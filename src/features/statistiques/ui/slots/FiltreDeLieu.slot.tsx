@@ -4,19 +4,16 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import { useSelector } from '@tanstack/react-form'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
+import { lieuxEnParametres } from '@/features/statistiques/ui/search-params/filtres-de-la-barre.search-params'
 import { FilterFooter } from '@/libraries/filtres/FilterFooter'
 import { FilterSelection } from '@/libraries/filtres/FilterSelection'
-import {
-  availableOptionsIn,
-  matchingOption,
-  resetPagination,
-  update,
-} from '@/libraries/filtres/helpers'
+import { availableOptionsIn, matchingOption } from '@/libraries/filtres/helpers'
 import TriggerButton from '@/libraries/filtres/TriggerButton'
 import type { ComboBoxData } from '@/libraries/formulaire/fields-components/ComboBox'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
 import { useHydrated } from '@/libraries/formulaire/use-hydrated'
 import { inject } from '@/libraries/nextjs/injection/client'
+import { requeteAvec } from '@/libraries/parametres-d-url'
 import {
   labelsToOptions,
   type SelectOption,
@@ -96,7 +93,6 @@ export const FiltreDeLieu = ({
 }) => {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const params = new URLSearchParams(searchParams.toString())
 
   const [isOpen, setIsOpen] = useState(false)
   const champRef = useRef<HTMLDivElement>(null)
@@ -141,30 +137,34 @@ export const FiltreDeLieu = ({
   const tousLesChoisis = [...departements, ...communes, ...lieuxActivite]
   const aDesChoix = tousLesChoisis.length > 0
 
-  const closePopover = (close: boolean = false) => {
+  const closePopover = (
+    close: boolean,
+    choix: {
+      readonly lieux: readonly string[]
+      readonly communes: readonly string[]
+      readonly departements: readonly string[]
+    },
+  ) => {
     form.setFieldValue('type', '')
     form.setFieldValue('valeur', null)
     close && setIsOpen(false)
-    router.replace(`?${params}`, { scroll: false })
+    router.replace(requeteAvec(searchParams, lieuxEnParametres(choix)), {
+      scroll: false,
+    })
   }
 
-  const handleSubmit = (close: boolean = false) => {
-    update(params)('lieux', lieuxActivite)
-    update(params)('communes', communes)
-    update(params)('departements', departements)
-    resetPagination(params)
-    closePopover(close)
-  }
+  const handleSubmit = (close: boolean = false) =>
+    closePopover(close, {
+      lieux: lieuxActivite.map(({ value }) => value),
+      communes: communes.map(({ value }) => value),
+      departements: departements.map(({ value }) => value),
+    })
 
   const handleClearFilters = () => {
     setCommunes([])
     setDepartements([])
     setLieuxActivite([])
-    update(params)('lieux', [])
-    update(params)('communes', [])
-    update(params)('departements', [])
-    resetPagination(params)
-    closePopover(true)
+    closePopover(true, { lieux: [], communes: [], departements: [] })
   }
 
   const handleSelectFilter = (option: SelectOption) => {

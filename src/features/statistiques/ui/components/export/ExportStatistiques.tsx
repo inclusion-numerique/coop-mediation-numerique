@@ -14,6 +14,7 @@ import {
   hrefDeLExportDesStatistiques,
 } from '@/features/statistiques/ui/presenters/liens.presenter'
 import { MediateurOption } from '@/features/statistiques/ui/presenters/options-de-la-barre.presenter'
+import { adresseDesFiltres } from '@/features/statistiques/ui/search-params/filtres-de-la-barre.search-params'
 import { download } from '@/libraries/navigateur/download'
 import { numberToString } from '@/libraries/nombre/formatNumber'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
@@ -63,18 +64,7 @@ export const ExportStatistiques = ({
   const nombreDAccompagnements = use(accompagnementsCount)
   const impressionPrete = useImpressionPrete()
   const exportXlsx = (exportPath: string, message: string) => {
-    const searchParams = new URLSearchParams(
-      Object.entries(filters).flatMap(([key, value]) =>
-        value ? [[key, Array.isArray(value) ? value.join(',') : value]] : [],
-      ),
-    )
-
-    const pathWithSearchParams =
-      searchParams.size > 0
-        ? `${exportPath}?${searchParams.toString()}`
-        : exportPath
-
-    download(pathWithSearchParams)
+    download(adresseDesFiltres(exportPath, filters))
     ExportStatistiquesModal.close()
     createToast({
       priority: 'success',

@@ -2,6 +2,7 @@
 
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react'
+import { choixEnParametres } from '@/features/statistiques/ui/search-params/filtres-de-la-barre.search-params'
 import { FilterFooter } from '@/libraries/filtres/FilterFooter'
 import { FilterSelection } from '@/libraries/filtres/FilterSelection'
 import {
@@ -10,8 +11,7 @@ import {
   matchingOption,
 } from '@/libraries/filtres/helpers'
 import TriggerButton from '@/libraries/filtres/TriggerButton'
-import { routeConstruite } from '@/libraries/nextjs/route/route-construite'
-import { adresseAvec } from '@/libraries/parametres-d-url'
+import { requeteAvec } from '@/libraries/parametres-d-url'
 import CustomSelect from '@/libraries/ui/components/CustomSelect/CustomSelect'
 import { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import { Popover } from '@/libraries/ui/components/Primitives/Popover'
@@ -73,15 +73,13 @@ export const BeneficiaireFilter = ({
   const closePopover = (close: boolean, choisis: SelectOption[]) => {
     close && setIsOpen(false)
     router.replace(
-      routeConstruite(
-        adresseAvec(`?${searchParams}`, {
-          beneficiaires:
-            choisis.length > 0
-              ? choisis.map(({ value }) => value).join(',')
-              : null,
-          page: null,
-        }),
-      ) || '?',
+      requeteAvec(
+        searchParams,
+        choixEnParametres(
+          'beneficiaires',
+          choisis.map(({ value }) => String(value)),
+        ),
+      ),
       { scroll: false },
     )
   }

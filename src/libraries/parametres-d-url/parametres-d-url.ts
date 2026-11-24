@@ -53,15 +53,51 @@ export const periodeLue = (
     : { du: debut, au: fin }
 }
 
+type Changements = Readonly<Record<string, string | null | undefined>>
+
+const fusionnee = (requete: string, parametres: Changements): string =>
+  new URLSearchParams(
+    Object.entries({
+      ...Object.fromEntries(new URLSearchParams(requete)),
+      ...parametres,
+    }).flatMap(([nom, valeur]) => (valeur == null ? [] : [[nom, valeur]])),
+  ).toString()
+
 export const adresseAvec = (
   adresse: string,
-  parametres: Readonly<Record<string, string | null | undefined>>,
+  parametres: Changements,
 ): string => {
   const [chemin, requete = ''] = adresse.split('?')
-  const valeurs = Object.entries({
-    ...Object.fromEntries(new URLSearchParams(requete)),
-    ...parametres,
-  }).flatMap(([nom, valeur]) => (valeur == null ? [] : [[nom, valeur]]))
-  const chaine = new URLSearchParams(valeurs).toString()
+  const chaine = fusionnee(requete, parametres)
   return chaine === '' ? chemin : `${chemin}?${chaine}`
 }
+
+type RequeteCourante = string | { toString(): string }
+
+export const listeEnParametre = (valeurs: readonly string[]): string | null =>
+  valeurs.length > 0 ? valeurs.join(',') : null
+
+export const listeSansLaValeur = (
+  liste: string | null | undefined,
+  valeur: string,
+): string | null =>
+  listeEnParametre(
+    (liste ?? '')
+      .split(',')
+      .filter((restante) => restante !== '' && restante !== valeur),
+  )
+
+export const requeteAvec = (
+  requete: RequeteCourante,
+  parametres: Changements,
+): `?${string}` => `?${fusionnee(requete.toString(), parametres)}`
+
+export const requeteConservant = (
+  requete: RequeteCourante,
+  cles: readonly string[],
+): `?${string}` =>
+  `?${new URLSearchParams(
+    [...new URLSearchParams(requete.toString())].filter(([cle]) =>
+      cles.includes(cle),
+    ),
+  ).toString()}`

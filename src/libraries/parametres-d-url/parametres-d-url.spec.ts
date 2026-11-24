@@ -3,8 +3,12 @@ import { z } from 'zod'
 import {
   adresseAvec,
   entierPositifLu,
+  listeEnParametre,
+  listeSansLaValeur,
   periodeLue,
   premiereValeur,
+  requeteAvec,
+  requeteConservant,
   valeurLue,
   valeursLues,
 } from './parametres-d-url'
@@ -83,4 +87,44 @@ describe('paramètres d’URL', () => {
       expect(entierPositifLu(valeur, 7)).toBe(7)
     },
   )
+})
+
+describe("écriture de l'état d'URL", () => {
+  it('écrit une liste en valeurs séparées par des virgules', () => {
+    expect(listeEnParametre(['a', 'b'])).toBe('a,b')
+  })
+
+  it('retire le paramètre pour une liste vide', () => {
+    expect(listeEnParametre([])).toBeNull()
+  })
+
+  it("retire une valeur d'une liste", () => {
+    expect(listeSansLaValeur('a,b,c', 'b')).toBe('a,c')
+  })
+
+  it('retire le paramètre quand la liste se vide', () => {
+    expect(listeSansLaValeur('a', 'a')).toBeNull()
+  })
+
+  it("retire le paramètre d'une liste absente", () => {
+    expect(listeSansLaValeur(null, 'a')).toBeNull()
+  })
+
+  it('modifie la requête courante', () => {
+    expect(requeteAvec('du=1&page=2', { page: null, au: '3' })).toBe(
+      '?du=1&au=3',
+    )
+  })
+
+  it('garde une requête vide quand tout est retiré', () => {
+    expect(requeteAvec('page=2', { page: null })).toBe('?')
+  })
+
+  it('ne conserve que les paramètres choisis', () => {
+    expect(requeteConservant('a=1&b=2&c=3', ['a', 'c'])).toBe('?a=1&c=3')
+  })
+
+  it('garde une requête vide quand aucun paramètre choisi n’est présent', () => {
+    expect(requeteConservant('b=2', ['a'])).toBe('?')
+  })
 })

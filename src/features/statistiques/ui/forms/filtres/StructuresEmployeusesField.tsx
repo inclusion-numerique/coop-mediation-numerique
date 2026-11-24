@@ -10,13 +10,6 @@ import {
   StructureEmployeuseSelectedItems,
 } from './StructureEmployeuseComboBox'
 
-export const updateStructuresEmployeusesParams = (data: {
-  value: { structuresEmployeuses?: StructureEmployeuse[] }
-}) => {
-  const ids = data.value.structuresEmployeuses?.map((s) => s.id) ?? []
-  return { structuresEmployeuses: ids.length > 0 ? ids.join(',') : null }
-}
-
 export const StructuresEmployeusesField = withForm({
   ...plusDeFiltresFormOptions,
   props: {} as {

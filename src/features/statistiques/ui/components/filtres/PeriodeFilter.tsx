@@ -3,11 +3,10 @@
 import { format } from 'date-fns'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
+import { periodeEnParametres } from '@/features/statistiques/ui/search-params/filtres-de-la-barre.search-params'
 import { FilterFooter } from '@/libraries/filtres/FilterFooter'
 import TriggerButton from '@/libraries/filtres/TriggerButton'
-import { routeConstruite } from '@/libraries/nextjs/route/route-construite'
-import { adresseAvec } from '@/libraries/parametres-d-url'
+import { requeteAvec } from '@/libraries/parametres-d-url'
 import {
   type DateRange,
   DateRangePicker,
@@ -50,12 +49,12 @@ export const PeriodeFilter = ({
       setIsOpen(false)
     }
     router.replace(
-      routeConstruite(
-        adresseAvec(`?${searchParams}`, {
-          du: complete && range.from ? dateAsIsoDay(range.from) : null,
-          au: complete && range.to ? dateAsIsoDay(range.to) : null,
-        }),
-      ) || '?',
+      requeteAvec(
+        searchParams,
+        complete
+          ? periodeEnParametres(range.from, range.to)
+          : periodeEnParametres(),
+      ),
       { scroll: false },
     )
   }
@@ -63,14 +62,9 @@ export const PeriodeFilter = ({
   const handleClearFilters = () => {
     setRange(undefined)
     setIsOpen(false)
-    router.replace(
-      routeConstruite(
-        adresseAvec(`?${searchParams}`, { du: null, au: null }),
-      ) || '?',
-      {
-        scroll: false,
-      },
-    )
+    router.replace(requeteAvec(searchParams, periodeEnParametres()), {
+      scroll: false,
+    })
   }
 
   const { from, to } = range ?? {}

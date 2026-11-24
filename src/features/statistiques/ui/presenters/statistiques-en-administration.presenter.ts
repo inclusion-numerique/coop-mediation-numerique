@@ -2,6 +2,7 @@ import { z } from 'zod'
 import { ActivitesFilterValidations } from '@/features/statistiques/domain/filtres-des-activites'
 import { dateAsDayConventional } from '@/libraries/date/dateAsDay'
 import { numberToString } from '@/libraries/nombre/formatNumber'
+import { adresseDesFiltres } from '../search-params/filtres-de-la-barre.search-params'
 
 export type PeriodeChoisie = {
   readonly du?: string
@@ -33,15 +34,7 @@ export const periodeDActivite = (
 export const adresseDExport = (
   chemin: string,
   { du, au }: PeriodeChoisie,
-): string => {
-  const parametres = new URLSearchParams(
-    Object.entries({ du, au }).flatMap(([cle, valeur]) =>
-      valeur === undefined ? [] : [[cle, valeur]],
-    ),
-  ).toString()
-
-  return parametres === '' ? chemin : `${chemin}?${parametres}`
-}
+): string => adresseDesFiltres(chemin, { du, au })
 
 export const titreDesStatistiques = ({
   coordinateur,

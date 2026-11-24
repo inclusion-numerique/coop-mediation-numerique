@@ -3,15 +3,6 @@ import { withForm } from '@/libraries/formulaire/use-app-form'
 import type { MotDuVocabulaire } from '../../labels/barre.labels'
 import { plusDeFiltresFormOptions } from '../plus-de-filtres.form-options'
 
-export const updateThematiqueAdministrativesParams = (data: {
-  value: { thematiqueAdministratives: string[] }
-}) => ({
-  thematiqueAdministratives:
-    data.value.thematiqueAdministratives.length > 0
-      ? data.value.thematiqueAdministratives.join(',')
-      : null,
-})
-
 export const ThematiqueAdministrativesFiled = withForm({
   ...plusDeFiltresFormOptions,
   props: {} as {

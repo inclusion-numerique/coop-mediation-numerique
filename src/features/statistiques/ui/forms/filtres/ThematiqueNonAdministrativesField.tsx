@@ -2,15 +2,6 @@ import { withForm } from '@/libraries/formulaire/use-app-form'
 import type { MotDuVocabulaire } from '../../labels/barre.labels'
 import { plusDeFiltresFormOptions } from '../plus-de-filtres.form-options'
 
-export const updateThematiqueNonAdministrativesParams = (data: {
-  value: { thematiqueNonAdministratives: string[] }
-}) => ({
-  thematiqueNonAdministratives:
-    data.value.thematiqueNonAdministratives.length > 0
-      ? data.value.thematiqueNonAdministratives.join(',')
-      : null,
-})
-
 export const ThematiqueNonAdministrativesFiled = withForm({
   ...plusDeFiltresFormOptions,
   props: {} as {

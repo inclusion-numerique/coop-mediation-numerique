@@ -9,13 +9,14 @@ import {
   toLieuPrefix,
 } from '@/features/statistiques/ui/labels/filtres.labels'
 import type { MediateurOption } from '@/features/statistiques/ui/presenters/options-de-la-barre.presenter'
-import { routeConstruite } from '@/libraries/nextjs/route/route-construite'
-import { adresseAvec } from '@/libraries/parametres-d-url'
+import {
+  CLES_CONSERVEES,
+  sansLeFiltre,
+} from '@/features/statistiques/ui/search-params/filtres-de-la-barre.search-params'
+import { requeteAvec, requeteConservant } from '@/libraries/parametres-d-url'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import type { VocabulaireDeLaBarre } from '../../labels/barre.labels'
 import type { OptionDeBeneficiaire } from '../../presenters/options-de-la-barre.presenter'
-
-const queryParamsToKeep = ['voir-rdvs']
 
 export const FilterTags = ({
   filters,
@@ -55,44 +56,16 @@ export const FilterTags = ({
     activiteSourceOptions,
   }).map(toLieuPrefix)
 
-  const handleRemoveFilter = (key: string, value: string | string[]) => {
-    if (Array.isArray(value)) {
-      return router.replace(
-        routeConstruite(
-          adresseAvec(
-            `?${searchParams}`,
-            Object.fromEntries(value.map((cle) => [cle, null])),
-          ),
-        ) || '?',
-        { scroll: false },
-      )
-    }
-
-    const restantes = (searchParams.get(key)?.split(',') ?? []).filter(
-      (v) => v !== value,
-    )
-
-    return router.replace(
-      routeConstruite(
-        adresseAvec(`?${searchParams}`, {
-          [key]: restantes.length > 0 ? restantes.join(',') : null,
-          ...(key === 'rdvs' && value === 'tous' ? { rdvs: null } : {}),
-        }),
-      ) || '?',
+  const handleRemoveFilter = (key: string, value: string | string[]) =>
+    router.replace(
+      requeteAvec(searchParams, sansLeFiltre(searchParams, key, value)),
       { scroll: false },
     )
-  }
 
-  const handleClearFilters = () => {
-    const newQueryParams = new URLSearchParams(
-      queryParamsToKeep.flatMap((paramToKeep) =>
-        searchParams.has(paramToKeep)
-          ? [[paramToKeep, searchParams.get(paramToKeep) ?? '']]
-          : [],
-      ),
-    )
-    router.replace(`?${newQueryParams}`, { scroll: false })
-  }
+  const handleClearFilters = () =>
+    router.replace(requeteConservant(searchParams, CLES_CONSERVEES), {
+      scroll: false,
+    })
 
   return filterLabelsToDisplay.length > 0 ? (
     <>

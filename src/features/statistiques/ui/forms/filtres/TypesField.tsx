@@ -2,10 +2,6 @@ import { withForm } from '@/libraries/formulaire/use-app-form'
 import type { MotDuVocabulaire } from '../../labels/barre.labels'
 import { plusDeFiltresFormOptions } from '../plus-de-filtres.form-options'
 
-export const updateTypesParams = (data: { value: { types: string[] } }) => ({
-  types: data.value.types.length > 0 ? data.value.types.join(',') : null,
-})
-
 export const TypesField = withForm({
   ...plusDeFiltresFormOptions,
   props: {} as {

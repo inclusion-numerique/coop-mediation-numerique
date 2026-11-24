@@ -9,44 +9,41 @@ import { ActiviteSource } from '@/features/statistiques/domain/filtres-des-activ
 import {
   RolesField,
   roleCount,
-  updateRolesParams,
 } from '@/features/statistiques/ui/forms/filtres/RolesField'
-import {
-  SourcesField,
-  updateSourcesParams,
-} from '@/features/statistiques/ui/forms/filtres/SourceField'
+import { SourcesField } from '@/features/statistiques/ui/forms/filtres/SourceField'
 import type { StructureEmployeuse } from '@/features/statistiques/ui/forms/filtres/StructureEmployeuseComboBox'
-import {
-  StructuresEmployeusesField,
-  updateStructuresEmployeusesParams,
-} from '@/features/statistiques/ui/forms/filtres/StructuresEmployeusesField'
+import { StructuresEmployeusesField } from '@/features/statistiques/ui/forms/filtres/StructuresEmployeusesField'
 import {
   TagsField,
   tagToArray,
-  updateTagsParams,
 } from '@/features/statistiques/ui/forms/filtres/TagsField'
-import {
-  ThematiqueAdministrativesFiled,
-  updateThematiqueAdministrativesParams,
-} from '@/features/statistiques/ui/forms/filtres/ThematiqueAdministrativesField'
-import {
-  ThematiqueNonAdministrativesFiled,
-  updateThematiqueNonAdministrativesParams,
-} from '@/features/statistiques/ui/forms/filtres/ThematiqueNonAdministrativesField'
-import {
-  TypesField,
-  updateTypesParams,
-} from '@/features/statistiques/ui/forms/filtres/TypesField'
+import { ThematiqueAdministrativesFiled } from '@/features/statistiques/ui/forms/filtres/ThematiqueAdministrativesField'
+import { ThematiqueNonAdministrativesFiled } from '@/features/statistiques/ui/forms/filtres/ThematiqueNonAdministrativesField'
+import { TypesField } from '@/features/statistiques/ui/forms/filtres/TypesField'
 import {
   plusDeFiltresFormOptions,
   type ValeursDePlusDeFiltres,
 } from '@/features/statistiques/ui/forms/plus-de-filtres.form-options'
 import type { VocabulaireDeLaBarre } from '@/features/statistiques/ui/labels/barre.labels'
 import { TagScope } from '@/features/statistiques/ui/labels/portee-de-tag.labels'
+import {
+  type CleDePlusDeFiltres,
+  plusDeFiltresEnParametres,
+  sansPlusDeFiltres,
+} from '@/features/statistiques/ui/search-params/filtres-de-la-barre.search-params'
 import { handleSubmit } from '@/libraries/formulaire/handle-submit'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
-import { routeConstruite } from '@/libraries/nextjs/route/route-construite'
-import { adresseAvec } from '@/libraries/parametres-d-url'
+import { requeteAvec } from '@/libraries/parametres-d-url'
+
+const CLES: readonly CleDePlusDeFiltres[] = [
+  'conseiller_numerique',
+  'structuresEmployeuses',
+  'types',
+  'thematiqueNonAdministratives',
+  'thematiqueAdministratives',
+  'tags',
+  'source',
+]
 
 const MoreFiltersModal = createModal({
   id: 'more-filters-modal',
@@ -86,12 +83,7 @@ export const MoreCoordinateurFilters = ({
   const dismissModal = (
     parametres: Readonly<Record<string, string | null>>,
   ) => {
-    router.replace(
-      routeConstruite(adresseAvec(`?${searchParams}`, parametres)) || '?',
-      {
-        scroll: false,
-      },
-    )
+    router.replace(requeteAvec(searchParams, parametres), { scroll: false })
     MoreFiltersModal.close()
     form.reset()
   }
@@ -115,28 +107,11 @@ export const MoreCoordinateurFilters = ({
     ...plusDeFiltresFormOptions,
     defaultValues: valeursInitiales,
     onSubmit: (data) => {
-      dismissModal({
-        ...updateRolesParams(data),
-        ...updateStructuresEmployeusesParams(data),
-        ...updateTypesParams(data),
-        ...updateThematiqueAdministrativesParams(data),
-        ...updateThematiqueNonAdministrativesParams(data),
-        ...updateTagsParams(data),
-        ...updateSourcesParams(data),
-      })
+      dismissModal(plusDeFiltresEnParametres(data.value, CLES))
     },
   })
 
-  const clearFilters = () =>
-    dismissModal({
-      conseiller_numerique: null,
-      structuresEmployeuses: null,
-      types: null,
-      thematiqueNonAdministratives: null,
-      thematiqueAdministratives: null,
-      tags: null,
-      source: null,
-    })
+  const clearFilters = () => dismissModal(sansPlusDeFiltres(CLES))
 
   return (
     <form.AppForm>

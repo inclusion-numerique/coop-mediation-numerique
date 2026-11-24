@@ -4,10 +4,10 @@ import classNames from 'classnames'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { ChangeEvent, useEffect, useState } from 'react'
 import type { ActivitesFilters } from '@/features/statistiques/domain/filtres-des-activites'
+import { typesEnParametres } from '@/features/statistiques/ui/search-params/filtres-de-la-barre.search-params'
 import { FilterFooter } from '@/libraries/filtres/FilterFooter'
 import TriggerButton from '@/libraries/filtres/TriggerButton'
-import { routeConstruite } from '@/libraries/nextjs/route/route-construite'
-import { adresseAvec } from '@/libraries/parametres-d-url'
+import { requeteAvec } from '@/libraries/parametres-d-url'
 import { RDVServicePublicLogo } from '@/libraries/pictograms/services/RDVServicePublicLogo'
 import { Popover } from '@/libraries/ui/components/Primitives/Popover'
 import type { VocabulaireDeLaBarre } from '../../labels/barre.labels'
@@ -45,27 +45,16 @@ export const ActiviteTypeFilter = ({
     parametres: Readonly<Record<string, string | null>>,
   ) => {
     close && setIsOpen(false)
-    router.replace(
-      routeConstruite(adresseAvec(`?${searchParams}`, parametres)) || '?',
-      {
-        scroll: false,
-      },
-    )
+    router.replace(requeteAvec(searchParams, parametres), { scroll: false })
   }
 
-  const enParametre = (valeurs: readonly string[]): string | null =>
-    valeurs.length > 0 ? valeurs.join(',') : null
-
   const handleSubmit = (close: boolean = false) =>
-    closePopover(close, {
-      types: enParametre(activiteTypes),
-      rdvs: enParametre(rdvs),
-    })
+    closePopover(close, typesEnParametres(activiteTypes, rdvs))
 
   const handleClearFilters = () => {
     setActiviteTypes([])
     setRdvs([])
-    closePopover(true, { types: null, rdvs: null })
+    closePopover(true, typesEnParametres([], []))
   }
 
   const handleCheckTypeFilter = (option: ChangeEvent<HTMLInputElement>) => {
