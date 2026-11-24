@@ -7,5 +7,9 @@ export const hrefDeLExportDeLEquipe = (coordinateurId: string) =>
 export const hrefDuCoordinateurEnAdministration = (utilisateurId: string) =>
   `/administration/utilisateurs/${utilisateurId}` as const
 
+export const hrefDeLEquipeDuCoordinateurEnAdministration = (
+  utilisateurId: string,
+) => `/administration/utilisateurs/${utilisateurId}#coordinateur` as const
+
 export const hrefDeConnexion = (suivant: string) =>
   `/connexion?suivant=${encodeURIComponent(suivant)}` as const

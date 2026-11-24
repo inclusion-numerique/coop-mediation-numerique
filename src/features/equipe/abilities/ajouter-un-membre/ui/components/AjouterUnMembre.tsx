@@ -3,7 +3,7 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useRouter } from 'next/navigation'
 import { useRef, useState, useTransition } from 'react'
-import { hrefDuCoordinateurEnAdministration } from '@/features/equipe/ui/presenters/liens.presenter'
+import { hrefDeLEquipeDuCoordinateurEnAdministration } from '@/features/equipe/ui/presenters/liens.presenter'
 import type { ComboBoxData } from '@/libraries/formulaire/fields-components/ComboBox'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
 import { useHydrated } from '@/libraries/formulaire/use-hydrated'
@@ -79,7 +79,7 @@ export const AjouterUnMembre = ({
         message: `L'utilisateur a été ajouté à l'équipe`,
       })
       router.push(
-        `${hrefDuCoordinateurEnAdministration(equipe.utilisateurId)}#coordinateur` as const,
+        hrefDeLEquipeDuCoordinateurEnAdministration(equipe.utilisateurId),
       )
       router.refresh()
     })
