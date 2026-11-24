@@ -28,12 +28,13 @@ export const allocatePercentagesFromRecords = <
   countKey: CountKey,
   proportionKey: ProportionKey,
 ): (T & { [K in ProportionKey]: number })[] => {
-  const proportions = allocatePercentages(
-    values.map(({ [countKey]: count }) => count),
+  const total = values.reduce(
+    (somme, { [countKey]: count }) => somme + (count ?? 0),
+    0,
   )
 
-  return values.map((value, index) => ({
+  return values.map((value) => ({
     ...value,
-    [proportionKey]: proportions[index],
+    [proportionKey]: computeProportion(value[countKey] ?? 0, total),
   }))
 }

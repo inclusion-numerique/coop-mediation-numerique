@@ -44,11 +44,8 @@ export const ProgressItemList = ({
     className={classNames('fr-width-full', 'proportions proportions--barres')}
   >
     {items.map(({ label, count, proportion }, index) => {
-      const computedColors = color
-        ? [color] // only one color is provided
-        : colors && colors.length > 0
-          ? [colors[index % colors.length]]
-          : []
+      const couleur = color || colors?.[index % colors.length]
+      const computedColors = couleur === undefined ? [] : [couleur]
 
       const showTooltip = (truncateLabel || oneLineLabel) && tooltipKey
 
