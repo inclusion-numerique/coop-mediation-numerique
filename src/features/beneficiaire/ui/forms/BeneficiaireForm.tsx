@@ -12,7 +12,7 @@ import {
   ANNEE_NAISSANCE_MIN as anneeNaissanceMin,
 } from '@/features/beneficiaire/domain/annee-naissance'
 import { effectiveTrancheAge } from '@/features/beneficiaire/domain/tranche-age'
-import FormSection from '@/features/beneficiaire/ui/components/formulaire/FormSection'
+import FormSection from '@/features/beneficiaire/ui/components/FormSection'
 import {
   BeneficiaireData,
   BeneficiaireValidation,

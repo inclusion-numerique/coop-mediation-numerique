@@ -2,7 +2,7 @@ import Link from 'next/link'
 import type { VueDeModificationDuBeneficiaire } from '@/features/beneficiaire/abilities/modifier-beneficiaire/ui/presenters/modifier-beneficiaire.presenter'
 import BeneficiaireForm, {
   type EnregistrerBeneficiaire,
-} from '@/features/beneficiaire/ui/forms/formulaire/BeneficiaireForm'
+} from '@/features/beneficiaire/ui/forms/BeneficiaireForm'
 import { hrefDuBeneficiaire } from '@/features/beneficiaire/ui/presenters/liens.presenter'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
