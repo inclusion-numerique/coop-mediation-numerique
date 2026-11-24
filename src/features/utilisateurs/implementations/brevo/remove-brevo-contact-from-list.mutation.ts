@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { errorReporter } from '@/configuration/telemetry/error-reporter/server'
-import { cleApiBrevo } from '@/features/utilisateurs/implementations/brevo/brevo-api'
-import { brevoApiThrottle } from './brevo-api-throttle'
+import { cleApiBrevo } from '@/features/utilisateurs/implementations/brevo/brevo-api.client'
+import { brevoApiThrottle } from './brevo-api-throttle.client'
 
 const CONTACT_ABSENT_DE_LA_LISTE =
   'Contact already removed from list and/or does not exist'

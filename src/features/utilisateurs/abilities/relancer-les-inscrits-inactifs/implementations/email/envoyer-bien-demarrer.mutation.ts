@@ -2,39 +2,39 @@ import { contactEmail } from '@/configuration/projet/config'
 import { emailTransport } from '@/configuration/smtp/emailTransport'
 import { expediteur } from '@/configuration/smtp/serveur'
 import { throwOnSendMailFailure } from '@/configuration/smtp/throwOnSendMailFailure'
-import { avertissementDeSuppression } from '@/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees/implementations/email/avertissement-de-suppression'
+import { bienDemarrer } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/implementations/email/bien-demarrer.email'
 import { compileMjml } from '@/libraries/emails/mjml'
 
-export const envoyerLAvertissementDeSuppression = async ({
+export const envoyerBienDemarrer = async ({
   email,
   firstname,
-  deletionDate,
-  daysRemaining,
   matomoCampaignId,
+  isMediateur,
+  isCoordinateur,
 }: {
   email: string
   firstname: string | null
-  deletionDate: string
-  daysRemaining: number
   matomoCampaignId: string
+  isMediateur: boolean
+  isCoordinateur: boolean
 }) => {
   const result = await emailTransport.sendMail({
     to: email,
     from: expediteur,
     replyTo: contactEmail,
-    subject: `Votre compte va bientôt être supprimé ⚠️`,
-    text: avertissementDeSuppression.text({
+    subject: 'Bien commencer sur La Coop 🚀',
+    text: bienDemarrer.text({
       firstname,
-      deletionDate,
-      daysRemaining,
       matomoCampaignId,
+      isMediateur,
+      isCoordinateur,
     }),
     html: await compileMjml(
-      avertissementDeSuppression.mjml({
+      bienDemarrer.mjml({
         firstname,
-        deletionDate,
-        daysRemaining,
         matomoCampaignId,
+        isMediateur,
+        isCoordinateur,
       }),
     ),
   })

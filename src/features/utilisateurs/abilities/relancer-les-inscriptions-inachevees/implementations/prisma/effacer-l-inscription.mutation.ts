@@ -1,6 +1,6 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { UtilisateurId } from '@/features/utilisateurs/domain'
-import type { RetirerDuRegistre } from '@/features/utilisateurs/implementations/prisma/registre-des-personnes'
+import type { RetirerDuRegistre } from '@/features/utilisateurs/implementations/prisma/registre-des-personnes.mutation'
 
 export const effacerLInscription =
   (retirerDuRegistre: RetirerDuRegistre) =>

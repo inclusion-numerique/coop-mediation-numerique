@@ -1,15 +1,15 @@
-import type { SynchroniserLaPersonne } from '@/features/utilisateurs/implementations/prisma/registre-des-personnes'
+import type { SynchroniserLaPersonne } from '@/features/utilisateurs/implementations/prisma/registre-des-personnes.mutation'
 import type {
   SupprimerCompteDependances,
   SupprimerComptePorts,
 } from '../domain/ports'
 import { supprimerCompte } from '../domain/supprimer-compte'
 import { supprimerUnInscritJamaisActif } from '../domain/supprimer-un-inscrit-jamais-actif'
-import { retirerDesListesDeDiffusion } from './brevo/retirer-des-listes-de-diffusion'
-import { hash } from './crypto/hash'
+import { retirerDesListesDeDiffusion } from './brevo/retirer-des-listes-de-diffusion.mutation'
+import { hash } from './crypto/hash.adapter'
 import { compteASupprimer } from './prisma/compte-a-supprimer.query'
 import { couperAcces } from './prisma/couper-acces.mutation'
-import { logEffacementReport } from './prisma/log-effacement-report'
+import { logEffacementReport } from './prisma/log-effacement-report.mutation'
 
 export type EffacementsDesAutresFeatures = Omit<
   SupprimerComptePorts,

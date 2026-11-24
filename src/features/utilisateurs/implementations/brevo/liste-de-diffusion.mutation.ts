@@ -2,8 +2,8 @@ import axios from 'axios'
 import {
   cleApiBrevo,
   listeDesUtilisateurs,
-} from '@/features/utilisateurs/implementations/brevo/brevo-api'
-import { brevoApiThrottle } from '@/features/utilisateurs/implementations/brevo/brevo-api-throttle'
+} from '@/features/utilisateurs/implementations/brevo/brevo-api.client'
+import { brevoApiThrottle } from '@/features/utilisateurs/implementations/brevo/brevo-api-throttle.client'
 import {
   type AdresseCourriel,
   type ContactAImporter,

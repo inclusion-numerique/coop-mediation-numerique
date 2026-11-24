@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { criteresDExposition } from './criteres-d-exposition'
+import { criteresDExposition } from './criteres-d-exposition.transfer'
 
 describe('critères d’exposition des utilisateurs', () => {
   it('expose tout sans filtre', () => {

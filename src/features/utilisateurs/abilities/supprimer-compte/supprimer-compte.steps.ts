@@ -13,10 +13,10 @@ import {
   type SupprimerComptePorts,
 } from './domain'
 import { supprimerCompte } from './domain/supprimer-compte'
-import { hash } from './implementations/crypto/hash'
+import { hash } from './implementations/crypto/hash.adapter'
 import { compteASupprimer } from './implementations/prisma/compte-a-supprimer.query'
 import { couperAcces } from './implementations/prisma/couper-acces.mutation'
-import { logEffacementReport } from './implementations/prisma/log-effacement-report'
+import { logEffacementReport } from './implementations/prisma/log-effacement-report.mutation'
 
 const demandes: {
   portefeuille: string[]

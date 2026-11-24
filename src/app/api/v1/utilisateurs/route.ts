@@ -10,7 +10,7 @@ import {
   UtilisateursQueryParamsValidation,
 } from '@/features/clients-api/abilities/lire-les-utilisateurs/implementations/api-v1/utilisateurs.params'
 import { reponseDesUtilisateurs } from '@/features/clients-api/abilities/lire-les-utilisateurs/implementations/api-v1/utilisateurs.response'
-import { criteresDExposition } from '@/features/utilisateurs/abilities/exposer-les-utilisateurs/implementations/api/criteres-d-exposition'
+import { criteresDExposition } from '@/features/utilisateurs/abilities/exposer-les-utilisateurs/implementations/api/criteres-d-exposition.transfer'
 import { utilisateurExpose } from '@/features/utilisateurs/abilities/exposer-les-utilisateurs/implementations/api/utilisateur-expose.transfer'
 import { utilisateursExposes } from '@/features/utilisateurs/abilities/exposer-les-utilisateurs/implementations/prisma/utilisateurs-exposes.query'
 import { prismaCursorPagination } from '@/libraries/json-api/CursorPagination'

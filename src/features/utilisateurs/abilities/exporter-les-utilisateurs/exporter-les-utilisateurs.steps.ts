@@ -9,7 +9,7 @@ import {
 import { auteurDeLExport } from '@/features/utilisateurs/ui/presenters/auteur-de-l-export.presenter'
 import { barreDesUtilisateurs } from '@/features/utilisateurs/ui/presenters/barre-des-utilisateurs.presenter'
 import { semerUnCompteDeListe } from '@/features/utilisateurs/utilisateurs.cucumber'
-import { classeurDesUtilisateurs } from './implementations/excel/classeur-des-utilisateurs'
+import { classeurDesUtilisateurs } from './implementations/excel/classeur-des-utilisateurs.classeur'
 import { utilisateursAExporter } from './implementations/prisma/utilisateurs-a-exporter.query'
 import { colonnesDeLExport } from './ui/presenters/colonnes-de-l-export.presenter'
 

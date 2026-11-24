@@ -3,11 +3,11 @@ import { AdresseCourriel, UtilisateurId } from '@/features/utilisateurs/domain'
 import {
   cleApiBrevo,
   listeDesUtilisateurs,
-} from '@/features/utilisateurs/implementations/brevo/brevo-api'
-import { brevoApiThrottle } from '@/features/utilisateurs/implementations/brevo/brevo-api-throttle'
-import { deleteBrevoContact } from '@/features/utilisateurs/implementations/brevo/delete-brevo-contact'
-import { deleteBrevoContactIfOrphan } from '@/features/utilisateurs/implementations/brevo/delete-brevo-contact-if-orphan'
-import { removeBrevoContactFromList } from '@/features/utilisateurs/implementations/brevo/remove-brevo-contact-from-list'
+} from '@/features/utilisateurs/implementations/brevo/brevo-api.client'
+import { brevoApiThrottle } from '@/features/utilisateurs/implementations/brevo/brevo-api-throttle.client'
+import { deleteBrevoContact } from '@/features/utilisateurs/implementations/brevo/delete-brevo-contact.mutation'
+import { deleteBrevoContactIfOrphan } from '@/features/utilisateurs/implementations/brevo/delete-brevo-contact-if-orphan.mutation'
+import { removeBrevoContactFromList } from '@/features/utilisateurs/implementations/brevo/remove-brevo-contact-from-list.mutation'
 import type {
   CompteDuContact,
   ContactBrevo,

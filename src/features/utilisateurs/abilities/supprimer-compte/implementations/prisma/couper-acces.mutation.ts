@@ -4,7 +4,7 @@ import type {
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
 import { identiteAnonymeFromDomain } from '@/features/utilisateurs/implementations/prisma/compte.transfer'
-import type { SynchroniserLaPersonne } from '@/features/utilisateurs/implementations/prisma/registre-des-personnes'
+import type { SynchroniserLaPersonne } from '@/features/utilisateurs/implementations/prisma/registre-des-personnes.mutation'
 
 export const couperAcces =
   (synchroniserLaPersonne: SynchroniserLaPersonne) =>

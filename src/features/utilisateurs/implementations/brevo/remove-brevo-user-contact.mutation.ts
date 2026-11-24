@@ -1,7 +1,7 @@
 import { brevoActif } from '@/configuration/brevo'
-import { listeDesUtilisateurs } from '@/features/utilisateurs/implementations/brevo/brevo-api'
-import { deleteBrevoContactIfOrphan } from '@/features/utilisateurs/implementations/brevo/delete-brevo-contact-if-orphan'
-import { removeBrevoContactFromList } from '@/features/utilisateurs/implementations/brevo/remove-brevo-contact-from-list'
+import { listeDesUtilisateurs } from '@/features/utilisateurs/implementations/brevo/brevo-api.client'
+import { deleteBrevoContactIfOrphan } from '@/features/utilisateurs/implementations/brevo/delete-brevo-contact-if-orphan.mutation'
+import { removeBrevoContactFromList } from '@/features/utilisateurs/implementations/brevo/remove-brevo-contact-from-list.mutation'
 
 /**
  * Sort un utilisateur de Brevo : retrait de la liste des utilisateurs, puis

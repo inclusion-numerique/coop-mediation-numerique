@@ -8,7 +8,7 @@ import { ValiderValidation } from '@/features/inscription/abilities/valider/acti
 import { validerAvec } from '@/features/inscription/abilities/valider/implementations/valider.binding'
 import { UtilisateurId } from '@/features/inscription/domain'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
-import { inscrireALaListeDeDiffusion } from '@/features/utilisateurs/abilities/activer-la-mediation-numerique/implementations/brevo/inscrire-a-la-liste-de-diffusion'
+import { inscrireALaListeDeDiffusion } from '@/features/utilisateurs/abilities/activer-la-mediation-numerique/implementations/brevo/inscrire-a-la-liste-de-diffusion.mutation'
 import { fromResult, withInput } from '@/libraries/nextjs'
 
 export const validerAction = actionBuilder()

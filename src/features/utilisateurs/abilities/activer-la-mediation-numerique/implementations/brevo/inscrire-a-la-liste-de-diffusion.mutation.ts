@@ -1,6 +1,6 @@
 import { brevoActif } from '@/configuration/brevo'
 import { contactASynchroniser } from '@/features/utilisateurs/domain'
-import { importerDansLaListe } from '@/features/utilisateurs/implementations/brevo/liste-de-diffusion'
+import { importerDansLaListe } from '@/features/utilisateurs/implementations/brevo/liste-de-diffusion.mutation'
 import { inscritAInscrire } from '../prisma/inscrit-a-inscrire.query'
 
 export const inscrireALaListeDeDiffusion = async (

@@ -1,4 +1,4 @@
-import type { SynchroniserLaPersonne } from '@/features/utilisateurs/implementations/prisma/registre-des-personnes'
+import type { SynchroniserLaPersonne } from '@/features/utilisateurs/implementations/prisma/registre-des-personnes.mutation'
 import { createStopwatch } from '@/libraries/chronometre/stopwatch'
 import {
   type ChangerLesRoles,
@@ -7,7 +7,7 @@ import {
 import { retirerLesRolesVacants } from '../domain/retirer-les-roles-vacants'
 import { appliquerLePlan } from './prisma/appliquer-le-plan.mutation'
 import { compteAReaffecter } from './prisma/compte-a-reaffecter.query'
-import { journaliserLeChangement } from './prisma/journaliser-le-changement'
+import { journaliserLeChangement } from './prisma/journaliser-le-changement.mutation'
 import { rolesVacants } from './prisma/roles-vacants.query'
 
 export const changerLesRolesAvec =

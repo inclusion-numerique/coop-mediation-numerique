@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
-import { cleApiBrevo } from '@/features/utilisateurs/implementations/brevo/brevo-api'
-import { brevoApiThrottle } from './brevo-api-throttle'
+import { cleApiBrevo } from '@/features/utilisateurs/implementations/brevo/brevo-api.client'
+import { brevoApiThrottle } from './brevo-api-throttle.client'
 
 const deleteContactImmediate = async (email: string): Promise<void> => {
   try {

@@ -6,7 +6,7 @@ import {
   AdresseCourriel,
   type ContactAImporter,
 } from '@/features/utilisateurs/domain'
-import { versContactBrevo } from '@/features/utilisateurs/implementations/brevo/liste-de-diffusion'
+import { versContactBrevo } from '@/features/utilisateurs/implementations/brevo/liste-de-diffusion.mutation'
 import {
   type CompteDeListe,
   semerUnCompteDeListe,

@@ -8,7 +8,7 @@ import {
   SANS_CONTRAT,
   UtilisateurId,
 } from '../../domain'
-import { versContactBrevo } from './liste-de-diffusion'
+import { versContactBrevo } from './liste-de-diffusion.mutation'
 
 const utilisateurId = UtilisateurId('3c4d5e6f-7a8b-4c9d-8e0f-1a2b3c4d5e6f')
 const courriel = AdresseCourriel('jeanne@example.com')

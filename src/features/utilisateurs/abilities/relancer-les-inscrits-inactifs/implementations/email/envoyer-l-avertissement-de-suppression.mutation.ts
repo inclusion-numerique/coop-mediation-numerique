@@ -2,7 +2,7 @@ import { contactEmail } from '@/configuration/projet/config'
 import { emailTransport } from '@/configuration/smtp/emailTransport'
 import { expediteur } from '@/configuration/smtp/serveur'
 import { throwOnSendMailFailure } from '@/configuration/smtp/throwOnSendMailFailure'
-import { avertissementDeSuppression } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/implementations/email/avertissement-de-suppression'
+import { avertissementDeSuppression } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/implementations/email/avertissement-de-suppression.email'
 import { compileMjml } from '@/libraries/emails/mjml'
 
 export const envoyerLAvertissementDeSuppression = async ({

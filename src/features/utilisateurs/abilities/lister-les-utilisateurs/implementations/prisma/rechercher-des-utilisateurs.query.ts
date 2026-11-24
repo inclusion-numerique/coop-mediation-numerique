@@ -8,7 +8,7 @@ import {
 import { utilisateursWhere } from '@/features/utilisateurs/implementations/prisma/utilisateurs.where'
 import { utilisateursRattaches } from '@/features/utilisateurs/implementations/prisma/utilisateurs-rattaches.query'
 import type { ColonneTriable, UtilisateursTrouves } from '../../domain'
-import { ordreDesUtilisateurs } from './tri-des-utilisateurs'
+import { ordreDesUtilisateurs } from './tri-des-utilisateurs.order-by'
 
 export const rechercherDesUtilisateurs = async ({
   mots,
