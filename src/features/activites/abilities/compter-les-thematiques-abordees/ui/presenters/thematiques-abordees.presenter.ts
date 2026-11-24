@@ -1,5 +1,5 @@
+import { valeurDe } from '../../../../../../libraries/collections/valeur-de'
 import { thematiqueLabels } from '../../../../ui/labels/libelles/thematique.labels'
-import { valeurDe } from '../../../../ui/presenters/libelles/valeur-de'
 import type { ThematiqueAbordee } from '../../domain'
 
 export type ThematiqueAbordeePresentee = {

@@ -7,7 +7,7 @@ import classNames from 'classnames'
 import { usePathname } from 'next/navigation'
 import { contactEmail } from '@/configuration/projet/config'
 import styles from '@/features/navigation/ui/components/CoopSideMenu.module.css'
-import type { UtilisateurDeLaNavigation } from '../presenters/utilisateur-de-la-navigation'
+import type { UtilisateurDeLaNavigation } from '../layouts/CoopShell'
 
 const onlyFor =
   (user: UtilisateurDeLaNavigation) =>

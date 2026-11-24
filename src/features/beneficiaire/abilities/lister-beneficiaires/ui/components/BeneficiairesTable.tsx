@@ -5,7 +5,7 @@ import {
   type DataTableSelection,
   type DataTableUrlState,
 } from '@/libraries/data-table'
-import type { BeneficiaireRow } from '../presenters/beneficiaire-row'
+import type { BeneficiaireRow } from '../presenters/ligne-du-beneficiaire.presenter'
 import { BeneficiairesTableHead } from './BeneficiairesTableHead'
 import { BeneficiaireTableRow } from './BeneficiaireTableRow'
 

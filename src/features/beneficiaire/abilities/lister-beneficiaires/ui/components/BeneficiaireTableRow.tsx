@@ -1,8 +1,8 @@
 import classNames from 'classnames'
 import Link from 'next/link'
 import { SelectRowCell } from '@/libraries/data-table'
-import type { BeneficiaireRow } from '../presenters/beneficiaire-row'
 import { beneficiairesColumns } from '../presenters/beneficiaires.columns'
+import type { BeneficiaireRow } from '../presenters/ligne-du-beneficiaire.presenter'
 
 export const BeneficiaireTableRow = ({
   row,

@@ -3,7 +3,7 @@ import {
   genresColors,
   statusColors,
   tranchesAgeColors,
-} from '@/features/activites/ui/presenters/graphiques/couleurs'
+} from '@/features/activites/ui/labels/couleurs.labels'
 import ProgressBar from '@/libraries/proportions/ProgressBar'
 import { QuantifiedShareLegend } from '@/libraries/proportions/QuantifiedShareLegend'
 import type { ProfilPresente } from '../presenters/profil.presenter'

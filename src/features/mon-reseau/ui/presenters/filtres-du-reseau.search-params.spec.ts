@@ -1,0 +1,12 @@
+import { describe, expect, it } from 'vitest'
+import { sansLaValeur } from './filtres-du-reseau.search-params'
+
+describe('retrait d’une valeur de filtre', () => {
+  it('retire la valeur et garde les autres', () => {
+    expect(sansLaValeur('15014,15187', '15014')).toBe('15187')
+  })
+
+  it('ne laisse rien quand c’était la dernière valeur', () => {
+    expect(sansLaValeur('coordinateur', 'coordinateur')).toBe('')
+  })
+})

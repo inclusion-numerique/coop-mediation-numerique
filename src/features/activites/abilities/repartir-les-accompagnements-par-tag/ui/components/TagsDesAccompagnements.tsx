@@ -1,4 +1,4 @@
-import { tagsColor } from '@/features/activites/ui/presenters/graphiques/couleurs'
+import { tagsColor } from '@/features/activites/ui/labels/couleurs.labels'
 import { ProgressItemList } from '@/libraries/proportions/ProgressItemList'
 import type { parTagPresentes } from '../presenters/par-tag.presenter'
 

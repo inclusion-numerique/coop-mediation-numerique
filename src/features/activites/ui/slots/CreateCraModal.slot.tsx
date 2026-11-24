@@ -1,7 +1,7 @@
 'use client'
 
 import CreateCraModalContent from '@/features/activites/ui/components/saisie/CreateCraModalContent'
-import { CreateCraModalDefinition } from '@/features/activites/ui/presenters/saisie/modale-de-saisie'
+import { CreateCraModalDefinition } from '@/features/activites/ui/components/saisie/modale-de-saisie'
 
 const CreateCraModal = ({
   isMediateur,

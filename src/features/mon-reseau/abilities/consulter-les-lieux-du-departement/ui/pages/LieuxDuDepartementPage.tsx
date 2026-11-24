@@ -22,7 +22,12 @@ import {
   libelleDesResultats,
   parametresDeLURL,
 } from './libelles-des-filtres.presenter'
-import { type LieuxTrouves } from './lieu-affiche'
+
+type LieuxTrouves = {
+  readonly totalCount: number
+  readonly page: number
+  readonly pageSize: number
+}
 
 const pageSizeOptions = generatePageSizeSelectOptions([20, 50, 100])
 

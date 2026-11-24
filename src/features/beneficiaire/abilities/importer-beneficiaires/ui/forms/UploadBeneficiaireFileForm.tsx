@@ -6,10 +6,8 @@ import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { z } from 'zod'
-import {
-  type AnalyseResponse,
-  storeBeneficiaireImportAnalysis,
-} from '@/features/beneficiaire/abilities/importer-beneficiaires/ui/presenters/import-analysis-storage'
+import type { AnalyseResponse } from '@/features/beneficiaire/abilities/importer-beneficiaires/domain/analyse-de-l-import'
+import { useEnregistrementDeLAnalyse } from '@/features/beneficiaire/abilities/importer-beneficiaires/ui/hooks/analyse-de-l-import'
 import { handleSubmit } from '@/libraries/formulaire/handle-submit'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
 import { isBrowser } from '@/libraries/navigateur/isBrowser'
@@ -39,6 +37,7 @@ type UploadBeneficiaireFileFormData = z.infer<
 
 const UploadBeneficiaireFileForm = () => {
   const router = useRouter()
+  const enregistrerLAnalyse = useEnregistrementDeLAnalyse()
   // Bouton actif seulement après hydratation : empêche une soumission GET native
   // si l'utilisateur clique avant que le handler React soit monté.
   const [isInteractive, setIsInteractive] = useState(false)
@@ -66,7 +65,7 @@ const UploadBeneficiaireFileForm = () => {
 
         const analysisData = (await response.json()) as AnalyseResponse
 
-        storeBeneficiaireImportAnalysis(analysisData)
+        enregistrerLAnalyse(analysisData)
 
         router.push(
           `/coop/mes-beneficiaires/importer/analyse/${analysisData.id}`,

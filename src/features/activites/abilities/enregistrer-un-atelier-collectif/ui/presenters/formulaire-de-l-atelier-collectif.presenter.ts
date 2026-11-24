@@ -5,7 +5,7 @@ import type {
   ParticipantsAnonymes,
 } from '../../../../domain'
 import { formulaireCommunDeMediation } from '../../../../ui/presenters/saisie/formulaire-de-mediation.presenter'
-import { suiviDuFormulaire } from '../../../../ui/presenters/saisie/suivi-du-formulaire'
+import { suiviDuFormulaire } from '../../../../ui/presenters/saisie/suivi-du-formulaire.presenter'
 import type { CraCollectifData } from '../forms/cra-collectif.validation'
 import type { ParticipantsAnonymesCraCollectifData } from '../forms/participants-anonymes-du-cra-collectif.validation'
 

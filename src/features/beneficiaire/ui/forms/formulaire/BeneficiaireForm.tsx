@@ -1,5 +1,3 @@
-'use client'
-
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useSelector } from '@tanstack/react-form'
 import Link from 'next/link'
@@ -37,7 +35,12 @@ import RedAsterisk from '@/libraries/ui/components/Form/RedAsterisk'
 import RequiredFieldsDisclaimer from '@/libraries/ui/components/Form/RequiredFieldsDisclaimer'
 import { Options } from '@/libraries/ui/components/Primitives/Options'
 import { createToast } from '@/libraries/ui/toast/createToast'
-import type { SaisieEnCours } from '../../presenters/saisie-en-cours'
+
+export type SaisieEnCours = Readonly<Record<string, unknown>> & {
+  readonly participants?: readonly unknown[]
+}
+
+;('use client')
 
 // Le formulaire véhicule l'identifiant du médiateur propriétaire dans ses
 // valeurs (comme `CraValidation`) : on étend le schéma partagé localement pour

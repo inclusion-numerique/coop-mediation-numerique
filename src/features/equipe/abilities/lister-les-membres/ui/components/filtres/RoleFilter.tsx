@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 import { resetPagination } from '@/libraries/filtres/helpers'
 import TriggerButton from '@/libraries/filtres/TriggerButton'
 import { Popover } from '@/libraries/ui/components/Primitives/Popover'
-import type { RoleFiltre } from '../../presenters/valeurs-de-filtre'
+import type { RoleFiltre } from '../../presenters/parametres-de-la-liste.search-params'
 
 const roleOptions: { label: string; value: RoleFiltre | '' }[] = [
   { label: 'Tous les rôles', value: '' },

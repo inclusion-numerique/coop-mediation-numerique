@@ -9,8 +9,8 @@ import { inject } from '@/libraries/nextjs/injection/client'
 import { createToast } from '@/libraries/ui/toast/createToast'
 import { APPLIQUER_LES_DIFFERENCES_ACTION_KEY } from '../../action/appliquer-les-differences.key'
 import type { OrigineDuChoix } from '../../domain'
-import type { DifferenceAffichee } from '../presenters/reprise-externe'
-import type { ValeurAffichee } from '../presenters/valeur-affichee'
+import type { DifferenceAffichee } from '../presenters/reprise-externe.presenter'
+import type { ValeurAffichee } from '../presenters/valeur-affichee.presenter'
 import { HorairesDOuverture } from './vues/HorairesDOuverture'
 
 const modale = createModal({

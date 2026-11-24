@@ -4,7 +4,7 @@ import Badge from '@codegouvfr/react-dsfr/Badge'
 import classNames from 'classnames'
 import { useEffect, useId, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { TagScope } from '@/features/statistiques/ui/presenters/portee-de-tag'
+import { TagScope } from '@/features/statistiques/ui/labels/portee-de-tag.labels'
 import TooltipIcon from '@/libraries/ui/components/TooltipIcon'
 
 const TAG_SEVERITY: Record<TagScope, string> = {

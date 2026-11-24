@@ -7,8 +7,8 @@ import { useState } from 'react'
 import {
   adresseNonVerifiableMessage,
   SANS_SIRET_A_LA_MAIN,
-} from '@/features/lieux-activite/ui/presenters/adresse-non-verifiable'
-import { typologieStructureOptions } from '@/features/lieux-activite/ui/presenters/options-du-lieu'
+} from '@/features/lieux-activite/ui/labels/adresse-non-verifiable.labels'
+import { typologieStructureOptions } from '@/features/lieux-activite/ui/labels/options-du-lieu.labels'
 import {
   AdresseBanComboBox,
   AdresseBanOptions,

@@ -1,11 +1,12 @@
 import { formatInTimeZone } from 'date-fns-tz'
-import { formatActiviteDayDate } from '@/features/activites/ui/presenters/format-du-jour-d-activite'
+import { formatActiviteDayDate } from '@/features/activites/ui/presenters/format-du-jour-d-activite.presenter'
 import {
   dateAsDay,
   dateAsDayWithHourInTimezone,
 } from '@/libraries/date/dateAsDay'
 import { dureeAsString } from '@/libraries/date/dureeAsString'
 import { pluriel } from '@/libraries/pluriel'
+import { valeurDe } from '../../../../../../libraries/collections/valeur-de'
 import type {
   ActiviteConsultee,
   ChronologieDesActivites,
@@ -22,7 +23,6 @@ import {
   type DetailDActivite,
   detailDeLActivite,
 } from '../../../../ui/presenters/detail/detail-de-l-activite.presenter'
-import { valeurDe } from '../../../../ui/presenters/libelles/valeur-de'
 import {
   type CarteDeRendezVous,
   carteDeRendezVous,

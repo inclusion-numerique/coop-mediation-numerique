@@ -2,6 +2,7 @@
 
 import classNames from 'classnames'
 import type { ReactNode } from 'react'
+import type { StructureEmployeuseOption } from '@/features/statistiques/action/rechercher-employeuses-des-statistiques.key'
 import type { ActivitesFilters } from '@/features/statistiques/domain/filtres-des-activites'
 import { ActiviteTypeFilter } from '@/features/statistiques/ui/components/filtres/ActiviteTypeFilter'
 import { BeneficiaireFilter } from '@/features/statistiques/ui/components/filtres/BeneficiaireFilter'
@@ -9,11 +10,10 @@ import { MediateurFilter } from '@/features/statistiques/ui/components/filtres/M
 import { MoreCoordinateurFilters } from '@/features/statistiques/ui/components/filtres/MoreCoordinateurFilters'
 import { MoreMediateurFilters } from '@/features/statistiques/ui/components/filtres/MoreMediateurFilters'
 import { PeriodeFilter } from '@/features/statistiques/ui/components/filtres/PeriodeFilter'
-import type { MediateurOption } from '@/features/statistiques/ui/presenters/mediateur-option'
-import { TagScope } from '@/features/statistiques/ui/presenters/portee-de-tag'
-import type { StructureEmployeuseOption } from '@/features/statistiques/ui/presenters/structure-employeuse-option'
+import { TagScope } from '@/features/statistiques/ui/labels/portee-de-tag.labels'
+import type { MediateurOption } from '@/features/statistiques/ui/presenters/options-de-la-barre.presenter'
 import type { VocabulaireDeLaBarre } from '../../labels/barre.labels'
-import type { OptionDeBeneficiaire } from '../../presenters/option-de-beneficiaire'
+import type { OptionDeBeneficiaire } from '../../presenters/options-de-la-barre.presenter'
 
 const Filters = ({
   defaultFilters,

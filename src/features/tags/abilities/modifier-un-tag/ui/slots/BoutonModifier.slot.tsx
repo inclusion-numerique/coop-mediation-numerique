@@ -1,7 +1,7 @@
 'use client'
 
 import { ElementDuMenu } from '../../../../ui/components/ElementDuMenu'
-import { type TagAffiche } from '../../../../ui/presenters/tag-affiche'
+import { type TagAffiche } from '../../../../ui/presenters/tag-affiche.presenter'
 import { ModificationDUnTag } from '../components/ModaleDeModification'
 
 export const BoutonModifier = ({ tag }: { tag: TagAffiche }) => {

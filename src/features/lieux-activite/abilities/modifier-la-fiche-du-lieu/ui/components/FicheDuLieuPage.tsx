@@ -7,7 +7,7 @@ import { DisplayOnCartography } from '@/features/lieux-activite/ui/components/Di
 import { LieuAccueillantPublicTitle } from '@/features/lieux-activite/ui/components/LieuAccueillantPublicTitle'
 import { ServiceInclusionNumeriqueTitle } from '@/features/lieux-activite/ui/components/ServiceInclusionNumeriqueTitle'
 import { formatDate } from '@/libraries/date/formatDate'
-import type { EnregistrerUneSection } from '../presenters/enregistrer-une-section'
+import type { EnregistrerUneSection } from '../hooks/use-enregistrement-de-section'
 import type { FicheAffichee } from '../presenters/fiche-du-lieu.presenter'
 import { BandeauRepriseExterne } from './BandeauRepriseExterne'
 import { BasculeVisibiliteCartographie } from './BasculeVisibiliteCartographie'

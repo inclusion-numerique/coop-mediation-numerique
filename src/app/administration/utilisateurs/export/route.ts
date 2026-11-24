@@ -10,7 +10,7 @@ import { colonnesDeLExport } from '@/features/utilisateurs/abilities/exporter-le
 import { optionsDesFiltres } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/implementations/prisma/options-des-filtres.query'
 import { optionDuCoordinateur } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui/presenters/coordinateur-a-choisir.presenter'
 import { filtresUtilisateurs } from '@/features/utilisateurs/domain'
-import { auteurDeLExport } from '@/features/utilisateurs/ui/presenters/auteur-de-l-export'
+import { auteurDeLExport } from '@/features/utilisateurs/ui/presenters/auteur-de-l-export.presenter'
 import { libellesDesFiltres } from '@/features/utilisateurs/ui/presenters/libelles-des-filtres.presenter'
 import { toQueryParts } from '@/libraries/data-table/search/toQueryParts'
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'

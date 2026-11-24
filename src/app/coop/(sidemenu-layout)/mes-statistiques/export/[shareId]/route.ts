@@ -34,17 +34,17 @@ import { getSessionUserFromId } from '@/features/authentification/implementation
 import { membresAFiltrerDuDemandeur } from '@/features/equipe/abilities/lister-les-membres-a-filtrer/implementations/prisma/membres-a-filtrer-du-demandeur.query'
 import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage/implementations/prisma/resoudre-un-lien-de-partage.query'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/rdvs-des-activites.query'
-import { rdvStatusOptions } from '@/features/rdvsp/ui/presenters/statut-rdv'
+import { rdvStatusOptions } from '@/features/rdvsp/ui/labels/statut-rdv.labels'
 import {
   type ActivitesFilters,
   ActivitesFilterValidations,
 } from '@/features/statistiques/domain/filtres-des-activites'
 import { utilisateurDuPartage } from '@/features/statistiques/domain/utilisateur-du-partage'
 import { buildStatistiquesWorksheet } from '@/features/statistiques/implementations/excel/classeur-des-statistiques'
-import { entreeDuClasseur } from '@/features/statistiques/ui/presenters/entree-du-classeur'
-import { donneesDeMesStatistiques } from '@/features/statistiques/ui/presenters/mes-statistiques'
+import { entreeDuClasseur } from '@/features/statistiques/ui/presenters/entree-du-classeur.presenter'
+import { donneesDeMesStatistiques } from '@/features/statistiques/ui/presenters/mes-statistiques.presenter'
 import { tagsVisiblesDuProfil } from '@/features/tags/abilities/lire-les-tags-visibles/implementations/session/tags-visibles-du-profil'
-import { auteurDeLExport } from '@/features/utilisateurs/ui/presenters/auteur-de-l-export'
+import { auteurDeLExport } from '@/features/utilisateurs/ui/presenters/auteur-de-l-export.presenter'
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
 
 const statistiquesDesActivites = statistiquesAvec({

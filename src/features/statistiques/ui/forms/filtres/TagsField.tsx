@@ -1,6 +1,6 @@
 import Checkbox from '@codegouvfr/react-dsfr/Checkbox'
 import TagScopeBadge from '@/features/statistiques/ui/components/filtres/BadgeDePortee'
-import { TagScope } from '@/features/statistiques/ui/presenters/portee-de-tag'
+import { TagScope } from '@/features/statistiques/ui/labels/portee-de-tag.labels'
 import { withForm } from '@/libraries/formulaire/use-app-form'
 import { plusDeFiltresFormOptions } from '../plus-de-filtres.form-options'
 

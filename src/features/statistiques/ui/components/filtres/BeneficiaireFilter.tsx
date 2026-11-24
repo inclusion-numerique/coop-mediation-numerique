@@ -14,7 +14,7 @@ import { adresseAvec } from '@/libraries/parametres-d-url'
 import CustomSelect from '@/libraries/ui/components/CustomSelect/CustomSelect'
 import { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import { Popover } from '@/libraries/ui/components/Primitives/Popover'
-import type { OptionDeBeneficiaire } from '../../presenters/option-de-beneficiaire'
+import type { OptionDeBeneficiaire } from '../../presenters/options-de-la-barre.presenter'
 
 type OptionDeBeneficiaireWithId = OptionDeBeneficiaire & {
   value: { id: string }

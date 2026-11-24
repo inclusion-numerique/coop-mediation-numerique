@@ -1,10 +1,11 @@
-import { formatActiviteDayDate } from '@/features/activites/ui/presenters/format-du-jour-d-activite'
+import { formatActiviteDayDate } from '@/features/activites/ui/presenters/format-du-jour-d-activite.presenter'
 import {
   dateAsDayInTimeZone,
   dateAsTimeInTimeZone,
 } from '@/libraries/date/dateAsDayAndTime'
 import { dureeAsString } from '@/libraries/date/dureeAsString'
 import { pluriel } from '@/libraries/pluriel'
+import { valeurDe } from '../../../../../libraries/collections/valeur-de'
 import type {
   AccompagnementIndividuel,
   ActiviteConsultee,
@@ -29,7 +30,6 @@ import {
 import { structuresRedirectionLabels } from '../../labels/libelles/structures-redirection.labels'
 import { thematiqueLabels } from '../../labels/libelles/thematique.labels'
 import { typeActiviteLabels } from '../../labels/libelles/type-activite.labels'
-import { valeurDe } from '../libelles/valeur-de'
 
 export type Rubrique =
   | {

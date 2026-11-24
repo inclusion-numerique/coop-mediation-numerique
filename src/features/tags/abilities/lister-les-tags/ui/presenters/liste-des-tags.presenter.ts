@@ -1,5 +1,5 @@
 import { type Acteur, peutGerer } from '../../../../domain'
-import type { TagAffiche } from '../../../../ui/presenters/tag-affiche'
+import type { TagAffiche } from '../../../../ui/presenters/tag-affiche.presenter'
 import { tagAffiche } from '../../../../ui/presenters/tag-affiche.presenter'
 import type { ListeDesTags } from '../../domain'
 

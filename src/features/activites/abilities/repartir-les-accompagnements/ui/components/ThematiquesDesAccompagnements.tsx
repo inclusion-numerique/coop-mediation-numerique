@@ -1,4 +1,4 @@
-import { thematiquesAccompagnementColors } from '@/features/activites/ui/presenters/graphiques/couleurs'
+import { thematiquesAccompagnementColors } from '@/features/activites/ui/labels/couleurs.labels'
 import { ProgressItemList } from '@/libraries/proportions/ProgressItemList'
 import type { RepartitionPresentee } from '../presenters/repartition.presenter'
 

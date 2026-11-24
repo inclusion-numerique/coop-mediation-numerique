@@ -4,7 +4,7 @@ import {
   STATUTS_SOCIAUX,
   TRANCHES_D_AGE,
 } from '@/features/activites/domain'
-import { CommuneDuCraValidation } from '@/features/activites/ui/presenters/saisie/commune-du-cra'
+import { CommuneDuCraValidation } from '@/features/activites/ui/forms/commune-du-cra.validation'
 
 export const BeneficiaireCraValidation = z.object({
   id: z.guid().nullish(),

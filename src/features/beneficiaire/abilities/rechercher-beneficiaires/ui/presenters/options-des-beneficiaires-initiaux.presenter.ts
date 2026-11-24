@@ -3,7 +3,7 @@ import type { BeneficiairesRecherches } from '../../domain/rechercher-beneficiai
 import {
   type BeneficiaireOption,
   toBeneficiaireData,
-} from './beneficiaire-option'
+} from './option-de-beneficiaire.presenter'
 
 const nonAffichesOption = (count: number): BeneficiaireOption => ({
   label: `Veuillez préciser votre recherche - ${count} bénéficiaire${

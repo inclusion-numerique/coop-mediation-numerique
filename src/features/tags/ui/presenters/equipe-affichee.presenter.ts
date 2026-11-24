@@ -1,6 +1,10 @@
 import type { Acteur, Portee } from '../../domain'
 import { nomDeLEquipe } from './nom-de-l-equipe.presenter'
-import type { EquipeAffichee } from './tag-affiche'
+
+export type EquipeAffichee = {
+  readonly numero: number
+  readonly coordonneePar: string
+}
 
 export const equipeAffichee =
   (acteur: Acteur) =>

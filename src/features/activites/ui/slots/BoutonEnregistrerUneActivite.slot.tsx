@@ -1,5 +1,5 @@
 import { Button } from '@codegouvfr/react-dsfr/Button'
-import { CreateCraModalDefinition } from '../presenters/saisie/modale-de-saisie'
+import { CreateCraModalDefinition } from '../components/saisie/modale-de-saisie'
 
 export const BoutonEnregistrerUneActivite = () => (
   <Button

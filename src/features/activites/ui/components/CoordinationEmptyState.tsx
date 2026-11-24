@@ -1,5 +1,5 @@
 import { Button } from '@codegouvfr/react-dsfr/Button'
-import { CreateCraModalDefinition } from '@/features/activites/ui/presenters/saisie/modale-de-saisie'
+import { CreateCraModalDefinition } from '@/features/activites/ui/components/saisie/modale-de-saisie'
 
 export const CoordinationEmptyState = ({
   isFiltered = false,

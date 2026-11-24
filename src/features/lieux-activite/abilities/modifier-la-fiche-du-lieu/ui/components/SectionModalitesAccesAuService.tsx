@@ -2,7 +2,7 @@
 
 import { useStore } from '@tanstack/react-form'
 import type { z } from 'zod'
-import { fraisAChargeOptions } from '@/features/lieux-activite/ui/presenters/options-du-lieu'
+import { fraisAChargeOptions } from '@/features/lieux-activite/ui/labels/options-du-lieu.labels'
 import EditCardTanStack from '@/libraries/formulaire/form-components/EditCardTanStack'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
 import { telephoneDisplayString } from '@/libraries/telephone'
@@ -10,9 +10,9 @@ import {
   ModalitesAccesAuServiceFormValidation,
   ModalitesAccesAuServiceSaisie,
 } from '../../action/modifier-la-fiche-du-lieu.validation'
+import type { EnregistrerUneSection } from '../hooks/use-enregistrement-de-section'
 import { useEnregistrementDeSection } from '../hooks/use-enregistrement-de-section'
-import type { EnregistrerUneSection } from '../presenters/enregistrer-une-section'
-import type { ModalitesAccesAuServiceAffichees } from '../presenters/modalites-acces-au-service'
+import type { ModalitesAccesAuServiceAffichees } from '../presenters/modalites-acces-au-service.presenter'
 import { EtatVide } from './EtatVide'
 import { VueModalitesAccesAuService } from './vues/VueModalitesAccesAuService'
 

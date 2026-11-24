@@ -30,7 +30,7 @@ import {
   type GenreDuFiltreDeLieu,
   RECHERCHER_LES_LIEUX_DES_STATISTIQUES_ACTION_KEY,
 } from '../../action/rechercher-les-lieux-des-statistiques.key'
-import type { LieuxChoisisDeLaBarre } from '../presenters/lieux-choisis'
+import type { LieuxChoisisDeLaBarre } from '../presenters/options-de-la-barre.presenter'
 
 type TypeDeLieu = 'lieu' | 'commune' | 'departement'
 

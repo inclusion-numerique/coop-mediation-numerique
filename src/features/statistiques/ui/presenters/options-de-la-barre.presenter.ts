@@ -3,9 +3,24 @@ import type { ActivitesFilters } from '@/features/statistiques/domain/filtres-de
 import type Filters from '@/features/statistiques/ui/components/filtres/Filters'
 import type { VocabulaireDeLaBarre } from '@/features/statistiques/ui/labels/barre.labels'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
-import type { LieuxChoisisDeLaBarre } from './lieux-choisis'
-import { TagScope } from './portee-de-tag'
-import { activiteSourceOptions } from './source-de-l-activite'
+import { TagScope } from '../labels/portee-de-tag.labels'
+import { activiteSourceOptions } from '../labels/source-de-l-activite.labels'
+
+export type OptionDeBeneficiaire = SelectOption<{
+  id?: string | null
+} | null>
+
+export type MediateurOption = {
+  label: string
+  value: { mediateurId: string } | null
+  isDisabled?: boolean
+}
+
+export type LieuxChoisisDeLaBarre = {
+  readonly lieuxActiviteOptions: SelectOption[]
+  readonly communesOptions: SelectOption[]
+  readonly departementsOptions: SelectOption[]
+}
 
 type PorteeDuTag = 'Personnel' | 'Equipe' | 'Departemental' | 'National'
 

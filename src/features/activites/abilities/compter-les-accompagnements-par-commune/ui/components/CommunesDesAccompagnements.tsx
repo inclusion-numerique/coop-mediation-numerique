@@ -1,4 +1,4 @@
-import { nombreAccompagnementParCommuneColor } from '@/features/activites/ui/presenters/graphiques/couleurs'
+import { nombreAccompagnementParCommuneColor } from '@/features/activites/ui/labels/couleurs.labels'
 import { QuantifiedShareList } from '@/libraries/proportions/QuantifiedShareList'
 import type { parCommunePresentes } from '../presenters/par-commune.presenter'
 

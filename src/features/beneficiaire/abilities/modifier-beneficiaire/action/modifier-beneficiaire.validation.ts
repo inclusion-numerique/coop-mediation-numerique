@@ -3,7 +3,7 @@ import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
 import { ContactTelephone } from '@/features/beneficiaire/domain/contact-telephone'
 import { Genre } from '@/features/beneficiaire/domain/genre'
 import { StatutSocial } from '@/features/beneficiaire/domain/statut-social'
-import { beneficiaireFormShape } from '@/features/beneficiaire/ui/presenters/beneficiaire-form'
+import { beneficiaireFormShape } from '@/features/beneficiaire/ui/forms/beneficiaire-form.validation'
 import type { BeneficiaireAModifier } from '../domain/beneficiaire-a-modifier'
 
 export const ModifierBeneficiaireValidation = beneficiaireFormShape

@@ -13,13 +13,13 @@ import { MediateurId } from '@/features/lieux-activite/domain/identifiants/media
 import { SlugOutil } from '@/features/outils/abilities/consulter-un-outil/domain/index'
 import { OutilPage } from '@/features/outils/abilities/consulter-un-outil/ui/pages/OutilPage'
 import {
-  ficheDeLOutil,
-  type SitesDesOutils,
-} from '@/features/outils/abilities/consulter-un-outil/ui/presenters'
-import {
   emplacementsDeLOutil,
   type FournisseursDEmplacements,
-} from '@/features/outils/abilities/consulter-un-outil/ui/presenters/emplacements-de-l-outil'
+} from '@/features/outils/abilities/consulter-un-outil/ui/presenters/emplacements-de-l-outil.presenter'
+import {
+  ficheDeLOutil,
+  type SitesDesOutils,
+} from '@/features/outils/abilities/consulter-un-outil/ui/presenters/fiche-de-l-outil.presenter'
 import { DECLENCHER_SYNCHRONISATION_ACTION_KEY } from '@/features/rdvsp/action/declencher-synchronisation.key'
 import { DECONNECTER_COMPTE_RDV_ACTION_KEY } from '@/features/rdvsp/action/deconnecter-compte-rdv.key'
 import { lienDeConnexionARdvServicePublic } from '@/features/rdvsp/implementations/oauth/oauth'

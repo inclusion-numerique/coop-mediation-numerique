@@ -14,7 +14,7 @@ import {
   type RechercherDesTagsInitiaux,
   type VisibiliteDuTagDuCra,
   visibilitesDuCra,
-} from '../../../../ui/presenters/saisie/tag-du-cra'
+} from '../../../../ui/presenters/saisie/tag-du-cra.presenter'
 import type { CraAnimationData } from '../forms/cra-animation.validation'
 import type { CraEvenementData } from '../forms/cra-evenement.validation'
 import type { CraPartenariatData } from '../forms/cra-partenariat.validation'
@@ -22,7 +22,7 @@ import {
   copieDeLaCoordination,
   departDuPartenariat,
 } from './copie-de-la-coordination.presenter'
-import { getCraCoordinationPageData } from './donnees-de-la-page'
+import { getCraCoordinationPageData } from './donnees-de-la-page.presenter'
 import {
   formulaireDeLAnimation,
   formulaireDeLEvenement,

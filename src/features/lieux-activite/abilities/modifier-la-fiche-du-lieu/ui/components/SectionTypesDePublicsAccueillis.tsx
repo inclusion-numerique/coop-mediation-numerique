@@ -5,13 +5,13 @@ import type { z } from 'zod'
 import {
   priseEnChargeSpecifiqueOptions,
   publicSpecifiquementAdresseOptions,
-} from '@/features/lieux-activite/ui/presenters/options-du-lieu'
+} from '@/features/lieux-activite/ui/labels/options-du-lieu.labels'
 import EditCardTanStack from '@/libraries/formulaire/form-components/EditCardTanStack'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
 import { TypesDePublicsAccueillisSaisie } from '../../action/modifier-la-fiche-du-lieu.validation'
+import type { EnregistrerUneSection } from '../hooks/use-enregistrement-de-section'
 import { useEnregistrementDeSection } from '../hooks/use-enregistrement-de-section'
-import type { EnregistrerUneSection } from '../presenters/enregistrer-une-section'
-import type { TypesDePublicsAccueillisAffiches } from '../presenters/types-de-publics-accueillis'
+import type { TypesDePublicsAccueillisAffiches } from '../presenters/types-de-publics-accueillis.presenter'
 import { EtatVide } from './EtatVide'
 import { VueTypesDePublicsAccueillis } from './vues/VueTypesDePublicsAccueillis'
 

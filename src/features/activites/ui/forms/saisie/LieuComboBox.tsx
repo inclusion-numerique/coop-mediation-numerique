@@ -2,7 +2,10 @@ import type { ComboBoxData } from '@/libraries/formulaire/fields-components/Comb
 import { inject } from '@/libraries/nextjs/injection/client'
 import type { OptionsData } from '@/libraries/ui/components/Primitives/Options'
 import { RECHERCHER_DES_LIEUX_DU_CRA_KEY } from '../../../action/rechercher-des-lieux.key'
-import { type LieuDuCra, lieuDuCra } from '../../presenters/saisie/lieu-du-cra'
+import {
+  type LieuDuCra,
+  lieuDuCra,
+} from '../../presenters/saisie/lieu-du-cra.presenter'
 
 const loadSuggestions = async (
   recherche: string,

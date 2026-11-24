@@ -1,7 +1,7 @@
 import type { z } from 'zod'
 import type { CraCollectifData } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/forms/cra-collectif.validation'
-import { craDureeDataToMinutes } from '@/features/activites/ui/presenters/saisie/duree'
-import { clearAdministrativeData } from '@/features/activites/ui/presenters/saisie/effacer-les-donnees-administratives'
+import { craDureeDataToMinutes } from '@/features/activites/ui/forms/saisie/duree.form-data'
+import { clearAdministrativeData } from '@/features/activites/ui/forms/saisie/effacer-les-donnees-administratives.form-data'
 import type { EnregistrerUnAtelierCollectifValidation } from '../../action/enregistrer-un-atelier-collectif.validation'
 
 type Saisie = z.input<typeof EnregistrerUnAtelierCollectifValidation>

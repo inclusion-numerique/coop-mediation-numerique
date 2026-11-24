@@ -32,7 +32,7 @@ import {
   type ValeursDePlusDeFiltres,
 } from '@/features/statistiques/ui/forms/plus-de-filtres.form-options'
 import type { VocabulaireDeLaBarre } from '@/features/statistiques/ui/labels/barre.labels'
-import { TagScope } from '@/features/statistiques/ui/presenters/portee-de-tag'
+import { TagScope } from '@/features/statistiques/ui/labels/portee-de-tag.labels'
 import { handleSubmit } from '@/libraries/formulaire/handle-submit'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
 import { adresseAvec } from '@/libraries/parametres-d-url'

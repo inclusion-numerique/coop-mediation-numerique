@@ -21,9 +21,9 @@ import {
   thematiqueAdministrativesOptionsWithExtras,
   thematiqueNonAdministrativesOptionsWithExtras,
 } from '@/features/activites/ui/labels/libelles/thematique.labels'
-import type { BeneficiaireDuCra } from '@/features/activites/ui/presenters/saisie/beneficiaire-du-cra'
-import type { LieuDuCra } from '@/features/activites/ui/presenters/saisie/lieu-du-cra'
-import type { Tag } from '@/features/activites/ui/presenters/saisie/tag-du-cra'
+import type { BeneficiaireDuCra } from '@/features/activites/ui/presenters/saisie/beneficiaire-du-cra.presenter'
+import type { LieuDuCra } from '@/features/activites/ui/presenters/saisie/lieu-du-cra.presenter'
+import type { Tag } from '@/features/activites/ui/presenters/saisie/tag-du-cra.presenter'
 import { cheminInterne } from '@/libraries/chemin-interne'
 import { handleSubmit } from '@/libraries/formulaire/handle-submit'
 import type { DefaultValues } from '@/libraries/formulaire/use-app-form'

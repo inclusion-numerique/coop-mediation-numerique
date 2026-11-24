@@ -9,7 +9,7 @@ import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
 import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
 import type { ProfilOutils } from '../../domain'
 import { CardOutil } from '../components/CardOutil'
-import { outilsAccompagnementsVisibles } from './catalogue'
+import { outilsAccompagnementsVisibles } from '../presenters/catalogue.presenter'
 
 export type RdvServicePublicDansMesOutils = {
   readonly lien: string

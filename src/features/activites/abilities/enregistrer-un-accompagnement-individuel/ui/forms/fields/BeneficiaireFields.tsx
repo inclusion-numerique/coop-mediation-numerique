@@ -6,8 +6,8 @@ import type { CraIndividuelData } from '@/features/activites/abilities/enregistr
 import {
   BeneficiaireComboBox,
   BeneficiaireOptions,
-} from '@/features/activites/ui/presenters/saisie/beneficiaire-combo-box'
-import type { BeneficiaireDuCra } from '@/features/activites/ui/presenters/saisie/beneficiaire-du-cra'
+} from '@/features/activites/ui/forms/saisie/beneficiaire-combo-box'
+import type { BeneficiaireDuCra } from '@/features/activites/ui/presenters/saisie/beneficiaire-du-cra.presenter'
 import type { DefaultValues } from '@/libraries/formulaire/use-app-form'
 import { withForm } from '@/libraries/formulaire/use-app-form'
 import { encodeSerializableState } from '@/libraries/parametres-d-url/encodeSerializableState'

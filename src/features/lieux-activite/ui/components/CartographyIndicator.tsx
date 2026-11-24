@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { getStructureCartographieLink } from '@/features/lieux-activite/domain/cartographie-nationale/liens'
 import TooltipIcon from '@/libraries/ui/components/TooltipIcon'
 
-import type { CartographyStatus } from '../presenters/statut-cartographie'
+import type { CartographyStatus } from '../presenters/statut-cartographie.presenter'
 
 const CartographyIndicator = ({
   status,

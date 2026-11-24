@@ -7,7 +7,7 @@ import {
   type ParametresDesCoordinations,
   paginationLue,
 } from '../../../../domain'
-import { filtresActifsDesCoordinations } from '../../../../ui/presenters/filtres-actifs-des-coordinations'
+import { filtresActifsDesCoordinations } from '../../../../ui/presenters/filtres-actifs-des-coordinations.presenter'
 import type {
   ActivitesDeCoordinationListees,
   OptionsDeFiltre,

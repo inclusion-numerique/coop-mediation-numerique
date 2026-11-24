@@ -3,6 +3,7 @@ import { fr } from 'date-fns/locale'
 import { formatInTimeZone } from 'date-fns-tz'
 import { htmlToText } from '@/libraries/texte/htmlToText'
 import { booleanToYesNoLabel } from '@/libraries/ui/components/Form/utils/yesNoBooleanOptions'
+import { valeurDe } from '../../../../../../libraries/collections/valeur-de'
 import type { Equipement, Orientation } from '../../../../domain'
 import {
   autonomieStars,
@@ -22,7 +23,6 @@ import { structuresRedirectionLabels } from '../../../../ui/labels/libelles/stru
 import { thematiqueLabels } from '../../../../ui/labels/libelles/thematique.labels'
 import { typeActiviteLabels } from '../../../../ui/labels/libelles/type-activite.labels'
 import { typeLieuLabels } from '../../../../ui/labels/libelles/type-lieu.labels'
-import { valeurDe } from '../../../../ui/presenters/libelles/valeur-de'
 import type {
   AccompagnementExporte,
   ActiviteExportee,

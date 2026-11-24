@@ -14,7 +14,7 @@ import {
 import type { ReseauDuDepartement } from '../../domain'
 import CompteurDuReseau from '../components/CompteurDuReseau'
 import DepartementComboBox from '../forms/DepartementComboBox'
-import { urlDesDonneesTerritoriales } from './donnees-territoriales'
+import { urlDesDonneesTerritoriales } from '../presenters/donnees-territoriales.presenter'
 
 const mattermostHref = 'https://discussion.coop-numerique.anct.gouv.fr'
 

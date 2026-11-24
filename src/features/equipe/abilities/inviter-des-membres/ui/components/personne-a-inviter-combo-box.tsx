@@ -3,15 +3,15 @@ import { inject } from '@/libraries/nextjs/injection/client'
 import type { OptionsData } from '@/libraries/ui/components/Primitives/Options'
 import { RECHERCHER_DES_MEDIATEURS_A_INVITER_ACTION_KEY } from '../../action/rechercher-des-mediateurs-a-inviter.key'
 import {
+  cleDe,
+  libelleDe,
+  type PersonneAInviter,
+} from '../forms/personne-a-inviter.form-data'
+import {
   type EtatDeLaRecherche,
   rechercheTropCourte,
   suggestionsDe,
 } from '../presenters/mediateurs-a-inviter.presenter'
-import {
-  cleDe,
-  libelleDe,
-  type PersonneAInviter,
-} from '../presenters/personne-a-inviter'
 import { UserRole } from './UserRole'
 
 const chargerLesSuggestions =

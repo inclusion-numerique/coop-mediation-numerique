@@ -15,7 +15,7 @@ import {
 } from '../../../../ui/components/export/ExportStatistiques'
 import { ImpressionPreteProvider } from '../../../../ui/components/impression-prete'
 import { BlocEnAttente } from '../../../../ui/components/sections/BlocEnAttente'
-import { statistiquesPageTitle } from '../../../../ui/presenters/titre-des-statistiques'
+import { statistiquesPageTitle } from '../../../../ui/presenters/titre-des-statistiques.presenter'
 import { StatistiquesImpact } from '../components/StatistiquesImpact'
 
 export const MesStatistiques = ({

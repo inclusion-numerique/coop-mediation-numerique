@@ -7,7 +7,7 @@ import Image from 'next/image'
 import { download } from '@/libraries/navigateur/download'
 import { numberToString } from '@/libraries/nombre/formatNumber'
 import { createToast } from '@/libraries/ui/toast/createToast'
-import type { FiltreActif } from '../../../../ui/presenters/filtres-actifs-des-coordinations'
+import type { FiltreActif } from '../../../../ui/presenters/filtres-actifs-des-coordinations.presenter'
 
 const ExportActiviteModal = createModal({
   id: 'export-activites',

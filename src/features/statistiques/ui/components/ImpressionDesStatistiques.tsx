@@ -7,7 +7,7 @@ import {
 } from '@/features/statistiques/ui/labels/filtres.labels'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import type { VocabulaireDeLaBarre } from '../labels/barre.labels'
-import type { MediateurOption } from '../presenters/mediateur-option'
+import type { MediateurOption } from '../presenters/options-de-la-barre.presenter'
 
 export const ImpressionDesStatistiques = ({
   activitesFilters,

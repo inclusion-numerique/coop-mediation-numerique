@@ -6,7 +6,7 @@ import {
   TagOptions,
   TagSelectedItems,
 } from '@/features/activites/ui/forms/saisie/TagsComboBox'
-import type { Tag } from '@/features/activites/ui/presenters/saisie/tag-du-cra'
+import type { Tag } from '@/features/activites/ui/presenters/saisie/tag-du-cra.presenter'
 import {
   type DefaultValues,
   withFieldGroup,

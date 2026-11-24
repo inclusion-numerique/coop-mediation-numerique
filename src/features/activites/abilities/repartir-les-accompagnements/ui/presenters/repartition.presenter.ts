@@ -1,11 +1,11 @@
+import { valeurDe } from '../../../../../../libraries/collections/valeur-de'
 import { estAdministrative } from '../../../../domain'
 import { dureeAccompagnementStatisticsRanges } from '../../../../ui/labels/libelles/duree-accompagnement.labels'
 import { materielLabels } from '../../../../ui/labels/libelles/materiel.labels'
 import { thematiqueLabels } from '../../../../ui/labels/libelles/thematique.labels'
 import { typeActiviteLabels } from '../../../../ui/labels/libelles/type-activite.labels'
 import { typeLieuLabels } from '../../../../ui/labels/libelles/type-lieu.labels'
-import { valeurDe } from '../../../../ui/presenters/libelles/valeur-de'
-import { partsPresentees } from '../../../../ui/presenters/parts-presentees'
+import { partsPresentees } from '../../../../ui/presenters/parts-presentees.presenter'
 import {
   type RepartitionDesAccompagnements,
   type TrancheDeDuree,

@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import { encodeSerializableState } from '@/libraries/parametres-d-url/encodeSerializableState'
-import { minutesToCraDureeData, minutesToCustomCraDureeData } from './duree'
+import {
+  minutesToCraDureeData,
+  minutesToCustomCraDureeData,
+} from '../../forms/saisie/duree.form-data'
 import { cheminDeSaisieDepuisUnRendezVous } from './url-de-saisie-depuis-un-rendez-vous.presenter'
 
 const rendezVous = {

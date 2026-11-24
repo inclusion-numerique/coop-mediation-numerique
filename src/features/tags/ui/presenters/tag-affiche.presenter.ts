@@ -1,6 +1,16 @@
-import type { Acteur, Tag } from '../../domain'
-import { equipeAffichee } from './equipe-affichee.presenter'
-import type { TagAffiche } from './tag-affiche'
+import type { Acteur, Tag, TypeDePortee } from '../../domain'
+import {
+  type EquipeAffichee,
+  equipeAffichee,
+} from './equipe-affichee.presenter'
+
+export type TagAffiche = {
+  readonly id: string
+  readonly nom: string
+  readonly description: string | null
+  readonly portee: TypeDePortee
+  readonly equipe: EquipeAffichee | null
+}
 
 export const tagAffiche =
   (acteur: Acteur) =>

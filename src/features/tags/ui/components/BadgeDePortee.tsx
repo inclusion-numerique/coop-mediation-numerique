@@ -6,7 +6,7 @@ import { useEffect, useId, useState } from 'react'
 import { createPortal } from 'react-dom'
 import TooltipIcon from '@/libraries/ui/components/TooltipIcon'
 import type { TypeDePortee } from '../../domain'
-import type { EquipeAffichee } from '../presenters/tag-affiche'
+import type { EquipeAffichee } from '../presenters/equipe-affichee.presenter'
 
 const APPARENCE: Record<TypeDePortee, { libelle: string; classe: string }> = {
   Personnel: { libelle: 'Tag personnel', classe: 'fr-text-mention--grey' },

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
+import { activiteSourceOptions } from '../labels/source-de-l-activite.labels'
 import { optionsDesStatistiques } from './options-de-la-barre.presenter'
-import { activiteSourceOptions } from './source-de-l-activite'
 
 const fournisseurs = {
   lieuxChoisis: async () => ({

@@ -1,7 +1,7 @@
 import type { z } from 'zod'
 import type { CraIndividuelData } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/forms/cra-individuel.validation'
-import { craDureeDataToMinutes } from '@/features/activites/ui/presenters/saisie/duree'
-import { clearAdministrativeData } from '@/features/activites/ui/presenters/saisie/effacer-les-donnees-administratives'
+import { craDureeDataToMinutes } from '@/features/activites/ui/forms/saisie/duree.form-data'
+import { clearAdministrativeData } from '@/features/activites/ui/forms/saisie/effacer-les-donnees-administratives.form-data'
 import type { EnregistrerUnAccompagnementIndividuelValidation } from '../../action/enregistrer-un-accompagnement-individuel.validation'
 
 type Saisie = z.input<typeof EnregistrerUnAccompagnementIndividuelValidation>

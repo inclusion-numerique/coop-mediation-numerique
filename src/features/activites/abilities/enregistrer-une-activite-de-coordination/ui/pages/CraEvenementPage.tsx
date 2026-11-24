@@ -4,7 +4,7 @@ import { ModaleDeCreationDeTag } from '@/features/activites/ui/components/saisie
 import type {
   Tag,
   VisibiliteDuTagDuCra,
-} from '@/features/activites/ui/presenters/saisie/tag-du-cra'
+} from '@/features/activites/ui/presenters/saisie/tag-du-cra.presenter'
 import type { DefaultValues } from '@/libraries/formulaire/use-app-form'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'

@@ -1,3 +1,4 @@
+import { valeurDe } from '../../../../../../libraries/collections/valeur-de'
 import type { Repartition } from '../../../../domain'
 import {
   genreLabels,
@@ -7,8 +8,7 @@ import {
   trancheAgeLabels,
   tranchesAgeAffichees,
 } from '../../../../ui/labels/libelles/profil.labels'
-import { valeurDe } from '../../../../ui/presenters/libelles/valeur-de'
-import { partsPresentees } from '../../../../ui/presenters/parts-presentees'
+import { partsPresentees } from '../../../../ui/presenters/parts-presentees.presenter'
 import type { ProfilDesPersonnesAccompagnees } from '../../domain'
 
 const dansLOrdre = <V extends string>(

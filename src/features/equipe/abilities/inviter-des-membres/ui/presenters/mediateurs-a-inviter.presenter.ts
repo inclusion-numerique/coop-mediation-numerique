@@ -1,7 +1,11 @@
 import { pluriel } from '@/libraries/pluriel'
 import { Email } from '../../../../domain'
 import type { InvitationsEnvoyees, MediateursAInviter } from '../../domain'
-import { horsDe, libelleDe, type PersonneAInviter } from './personne-a-inviter'
+import {
+  horsDe,
+  libelleDe,
+  type PersonneAInviter,
+} from '../forms/personne-a-inviter.form-data'
 
 const RECHERCHE_MINIMALE = 3
 

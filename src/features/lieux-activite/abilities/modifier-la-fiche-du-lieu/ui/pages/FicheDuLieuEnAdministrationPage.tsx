@@ -4,7 +4,7 @@ import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import type { LieuId } from '../../../../domain/identifiants/lieu-id'
 import { EnteteDeLaFicheEnAdministration } from '../components/EnteteDeLaFicheEnAdministration'
 import { FicheDuLieuPage } from '../components/FicheDuLieuPage'
-import type { EnregistrerUneSection } from '../presenters/enregistrer-une-section'
+import type { EnregistrerUneSection } from '../hooks/use-enregistrement-de-section'
 import type { FicheAffichee } from '../presenters/fiche-du-lieu.presenter'
 
 export const FicheDuLieuEnAdministrationPage = ({

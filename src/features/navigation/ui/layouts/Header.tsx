@@ -7,7 +7,7 @@ import { HeaderQuickAccess } from '@/features/navigation/ui/components/en-tete/H
 import { HeaderUserMenu } from '@/features/navigation/ui/components/en-tete/HeaderUserMenu'
 import styles from '@/features/navigation/ui/layouts/Header.module.css'
 import LogoCoop from '@/libraries/ui/components/LogoCoop'
-import type { UtilisateurDeLaNavigation } from '../presenters/utilisateur-de-la-navigation'
+import type { UtilisateurDeLaNavigation } from './CoopShell'
 
 type HeaderVariant = 'public' | 'coop'
 

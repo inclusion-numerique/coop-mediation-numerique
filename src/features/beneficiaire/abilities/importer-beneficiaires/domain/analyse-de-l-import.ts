@@ -245,3 +245,8 @@ export const analyserLaFeuille =
       rows,
     }
   }
+
+export type AnalyseResponse = {
+  analysis: Analysis
+  id: string
+}

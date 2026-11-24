@@ -1,4 +1,4 @@
-import type { TagAffiche } from '../../../../ui/presenters/tag-affiche'
+import type { TagAffiche } from '../../../../ui/presenters/tag-affiche.presenter'
 import type { TagLePlusUtilise } from '../../domain'
 
 export type TagDeLaListe = {

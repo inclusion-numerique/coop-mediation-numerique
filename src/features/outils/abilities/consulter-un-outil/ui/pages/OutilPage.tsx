@@ -9,7 +9,7 @@ import { Access } from '../components/Access'
 import { ComingSoon } from '../components/ComingSoon'
 import { Features } from '../components/Features'
 import { Hero } from '../components/Hero'
-import type { FicheOutil } from '../presenters/fiche-outil'
+import type { FicheOutil } from '../presenters/fiche-de-l-outil.presenter'
 
 export type EmplacementsDeLaFiche = {
   readonly avis?: ReactNode

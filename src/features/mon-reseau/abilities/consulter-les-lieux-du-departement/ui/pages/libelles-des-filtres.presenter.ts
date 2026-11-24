@@ -1,6 +1,6 @@
 import { pluriel } from '@/libraries/pluriel'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
-import type { EtiquetteDeFiltre } from '../../../../ui/presenters/etiquette-de-filtre'
+import type { EtiquetteDeFiltre } from '../../../../ui/presenters/filtres-du-reseau.search-params'
 import type { CriteresDesLieux } from '../../domain'
 
 export const etiquettesDesCommunes = (

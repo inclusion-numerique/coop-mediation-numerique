@@ -1,5 +1,5 @@
+import type { StructureEmployeuseOption } from '@/features/statistiques/action/rechercher-employeuses-des-statistiques.key'
 import { RECHERCHER_EMPLOYEUSES_DES_ACTIVITES_ACTION_KEY } from '@/features/statistiques/action/rechercher-employeuses-des-statistiques.key'
-import type { StructureEmployeuseOption } from '@/features/statistiques/ui/presenters/structure-employeuse-option'
 import type { ComboBoxData } from '@/libraries/formulaire/fields-components/ComboBox'
 import { inject } from '@/libraries/nextjs/injection/client'
 import type { OptionsData } from '@/libraries/ui/components/Primitives/Options'

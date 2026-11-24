@@ -1,23 +1,23 @@
 import Button from '@codegouvfr/react-dsfr/Button'
+import type { CommuneDuCra } from '@/features/activites/ui/forms/commune-du-cra.validation'
 import { CraData } from '@/features/activites/ui/forms/cra.validation'
 import {
   debutDispositifConum,
   derniereDateDuFormulaire,
 } from '@/features/activites/ui/forms/date-du-cra.validation'
 import {
+  CommuneComboBox,
+  CommuneOptions,
+} from '@/features/activites/ui/forms/saisie/commune-combo-box'
+import {
   LieuComboBox,
   LieuOptions,
 } from '@/features/activites/ui/forms/saisie/LieuComboBox'
 import { typeLieuOptionsWithExtras } from '@/features/activites/ui/labels/libelles/type-lieu.labels'
 import {
-  CommuneComboBox,
-  CommuneOptions,
-} from '@/features/activites/ui/presenters/saisie/commune-combo-box'
-import type { CommuneDuCra } from '@/features/activites/ui/presenters/saisie/commune-du-cra'
-import {
   type LieuDuCra,
   lieuLePlusUtilise,
-} from '@/features/activites/ui/presenters/saisie/lieu-du-cra'
+} from '@/features/activites/ui/presenters/saisie/lieu-du-cra.presenter'
 import {
   type DefaultValues,
   withFieldGroup,

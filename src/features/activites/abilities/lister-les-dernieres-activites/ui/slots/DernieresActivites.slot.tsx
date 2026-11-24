@@ -1,7 +1,7 @@
 import { Button } from '@codegouvfr/react-dsfr/Button'
 import { CarteDActivite } from '../../../../ui/components/carte/CarteDActivite'
 import { DetailDeLActiviteModale } from '../../../../ui/components/detail/DetailDeLActiviteModale'
-import { CreateCraModalDefinition } from '../../../../ui/presenters/saisie/modale-de-saisie'
+import { CreateCraModalDefinition } from '../../../../ui/components/saisie/modale-de-saisie'
 import type { DerniereActivite } from '../presenters/dernieres-activites.presenter'
 
 const AucuneActiviteEnregistree = () => (

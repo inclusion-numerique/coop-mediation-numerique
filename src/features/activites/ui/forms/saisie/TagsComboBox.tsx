@@ -3,7 +3,7 @@ import { BadgeDePortee } from '@/features/activites/ui/components/BadgeDePortee'
 import {
   type Tag,
   tagDuFormulaire,
-} from '@/features/activites/ui/presenters/saisie/tag-du-cra'
+} from '@/features/activites/ui/presenters/saisie/tag-du-cra.presenter'
 import { ComboBoxData } from '@/libraries/formulaire/fields-components/ComboBox'
 import { inject } from '@/libraries/nextjs/injection/client'
 import { OptionsData } from '@/libraries/ui/components/Primitives/Options'

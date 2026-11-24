@@ -6,7 +6,7 @@ import { ExportBeneficiairesFilterValidations } from '@/features/beneficiaire/ab
 import { exporterBeneficiairesAvec } from '@/features/beneficiaire/abilities/exporter-beneficiaires/implementations/exporter-beneficiaires.binding'
 import { listerBeneficiaires } from '@/features/beneficiaire/abilities/lister-beneficiaires/implementations/prisma/lister-beneficiaires.query'
 import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
-import { auteurDeLExport } from '@/features/utilisateurs/ui/presenters/auteur-de-l-export'
+import { auteurDeLExport } from '@/features/utilisateurs/ui/presenters/auteur-de-l-export.presenter'
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
 
 export const GET = async (request: NextRequest) => {

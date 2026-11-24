@@ -1,8 +1,8 @@
 import type { ActivitesFilters } from '@/features/statistiques/domain/filtres-des-activites'
-import type { MediateurOption } from '@/features/statistiques/ui/presenters/mediateur-option'
+import type { MediateurOption } from '@/features/statistiques/ui/presenters/options-de-la-barre.presenter'
 import { dateAsDay } from '@/libraries/date/dateAsDay'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
-import type { OptionDeBeneficiaire } from '../presenters/option-de-beneficiaire'
+import type { OptionDeBeneficiaire } from '../presenters/options-de-la-barre.presenter'
 import { libelleDans, type VocabulaireDeLaBarre } from './barre.labels'
 
 export type FilterType =

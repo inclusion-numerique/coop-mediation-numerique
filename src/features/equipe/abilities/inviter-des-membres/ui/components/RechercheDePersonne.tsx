@@ -2,9 +2,9 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import type { ComboBoxProps } from '@/libraries/formulaire/fields-components/ComboBox'
 import { Input } from '@/libraries/formulaire/fields-components/Input'
 import { Options } from '@/libraries/ui/components/Primitives/Options'
+import type { PersonneAInviter } from '../forms/personne-a-inviter.form-data'
 import type { EtatDeLaRecherche } from '../presenters/mediateurs-a-inviter.presenter'
 import { messagesDe } from '../presenters/mediateurs-a-inviter.presenter'
-import type { PersonneAInviter } from '../presenters/personne-a-inviter'
 import { PersonneAInviterOptions } from './personne-a-inviter-combo-box'
 
 type RenduDuComboBox = Parameters<

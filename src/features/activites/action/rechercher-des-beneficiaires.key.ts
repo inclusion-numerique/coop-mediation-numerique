@@ -1,6 +1,6 @@
 import type { ServerActionResult } from '@/libraries/nextjs/action/result'
 import { keyFor } from '@/libraries/nextjs/injection/client'
-import type { BeneficiaireTrouveParLeCra } from '../ui/presenters/saisie/beneficiaire-du-cra'
+import type { BeneficiaireTrouveParLeCra } from '../ui/presenters/saisie/beneficiaire-du-cra.presenter'
 
 export const RECHERCHER_DES_BENEFICIAIRES_DU_CRA_KEY = keyFor<
   (input: {

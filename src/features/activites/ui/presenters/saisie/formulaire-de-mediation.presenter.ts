@@ -1,5 +1,5 @@
-import { communeDuCra } from '@/features/activites/ui/presenters/saisie/commune-du-cra'
-import { minutesToCraDureeData } from '@/features/activites/ui/presenters/saisie/duree'
+import { minutesToCraDureeData } from '@/features/activites/ui/forms/saisie/duree.form-data'
+import { communeDuCra } from '@/features/activites/ui/presenters/saisie/commune-du-cra.presenter'
 import type {
   ActiviteDeMediation,
   AffichageDeLActivite,

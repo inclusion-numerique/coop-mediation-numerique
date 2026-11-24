@@ -8,9 +8,9 @@ import {
   type InformationsPratiquesFormData,
   informationsPratiquesFormOptions,
 } from '../forms/informations-pratiques.form-data'
+import type { EnregistrerUneSection } from '../hooks/use-enregistrement-de-section'
 import { useEnregistrementDeSection } from '../hooks/use-enregistrement-de-section'
-import type { EnregistrerUneSection } from '../presenters/enregistrer-une-section'
-import type { InformationsPratiquesAffichees } from '../presenters/informations-pratiques'
+import type { InformationsPratiquesAffichees } from '../presenters/informations-pratiques.presenter'
 import { ChampsHoraires } from './ChampsHoraires'
 import { EtatVide } from './EtatVide'
 import { VueInformationsPratiques } from './vues/VueInformationsPratiques'

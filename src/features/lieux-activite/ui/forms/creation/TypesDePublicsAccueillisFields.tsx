@@ -4,7 +4,7 @@ import { type PublicSpecifiquementAdresse } from '@gouvfr-anct/lieux-de-mediatio
 import {
   priseEnChargeSpecifiqueOptions,
   publicSpecifiquementAdresseOptions,
-} from '@/features/lieux-activite/ui/presenters/options-du-lieu'
+} from '@/features/lieux-activite/ui/labels/options-du-lieu.labels'
 import { withForm } from '@/libraries/formulaire/use-app-form'
 import { creerLieuActiviteFormOptions } from '../creer-lieu-activite.form-options'
 

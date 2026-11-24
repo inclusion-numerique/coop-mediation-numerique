@@ -1,8 +1,12 @@
-'use client'
-
+import type { ServerActionResult } from '@/libraries/nextjs'
 import { createToast } from '@/libraries/ui/toast/createToast'
 import type { ModifierLaFicheDuLieuSaisie } from '../../action/modifier-la-fiche-du-lieu.validation'
-import type { EnregistrerUneSection } from '../presenters/enregistrer-une-section'
+
+export type EnregistrerUneSection = (
+  saisie: ModifierLaFicheDuLieuSaisie,
+) => Promise<ServerActionResult<unknown>>
+
+;('use client')
 
 export const useEnregistrementDeSection =
   (id: string, enregistrer: EnregistrerUneSection) =>

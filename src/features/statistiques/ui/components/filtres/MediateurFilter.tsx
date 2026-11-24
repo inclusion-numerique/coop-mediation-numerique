@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react'
-import { MediateurOption } from '@/features/statistiques/ui/presenters/mediateur-option'
+import { MediateurOption } from '@/features/statistiques/ui/presenters/options-de-la-barre.presenter'
 import { FilterFooter } from '@/libraries/filtres/FilterFooter'
 import { FilterSelection } from '@/libraries/filtres/FilterSelection'
 import {

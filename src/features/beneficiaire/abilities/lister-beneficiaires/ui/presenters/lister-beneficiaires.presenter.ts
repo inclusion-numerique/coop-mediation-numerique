@@ -1,6 +1,9 @@
 import type { Paginated } from '@arckit/resultset'
 import type { BeneficiaireListItem } from '@/features/beneficiaire/abilities/lister-beneficiaires/domain/lister-beneficiaires'
-import { type BeneficiaireRow, toBeneficiaireRow } from './beneficiaire-row'
+import {
+  type BeneficiaireRow,
+  toBeneficiaireRow,
+} from './ligne-du-beneficiaire.presenter'
 
 type BeneficiairesPaginationView = {
   readonly currentPage: number

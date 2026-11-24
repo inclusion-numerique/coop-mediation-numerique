@@ -16,6 +16,7 @@ import {
 } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/forms/fields/BeneficiaireFields'
 import { OrientationFields } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/forms/fields/OrientationFields'
 import { saisieDeLAccompagnementIndividuel } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/forms/saisie-du-formulaire.presenter'
+import type { CommuneDuCra } from '@/features/activites/ui/forms/commune-du-cra.validation'
 import { MaterielField } from '@/features/activites/ui/forms/saisie/MaterielField'
 import { RendezVousFields } from '@/features/activites/ui/forms/saisie/RendezVousFields'
 import { TagsFields } from '@/features/activites/ui/forms/saisie/TagsFields'
@@ -32,10 +33,9 @@ import {
   thematiqueAdministrativesOptionsWithExtras,
   thematiqueNonAdministrativesOptionsWithExtras,
 } from '@/features/activites/ui/labels/libelles/thematique.labels'
-import type { BeneficiaireDuCra } from '@/features/activites/ui/presenters/saisie/beneficiaire-du-cra'
-import type { CommuneDuCra } from '@/features/activites/ui/presenters/saisie/commune-du-cra'
-import type { LieuDuCra } from '@/features/activites/ui/presenters/saisie/lieu-du-cra'
-import type { Tag } from '@/features/activites/ui/presenters/saisie/tag-du-cra'
+import type { BeneficiaireDuCra } from '@/features/activites/ui/presenters/saisie/beneficiaire-du-cra.presenter'
+import type { LieuDuCra } from '@/features/activites/ui/presenters/saisie/lieu-du-cra.presenter'
+import type { Tag } from '@/features/activites/ui/presenters/saisie/tag-du-cra.presenter'
 import { cheminInterne } from '@/libraries/chemin-interne'
 import { handleSubmit } from '@/libraries/formulaire/handle-submit'
 import type { DefaultValues } from '@/libraries/formulaire/use-app-form'

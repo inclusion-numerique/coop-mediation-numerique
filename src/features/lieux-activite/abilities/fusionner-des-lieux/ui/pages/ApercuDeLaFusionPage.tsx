@@ -8,7 +8,7 @@ import { toTitleCase } from '@/libraries/texte/toTitleCase'
 import AdministrationBreadcrumbs from '@/libraries/ui/components/administration/AdministrationBreadcrumbs'
 import AdministrationTitle from '@/libraries/ui/components/administration/AdministrationTitle'
 import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
-import { nomAffiche } from '../presenters/nom-affiche'
+import { nomAffiche } from '../presenters/nom-affiche.presenter'
 
 export const ApercuDeLaFusionPage = ({
   structureId,

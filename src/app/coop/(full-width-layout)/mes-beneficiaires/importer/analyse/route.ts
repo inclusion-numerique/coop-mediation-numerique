@@ -3,9 +3,9 @@ import { v4 } from 'uuid'
 import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
 import { getSessionUserFromSessionToken } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
 import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementations/session/session-token-from-cookies'
+import type { AnalyseResponse } from '@/features/beneficiaire/abilities/importer-beneficiaires/domain/analyse-de-l-import'
 import { analyseImportBeneficiairesExcel } from '@/features/beneficiaire/abilities/importer-beneficiaires/implementations/analyse-de-l-import.binding'
 import { getBeneficiaireImportSheet } from '@/features/beneficiaire/abilities/importer-beneficiaires/implementations/excel/feuille-d-import'
-import type { AnalyseResponse } from '@/features/beneficiaire/abilities/importer-beneficiaires/ui/presenters/import-analysis-storage'
 
 const tailleMaximaleDuFichier = 5 * 1024 * 1024
 

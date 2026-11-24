@@ -8,7 +8,7 @@ import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import BackButton from '@/libraries/ui/components/BackButton'
 import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
 import IconInSquare from '@/libraries/ui/components/IconInSquare'
-import type { SaisieEnCours } from '../../../../ui/presenters/saisie-en-cours'
+import type { SaisieEnCours } from '../../../../ui/forms/formulaire/BeneficiaireForm'
 
 /**
  * Composant de page pur : rend le formulaire de création et son chrome.

@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import type { FicheOutil } from '../presenters/fiche-outil'
+import type { FicheOutil } from '../presenters/fiche-de-l-outil.presenter'
 
 export const AccessInfoLink = ({
   illustration,

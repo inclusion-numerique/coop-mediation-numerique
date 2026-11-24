@@ -20,7 +20,7 @@ import {
   cleDe,
   libelleDe,
   type PersonneAInviter,
-} from '../presenters/personne-a-inviter'
+} from './personne-a-inviter.form-data'
 
 type Valeurs = {
   membres: readonly PersonneAInviter[]

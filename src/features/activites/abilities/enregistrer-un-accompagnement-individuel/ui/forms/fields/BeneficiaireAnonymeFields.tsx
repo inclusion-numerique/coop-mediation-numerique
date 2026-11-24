@@ -1,15 +1,15 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import { formOptions } from '@tanstack/react-form'
 import type { CraIndividuelData } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/forms/cra-individuel.validation'
+import {
+  CommuneComboBox,
+  CommuneOptions,
+} from '@/features/activites/ui/forms/saisie/commune-combo-box'
 import type {
   Genre,
   StatutSocial,
   TrancheAge,
 } from '@/features/activites/ui/labels/libelles/profil.labels'
-import {
-  CommuneComboBox,
-  CommuneOptions,
-} from '@/features/activites/ui/presenters/saisie/commune-combo-box'
 import type { DefaultValues } from '@/libraries/formulaire/use-app-form'
 import { withForm } from '@/libraries/formulaire/use-app-form'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'

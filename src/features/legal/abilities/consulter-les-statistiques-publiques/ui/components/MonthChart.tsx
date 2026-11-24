@@ -1,5 +1,3 @@
-'use client'
-
 import { SegmentedControl } from '@codegouvfr/react-dsfr/SegmentedControl'
 import { useState } from 'react'
 import {
@@ -15,7 +13,14 @@ import {
 } from 'recharts'
 import { numberToString } from '@/libraries/nombre/formatNumber'
 import CustomTooltip from './CustomTooltip'
-import { StatisticsLegend } from './legende-des-statistiques'
+
+export type StatisticsLegend<T extends object = object> = {
+  label: string
+  value?: string
+  key: keyof T
+}
+
+;('use client')
 
 export type ChartSerie = {
   label: string

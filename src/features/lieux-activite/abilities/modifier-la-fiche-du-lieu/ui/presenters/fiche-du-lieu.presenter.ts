@@ -6,28 +6,31 @@ import { estPublie } from '../../../../domain/cartographie-nationale/visibilite-
 import type { Fiche } from '../../../../domain/fiche'
 import type { Lieu } from '../../../../domain/lieu'
 import { estPartage, type FicheDuLieu, type PartageDuLieu } from '../../domain'
-import { type DescriptionAffichee, description } from './description'
+import { type DescriptionAffichee, description } from './description.presenter'
 import {
   type InformationsGeneralesAffichees,
   informationsGenerales,
-} from './informations-generales'
+} from './informations-generales.presenter'
 import {
   type InformationsPratiquesAffichees,
   informationsPratiques,
-} from './informations-pratiques'
+} from './informations-pratiques.presenter'
 import {
   type ModalitesAccesAuServiceAffichees,
   modalitesAccesAuService,
-} from './modalites-acces-au-service'
-import { type RepriseExterne, repriseExterne } from './reprise-externe'
+} from './modalites-acces-au-service.presenter'
+import {
+  type RepriseExterne,
+  repriseExterne,
+} from './reprise-externe.presenter'
 import {
   type ServicesEtAccompagnementAffiches,
   servicesEtAccompagnement,
-} from './services-et-accompagnement'
+} from './services-et-accompagnement.presenter'
 import {
   type TypesDePublicsAccueillisAffiches,
   typesDePublicsAccueillis,
-} from './types-de-publics-accueillis'
+} from './types-de-publics-accueillis.presenter'
 
 export type PartageAffiche = {
   readonly message: string

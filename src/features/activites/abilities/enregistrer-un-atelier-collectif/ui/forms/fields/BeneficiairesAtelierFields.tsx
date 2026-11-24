@@ -11,6 +11,11 @@ import {
   participantsAnonymesDefault,
 } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/forms/participants-anonymes'
 import {
+  BeneficiaireComboBox,
+  BeneficiaireOptions,
+  BeneficiaireSelectedItems,
+} from '@/features/activites/ui/forms/saisie/beneficiaire-combo-box'
+import {
   genreLabels,
   genresAffiches as genreValues,
   statutSocialLabels,
@@ -18,12 +23,7 @@ import {
   trancheAgeLabels,
   tranchesAgeAffichees as trancheAgeValues,
 } from '@/features/activites/ui/labels/libelles/profil.labels'
-import {
-  BeneficiaireComboBox,
-  BeneficiaireOptions,
-  BeneficiaireSelectedItems,
-} from '@/features/activites/ui/presenters/saisie/beneficiaire-combo-box'
-import type { BeneficiaireDuCra } from '@/features/activites/ui/presenters/saisie/beneficiaire-du-cra'
+import type { BeneficiaireDuCra } from '@/features/activites/ui/presenters/saisie/beneficiaire-du-cra.presenter'
 import { DefaultValues, withForm } from '@/libraries/formulaire/use-app-form'
 import { encodeSerializableState } from '@/libraries/parametres-d-url/encodeSerializableState'
 import { pluriel } from '@/libraries/pluriel'

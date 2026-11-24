@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react'
 import Header from '@/features/navigation/ui/layouts/Header'
-import type { UtilisateurDeLaNavigation } from '../presenters/utilisateur-de-la-navigation'
+import type { UtilisateurDeLaNavigation } from './CoopShell'
 
 const utilisateur: UtilisateurDeLaNavigation = {
   role: 'User',

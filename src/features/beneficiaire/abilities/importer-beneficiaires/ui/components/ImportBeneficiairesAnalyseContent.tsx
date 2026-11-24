@@ -8,14 +8,11 @@ import {
   PropsWithChildren,
   useEffect,
   useLayoutEffect,
-  useMemo,
   useRef,
   useState,
 } from 'react'
-import {
-  type AnalyseResponse,
-  getBeneficiaireImportAnalysis,
-} from '@/features/beneficiaire/abilities/importer-beneficiaires/ui/presenters/import-analysis-storage'
+import type { AnalyseResponse } from '@/features/beneficiaire/abilities/importer-beneficiaires/domain/analyse-de-l-import'
+import { useAnalyseDeLImport } from '@/features/beneficiaire/abilities/importer-beneficiaires/ui/hooks/analyse-de-l-import'
 import type { ServerActionResult } from '@/libraries/nextjs'
 import { pluriel } from '@/libraries/pluriel'
 import { createToast } from '@/libraries/ui/toast/createToast'
@@ -70,10 +67,7 @@ const ImportBeneficiairesAnalyseContent = ({
   analysisId: string
   importer: ImporterBeneficiaires
 }) => {
-  const analysisResponse = useMemo(
-    () => getBeneficiaireImportAnalysis(analysisId),
-    [analysisId],
-  )
+  const analysisResponse = useAnalyseDeLImport(analysisId)
 
   const router = useRouter()
 

@@ -19,7 +19,7 @@ import {
   ORGANISATEURS_OPTIONS,
   TYPE_EVENEMENT_OPTIONS,
 } from '@/features/activites/ui/labels/libelles/evenement.labels'
-import type { Tag } from '@/features/activites/ui/presenters/saisie/tag-du-cra'
+import type { Tag } from '@/features/activites/ui/presenters/saisie/tag-du-cra.presenter'
 import { cheminInterne } from '@/libraries/chemin-interne'
 import { handleSubmit } from '@/libraries/formulaire/handle-submit'
 import type { DefaultValues } from '@/libraries/formulaire/use-app-form'

@@ -1,4 +1,4 @@
-import type { TagDuCra } from '@/features/activites/ui/presenters/saisie/tag-du-cra'
+import type { TagDuCra } from '@/features/activites/ui/presenters/saisie/tag-du-cra.presenter'
 import type { ServerActionResult } from '@/libraries/nextjs/action/result'
 import { keyFor } from '@/libraries/nextjs/injection/client'
 

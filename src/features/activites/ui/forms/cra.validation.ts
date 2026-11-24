@@ -1,10 +1,10 @@
 import z from 'zod'
+import { CommuneDuCraValidation } from '@/features/activites/ui/forms/commune-du-cra.validation'
 import { CraDateValidation } from '@/features/activites/ui/forms/date-du-cra.validation'
 import { CraDureeValidation } from '@/features/activites/ui/forms/duree-du-cra.validation'
 import { materielValues } from '@/features/activites/ui/labels/libelles/materiel.labels'
 import { thematiqueValues } from '@/features/activites/ui/labels/libelles/thematique.labels'
 import { typeLieuValues } from '@/features/activites/ui/labels/libelles/type-lieu.labels'
-import { CommuneDuCraValidation } from '@/features/activites/ui/presenters/saisie/commune-du-cra'
 
 export const CraValidation = z.object({
   id: z.guid().nullish(),

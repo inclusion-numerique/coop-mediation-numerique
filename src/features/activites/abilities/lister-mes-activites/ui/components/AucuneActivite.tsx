@@ -1,5 +1,5 @@
 import Button from '@codegouvfr/react-dsfr/Button'
-import { CreateCraModalDefinition } from '@/features/activites/ui/presenters/saisie/modale-de-saisie'
+import { CreateCraModalDefinition } from '@/features/activites/ui/components/saisie/modale-de-saisie'
 
 export const AucuneActivite = () => (
   <div className="fr-border-radius--8 fr-mt-6v fr-p-12v fr-background-alt--blue-france fr-align-items-center">

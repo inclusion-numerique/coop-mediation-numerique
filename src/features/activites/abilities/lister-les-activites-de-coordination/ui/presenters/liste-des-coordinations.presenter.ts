@@ -1,5 +1,5 @@
 import { formatInTimeZone } from 'date-fns-tz'
-import { formatActiviteDayDate } from '@/features/activites/ui/presenters/format-du-jour-d-activite'
+import { formatActiviteDayDate } from '@/features/activites/ui/presenters/format-du-jour-d-activite.presenter'
 import {
   dateAsDayInTimeZone,
   dateAsTimeInTimeZone,

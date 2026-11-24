@@ -1,7 +1,10 @@
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
 import { encodeSerializableState } from '@/libraries/parametres-d-url/encodeSerializableState'
-import { minutesToCraDureeData, minutesToCustomCraDureeData } from './duree'
-import { optionsDeDuree } from './options-de-duree'
+import {
+  minutesToCraDureeData,
+  minutesToCustomCraDureeData,
+} from '../../forms/saisie/duree.form-data'
+import { optionsDeDuree } from './options-de-duree.presenter'
 
 export type RendezVousASaisir = {
   readonly id: number

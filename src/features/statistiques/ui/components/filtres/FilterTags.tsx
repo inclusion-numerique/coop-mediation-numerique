@@ -8,11 +8,11 @@ import {
   generateActivitesFiltersLabels,
   toLieuPrefix,
 } from '@/features/statistiques/ui/labels/filtres.labels'
-import type { MediateurOption } from '@/features/statistiques/ui/presenters/mediateur-option'
+import type { MediateurOption } from '@/features/statistiques/ui/presenters/options-de-la-barre.presenter'
 import { adresseAvec } from '@/libraries/parametres-d-url'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import type { VocabulaireDeLaBarre } from '../../labels/barre.labels'
-import type { OptionDeBeneficiaire } from '../../presenters/option-de-beneficiaire'
+import type { OptionDeBeneficiaire } from '../../presenters/options-de-la-barre.presenter'
 
 const queryParamsToKeep = ['voir-rdvs']
 
