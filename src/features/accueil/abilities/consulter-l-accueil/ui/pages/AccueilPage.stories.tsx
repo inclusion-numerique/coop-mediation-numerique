@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { consulterLAccueil } from '../../domain/index'
-import { visiteurDe } from '../../implementations/session/visiteur'
+import { visiteurDe } from '../../implementations/session/visiteur.query'
 import { AccueilPage } from './AccueilPage'
 
 const accueil = consulterLAccueil(

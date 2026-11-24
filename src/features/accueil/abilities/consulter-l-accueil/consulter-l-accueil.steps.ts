@@ -7,7 +7,7 @@ import {
 import {
   type UtilisateurConnecte,
   visiteurDe,
-} from '@/features/accueil/abilities/consulter-l-accueil/implementations/session/visiteur'
+} from '@/features/accueil/abilities/consulter-l-accueil/implementations/session/visiteur.query'
 
 type Utilisateur = UtilisateurConnecte
 
