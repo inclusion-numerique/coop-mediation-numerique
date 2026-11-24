@@ -34,7 +34,7 @@
     "db:check-main-drift": "bash ./scripts/main-drift.sh check",
     "db:refresh-main-reference": "bash ./scripts/main-drift.sh refresh",
     "erd": "DISABLE_ERD= pnpm prisma generate",
-    "api-v1-doc:generate": "next-swagger-doc-cli --config ./src/features/clients-api/implementations/openapi/api-v1-doc-config.json --output ./src/features/clients-api/implementations/openapi/v1.openapi.json && biome format --write ./src/features/clients-api/implementations/openapi/v1.openapi.json",
+    "api-v1-doc:generate": "next-swagger-doc-cli --config ./src/features/clients-api/implementations/openapi/v1.openapi-config.json --output ./src/features/clients-api/implementations/openapi/v1.openapi.json && biome format --write ./src/features/clients-api/implementations/openapi/v1.openapi.json",
     "standalone:configure": "cp -R ./public ./.next/standalone/public && cp -R ./.next/static ./.next/standalone/.next/static",
     "standalone:start": "HOSTNAME=\"0.0.0.0\" dotenv -- node ./.next/standalone/server.js",
     "cli": "TSX_TSCONFIG_PATH=./tsconfig.node.json dotenv -- tsx --import ./src/configuration/telemetry/instrument/cli.ts src/cli/index.ts",
