@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import type { OptionsDeLaBarre } from '../../../../ui/components/filtres/BarreDeFiltres'
-import type { FiltresDeLaListe } from '../../../../ui/presenters/filtres/filtres-de-la-liste.search-params'
+import type { FiltresDeLaListe } from '../../../../ui/search-params/filtres-de-la-liste.search-params'
 import type { RenseignerLeStatut } from '../components/CarteDeRendezVous'
 import { EnTeteDeLaListe } from '../components/EnTeteDeLaListe'
 import {

@@ -4,7 +4,7 @@ import {
   PaginationNavWithPageSizeSelect,
 } from '@/libraries/data-table'
 import { LIGNES_PAR_PAGE } from '../../domain'
-import { etatDeLaTable } from '../presenters/etat-de-la-table.search-params'
+import { etatDeLaTable } from '../search-params/etat-de-la-table.search-params'
 
 const optionsDeLignes = generatePageSizeSelectOptions([...LIGNES_PAR_PAGE])
 

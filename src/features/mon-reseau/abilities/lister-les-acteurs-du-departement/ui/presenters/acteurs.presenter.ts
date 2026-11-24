@@ -1,7 +1,7 @@
 import { pluriel } from '@/libraries/pluriel'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import type { Acteur } from '../../../../domain'
-import type { EtiquetteDeFiltre } from '../../../../ui/presenters/filtres-du-reseau.search-params'
+import type { EtiquetteDeFiltre } from '../../../../ui/search-params/filtres-du-reseau.search-params'
 import type { CriteresActeurs, filtresDeRole } from '../../domain'
 
 type Role = (typeof filtresDeRole)[number]

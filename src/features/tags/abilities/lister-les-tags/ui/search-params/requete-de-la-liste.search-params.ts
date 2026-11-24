@@ -3,7 +3,7 @@ import {
   DEFAULT_PAGE_SIZE,
 } from '@/libraries/data-table/pagination/page-size-options'
 import { entierPositifLu } from '@/libraries/parametres-d-url'
-import { type TriDesTags, triDemande } from '../../domain'
+import { type TriDesTags, triDemande } from '../../domain/index'
 import type { ParametresDeLaListe } from '../pages/ListeDesTagsPage'
 
 export type RequeteDeLaListe = {

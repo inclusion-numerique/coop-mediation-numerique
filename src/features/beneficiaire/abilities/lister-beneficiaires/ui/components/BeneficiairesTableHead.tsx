@@ -3,7 +3,7 @@ import {
   SelectAllHeaderCell,
   SortableColumnHeader,
 } from '@/libraries/data-table'
-import { beneficiairesColumns } from '../presenters/beneficiaires.columns'
+import { beneficiairesColumns } from '../columns/beneficiaires.columns'
 
 export const BeneficiairesTableHead = ({
   state,

@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import {
   type EtiquetteDeFiltre,
   sansLaValeur,
-} from '../presenters/filtres-du-reseau.search-params'
+} from '../search-params/filtres-du-reseau.search-params'
 
 export const EtiquettesDeFiltres = ({
   etiquettes,

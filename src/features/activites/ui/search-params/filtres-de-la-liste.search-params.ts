@@ -4,16 +4,16 @@ import {
   type CriteresDesActivites,
   parametresDesActivitesDe,
   THEMATIQUES_RECHERCHEES,
-} from '../../../domain'
+} from '../../domain/index'
 import {
   SOURCES_DANS_L_URL,
   type SourceDansLURL,
-} from '../../labels/libelles/source-de-l-activite.labels'
-import type { StatutDeRendezVousDansLURL } from '../../labels/libelles/statut-de-rendez-vous.labels'
+} from '../labels/libelles/source-de-l-activite.labels'
+import type { StatutDeRendezVousDansLURL } from '../labels/libelles/statut-de-rendez-vous.labels'
 import {
   type TypeActiviteSlug,
   typeActiviteSlugValues,
-} from '../../labels/libelles/type-activite.labels'
+} from '../labels/libelles/type-activite.labels'
 
 type ThematiqueDansLURL = (typeof THEMATIQUES_RECHERCHEES)[number]
 

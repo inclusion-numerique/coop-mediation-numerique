@@ -5,7 +5,7 @@ import { LieuxPage } from '@/features/lieux-activite/abilities/lister-tous-les-l
 import {
   criteresDeLaListe,
   type ListeDesLieuxSearchParams,
-} from '@/features/lieux-activite/abilities/lister-tous-les-lieux/ui/presenters/lister-tous-les-lieux.search-params'
+} from '@/features/lieux-activite/abilities/lister-tous-les-lieux/ui/search-params/lister-tous-les-lieux.search-params'
 
 export const metadata = {
   title: metadataTitle('Lieux d’activité'),

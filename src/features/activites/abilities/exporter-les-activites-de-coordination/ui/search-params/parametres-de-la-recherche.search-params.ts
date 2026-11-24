@@ -1,4 +1,4 @@
-import type { ParametresDesCoordinations } from '../../../../domain'
+import type { ParametresDesCoordinations } from '../../../../domain/index'
 
 export const parametresDeLaRecherche = (
   recherche: URLSearchParams,

@@ -1,5 +1,5 @@
 import { SortableColumnHeader } from '@/libraries/data-table'
-import type { EtatDeLaListe } from '../presenters/etat-de-la-liste.search-params'
+import type { EtatDeLaListe } from '../search-params/etat-de-la-liste.search-params'
 
 export const EquipeTableHead = ({
   state,

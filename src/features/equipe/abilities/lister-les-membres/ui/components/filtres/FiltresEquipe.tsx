@@ -2,7 +2,7 @@
 
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useRouter, useSearchParams } from 'next/navigation'
-import type { RoleFiltre } from '../../presenters/parametres-de-la-liste.search-params'
+import type { RoleFiltre } from '../../search-params/parametres-de-la-liste.search-params'
 import { Actifs } from './Actifs'
 import { Archives } from './Archives'
 import { Inactifs } from './Inactifs'

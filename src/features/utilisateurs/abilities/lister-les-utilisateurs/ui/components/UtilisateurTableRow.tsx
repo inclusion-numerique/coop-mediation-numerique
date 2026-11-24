@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import type { LigneUtilisateur } from '@/features/utilisateurs/domain'
-import { colonnesDesUtilisateurs } from './utilisateurs.columns'
+import { colonnesDesUtilisateurs } from '../columns/utilisateurs.columns'
 
 export const UtilisateurTableRow = ({
   utilisateur,

@@ -10,8 +10,8 @@ import {
 import type {
   FiltresDeLaListe,
   OptionDeMediateur,
-} from '@/features/activites/ui/presenters/filtres/filtres-de-la-liste.search-params'
-import { OptionDeBeneficiaire } from '@/features/activites/ui/presenters/filtres/filtres-de-la-liste.search-params'
+} from '@/features/activites/ui/search-params/filtres-de-la-liste.search-params'
+import { OptionDeBeneficiaire } from '@/features/activites/ui/search-params/filtres-de-la-liste.search-params'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 
 const queryParamsToKeep = ['voir-rdvs']

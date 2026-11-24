@@ -1,7 +1,7 @@
 import type { NextRequest } from 'next/server'
 import { classeurDeMesCoordinations } from '@/features/activites/abilities/exporter-les-activites-de-coordination/implementations/excel/classeur-de-mes-coordinations'
 import { lignesDesCoordinations } from '@/features/activites/abilities/exporter-les-activites-de-coordination/ui/presenters/lignes-des-coordinations.presenter'
-import { parametresDeLaRecherche } from '@/features/activites/abilities/exporter-les-activites-de-coordination/ui/presenters/parametres-de-la-recherche.search-params'
+import { parametresDeLaRecherche } from '@/features/activites/abilities/exporter-les-activites-de-coordination/ui/search-params/parametres-de-la-recherche.search-params'
 import { criteresDesCoordinations } from '@/features/activites/domain'
 import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
 import { getSessionUserFromSessionToken } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'

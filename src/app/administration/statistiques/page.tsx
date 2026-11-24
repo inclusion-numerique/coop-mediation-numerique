@@ -52,7 +52,7 @@ import {
 } from '@/features/statistiques/ui/components/sections-des-statistiques'
 import { activiteSourceOptions } from '@/features/statistiques/ui/labels/source-de-l-activite.labels'
 import { optionsDeTags } from '@/features/statistiques/ui/presenters/options-de-la-barre.presenter'
-import { validateActivitesFilters } from '@/features/statistiques/ui/presenters/parametres-de-la-barre.search-params'
+import { validateActivitesFilters } from '@/features/statistiques/ui/search-params/parametres-de-la-barre.search-params'
 import { FiltreDeLieu } from '@/features/statistiques/ui/slots/FiltreDeLieu.slot'
 import { lireLesTagsCollectifs } from '@/features/tags/abilities/lire-les-tags-visibles/implementations/prisma/lire-les-tags-visibles.query'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'

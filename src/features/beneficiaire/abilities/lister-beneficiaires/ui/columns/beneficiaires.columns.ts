@@ -1,5 +1,5 @@
 import type { BeneficiaireSortField } from '@/features/beneficiaire/abilities/lister-beneficiaires/domain/lister-beneficiaires'
-import type { BeneficiaireRow } from './ligne-du-beneficiaire.presenter'
+import type { BeneficiaireRow } from '../presenters/ligne-du-beneficiaire.presenter'
 
 /**
  * Description déclarative des colonnes triables. `tri` est aligné sur le champ

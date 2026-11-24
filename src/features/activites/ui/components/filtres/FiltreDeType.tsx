@@ -11,7 +11,7 @@ import {
   typeActiviteOptions,
   typeActiviteSlugOptions,
 } from '@/features/activites/ui/labels/libelles/type-activite.labels'
-import type { FiltresDeLaListe } from '@/features/activites/ui/presenters/filtres/filtres-de-la-liste.search-params'
+import type { FiltresDeLaListe } from '@/features/activites/ui/search-params/filtres-de-la-liste.search-params'
 import { FilterFooter } from '@/libraries/filtres/FilterFooter'
 import TriggerButton from '@/libraries/filtres/TriggerButton'
 import { RDVServicePublicLogo } from '@/libraries/pictograms/services/RDVServicePublicLogo'

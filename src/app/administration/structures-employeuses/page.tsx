@@ -7,7 +7,7 @@ import {
   criteresListeEmployeuses,
   type EmployeusesSearchParams,
   etatDeTableEmployeuses,
-} from '@/features/employeuse/abilities/lister-employeuses/ui/presenters/lister-employeuses.search-params'
+} from '@/features/employeuse/abilities/lister-employeuses/ui/search-params/lister-employeuses.search-params'
 
 export const metadata = {
   title: metadataTitle('Structures employeuses'),

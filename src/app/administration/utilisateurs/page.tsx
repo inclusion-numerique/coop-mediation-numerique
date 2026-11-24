@@ -17,7 +17,7 @@ import { rechercherDesUtilisateurs } from '@/features/utilisateurs/abilities/lis
 import { ordreDesUtilisateurs } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/implementations/prisma/tri-des-utilisateurs'
 import { UtilisateursPage } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui/pages/UtilisateursPage'
 import { optionDuCoordinateur } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui/presenters/coordinateur-a-choisir.presenter'
-import { type ParametresDeLaListe } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui/presenters/lister-les-utilisateurs.search-params'
+import { type ParametresDeLaListe } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui/search-params/lister-les-utilisateurs.search-params'
 import {
   filtresUtilisateurs,
   parametresDesFiltres,

@@ -13,7 +13,7 @@ import {
 } from '@/libraries/date/dateAsDayAndTime'
 import { optionalNumberToString } from '@/libraries/nombre/formatNumber'
 import CopyToClipboardButton from '@/libraries/ui/components/CopyToClipboardButton'
-import type { ColonneTriable } from '../../domain'
+import type { ColonneTriable } from '../../domain/index'
 
 export type ColonneDesUtilisateurs = {
   readonly cle: string

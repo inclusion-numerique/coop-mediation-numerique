@@ -9,8 +9,8 @@ import {
   listerLesMembres,
 } from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/lister-les-membres.query'
 import { default as EquipeListePage } from '@/features/equipe/abilities/lister-les-membres/ui/pages/EquipeListePage'
-import { type ParametresDeLaListe } from '@/features/equipe/abilities/lister-les-membres/ui/presenters/parametres-de-la-liste.search-params'
-import { requeteDeLaListe } from '@/features/equipe/abilities/lister-les-membres/ui/presenters/requete-de-la-liste.search-params'
+import { type ParametresDeLaListe } from '@/features/equipe/abilities/lister-les-membres/ui/search-params/parametres-de-la-liste.search-params'
+import { requeteDeLaListe } from '@/features/equipe/abilities/lister-les-membres/ui/search-params/requete-de-la-liste.search-params'
 import { QUITTER_UNE_EQUIPE_ACTION_KEY } from '@/features/equipe/abilities/quitter-une-equipe/action/quitter-une-equipe.key'
 import { default as BoutonQuitterLEquipe } from '@/features/equipe/abilities/quitter-une-equipe/ui/slots/BoutonQuitterLEquipe.slot'
 import { CoordinateurId, MediateurId } from '@/features/equipe/domain'

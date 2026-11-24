@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { criteresDesActivites } from '../../../domain'
+import { criteresDesActivites } from '../../domain/index'
 import { filtresDeLaListe } from './filtres-de-la-liste.search-params'
 
 describe('filtres de la liste', () => {

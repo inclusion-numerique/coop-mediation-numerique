@@ -8,7 +8,7 @@ import { optionsDesSources } from '../../../../ui/labels/libelles/source-de-l-ac
 import {
   type FiltresDeLaListe,
   filtresDeLaListe,
-} from '../../../../ui/presenters/filtres/filtres-de-la-liste.search-params'
+} from '../../../../ui/search-params/filtres-de-la-liste.search-params'
 import type { ExportDesAccompagnements } from '../../domain'
 import { contenuDuClasseur } from './lignes-du-classeur.presenter'
 

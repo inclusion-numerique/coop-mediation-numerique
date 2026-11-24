@@ -9,7 +9,7 @@ import { presentMesBeneficiaires } from '@/features/beneficiaire/abilities/liste
 import {
   type MesBeneficiairesSearchParams,
   toListerBeneficiairesQuery,
-} from '@/features/beneficiaire/abilities/lister-beneficiaires/ui/presenters/lister-beneficiaires.search-params'
+} from '@/features/beneficiaire/abilities/lister-beneficiaires/ui/search-params/lister-beneficiaires.search-params'
 import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 

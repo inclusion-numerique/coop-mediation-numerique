@@ -7,7 +7,7 @@ import {
   type Pagination,
   parametresDesActivitesDe,
 } from '../../../../domain'
-import { filtresDeLaListe } from '../../../../ui/presenters/filtres/filtres-de-la-liste.search-params'
+import { filtresDeLaListe } from '../../../../ui/search-params/filtres-de-la-liste.search-params'
 import {
   basculeDesRendezVous,
   type CompteRendezVousDuMediateur,

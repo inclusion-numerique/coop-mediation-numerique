@@ -19,7 +19,7 @@ import { UtilisateursTable } from '../components/UtilisateursTable'
 import {
   etatDeLaTable,
   type ParametresDeLaListe,
-} from '../presenters/lister-les-utilisateurs.search-params'
+} from '../search-params/lister-les-utilisateurs.search-params'
 
 const BASE_HREF = '/administration/utilisateurs'
 
