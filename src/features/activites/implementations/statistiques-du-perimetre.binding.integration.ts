@@ -24,20 +24,14 @@ import { Prisma } from '@/generated/prisma/client'
 import { computeProportion } from '@/libraries/proportions'
 import { partsFixees } from '@/libraries/proportions/parts-fixees'
 import type { QuantifiedShare } from '@/libraries/proportions/quantifiedShare'
-import { MediateurId, perimetreDuDemandeur } from './domain'
-import { crasDeDemonstration } from './fixtures/cras-de-demonstration'
-import { enregistrerLesCras } from './fixtures/enregistrer-les-cras'
-import { statistiquesDuPerimetre } from './implementations/statistiques-du-perimetre.binding'
-import {
-  source,
-  sourceOptionnelle,
-  statistiquesAvec,
-} from './implementations/statistiques-en-cours.binding'
-import { tranchesDeDureeDesStatistiques } from './ui/labels/libelles/duree-accompagnement.labels'
+import { MediateurId, perimetreDuDemandeur } from '../domain'
+import { crasDeDemonstration } from '../fixtures/cras-de-demonstration'
+import { enregistrerLesCras } from '../fixtures/enregistrer-les-cras'
+import { tranchesDeDureeDesStatistiques } from '../ui/labels/libelles/duree-accompagnement.labels'
 import {
   materielLabels,
   materielValues,
-} from './ui/labels/libelles/materiel.labels'
+} from '../ui/labels/libelles/materiel.labels'
 import {
   genreLabels,
   genresAffiches,
@@ -45,21 +39,27 @@ import {
   statutsSociauxAffiches,
   trancheAgeLabels,
   tranchesAgeAffichees,
-} from './ui/labels/libelles/profil.labels'
+} from '../ui/labels/libelles/profil.labels'
 import {
   thematiquesAdministrativesLabels,
   thematiquesAdministrativesValues,
   thematiquesNonAdministrativesLabels,
   thematiquesNonAdministrativesValues,
-} from './ui/labels/libelles/thematique.labels'
+} from '../ui/labels/libelles/thematique.labels'
 import {
   typeActiviteLabels,
   typeActiviteValues,
-} from './ui/labels/libelles/type-activite.labels'
+} from '../ui/labels/libelles/type-activite.labels'
 import {
   typeLieuLabels,
   typeLieuValues,
-} from './ui/labels/libelles/type-lieu.labels'
+} from '../ui/labels/libelles/type-lieu.labels'
+import { statistiquesDuPerimetre } from './statistiques-du-perimetre.binding'
+import {
+  source,
+  sourceOptionnelle,
+  statistiquesAvec,
+} from './statistiques-en-cours.binding'
 
 const statistiquesDesActivites = statistiquesAvec({
   totalCounts: source(compterLesAccompagnements, totauxPresentes),
