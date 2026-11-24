@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { numberToPercentage } from '@/libraries/nombre/formatNumber'
+import { numberToPercentage } from '@/libraries/nombre/format-number'
 
 describe('formatNumber', () => {
   describe('numberToPercentage', () => {
