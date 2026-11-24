@@ -9,7 +9,7 @@
     "e2e/proconnect-simule/serveur.ts",
     "e2e/tasks/taskExecutor.ts"
   ],
-  "project": ["src/**/*.{ts,tsx,mts}!", "e2e/**/*.ts", "scripts/**/*.mjs"],
+  "project": ["src/**/*.{ts,tsx}!", "e2e/**/*.ts", "scripts/**/*.mjs"],
   "cypress": {
     "config": [],
     "entry": [

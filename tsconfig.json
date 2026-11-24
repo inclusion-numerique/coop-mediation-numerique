@@ -43,7 +43,6 @@
     "prisma/entrepot/prisma.config.ts",
     "src/**/*.ts",
     "src/**/*.tsx",
-    "src/**/*.mts",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     ".storybook/**/*.ts",
