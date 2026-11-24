@@ -129,6 +129,6 @@ describe('ETQ médiateur, je filtre mes activités', () => {
     cy.get('.fr-tags-group').contains('a', 'Atelier collectif').click()
 
     cy.location('search').should('equal', '')
-    cy.contains('button', /^Type$/).should('be.visible')
+    cy.contains('button', /^Type\s*$/).should('be.visible')
   })
 })
