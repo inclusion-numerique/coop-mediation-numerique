@@ -10,7 +10,11 @@ import {
   semerLesLieuxDeDemonstration,
   structureEmployeuse,
 } from '@/features/lieux-activite/fixtures/lieux-de-demonstration'
-import { mediateursDesPersonas } from '@/features/utilisateurs/fixtures/personas'
+import {
+  fixtureUsers,
+  mediateursDesPersonas,
+} from '@/features/utilisateurs/fixtures/personas'
+import { seedPersonnesMain } from '@/features/utilisateurs/fixtures/personnes-main-conseiller-numerique'
 import { resetFixtureUser } from '@/features/utilisateurs/fixtures/reinitialiser-un-utilisateur'
 import { enSerie } from '@/libraries/fixtures/enSerie'
 
@@ -41,6 +45,11 @@ export const preparerLesPersonas = async ({
     mediateque,
   })
   await enSerie(ids, (id) => resetFixtureUser({ id }, demonstration, false))
+  await seedPersonnesMain(
+    prismaClient,
+    demonstration.employeuse,
+    fixtureUsers.filter(({ id }) => ids.includes(id)),
+  )
 
   return { done: true }
 }

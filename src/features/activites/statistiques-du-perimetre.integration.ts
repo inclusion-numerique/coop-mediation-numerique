@@ -1,4 +1,5 @@
 import { cloneDeep } from 'lodash-es'
+import { v5 } from 'uuid'
 import { afterAll, beforeAll, describe, expect, test } from 'vitest'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { compterLesAccompagnements } from '@/features/activites/abilities/compter-les-accompagnements/implementations/prisma/totaux-des-accompagnements.query'
@@ -19,7 +20,6 @@ import { repartirLesAccompagnementsParTag } from '@/features/activites/abilities
 import { parTagPresentes } from '@/features/activites/abilities/repartir-les-accompagnements-par-tag/ui/presenters/par-tag.presenter'
 import { presenceDeCrasV1 } from '@/features/activites/abilities/verifier-la-presence-de-cras-v1/implementations/presence-de-cras-v1.binding'
 import { Prisma } from '@/generated/prisma/client'
-import { mergeUuids } from '@/libraries/fixtures/mergeUuids'
 import { computeProportion } from '@/libraries/proportions'
 import { partsFixees } from '@/libraries/proportions/parts-fixees'
 import type { QuantifiedShare } from '@/libraries/proportions/quantifiedShare'
@@ -178,7 +178,7 @@ const cras = crasDeDemonstration({
   lieux: { mediateque },
 })
 
-const salee = (id: string) => mergeUuids(id, SEL)
+const salee = (id: string) => v5(id, SEL)
 
 const duMediateurAvecActivites = ({
   activite,

@@ -103,6 +103,12 @@ export const resetFixtureUser = async (
     })
 
     if (user.rdvAccount) {
+      const duCompte = { rdvAccountId: user.rdvAccount.id }
+      await prismaClient.rdv.deleteMany({ where: duCompte })
+      await prismaClient.rdvSyncLog.deleteMany({ where: duCompte })
+      await prismaClient.rdvAccountOrganisation.deleteMany({
+        where: { accountId: user.rdvAccount.id },
+      })
       await prismaClient.rdvAccount.delete({
         where: {
           id: user.rdvAccount.id,
