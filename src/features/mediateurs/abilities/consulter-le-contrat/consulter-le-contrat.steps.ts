@@ -129,8 +129,8 @@ Then("il n'a pas de contrat", () => {
 
 After(async () => {
   const compte = etat.compte
-  etat.compte = undefined
-  etat.contrat = undefined
+  delete etat.compte
+  delete etat.contrat
   if (!compte) return
 
   if (compte.personneId !== null) {
