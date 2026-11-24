@@ -5,12 +5,12 @@ import { creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding } from '@/fea
 import { traiterNotificationRdvAvec } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/implementations/recevoir-webhook-rdv.binding'
 import { traiterNotificationUsager } from '@/features/rdvsp/abilities/recevoir-webhook-usager/implementations/recevoir-webhook-usager.binding'
 import { aiguillerNotificationWebhook } from '@/features/rdvsp/domain/webhook/aiguiller-notification-webhook'
-import { journaliserWebhook } from '@/features/rdvsp/implementations/webhook/journal'
-import { lireNotificationWebhook } from '@/features/rdvsp/implementations/webhook/lire-notification-webhook'
+import { journaliserWebhook } from '@/features/rdvsp/implementations/webhook/journal-du-webhook.mutation'
+import { lireNotificationWebhook } from '@/features/rdvsp/implementations/webhook/notification-webhook.params'
 import {
   ENTETE_SIGNATURE_WEBHOOK,
   signatureValide,
-} from '@/features/rdvsp/implementations/webhook/verifier-signature'
+} from '@/features/rdvsp/implementations/webhook/signature-du-webhook.middleware'
 
 const traiter = aiguillerNotificationWebhook({
   traiterRdv: traiterNotificationRdvAvec(

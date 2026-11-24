@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { RdvAgentId } from '../../domain/identifiants/rdv-agent-id'
 import { payloadsRdvCaptures } from '../../fixtures/payloads-captures'
-import { rdvPayload } from './payloads'
-import { rdvToDomain } from './to-domain'
+import { rdvPayload } from './rdv-service-public.payload'
+import { rdvToDomain } from './rdv-service-public.transfer'
 
 const AGENT_ID = RdvAgentId(2732)
 

@@ -1,7 +1,7 @@
 import type { EvenementWebhook } from '../../../domain/webhook/evenement-webhook'
-import { journaliserWebhook } from '../../../implementations/webhook/journal'
+import { journaliserWebhook } from '../../../implementations/webhook/journal-du-webhook.mutation'
 import { recevoirWebhookUsager } from '../domain/recevoir-webhook-usager'
-import { lireNotificationUsager } from './api/lire-notification-usager'
+import { lireNotificationUsager } from './api/notification-usager.params'
 import {
   anonymiserEtSupprimerUsager,
   beneficiairesLiesAUsager,

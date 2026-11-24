@@ -1,4 +1,4 @@
-import { rdvServicePublicApiBinding } from '../../../implementations/api/rdv-service-public.binding'
+import { rdvServicePublicApiBinding } from '../../../implementations/rdv-service-public.binding'
 import { mettreAJourStatutRdv } from '../domain/mettre-a-jour-statut-rdv'
 import { contexteMiseAJourStatut } from './prisma/contexte-mise-a-jour-statut.query'
 import { enregistrerStatutRdv } from './prisma/enregistrer-statut-rdv.mutation'

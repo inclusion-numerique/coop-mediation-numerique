@@ -1,5 +1,5 @@
 import { getServerUrl } from '@/configuration/projet/baseUrl'
-import { rdvServicePublicApiBinding } from '../../../implementations/api/rdv-service-public.binding'
+import { rdvServicePublicApiBinding } from '../../../implementations/rdv-service-public.binding'
 import { prendreRendezVous } from '../domain/prendre-rendez-vous'
 import { beneficiaireADemander } from './prisma/beneficiaire-a-demander.query'
 import { compteDuMediateur } from './prisma/compte-du-mediateur.query'

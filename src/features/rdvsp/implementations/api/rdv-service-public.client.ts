@@ -37,7 +37,7 @@ import {
   usagerUniquePayload,
   webhooksPagePayload,
   webhookUniquePayload,
-} from './payloads'
+} from './rdv-service-public.payload'
 import {
   agentToDomain,
   demandeRdvToDomain,
@@ -46,7 +46,7 @@ import {
   rdvToDomain,
   usagerToDomain,
   webhookToDomain,
-} from './to-domain'
+} from './rdv-service-public.transfer'
 
 export type RdvServicePublicApiConfig = {
   readonly hostname: string

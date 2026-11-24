@@ -1,8 +1,8 @@
 import type { CreerOuFusionnerDepuisUsagersExternes } from '../../../domain/ports'
 import type { EvenementWebhook } from '../../../domain/webhook/evenement-webhook'
-import { journaliserWebhook } from '../../../implementations/webhook/journal'
+import { journaliserWebhook } from '../../../implementations/webhook/journal-du-webhook.mutation'
 import { recevoirWebhookRdv } from '../domain/recevoir-webhook-rdv'
-import { lireNotificationRdv } from './api/lire-notification-rdv'
+import { lireNotificationRdv } from './api/notification-rdv.params'
 import { rapprocherBeneficiairesDuRdv } from './prisma/rapprocher-beneficiaires-du-rdv.adapter'
 import {
   comptePourWebhook,

@@ -29,7 +29,7 @@ import type { Rdv } from '../../domain/rdv'
 import { StatutPresence } from '../../domain/statut-presence'
 import { UrlAgent } from '../../domain/url-agent'
 import type { Usager } from '../../domain/usager'
-import { absentSiVide } from './vide'
+import { absentSiVide } from './vide.transfer'
 
 /**
  * Le rendez-vous et son entourage : motif, lieu et participants sont des

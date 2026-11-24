@@ -1,12 +1,12 @@
 import { environnementServeur } from '@/configuration/environnement/serveur'
-import { rdvspOAuthHostname } from '@/features/rdvsp/implementations/oauth/client'
-import { rdvServicePublicApiBinding } from '../../../implementations/api/rdv-service-public.binding'
+import { rdvspOAuthHostname } from '@/features/rdvsp/implementations/oauth/rdvsp-oauth.client'
 import {
   rdvServicePublicOAuthConfig,
   rdvServicePublicOauthCallbackUrl,
-} from '../../../implementations/oauth/oauth'
+} from '../../../implementations/oauth/rdvsp-oauth-callback.client'
+import { rdvServicePublicApiBinding } from '../../../implementations/rdv-service-public.binding'
 import { connecterCompteRdv } from '../domain/connecter-compte-rdv'
-import { echangerCodeAutorisation } from './api/echanger-code-autorisation'
+import { echangerCodeAutorisation } from './api/echanger-code-autorisation.mutation'
 import { compteRdvExistant } from './prisma/compte-rdv-existant.query'
 import { enregistrerCompteConnecte } from './prisma/enregistrer-compte-connecte.mutation'
 

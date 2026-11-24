@@ -1,5 +1,5 @@
 import type { CreerOuFusionnerDepuisUsagersExternes } from '@/features/rdvsp/domain/ports'
-import { rdvServicePublicApiBinding } from '@/features/rdvsp/implementations/api/rdv-service-public.binding'
+import { rdvServicePublicApiBinding } from '@/features/rdvsp/implementations/rdv-service-public.binding'
 import {
   type SynchroniserRdvs,
   synchroniserRdvs,

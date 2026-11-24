@@ -2,7 +2,7 @@ import { getServerUrl } from '@/configuration/projet/baseUrl'
 import {
   rdvspOAuthClientId,
   rdvspOAuthHostname,
-} from '@/features/rdvsp/implementations/oauth/client'
+} from '@/features/rdvsp/implementations/oauth/rdvsp-oauth.client'
 import { encodeSerializableState } from '@/libraries/etat-encode/encodeSerializableState'
 
 export const rdvServicePublicOauthCallbackUrl = getServerUrl(

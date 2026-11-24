@@ -12,7 +12,7 @@ import {
 import { OrganisationId } from '../../domain/identifiants/organisation-id'
 import { RdvAgentId } from '../../domain/identifiants/rdv-agent-id'
 import { UtilisateurCoopId } from '../../domain/identifiants/utilisateur-coop-id'
-import { absentSiVide } from './vide'
+import { absentSiVide } from './vide.transfer'
 
 /**
  * Les organisations d'un compte vivent dans une table de jointure : la lecture

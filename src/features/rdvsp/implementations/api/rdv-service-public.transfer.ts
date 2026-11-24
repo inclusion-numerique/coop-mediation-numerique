@@ -49,7 +49,7 @@ import type {
   RdvPayload,
   UsagerPayload,
   WebhookPayload,
-} from './payloads'
+} from './rdv-service-public.payload'
 
 /**
  * Les données d'identité que RDV Service Public transmet sont saisies par des

@@ -3,7 +3,7 @@ import { estUtilisable } from '@/features/rdvsp/domain/compte/compte-rdv'
 import { EchecDeSynchronisation } from '@/features/rdvsp/domain/compte/echec-de-synchronisation'
 import { diagnosticErreur } from '@/features/rdvsp/domain/errors'
 import { OrganisationId } from '@/features/rdvsp/domain/identifiants/organisation-id'
-import { rdvServicePublicApiBinding } from '@/features/rdvsp/implementations/api/rdv-service-public.binding'
+import { rdvServicePublicApiBinding } from '@/features/rdvsp/implementations/rdv-service-public.binding'
 import { success } from '@/libraries/result'
 import {
   type ReconcilierLesRdvsDuMediateur,
@@ -19,7 +19,7 @@ import {
 } from './prisma/journal-synchronisation.mutation'
 import { noterLaSynchronisationReussie } from './prisma/synchronisation-reussie.mutation'
 import { noterLesWebhooksInvalides } from './prisma/webhooks-invalides.mutation'
-import { installWebhooks } from './webhook/installer-webhooks'
+import { installWebhooks } from './webhook/installer-webhooks.mutation'
 
 const bilanRdvsVide = {
   rdvs: bilanVide,

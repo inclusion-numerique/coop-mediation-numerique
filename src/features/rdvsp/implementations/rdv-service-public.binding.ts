@@ -3,10 +3,10 @@ import { getServerUrl } from '@/configuration/projet/baseUrl'
 import {
   rdvspOAuthClientId,
   rdvspOAuthHostname,
-} from '@/features/rdvsp/implementations/oauth/client'
-import { enregistrerLesJetons } from '../prisma/jetons-du-compte.mutation'
-import { jetonsCourants } from '../prisma/jetons-du-compte.query'
-import { rdvServicePublicApi, revoquerJetons } from '.'
+} from '@/features/rdvsp/implementations/oauth/rdvsp-oauth.client'
+import { rdvServicePublicApi, revoquerJetons } from './api'
+import { enregistrerLesJetons } from './prisma/jetons-du-compte.mutation'
+import { jetonsCourants } from './prisma/jetons-du-compte.query'
 
 /**
  * Composition de l'adaptateur RDV Service Public avec la configuration de

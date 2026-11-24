@@ -1,6 +1,6 @@
 import { failure, success } from '@/libraries/result'
-import { usagerPayload } from '../../../../implementations/api/payloads'
-import { usagerToDomain } from '../../../../implementations/api/to-domain'
+import { usagerPayload } from '../../../../implementations/api/rdv-service-public.payload'
+import { usagerToDomain } from '../../../../implementations/api/rdv-service-public.transfer'
 import type { LireNotificationUsager } from '../../domain/recevoir-webhook-usager'
 
 /**

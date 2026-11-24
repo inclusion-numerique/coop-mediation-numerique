@@ -1,6 +1,6 @@
 import crypto from 'node:crypto'
 import { describe, expect, it } from 'vitest'
-import { signatureValide } from './verifier-signature'
+import { signatureValide } from './signature-du-webhook.middleware'
 
 const SECRET = 'secret-partage'
 
