@@ -1,6 +1,6 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
-import { FiltresDesStatistiquesValidation } from './implementations/api/filtres-des-statistiques'
+import { FiltresDesStatistiquesValidation } from './implementations/api/filtres-des-statistiques.params'
 import type { StatistiquesFourniesAExposer } from './implementations/api/statistiques-exposees.transfer'
 import {
   type StatistiquesExposees,

@@ -5,7 +5,7 @@ import {
   THEMATIQUES_ADMINISTRATIVES,
   THEMATIQUES_NON_ADMINISTRATIVES,
   TYPES_D_ACTIVITE,
-} from './valeurs-des-filtres'
+} from './valeurs-des-filtres.params'
 
 const JOUR = /^\d{4}-\d{2}-\d{2}$/
 

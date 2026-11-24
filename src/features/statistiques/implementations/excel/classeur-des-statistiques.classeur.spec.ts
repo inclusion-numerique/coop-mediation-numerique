@@ -5,7 +5,7 @@ import { computeProportion } from '@/libraries/proportions'
 import {
   classeurDesStatistiques,
   type EntreeDuClasseurDesStatistiques,
-} from './classeur-des-statistiques'
+} from './classeur-des-statistiques.classeur'
 
 const DUREES = [
   'Moins de 30 min',

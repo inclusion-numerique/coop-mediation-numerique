@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { FiltresDesStatistiquesValidation } from './filtres-des-statistiques'
+import { FiltresDesStatistiquesValidation } from './filtres-des-statistiques.params'
 
 const departements = (valeur: string | string[]) =>
   FiltresDesStatistiquesValidation.parse({ departements: valeur }).departements
