@@ -20,8 +20,8 @@ const derniere: { reponse?: Issue } = {}
 const momentDeLaReponse = new Date('2026-10-20T09:00:00.000Z')
 
 const date = (jour: string): Date => {
-  const [j, m, a] = jour.split('/').map(Number)
-  return new Date(Date.UTC(a, m - 1, j))
+  const [j, m, a] = jour.split('/')
+  return new Date(Date.UTC(Number(a), Number(m) - 1, Number(j)))
 }
 
 const repondre = async (reponse: ReponseApresRupture) => {
