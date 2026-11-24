@@ -35,7 +35,6 @@ const compteurDuMediateur =
 const Roles = ({ role, rattachements }: LigneUtilisateur) => (
   <div className="fr-flex fr-flex-gap-2v">
     {role === 'Admin' && <Tag small>Administrateur</Tag>}
-    {role === 'Support' && <Tag small>Support</Tag>}
     {mediateurDe(rattachements) !== null && <Tag small>Médiateur</Tag>}
     {coordinateurDe(rattachements) !== null && <Tag small>Coordinateur</Tag>}
   </div>

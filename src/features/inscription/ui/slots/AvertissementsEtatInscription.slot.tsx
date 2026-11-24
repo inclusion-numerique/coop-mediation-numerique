@@ -31,8 +31,7 @@ export const AvertissementsEtatInscription = ({
   user: EtatInscriptionUtilisateur
 }) => {
   const sansCompteDeRole = !user.mediateur && !user.coordinateur
-  const estUtilisateurStandard =
-    user.role !== 'Admin' && user.role !== 'Support'
+  const estUtilisateurStandard = user.role !== 'Admin'
 
   const resteeALaPremiereEtape = inscriptionEnCours(user) && sansCompteDeRole
 

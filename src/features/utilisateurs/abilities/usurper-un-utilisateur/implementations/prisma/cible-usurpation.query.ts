@@ -5,11 +5,11 @@ import {
   MediateurId,
   nomAffiche,
   origineDuCompte,
-  RoleUtilisateur,
   rattachements,
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
 import { identiteToDomain } from '@/features/utilisateurs/implementations/prisma/identite.transfer'
+import { roleLu } from '../../../../implementations/prisma/role.transfer'
 import type { CibleUsurpation, CompteDeTest } from '../../domain'
 
 export const cibleUsurpation = async (
@@ -39,7 +39,7 @@ export const cibleUsurpation = async (
         id,
         nom: nomAffiche(identiteToDomain(row)),
         origine: origineDuCompte(row.isFixture),
-        role: RoleUtilisateur(row.role),
+        role: roleLu(row.role),
         inscription: jalon(row.inscriptionValidee),
         rattachements: rattachements(
           row.mediateur === null ? null : MediateurId(row.mediateur.id),

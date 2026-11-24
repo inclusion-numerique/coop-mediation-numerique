@@ -17,12 +17,6 @@ const personnes: Readonly<Record<string, Personne>> = {
     mediateur: null,
     coordinateur: null,
   },
-  support: {
-    role: 'Support',
-    inscriptionValidee: null,
-    mediateur: null,
-    coordinateur: null,
-  },
   "utilisateur dont l'inscription n'est pas validée": {
     role: 'User',
     inscriptionValidee: null,

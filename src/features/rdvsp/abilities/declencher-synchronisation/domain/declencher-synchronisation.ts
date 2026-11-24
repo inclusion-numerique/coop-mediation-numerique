@@ -8,7 +8,7 @@ import type { UtilisateurCoopId } from '@/features/rdvsp/domain/identifiants/uti
 import type { Result } from '@/libraries/result'
 import { failure, success } from '@/libraries/result'
 
-type RoleDemandeur = 'User' | 'Admin' | 'Support'
+type RoleDemandeur = 'User' | 'Admin'
 
 export type Demandeur = {
   readonly id: UtilisateurCoopId
@@ -25,10 +25,7 @@ export type Demandeur = {
 export const peutDeclencherPour = (
   demandeur: Demandeur,
   cible: UtilisateurCoopId,
-): boolean =>
-  demandeur.id === cible ||
-  demandeur.role === 'Admin' ||
-  demandeur.role === 'Support'
+): boolean => demandeur.id === cible || demandeur.role === 'Admin'
 
 /**
  * Organisations dont les rendez-vous n'arrivent pas d'eux-mêmes, faute de
@@ -55,7 +52,7 @@ export type PorteeDeclenchement =
     }
 
 export const peutRelancerUnCompteEnErreur = (demandeur: Demandeur): boolean =>
-  demandeur.role === 'Admin' || demandeur.role === 'Support'
+  demandeur.role === 'Admin'
 
 export const porteePour = (
   compte: CompteRdv,

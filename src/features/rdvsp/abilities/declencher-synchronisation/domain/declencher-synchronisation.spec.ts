@@ -70,12 +70,9 @@ describe('peutDeclencherPour', () => {
     expect(peutDeclencherPour({ id: moi, role: 'User' }, autrui)).toBe(false)
   })
 
-  it.each(['Admin', 'Support'] as const)(
-    'autorise un profil %s pour n’importe qui — la synchronisation est aussi un dépannage',
-    (role) => {
-      expect(peutDeclencherPour({ id: moi, role }, autrui)).toBe(true)
-    },
-  )
+  it('autorise un administrateur pour n’importe qui — la synchronisation est aussi un dépannage', () => {
+    expect(peutDeclencherPour({ id: moi, role: 'Admin' }, autrui)).toBe(true)
+  })
 })
 
 describe('porteePour', () => {
@@ -124,7 +121,6 @@ describe('compte en erreur', () => {
 
   it.each([
     ['Admin', true],
-    ['Support', true],
     ['User', false],
   ] as const)('relance autorisée pour un profil %s : %s', (role, attendu) => {
     expect(peutRelancerUnCompteEnErreur({ id: moi, role })).toBe(attendu)

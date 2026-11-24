@@ -10,7 +10,6 @@ import {
   type MediateurDeLaLigne,
   NomEmployeuse,
   nomAffiche,
-  RoleUtilisateur,
   rattachements,
   statutDe,
   UtilisateurId,
@@ -20,6 +19,7 @@ import {
   estEnPoste,
 } from './conseiller-numerique-en-poste.where'
 import { identiteToDomain } from './identite.transfer'
+import { roleLu } from './role.transfer'
 
 export const ligneUtilisateurSelect = {
   id: true,
@@ -100,7 +100,7 @@ export const ligneUtilisateurToDomain = (
     row.mediateur === null ? null : mediateurToDomain(row.mediateur),
     row.coordinateur === null ? null : coordinateurToDomain(row.coordinateur),
   )
-  const role = RoleUtilisateur(row.role)
+  const role = roleLu(row.role)
   const derniereVisite = jalon(row.lastSeen)
   const identite = identiteToDomain(row)
 

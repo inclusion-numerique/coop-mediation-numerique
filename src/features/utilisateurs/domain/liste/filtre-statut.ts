@@ -34,10 +34,7 @@ export const FiltreStatut = defineModel(
 
 export type FiltreStatut = Model.TypeOf<typeof FiltreStatut>
 
-type StatutFiltrable = Exclude<
-  StatutCompte,
-  { _tag: 'Administrateur' } | { _tag: 'Support' }
->
+type StatutFiltrable = Exclude<StatutCompte, { _tag: 'Administrateur' }>
 
 const statutParFiltre: Record<(typeof filtresStatut)[number], StatutFiltrable> =
   {

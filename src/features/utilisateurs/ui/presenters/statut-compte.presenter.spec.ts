@@ -6,7 +6,6 @@ describe('présentation du statut d’un compte', () => {
   it.each<[StatutCompte, string, string]>([
     [{ _tag: 'Supprime' }, 'Supprimé', 'error'],
     [{ _tag: 'Administrateur' }, 'Admin', 'info'],
-    [{ _tag: 'Support' }, 'Support', 'info'],
     [{ _tag: 'InscriptionEnCours', palier: 0 }, 'Inscription en cours', 'new'],
     [
       { _tag: 'InscriptionEnCours', palier: 7 },

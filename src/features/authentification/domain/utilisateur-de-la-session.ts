@@ -1,4 +1,4 @@
-type RoleDeLaSession = 'User' | 'Support' | 'Admin'
+type RoleDeLaSession = 'User' | 'Admin'
 
 type ProfilDInscriptionDeLaSession =
   | 'ConseillerNumerique'

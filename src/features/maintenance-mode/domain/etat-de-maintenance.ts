@@ -7,7 +7,7 @@ export type EtatDeMaintenance =
   | { readonly _tag: 'Inactive' }
   | { readonly _tag: 'Active'; readonly message: MessageDeMaintenance | null }
 
-export type RoleDuCompte = 'Admin' | 'Support' | 'User'
+export type RoleDuCompte = 'Admin' | 'User'
 
 export const messageAffiche = (etat: EtatDeMaintenance): string =>
   etat._tag === 'Active'

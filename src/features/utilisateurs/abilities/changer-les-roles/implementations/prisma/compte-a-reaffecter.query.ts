@@ -2,10 +2,10 @@ import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   CoordinateurId,
   MediateurId,
-  RoleUtilisateur,
   rattachements,
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
+import { roleLu } from '../../../../implementations/prisma/role.transfer'
 import type { CompteAReaffecter } from '../../domain'
 
 export const compteAReaffecter = async (
@@ -45,7 +45,7 @@ export const compteAReaffecter = async (
 
   return {
     id,
-    role: RoleUtilisateur(row.role),
+    role: roleLu(row.role),
     supprime: row.deleted !== null,
     rattachements: rattachements(
       row.mediateur === null

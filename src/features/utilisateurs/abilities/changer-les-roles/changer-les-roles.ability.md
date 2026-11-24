@@ -49,7 +49,7 @@
 * When l'administration lui retire tous ses rôles
 * Then le changement de rôles échoue avec l'erreur "AucunRoleDemande"
 
-## Rule: Les comptes administrateur et support ne se changent pas ici
+## Rule: Les comptes administrateur ne se changent pas ici
 
 ### Scenario: Les rôles d'un administrateur ne changent pas
 

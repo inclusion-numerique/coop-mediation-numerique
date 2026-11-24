@@ -1,8 +1,6 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import {
-  AdresseCourriel,
-  RoleUtilisateur,
-} from '@/features/utilisateurs/domain'
+import { AdresseCourriel } from '@/features/utilisateurs/domain'
+import { roleLu } from '../../../../implementations/prisma/role.transfer'
 import {
   CibleFusionId,
   type CompteAFusionner,
@@ -21,7 +19,7 @@ const versCompte = <Id>(
 ): CompteAFusionner<Id> => ({
   id,
   courriel: AdresseCourriel(row.email),
-  role: RoleUtilisateur(row.role),
+  role: roleLu(row.role),
   supprime: row.deleted !== null,
 })
 

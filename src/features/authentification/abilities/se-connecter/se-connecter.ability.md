@@ -41,7 +41,6 @@
   | ----------------------------------------------------------- | ---------------------------- |
   | visiteur sans session                                       | /connexion                   |
   | administrateur                                              | /administration/utilisateurs |
-  | support                                                     | /administration/utilisateurs |
   | utilisateur dont l'inscription n'est pas validée            | /inscription                 |
   | utilisateur validé sans profil de médiateur ni coordinateur | /inscription                 |
   | médiateur inscrit                                           | /coop                        |

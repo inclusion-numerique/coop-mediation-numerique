@@ -38,7 +38,7 @@ describe('autoriserSuppression', () => {
     expect(autoriserSuppression(compte(), titulaire).success).toBe(true)
   })
 
-  it.each([['Admin'] as const, ['Support'] as const])(
+  it.each([['Admin'] as const])(
     'refuse un compte %s, quel que soit le demandeur',
     (role) => {
       const result = autoriserSuppression(

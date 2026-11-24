@@ -10,7 +10,7 @@ const utilisateur = ({
   mediateur = null,
   coordinateur = null,
 }: {
-  role?: 'Admin' | 'Support' | 'User'
+  role?: 'Admin' | 'User'
   inscriptionValidee?: Date | null
   mediateur?: { id: string } | null
   coordinateur?: { id: string } | null
@@ -67,12 +67,6 @@ describe('adresseDeRetourApresConnexion', () => {
     expect(adresseDeRetourApresConnexion(utilisateur({ role: 'Admin' }))).toBe(
       '/administration/utilisateurs',
     )
-  })
-
-  it('renvoie les utilisateurs de l’administration pour le support', () => {
-    expect(
-      adresseDeRetourApresConnexion(utilisateur({ role: 'Support' })),
-    ).toBe('/administration/utilisateurs')
   })
 
   it('renvoie l’inscription quand elle n’est pas validée', () => {

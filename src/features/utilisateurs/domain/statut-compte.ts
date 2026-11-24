@@ -13,7 +13,6 @@ export type PalierInactivite = (typeof paliersInactivite)[number]
 export type StatutCompte =
   | { readonly _tag: 'Supprime' }
   | { readonly _tag: 'Administrateur' }
-  | { readonly _tag: 'Support' }
   | { readonly _tag: 'InscriptionEnCours'; readonly palier: PalierInscription }
   | { readonly _tag: 'Nouveau'; readonly palier: PalierNouveau }
   | { readonly _tag: 'Actif' }
@@ -66,7 +65,6 @@ export const statutDe = (
 ): StatutCompte => {
   if (cycle._tag === 'Supprime') return { _tag: 'Supprime' }
   if (role === 'Admin') return { _tag: 'Administrateur' }
-  if (role === 'Support') return { _tag: 'Support' }
   if (cycle._tag === 'InscriptionEnCours')
     return {
       _tag: 'InscriptionEnCours',

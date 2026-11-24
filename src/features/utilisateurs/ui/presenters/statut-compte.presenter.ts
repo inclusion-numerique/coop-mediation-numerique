@@ -7,7 +7,6 @@ const suffixe = (palier: number): string => (palier === 0 ? '' : ` J+${palier}`)
 export const libelleDuStatut = (statut: StatutCompte): string => {
   if (statut._tag === 'Supprime') return 'Supprimé'
   if (statut._tag === 'Administrateur') return 'Admin'
-  if (statut._tag === 'Support') return 'Support'
   if (statut._tag === 'InscriptionEnCours')
     return `Inscription en cours${suffixe(statut.palier)}`
   if (statut._tag === 'Nouveau') return `Nouveau${suffixe(statut.palier)}`
@@ -24,7 +23,6 @@ const severiteDuPalier = (palier: number): SeveriteDuStatut | null => {
 const severiteParDefaut: Record<StatutCompte['_tag'], SeveriteDuStatut> = {
   Supprime: 'error',
   Administrateur: 'info',
-  Support: 'info',
   InscriptionEnCours: 'new',
   Nouveau: 'info',
   Actif: 'success',

@@ -7,7 +7,6 @@ import {
   etatDuCompte,
   type IdentiteAnonyme,
   MediateurId,
-  RoleUtilisateur,
   rattachements,
   UtilisateurId,
 } from '../../domain'
@@ -15,6 +14,7 @@ import {
   enPosteSelect,
   estEnPoste,
 } from './conseiller-numerique-en-poste.where'
+import { roleLu } from './role.transfer'
 
 export const compteASupprimerSelect = {
   id: true,
@@ -35,7 +35,7 @@ export const compteASupprimerToDomain = (
 ): CompteASupprimer => ({
   id: UtilisateurId(row.id),
   courriel: AdresseCourriel(row.email),
-  role: RoleUtilisateur(row.role),
+  role: roleLu(row.role),
   etat: etatDuCompte(row.deleted),
   rattachements: rattachements(
     row.mediateur === null ? null : MediateurId(row.mediateur.id),

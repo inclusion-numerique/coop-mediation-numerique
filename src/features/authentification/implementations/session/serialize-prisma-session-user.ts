@@ -35,7 +35,7 @@ export const serializePrismaSessionUser = (
   email: prismaSessionUser.email,
   phone: prismaSessionUser.phone,
   siret: prismaSessionUser.siret,
-  role: prismaSessionUser.role,
+  role: prismaSessionUser.role === 'Admin' ? 'Admin' : 'User',
   isFixture: prismaSessionUser.isFixture,
   profilInscription: prismaSessionUser.profilInscription,
   acceptationCgu: prismaSessionUser.acceptationCgu,

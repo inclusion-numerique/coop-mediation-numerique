@@ -2,7 +2,7 @@ import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { type AccesALaCoop, accesALaCoop, type RoleDuCompte } from './domain'
 
-const roles: readonly RoleDuCompte[] = ['User', 'Support', 'Admin']
+const roles: readonly RoleDuCompte[] = ['User', 'Admin']
 
 const roleDuCompte = (role: string): RoleDuCompte => {
   const trouve = roles.find((candidat) => candidat === role)

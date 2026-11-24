@@ -30,7 +30,7 @@ const InscriptionLayout = async ({ children }: PropsWithChildren) => {
       }
       piedDePage={<MinimalFooter />}
     >
-      {user.role === 'Admin' || user.role === 'Support' ? (
+      {user.role === 'Admin' ? (
         <InscriptionReserveeAuxUtilisateurs />
       ) : (
         children

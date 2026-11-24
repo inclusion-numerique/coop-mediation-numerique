@@ -1,4 +1,4 @@
-export type RoleDuCompte = 'User' | 'Support' | 'Admin'
+export type RoleDuCompte = 'User' | 'Admin'
 
 /**
  * « L'utilisateur n'a pas encore validé son inscription » — et rien de plus.
@@ -22,5 +22,5 @@ export const inscriptionEnCours = (user?: {
   }
   const { role, inscriptionValidee } = user
 
-  return !inscriptionValidee && role !== 'Admin' && role !== 'Support'
+  return !inscriptionValidee && role !== 'Admin'
 }

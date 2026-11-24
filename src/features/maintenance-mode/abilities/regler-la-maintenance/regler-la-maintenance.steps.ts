@@ -22,7 +22,6 @@ const etat = async (): Promise<EtatDeMaintenance> => consulterLaMaintenance()
 
 const roles: Readonly<Record<string, RoleDuCompte>> = {
   User: 'User',
-  Support: 'Support',
   Admin: 'Admin',
 }
 

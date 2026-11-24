@@ -9,12 +9,6 @@ describe('accès à la coop', () => {
     })
   })
 
-  it('réserve la coop aux utilisateurs face au support, même sans inscription', () => {
-    expect(
-      accesALaCoop({ role: 'Support', inscriptionAchevee: false }),
-    ).toEqual({ _tag: 'ReserveAuxUtilisateurs', role: 'Support' })
-  })
-
   it('renvoie à l’inscription un utilisateur qui ne l’a pas achevée', () => {
     expect(accesALaCoop({ role: 'User', inscriptionAchevee: false })).toEqual({
       _tag: 'InscriptionInachevee',

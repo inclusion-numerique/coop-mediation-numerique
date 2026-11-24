@@ -8,7 +8,6 @@ import {
   MediateurId,
   mediateurEstVierge,
   nomAffiche,
-  RoleUtilisateur,
   rattachements,
   statutDe,
   UtilisateurId,
@@ -21,6 +20,7 @@ import { identiteToDomain } from '@/features/utilisateurs/implementations/prisma
 import type { Prisma } from '@/generated/prisma/client'
 import { Siret } from '@/libraries/insee'
 import { telephoneEnregistrable } from '@/libraries/telephone'
+import { roleLu } from '../../../../implementations/prisma/role.transfer'
 import type { FicheUtilisateur } from '../../domain'
 
 const ficheSelect = {
@@ -97,7 +97,7 @@ const ficheSelect = {
 type FicheRow = Prisma.UserGetPayload<{ select: typeof ficheSelect }>
 
 const versFiche = (row: FicheRow, maintenant: Date): FicheUtilisateur => {
-  const role = RoleUtilisateur(row.role)
+  const role = roleLu(row.role)
   const derniereVisite = jalon(row.lastSeen)
   const identite = identiteToDomain(row)
   const cycle = cycleDeVie({

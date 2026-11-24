@@ -1,4 +1,4 @@
-export type RoleDuCompte = 'User' | 'Support' | 'Admin'
+export type RoleDuCompte = 'User' | 'Admin'
 
 export type RoleHorsCoop = Exclude<RoleDuCompte, 'User'>
 

@@ -12,7 +12,7 @@ type CoordinationDuMediateur = {
 }
 
 export type UtilisateurDeLaNavigation = {
-  readonly role: 'User' | 'Support' | 'Admin'
+  readonly role: 'User' | 'Admin'
   readonly inscriptionValidee: string | null
   readonly name: string | null
   readonly email: string

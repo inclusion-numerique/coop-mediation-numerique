@@ -13,7 +13,6 @@ export const etiquettesDuCompte = (
 ): readonly string[] =>
   [
     fiche.role === 'Admin' ? 'Administrateur' : null,
-    fiche.role === 'Support' ? 'Support' : null,
     mediateurDe(fiche.rattachements) === null ? null : 'Médiateur',
     fiche.dispositif === 'ConseillerNumerique' ? 'Conseiller numérique' : null,
     coordinateurDe(fiche.rattachements) === null ? null : 'Coordinateur',

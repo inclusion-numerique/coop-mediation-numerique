@@ -43,7 +43,7 @@ export const adresseDeRetourApresConnexion = (
     return '/connexion'
   }
 
-  if (user.role === 'Admin' || user.role === 'Support') {
+  if (user.role === 'Admin') {
     return '/administration/utilisateurs'
   }
 

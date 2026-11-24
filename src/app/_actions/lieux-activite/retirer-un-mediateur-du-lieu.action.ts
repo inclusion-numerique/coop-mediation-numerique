@@ -37,7 +37,7 @@ export const retirerUnMediateurDuLieuAction = actionBuilder()
             userId: UtilisateurId(user.id),
             mediateurId:
               user.mediateur == null ? null : MediateurId(user.mediateur.id),
-            estAdministrateur: user.role === 'Admin' || user.role === 'Support',
+            estAdministrateur: user.role === 'Admin',
             coordonneLeMediateurRetire:
               user.coordinateur?.mediateursCoordonnes.some(
                 ({ mediateurId }) => mediateurId === input.mediateurId,

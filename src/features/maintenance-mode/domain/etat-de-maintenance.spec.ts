@@ -13,7 +13,7 @@ const inactive: EtatDeMaintenance = { _tag: 'Inactive' }
 const active: EtatDeMaintenance = { _tag: 'Active', message: null }
 
 describe('maintenance', () => {
-  it.each(['Admin', 'Support', 'User'] as const)(
+  it.each(['Admin', 'User'] as const)(
     'laisse modifier le rôle %s hors maintenance',
     (role) => {
       expect(peutModifierPendantLaMaintenance({ role, etat: inactive })).toBe(
@@ -28,14 +28,11 @@ describe('maintenance', () => {
     ).toBe(false)
   })
 
-  it.each(['Admin', 'Support'] as const)(
-    'laisse modifier le rôle %s pendant la maintenance',
-    (role) => {
-      expect(peutModifierPendantLaMaintenance({ role, etat: active })).toBe(
-        true,
-      )
-    },
-  )
+  it('laisse modifier un administrateur pendant la maintenance', () => {
+    expect(
+      peutModifierPendantLaMaintenance({ role: 'Admin', etat: active }),
+    ).toBe(true)
+  })
 
   it('affiche le message de la maintenance en cours', () => {
     expect(

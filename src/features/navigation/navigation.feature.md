@@ -1,8 +1,8 @@
 # Feature: Navigation
 
 > La coop est l'espace de travail des utilisateurs inscrits. Un compte
-> d'administration ou de support n'y a pas sa place, et un utilisateur qui n'a
-> pas achevé son inscription est renvoyé vers elle.
+> d'administration n'y a pas sa place, et un utilisateur qui n'a pas achevé son
+> inscription est renvoyé vers elle.
 
 ## Rule: La coop est réservée aux utilisateurs
 
@@ -11,12 +11,6 @@
 * Given un compte "Admin" dont l'inscription est achevée
 * When ce compte demande l'accès à la coop
 * Then la coop lui est réservée aux utilisateurs, en tant que "Admin"
-
-### Scenario: Le support n'entre pas dans la coop, même sans inscription
-
-* Given un compte "Support" dont l'inscription n'est pas achevée
-* When ce compte demande l'accès à la coop
-* Then la coop lui est réservée aux utilisateurs, en tant que "Support"
 
 ## Rule: Un utilisateur entre dans la coop une fois son inscription achevée
 

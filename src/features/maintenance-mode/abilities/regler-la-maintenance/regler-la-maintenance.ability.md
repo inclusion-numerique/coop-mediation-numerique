@@ -2,8 +2,8 @@
 
 > Pendant une opération sur les données, l'administration met la Coop en
 > maintenance : les médiateurs et coordinateurs ne peuvent plus rien modifier,
-> mais consultent toujours leurs données. Les administrateurs et le support
-> gardent la main. Chaque maintenance est une période, ouverte à l'activation et
+> mais consultent toujours leurs données. Les administrateurs gardent la
+> main. Chaque maintenance est une période, ouverte à l'activation et
 > close à la désactivation, que l'historique conserve.
 
 ## Rule: Activer ouvre une période, désactiver la clôt
@@ -36,7 +36,7 @@
 * When l'administration active la maintenance sans message
 * Then la maintenance est active avec le message par défaut
 
-## Rule: Pendant une maintenance, seuls les administrateurs et le support modifient
+## Rule: Pendant une maintenance, seuls les administrateurs modifient
 
 ### Scenario: Un médiateur ne peut plus modifier pendant la maintenance
 
@@ -44,10 +44,10 @@
 * When un compte de rôle "User" tente une modification
 * Then la modification est refusée avec le message "Bascule de la base"
 
-### Scenario: Le support modifie pendant la maintenance
+### Scenario: Un administrateur modifie pendant la maintenance
 
 * Given une maintenance en cours avec le message "Bascule de la base"
-* When un compte de rôle "Support" tente une modification
+* When un compte de rôle "Admin" tente une modification
 * Then la modification passe
 
 ### Scenario: Un médiateur modifie hors maintenance

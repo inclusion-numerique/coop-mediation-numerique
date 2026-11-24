@@ -26,7 +26,7 @@ export const semerCompte = async ({
 }: {
   avecCoordinateur?: boolean
   conseillerNumerique?: boolean
-  role?: 'User' | 'Admin' | 'Support'
+  role?: 'User' | 'Admin'
 } = {}): Promise<CompteSeme> => {
   const userId = v4()
   const courriel = `suppression-${userId}@example.com`
@@ -306,7 +306,7 @@ After(async () => {
 export type CompteDeListe = {
   readonly prenom: string
   readonly marqueur: string
-  readonly role?: 'User' | 'Admin' | 'Support'
+  readonly role?: 'User' | 'Admin'
   readonly creeLe: Date
   readonly inscritLe: Date | null
   readonly supprimeLe?: Date | null
