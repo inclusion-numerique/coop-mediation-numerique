@@ -15,13 +15,13 @@
 
 #### Examples:
 
-| situation                                              | roles                                         |
-| ------------------------------------------------------ | --------------------------------------------- |
-| médiateur hors dispositif                              | Médiateur                                     |
-| médiateur conseiller numérique                         | Médiateur, Conseiller numérique               |
-| coordinateur de la coop hors dispositif                | Coordinateur                                  |
-| coordinateur du dispositif sans rôle coordinateur coop | Conseiller numérique, Coordinateur            |
-| médiateur et coordinateur conseiller numérique         | Médiateur, Conseiller numérique, Coordinateur |
+  | situation                                              | roles                                         |
+  | ------------------------------------------------------ | --------------------------------------------- |
+  | médiateur hors dispositif                              | Médiateur                                     |
+  | médiateur conseiller numérique                         | Médiateur, Conseiller numérique               |
+  | coordinateur de la coop hors dispositif                | Coordinateur                                  |
+  | coordinateur du dispositif sans rôle coordinateur coop | Conseiller numérique, Coordinateur            |
+  | médiateur et coordinateur conseiller numérique         | Médiateur, Conseiller numérique, Coordinateur |
 
 ## Rule: Un inscrit sans rôle est retiré de la liste
 
@@ -74,14 +74,14 @@
 
 #### Examples:
 
-| situation                                  | fin        | rupture    |
-| ------------------------------------------ | ---------- | ---------- |
-| en CDD                                     | 2026-12-15 | aucune     |
-| en CDI                                     | aucune     | aucune     |
-| dont le CDD a été rompu                    | 2026-12-15 | 2026-07-10 |
-| dont le CDI a été rompu                    | aucune     | 2026-06-30 |
-| réembauché en CDI après une rupture        | aucune     | aucune     |
-| sans contrat connu                         | aucune     | aucune     |
+  | situation                                  | fin        | rupture    |
+  | ------------------------------------------ | ---------- | ---------- |
+  | en CDD                                     | 2026-12-15 | aucune     |
+  | en CDI                                     | aucune     | aucune     |
+  | dont le CDD a été rompu                    | 2026-12-15 | 2026-07-10 |
+  | dont le CDI a été rompu                    | aucune     | 2026-06-30 |
+  | réembauché en CDI après une rupture        | aucune     | aucune     |
+  | sans contrat connu                         | aucune     | aucune     |
 
 ## Rule: Les contacts partent par lots bornés
 
