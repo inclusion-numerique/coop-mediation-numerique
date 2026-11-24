@@ -8,7 +8,6 @@ import {
   isSelectionOkForLink,
   linkCommandHandler,
 } from '@/libraries/ui/components/Form/RichText/richTextLinkFeature'
-import styles from './RichTextFormMenuBar.module.css'
 
 const MenuButton = ({
   title,
@@ -29,10 +28,9 @@ const MenuButton = ({
     aria-label={title}
     className={classNames(
       icon,
-      styles.button,
+      'texte-riche__bouton',
       {
-        [styles.active]: active,
-        [styles.disabled]: disabled,
+        'texte-riche__bouton--actif': active,
       },
       'fr-icon--sm',
     )}
@@ -57,7 +55,7 @@ const RichTextFormMenuBar = ({ editor }: { editor: Editor }) => {
 
   return (
     <>
-      <div className={styles.menuBar}>
+      <div className="texte-riche__barre-d-outils">
         <MenuButton
           title="Titre 1"
           icon="fr-icon-h-1"
@@ -82,7 +80,7 @@ const RichTextFormMenuBar = ({ editor }: { editor: Editor }) => {
           }}
           active={editor.isActive('heading', { level: 4 })}
         />
-        <div className={styles.separator} />
+        <div className="texte-riche__separateur" />
         <MenuButton
           title="Gras"
           icon="fr-icon-bold"
@@ -99,7 +97,7 @@ const RichTextFormMenuBar = ({ editor }: { editor: Editor }) => {
           }}
           active={editor.isActive('italic')}
         />
-        <div className={styles.separator} />
+        <div className="texte-riche__separateur" />
         <MenuButton
           title="Liste ordonnée"
           icon="fr-icon-list-ordered"
@@ -116,7 +114,7 @@ const RichTextFormMenuBar = ({ editor }: { editor: Editor }) => {
           }}
           active={editor.isActive('bulletList')}
         />
-        <div className={styles.separator} />
+        <div className="texte-riche__separateur" />
         <MenuButton
           title="Lien"
           icon="fr-icon-link"

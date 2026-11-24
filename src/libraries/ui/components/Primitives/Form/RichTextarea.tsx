@@ -3,7 +3,6 @@
 import { EditorContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import { ReactNode, useState } from 'react'
-import styles from '@/libraries/ui/components/Form/RichText/RichTextForm.module.css'
 import RichTextFormLinkTooltip from '@/libraries/ui/components/Form/RichText/RichTextFormLinkTooltip'
 import RichTextFormMenuBar from '@/libraries/ui/components/Form/RichText/RichTextFormMenuBar'
 
@@ -74,11 +73,11 @@ export const RichTextarea = ({
         </label>
       )}
       {editor ? (
-        <div className={styles.container}>
+        <div className="fr-position-relative">
           <RichTextFormMenuBar editor={editor} />
           <EditorContent
             editor={editor}
-            className={styles.input}
+            className="texte-riche__saisie"
             aria-describedby={ariaDescribedBy}
             disabled={disabled}
             name={name}

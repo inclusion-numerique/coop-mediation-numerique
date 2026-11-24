@@ -1,7 +1,5 @@
-import classNames from 'classnames'
 import { useState } from 'react'
 import { useOnDiff } from '@/libraries/ui/hooks/useOnDiff'
-import styles from './RichTextLinkTooltip.module.css'
 
 const tooltipTopOffset = 40
 
@@ -53,7 +51,7 @@ const RichTextFormLinkTooltip = ({
 
   return (
     <div
-      className={styles.tooltip}
+      className="texte-riche__infobulle-de-lien"
       onMouseEnter={() => {
         setIsHover(true)
       }}
@@ -73,7 +71,7 @@ const RichTextFormLinkTooltip = ({
       <a
         href={url}
         target="_blank"
-        className={classNames('fr-text--xs', styles.url)}
+        className="fr-text--xs texte-riche__url"
         rel="noreferrer"
       >
         {url}
