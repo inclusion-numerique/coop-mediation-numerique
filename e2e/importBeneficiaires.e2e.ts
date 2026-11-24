@@ -3,7 +3,7 @@ import { mediateurSansActivites } from '@/features/utilisateurs/fixtures/persona
 
 describe('ETQ Utilisateur, je peux importer des bénéficiaires', () => {
   before(() => {
-    cy.execute('resetFixtures', {})
+    cy.execute('preparerLesPersonas', { ids: [mediateurSansActivites.id] })
   })
 
   it('Je vois la page d’erreur si j’upload un fichier invalide', () => {
@@ -112,7 +112,7 @@ describe('ETQ Visiteur, je ne peux pas faire analyser un fichier d’import', ()
 
 describe('ETQ Médiateur, je ne peux pas faire analyser un fichier trop lourd', () => {
   before(() => {
-    cy.execute('resetFixtures', {})
+    cy.execute('preparerLesPersonas', { ids: [mediateurSansActivites.id] })
   })
 
   it('L’analyse refuse un fichier de plus de 5 Mo', () => {

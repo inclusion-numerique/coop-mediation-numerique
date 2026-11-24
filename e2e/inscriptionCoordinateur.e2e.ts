@@ -3,7 +3,9 @@ import { executeInscriptionFlow } from './support/executeInscriptionFlow'
 
 describe("ETQ Coordinateur hors dispositif, je peux m'inscrire en suivant le bon parcours", () => {
   beforeEach(() => {
-    cy.execute('resetFixtures', {})
+    cy.execute('preparerLesPersonas', {
+      ids: [coordinateurHorsDispositifInscription.id],
+    })
   })
 
   it("ETQ Coordinateur hors dispositif, je peux m'inscrire en suivant le bon parcours", () => {

@@ -5,7 +5,7 @@ import { executeInscriptionFlow } from './support/executeInscriptionFlow'
 
 describe("ETQ médiateur, je peux m'inscrire en suivant le bon parcours", () => {
   beforeEach(() => {
-    cy.execute('resetFixtures', {})
+    cy.execute('preparerLesPersonas', { ids: [mediateurInscription.id] })
   })
 
   it("ETQ Médiateur, je peux m'inscrire en suivant le bon parcours", () => {

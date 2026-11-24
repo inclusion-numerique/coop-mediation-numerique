@@ -3,7 +3,7 @@ import { executeInscriptionFlow } from './support/executeInscriptionFlow'
 
 describe('ETQ Coordinateur conseiller numérique, je peux m’inscrire en suivant le bon parcours', () => {
   beforeEach(() => {
-    cy.execute('resetFixtures', {})
+    cy.execute('preparerLesPersonas', { ids: [coordinateurInscription.id] })
   })
 
   it(`ETQ Coordinateur conseiller numérique, je peux m’inscrire en suivant le bon parcours`, () => {

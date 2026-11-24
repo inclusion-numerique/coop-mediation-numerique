@@ -11,7 +11,9 @@ import { executeInscriptionFlow } from './support/executeInscriptionFlow'
  */
 describe("ETQ médiateur sans employeuse, je la renseigne pendant l'inscription", () => {
   beforeEach(() => {
-    cy.execute('resetFixtures', {})
+    cy.execute('preparerLesPersonas', {
+      ids: [mediateurSansEmployeuseInscription.id],
+    })
   })
 
   it('ETQ Médiateur sans employeuse, je la choisis puis je poursuis mon inscription', () => {

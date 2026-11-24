@@ -16,7 +16,12 @@ import { executeInscriptionFlow } from './support/executeInscriptionFlow'
  */
 describe("ETQ Conseiller numérique, je peux m'inscrire en suivant le bon parcours", () => {
   beforeEach(() => {
-    cy.execute('resetFixtures', {})
+    cy.execute('preparerLesPersonas', {
+      ids: [
+        conseillerInscriptionSansContrat.id,
+        conseillerSansLieuInscription.id,
+      ],
+    })
   })
 
   it('ETQ Conseiller numérique, je renseigne mes lieux puis je valide', () => {

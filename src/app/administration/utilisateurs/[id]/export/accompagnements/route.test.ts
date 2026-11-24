@@ -22,7 +22,7 @@ describe('ETQ Visiteur, je ne peux pas exporter les accompagnements d’un utili
 
 describe('ETQ Médiateur, je ne peux pas exporter les accompagnements d’un autre utilisateur depuis l’administration', () => {
   before(() => {
-    cy.execute('resetFixtures', {})
+    cy.execute('preparerLesPersonas', { ids: [mediateurSansActivites.id] })
   })
 
   it('L’export refuse un médiateur', () => {

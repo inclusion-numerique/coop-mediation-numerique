@@ -19,7 +19,7 @@ const RDV = 9_900_200
 
 describe('ETQ médiateur, l’accueil ne m’annonce que les rendez-vous qui auront lieu', () => {
   beforeEach(() => {
-    cy.execute('resetFixtures', {})
+    cy.execute('preparerLesPersonas', { ids: [mediateurSansActivites.id] })
     cy.execute('connectRdvAccountFor', { email: mediateurSansActivites.email })
   })
 

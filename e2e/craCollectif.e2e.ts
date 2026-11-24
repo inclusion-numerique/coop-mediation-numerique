@@ -3,7 +3,7 @@ import { mediateurAvecActivite } from '@/features/utilisateurs/fixtures/personas
 
 describe('ETQ Mediateur, je peux créer un CRA collectif', () => {
   before(() => {
-    cy.execute('resetFixtures', {})
+    cy.execute('preparerLesPersonas', { ids: [mediateurAvecActivite.id] })
   })
 
   it('Je peux renseigner un CRA collectif à distance', () => {

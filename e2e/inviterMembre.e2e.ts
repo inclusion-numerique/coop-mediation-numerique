@@ -36,7 +36,13 @@ const searchAndInviteUser = ({
 
 describe('ETQ coordinateur, je peux inviter un médiateur à rejoindre mon équipe', () => {
   before(() => {
-    cy.execute('resetFixtures', {})
+    cy.execute('preparerLesPersonas', {
+      ids: [
+        conseillerNumerique.id,
+        mediateurInscription.id,
+        coordinateurInscrit.id,
+      ],
+    })
   })
 
   it('Je vois le médiateur invité dans la liste des médiateurs', () => {

@@ -36,7 +36,7 @@ const attendreHydratation = () => cy.dsfrShouldBeStarted()
 
 describe('ETQ médiateur, je choisis de voir mes rendez-vous parmi mes activités', () => {
   beforeEach(() => {
-    cy.execute('resetFixtures', {})
+    cy.execute('preparerLesPersonas', { ids: [mediateurAvecActivite.id] })
     cy.execute('connectRdvAccountFor', { email: mediateurAvecActivite.email })
     cy.execute('seedRdvsFor', {
       email: mediateurAvecActivite.email,

@@ -19,7 +19,7 @@ const MODALE_GESTION = 'gerer-rdv-service-public'
 
 describe('ETQ médiateur, je peux déconnecter mon compte RDV Service Public', () => {
   beforeEach(() => {
-    cy.execute('resetFixtures', {})
+    cy.execute('preparerLesPersonas', { ids: [mediateurSansActivites.id] })
     cy.execute('connectRdvAccountFor', { email: mediateurSansActivites.email })
   })
 

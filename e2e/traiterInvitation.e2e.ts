@@ -10,7 +10,10 @@ import {
   conseillerNumerique,
   conseillerNumeriqueMediateurId,
 } from '@/features/utilisateurs/fixtures/personas/conseiller-numerique'
-import { coordinateurInscritCoordinateurId } from '@/features/utilisateurs/fixtures/personas/coordinateur-inscrit'
+import {
+  coordinateurInscrit,
+  coordinateurInscritCoordinateurId,
+} from '@/features/utilisateurs/fixtures/personas/coordinateur-inscrit'
 import {
   mediateurInscription,
   mediateurInscriptionMediateurId,
@@ -36,7 +39,13 @@ describe('ETQ visiteur, je peux donner suite à une invitation', () => {
     coordinateurId: coordinateurInscritCoordinateurId,
   }
   beforeEach(() => {
-    cy.execute('resetFixtures', {})
+    cy.execute('preparerLesPersonas', {
+      ids: [
+        coordinateurInscrit.id,
+        conseillerNumerique.id,
+        mediateurInscription.id,
+      ],
+    })
     cy.execute('createInvitation', invitationData)
   })
 
@@ -82,7 +91,13 @@ describe('ETQ médiateur inscrit, je peux donner suite à une invitation', () =>
   }
 
   beforeEach(() => {
-    cy.execute('resetFixtures', {})
+    cy.execute('preparerLesPersonas', {
+      ids: [
+        coordinateurInscrit.id,
+        conseillerNumerique.id,
+        mediateurInscription.id,
+      ],
+    })
     cy.execute('createInvitation', invitationData)
   })
 
@@ -122,7 +137,13 @@ describe('ETQ médiateur non inscrit, je peux donner suite à une invitation', (
   }
 
   beforeEach(() => {
-    cy.execute('resetFixtures', {})
+    cy.execute('preparerLesPersonas', {
+      ids: [
+        coordinateurInscrit.id,
+        conseillerNumerique.id,
+        mediateurInscription.id,
+      ],
+    })
     cy.execute('createInvitation', invitationData)
   })
 

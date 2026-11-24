@@ -53,14 +53,6 @@ Cypress.Commands.add('signin', ({ email }: { email: string }) =>
   }),
 )
 
-Cypress.Commands.add('deleteAllData', () => {
-  cy.execute('deleteAllData', {})
-})
-
-Cypress.Commands.add('resetFixtures', () => {
-  cy.execute('resetFixtures', {})
-})
-
 Cypress.Commands.add('logout', () => cy.clearCookie('next-auth.session-token'))
 
 Cypress.Commands.add('createUserAndSignin', (user: CreateUserInput) => {
@@ -205,10 +197,6 @@ declare global {
       createCoordinateurFor(user: { email: string }): Chainable<void>
 
       signin(user: { email: string }): Chainable<string>
-
-      deleteAllData(): Chainable<null>
-
-      resetFixtures(): Chainable<null>
 
       logout(): Chainable<null>
 

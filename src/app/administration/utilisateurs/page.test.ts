@@ -3,7 +3,7 @@ import { mediateurSansActivites } from '@/features/utilisateurs/fixtures/persona
 
 describe('ETQ Visiteur, je ne vois aucune donnée de l’administration', () => {
   before(() => {
-    cy.execute('resetFixtures', {})
+    cy.execute('preparerLesPersonas', { ids: [mediateurSansActivites.id] })
   })
 
   it('La liste des utilisateurs ne contient pas l’e-mail recherché', () => {
