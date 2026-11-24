@@ -1,5 +1,4 @@
 import classNames from 'classnames'
-import styles from './Spinner.module.css'
 
 export const Spinner = ({
   className,
@@ -12,12 +11,12 @@ export const Spinner = ({
 }) => (
   <span
     className={classNames(
-      styles.spinner,
-      inline && styles.inline,
+      'indicateur-de-chargement',
+      inline && 'indicateur-de-chargement--en-ligne',
       {
-        [styles['spinner--sm']]: size === 'small',
-        [styles['spinner--md']]: size === 'medium',
-        [styles['spinner--lg']]: size === 'large',
+        'indicateur-de-chargement--petit': size === 'small',
+        'indicateur-de-chargement--moyen': size === 'medium',
+        'indicateur-de-chargement--grand': size === 'large',
       },
       className,
     )}

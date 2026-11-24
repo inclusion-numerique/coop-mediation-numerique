@@ -2,7 +2,6 @@ import classNames from 'classnames'
 import type { Route } from 'next'
 import Link from 'next/link'
 import { ReactNode } from 'react'
-import styles from './Card.module.css'
 
 const Card = <T extends string>({
   id,
@@ -90,7 +89,7 @@ const Card = <T extends string>({
             )}
           >
             {contentSeparator && (
-              <hr className={classNames('fr-pb-4w', styles.contentSeparator)} />
+              <hr className={'fr-pb-4w carte__separateur'} />
             )}
             {children}
           </div>

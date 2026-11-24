@@ -36,3 +36,8 @@
 .fr-card--structure + .fr-card--structure {
   margin-top: 1rem;
 }
+
+.carte__separateur {
+  margin-left: -32px;
+  margin-right: -32px;
+}

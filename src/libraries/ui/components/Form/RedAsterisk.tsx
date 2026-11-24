@@ -1,8 +1,11 @@
 import classNames from 'classnames'
-import styles from './RedAsterisk.module.css'
 
 const RedAsterisk = ({ className }: { className?: string }) => (
-  <span className={classNames(styles.redAsterisk, className)}>*</span>
+  <span
+    className={classNames('fr-text-default--error fr-text--regular', className)}
+  >
+    *
+  </span>
 )
 
 export default RedAsterisk

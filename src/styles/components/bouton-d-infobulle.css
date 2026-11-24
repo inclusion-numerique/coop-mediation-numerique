@@ -1,4 +1,4 @@
-.tooltipButton {
+.bouton-d-infobulle {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -12,6 +12,6 @@
   line-height: 1;
 }
 
-.tooltipButton:hover {
+.bouton-d-infobulle:hover {
   background: none !important;
 }

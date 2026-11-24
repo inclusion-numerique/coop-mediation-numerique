@@ -1,4 +1,4 @@
-.container {
+.icone-dans-un-carre {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -6,11 +6,11 @@
   flex-shrink: 0;
 }
 
-.small {
+.icone-dans-un-carre--petite {
   width: 32px;
   height: 32px;
 
-  .icon {
+  .icone-dans-un-carre__icone {
     line-height: 20px !important;
     font-size: 20px !important;
     max-height: 20px;
@@ -22,11 +22,12 @@
     }
   }
 }
-.size-48 {
+
+.icone-dans-un-carre--48 {
   width: 48px;
   height: 48px;
 
-  .icon {
+  .icone-dans-un-carre__icone {
     line-height: 24px !important;
     font-size: 24px !important;
     max-height: 24px;
@@ -39,11 +40,11 @@
   }
 }
 
-.medium {
+.icone-dans-un-carre--moyenne {
   width: 56px;
   height: 56px;
 
-  .icon {
+  .icone-dans-un-carre__icone {
     line-height: 32px !important;
     font-size: 32px !important;
     max-height: 32px;
@@ -56,11 +57,11 @@
   }
 }
 
-.large {
+.icone-dans-un-carre--grande {
   width: 76px;
   height: 76px;
 
-  .icon {
+  .icone-dans-un-carre__icone {
     line-height: 30px !important;
     font-size: 30px !important;
     max-height: 30px;

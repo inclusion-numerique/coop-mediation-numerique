@@ -1,4 +1,4 @@
-@keyframes rotate-animation {
+@keyframes indicateur-de-chargement-rotation {
   0% {
     transform: rotate(0deg);
   }
@@ -12,31 +12,31 @@
   }
 }
 
-.spinner {
+.indicateur-de-chargement {
   display: block;
   font-size: 0;
   mask-repeat: no-repeat;
   mask-size: 100% 100%;
   mask-image: url("/images/spinner.svg");
-  animation: rotate-animation 1.2s infinite linear;
+  animation: indicateur-de-chargement-rotation 1.2s infinite linear;
   background: currentcolor;
 }
 
-.inline {
+.indicateur-de-chargement--en-ligne {
   display: inline-block;
 }
 
-.spinner--sm {
+.indicateur-de-chargement--petit {
   width: 16px;
   height: 16px;
 }
 
-.spinner--md {
+.indicateur-de-chargement--moyen {
   width: 24px;
   height: 24px;
 }
 
-.spinner--lg {
+.indicateur-de-chargement--grand {
   width: 32px;
   height: 32px;
 }
