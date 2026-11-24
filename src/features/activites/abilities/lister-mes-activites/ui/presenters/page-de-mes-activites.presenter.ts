@@ -7,7 +7,6 @@ import {
   type Pagination,
   parametresDesActivitesDe,
 } from '../../../../domain'
-import { filtresDeLaListe } from '../../../../ui/search-params/filtres-de-la-liste.search-params'
 import {
   basculeDesRendezVous,
   type CompteRendezVousDuMediateur,
@@ -42,6 +41,7 @@ type CompteRendezVous = CompteRendezVousDuMediateur & { readonly id: number }
 type DemandeDeMesActivites = {
   readonly mediateurId: MediateurId
   readonly parametres: ParametresDeLaListe
+  readonly criteres: CriteresDesActivites
   readonly compteRdv: CompteRendezVous | null
   readonly timezone: string
   readonly chronologie: LireLaChronologie
@@ -50,12 +50,15 @@ type DemandeDeMesActivites = {
 export const maListeDActivites = ({
   mediateurId,
   parametres,
+  criteres,
   compteRdv,
   timezone,
   chronologie: lireLaChronologie,
 }: DemandeDeMesActivites) => {
-  const { criteres, filtree, voirLesRdvs, pagination, ordre } =
-    lectureDeLaListe(parametres)
+  const { filtree, voirLesRdvs, pagination, ordre } = lectureDeLaListe(
+    parametres,
+    criteres,
+  )
   const compte = compteConnecte(compteRdv)
 
   const chronologie = lireLaChronologie({
@@ -68,7 +71,6 @@ export const maListeDActivites = ({
   })
 
   return {
-    filtres: filtresDeLaListe(criteres),
     rendezVousFiltrables: rendezVousFiltrablesDansLaListe({
       compte,
       voirLesRdvs,
@@ -95,12 +97,15 @@ export const maListeDActivites = ({
 export const monTableauDActivites = ({
   mediateurId,
   parametres,
+  criteres,
   compteRdv,
   timezone,
   chronologie: lireLaChronologie,
 }: DemandeDeMesActivites) => {
-  const { criteres, filtree, voirLesRdvs, pagination, ordre } =
-    lectureDeLaListe(parametres)
+  const { filtree, voirLesRdvs, pagination, ordre } = lectureDeLaListe(
+    parametres,
+    criteres,
+  )
 
   const chronologie = lireLaChronologie({
     mediateurId,
@@ -112,7 +117,6 @@ export const monTableauDActivites = ({
   })
 
   return {
-    filtres: filtresDeLaListe(criteres),
     rendezVousFiltrables: rendezVousFiltrablesDansLeTableau({
       compte: compteConnecte(compteRdv),
       voirLesRdvs,

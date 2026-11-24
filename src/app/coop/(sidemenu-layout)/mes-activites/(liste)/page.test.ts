@@ -108,3 +108,27 @@ describe('ETQ médiateur, je choisis de voir mes rendez-vous parmi mes activité
     })
   })
 })
+
+describe('ETQ médiateur, je filtre mes activités', () => {
+  beforeEach(() => {
+    cy.execute('preparerLesPersonas', { ids: [mediateurAvecActivite.id] })
+  })
+
+  it('Un type validé filtre la liste, et son étiquette le retire', () => {
+    cy.signin(mediateurAvecActivite)
+    cy.visit(appUrl('/coop/mes-activites?page=2'))
+    attendreHydratation()
+
+    cy.contains('button', 'Type').click()
+    cy.contains('label', 'Atelier collectif').click()
+    cy.contains('button', 'Valider').click()
+
+    cy.location('search').should('equal', '?types=collectif')
+    cy.contains('button', 'Type · 1').should('be.visible')
+
+    cy.get('.fr-tags-group').contains('a', 'Atelier collectif').click()
+
+    cy.location('search').should('equal', '')
+    cy.contains('button', /^Type$/).should('be.visible')
+  })
+})

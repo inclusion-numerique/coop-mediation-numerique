@@ -57,7 +57,7 @@ const libellesDesStatutsDansLURL: Readonly<
   noshow: 'Absence',
 }
 
-export const optionsDesStatutsDeRendezVous: readonly SelectOption<StatutDeRendezVousDansLURL>[] =
+const optionsDesStatutsDeRendezVous: readonly SelectOption<StatutDeRendezVousDansLURL>[] =
   [
     { value: 'unknown', label: libellesDesStatutsDansLURL.unknown },
     { value: 'past', label: libellesDesStatutsDansLURL.past },
@@ -66,12 +66,6 @@ export const optionsDesStatutsDeRendezVous: readonly SelectOption<StatutDeRendez
     { value: 'excused', label: libellesDesStatutsDansLURL.excused },
     { value: 'noshow', label: libellesDesStatutsDansLURL.noshow },
   ]
-
-export const statutDansLURL = (
-  valeur: string,
-): StatutDeRendezVousDansLURL | null =>
-  optionsDesStatutsDeRendezVous.find((option) => option.value === valeur)
-    ?.value ?? null
 
 export const libelleDuStatutDansLURL = (valeur: string): string =>
   optionsDesStatutsDeRendezVous.find((option) => option.value === valeur)

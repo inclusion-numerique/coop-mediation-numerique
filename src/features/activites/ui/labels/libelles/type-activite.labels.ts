@@ -43,6 +43,4 @@ export const typeActivitePictograms: Record<TypeActivite, Pictogram> = {
   Collectif: TeacherIcon,
 }
 
-export const typeActiviteOptions = labelsToOptions(typeActiviteLabels)
-
 export const typeActiviteSlugOptions = labelsToOptions(typeActiviteSlugLabels)

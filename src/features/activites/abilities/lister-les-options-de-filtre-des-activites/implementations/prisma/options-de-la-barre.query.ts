@@ -1,4 +1,3 @@
-import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import type { MediateurId } from '../../../../domain'
 import {
   type OptionsDeFiltreDesActivites,
@@ -21,49 +20,19 @@ export const periodeLaPlusLarge = (
   last: plusTard(activites.last, rendezVous.last),
 })
 
-export type OptionsDeLaBarre = Omit<
-  OptionsDeFiltreDesActivites,
-  'periodeCouverte'
-> & {
-  readonly communes: SelectOption[]
-  readonly departements: SelectOption[]
-  readonly lieux: SelectOption[]
-  readonly periodeCouverte: PeriodeCouverte
-}
-
-export const optionsDeLaBarre = async ({
+export const optionsDesFiltres = async ({
   mediateurId,
-  lieuxDesActivites,
-  communesEtDepartements,
   periodeDesRendezVous,
 }: {
   readonly mediateurId: MediateurId
-  readonly lieuxDesActivites: () => Promise<SelectOption[]>
-  readonly communesEtDepartements: () => Promise<{
-    communesOptions: SelectOption[]
-    departementsOptions: SelectOption[]
-  }>
   readonly periodeDesRendezVous: () => Promise<PeriodeCouverte>
-}): Promise<OptionsDeLaBarre> => {
-  const [
-    activites,
-    lieux,
-    { communesOptions, departementsOptions },
-    rendezVous,
-  ] = await Promise.all([
+}) => {
+  const [activites, rendezVous] = await Promise.all([
     optionsDeFiltreDesActivites({ mediateurId }),
-    lieuxDesActivites(),
-    communesEtDepartements(),
     periodeDesRendezVous(),
   ])
   return {
-    communes: communesOptions,
-    departements: departementsOptions,
-    lieux,
-    employeuses: activites.employeuses,
-    tags: activites.tags,
+    ...activites,
     periodeCouverte: periodeLaPlusLarge(activites.periodeCouverte, rendezVous),
-    importsV1: activites.importsV1,
-    aDesActivites: activites.aDesActivites,
   }
 }

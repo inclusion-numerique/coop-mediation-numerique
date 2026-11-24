@@ -2,6 +2,8 @@ import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { type MediateurId, NomDeTag, TagId } from '../../../../domain'
 import { porteeDe } from '../../../../implementations/prisma/portee-de-tag'
 
+const TAGS_LES_PLUS_UTILISES = 10
+
 const employeusesDesActivites = async (
   mediateurId: MediateurId,
 ): Promise<readonly number[]> =>
@@ -42,7 +44,8 @@ export const optionsDeFiltreDesActivites = async ({
           departement: true,
           equipe: true,
         },
-        orderBy: { nom: 'asc' },
+        orderBy: [{ activites: { _count: 'desc' } }, { nom: 'asc' }],
+        take: TAGS_LES_PLUS_UTILISES,
       }),
       prismaClient.activite.findFirst({
         where: { mediateurId, suppression: null, v1CraId: { not: null } },

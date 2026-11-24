@@ -99,12 +99,6 @@ export const filtresDeLaListe = (
   }
 }
 
-export type OptionDeTag = {
-  readonly id: string
-  readonly nom: string
-  readonly portee: 'Personnel' | 'Equipe' | 'Departemental' | 'National'
-}
-
 export type OptionDeBeneficiaire = {
   readonly label: string
   readonly value: { readonly id: string } | null
@@ -115,14 +109,7 @@ export type OptionDeMediateur = {
   readonly value: { readonly mediateurId?: string | null } | null
 }
 
-export type PeriodeCouverte = {
-  readonly first: Date | undefined
-  readonly last: Date | undefined
-}
-
 type Parametres = Readonly<Record<string, string | null>>
-
-export const CLES_CONSERVEES = ['voir-rdvs'] as const
 
 export const typesEnParametres = (
   types: readonly string[],

@@ -1,7 +1,6 @@
 import {
   type CriteresDesActivites,
   contenuDeLaChronologie,
-  criteresDesActivites,
   estFiltreDesActivites,
   ordreChronologiqueLu,
   paginationLue,
@@ -17,8 +16,10 @@ export type CompteRendezVousDuMediateur = {
   readonly invalidWebhookOrganisationIds: readonly number[]
 }
 
-export const lectureDeLaListe = (parametres: ParametresDeLaListe) => {
-  const criteres = criteresDesActivites(parametres)
+export const lectureDeLaListe = (
+  parametres: ParametresDeLaListe,
+  criteres: CriteresDesActivites,
+) => {
   return {
     criteres,
     filtree: estFiltreDesActivites(criteres),

@@ -1,8 +1,5 @@
 import type { ReactNode } from 'react'
-import type { OptionsDeLaBarre } from '../../../../ui/components/filtres/BarreDeFiltres'
-import type { FiltresDeLaListe } from '../../../../ui/search-params/filtres-de-la-liste.search-params'
 import type { RenseignerLeStatut } from '../components/CarteDeRendezVous'
-import { EnTeteDeLaListe } from '../components/EnTeteDeLaListe'
 import {
   type ContenuDeLaListe,
   ListeDeMesActivites,
@@ -12,23 +9,19 @@ import { sousTitreDeMesActivites } from '../presenters/lecture-de-la-liste.prese
 
 export const PageDeMaListeDActivites = ({
   liste,
-  options,
+  barreDeFiltres,
   aussiCoordinateur,
   saisieDuStatutDesRendezVous,
-  exportDesAccompagnements,
   basculeDesRendezVous,
   renseignerLeStatut,
 }: {
   liste: {
-    readonly filtres: FiltresDeLaListe
-    readonly rendezVousFiltrables: boolean
     readonly contenu: Promise<ContenuDeLaListe>
     readonly parametres: Record<string, string>
   }
-  options: OptionsDeLaBarre
+  barreDeFiltres: ReactNode
   aussiCoordinateur: boolean
   saisieDuStatutDesRendezVous: ReactNode
-  exportDesAccompagnements: ReactNode
   basculeDesRendezVous: ReactNode
   renseignerLeStatut: RenseignerLeStatut
 }) => (
@@ -37,12 +30,7 @@ export const PageDeMaListeDActivites = ({
     sousTitre={sousTitreDeMesActivites(aussiCoordinateur)}
     saisieDuStatutDesRendezVous={saisieDuStatutDesRendezVous}
   >
-    <EnTeteDeLaListe
-      filtres={liste.filtres}
-      options={options}
-      rendezVousFiltrables={liste.rendezVousFiltrables}
-      exportDesAccompagnements={exportDesAccompagnements}
-    />
+    {barreDeFiltres}
     <ListeDeMesActivites
       contenu={liste.contenu}
       basculeDesRendezVous={basculeDesRendezVous}

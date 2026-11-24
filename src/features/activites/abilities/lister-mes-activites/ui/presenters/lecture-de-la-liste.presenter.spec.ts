@@ -18,15 +18,25 @@ const sansCritere = criteresDesActivites({})
 
 describe('lecture de la liste', () => {
   it('affiche les rendez-vous demandés', () => {
-    expect(lectureDeLaListe({ 'voir-rdvs': '1' }).voirLesRdvs).toBe(true)
+    expect(
+      lectureDeLaListe({ 'voir-rdvs': '1' }, criteresDesActivites({}))
+        .voirLesRdvs,
+    ).toBe(true)
   })
 
   it("n'affiche pas les rendez-vous sans demande", () => {
-    expect(lectureDeLaListe({}).voirLesRdvs).toBe(false)
+    expect(lectureDeLaListe({}, criteresDesActivites({})).voirLesRdvs).toBe(
+      false,
+    )
   })
 
   it('reconnaît une liste filtrée', () => {
-    expect(lectureDeLaListe({ types: 'individuel' }).filtree).toBe(true)
+    expect(
+      lectureDeLaListe(
+        { types: 'individuel' },
+        criteresDesActivites({ types: 'individuel' }),
+      ).filtree,
+    ).toBe(true)
   })
 })
 

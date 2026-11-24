@@ -1,0 +1,118 @@
+'use client'
+
+import { ChoixEnLigne } from '@/libraries/filtres/ChoixEnLigne'
+import { FiltresEnModale } from '@/libraries/filtres/FiltresEnModale'
+import { RechercheEnLigne } from '@/libraries/filtres/RechercheEnLigne'
+import { inject } from '@/libraries/nextjs/injection/client'
+import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
+import { RECHERCHER_DES_TAGS_DU_CRA_KEY } from '../../../action/rechercher-des-tags.key'
+import { RECHERCHER_LES_EMPLOYEUSES_DE_LA_LISTE_KEY } from '../../../action/rechercher-employeuses.key'
+import {
+  filtreDeLaSource,
+  filtreDesEmployeuses,
+  filtreDesTags,
+  filtreDesThematiquesAdministratives,
+  filtreDesThematiquesDeMediation,
+} from '../../filtres/activites.filtre'
+
+const rechercherDesEmployeuses = async ({
+  recherche,
+}: {
+  recherche: string
+}) => {
+  const resultat = await inject(RECHERCHER_LES_EMPLOYEUSES_DE_LA_LISTE_KEY)({
+    recherche,
+    exclues: [],
+  })
+  return resultat.success
+    ? {
+        success: true as const,
+        data: resultat.data.map(({ id, nom, commune }) => ({
+          value: id,
+          label: commune === null ? nom : `${nom} · ${commune}`,
+        })),
+      }
+    : resultat
+}
+
+const rechercherDesTags = async ({ recherche }: { recherche: string }) => {
+  const resultat = await inject(RECHERCHER_DES_TAGS_DU_CRA_KEY)({ recherche })
+  return resultat.success
+    ? {
+        success: true as const,
+        data: resultat.data.map(({ id, nom }) => ({ value: id, label: nom })),
+      }
+    : resultat
+}
+
+type OptionsDeRecherche = {
+  readonly suggestions: readonly SelectOption[]
+  readonly choisies: readonly SelectOption[]
+}
+
+export const PlusDeFiltresDesActivites = ({
+  importsV1,
+  employeuses,
+  tags,
+}: {
+  importsV1: boolean
+  employeuses: OptionsDeRecherche
+  tags: OptionsDeRecherche
+}) => (
+  <FiltresEnModale
+    titre="Plus de filtres"
+    filtres={[
+      filtreDeLaSource,
+      filtreDesEmployeuses,
+      filtreDesThematiquesDeMediation,
+      filtreDesThematiquesAdministratives,
+      filtreDesTags,
+    ]}
+  >
+    {importsV1 && (
+      <>
+        <ChoixEnLigne
+          filtre={filtreDeLaSource}
+          legende="Filtrer par source de données"
+        />
+        <hr className="fr-separator-8v" />
+      </>
+    )}
+    {employeuses.suggestions.length > 1 && (
+      <>
+        <RechercheEnLigne
+          filtre={filtreDesEmployeuses}
+          libelle="Filtrer par structure employeuse"
+          placeholder="Rechercher une structure employeuse"
+          selection={{
+            singular: 'structure employeuse',
+            plural: 'structures employeuses',
+          }}
+          rechercher={rechercherDesEmployeuses}
+          choisies={employeuses.choisies}
+          suggestions={employeuses.suggestions}
+        />
+        <hr className="fr-separator-8v" />
+      </>
+    )}
+    <ChoixEnLigne
+      filtre={filtreDesThematiquesDeMediation}
+      legende="Filtrer par thématique de médiation numérique"
+    />
+    <hr className="fr-separator-8v" />
+    <ChoixEnLigne
+      filtre={filtreDesThematiquesAdministratives}
+      legende="Filtrer par thématique de démarches administratives"
+    />
+    <hr className="fr-separator-8v" />
+    <RechercheEnLigne
+      filtre={filtreDesTags}
+      libelle="Filtrer par tags"
+      placeholder="Rechercher un tag"
+      selection={{ singular: 'tag', plural: 'tags' }}
+      rechercher={rechercherDesTags}
+      choisies={tags.choisies}
+      suggestions={tags.suggestions}
+    />
+  </FiltresEnModale>
+)

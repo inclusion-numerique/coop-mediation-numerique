@@ -9,21 +9,6 @@ import type {
 import { dateAsDay } from '@/libraries/date/dateAsDay'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 
-export type FilterType =
-  | 'lieux'
-  | 'communes'
-  | 'departements'
-  | 'beneficiaires'
-  | 'mediateurs'
-  | 'structuresEmployeuses'
-  | 'periode'
-  | 'types'
-  | 'conseiller_numerique'
-  | 'rdvs'
-  | 'thematiqueNonAdministratives'
-  | 'thematiqueAdministratives'
-  | 'tags'
-  | 'source'
 const generateActivitesPeriodeFilterLabel = ({
   au,
   du,
@@ -273,27 +258,6 @@ export const generateActivitesFiltersLabels = (
     ...(sourceLabel == null ? [] : sourceLabel),
   ]
 }
-
-const labelPrefixes: Record<string, string> = {
-  communes: 'Commune : ',
-  departements: 'Département : ',
-  lieux: 'Lieu d’activité : ',
-  structuresEmployeuses: 'Structure employeuse : ',
-}
-
-export const toLieuPrefix = ({
-  label,
-  type,
-  key,
-}: {
-  label: string
-  type: FilterType
-  key?: string[] | string | null
-}) => ({
-  label: labelPrefixes[type] ? `${labelPrefixes[type]}${label}` : label,
-  type,
-  key,
-})
 
 export type ActivitesFiltersLabels = ReturnType<
   typeof generateActivitesFiltersLabels

@@ -173,7 +173,10 @@ export { Notes, NotesSaisies, notesDe } from './notes'
 export { Precision } from './precision'
 export { LienAgent } from './rendez-vous/lien-agent'
 export { NomDuMotif } from './rendez-vous/nom-du-motif'
-export { SourceDeLActivite } from './rendez-vous/source-de-l-activite'
+export {
+  SOURCES_DE_L_ACTIVITE,
+  SourceDeLActivite,
+} from './rendez-vous/source-de-l-activite'
 export {
   STATUTS_DE_RENDEZ_VOUS,
   StatutDeRendezVous,

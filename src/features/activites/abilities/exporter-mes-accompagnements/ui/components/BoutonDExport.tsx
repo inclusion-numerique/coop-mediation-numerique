@@ -9,7 +9,6 @@ import { download } from '@/libraries/navigateur/download'
 import { numberToString } from '@/libraries/nombre/formatNumber'
 import { pluriel } from '@/libraries/pluriel'
 import { createToast } from '@/libraries/ui/toast/createToast'
-import type { ActivitesFiltersLabels } from '../../../../ui/labels/filtres/filtres.labels'
 import { cheminDImpressionDesStatistiques } from '../presenters/export.presenter'
 import { cheminAvecRequete } from '../search-params/requete-de-l-export.search-params'
 
@@ -46,7 +45,7 @@ export const BoutonDExport = ({
   requete,
   nombreDAccompagnements,
 }: {
-  libelles: ActivitesFiltersLabels
+  libelles: readonly string[]
   requete: string
   nombreDAccompagnements: number
 }) => {
@@ -97,11 +96,8 @@ export const BoutonDExport = ({
             </p>
             <ul className="fr-tags-group">
               {libelles.map((libelle) => (
-                <li
-                  className="fr-line-height-1"
-                  key={`${libelle.type}-${libelle.key}`}
-                >
-                  <Tag small>{libelle.label}</Tag>
+                <li className="fr-line-height-1" key={libelle}>
+                  <Tag small>{libelle}</Tag>
                 </li>
               ))}
             </ul>

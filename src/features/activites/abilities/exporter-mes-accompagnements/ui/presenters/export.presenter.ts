@@ -1,5 +1,4 @@
 import type { CriteresDesActivites } from '../../../../domain'
-import type { OptionsDeLaBarre } from '../../../../ui/components/filtres/BarreDeFiltres'
 import {
   type ActivitesFiltersLabels,
   generateActivitesFiltersLabels,
@@ -11,24 +10,6 @@ import {
 } from '../../../../ui/search-params/filtres-de-la-liste.search-params'
 import type { ExportDesAccompagnements } from '../../domain'
 import { contenuDuClasseur } from './lignes-du-classeur.presenter'
-
-export const libellesDeLExport = (
-  filtres: FiltresDeLaListe,
-  options: OptionsDeLaBarre,
-): ActivitesFiltersLabels =>
-  generateActivitesFiltersLabels(filtres, {
-    communesOptions: options.communes,
-    departementsOptions: options.departements,
-    lieuxActiviteOptions: options.lieux,
-    structuresEmployeusesOptions: options.employeuses.map(({ id, nom }) => ({
-      id,
-      nom,
-    })),
-    tagsOptions: options.tags.map(({ id, nom }) => ({ id, nom })),
-    beneficiairesOptions: [],
-    mediateursOptions: [],
-    optionsDesSources: options.importsV1 ? [...optionsDesSources] : [],
-  })
 
 type NomsDesFiltres = {
   readonly beneficiaires: readonly {

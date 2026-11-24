@@ -1,8 +1,5 @@
 import type { ReactNode } from 'react'
-import type { OptionsDeLaBarre } from '../../../../ui/components/filtres/BarreDeFiltres'
-import type { FiltresDeLaListe } from '../../../../ui/search-params/filtres-de-la-liste.search-params'
 import { AucuneActivite } from '../components/AucuneActivite'
-import { EnTeteDeLaListe } from '../components/EnTeteDeLaListe'
 import { MesActivitesPage } from '../components/MesActivitesPage'
 import {
   type ContenuDuTableau,
@@ -12,19 +9,15 @@ import { sousTitreDeMesActivites } from '../presenters/lecture-de-la-liste.prese
 
 export const PageDuTableauDeMesActivites = ({
   tableau,
-  options,
+  barreDeFiltres,
   aussiCoordinateur,
-  exportDesAccompagnements,
 }: {
   tableau: {
-    readonly filtres: FiltresDeLaListe
-    readonly rendezVousFiltrables: boolean
     readonly contenu: Promise<ContenuDuTableau>
     readonly parametres: Record<string, string>
   } | null
-  options: OptionsDeLaBarre
+  barreDeFiltres: ReactNode
   aussiCoordinateur: boolean
-  exportDesAccompagnements: ReactNode
 }) =>
   tableau === null ? (
     <MesActivitesPage vue="tableau" saisieDuStatutDesRendezVous={null}>
@@ -36,12 +29,7 @@ export const PageDuTableauDeMesActivites = ({
       sousTitre={sousTitreDeMesActivites(aussiCoordinateur)}
       saisieDuStatutDesRendezVous={null}
     >
-      <EnTeteDeLaListe
-        filtres={tableau.filtres}
-        options={options}
-        rendezVousFiltrables={tableau.rendezVousFiltrables}
-        exportDesAccompagnements={exportDesAccompagnements}
-      />
+      {barreDeFiltres}
       <TableauDeMesActivites
         contenu={tableau.contenu}
         parametres={tableau.parametres}
