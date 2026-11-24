@@ -1,0 +1,380 @@
+version: 1
+rules:
+  - id: zones-de-src
+    kind: dir_absent
+    level: error
+    message: "src ne contient que app, features, libraries, configuration, cli, jobs, styles et generated (AGENTS.md)"
+    paths:
+      - "src/*"
+      - "!src/{app,features,libraries,configuration,cli,jobs,styles,generated}"
+
+  - id: fichiers-a-la-racine-de-src
+    kind: file_absent
+    level: error
+    message: "À la racine de src, seules les conventions de Next : proxy.ts, instrumentation.ts, instrumentation-client.ts"
+    paths:
+      - "src/*"
+      - "!src/{proxy,instrumentation,instrumentation-client}.ts"
+
+  - id: dossiers-d-une-feature
+    kind: dir_absent
+    level: error
+    message: "Dossier hors de la structure d'une feature (feature-architecture.md §1, §4, ST-3, ST-4, UI-7)"
+    paths:
+      - "src/features/**"
+      - "!src/features/*"
+      - "!src/features/*/{abilities,action,domain,fixtures,implementations,middlewares,ui}"
+      - "!src/features/*/abilities/*"
+      - "!src/features/*/abilities/*/{action,domain,implementations,ui}"
+      - "!src/features/**/domain/*"
+      - "!src/features/*/fixtures/*"
+      - "!src/features/**/implementations/*"
+      - "!src/features/**/implementations/*/*"
+      - "!src/features/**/ui/{columns,components,filtres,forms,hooks,labels,layouts,pages,presenters,search-params,slots}"
+      - "!src/features/**/ui/{columns,components,filtres,forms,hooks,labels,layouts,pages,presenters,search-params,slots}/*"
+
+  - id: racine-d-une-feature
+    kind: dir_only_contains
+    level: error
+    message: "À la racine d'une feature, seuls les hooks Cucumber partagés et la spécification d'une feature sans ability (§1, TS-1)"
+    select: "src/features/*"
+    allow: ["*.cucumber.ts", "*.feature.md", "*.steps.ts"]
+
+  - id: racine-d-une-ability
+    kind: dir_only_contains
+    level: error
+    message: "À la racine d'une ability, seules sa spécification et ses steps (§4)"
+    select: "src/features/*/abilities/*"
+    allow: ["*.ability.md", "*.steps.ts"]
+
+  - id: specification-de-l-ability
+    kind: for_each_dir
+    level: error
+    message: "Toute ability a sa spécification exécutable au nom de son dossier (TS-1)"
+    select: "src/features/*/abilities/*"
+    require:
+      - kind: file_exists
+        paths: "{path}/{basename}.ability.md"
+      - kind: file_exists
+        paths: "{path}/{basename}.steps.ts"
+
+  - id: contrats-d-action
+    kind: dir_only_contains
+    level: error
+    message: "action/ ne contient que des .key, .validation, .errors, .transfer et leurs tests (ST-5, ST-6)"
+    select: "src/features/**/action"
+    allow:
+      - "*.{key,validation,errors,transfer}.ts"
+      - "*.{validation,errors,transfer}.spec.ts"
+
+  - id: domaine
+    kind: dir_only_contains
+    level: error
+    message: "domain/ ne contient que du TypeScript sans JSX (§2)"
+    select: "{src/features/**/domain,src/features/**/domain/*}"
+    allow: ["*.ts"]
+
+  - id: middlewares
+    kind: dir_only_contains
+    level: error
+    message: "middlewares/ ne contient que des with-<nom>.ts (§1)"
+    select: "src/features/*/middlewares"
+    allow: ["with-*.ts", "with-*.spec.ts"]
+
+  - id: fixtures
+    kind: dir_only_contains
+    level: error
+    message: "fixtures/ ne contient que des données de test en TypeScript ou en Excel"
+    select: "{src/features/*/fixtures,src/features/*/fixtures/*}"
+    allow: ["*.ts", "*.xlsx"]
+
+  - id: racine-des-implementations
+    kind: dir_only_contains
+    level: error
+    message: "À la racine d'implementations/, seuls des .binding.ts, qui assemblent plusieurs techniques (ST-4)"
+    select: "src/features/**/implementations"
+    allow: ["*.binding.ts", "*.binding.{spec,integration}.ts"]
+
+  - id: implementations-par-categorie
+    kind: dir_only_contains
+    level: error
+    message: "Une implémentation porte la catégorie de son rôle (ST-5)"
+    select: "{src/features/**/implementations/*,src/features/**/implementations/*/*}"
+    allow:
+      - "index.ts"
+      - "*.d.ts"
+      - "*.{query,mutation,transfer,client,sql,where,select,order-by,payload,params,response,middleware,classeur,adapter}.ts"
+      - "*.{query,mutation,transfer,client,sql,where,select,order-by,payload,params,response,middleware,classeur,adapter}.{spec,integration}.ts"
+      - "*.email.tsx"
+      - "*.email.spec.tsx"
+      - "*.email-fragment.tsx"
+      - "*.openapi.json"
+      - "*.openapi-config.json"
+
+  - id: presenters
+    kind: dir_only_contains
+    level: error
+    message: "presenters/ ne contient que des .presenter.ts (UI-7)"
+    select: "{src/features/**/ui/presenters,src/features/**/ui/presenters/*}"
+    allow: ["*.presenter.ts", "*.presenter.spec.ts"]
+
+  - id: libelles
+    kind: dir_only_contains
+    level: error
+    message: "labels/ ne contient que des .labels.ts(x) (UI-7)"
+    select: "{src/features/**/ui/labels,src/features/**/ui/labels/*}"
+    allow: ["*.labels.ts", "*.labels.tsx", "*.labels.spec.ts"]
+
+  - id: etat-d-url
+    kind: dir_only_contains
+    level: error
+    message: "search-params/ ne contient que des .search-params.ts (UI-7)"
+    select: "src/features/**/ui/search-params"
+    allow: ["*.search-params.ts", "*.search-params.spec.ts"]
+
+  - id: colonnes
+    kind: dir_only_contains
+    level: error
+    message: "columns/ ne contient que des .columns.ts(x) (UI-7)"
+    select: "src/features/**/ui/columns"
+    allow: ["*.columns.ts", "*.columns.tsx", "*.columns.spec.ts"]
+
+  - id: filtres
+    kind: dir_only_contains
+    level: error
+    message: "filtres/ ne contient que des .filtre.ts (UI-7)"
+    select: "src/features/**/ui/filtres"
+    allow: ["*.filtre.ts", "*.filtre.spec.ts"]
+
+  - id: hooks
+    kind: dir_only_contains
+    level: error
+    message: "hooks/ ne contient que des use-<nom>.ts (UI-7)"
+    select: "src/features/**/ui/hooks"
+    allow: ["use-*.ts", "use-*.spec.ts"]
+
+  - id: slots
+    kind: dir_only_contains
+    level: error
+    message: "slots/ ne contient que des <Nom>.slot.tsx (UI-7)"
+    select: "src/features/**/ui/slots"
+    allow: ["*.slot.tsx", "*.slot.{stories,cy}.tsx"]
+
+  - id: pages
+    kind: dir_only_contains
+    level: error
+    message: "pages/ ne contient que des <Nom>Page.tsx (UI-7)"
+    select: "src/features/**/ui/pages"
+    allow: ["*Page.tsx", "*Page.{stories,cy}.tsx"]
+
+  - id: layouts
+    kind: dir_only_contains
+    level: error
+    message: "layouts/ ne contient que des <Nom>Layout.tsx (UI-7)"
+    select: "src/features/**/ui/layouts"
+    allow: ["*Layout.tsx", "*Layout.{stories,cy}.tsx"]
+
+  - id: composants
+    kind: dir_only_contains
+    level: error
+    message: "components/ ne contient que des composants <Nom>.tsx (UI-7)"
+    select: "{src/features/**/ui/components,src/features/**/ui/components/*}"
+    allow: ["[A-Z]*.tsx", "[A-Z]*.{stories,cy}.tsx"]
+
+  - id: formulaires
+    kind: dir_only_contains
+    level: error
+    message: "forms/ ne contient que des formulaires, leurs champs et leurs .validation, .form-options, .form-data (UI-7)"
+    select: "{src/features/**/ui/forms,src/features/**/ui/forms/*}"
+    allow:
+      - "*Form.tsx"
+      - "*Fields.tsx"
+      - "*Field.tsx"
+      - "*ComboBox.tsx"
+      - "*{Form,Fields,Field,ComboBox}.{stories,cy}.tsx"
+      - "*.{validation,form-options,form-data}.ts"
+      - "*.{validation,form-options,form-data}.spec.ts"
+
+  - id: categorie-dans-son-dossier
+    kind: file_absent
+    level: error
+    message: "Une catégorie ne vit que dans le dossier de son rôle (ST-5, UI-7)"
+    paths:
+      - "src/**/*.{presenter,labels,search-params,columns,filtre,slot,key,form-data,form-options,binding,action,job,execution}.{ts,tsx}"
+      - "!src/features/**/ui/presenters/**/*.presenter.ts"
+      - "!src/features/**/ui/labels/**/*.labels.{ts,tsx}"
+      - "!src/features/**/ui/search-params/*.search-params.ts"
+      - "!src/features/**/ui/columns/*.columns.{ts,tsx}"
+      - "!src/features/**/ui/filtres/*.filtre.ts"
+      - "!src/features/**/ui/slots/*.slot.tsx"
+      - "!src/features/**/action/*.key.ts"
+      - "!src/features/**/ui/forms/**/*.{form-data,form-options}.ts"
+      - "!src/features/**/implementations/*.binding.ts"
+      - "!src/app/_actions/*/*.action.ts"
+      - "!src/jobs/*/*.{job,execution}.ts"
+
+  - id: un-test-a-cote-de-sa-source-ts
+    kind: file_graph
+    level: error
+    message: "Un test porte le nom du fichier qu'il exerce et vit à côté de lui (D1)"
+    nodes: "src/**/*.{spec,integration}.ts"
+    edges:
+      derive_target:
+        from: '^(.+)\.(spec|integration)\.ts$'
+        to: "$1.ts"
+    require: no_dangling
+
+  - id: un-test-a-cote-de-sa-source-tsx
+    kind: file_graph
+    level: error
+    message: "Un test porte le nom du fichier qu'il exerce et vit à côté de lui (D1)"
+    nodes: "src/**/*.{spec,stories,cy}.tsx"
+    edges:
+      derive_target:
+        from: '^(.+)\.(spec|stories|cy)\.tsx$'
+        to: "$1.tsx"
+    require: no_dangling
+
+  - id: un-test-de-page-a-cote-de-sa-page
+    kind: file_graph
+    level: error
+    message: "Un test de page vit à côté d'elle (ST-7)"
+    nodes: "src/app/**/page.test.ts"
+    edges:
+      derive_target:
+        from: '^(.+)/page\.test\.ts$'
+        to: "$1/page.tsx"
+    require: no_dangling
+
+  - id: un-test-de-route-a-cote-de-sa-route
+    kind: file_graph
+    level: error
+    message: "Un test de route vit à côté d'elle (ST-7)"
+    nodes: "src/app/**/route.test.ts"
+    edges:
+      derive_target:
+        from: '^(.+)/route\.test\.ts$'
+        to: "$1/route.ts"
+    require: no_dangling
+
+  - id: transfert-teste
+    kind: file_graph
+    level: error
+    message: "Un .transfer.ts a son test aller-retour (.transfer.spec.ts)"
+    nodes: "src/**/*.transfer.ts"
+    edges:
+      derive_target:
+        from: '^(.+)\.transfer\.ts$'
+        to: "$1.transfer.spec.ts"
+    require: no_dangling
+
+  - id: au-plus-32-fichiers
+    kind: max_files_per_directory
+    level: error
+    message: "Au-delà de 32 fichiers à plat, regrouper par sujet ou scinder la feature (ST-3)"
+    paths:
+      - "src/**"
+      - "!src/generated/**"
+      - "!src/**/*.{spec,integration}.ts"
+      - "!src/**/*.{spec,stories,cy}.tsx"
+    max_files: 32
+
+  - id: nommage
+    kind: filename_regex
+    level: error
+    message: "Fichier en kebab-case, sauf un .tsx dont l'export principal est un composant, en PascalCase (ST-1)"
+    paths:
+      - "src/**"
+      - "e2e/**"
+      - "!src/generated/**"
+      - "!src/app/**/{favicon.ico,icon.svg,apple-icon.png}"
+      - "!e2e/screenshots/**"
+    pattern: '^([a-z0-9]+(-[a-z0-9]+)*(\.[a-z0-9]+(-[a-z0-9]+)*)*\.[a-z]+|[A-Z][A-Za-z0-9]*(\.[a-z0-9]+(-[a-z0-9]+)*)*\.tsx)$'
+
+  - id: fichiers-d-une-route
+    kind: dir_only_contains
+    level: error
+    message: "Une route de app ne contient que les fichiers de Next et ses tests (§ app, ST-7)"
+    select: "{src/app,src/app/[!_]*,src/app/[!_]*/**}"
+    allow:
+      - "{page,layout,template,loading,error,not-found,global-error,default}.tsx"
+      - "{route,manifest,robots,sitemap}.ts"
+      - "{page,route}.test.ts"
+      - "{favicon.ico,icon.svg,apple-icon.png}"
+      - "security.txt"
+
+  - id: actions-par-feature
+    kind: for_each_dir
+    level: error
+    message: "app/_actions/<feature>/ porte le nom d'une feature existante"
+    select: "src/app/_actions/*"
+    require:
+      - kind: dir_exists
+        paths: "src/features/{basename}"
+
+  - id: actions
+    kind: dir_only_contains
+    level: error
+    message: "app/_actions/<feature>/ ne contient que des <ability>.action.ts"
+    select: "src/app/_actions/*"
+    allow: ["*.action.ts"]
+
+  - id: libraries
+    kind: dir_only_contains
+    level: error
+    message: "Une library ne contient que du TypeScript, et du JSON de données"
+    select: "src/libraries/**"
+    allow: ["*.ts", "*.tsx", "*.json"]
+
+  - id: profondeur-des-libraries
+    kind: dir_absent
+    level: error
+    message: "Une library a au plus deux niveaux de sous-dossiers par sujet"
+    paths: ["src/libraries/*/*/*/*"]
+
+  - id: configuration
+    kind: dir_only_contains
+    level: error
+    message: "configuration/ ne contient que du TypeScript"
+    select: "src/configuration/**"
+    allow: ["*.ts", "*.tsx"]
+
+  - id: cli
+    kind: dir_only_contains
+    level: error
+    message: "cli/ ne contient que du TypeScript"
+    select: "{src/cli,src/cli/**}"
+    allow: ["*.ts"]
+
+  - id: une-tache
+    kind: for_each_dir
+    level: error
+    message: "Une tâche range <tâche>.job.ts et <tâche>.execution.ts (CONTRIBUTING)"
+    select: "src/jobs/*"
+    require:
+      - kind: file_exists
+        paths: "{path}/{basename}.job.ts"
+      - kind: file_exists
+        paths: "{path}/{basename}.execution.ts"
+
+  - id: dossier-d-une-tache
+    kind: dir_only_contains
+    level: error
+    message: "Une tâche ne contient que <tâche>.job.ts et <tâche>.execution.ts (CONTRIBUTING)"
+    select: "src/jobs/*"
+    allow: ["*.job.ts", "*.execution.ts"]
+
+  - id: styles
+    kind: dir_only_contains
+    level: error
+    message: "styles/ ne contient que du CSS"
+    select: "{src/styles,src/styles/**}"
+    allow: ["*.css"]
+
+  - id: dossiers-d-e2e
+    kind: dir_absent
+    level: error
+    message: "e2e/ ne contient que support, tasks, fixtures, proconnect-simule et screenshots"
+    paths:
+      - "e2e/**"
+      - "!e2e/{support,tasks,tasks/handlers,fixtures,proconnect-simule,screenshots}"
