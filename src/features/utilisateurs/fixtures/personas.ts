@@ -1,67 +1,67 @@
-import { mediateur } from '@/features/utilisateurs/fixtures/mediateur'
-import { administrateur } from '@/features/utilisateurs/fixtures/personas/administrateur'
-import { conseillerInscriptionSansContrat } from '@/features/utilisateurs/fixtures/personas/conseiller-inscription-sans-contrat'
+import { administrateur } from '@/features/utilisateurs/fixtures/administrateur'
+import { conseillerInscriptionSansContrat } from '@/features/utilisateurs/fixtures/conseillers/conseiller-inscription-sans-contrat'
 import {
   conseillerNumerique,
   conseillerNumeriqueMediateurId,
-} from '@/features/utilisateurs/fixtures/personas/conseiller-numerique'
-import { conseillerSansLieuInscription } from '@/features/utilisateurs/fixtures/personas/conseiller-sans-lieu-inscription'
-import { coordinateurHorsDispositifInscription } from '@/features/utilisateurs/fixtures/personas/coordinateur-hors-dispositif-inscription'
+} from '@/features/utilisateurs/fixtures/conseillers/conseiller-numerique'
+import { conseillerSansLieuInscription } from '@/features/utilisateurs/fixtures/conseillers/conseiller-sans-lieu-inscription'
+import {
+  exConseillerApresRupture,
+  exConseillerApresRuptureMediateurId,
+} from '@/features/utilisateurs/fixtures/conseillers/ex-conseiller-apres-rupture'
+import { coordinateurHorsDispositifInscription } from '@/features/utilisateurs/fixtures/coordinateurs/coordinateur-hors-dispositif-inscription'
 import {
   coordinateurHorsDispositifInscritAvecTout,
   coordinateurHorsDispositifInscritAvecToutCoordinateurId,
   coordinateurHorsDispositifInscritAvecToutMediateurId,
-} from '@/features/utilisateurs/fixtures/personas/coordinateur-hors-dispositif-inscrit-avec-tout'
-import { coordinateurInscription } from '@/features/utilisateurs/fixtures/personas/coordinateur-inscription'
+} from '@/features/utilisateurs/fixtures/coordinateurs/coordinateur-hors-dispositif-inscrit-avec-tout'
+import { coordinateurInscription } from '@/features/utilisateurs/fixtures/coordinateurs/coordinateur-inscription'
 import {
   coordinateurInscriptionAvecTout,
   coordinateurInscriptionAvecToutCoordinateurId,
   coordinateurInscriptionAvecToutMediateurId,
-} from '@/features/utilisateurs/fixtures/personas/coordinateur-inscription-avec-tout'
-import { coordinateurInscrit } from '@/features/utilisateurs/fixtures/personas/coordinateur-inscrit'
+} from '@/features/utilisateurs/fixtures/coordinateurs/coordinateur-inscription-avec-tout'
+import { coordinateurInscrit } from '@/features/utilisateurs/fixtures/coordinateurs/coordinateur-inscrit'
 import {
   coordinateurInscritAvecTout,
   coordinateurInscritAvecToutMediateurId,
-} from '@/features/utilisateurs/fixtures/personas/coordinateur-inscrit-avec-tout'
-import { coordinateurInscritJ7 } from '@/features/utilisateurs/fixtures/personas/coordinateur-inscrit-j7'
-import { coordinateurInscritJ30 } from '@/features/utilisateurs/fixtures/personas/coordinateur-inscrit-j30'
-import { coordinateurInscritJ60 } from '@/features/utilisateurs/fixtures/personas/coordinateur-inscrit-j60'
-import { coordinateurInscritJ90 } from '@/features/utilisateurs/fixtures/personas/coordinateur-inscrit-j90'
-import { coordinateurInscritJ100 } from '@/features/utilisateurs/fixtures/personas/coordinateur-inscrit-j100'
-import { coordinateurInscritJ110 } from '@/features/utilisateurs/fixtures/personas/coordinateur-inscrit-j110'
-import { coordinateurInscritJ180 } from '@/features/utilisateurs/fixtures/personas/coordinateur-inscrit-j180'
-import {
-  exConseillerApresRupture,
-  exConseillerApresRuptureMediateurId,
-} from '@/features/utilisateurs/fixtures/personas/ex-conseiller-apres-rupture'
+} from '@/features/utilisateurs/fixtures/coordinateurs/coordinateur-inscrit-avec-tout'
+import { coordinateurInscritJ7 } from '@/features/utilisateurs/fixtures/coordinateurs/coordinateur-inscrit-j7'
+import { coordinateurInscritJ30 } from '@/features/utilisateurs/fixtures/coordinateurs/coordinateur-inscrit-j30'
+import { coordinateurInscritJ60 } from '@/features/utilisateurs/fixtures/coordinateurs/coordinateur-inscrit-j60'
+import { coordinateurInscritJ90 } from '@/features/utilisateurs/fixtures/coordinateurs/coordinateur-inscrit-j90'
+import { coordinateurInscritJ100 } from '@/features/utilisateurs/fixtures/coordinateurs/coordinateur-inscrit-j100'
+import { coordinateurInscritJ110 } from '@/features/utilisateurs/fixtures/coordinateurs/coordinateur-inscrit-j110'
+import { coordinateurInscritJ180 } from '@/features/utilisateurs/fixtures/coordinateurs/coordinateur-inscrit-j180'
+import { mediateurCoordinateurJ7 } from '@/features/utilisateurs/fixtures/coordinateurs/mediateur-coordinateur-j7'
+import { mediateurCoordinateurJ30 } from '@/features/utilisateurs/fixtures/coordinateurs/mediateur-coordinateur-j30'
+import { mediateurCoordinateurJ60 } from '@/features/utilisateurs/fixtures/coordinateurs/mediateur-coordinateur-j60'
+import { mediateurCoordinateurJ90 } from '@/features/utilisateurs/fixtures/coordinateurs/mediateur-coordinateur-j90'
+import { mediateurCoordinateurJ100 } from '@/features/utilisateurs/fixtures/coordinateurs/mediateur-coordinateur-j100'
+import { mediateurCoordinateurJ110 } from '@/features/utilisateurs/fixtures/coordinateurs/mediateur-coordinateur-j110'
+import { mediateur } from '@/features/utilisateurs/fixtures/mediateur'
 import {
   mediateurAvecActivite,
   mediateurAvecActiviteMediateurId,
-} from '@/features/utilisateurs/fixtures/personas/mediateur-avec-activite'
-import { mediateurCoordinateurJ7 } from '@/features/utilisateurs/fixtures/personas/mediateur-coordinateur-j7'
-import { mediateurCoordinateurJ30 } from '@/features/utilisateurs/fixtures/personas/mediateur-coordinateur-j30'
-import { mediateurCoordinateurJ60 } from '@/features/utilisateurs/fixtures/personas/mediateur-coordinateur-j60'
-import { mediateurCoordinateurJ90 } from '@/features/utilisateurs/fixtures/personas/mediateur-coordinateur-j90'
-import { mediateurCoordinateurJ100 } from '@/features/utilisateurs/fixtures/personas/mediateur-coordinateur-j100'
-import { mediateurCoordinateurJ110 } from '@/features/utilisateurs/fixtures/personas/mediateur-coordinateur-j110'
-import { mediateurInscription } from '@/features/utilisateurs/fixtures/personas/mediateur-inscription'
-import { mediateurInscriptionJ7 } from '@/features/utilisateurs/fixtures/personas/mediateur-inscription-j7'
-import { mediateurInscriptionJ30 } from '@/features/utilisateurs/fixtures/personas/mediateur-inscription-j30'
-import { mediateurInscriptionJ60 } from '@/features/utilisateurs/fixtures/personas/mediateur-inscription-j60'
-import { mediateurInscriptionJ90 } from '@/features/utilisateurs/fixtures/personas/mediateur-inscription-j90'
-import { mediateurInscriptionJ100 } from '@/features/utilisateurs/fixtures/personas/mediateur-inscription-j100'
-import { mediateurInscriptionJ110 } from '@/features/utilisateurs/fixtures/personas/mediateur-inscription-j110'
+} from '@/features/utilisateurs/fixtures/mediateurs/mediateur-avec-activite'
+import { mediateurInscription } from '@/features/utilisateurs/fixtures/mediateurs/mediateur-inscription'
+import { mediateurInscriptionJ7 } from '@/features/utilisateurs/fixtures/mediateurs/mediateur-inscription-j7'
+import { mediateurInscriptionJ30 } from '@/features/utilisateurs/fixtures/mediateurs/mediateur-inscription-j30'
+import { mediateurInscriptionJ60 } from '@/features/utilisateurs/fixtures/mediateurs/mediateur-inscription-j60'
+import { mediateurInscriptionJ90 } from '@/features/utilisateurs/fixtures/mediateurs/mediateur-inscription-j90'
+import { mediateurInscriptionJ100 } from '@/features/utilisateurs/fixtures/mediateurs/mediateur-inscription-j100'
+import { mediateurInscriptionJ110 } from '@/features/utilisateurs/fixtures/mediateurs/mediateur-inscription-j110'
 import {
   mediateurSansActivites,
   mediateurSansActivitesMediateurId,
-} from '@/features/utilisateurs/fixtures/personas/mediateur-sans-activites'
-import { mediateurSansActivitesJ7 } from '@/features/utilisateurs/fixtures/personas/mediateur-sans-activites-j7'
-import { mediateurSansActivitesJ30 } from '@/features/utilisateurs/fixtures/personas/mediateur-sans-activites-j30'
-import { mediateurSansActivitesJ60 } from '@/features/utilisateurs/fixtures/personas/mediateur-sans-activites-j60'
-import { mediateurSansActivitesJ90 } from '@/features/utilisateurs/fixtures/personas/mediateur-sans-activites-j90'
-import { mediateurSansActivitesJ100 } from '@/features/utilisateurs/fixtures/personas/mediateur-sans-activites-j100'
-import { mediateurSansActivitesJ110 } from '@/features/utilisateurs/fixtures/personas/mediateur-sans-activites-j110'
-import { mediateurSansEmployeuseInscription } from '@/features/utilisateurs/fixtures/personas/mediateur-sans-employeuse-inscription'
+} from '@/features/utilisateurs/fixtures/mediateurs/mediateur-sans-activites'
+import { mediateurSansActivitesJ7 } from '@/features/utilisateurs/fixtures/mediateurs/mediateur-sans-activites-j7'
+import { mediateurSansActivitesJ30 } from '@/features/utilisateurs/fixtures/mediateurs/mediateur-sans-activites-j30'
+import { mediateurSansActivitesJ60 } from '@/features/utilisateurs/fixtures/mediateurs/mediateur-sans-activites-j60'
+import { mediateurSansActivitesJ90 } from '@/features/utilisateurs/fixtures/mediateurs/mediateur-sans-activites-j90'
+import { mediateurSansActivitesJ100 } from '@/features/utilisateurs/fixtures/mediateurs/mediateur-sans-activites-j100'
+import { mediateurSansActivitesJ110 } from '@/features/utilisateurs/fixtures/mediateurs/mediateur-sans-activites-j110'
+import { mediateurSansEmployeuseInscription } from '@/features/utilisateurs/fixtures/mediateurs/mediateur-sans-employeuse-inscription'
 import { utilisateur } from '@/features/utilisateurs/fixtures/utilisateur'
 import type { Prisma } from '@/generated/prisma/client'
 

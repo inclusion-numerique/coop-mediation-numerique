@@ -24,7 +24,12 @@ import {
   semerLesLieuxDeDemonstration,
   structureEmployeuse,
 } from '@/features/lieux-activite/fixtures/lieux-de-demonstration'
+import { coordinateurInscritAvecToutCoordinateurId } from '@/features/utilisateurs/fixtures/coordinateurs/coordinateur-inscrit-avec-tout'
 import { enregistrerLesUtilisateurs } from '@/features/utilisateurs/fixtures/enregistrer-les-utilisateurs'
+import {
+  equipeCoordonnee,
+  membresDeLEquipeCoordonnee,
+} from '@/features/utilisateurs/fixtures/equipe-coordonnee'
 import {
   administrateursDeLEquipe,
   coordinations,
@@ -34,11 +39,6 @@ import {
   personas,
   utilisateursDeRecetteRdv,
 } from '@/features/utilisateurs/fixtures/personas'
-import { coordinateurInscritAvecToutCoordinateurId } from '@/features/utilisateurs/fixtures/personas/coordinateur-inscrit-avec-tout'
-import {
-  equipeCoordonnee,
-  membresDeLEquipeCoordonnee,
-} from '@/features/utilisateurs/fixtures/personas/equipe-coordonnee'
 import {
   effacerLesPersonnesMainDeDemonstration,
   seedPersonnesMain,

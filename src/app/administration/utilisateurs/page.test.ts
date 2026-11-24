@@ -1,5 +1,5 @@
 import { appUrl } from '@e2e/support/helpers'
-import { administrateur } from '@/features/utilisateurs/fixtures/personas/administrateur'
+import { administrateur } from '@/features/utilisateurs/fixtures/administrateur'
 
 describe('ETQ administrateur, je filtre la liste des utilisateurs', () => {
   beforeEach(() => {

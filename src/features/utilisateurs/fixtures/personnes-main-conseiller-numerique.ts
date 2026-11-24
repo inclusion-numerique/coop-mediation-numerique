@@ -1,9 +1,9 @@
+import { conseillerInscriptionSansContrat } from '@/features/utilisateurs/fixtures/conseillers/conseiller-inscription-sans-contrat'
+import { conseillerSansLieuInscription } from '@/features/utilisateurs/fixtures/conseillers/conseiller-sans-lieu-inscription'
+import { contratRompuDeLExConseiller } from '@/features/utilisateurs/fixtures/conseillers/ex-conseiller-apres-rupture'
+import { coordinateurInscription } from '@/features/utilisateurs/fixtures/coordinateurs/coordinateur-inscription'
 import type { UtilisateurAEnregistrer } from '@/features/utilisateurs/fixtures/enregistrer-les-utilisateurs'
 import { personas } from '@/features/utilisateurs/fixtures/personas'
-import { conseillerInscriptionSansContrat } from '@/features/utilisateurs/fixtures/personas/conseiller-inscription-sans-contrat'
-import { conseillerSansLieuInscription } from '@/features/utilisateurs/fixtures/personas/conseiller-sans-lieu-inscription'
-import { coordinateurInscription } from '@/features/utilisateurs/fixtures/personas/coordinateur-inscription'
-import { contratRompuDeLExConseiller } from '@/features/utilisateurs/fixtures/personas/ex-conseiller-apres-rupture'
 import type { Prisma } from '@/generated/prisma/client'
 import { enSerie } from '@/libraries/fixtures/enSerie'
 

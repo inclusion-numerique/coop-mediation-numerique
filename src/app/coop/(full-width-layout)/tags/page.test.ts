@@ -1,5 +1,5 @@
 import { appUrl } from '@e2e/support/helpers'
-import { mediateurAvecActivite } from '@/features/utilisateurs/fixtures/personas/mediateur-avec-activite'
+import { mediateurAvecActivite } from '@/features/utilisateurs/fixtures/mediateurs/mediateur-avec-activite'
 
 describe('ETQ médiateur, je trie mes tags', () => {
   beforeEach(() => {

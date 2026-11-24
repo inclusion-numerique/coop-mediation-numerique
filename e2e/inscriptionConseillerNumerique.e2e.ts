@@ -1,5 +1,5 @@
-import { conseillerInscriptionSansContrat } from '@/features/utilisateurs/fixtures/personas/conseiller-inscription-sans-contrat'
-import { conseillerSansLieuInscription } from '@/features/utilisateurs/fixtures/personas/conseiller-sans-lieu-inscription'
+import { conseillerInscriptionSansContrat } from '@/features/utilisateurs/fixtures/conseillers/conseiller-inscription-sans-contrat'
+import { conseillerSansLieuInscription } from '@/features/utilisateurs/fixtures/conseillers/conseiller-sans-lieu-inscription'
 import { executeInscriptionFlow } from './support/executeInscriptionFlow'
 
 /**

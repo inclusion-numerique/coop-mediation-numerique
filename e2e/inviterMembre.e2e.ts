@@ -1,8 +1,8 @@
 import { appUrl } from '@e2e/support/helpers'
 import { goToMostRecentEmailReceived } from '@e2e/support/maildev'
-import { conseillerNumerique } from '@/features/utilisateurs/fixtures/personas/conseiller-numerique'
-import { coordinateurInscrit } from '@/features/utilisateurs/fixtures/personas/coordinateur-inscrit'
-import { mediateurInscription } from '@/features/utilisateurs/fixtures/personas/mediateur-inscription'
+import { conseillerNumerique } from '@/features/utilisateurs/fixtures/conseillers/conseiller-numerique'
+import { coordinateurInscrit } from '@/features/utilisateurs/fixtures/coordinateurs/coordinateur-inscrit'
+import { mediateurInscription } from '@/features/utilisateurs/fixtures/mediateurs/mediateur-inscription'
 import { nomAffiche } from '@/libraries/nom-affiche'
 
 const nomAfficheDe = (utilisateur: {

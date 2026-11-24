@@ -1,5 +1,5 @@
 import { appUrl } from '@e2e/support/helpers'
-import { coordinateurInscrit } from '@/features/utilisateurs/fixtures/personas/coordinateur-inscrit'
+import { coordinateurInscrit } from '@/features/utilisateurs/fixtures/coordinateurs/coordinateur-inscrit'
 
 describe('ETQ coordinateur, je filtre les acteurs de mon département', () => {
   beforeEach(() => {
