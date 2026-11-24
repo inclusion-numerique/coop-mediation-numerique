@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest'
+import { criteresDesCoordinationsDepuisLURL } from '@/features/activites/fixtures/criteres-depuis-l-url'
 import {
   type ActiviteDeCoordination,
   ActiviteDeCoordinationId,
   CoordinateurId,
-  criteresDesCoordinations,
   DateDActivite,
   DureeEnMinutes,
   Effectif,
@@ -67,7 +67,7 @@ const lignesDuTableau = (
 ) => {
   const { lignes, filtres } = lignesDesCoordinations({
     activites,
-    criteres: criteresDesCoordinations(parametres),
+    criteres: criteresDesCoordinationsDepuisLURL(parametres),
     tags: [TAG],
     fuseau: 'Europe/Paris',
   })

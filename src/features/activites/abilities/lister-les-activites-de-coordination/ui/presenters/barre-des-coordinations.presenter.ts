@@ -3,7 +3,7 @@ import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import {
   filtresDesCoordinations,
   type ValeursDesCoordinations,
-} from '../filtres/filtres-des-coordinations.filtre'
+} from '../../../../ui/filtres/coordinations.filtre'
 import type { OptionsDeFiltrePresentees } from './options-de-filtre.presenter'
 
 type Nomme = { readonly id: string; readonly nom: string }

@@ -156,6 +156,15 @@ export const filtreDesBeneficiaires = filtreDeRecherche({
   schema: BeneficiaireId.schema,
 })
 
+export const periodeOrdonnee = ({
+  du,
+  au,
+}: {
+  readonly du: Date | null
+  readonly au: Date | null
+}): { readonly du: Date; readonly au: Date } | null =>
+  du === null || au === null || du > au ? null : { du, au }
+
 type ValeursDesFiltres = {
   readonly du: Date | null
   readonly au: Date | null
@@ -182,10 +191,7 @@ type ValeursDesFiltres = {
 export const criteresDesFiltres = (
   valeurs: ValeursDesFiltres,
 ): CriteresDesActivites => ({
-  periode:
-    valeurs.du === null || valeurs.au === null
-      ? null
-      : { du: valeurs.du, au: valeurs.au },
+  periode: periodeOrdonnee(valeurs),
   types: (valeurs.types ?? []).map((type) => TypeDActivite(type)),
   statutsDeRendezVous: (valeurs.rdvs ?? []).map((statut) =>
     StatutDeRendezVous(statut),

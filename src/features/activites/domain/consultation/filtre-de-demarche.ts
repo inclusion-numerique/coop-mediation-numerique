@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { defineModel, type Model } from '@/libraries/model'
 
-export const FILTRES_DE_DEMARCHE = ['Avec', 'Sans'] as const
+const FILTRES_DE_DEMARCHE = ['Avec', 'Sans'] as const
 
 export const FiltreDeDemarche = defineModel(
   z.enum(FILTRES_DE_DEMARCHE).brand('FiltreDeDemarche'),

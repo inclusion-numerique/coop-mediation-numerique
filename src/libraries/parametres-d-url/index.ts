@@ -4,7 +4,6 @@ export {
   listeEnParametre,
   listeSansLaValeur,
   type Periode,
-  periodeLue,
   premiereValeur,
   requeteAvec,
   requeteDeRecherche,

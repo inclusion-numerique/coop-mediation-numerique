@@ -1,8 +1,10 @@
 import type { NextRequest } from 'next/server'
 import { classeurDeMesCoordinations } from '@/features/activites/abilities/exporter-les-activites-de-coordination/implementations/excel/classeur-de-mes-coordinations'
 import { lignesDesCoordinations } from '@/features/activites/abilities/exporter-les-activites-de-coordination/ui/presenters/lignes-des-coordinations.presenter'
-import { filtresDesCoordinations } from '@/features/activites/abilities/lister-les-activites-de-coordination/ui/filtres/filtres-des-coordinations.filtre'
-import { criteresDesFiltresDeCoordination } from '@/features/activites/ui/filtres/coordinations.filtre'
+import {
+  criteresDesFiltresDeCoordination,
+  filtresDesCoordinations,
+} from '@/features/activites/ui/filtres/coordinations.filtre'
 import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
 import { getSessionUserFromSessionToken } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
 import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementations/session/session-token-from-cookies'

@@ -50,7 +50,7 @@ import { RECHERCHER_DES_TAGS_DU_CRA_KEY } from '@/features/activites/action/rech
 import { RECHERCHER_LES_EMPLOYEUSES_DE_LA_LISTE_KEY } from '@/features/activites/action/rechercher-employeuses.key'
 import { RECHERCHER_LES_LIEUX_DES_ACTIVITES_KEY } from '@/features/activites/action/rechercher-les-lieux-des-activites.key'
 import { perimetreDeLUtilisateur } from '@/features/activites/implementations/session/perimetre'
-import { statistiquesDuPerimetreSelonLesCriteres } from '@/features/activites/implementations/statistiques-du-perimetre.binding'
+import { statistiquesDuPerimetre } from '@/features/activites/implementations/statistiques-du-perimetre.binding'
 import {
   nombreDAccompagnements,
   source,
@@ -119,7 +119,7 @@ const Page = async ({ params, searchParams }: PageProps) => {
 
   const lues = filtresDesStatistiques.charger(parametres)
   const valeurs = { ...lues, au: lues.au ?? new Date() }
-  const statistiques = statistiquesDuPerimetreSelonLesCriteres(
+  const statistiques = statistiquesDuPerimetre(
     statistiquesDesActivites.lancer,
     rendezVousAuxStatutsSql,
   )({

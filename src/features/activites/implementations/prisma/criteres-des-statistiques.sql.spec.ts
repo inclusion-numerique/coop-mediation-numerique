@@ -1,13 +1,15 @@
 import { describe, expect, it } from 'vitest'
+import { criteresDesStatistiquesDepuisLURL } from '@/features/activites/fixtures/criteres-depuis-l-url'
 import { Prisma } from '@/generated/prisma/client'
-import { criteresDesStatistiques } from '../../domain'
 import { filtreDesStatistiques } from './criteres-des-statistiques.sql'
 
 const rendezVousAuxStatuts = (statuts: readonly string[]) =>
   Prisma.sql`SELECT id FROM rendez_vous WHERE statut = ANY(${statuts})`
 
-const filtre = (parametres: Parameters<typeof criteresDesStatistiques>[0]) =>
-  filtreDesStatistiques(criteresDesStatistiques(parametres), {
+const filtre = (
+  parametres: Parameters<typeof criteresDesStatistiquesDepuisLURL>[0],
+) =>
+  filtreDesStatistiques(criteresDesStatistiquesDepuisLURL(parametres), {
     rendezVousAuxStatuts,
   })
 

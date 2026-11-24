@@ -36,11 +36,3 @@ const apparence =
 
 export const apparenceDuStatut = (statut: StatutDeRendezVous): Apparence =>
   apparence(APPARENCE)(statut)
-
-export type StatutDeRendezVousDansLURL =
-  | 'unknown'
-  | 'past'
-  | 'seen'
-  | 'revoked'
-  | 'excused'
-  | 'noshow'

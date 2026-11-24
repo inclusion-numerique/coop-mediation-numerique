@@ -14,10 +14,6 @@ export const typeActivitePluralLabels: {
   Collectif: 'Participants aux ateliers',
 }
 
-export const typeActiviteSlugValues = ['individuel', 'collectif'] as const
-
-export type TypeActiviteSlug = (typeof typeActiviteSlugValues)[number]
-
 export const typeActiviteLabels: {
   [key in TypeActivite]: string
 } = {

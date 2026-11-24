@@ -1,8 +1,8 @@
 import {
   type BeneficiaireId,
   type ChronologieDesActivites,
+  CRITERES_VIDES,
   contenuDeLaChronologie,
-  criteresDesActivites,
   type MediateurId,
   OrdreChronologique,
   type Pagination,
@@ -26,7 +26,7 @@ export const listerLHistoriqueDUnBeneficiaire = ({
   readonly rendezVous: RendezVousALister | null
   readonly rendezVousLies: RendezVousLies
 }): Promise<ChronologieDesActivites> => {
-  const criteres = criteresDesActivites({ beneficiaires: beneficiaireId })
+  const criteres = { ...CRITERES_VIDES, beneficiaires: [beneficiaireId] }
   return listerMesActivites({
     mediateurId,
     criteres,

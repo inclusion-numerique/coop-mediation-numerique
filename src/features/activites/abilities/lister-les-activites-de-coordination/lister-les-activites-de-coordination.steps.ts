@@ -13,24 +13,23 @@ import {
 } from '@/features/activites/activites.cucumber'
 import {
   CoordinateurId,
-  criteresDesCoordinations,
   LignesParPage,
   NumeroDePage,
-  type ParametresDesCoordinations,
 } from '@/features/activites/domain'
+import { criteresDesCoordinationsDepuisLURL } from '@/features/activites/fixtures/criteres-depuis-l-url'
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
 
 let listees: ActivitesDeCoordinationListees | undefined
 let options: OptionsDeFiltre | undefined
 
 const lister = async (
-  parametres: ParametresDesCoordinations,
+  parametres: Parameters<typeof criteresDesCoordinationsDepuisLURL>[0],
   page = 1,
   lignesParPage = 50,
 ) => {
   listees = await listerLesActivitesDeCoordination({
     coordinateurId: CoordinateurId(coordinationsSemees().coordinateurId),
-    criteres: criteresDesCoordinations(parametres),
+    criteres: criteresDesCoordinationsDepuisLURL(parametres),
     pagination: {
       page: NumeroDePage(page),
       lignesParPage: LignesParPage(lignesParPage),

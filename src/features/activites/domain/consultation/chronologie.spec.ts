@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
+import { criteresDesActivitesDepuisLURL } from '@/features/activites/fixtures/criteres-depuis-l-url'
 import { contenuDeLaChronologie } from './chronologie'
-import { criteresDesActivites } from './criteres-des-activites'
 
 const connecte = { _tag: 'Connecte', affichesDansLaListe: true } as const
 const masques = { _tag: 'Connecte', affichesDansLaListe: false } as const
@@ -32,7 +32,10 @@ describe('contenu de la chronologie', () => {
     ],
   ] as const)('%s', (_, parametres, compte, attendu) => {
     expect(
-      contenuDeLaChronologie(criteresDesActivites(parametres), compte),
+      contenuDeLaChronologie(
+        criteresDesActivitesDepuisLURL(parametres),
+        compte,
+      ),
     ).toBe(attendu)
   })
 })

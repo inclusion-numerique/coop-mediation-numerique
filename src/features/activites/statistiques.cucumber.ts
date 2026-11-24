@@ -2,6 +2,7 @@ import assert from 'node:assert'
 import { After, type DataTable, Given } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { criteresDesStatistiquesDepuisLURL } from '@/features/activites/fixtures/criteres-depuis-l-url'
 import {
   Genre,
   Materiel,
@@ -13,7 +14,6 @@ import {
 } from '@/generated/prisma/client'
 import {
   CoordinateurId,
-  criteresDesStatistiques,
   MediateurId,
   type PerimetreDesStatistiques,
 } from './domain'
@@ -366,7 +366,7 @@ export const demandeDeStatistiques = (
   parametres: Readonly<Record<string, string>> = {},
 ): DemandeDeStatistiques => ({
   perimetre: perimetreDe(nom),
-  criteres: criteresDesStatistiques(parametres),
+  criteres: criteresDesStatistiquesDepuisLURL(parametres),
   rendezVousAuxStatuts: rendezVousSemesAuxStatuts,
 })
 

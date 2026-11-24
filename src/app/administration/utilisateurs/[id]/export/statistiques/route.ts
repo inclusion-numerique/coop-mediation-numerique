@@ -24,7 +24,7 @@ import { parTagPresentes } from '@/features/activites/abilities/repartir-les-acc
 import { presenceDeCrasV1 } from '@/features/activites/abilities/verifier-la-presence-de-cras-v1/implementations/presence-de-cras-v1.binding'
 import type { PerimetreDesStatistiques } from '@/features/activites/domain'
 import { perimetreDeLUtilisateur } from '@/features/activites/implementations/session/perimetre'
-import { statistiquesDuPerimetreSelonLesCriteres } from '@/features/activites/implementations/statistiques-du-perimetre.binding'
+import { statistiquesDuPerimetre } from '@/features/activites/implementations/statistiques-du-perimetre.binding'
 import {
   source,
   sourceOptionnelle,
@@ -90,7 +90,7 @@ const classeurDuPerimetre = async (
 ) => {
   const [statistiques, barre] = await Promise.all([
     statistiquesDesActivites.rassembler(
-      statistiquesDuPerimetreSelonLesCriteres(
+      statistiquesDuPerimetre(
         statistiquesDesActivites.lancer,
         rendezVousAuxStatutsSql,
       )({

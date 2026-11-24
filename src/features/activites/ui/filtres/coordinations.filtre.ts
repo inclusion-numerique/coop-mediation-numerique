@@ -1,9 +1,12 @@
+import { composerLesFiltres } from '@/libraries/filtres/definition/composition'
 import { filtreDeChoix } from '@/libraries/filtres/definition/filtre-de-choix'
+import { filtreDePeriode } from '@/libraries/filtres/definition/filtre-de-periode'
 import {
   type CriteresDesCoordinations,
   type TagId,
   TypeDActiviteDeCoordination,
 } from '../../domain'
+import { filtreDesTags, periodeOrdonnee } from './activites.filtre'
 
 export const filtreDuTypeDeCoordination = filtreDeChoix({
   titre: 'Type de coordination',
@@ -25,10 +28,17 @@ type ValeursDesFiltres = {
 export const criteresDesFiltresDeCoordination = (
   valeurs: ValeursDesFiltres,
 ): CriteresDesCoordinations => ({
-  periode:
-    valeurs.du === null || valeurs.au === null
-      ? null
-      : { du: valeurs.du, au: valeurs.au },
+  periode: periodeOrdonnee(valeurs),
   types: valeurs.types.map((type) => TypeDActiviteDeCoordination(type)),
   tags: valeurs.tags,
 })
+
+export const filtresDesCoordinations = composerLesFiltres(
+  filtreDePeriode,
+  filtreDuTypeDeCoordination,
+  filtreDesTags,
+)
+
+export type ValeursDesCoordinations = ReturnType<
+  typeof filtresDesCoordinations.charger
+>

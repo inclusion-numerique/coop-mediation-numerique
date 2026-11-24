@@ -5,7 +5,6 @@ import {
   type MediateurId,
   type OrdreChronologique,
   type Pagination,
-  parametresDesActivitesDe,
 } from '../../../../domain'
 import {
   basculeDesRendezVous,
@@ -42,6 +41,7 @@ type DemandeDeMesActivites = {
   readonly mediateurId: MediateurId
   readonly parametres: ParametresDeLaListe
   readonly criteres: CriteresDesActivites
+  readonly parametresDesFiltres: Readonly<Record<string, string>>
   readonly compteRdv: CompteRendezVous | null
   readonly timezone: string
   readonly chronologie: LireLaChronologie
@@ -51,6 +51,7 @@ export const maListeDActivites = ({
   mediateurId,
   parametres,
   criteres,
+  parametresDesFiltres,
   compteRdv,
   timezone,
   chronologie: lireLaChronologie,
@@ -87,7 +88,7 @@ export const maListeDActivites = ({
       aucuneActivite: lue.elements.length === 0 && !filtree,
     })),
     parametres: {
-      ...parametresDesActivitesDe(criteres),
+      ...parametresDesFiltres,
       ...parametresDeNavigation(parametres),
     },
     bascule: basculeDesRendezVous(compte),
@@ -98,6 +99,7 @@ export const monTableauDActivites = ({
   mediateurId,
   parametres,
   criteres,
+  parametresDesFiltres,
   compteRdv,
   timezone,
   chronologie: lireLaChronologie,
@@ -131,7 +133,7 @@ export const monTableauDActivites = ({
       lignesParPage: pagination.lignesParPage,
     })),
     parametres: {
-      ...parametresDesActivitesDe(criteres),
+      ...parametresDesFiltres,
       ...parametresDeNavigation(parametres),
     },
   }

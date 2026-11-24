@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { defineModel, type Model } from '@/libraries/model'
 
-export const FILTRES_DE_DISPOSITIF = [
+const FILTRES_DE_DISPOSITIF = [
   'ConseillersNumeriques',
   'HorsDispositif',
 ] as const

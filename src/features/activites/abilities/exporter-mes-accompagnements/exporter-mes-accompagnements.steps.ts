@@ -2,7 +2,8 @@ import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { CoordinateurId, criteresDesActivites, MediateurId } from '../../domain'
+import { criteresDesActivitesDepuisLURL } from '@/features/activites/fixtures/criteres-depuis-l-url'
+import { CoordinateurId, MediateurId } from '../../domain'
 import type { Demandeur, ExportDesAccompagnements } from './domain'
 import { exporterMesAccompagnements } from './implementations/prisma/accompagnements-a-exporter.query'
 import { nomsDesFiltresExportes } from './implementations/prisma/noms-des-filtres-exportes.query'
@@ -51,7 +52,7 @@ const nommer = async (parametres: Record<string, string>) => {
   assert.ok(contexte.demandeur, 'Aucun demandeur semé')
   contexte.noms = await nomsDesFiltresExportes({
     demandeur: contexte.demandeur,
-    criteres: criteresDesActivites(parametres),
+    criteres: criteresDesActivitesDepuisLURL(parametres),
     lieuxDesActivites: recherche('lieux', []),
     communesEtDepartements: recherche('territoire', {
       communesOptions: [],
@@ -299,7 +300,7 @@ const exporter = async (parametres: Record<string, string>) => {
   assert.ok(contexte.demandeur, 'Aucun demandeur semé')
   contexte.exporte = await exporterMesAccompagnements({
     demandeur: contexte.demandeur,
-    criteres: criteresDesActivites(parametres),
+    criteres: criteresDesActivitesDepuisLURL(parametres),
   })
 }
 

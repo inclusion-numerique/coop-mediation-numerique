@@ -134,6 +134,10 @@ export const composerLesFiltres = <
     sansFiltres: (courante: AdresseCourante): string => base(courante, true),
     requete: (valeurs: Partial<ValeursComposees<Fs>>): string =>
       serialiser(valeurs as never).replace(/^\?/, ''),
+    parametresDe: (
+      valeurs: Partial<ValeursComposees<Fs>>,
+    ): Readonly<Record<string, string>> =>
+      Object.fromEntries(new URLSearchParams(serialiser(valeurs as never))),
     etiquettes: (
       courante: AdresseCourante,
       valeurs: ValeursComposees<Fs>,

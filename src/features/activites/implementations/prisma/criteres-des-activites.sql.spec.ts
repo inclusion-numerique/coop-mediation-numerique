@@ -1,9 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { criteresDesActivites } from '../../domain'
+import { criteresDesActivitesDepuisLURL } from '@/features/activites/fixtures/criteres-depuis-l-url'
 import { filtreDesActivites } from './criteres-des-activites.sql'
 
-const filtre = (parametres: Parameters<typeof criteresDesActivites>[0]) =>
-  filtreDesActivites(criteresDesActivites(parametres))
+const filtre = (
+  parametres: Parameters<typeof criteresDesActivitesDepuisLURL>[0],
+) => filtreDesActivites(criteresDesActivitesDepuisLURL(parametres))
 
 describe('filtre SQL des activités', () => {
   it('ne restreint rien sans critère', () => {

@@ -29,17 +29,14 @@ export {
 } from './consultation/chronologie'
 export {
   type CriteresDesActivites,
-  criteresDesActivites,
   estFiltre as estFiltreDesActivites,
-  parametresDe as parametresDesActivitesDe,
 } from './consultation/criteres-des-activites'
 export {
   type CriteresDesCoordinations,
-  criteresDesCoordinations,
   estFiltre,
-  type ParametresDesCoordinations,
   type Periode,
 } from './consultation/criteres-des-coordinations'
+export { CRITERES_VIDES } from './consultation/criteres-vides'
 export { FiltreDOrigine } from './consultation/filtre-d-origine'
 export { FiltreDeDemarche } from './consultation/filtre-de-demarche'
 export { FiltreDeDispositif } from './consultation/filtre-de-dispositif'
@@ -191,7 +188,6 @@ export {
 } from './statistiques/commune-comptee'
 export {
   type CriteresDesStatistiques,
-  criteresDesStatistiques,
   type PeriodeDesStatistiques,
 } from './statistiques/criteres-des-statistiques'
 export { criteresSurLaPeriode } from './statistiques/criteres-sur-la-periode'

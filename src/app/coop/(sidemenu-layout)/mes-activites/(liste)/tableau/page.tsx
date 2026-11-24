@@ -77,6 +77,7 @@ const MesActivitesTableauRoute = async ({
         mediateurId,
         parametres,
         criteres: criteresDesFiltres(valeurs),
+        parametresDesFiltres: filtresDeMesActivites.parametresDe(valeurs),
         compteRdv: user.rdvAccount,
         timezone: user.timezone,
         chronologie: chronologieAvec({

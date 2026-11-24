@@ -19,15 +19,12 @@ import { repartitionPresentee } from '@/features/activites/abilities/repartir-le
 import { repartirLesAccompagnementsParTag } from '@/features/activites/abilities/repartir-les-accompagnements-par-tag/implementations/prisma/accompagnements-par-tag.query'
 import { parTagPresentes } from '@/features/activites/abilities/repartir-les-accompagnements-par-tag/ui/presenters/par-tag.presenter'
 import { presenceDeCrasV1 } from '@/features/activites/abilities/verifier-la-presence-de-cras-v1/implementations/presence-de-cras-v1.binding'
+import { criteresDesStatistiquesDepuisLURL } from '@/features/activites/fixtures/criteres-depuis-l-url'
 import { Prisma } from '@/generated/prisma/client'
 import { computeProportion } from '@/libraries/proportions'
 import { partsFixees } from '@/libraries/proportions/parts-fixees'
 import type { QuantifiedShare } from '@/libraries/proportions/quantifiedShare'
-import {
-  criteresDesStatistiques,
-  MediateurId,
-  perimetreDuDemandeur,
-} from './domain'
+import { MediateurId, perimetreDuDemandeur } from './domain'
 import { crasDeDemonstration } from './fixtures/cras-de-demonstration'
 import { upsertCraFixtures } from './fixtures/enregistrer-les-cras'
 import { statistiquesDuPerimetre } from './implementations/statistiques-du-perimetre.binding'
@@ -254,7 +251,7 @@ const effacerLeJeuDuTest = async () => {
   await prismaClient.lieuInclusion.deleteMany({ where: { id: mediateque.id } })
 }
 
-type ActivitesFilters = Parameters<typeof criteresDesStatistiques>[0]
+type ActivitesFilters = Parameters<typeof criteresDesStatistiquesDepuisLURL>[0]
 
 const aucunRendezVous = () => Prisma.sql`SELECT NULL WHERE FALSE`
 
@@ -277,7 +274,7 @@ const statistiquesDuMediateur = ({
       aucunRendezVous,
     )({
       perimetre,
-      filtres: activitesFilters,
+      criteres: criteresDesStatistiquesDepuisLURL(activitesFilters),
       fin: graphOptions.fin,
     }),
   )

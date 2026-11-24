@@ -2,10 +2,10 @@ import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { criteresDesActivitesDepuisLURL } from '@/features/activites/fixtures/criteres-depuis-l-url'
 import {
   type ChronologieDesActivites,
   contenuDeLaChronologie,
-  criteresDesActivites,
   MediateurId,
   ordreChronologiqueLu,
   paginationLue,
@@ -154,7 +154,7 @@ Given(
 )
 
 const lister = async (parametres: Record<string, string>) => {
-  const criteres = criteresDesActivites(parametres)
+  const criteres = criteresDesActivitesDepuisLURL(parametres)
   chronologie = await listerMesActivites({
     mediateurId: MediateurId(semisCourant().mediateurId),
     criteres,

@@ -1,30 +1,48 @@
 import { describe, expect, it } from 'vitest'
-import { composerLesFiltres } from '@/libraries/filtres/definition/composition'
-import { filtreDePeriode } from '@/libraries/filtres/definition/filtre-de-periode'
-import { criteresDesCoordinations } from '../../domain'
-import { filtreDesTags } from './activites.filtre'
 import {
   criteresDesFiltresDeCoordination,
-  filtreDuTypeDeCoordination,
+  filtresDesCoordinations,
 } from './coordinations.filtre'
 
-const filtres = composerLesFiltres(
-  filtreDePeriode,
-  filtreDuTypeDeCoordination,
-  filtreDesTags,
-)
+const TAG = '6f1c2a4e-8b3d-4c5e-9f7a-1b2c3d4e5f60'
 
-const URL_DES_COORDINATIONS = {
-  du: '2026-01-01',
-  au: '2026-03-31',
-  types: 'Animation,Inconnu,Evenement',
-  tags: 'a6b1c9d2-7e3f-4a5b-8c9d-0e1f2a3b4c5d,pas-un-uuid',
-}
+const criteres = (parametres: Record<string, string>) =>
+  criteresDesFiltresDeCoordination(filtresDesCoordinations.charger(parametres))
 
 describe('filtres des coordinations', () => {
-  it('lisent une URL des coordinations comme le faisait le domaine', () => {
+  it('ne filtrent rien sans paramètre', () => {
+    expect(criteres({})).toEqual({ periode: null, types: [], tags: [] })
+  })
+
+  it('retiennent les types et les tags valides, écartent les autres', () => {
     expect(
-      criteresDesFiltresDeCoordination(filtres.charger(URL_DES_COORDINATIONS)),
-    ).toStrictEqual(criteresDesCoordinations(URL_DES_COORDINATIONS))
+      criteres({
+        types: 'Animation,Inconnu,Partenariat',
+        tags: `${TAG},pas-un-tag`,
+      }),
+    ).toEqual({
+      periode: null,
+      types: ['Animation', 'Partenariat'],
+      tags: [TAG],
+    })
+  })
+
+  it('retiennent une période complète et dans le bon ordre', () => {
+    expect(criteres({ du: '2026-01-01', au: '2026-03-31' }).periode).toEqual({
+      du: new Date('2026-01-01'),
+      au: new Date('2026-03-31'),
+    })
+  })
+
+  it('écartent une période incomplète', () => {
+    expect(criteres({ du: '2026-01-01' }).periode).toBeNull()
+  })
+
+  it('écartent une période inversée', () => {
+    expect(criteres({ du: '2026-03-31', au: '2026-01-01' }).periode).toBeNull()
+  })
+
+  it('écartent une date invalide', () => {
+    expect(criteres({ du: 'hier', au: '2026-01-01' }).periode).toBeNull()
   })
 })

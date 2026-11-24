@@ -7,13 +7,12 @@ import { coordinationsSemees } from '@/features/activites/activites.cucumber'
 import {
   type ActiviteDeCoordination,
   CoordinateurId,
-  criteresDesCoordinations,
   NomDeTag,
-  type ParametresDesCoordinations,
   type TagDeLActivite,
   TagId,
   type TagsUtilisables,
 } from '@/features/activites/domain'
+import { criteresDesCoordinationsDepuisLURL } from '@/features/activites/fixtures/criteres-depuis-l-url'
 
 let exportees: readonly ActiviteDeCoordination[] = []
 let rappeles: readonly TagDeLActivite[] = []
@@ -26,8 +25,10 @@ const tagsEnBase: TagsUtilisables = async (tagIds) =>
     })
   ).map(({ id, nom }) => ({ id: TagId(id), nom: NomDeTag(nom) }))
 
-const exporter = async (parametres: ParametresDesCoordinations) => {
-  const criteres = criteresDesCoordinations(parametres)
+const exporter = async (
+  parametres: Parameters<typeof criteresDesCoordinationsDepuisLURL>[0],
+) => {
+  const criteres = criteresDesCoordinationsDepuisLURL(parametres)
   const [activites, tags] = await Promise.all([
     exporterLesActivitesDeCoordination({
       coordinateurId: CoordinateurId(coordinationsSemees().coordinateurId),

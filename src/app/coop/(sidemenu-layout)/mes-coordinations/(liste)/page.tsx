@@ -7,13 +7,15 @@ import { SUPPRIMER_LA_COORDINATION_KEY } from '@/features/activites/abilities/li
 import { listerLesActivitesDeCoordination } from '@/features/activites/abilities/lister-les-activites-de-coordination/implementations/prisma/activites-de-coordination.query'
 import { optionsDeFiltre } from '@/features/activites/abilities/lister-les-activites-de-coordination/implementations/prisma/options-de-filtre.query'
 import { BarreDesCoordinations } from '@/features/activites/abilities/lister-les-activites-de-coordination/ui/components/BarreDesCoordinations'
-import { filtresDesCoordinations } from '@/features/activites/abilities/lister-les-activites-de-coordination/ui/filtres/filtres-des-coordinations.filtre'
 import { MesCoordinationsPage } from '@/features/activites/abilities/lister-les-activites-de-coordination/ui/pages/MesCoordinationsPage'
 import { barreDesCoordinations } from '@/features/activites/abilities/lister-les-activites-de-coordination/ui/presenters/barre-des-coordinations.presenter'
 import { mesActivitesDeCoordination } from '@/features/activites/abilities/lister-les-activites-de-coordination/ui/presenters/page-de-mes-coordinations.presenter'
 import { tagsChoisis } from '@/features/activites/abilities/lister-les-options-de-filtre-des-activites/implementations/prisma/tags-choisis.query'
 import { RECHERCHER_DES_TAGS_DU_CRA_KEY } from '@/features/activites/action/rechercher-des-tags.key'
-import { criteresDesFiltresDeCoordination } from '@/features/activites/ui/filtres/coordinations.filtre'
+import {
+  criteresDesFiltresDeCoordination,
+  filtresDesCoordinations,
+} from '@/features/activites/ui/filtres/coordinations.filtre'
 import { isMediateur } from '@/features/authentification/domain/profils-d-utilisateur'
 import { authenticateCoordinateur } from '@/features/authentification/implementations/session/authenticate-user'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'

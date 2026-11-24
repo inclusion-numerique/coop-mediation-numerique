@@ -7,8 +7,6 @@ export type Periode = {
   readonly au: Date
 }
 
-const JourIso = z.iso.date().transform((jour) => new Date(jour))
-
 export const premiereValeur = (
   valeur: ValeurDeParametre,
 ): string | undefined => (typeof valeur === 'string' ? valeur : valeur?.at(0))
@@ -41,17 +39,6 @@ export const valeursLues = <S extends z.ZodType>(
       const lue = valeurLue(schema, element)
       return lue === null ? [] : [lue]
     })
-
-export const periodeLue = (
-  du: ValeurDeParametre,
-  au: ValeurDeParametre,
-): Periode | null => {
-  const debut = valeurLue(JourIso, premiereValeur(du))
-  const fin = valeurLue(JourIso, premiereValeur(au))
-  return debut === null || fin === null || debut > fin
-    ? null
-    : { du: debut, au: fin }
-}
 
 type Changements = Readonly<Record<string, string | null | undefined>>
 

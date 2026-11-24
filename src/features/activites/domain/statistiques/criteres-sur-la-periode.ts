@@ -1,3 +1,4 @@
+import { CRITERES_VIDES } from '../consultation/criteres-vides'
 import type {
   CriteresDesStatistiques,
   PeriodeDesStatistiques,
@@ -5,20 +6,4 @@ import type {
 
 export const criteresSurLaPeriode = (
   periode: PeriodeDesStatistiques,
-): CriteresDesStatistiques => ({
-  periode,
-  types: [],
-  statutsDeRendezVous: [],
-  mediateurs: [],
-  beneficiaires: [],
-  communes: [],
-  departements: [],
-  lieux: [],
-  thematiques: [],
-  demarche: null,
-  tags: [],
-  employeuses: [],
-  dispositif: null,
-  origine: null,
-  source: null,
-})
+): CriteresDesStatistiques => ({ ...CRITERES_VIDES, periode })

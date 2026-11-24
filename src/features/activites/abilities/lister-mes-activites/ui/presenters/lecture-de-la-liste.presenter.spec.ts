@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { criteresDesActivites } from '../../../../domain'
+import { criteresDesActivitesDepuisLURL } from '@/features/activites/fixtures/criteres-depuis-l-url'
 import {
   basculeDesRendezVous,
   compteConnecte,
@@ -14,27 +14,27 @@ const compte = {
   invalidWebhookOrganisationIds: [],
 }
 
-const sansCritere = criteresDesActivites({})
+const sansCritere = criteresDesActivitesDepuisLURL({})
 
 describe('lecture de la liste', () => {
   it('affiche les rendez-vous demandés', () => {
     expect(
-      lectureDeLaListe({ 'voir-rdvs': '1' }, criteresDesActivites({}))
+      lectureDeLaListe({ 'voir-rdvs': '1' }, criteresDesActivitesDepuisLURL({}))
         .voirLesRdvs,
     ).toBe(true)
   })
 
   it("n'affiche pas les rendez-vous sans demande", () => {
-    expect(lectureDeLaListe({}, criteresDesActivites({})).voirLesRdvs).toBe(
-      false,
-    )
+    expect(
+      lectureDeLaListe({}, criteresDesActivitesDepuisLURL({})).voirLesRdvs,
+    ).toBe(false)
   })
 
   it('reconnaît une liste filtrée', () => {
     expect(
       lectureDeLaListe(
         { types: 'individuel' },
-        criteresDesActivites({ types: 'individuel' }),
+        criteresDesActivitesDepuisLURL({ types: 'individuel' }),
       ).filtree,
     ).toBe(true)
   })

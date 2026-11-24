@@ -164,6 +164,14 @@ describe('composition de filtres', () => {
     expect(filtres.requete(filtres.charger(parametres))).toBe('types=collectif')
   })
 
+  it('rend les paramètres des seuls filtres', () => {
+    const parametres = { types: 'collectif', source: 'v1', page: '2' }
+    expect(filtres.parametresDe(filtres.charger(parametres))).toStrictEqual({
+      types: 'collectif',
+      source: 'v1',
+    })
+  })
+
   it('construit l’adresse d’une autre page avec les mêmes filtres', () => {
     const parametres = { types: 'collectif', page: '2' }
     expect(
