@@ -76,12 +76,15 @@ Given('un lieu partagé où exerce un médiateur visible', async () => {
   await semerUnLieu(true)
 })
 
+const lieuSeme = (): string => {
+  if (semis.lieuId === undefined) throw new Error('Aucun lieu semé')
+  return semis.lieuId
+}
+
 Given("un lieu partagé où aucun médiateur n'a jamais exercé", async () => {
   await semerUnLieu(true)
   await prismaClient.mediateurEnActivite.deleteMany({
-    where: {
-      ...(semis.lieuId === undefined ? {} : { structureId: semis.lieuId }),
-    },
+    where: { structureId: lieuSeme() },
   })
 })
 
@@ -94,9 +97,7 @@ Given("ce lieu n'est pas partagé sur la cartographie", async () => {
 
 Given("ce médiateur s'est retiré du lieu", async () => {
   await prismaClient.mediateurEnActivite.updateMany({
-    where: {
-      ...(semis.lieuId === undefined ? {} : { structureId: semis.lieuId }),
-    },
+    where: { structureId: lieuSeme() },
     data: { fin: new Date() },
   })
 })

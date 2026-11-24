@@ -91,14 +91,16 @@ Given('seul le lieu conservé est publié sur la carte nationale', async () => {
   await publier([semis.conserveId])
 })
 
-const poserUnReferent = (id: string | undefined, nom: string) =>
-  prismaClient.lieuInclusion.updateMany({
-    where: { ...(id === undefined ? {} : { id }) },
+const poserUnReferent = (id: string | undefined, nom: string) => {
+  if (id === undefined) throw new Error('Aucun lieu semé pour le référent')
+  return prismaClient.lieuInclusion.updateMany({
+    where: { id },
     data: {
       nomReferent: nom,
       courrielReferent: `${nom.toLowerCase()}@example.com`,
     },
   })
+}
 
 Given('seule la fiche à absorber porte un référent', async () => {
   await poserUnReferent(semis.absorbeId, 'Absorbe')
