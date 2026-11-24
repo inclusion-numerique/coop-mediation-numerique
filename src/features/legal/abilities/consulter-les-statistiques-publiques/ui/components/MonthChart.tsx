@@ -88,7 +88,7 @@ export const MonthChart = ({
   chartColors: { fill: string }[]
   series: ChartSerie[]
   counts: DonneesDuGraphique[]
-  runningTotal?: DonneesDuGraphique[]
+  runningTotal?: DonneesDuGraphique[] | undefined
   showCumulativeToggle?: boolean
 }) => {
   const [isCumulative, setIsCumulative] = useState(false)
@@ -140,7 +140,9 @@ export const MonthChart = ({
       <div style={{ height: 240, marginLeft: -32 }}>
         <ResponsiveContainer width="100%" height="100%">
           {isCumulative ? (
-            <AreaChart data={runningTotal}>
+            <AreaChart
+              {...(runningTotal === undefined ? {} : { data: runningTotal })}
+            >
               <CartesianGrid strokeDasharray="3 3" vertical={false} />
               {StatisticsTooltip({ tooltipLabelDataKey, legends })}
               <XAxis
