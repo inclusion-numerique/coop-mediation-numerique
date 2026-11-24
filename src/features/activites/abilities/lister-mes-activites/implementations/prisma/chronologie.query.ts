@@ -24,7 +24,7 @@ import {
   type RendezVousLies,
   rendezVousDeLaChronologie,
   type StatutFourni,
-} from '../../../../implementations/prisma/rendez-vous-fournis'
+} from '../../../../implementations/prisma/rendez-vous-fournis.transfer'
 
 export type RendezVousALister = {
   readonly comptes: readonly number[]

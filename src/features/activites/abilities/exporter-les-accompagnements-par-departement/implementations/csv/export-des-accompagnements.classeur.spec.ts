@@ -5,7 +5,7 @@ import { Jour, NombreDAccompagnements } from '../../domain'
 import {
   exportDesAccompagnementsCsv,
   nomDuFichierDExport,
-} from './export-des-accompagnements'
+} from './export-des-accompagnements.classeur'
 
 describe('exportDesAccompagnementsCsv', () => {
   it('écrit une ligne par département sous l’en-tête', () => {

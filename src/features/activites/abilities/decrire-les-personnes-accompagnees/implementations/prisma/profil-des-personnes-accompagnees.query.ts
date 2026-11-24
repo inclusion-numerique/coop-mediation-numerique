@@ -11,7 +11,7 @@ import {
   type DemandeDeStatistiques,
   personneAccompagnee,
 } from '../../../../implementations/prisma/statistiques.sql'
-import { valeurEnBase } from '../../../../implementations/prisma/valeur-en-base'
+import { valeurEnBase } from '../../../../implementations/prisma/valeur-en-base.transfer'
 import {
   AGE_AVANT_LA_TRANCHE_SUIVANTE,
   PREMIERE_ANNEE_DE_NAISSANCE,

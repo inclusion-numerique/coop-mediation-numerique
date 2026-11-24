@@ -8,7 +8,7 @@ import {
   type Pagination,
   type RendezVousDuCompte,
 } from '../../../../domain'
-import type { RendezVousLies } from '../../../../implementations/prisma/rendez-vous-fournis'
+import type { RendezVousLies } from '../../../../implementations/prisma/rendez-vous-fournis.transfer'
 import { listerMesActivites, type RendezVousALister } from './chronologie.query'
 
 export const listerLHistoriqueDUnBeneficiaire = ({

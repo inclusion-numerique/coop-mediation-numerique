@@ -10,7 +10,7 @@ import {
   activiteConsulteeSelect,
   rdvIdsDes,
 } from './activite-consultee.transfer'
-import type { RendezVousLies } from './rendez-vous-fournis'
+import type { RendezVousLies } from './rendez-vous-fournis.transfer'
 
 export const lireUneActiviteDeMediation = async ({
   id,

@@ -4,7 +4,7 @@ import { activiteExposee } from '@/features/activites/abilities/exposer-les-acti
 import {
   criteresDExposition,
   curseurDActivite,
-} from '@/features/activites/abilities/exposer-les-activites/implementations/api/criteres-d-exposition'
+} from '@/features/activites/abilities/exposer-les-activites/implementations/api/criteres-d-exposition.transfer'
 import { activitesExposees } from '@/features/activites/abilities/exposer-les-activites/implementations/prisma/activites-exposees.query'
 import {
   withApiV1Errors,

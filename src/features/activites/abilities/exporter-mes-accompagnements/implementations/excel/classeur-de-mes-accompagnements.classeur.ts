@@ -3,7 +3,7 @@ import { tagsUtilisablesDepuis } from '../../../../domain/fournisseurs-de-la-sai
 import { demandeurDe, type ExportDesAccompagnements } from '../../domain'
 import { exporterMesAccompagnements } from '../prisma/accompagnements-a-exporter.query'
 import { nomsDesFiltresExportes } from '../prisma/noms-des-filtres-exportes.query'
-import { classeurDesAccompagnements } from './classeur-des-accompagnements'
+import { classeurDesAccompagnements } from './classeur-des-accompagnements.classeur'
 
 type Fournisseurs = Pick<
   Parameters<typeof nomsDesFiltresExportes>[0],

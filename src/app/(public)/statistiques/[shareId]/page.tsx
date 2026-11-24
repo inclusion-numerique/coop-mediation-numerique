@@ -49,7 +49,7 @@ import { presenceDeCrasV1 } from '@/features/activites/abilities/verifier-la-pre
 import { RECHERCHER_DES_TAGS_DU_CRA_KEY } from '@/features/activites/action/rechercher-des-tags.key'
 import { RECHERCHER_LES_EMPLOYEUSES_DE_LA_LISTE_KEY } from '@/features/activites/action/rechercher-employeuses.key'
 import { RECHERCHER_LES_LIEUX_DES_ACTIVITES_KEY } from '@/features/activites/action/rechercher-les-lieux-des-activites.key'
-import { perimetreDeLUtilisateur } from '@/features/activites/implementations/session/perimetre'
+import { perimetreDeLUtilisateur } from '@/features/activites/implementations/session/perimetre.query'
 import { statistiquesDuPerimetre } from '@/features/activites/implementations/statistiques-du-perimetre.binding'
 import {
   nombreDAccompagnements,

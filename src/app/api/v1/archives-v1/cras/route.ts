@@ -1,7 +1,7 @@
 import { routeBuilder } from '@arckit/nextjs/route'
 import { NextResponse } from 'next/server'
 import { craV1Expose } from '@/features/activites/abilities/exposer-les-cras-v1/implementations/api/cra-v1-expose.transfer'
-import { curseurDeCraV1 } from '@/features/activites/abilities/exposer-les-cras-v1/implementations/api/curseur-de-cra-v1'
+import { curseurDeCraV1 } from '@/features/activites/abilities/exposer-les-cras-v1/implementations/api/curseur-de-cra-v1.params'
 import { crasV1Exposes } from '@/features/activites/abilities/exposer-les-cras-v1/implementations/prisma/cras-v1-exposes.query'
 import {
   withApiV1Errors,

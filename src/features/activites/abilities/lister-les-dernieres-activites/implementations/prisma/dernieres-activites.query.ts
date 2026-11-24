@@ -9,7 +9,7 @@ import {
   activiteConsulteeSelect,
   rdvIdsDes,
 } from '../../../../implementations/prisma/activite-consultee.transfer'
-import type { RendezVousLies } from '../../../../implementations/prisma/rendez-vous-fournis'
+import type { RendezVousLies } from '../../../../implementations/prisma/rendez-vous-fournis.transfer'
 
 const NOMBRE_DE_DERNIERES_ACTIVITES = 3
 

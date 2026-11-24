@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { ZodError } from 'zod'
-import { curseurDeCraV1 } from './curseur-de-cra-v1'
+import { curseurDeCraV1 } from './curseur-de-cra-v1.params'
 
 describe('curseurDeCraV1', () => {
   it('lit la date de création du dernier CRA lu', () => {

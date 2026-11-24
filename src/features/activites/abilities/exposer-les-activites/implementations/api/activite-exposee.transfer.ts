@@ -12,7 +12,7 @@ import {
   thematiqueApiValues,
   typeActiviteApiValues,
   typeLieuApiValues,
-} from './valeurs-de-l-api'
+} from './valeurs-de-l-api.transfer'
 
 type Genre = (typeof GENRES)[number]
 type TrancheAge = (typeof TRANCHES_D_AGE)[number]

@@ -6,7 +6,7 @@ import { RechercherLesEmployeusesDesActivitesValidation } from '@/features/activ
 import { rechercherLesEmployeusesDesActivites } from '@/features/activites/abilities/rechercher-les-employeuses-des-activites/implementations/prisma/rechercher-les-employeuses-des-activites.query'
 import { optionsDEmployeuses } from '@/features/activites/abilities/rechercher-les-employeuses-des-activites/ui/presenters/options-d-employeuses.presenter'
 import { EmployeuseId } from '@/features/activites/domain/index'
-import { perimetreDesEmployeusesDe } from '@/features/activites/implementations/session/perimetre'
+import { perimetreDesEmployeusesDe } from '@/features/activites/implementations/session/perimetre.query'
 import { utilisateurDeLaSessionParId } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
 import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage/implementations/prisma/resoudre-un-lien-de-partage.query'
 import { utilisateurDuPartage } from '@/features/statistiques/domain/utilisateur-du-partage'

@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import { ZodError } from 'zod'
-import { criteresDExposition, curseurDActivite } from './criteres-d-exposition'
+import {
+  criteresDExposition,
+  curseurDActivite,
+} from './criteres-d-exposition.transfer'
 
 describe('criteresDExposition', () => {
   it('ne restreint rien sans date', () => {

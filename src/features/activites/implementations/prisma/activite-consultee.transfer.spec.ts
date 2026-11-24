@@ -25,7 +25,7 @@ import {
   activiteConsulteeDe,
   rdvIdsDes,
 } from './activite-consultee.transfer'
-import type { RendezVousLieFourni } from './rendez-vous-fournis'
+import type { RendezVousLieFourni } from './rendez-vous-fournis.transfer'
 
 const instant = new Date('2026-11-10T09:00:00.000Z')
 

@@ -21,7 +21,7 @@ import {
 import {
   type RendezVousLieFourni,
   rendezVousAffiche,
-} from './rendez-vous-fournis'
+} from './rendez-vous-fournis.transfer'
 
 export const activiteConsulteeSelect = {
   ...activiteDeMediationSelect,

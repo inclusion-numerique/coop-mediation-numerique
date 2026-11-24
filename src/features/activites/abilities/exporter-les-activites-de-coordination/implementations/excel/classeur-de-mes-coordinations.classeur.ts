@@ -7,7 +7,7 @@ import {
 import { tagsUtilisablesDepuis } from '../../../../domain/fournisseurs-de-la-saisie'
 import { tagsRappeles } from '../../domain/tags-rappeles'
 import { exporterLesActivitesDeCoordination } from '../prisma/activites-a-exporter.query'
-import { classeurDesCoordinations } from './classeur-des-coordinations'
+import { classeurDesCoordinations } from './classeur-des-coordinations.classeur'
 
 type Presenter = (donnees: {
   activites: readonly ActiviteDeCoordination[]

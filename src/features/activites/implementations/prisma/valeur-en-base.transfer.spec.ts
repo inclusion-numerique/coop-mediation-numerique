@@ -8,7 +8,7 @@ import {
   TYPES_D_ACTIVITE,
   TYPES_DE_LIEU,
 } from '../../domain'
-import { valeurEnBase } from './valeur-en-base'
+import { valeurEnBase } from './valeur-en-base.transfer'
 
 describe('valeur en base', () => {
   it.each([

@@ -12,7 +12,7 @@ import {
   type DemandeDeStatistiques,
   jointuresDesStatistiques,
 } from '../../../../implementations/prisma/statistiques.sql'
-import { valeurEnBase } from '../../../../implementations/prisma/valeur-en-base'
+import { valeurEnBase } from '../../../../implementations/prisma/valeur-en-base.transfer'
 import {
   bornesEnMinutes,
   materielsComptes,

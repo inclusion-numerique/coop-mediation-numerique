@@ -5,7 +5,7 @@ import {
   personneAccompagnee,
 } from '../../../../implementations/prisma/statistiques.sql'
 import type { PersonnesParCommune } from '../../domain'
-import { premierCodePostal } from './premier-code-postal'
+import { premierCodePostal } from '../../domain/premier-code-postal'
 
 type Ligne = {
   readonly nom: string | null
