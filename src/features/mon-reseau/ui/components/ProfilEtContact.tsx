@@ -13,7 +13,7 @@ export const ProfilEtContact = ({
 }: {
   acteur: Acteur
   compact?: boolean
-  className?: string
+  className?: string | undefined
   classeDesLiens?: string
 }) => {
   const icone = iconeDuProfil(profil)

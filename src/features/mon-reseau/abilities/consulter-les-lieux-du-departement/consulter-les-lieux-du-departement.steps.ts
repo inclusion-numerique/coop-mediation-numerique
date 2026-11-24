@@ -66,6 +66,6 @@ Then('l’annuaire des lieux est introuvable', () => {
 })
 
 After(() => {
-  etat.communesDemandees = undefined
-  etat.consultation = undefined
+  delete etat.communesDemandees
+  delete etat.consultation
 })

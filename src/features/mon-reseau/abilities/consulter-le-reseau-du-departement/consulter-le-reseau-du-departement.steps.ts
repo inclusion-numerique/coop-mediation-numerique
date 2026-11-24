@@ -100,6 +100,6 @@ Then('le département est inconnu', () => {
 })
 
 After(() => {
-  etat.acteursAvant = undefined
-  etat.consultation = undefined
+  delete etat.acteursAvant
+  delete etat.consultation
 })

@@ -235,8 +235,8 @@ Then('l’acteur ne peut pas rejoindre son équipe', () => {
 })
 
 After(() => {
-  etat.derniereActivite = undefined
-  etat.acteur = undefined
-  etat.lecteur = undefined
-  etat.consultation = undefined
+  delete etat.derniereActivite
+  delete etat.acteur
+  delete etat.lecteur
+  delete etat.consultation
 })

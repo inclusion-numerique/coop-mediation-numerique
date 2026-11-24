@@ -46,7 +46,7 @@ const semerDansLeCantal = async ({
   if (mediateurId === null) throw new Error('Médiateur non semé')
   await exercerDansLeLieu({
     mediateurId,
-    lieuId: await semerUnLieu({ codeInsee }),
+    lieuId: await semerUnLieu(codeInsee === undefined ? {} : { codeInsee }),
   })
 }
 
@@ -171,5 +171,5 @@ Then('l’annuaire des acteurs est introuvable', () => {
 })
 
 After(() => {
-  etat.consultation = undefined
+  delete etat.consultation
 })
