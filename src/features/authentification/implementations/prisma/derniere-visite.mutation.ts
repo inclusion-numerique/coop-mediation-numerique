@@ -2,7 +2,7 @@ import { prismaClient } from '@/configuration/prisma/prismaClient'
 
 const THROTTLE_MS = 60 * 60 * 1000 // 1 hour
 
-export const registerLastSeen = ({
+export const enregistrerLaDerniereVisite = ({
   userId,
   currentLastSeen,
 }: {

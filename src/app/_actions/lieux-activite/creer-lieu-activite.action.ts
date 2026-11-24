@@ -7,7 +7,7 @@ import { nouveauLieu } from '@/features/lieux-activite/abilities/creer-lieu-acti
 import { creerLieuActivite } from '@/features/lieux-activite/abilities/creer-lieu-activite/implementations/prisma/creer-lieu-activite.mutation'
 import { CreerLieuActiviteValidation } from '@/features/lieux-activite/action/creer-lieu-activite.validation'
 import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
-import { UserId } from '@/features/lieux-activite/domain/identifiants/utilisateur-id'
+import { UtilisateurId } from '@/features/lieux-activite/domain/identifiants/utilisateur-id'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { fromResult, withInput } from '@/libraries/nextjs'
 
@@ -19,7 +19,7 @@ export const creerUnLieuActiviteAction = actionBuilder()
     fromResult(
       async ({ user, input }) =>
         creerLieuActivite({
-          lieu: nouveauLieu(input, UserId(user.id), new Date()),
+          lieu: nouveauLieu(input, UtilisateurId(user.id), new Date()),
           mediateurId:
             user.mediateur == null ? null : MediateurId(user.mediateur.id),
         }),

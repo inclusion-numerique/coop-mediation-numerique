@@ -5,9 +5,9 @@ import type { RetirerDuRegistre } from '@/features/utilisateurs/implementations/
 import type { RelancerLesInscriptionsInacheveesPorts } from '../domain'
 import { relancerLesInscriptionsInachevees } from '../domain/relancer-les-inscriptions-inachevees'
 import {
-  sendAccountDeletedEmail,
-  sendDeletionWarningEmail,
-  sendFinishYourSignupEmail,
+  envoyerLAvertissementDeSuppression,
+  envoyerLaRelance,
+  envoyerLaSuppressionDuCompte,
 } from './email'
 import { effacerLInscription } from './prisma'
 import { inscriptionsInachevees } from './prisma/inscriptions-inachevees.query'
@@ -21,14 +21,14 @@ const relancesDInscriptionPorts = (
   lireLesComptesARelancer: inscriptionsInachevees,
   noterLaRelance: noterLaRelance('Inscription'),
   envoyerLaRelance: ({ courriel, prenom }, palier) =>
-    sendFinishYourSignupEmail({
+    envoyerLaRelance({
       email: courriel,
       firstname: prenom,
       totalUsers: totalInscrits,
       matomoCampaignId: `finaliser_inscription_j${palier}`,
     }),
   envoyerLAvertissement: ({ courriel, prenom }, echeance) =>
-    sendDeletionWarningEmail({
+    envoyerLAvertissementDeSuppression({
       email: courriel,
       firstname: prenom,
       deletionDate: dateFrancaise(echeance.suppressionLe),
@@ -36,7 +36,7 @@ const relancesDInscriptionPorts = (
       matomoCampaignId: 'finaliser_inscription_j90',
     }),
   envoyerLAvisDEffacement: ({ courriel, prenom }) =>
-    sendAccountDeletedEmail({ email: courriel, firstname: prenom }),
+    envoyerLaSuppressionDuCompte({ email: courriel, firstname: prenom }),
   effacerLInscription: effacerLInscription(retirerDuRegistre),
   retirerDesListes: async (courriel) => {
     await removeBrevoUserContact(courriel)

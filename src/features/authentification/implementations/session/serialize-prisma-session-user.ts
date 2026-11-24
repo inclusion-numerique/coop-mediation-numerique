@@ -1,13 +1,13 @@
-import type { SessionUser } from '@/features/authentification/domain/utilisateur-de-la-session'
+import type { UtilisateurDeLaSession } from '@/features/authentification/domain/utilisateur-de-la-session'
 import type {
-  PrismaSessionUser,
   PrismaSessionUsupper,
+  UtilisateurDeLaSessionRow,
 } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
 import { splitMediateursCoordonnes } from './coordination-de-la-session'
 
 const emploisDeLaSession = (
-  personneMain: PrismaSessionUser['personneMain'],
-): SessionUser['emplois'] =>
+  personneMain: UtilisateurDeLaSessionRow['personneMain'],
+): UtilisateurDeLaSession['emplois'] =>
   personneMain?.employeuseActuelle
     ? [
         {
@@ -25,9 +25,9 @@ const emploisDeLaSession = (
  * DO NOT INCLUDE ANY SECRET DATA IN THIS OBJECT
  */
 export const serializePrismaSessionUser = (
-  prismaSessionUser: PrismaSessionUser,
+  prismaSessionUser: UtilisateurDeLaSessionRow,
   usurper?: PrismaSessionUsupper,
-): SessionUser => ({
+): UtilisateurDeLaSession => ({
   id: prismaSessionUser.id,
   firstName: prismaSessionUser.firstName,
   lastName: prismaSessionUser.lastName,

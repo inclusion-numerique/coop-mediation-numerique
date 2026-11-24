@@ -1,4 +1,4 @@
-import { getCartographieDepartementLink } from '@/features/lieux-activite/ui/presenters/liens-de-la-cartographie.presenter'
+import { lienDuDepartementDansLaCartographie } from '@/features/lieux-activite/ui/presenters/liens-de-la-cartographie.presenter'
 import { departementsRegionByCode } from '@/libraries/departement/departementsRegion'
 import type { CodeDepartement } from '@/libraries/insee'
 
@@ -11,7 +11,7 @@ export const lienDeLaCartographie = (
   const departementRegion = departementsRegionByCode.get(departement)
 
   return departementRegion
-    ? getCartographieDepartementLink({
+    ? lienDuDepartementDansLaCartographie({
         region: departementRegion.region,
         departement: departementRegion.nom,
       })

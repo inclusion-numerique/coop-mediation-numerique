@@ -16,7 +16,7 @@ import {
 import type { AuteurDExport } from '@/libraries/tableur/addExportMetadata'
 import { Telephone } from '@/libraries/telephone'
 import type { BeneficiaireExportRow } from '../../domain/exporter-beneficiaires'
-import { buildBeneficiairesWorksheet } from './classeur-des-beneficiaires'
+import { classeurDesBeneficiaires } from './classeur-des-beneficiaires'
 
 const user: AuteurDExport = {
   nom: 'Médiatrice',
@@ -44,7 +44,7 @@ const beneficiaire: BeneficiaireExportRow = {
 }
 
 const cellValues = (worksheetName: string) => {
-  const workbook = buildBeneficiairesWorksheet({
+  const workbook = classeurDesBeneficiaires({
     beneficiaires: [beneficiaire],
     filters: { recherche: 'Dupont' },
     matchesCount: 1,
@@ -59,7 +59,7 @@ const cellValues = (worksheetName: string) => {
   return { worksheet, values }
 }
 
-describe('buildBeneficiairesWorksheet', () => {
+describe('classeurDesBeneficiaires', () => {
   it('produces a "Bénéficiaires" worksheet', () => {
     const { worksheet } = cellValues('Bénéficiaires')
     expect(worksheet).toBeDefined()

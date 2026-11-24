@@ -1,13 +1,13 @@
 import {
+  estNonDemarree,
+  estValidee,
   franchirLieuxActivite,
   InscriptionDejaValidee,
   type InscriptionEnCours,
   type InscriptionEtat,
   InscriptionIntrouvable,
-  isNonDemarree,
-  isValidee,
   ProfilNonChoisi,
-  type UserId,
+  type UtilisateurId,
 } from '@/features/inscription/domain'
 import { failure, type Result, success } from '@/libraries/result'
 
@@ -24,15 +24,15 @@ export type RenseignerLieuxActiviteError =
  */
 export const deciderLesLieux = (
   etat: InscriptionEtat | null,
-  userId: UserId,
+  userId: UtilisateurId,
   maintenant: Date,
 ): Result<
   { readonly etatFranchi: InscriptionEnCours },
   RenseignerLieuxActiviteError
 > => {
   if (etat === null) return failure(InscriptionIntrouvable(userId))
-  if (isNonDemarree(etat)) return failure(ProfilNonChoisi(userId))
-  if (isValidee(etat)) return failure(InscriptionDejaValidee(userId))
+  if (estNonDemarree(etat)) return failure(ProfilNonChoisi(userId))
+  if (estValidee(etat)) return failure(InscriptionDejaValidee(userId))
 
   return success({ etatFranchi: franchirLieuxActivite(etat, maintenant) })
 }

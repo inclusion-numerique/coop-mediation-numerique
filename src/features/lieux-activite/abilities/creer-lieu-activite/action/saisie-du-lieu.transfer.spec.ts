@@ -8,11 +8,11 @@ import {
 import type { Schedule } from '@gouvfr-anct/timetable-to-osm-opening-hours'
 import { describe, expect, it } from 'vitest'
 import type { CreerLieuActiviteData } from '@/features/lieux-activite/action/creer-lieu-activite.validation'
-import { emptyOpeningHours } from '@/features/lieux-activite/domain/horaires-d-ouverture'
-import { UserId } from '../../../domain/identifiants/utilisateur-id'
+import { horairesVides } from '@/features/lieux-activite/domain/horaires-d-ouverture'
+import { UtilisateurId } from '../../../domain/identifiants/utilisateur-id'
 import { nouveauLieu } from './saisie-du-lieu.transfer'
 
-const auteur = UserId('550e8400-e29b-41d4-a716-446655440001')
+const auteur = UtilisateurId('550e8400-e29b-41d4-a716-446655440001')
 const maintenant = new Date('2026-09-07T10:00:00Z')
 
 const saisie = (
@@ -41,7 +41,7 @@ const saisie = (
   ficheAccesLibre: null,
   priseRdv: null,
   horairesComment: null,
-  openingHours: emptyOpeningHours,
+  openingHours: horairesVides,
   modalitesAcces: null,
   fraisACharge: [],
   services: [],
@@ -174,7 +174,7 @@ describe('les publics accueillis', () => {
 
 describe('les horaires', () => {
   const lundiMatin: Schedule = {
-    ...emptyOpeningHours,
+    ...horairesVides,
     Mo: {
       am: { startTime: '09:00', endTime: '12:00', isOpen: true },
       pm: { startTime: null, endTime: null, isOpen: false },

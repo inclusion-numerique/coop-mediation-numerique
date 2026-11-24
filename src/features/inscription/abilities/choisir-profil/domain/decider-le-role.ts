@@ -1,11 +1,11 @@
 import {
+  estValidee,
   InscriptionDejaValidee,
   type InscriptionEtat,
   InscriptionIntrouvable,
-  isValidee,
   poserRole,
   type Role,
-  type UserId,
+  type UtilisateurId,
 } from '@/features/inscription/domain'
 import { failure, type Result, success } from '@/libraries/result'
 import type { EnregistrerProfilChoisiInput } from './ports'
@@ -18,7 +18,7 @@ import { rolesACreerPourRole } from './roles-a-creer'
 export const rolesDisponibles = ['Mediateur', 'Coordinateur'] as const
 
 export type RoleChoisi = {
-  readonly userId: UserId
+  readonly userId: UtilisateurId
   readonly role: Role
 }
 
@@ -39,7 +39,7 @@ export const deciderLeRole = (
   ChoisirProfilError
 > => {
   if (etat === null) return failure(InscriptionIntrouvable(userId))
-  if (isValidee(etat)) return failure(InscriptionDejaValidee(userId))
+  if (estValidee(etat)) return failure(InscriptionDejaValidee(userId))
 
   return success({
     role,

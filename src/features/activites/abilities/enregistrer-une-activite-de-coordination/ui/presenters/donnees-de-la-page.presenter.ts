@@ -25,7 +25,7 @@ const craDefaultValues = (
   tags: defaultValues.tags ?? [],
 })
 
-export const getCraCoordinationPageData = async (
+export const donneesDeLaPage = async (
   coordinateurId: string,
   initialDefaultValues: DefaultValues<CraCoordinationData>,
   rechercherDesTagsInitiaux: RechercherDesTagsInitiaux,

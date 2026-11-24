@@ -6,12 +6,12 @@ import {
   type LiensDeLaListe,
   paginationDesBeneficiaires,
 } from '../filtres/liste-des-beneficiaires.filtre'
-import type { MesBeneficiairesView } from '../presenters/lister-beneficiaires.presenter'
+import type { VueDeMesBeneficiaires } from '../presenters/lister-beneficiaires.presenter'
 import { BeneficiairesSelectionToolbar } from './BeneficiairesSelectionToolbar'
 import { BeneficiairesTable } from './BeneficiairesTable'
 import DeleteBulkBeneficiairesModalContent from './DeleteBulkBeneficiairesModalContent'
 
-type ResultsView = Extract<MesBeneficiairesView, { tag: 'results' }>
+type ResultsView = Extract<VueDeMesBeneficiaires, { tag: 'results' }>
 
 export const BeneficiairesResults = ({
   view,

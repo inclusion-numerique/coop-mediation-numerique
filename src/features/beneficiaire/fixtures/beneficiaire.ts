@@ -1,7 +1,7 @@
 import { v4 } from 'uuid'
 import type { Prisma } from '@/generated/prisma/client'
 
-export const givenBeneficiaire = <
+export const beneficiaire = <
   T extends Partial<Prisma.BeneficiaireUncheckedCreateInput> & {
     prenom: string
     nom: string
@@ -38,7 +38,7 @@ export const givenBeneficiaire = <
   } satisfies Prisma.BeneficiaireUncheckedCreateInput
 }
 
-export const givenBeneficiaireAnonyme = <
+export const beneficiaireAnonyme = <
   T extends Partial<Prisma.BeneficiaireUncheckedCreateInput> & {
     prenom?: null
     nom?: null

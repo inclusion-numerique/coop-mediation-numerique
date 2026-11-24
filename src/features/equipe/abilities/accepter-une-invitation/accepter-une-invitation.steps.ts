@@ -4,7 +4,7 @@ import { type Accepteur } from '@/features/equipe/abilities/accepter-une-invitat
 import { accepterUneInvitation } from '@/features/equipe/abilities/accepter-une-invitation/implementations/prisma/accepter-une-invitation.mutation'
 import {
   CoordinateurId,
-  Email,
+  Courriel,
   MediateurId,
   ReferenceInvitation,
   UtilisateurId,
@@ -73,10 +73,10 @@ const accepteurDe = (
   inscriptionValidee
     ? {
         type: 'InscriptionValidee',
-        email: Email(mediateur.email),
+        email: Courriel(mediateur.email),
         mediateurId: MediateurId(mediateur.mediateurId),
       }
-    : { type: 'InscriptionEnCours', email: Email(mediateur.email) }
+    : { type: 'InscriptionEnCours', email: Courriel(mediateur.email) }
 
 const accepterPar = async (
   mediateur: MediateurSeme,
@@ -84,7 +84,7 @@ const accepterPar = async (
 ) => {
   contexte.issue = await accepterUneInvitation({
     reference: ReferenceInvitation({
-      email: Email(invite().email),
+      email: Courriel(invite().email),
       coordinateurId: CoordinateurId(coordinateur().coordinateurId),
     }),
     accepteur: accepteurDe(mediateur, inscriptionValidee),

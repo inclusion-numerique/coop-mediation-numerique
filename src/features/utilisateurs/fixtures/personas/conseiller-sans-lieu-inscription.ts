@@ -1,10 +1,10 @@
 import { previewBranchAuthFallbacks } from '@/configuration/projet/previewBranchAuthFallbacks'
-import { givenUser } from '@/features/utilisateurs/fixtures/utilisateur'
+import { utilisateur } from '@/features/utilisateurs/fixtures/utilisateur'
 
 const conseillerSansLieuInscriptionEmail =
   'conseiller-sans-lieu-inscription@coop-numerique.anct.gouv.fr'
 
-export const conseillerSansLieuInscription = givenUser({
+export const conseillerSansLieuInscription = utilisateur({
   id: 'be15e33d-e07d-4d17-85fb-48dddbad9a5d',
   firstName: 'Conseiller Num',
   lastName: 'Sans Lieu Inscription',

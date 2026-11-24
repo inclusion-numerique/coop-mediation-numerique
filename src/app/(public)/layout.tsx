@@ -1,5 +1,5 @@
 import { PropsWithChildren } from 'react'
-import { getHomepage } from '@/features/authentification/domain/page-d-accueil'
+import { pageDAccueil } from '@/features/authentification/domain/page-d-accueil'
 import { getSessionUser } from '@/features/authentification/implementations/session/session-user'
 import PublicFooter from '@/features/navigation/ui/components/pied-de-page/PublicFooter'
 import Header from '@/features/navigation/ui/layouts/Header'
@@ -13,7 +13,7 @@ const PublicLayout = async ({ children }: PropsWithChildren) => {
       entete={
         <Header
           user={user}
-          accueil={getHomepage(user)}
+          accueil={pageDAccueil(user)}
           terminerUsurpation={<TerminerUsurpationHeaderUserMenuItem />}
           variant="public"
         />

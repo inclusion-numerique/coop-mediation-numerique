@@ -1,7 +1,7 @@
 import classNames from 'classnames'
 import Link from 'next/link'
 import type { PropsWithChildren, ReactNode } from 'react'
-import { displayNameFromIdentity } from '@/features/beneficiaire/domain/beneficiaire'
+import { nomAfficheDepuisLIdentite } from '@/features/beneficiaire/domain/beneficiaire'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
 import BackButton from '@/libraries/ui/components/BackButton'
@@ -36,7 +36,7 @@ const BeneficiaireConsultationLayout = ({
   deleteModal?: ReactNode
   refreshRdvs?: ReactNode
 }>) => {
-  const displayName = displayNameFromIdentity(beneficiaire)
+  const displayName = nomAfficheDepuisLIdentite(beneficiaire)
   const { anneeNaissance } = beneficiaire
 
   return (

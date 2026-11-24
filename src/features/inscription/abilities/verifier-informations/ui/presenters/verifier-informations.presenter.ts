@@ -1,13 +1,13 @@
 import {
-  getNextInscriptionStep,
+  EtapeDInscription,
+  etapeSuivante,
   type InscriptionContexte,
-  InscriptionFlowType,
-  InscriptionStep,
   ProfilInscription,
   profilInscriptionLabels,
+  TypeDeParcours,
 } from '@/features/inscription/domain'
 import type { ProfilInscriptionValue } from '@/features/inscription/domain/profil-inscription'
-import { stepPath } from '@/features/inscription/ui/presenters/chemin-de-l-etape.presenter'
+import { cheminDeLEtape } from '@/features/inscription/ui/presenters/chemin-de-l-etape.presenter'
 
 // Une employeuse peut n'avoir aucune dénomination en base, mais la carte attend
 // un libellé : la projection porte le contrat d'affichage et décide du repli,
@@ -45,11 +45,11 @@ export type VerifierInformationsPageData = {
  * spécial lieux-activité → structure-employeuse/renseigner. Toute la logique de
  * cet écran read/nav vit ici, laissant la route-hub minimale.
  */
-export const getVerifierInformationsPageData = (
+export const donneesDeVerifierInformations = (
   user: InscritAVerifier,
 ): VerifierInformationsPageData => {
   const contexte: InscriptionContexte = {
-    flowType: InscriptionFlowType('withoutDataspace'),
+    flowType: TypeDeParcours('withoutDataspace'),
     profil: user.profilInscription
       ? ProfilInscription(user.profilInscription)
       : null,
@@ -57,8 +57,8 @@ export const getVerifierInformationsPageData = (
     isConseillerNumerique: user.isConseillerNumerique,
   }
 
-  const nextStep = getNextInscriptionStep(
-    InscriptionStep('verifier-informations'),
+  const nextStep = etapeSuivante(
+    EtapeDInscription('verifier-informations'),
     contexte,
   )
 
@@ -69,9 +69,9 @@ export const getVerifierInformationsPageData = (
   const nextStepPath =
     nextStep === 'lieux-activite'
       ? user.emplois.length > 0
-        ? `${stepPath('lieux-activite')}/structure-employeuse`
-        : stepPath('renseigner-structure-employeuse')
-      : stepPath(nextStep)
+        ? `${cheminDeLEtape('lieux-activite')}/structure-employeuse`
+        : cheminDeLEtape('renseigner-structure-employeuse')
+      : cheminDeLEtape(nextStep)
 
   const employeuse = user.emplois.at(0)?.structure
 
@@ -84,7 +84,7 @@ export const getVerifierInformationsPageData = (
     structureEmployeuse: employeuse
       ? { ...employeuse, nom: employeuse.nom ?? '' }
       : undefined,
-    backHref: stepPath('choisir-role'),
+    backHref: cheminDeLEtape('choisir-role'),
     nextStepPath,
   }
 }

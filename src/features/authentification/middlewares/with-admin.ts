@@ -1,9 +1,13 @@
-import type { SessionUser } from '@/features/authentification/domain/utilisateur-de-la-session'
+import type { UtilisateurDeLaSession } from '@/features/authentification/domain/utilisateur-de-la-session'
 import type { PipeMiddleware, ServerActionResult } from '@/libraries/nextjs'
 import { ServerActionError } from '@/libraries/nextjs'
 
 export const withAdmin =
-  (): PipeMiddleware<{ user: SessionUser }, { user: SessionUser }, unknown> =>
+  (): PipeMiddleware<
+    { user: UtilisateurDeLaSession },
+    { user: UtilisateurDeLaSession },
+    unknown
+  > =>
   async (ctx, _rawInput, next): Promise<ServerActionResult<unknown>> => {
     if (ctx.user.role !== 'Admin') return ServerActionError('auth.not-admin')
     // Le contexte est REPROPAGÉ : un `Record<string, never>` absorbe tout au

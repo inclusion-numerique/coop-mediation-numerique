@@ -3,7 +3,7 @@ import { Telephone } from '@/libraries/telephone'
 import {
   type CoordinateurDeLEquipe,
   type CoordinateurId,
-  Email,
+  Courriel,
   Nom,
   NomAffiche,
   nomAffiche,
@@ -31,7 +31,7 @@ export const lireLeCoordinateur = async (
   if (coordinateur === null) return null
 
   const { user } = coordinateur
-  const email = Email.safe(user.email)
+  const email = Courriel.safe(user.email)
 
   return email === null
     ? null

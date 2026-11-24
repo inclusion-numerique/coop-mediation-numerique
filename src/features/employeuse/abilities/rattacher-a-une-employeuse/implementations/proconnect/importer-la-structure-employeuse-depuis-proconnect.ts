@@ -1,7 +1,7 @@
 import { type RattacherAUneEmployeuseDepuisSiret } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/domain'
 import { estConseillerNumeriqueEnPoste } from '../prisma/conseiller-numerique-en-poste.query'
 
-export type ImportStructureEmployeuseFromProConnectResult = {
+export type ResultatDeLImportDepuisProConnect = {
   success: boolean
   noOp: boolean
   reason?: string
@@ -18,7 +18,7 @@ export type ImportStructureEmployeuseFromProConnectResult = {
  * l'employeur courant par `est_active` (pas de fenêtre de dates pour les non-CN), ce qui remplace
  * fidèlement l'ancienne logique de clôture/chevauchement des emplois coop (artefact du modèle daté).
  */
-export const importStructureEmployeuseFromProConnect =
+export const importerLaStructureEmployeuseDepuisProConnect =
   (rattacherDepuisSiret: RattacherAUneEmployeuseDepuisSiret) =>
   async ({
     userId,
@@ -26,7 +26,7 @@ export const importStructureEmployeuseFromProConnect =
   }: {
     userId: string
     siret: string | null | undefined
-  }): Promise<ImportStructureEmployeuseFromProConnectResult> => {
+  }): Promise<ResultatDeLImportDepuisProConnect> => {
     // ProConnect may not provide a SIRET; in that case we intentionally do nothing.
     if (!siret) {
       return {

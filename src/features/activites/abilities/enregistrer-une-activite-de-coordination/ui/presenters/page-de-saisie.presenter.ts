@@ -22,7 +22,7 @@ import {
   copieDeLaCoordination,
   departDuPartenariat,
 } from './copie-de-la-coordination.presenter'
-import { getCraCoordinationPageData } from './donnees-de-la-page.presenter'
+import { donneesDeLaPage } from './donnees-de-la-page.presenter'
 import {
   formulaireDeLAnimation,
   formulaireDeLEvenement,
@@ -83,11 +83,7 @@ const pageDeSaisie = async (
   depart: ValeursDeLaCoordination,
   fournisseurs: FournisseursDeLaSaisieDeCoordination,
 ) => ({
-  ...(await getCraCoordinationPageData(
-    coordinateurId,
-    depart,
-    fournisseurs.tagsInitiaux,
-  )),
+  ...(await donneesDeLaPage(coordinateurId, depart, fournisseurs.tagsInitiaux)),
   coordinateurId,
   visibilitesDeTag: visibilitesDuCra(fournisseurs.visibilitesProposees, {
     departemental: true,

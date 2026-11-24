@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { computeUserProfile } from './profil-inscription'
+import { profilDInscription } from './profil-inscription'
 
-describe('computeUserProfile', () => {
+describe('profilDInscription', () => {
   it('médiateur par défaut', () => {
     expect(
-      computeUserProfile({
+      profilDInscription({
         isConseillerNumerique: false,
         isCoordinateur: false,
       }),
@@ -13,7 +13,7 @@ describe('computeUserProfile', () => {
 
   it('conseiller numérique sans coordination', () => {
     expect(
-      computeUserProfile({
+      profilDInscription({
         isConseillerNumerique: true,
         isCoordinateur: false,
       }),
@@ -22,7 +22,7 @@ describe('computeUserProfile', () => {
 
   it('coordinateur sans conseiller numérique', () => {
     expect(
-      computeUserProfile({
+      profilDInscription({
         isConseillerNumerique: false,
         isCoordinateur: true,
       }),
@@ -31,7 +31,7 @@ describe('computeUserProfile', () => {
 
   it('coordinateur conseiller numérique', () => {
     expect(
-      computeUserProfile({ isConseillerNumerique: true, isCoordinateur: true }),
+      profilDInscription({ isConseillerNumerique: true, isCoordinateur: true }),
     ).toBe('CoordinateurConseillerNumerique')
   })
 })

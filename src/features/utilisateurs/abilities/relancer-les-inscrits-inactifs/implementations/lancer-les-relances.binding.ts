@@ -4,10 +4,10 @@ import { noterLaRelance } from '@/features/utilisateurs/implementations/prisma/n
 import type { RelancerLesInscritsInactifsPorts } from '../domain'
 import { relancerLesInscritsInactifs } from '../domain/relancer-les-inscrits-inactifs'
 import {
-  sendGettingStartedEmail,
-  sendNouveauAccountDeletedEmail,
-  sendNouveauAccountDeletionWarningEmail,
-  sendNouveauAccountEmail,
+  envoyerBienDemarrer,
+  envoyerLAvertissementDeSuppression,
+  envoyerLaRelance,
+  envoyerLaSuppressionDuCompte,
 } from './email'
 import { inscritsSansProduction } from './prisma/inscrits-sans-production.query'
 
@@ -21,14 +21,14 @@ const relancesDesInscritsPorts = (
   noterLaRelance: noterLaRelance('Nouveau'),
   envoyerLaRelance: (destinataire, palier) =>
     palier === 7
-      ? sendGettingStartedEmail({
+      ? envoyerBienDemarrer({
           email: destinataire.courriel,
           firstname: destinataire.prenom,
           matomoCampaignId: 'nouveau_j7',
           isMediateur: mediateurDe(destinataire.rattachements) !== null,
           isCoordinateur: coordinateurDe(destinataire.rattachements) !== null,
         })
-      : sendNouveauAccountEmail({
+      : envoyerLaRelance({
           email: destinataire.courriel,
           firstname: destinataire.prenom,
           totalUsers: totalInscrits,
@@ -38,7 +38,7 @@ const relancesDesInscritsPorts = (
           monthsCount: palier === 30 ? 1 : 2,
         }),
   envoyerLAvertissement: (destinataire, echeance) =>
-    sendNouveauAccountDeletionWarningEmail({
+    envoyerLAvertissementDeSuppression({
       email: destinataire.courriel,
       firstname: destinataire.prenom,
       deletionDate: dateFrancaise(echeance.suppressionLe),
@@ -48,7 +48,7 @@ const relancesDesInscritsPorts = (
       isCoordinateur: coordinateurDe(destinataire.rattachements) !== null,
     }),
   envoyerLAvisDEffacement: (destinataire) =>
-    sendNouveauAccountDeletedEmail({
+    envoyerLaSuppressionDuCompte({
       email: destinataire.courriel,
       isMediateur: mediateurDe(destinataire.rattachements) !== null,
     }),

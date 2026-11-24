@@ -1,6 +1,6 @@
 import { failure, type Result, success } from '@/libraries/result'
 import type { LieuId } from '../../../../domain/identifiants/lieu-id'
-import type { UserId } from '../../../../domain/identifiants/utilisateur-id'
+import type { UtilisateurId } from '../../../../domain/identifiants/utilisateur-id'
 import type { Lieu } from '../../../../domain/lieu'
 import {
   type ChoixDesDifferences,
@@ -20,7 +20,7 @@ export const appliquerLesDifferences = async ({
 }: {
   id: LieuId
   choix: ChoixDesDifferences
-  par: UserId
+  par: UtilisateurId
   maintenant?: Date
 }): Promise<Result<Lieu, EchecDeModification>> => {
   const fiche = await consulterLaFicheDuLieu(id)

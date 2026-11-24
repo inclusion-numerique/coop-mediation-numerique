@@ -3,12 +3,12 @@ import Email from 'next-auth/providers/email'
 import { previewBranchAuthFallbacks } from '@/configuration/projet/previewBranchAuthFallbacks'
 import { expediteur, serveurSmtp } from '@/configuration/smtp/serveur'
 import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
-import { SessionUser } from '@/features/authentification/domain/utilisateur-de-la-session'
+import { UtilisateurDeLaSession } from '@/features/authentification/domain/utilisateur-de-la-session'
 import { sendVerificationRequest } from '@/features/authentification/implementations/email/send-verification-request'
 import { authenticationViaProconnect } from '@/features/authentification/implementations/next-auth/authentication-provider'
 import { updateAccountTokens } from '@/features/authentification/implementations/prisma/account-tokens.mutation'
-import { registerLastLogin } from '@/features/authentification/implementations/prisma/derniere-connexion.mutation'
-import { updateUserData } from '@/features/authentification/implementations/prisma/donnees-de-l-utilisateur.mutation'
+import { enregistrerLaDerniereConnexion } from '@/features/authentification/implementations/prisma/derniere-connexion.mutation'
+import { enregistrerLesDonneesDeLUtilisateur } from '@/features/authentification/implementations/prisma/donnees-de-l-utilisateur.mutation'
 import { nextAuthAdapter } from '@/features/authentification/implementations/prisma/next-auth-adapter'
 import type { SynchroniserLaPersonne } from '@/features/authentification/implementations/prisma/synchroniser-la-personne.mutation'
 import { proConnectProviderId } from '@/features/authentification/implementations/proconnect/proconnect'
@@ -19,7 +19,7 @@ const sessionUserHasOutdatedData = ({
   user,
   profile,
 }: {
-  user: SessionUser
+  user: UtilisateurDeLaSession
   profile: {
     given_name: string
     usual_name: string
@@ -88,7 +88,7 @@ export const nextAuthOptions = ({
 
         // Update user with fallback data if not set
         if (!user.firstName || !user.lastName || !user.siret) {
-          updateUserData(synchroniserLaPersonne)({
+          enregistrerLesDonneesDeLUtilisateur(synchroniserLaPersonne)({
             userId: user.id,
             firstName: user.firstName || fallbackFirstName,
             lastName: user.lastName || fallbackLastName,
@@ -106,16 +106,18 @@ export const nextAuthOptions = ({
           signaler(error)
         })
 
-        registerLastLogin({ userId: params.user.id }).catch((error) => {
-          signaler(error)
-        })
+        enregistrerLaDerniereConnexion({ userId: params.user.id }).catch(
+          (error) => {
+            signaler(error)
+          },
+        )
         return true
       }
 
       // The rest of this function will execute for ProConnect flow
 
       const { user, profile, account } = params as unknown as {
-        user: SessionUser
+        user: UtilisateurDeLaSession
         profile: {
           email: string
           given_name: string
@@ -151,7 +153,7 @@ export const nextAuthOptions = ({
       }
 
       if (sessionUserHasOutdatedData({ user, profile })) {
-        updateUserData(synchroniserLaPersonne)({
+        enregistrerLesDonneesDeLUtilisateur(synchroniserLaPersonne)({
           userId: user.id,
           firstName: profile.given_name,
           lastName: profile.usual_name,
@@ -179,7 +181,7 @@ export const nextAuthOptions = ({
           signaler(error)
         })
 
-      registerLastLogin({ userId: user.id }).catch((error) => {
+      enregistrerLaDerniereConnexion({ userId: user.id }).catch((error) => {
         signaler(error)
       })
       return true

@@ -1,8 +1,8 @@
 import type { NextRequest } from 'next/server'
 import { v4 } from 'uuid'
 import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
-import { getSessionUserFromSessionToken } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
-import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementations/session/session-token-from-cookies'
+import { utilisateurDuJetonDeSession } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
+import { jetonDeSessionDesCookies } from '@/features/authentification/implementations/session/session-token-from-cookies'
 import type { AnalyseResponse } from '@/features/beneficiaire/abilities/importer-beneficiaires/domain/analyse-de-l-import'
 import { analyseImportBeneficiairesExcel } from '@/features/beneficiaire/abilities/importer-beneficiaires/implementations/analyse-de-l-import.binding'
 import { getBeneficiaireImportSheet } from '@/features/beneficiaire/abilities/importer-beneficiaires/implementations/excel/feuille-d-import'
@@ -10,8 +10,8 @@ import { getBeneficiaireImportSheet } from '@/features/beneficiaire/abilities/im
 const tailleMaximaleDuFichier = 5 * 1024 * 1024
 
 export const POST = async (request: NextRequest) => {
-  const user = await getSessionUserFromSessionToken(
-    getSessionTokenFromNextRequestCookies(request.cookies),
+  const user = await utilisateurDuJetonDeSession(
+    jetonDeSessionDesCookies(request.cookies),
   )
   if (!user) return new Response(null, { status: 401 })
   if (!user.mediateur) return new Response(null, { status: 403 })

@@ -1,8 +1,8 @@
-import { givenUser } from '@/features/utilisateurs/fixtures/utilisateur'
+import { utilisateur } from '@/features/utilisateurs/fixtures/utilisateur'
 
 const mediateurInviteEnAttenteId = 'a1b2c3d4-e5f6-7890-abcd-ef1234567890'
 
-const mediateurInviteEnAttente = givenUser({
+const mediateurInviteEnAttente = utilisateur({
   id: 'b2c3d4e5-f6a7-8901-bcde-f12345678901',
   firstName: 'Médiateur',
   lastName: 'Invitation En Attente',
@@ -27,7 +27,7 @@ const mediateurInviteEnAttente = givenUser({
 
 const conseillerNumeriqueActifId = 'e5f6a7b8-c9d0-1234-ef01-345678901234'
 
-const conseillerNumeriqueActif = givenUser({
+const conseillerNumeriqueActif = utilisateur({
   id: 'f6a7b8c9-d0e1-2345-f012-456789012345',
   firstName: 'Conum',
   lastName: 'Actif',
@@ -54,7 +54,7 @@ const conseillerNumeriqueActif = givenUser({
 
 const mediateurActifId = 'c9d0e1f2-a3b4-5678-2345-789012345678'
 
-const mediateurActif = givenUser({
+const mediateurActif = utilisateur({
   id: 'd0e1f2a3-b4c5-6789-3456-890123456789',
   firstName: 'Médiateur',
   lastName: 'Actif',
@@ -84,7 +84,7 @@ sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6)
 const conseillerNumeriqueInactifMediateurId =
   'a3b4c5d6-e7f8-9012-6789-123456789012'
 
-const conseillerNumeriqueInactif = givenUser({
+const conseillerNumeriqueInactif = utilisateur({
   id: 'b4c5d6e7-f8a9-0123-7890-234567890123',
   firstName: 'Conum',
   lastName: 'Inactif',
@@ -114,7 +114,7 @@ const conseillerNumeriqueInactif = givenUser({
 
 const mediateurInactifMediateurId = 'e7f8a9b0-c1d2-3456-0123-567890123456'
 
-const mediateurInactif = givenUser({
+const mediateurInactif = utilisateur({
   id: 'f8a9b0c1-d2e3-4567-1234-678901234567',
   firstName: 'Médiateur',
   lastName: 'Inactif',
@@ -143,7 +143,7 @@ const mediateurInactif = givenUser({
 
 const mediateurAQuitteId = 'c1d2e3f4-a5b6-7890-4567-901234567890'
 
-const mediateurAQuitte = givenUser({
+const mediateurAQuitte = utilisateur({
   id: 'd2e3f4a5-b6c7-8901-5678-012345678901',
   firstName: 'Médiateur',
   lastName: 'A Quitté l’Équipe',
@@ -168,7 +168,7 @@ const mediateurAQuitte = givenUser({
 
 const conseillerNumeriqueAQuitteId = 'a5b6c7d8-e9f0-1234-8901-345678901234'
 
-const conseillerNumeriqueAQuitte = givenUser({
+const conseillerNumeriqueAQuitte = utilisateur({
   id: 'b6c7d8e9-f0a1-2345-9012-456789012345',
   firstName: 'Conum',
   lastName: 'A Quitté l’Équipe',
@@ -194,7 +194,7 @@ const conseillerNumeriqueAQuitte = givenUser({
 
 const mediateurProfilSupprimeId = 'e9f0a1b2-c3d4-5678-2345-789012345678'
 
-const mediateurProfilSupprime = givenUser({
+const mediateurProfilSupprime = utilisateur({
   id: 'f0a1b2c3-d4e5-6789-3456-890123456789',
   firstName: 'Utilisateur',
   lastName: 'Supprimé',
@@ -223,7 +223,7 @@ const mediateurProfilSupprime = givenUser({
 const conseillerNumeriqueProfilSupprimeId =
   'c3d4e5f6-a7b8-9012-6789-012345678901'
 
-const conseillerNumeriqueProfilSupprime = givenUser({
+const conseillerNumeriqueProfilSupprime = utilisateur({
   id: 'd4e5f6a7-b8c9-0123-7890-123456789012',
   firstName: 'Utilisateur',
   lastName: 'Supprimé',

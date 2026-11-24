@@ -1,6 +1,6 @@
 import { Typologie } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { describe, expect, it } from 'vitest'
-import { emptyOpeningHours } from '@/features/lieux-activite/domain/horaires-d-ouverture'
+import { horairesVides } from '@/features/lieux-activite/domain/horaires-d-ouverture'
 import {
   InformationsGeneralesSaisie,
   InformationsPratiquesSaisie,
@@ -46,7 +46,7 @@ const informationsPratiques = (
     siteWeb: null,
     ficheAccesLibre: null,
     priseRdv: null,
-    openingHours: emptyOpeningHours,
+    openingHours: horairesVides,
     horairesComment: null,
     ...champs,
   }).success

@@ -7,7 +7,7 @@ import {
   totalDepuis,
 } from '../labels/statistiques-publiques.labels'
 import { LegendTile } from './LegendTile'
-import { ChartData, ChartSerie, MonthChart } from './MonthChart'
+import { ChartSerie, DonneesDuGraphique, MonthChart } from './MonthChart'
 
 const chartColors = [
   { fill: 'var(--blue-france-sun-113-625)' },
@@ -26,8 +26,8 @@ type ChartCardUIProps = {
 
 export type ChartCardDataProps = {
   series: ChartSerie[]
-  perMonth: ChartData[]
-  runningTotalPerMonth?: ChartData[]
+  perMonth: DonneesDuGraphique[]
+  runningTotalPerMonth?: DonneesDuGraphique[]
   total: number
   showCumulativeToggle?: boolean
 }

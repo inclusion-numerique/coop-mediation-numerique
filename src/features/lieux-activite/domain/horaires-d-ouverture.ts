@@ -27,7 +27,7 @@ const defaultOpeningHours = {
   pm: { startTime: null, endTime: null, isOpen: false },
 }
 
-export const emptyOpeningHours = {
+export const horairesVides = {
   Mo: defaultOpeningHours,
   Tu: defaultOpeningHours,
   We: defaultOpeningHours,

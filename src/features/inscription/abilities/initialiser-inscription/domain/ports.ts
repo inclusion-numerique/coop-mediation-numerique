@@ -1,4 +1,7 @@
-import type { ProfilInscription, UserId } from '@/features/inscription/domain'
+import type {
+  ProfilInscription,
+  UtilisateurId,
+} from '@/features/inscription/domain'
 import type { DispositifInscription } from './dispositif-inscription'
 
 /**
@@ -8,21 +11,25 @@ import type { DispositifInscription } from './dispositif-inscription'
  * `null` : l'absence est un cas nominal du parcours, pas un défaut de réponse.
  */
 export type AppliquerDispositif = (input: {
-  readonly userId: UserId
+  readonly userId: UtilisateurId
 }) => Promise<DispositifInscription>
 
 /** Crée la structure employeuse depuis le SIRET de l'utilisateur si applicable. */
-export type ImporterStructureDepuisSiret = (userId: UserId) => Promise<void>
+export type ImporterStructureDepuisSiret = (
+  userId: UtilisateurId,
+) => Promise<void>
 
 export type RattacherDepuisSiret = (input: {
-  readonly userId: UserId
+  readonly userId: UtilisateurId
   readonly siret: string
 }) => Promise<unknown>
 
-export type GarantirLeRoleCoordinateur = (userId: UserId) => Promise<unknown>
+export type GarantirLeRoleCoordinateur = (
+  userId: UtilisateurId,
+) => Promise<unknown>
 
 /** État de l'utilisateur nécessaire pour déterminer l'étape suivante. */
-export type LireEtatPourEtapeSuivante = (userId: UserId) => Promise<{
+export type LireEtatPourEtapeSuivante = (userId: UtilisateurId) => Promise<{
   readonly profil: ProfilInscription | null
   readonly hasLieuxActivite: boolean
 }>

@@ -9,9 +9,9 @@ import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { nouveauLieu } from '@/features/lieux-activite/abilities/creer-lieu-activite/action/saisie-du-lieu.transfer'
 import { creerLieuActivite } from '@/features/lieux-activite/abilities/creer-lieu-activite/implementations/prisma/creer-lieu-activite.mutation'
 import type { CreerLieuActiviteData } from '@/features/lieux-activite/action/creer-lieu-activite.validation'
-import { emptyOpeningHours } from '@/features/lieux-activite/domain/horaires-d-ouverture'
+import { horairesVides } from '@/features/lieux-activite/domain/horaires-d-ouverture'
 import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
-import { UserId } from '@/features/lieux-activite/domain/identifiants/utilisateur-id'
+import { UtilisateurId } from '@/features/lieux-activite/domain/identifiants/utilisateur-id'
 import { ficheSemee } from '@/features/lieux-activite/lieux-activite.cucumber'
 
 type Issue = Awaited<ReturnType<typeof creerLieuActivite>>
@@ -44,7 +44,7 @@ const saisie: CreerLieuActiviteData = {
   ficheAccesLibre: null,
   priseRdv: null,
   horairesComment: null,
-  openingHours: emptyOpeningHours,
+  openingHours: horairesVides,
   modalitesAcces: null,
   fraisACharge: [],
   services: [],
@@ -59,7 +59,11 @@ const creer = async (
   quoi: CreerLieuActiviteData = saisie,
 ) => {
   dernier.creation = await creerLieuActivite({
-    lieu: nouveauLieu(quoi, UserId(ficheSemee().userIds[0] ?? ''), new Date()),
+    lieu: nouveauLieu(
+      quoi,
+      UtilisateurId(ficheSemee().userIds[0] ?? ''),
+      new Date(),
+    ),
     mediateurId: mediateurId == null ? null : MediateurId(mediateurId),
   })
 
@@ -435,7 +439,7 @@ When(
       ...saisie,
       horairesComment: COMMENTAIRE,
       openingHours: {
-        ...emptyOpeningHours,
+        ...horairesVides,
         Mo: {
           am: { startTime: '09:00', endTime: '12:00', isOpen: true },
           pm: { startTime: null, endTime: null, isOpen: false },

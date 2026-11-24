@@ -1,6 +1,6 @@
-import type { SessionUser } from '@/features/authentification/domain/utilisateur-de-la-session'
+import type { UtilisateurDeLaSession } from '@/features/authentification/domain/utilisateur-de-la-session'
 
-type UserRedirectionInfo = Pick<SessionUser, 'role'> & {
+type UserRedirectionInfo = Pick<UtilisateurDeLaSession, 'role'> & {
   inscriptionValidee: Date | string | null
   mediateur: { id: string } | null
   coordinateur: { id: string } | null
@@ -11,7 +11,7 @@ type UserRedirectionInfo = Pick<SessionUser, 'role'> & {
  * un compte « validé » sans médiateur ni coordinateur ne peut rien faire
  * dans la coop et doit reprendre son parcours d’inscription.
  */
-export const hasInscriptionComplete = (
+export const aTermineSonInscription = (
   user: Pick<
     UserRedirectionInfo,
     'inscriptionValidee' | 'mediateur' | 'coordinateur'
@@ -20,7 +20,7 @@ export const hasInscriptionComplete = (
   user.inscriptionValidee != null &&
   (user.mediateur != null || user.coordinateur != null)
 
-export const getHomepage = (user?: UserRedirectionInfo | null) => {
+export const pageDAccueil = (user?: UserRedirectionInfo | null) => {
   if (!user) {
     return '/'
   }
@@ -29,14 +29,16 @@ export const getHomepage = (user?: UserRedirectionInfo | null) => {
     return '/administration'
   }
 
-  if (!hasInscriptionComplete(user)) {
+  if (!aTermineSonInscription(user)) {
     return '/inscription'
   }
 
   return '/coop'
 }
 
-export const getLoginRedirectUrl = (user?: UserRedirectionInfo | null) => {
+export const adresseDeRetourApresConnexion = (
+  user?: UserRedirectionInfo | null,
+) => {
   if (!user) {
     return '/connexion'
   }
@@ -45,7 +47,7 @@ export const getLoginRedirectUrl = (user?: UserRedirectionInfo | null) => {
     return '/administration/utilisateurs'
   }
 
-  if (!hasInscriptionComplete(user)) {
+  if (!aTermineSonInscription(user)) {
     return '/inscription'
   }
 

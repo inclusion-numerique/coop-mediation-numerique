@@ -13,7 +13,7 @@ import { stateConcordant } from './state-concordant'
 
 const issuer = `https://${proConnectHostname}`
 
-export type ProConnectProfile = {
+export type ProfilProConnect = {
   sub: string
   email: string
   given_name: string
@@ -113,7 +113,7 @@ export const ProConnectProvider = () =>
           },
         })
         // User info returns a JWT token instead of a JSON object, we decode it
-        return jwt.decode(r.data) as ProConnectProfile
+        return jwt.decode(r.data) as ProfilProConnect
       },
     },
     profile: ({ email, sub, given_name, usual_name, phone_number, siret }) => ({
@@ -126,4 +126,4 @@ export const ProConnectProvider = () =>
       siret: siret || null,
       provider: proConnectProviderId,
     }),
-  }) satisfies OAuth2Config<ProConnectProfile>
+  }) satisfies OAuth2Config<ProfilProConnect>

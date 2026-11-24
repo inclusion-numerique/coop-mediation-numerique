@@ -5,8 +5,8 @@ import { Nom } from '@/features/beneficiaire/domain/nom'
 import { Prenom } from '@/features/beneficiaire/domain/prenom'
 import type { Prisma } from '@/generated/prisma/client'
 import type {
-  BeneficiaireSearchItem,
-  GetInitialBeneficiairesOptions,
+  BeneficiaireTrouve,
+  ProposerDesBeneficiaires,
   RechercherBeneficiaires,
 } from '../../domain/rechercher-beneficiaires'
 
@@ -68,7 +68,7 @@ const toSearchItem = (row: {
   communeCodePostal: string | null
   communeCodeInsee: string | null
   adresse: string | null
-}): BeneficiaireSearchItem => ({
+}): BeneficiaireTrouve => ({
   id: BeneficiaireId(row.id),
   prenom: Prenom(row.prenom ?? ''),
   nom: Nom(row.nom ?? ''),
@@ -103,37 +103,39 @@ export const rechercherBeneficiaires: RechercherBeneficiaires = async ({
   return { beneficiaires: rows.map(toSearchItem), totalCount }
 }
 
-export const getInitialBeneficiairesOptions: GetInitialBeneficiairesOptions =
-  async ({ mediateurId, includeBeneficiaireIds = [] }) => {
-    const where = baseWhere(mediateurId)
+export const beneficiairesProposes: ProposerDesBeneficiaires = async ({
+  mediateurId,
+  includeBeneficiaireIds = [],
+}) => {
+  const where = baseWhere(mediateurId)
 
-    const [topBeneficiaires, included, totalCount] = await Promise.all([
-      prismaClient.beneficiaire.findMany({
-        where: {
-          ...where,
-          ...(includeBeneficiaireIds.length > 0
-            ? { id: { notIn: [...includeBeneficiaireIds] } }
-            : {}),
-        },
-        select: searchSelect,
-        orderBy: [
-          { accompagnementsCount: 'desc' },
-          { nom: 'asc' },
-          { prenom: 'asc' },
-        ],
-        take: 20,
-      }),
-      includeBeneficiaireIds.length > 0
-        ? prismaClient.beneficiaire.findMany({
-            where: { ...where, id: { in: [...includeBeneficiaireIds] } },
-            select: searchSelect,
-          })
-        : Promise.resolve([]),
-      prismaClient.beneficiaire.count({ where }),
-    ])
+  const [topBeneficiaires, included, totalCount] = await Promise.all([
+    prismaClient.beneficiaire.findMany({
+      where: {
+        ...where,
+        ...(includeBeneficiaireIds.length > 0
+          ? { id: { notIn: [...includeBeneficiaireIds] } }
+          : {}),
+      },
+      select: searchSelect,
+      orderBy: [
+        { accompagnementsCount: 'desc' },
+        { nom: 'asc' },
+        { prenom: 'asc' },
+      ],
+      take: 20,
+    }),
+    includeBeneficiaireIds.length > 0
+      ? prismaClient.beneficiaire.findMany({
+          where: { ...where, id: { in: [...includeBeneficiaireIds] } },
+          select: searchSelect,
+        })
+      : Promise.resolve([]),
+    prismaClient.beneficiaire.count({ where }),
+  ])
 
-    return {
-      beneficiaires: [...included, ...topBeneficiaires].map(toSearchItem),
-      totalCount,
-    }
+  return {
+    beneficiaires: [...included, ...topBeneficiaires].map(toSearchItem),
+    totalCount,
   }
+}

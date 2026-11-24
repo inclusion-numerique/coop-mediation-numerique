@@ -5,7 +5,7 @@ import { failure, type Result, success } from '@/libraries/result'
 import {
   type CoordinateurId,
   CoordinateurIntrouvable,
-  Email,
+  Courriel,
   type InvitationEnAttente,
   MediateurId,
   type NomAffiche,
@@ -25,11 +25,11 @@ import {
   planifier,
 } from '../../domain'
 
-type EmailStocke = ReadonlyMap<Email, string>
+type EmailStocke = ReadonlyMap<Courriel, string>
 
 const lireLExistant = async (
   coordinateurId: CoordinateurId,
-  candidats: readonly Email[],
+  candidats: readonly Courriel[],
 ): Promise<{ existant: Existant; emailsStockes: EmailStocke }> => {
   const [invitations, membres, mediateurs] = await Promise.all([
     prismaClient.invitationEquipe.findMany({
@@ -67,13 +67,13 @@ const lireLExistant = async (
     invitations: lues.map(({ invitation }) => invitation),
     membresActifs: new Set(
       membres.flatMap(({ mediateur }) => {
-        const email = Email.safe(mediateur.user.email)
+        const email = Courriel.safe(mediateur.user.email)
         return email === null ? [] : [email]
       }),
     ),
     mediateursConnus: new Map(
       mediateurs.flatMap(({ email, mediateur }) => {
-        const canonique = Email.safe(email)
+        const canonique = Courriel.safe(email)
         return canonique === null || mediateur === null
           ? []
           : [[canonique, MediateurId(mediateur.id)] as const]
@@ -114,7 +114,7 @@ const enregistrer = (
 
 const envoyer =
   (de: NomAffiche) =>
-  async (invitation: InvitationEnAttente): Promise<Email | null> => {
+  async (invitation: InvitationEnAttente): Promise<Courriel | null> => {
     try {
       await envoyerUneInvitation({
         invitation,
@@ -134,7 +134,7 @@ export const inviterDesMembres = async ({
   maintenant = new Date(),
 }: {
   coordinateurId: CoordinateurId
-  candidats: readonly Email[]
+  candidats: readonly Courriel[]
   auteurId: UtilisateurId
   maintenant?: Date
 }): Promise<
@@ -174,7 +174,7 @@ export const inviterDesMembres = async ({
 
   const echecs = (
     await Promise.all(aEnvoyer.map(envoyer(coordinateur.nom)))
-  ).filter((email): email is Email => email !== null)
+  ).filter((email): email is Courriel => email !== null)
 
   return success({
     envoyees: aEnvoyer

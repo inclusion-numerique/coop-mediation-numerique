@@ -1,6 +1,6 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 
-export const getMediateursCoordonnesForInscription = async ({
+export const lireLesMediateursCoordonnes = async ({
   userId,
 }: {
   userId: string

@@ -1,7 +1,7 @@
 import { v4 } from 'uuid'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { sessionUserSelect } from '../prisma/utilisateur-de-la-session.query'
+import { utilisateurDeLaSessionSelect } from '../prisma/utilisateur-de-la-session.query'
 import { serializePrismaSessionUser } from './serialize-prisma-session-user'
 
 describe('le drapeau conseiller numérique de la session', () => {
@@ -74,7 +74,7 @@ describe('le drapeau conseiller numérique de la session', () => {
     serializePrismaSessionUser(
       await prismaClient.user.findUniqueOrThrow({
         where: { id: userId },
-        select: sessionUserSelect,
+        select: utilisateurDeLaSessionSelect,
       }),
     )
 

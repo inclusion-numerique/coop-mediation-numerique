@@ -34,7 +34,7 @@ export const libelleDuProfil = (profil: ProfilInscriptionValue): string =>
  * puis le statut conseiller numérique départage. Reprend la règle historique de
  * `computeUserProfile` sans dépendre de `SessionUser`.
  */
-export const computeUserProfile = ({
+export const profilDInscription = ({
   isConseillerNumerique,
   isCoordinateur,
 }: {

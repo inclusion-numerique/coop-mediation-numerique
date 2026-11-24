@@ -6,7 +6,7 @@ import { consulterEmployeuseActuelle } from '@/features/employeuse/abilities/con
 import { AJOUTER_STRUCTURE_EMPLOYEUSE_EN_LIEU_ERRORS } from '@/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/action/ajouter-structure-employeuse-en-lieu.errors'
 import { StructureEmployeuseLieuValidation } from '@/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/action/ajouter-structure-employeuse-en-lieu.validation'
 import { ajouterStructureEmployeuseEnLieuAvec } from '@/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/implementations/ajouter-structure-employeuse-en-lieu.binding'
-import { UserId } from '@/features/inscription/domain'
+import { UtilisateurId } from '@/features/inscription/domain'
 import {
   detacherDuLieuDecrit,
   rattacherAuLieuDecrit,
@@ -26,7 +26,7 @@ export const ajouterStructureEmployeuseEnLieuAction = actionBuilder()
           rattacherAuLieuDecrit,
           detacherDuLieuDecrit,
         })({
-          userId: UserId(user.id),
+          userId: UtilisateurId(user.id),
           estLieuActivite: input.estLieuActivite,
         }),
       { onError: AJOUTER_STRUCTURE_EMPLOYEUSE_EN_LIEU_ERRORS },

@@ -4,16 +4,15 @@ import type { ComboBoxData } from '@/libraries/formulaire/fields-components/Comb
 import { inject } from '@/libraries/nextjs/injection/client'
 import type { OptionsData } from '@/libraries/ui/components/Primitives/Options'
 import { RECHERCHER_STRUCTURE_EMPLOYEUSE_ACTION_KEY } from '../../action/rechercher-structure-employeuse.key'
-import type { StructureSearchResult } from '../../domain/employeuse-choisie'
+import type { StructureTrouvee } from '../../domain/employeuse-choisie'
 
 /**
  * Le SIRET identifie le choix : c'est la clé que les deux sources — structures
  * enregistrées et annuaire des entreprises — ont en commun.
  */
-const itemToKey = (item: StructureSearchResult): string => item.siret
+const itemToKey = (item: StructureTrouvee): string => item.siret
 
-const itemToString = (item: StructureSearchResult | null): string =>
-  item?.nom ?? ''
+const itemToString = (item: StructureTrouvee | null): string => item?.nom ?? ''
 
 /**
  * L'annuaire des entreprises peut être indisponible : la recherche se rabat
@@ -22,7 +21,7 @@ const itemToString = (item: StructureSearchResult | null): string =>
  */
 const loadSuggestions =
   (onApiUnavailable: (indisponible: boolean) => void) =>
-  async (input: string): Promise<{ items: StructureSearchResult[] }> => {
+  async (input: string): Promise<{ items: StructureTrouvee[] }> => {
     const result = await inject(RECHERCHER_STRUCTURE_EMPLOYEUSE_ACTION_KEY)({
       query: input,
     })
@@ -34,7 +33,7 @@ const loadSuggestions =
     return { items: result.data.structures }
   }
 
-const renderItem = ({ item }: { item: StructureSearchResult }) => (
+const renderItem = ({ item }: { item: StructureTrouvee }) => (
   <>
     <span className="fr-display-block fr-text--sm fr-mb-0">{item.nom}</span>
     <span className="fr-display-block fr-text--xs fr-text-mention--grey fr-mb-0">
@@ -48,13 +47,13 @@ const renderItem = ({ item }: { item: StructureSearchResult }) => (
 
 export const StructureEmployeuseComboBox = (
   onApiUnavailable: (indisponible: boolean) => void,
-): ComboBoxData<StructureSearchResult> => ({
+): ComboBoxData<StructureTrouvee> => ({
   itemToString,
   itemToKey,
   loadSuggestions: loadSuggestions(onApiUnavailable),
 })
 
-export const StructureEmployeuseOptions: OptionsData<StructureSearchResult> = {
+export const StructureEmployeuseOptions: OptionsData<StructureTrouvee> = {
   itemToKey,
   renderItem,
 }

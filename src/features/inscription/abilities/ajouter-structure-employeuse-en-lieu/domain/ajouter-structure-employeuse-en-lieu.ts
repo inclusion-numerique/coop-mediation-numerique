@@ -1,4 +1,4 @@
-import type { UserId } from '@/features/inscription/domain'
+import type { UtilisateurId } from '@/features/inscription/domain'
 import { failure, type Result, success } from '@/libraries/result'
 import { EmployeuseId } from './employeuse-id'
 import {
@@ -45,7 +45,7 @@ export const ajouterStructureEmployeuseEnLieu =
     userId,
     estLieuActivite,
   }: {
-    readonly userId: UserId
+    readonly userId: UtilisateurId
     readonly estLieuActivite: boolean
   }): Promise<Result<void, AjouterStructureEmployeuseEnLieuError>> => {
     const actuelle = await ports.consulterEmployeuseActuelle({ userId })

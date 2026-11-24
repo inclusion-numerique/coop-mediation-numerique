@@ -1,49 +1,51 @@
 import { describe, expect, it } from 'vitest'
-import { InscriptionStep } from './etape-d-inscription'
+import { EtapeDInscription } from './etape-d-inscription'
 import {
-  getInscriptionFlow,
-  getNextInscriptionStep,
+  etapeSuivante,
   type InscriptionContexte,
+  parcoursDInscription,
 } from './parcours-d-inscription'
 import { ProfilInscription } from './profil-inscription'
-import { InscriptionFlowType } from './type-de-parcours'
+import { TypeDeParcours } from './type-de-parcours'
 
 const contexte = (
   override: Partial<InscriptionContexte> = {},
 ): InscriptionContexte => ({
-  flowType: InscriptionFlowType('withoutDataspace'),
+  flowType: TypeDeParcours('withoutDataspace'),
   profil: null,
   hasLieuxActivite: false,
   isConseillerNumerique: false,
   ...override,
 })
 
-describe('getInscriptionFlow', () => {
+describe('parcoursDInscription', () => {
   it('is withDataspace when Dataspace data is present', () => {
-    expect(getInscriptionFlow({ hasDataspaceData: true })).toBe('withDataspace')
+    expect(parcoursDInscription({ hasDataspaceData: true })).toBe(
+      'withDataspace',
+    )
   })
 
   it('is withoutDataspace when Dataspace data is absent', () => {
-    expect(getInscriptionFlow({ hasDataspaceData: false })).toBe(
+    expect(parcoursDInscription({ hasDataspaceData: false })).toBe(
       'withoutDataspace',
     )
   })
 })
 
-describe('getNextInscriptionStep — flow sans Dataspace (ou non conseiller numérique)', () => {
+describe('etapeSuivante — flow sans Dataspace (ou non conseiller numérique)', () => {
   const withoutDataspace = contexte({
-    flowType: InscriptionFlowType('withoutDataspace'),
+    flowType: TypeDeParcours('withoutDataspace'),
   })
 
   it('initialize → choisir-role', () => {
     expect(
-      getNextInscriptionStep(InscriptionStep('initialize'), withoutDataspace),
+      etapeSuivante(EtapeDInscription('initialize'), withoutDataspace),
     ).toBe('choisir-role')
   })
 
   it('choisir-role → verifier-informations pour un médiateur', () => {
     expect(
-      getNextInscriptionStep(InscriptionStep('choisir-role'), {
+      etapeSuivante(EtapeDInscription('choisir-role'), {
         ...withoutDataspace,
         profil: ProfilInscription('Mediateur'),
       }),
@@ -52,7 +54,7 @@ describe('getNextInscriptionStep — flow sans Dataspace (ou non conseiller num�
 
   it('choisir-role → recapitulatif pour un coordinateur (raccourci)', () => {
     expect(
-      getNextInscriptionStep(InscriptionStep('choisir-role'), {
+      etapeSuivante(EtapeDInscription('choisir-role'), {
         ...withoutDataspace,
         profil: ProfilInscription('Coordinateur'),
       }),
@@ -61,7 +63,7 @@ describe('getNextInscriptionStep — flow sans Dataspace (ou non conseiller num�
 
   it('verifier-informations → lieux-activite pour un médiateur', () => {
     expect(
-      getNextInscriptionStep(InscriptionStep('verifier-informations'), {
+      etapeSuivante(EtapeDInscription('verifier-informations'), {
         ...withoutDataspace,
         profil: ProfilInscription('Mediateur'),
       }),
@@ -70,7 +72,7 @@ describe('getNextInscriptionStep — flow sans Dataspace (ou non conseiller num�
 
   it('verifier-informations → lieux-activite pour un conseiller numérique', () => {
     expect(
-      getNextInscriptionStep(InscriptionStep('verifier-informations'), {
+      etapeSuivante(EtapeDInscription('verifier-informations'), {
         ...withoutDataspace,
         profil: ProfilInscription('ConseillerNumerique'),
       }),
@@ -79,7 +81,7 @@ describe('getNextInscriptionStep — flow sans Dataspace (ou non conseiller num�
 
   it('verifier-informations → recapitulatif pour un coordinateur', () => {
     expect(
-      getNextInscriptionStep(InscriptionStep('verifier-informations'), {
+      etapeSuivante(EtapeDInscription('verifier-informations'), {
         ...withoutDataspace,
         profil: ProfilInscription('Coordinateur'),
       }),
@@ -88,41 +90,35 @@ describe('getNextInscriptionStep — flow sans Dataspace (ou non conseiller num�
 
   it('lieux-activite → recapitulatif', () => {
     expect(
-      getNextInscriptionStep(
-        InscriptionStep('lieux-activite'),
-        withoutDataspace,
-      ),
+      etapeSuivante(EtapeDInscription('lieux-activite'), withoutDataspace),
     ).toBe('recapitulatif')
   })
 
   it('recapitulatif → null (terminal)', () => {
     expect(
-      getNextInscriptionStep(
-        InscriptionStep('recapitulatif'),
-        withoutDataspace,
-      ),
+      etapeSuivante(EtapeDInscription('recapitulatif'), withoutDataspace),
     ).toBeNull()
   })
 
   it('emprunte le flow complet même en Dataspace si non conseiller numérique', () => {
     expect(
-      getNextInscriptionStep(InscriptionStep('initialize'), {
-        ...contexte({ flowType: InscriptionFlowType('withDataspace') }),
+      etapeSuivante(EtapeDInscription('initialize'), {
+        ...contexte({ flowType: TypeDeParcours('withDataspace') }),
         isConseillerNumerique: false,
       }),
     ).toBe('choisir-role')
   })
 })
 
-describe('getNextInscriptionStep — flow Dataspace (conseiller numérique)', () => {
+describe('etapeSuivante — flow Dataspace (conseiller numérique)', () => {
   const withDataspace = contexte({
-    flowType: InscriptionFlowType('withDataspace'),
+    flowType: TypeDeParcours('withDataspace'),
     isConseillerNumerique: true,
   })
 
   it('initialize → verifier-informations pour un conseiller numérique sans lieu', () => {
     expect(
-      getNextInscriptionStep(InscriptionStep('initialize'), {
+      etapeSuivante(EtapeDInscription('initialize'), {
         ...withDataspace,
         profil: ProfilInscription('ConseillerNumerique'),
         hasLieuxActivite: false,
@@ -132,7 +128,7 @@ describe('getNextInscriptionStep — flow Dataspace (conseiller numérique)', ()
 
   it('initialize → recapitulatif pour un conseiller numérique avec lieu', () => {
     expect(
-      getNextInscriptionStep(InscriptionStep('initialize'), {
+      etapeSuivante(EtapeDInscription('initialize'), {
         ...withDataspace,
         profil: ProfilInscription('ConseillerNumerique'),
         hasLieuxActivite: true,
@@ -142,7 +138,7 @@ describe('getNextInscriptionStep — flow Dataspace (conseiller numérique)', ()
 
   it('initialize → recapitulatif pour un coordinateur conseiller numérique', () => {
     expect(
-      getNextInscriptionStep(InscriptionStep('initialize'), {
+      etapeSuivante(EtapeDInscription('initialize'), {
         ...withDataspace,
         profil: ProfilInscription('CoordinateurConseillerNumerique'),
       }),
@@ -151,7 +147,7 @@ describe('getNextInscriptionStep — flow Dataspace (conseiller numérique)', ()
 
   it('initialize → choisir-role pour les autres profils', () => {
     expect(
-      getNextInscriptionStep(InscriptionStep('initialize'), {
+      etapeSuivante(EtapeDInscription('initialize'), {
         ...withDataspace,
         profil: ProfilInscription('Mediateur'),
       }),
@@ -160,13 +156,13 @@ describe('getNextInscriptionStep — flow Dataspace (conseiller numérique)', ()
 
   it('lieux-activite → recapitulatif', () => {
     expect(
-      getNextInscriptionStep(InscriptionStep('lieux-activite'), withDataspace),
+      etapeSuivante(EtapeDInscription('lieux-activite'), withDataspace),
     ).toBe('recapitulatif')
   })
 
   it('recapitulatif → null (terminal)', () => {
     expect(
-      getNextInscriptionStep(InscriptionStep('recapitulatif'), withDataspace),
+      etapeSuivante(EtapeDInscription('recapitulatif'), withDataspace),
     ).toBeNull()
   })
 })

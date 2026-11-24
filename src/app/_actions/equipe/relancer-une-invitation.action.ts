@@ -7,7 +7,7 @@ import { RelancerUneInvitationValidation } from '@/features/equipe/abilities/rel
 import { relancerUneInvitation } from '@/features/equipe/abilities/relancer-une-invitation/implementations/prisma/relancer-une-invitation.mutation'
 import {
   CoordinateurId,
-  Email,
+  Courriel,
   ReferenceInvitation,
   UtilisateurId,
 } from '@/features/equipe/domain'
@@ -24,7 +24,7 @@ export const relancerUneInvitationAction = actionBuilder()
       async ({ user, input }) =>
         relancerUneInvitation({
           reference: ReferenceInvitation({
-            email: Email(input.email),
+            email: Courriel(input.email),
             coordinateurId: CoordinateurId(input.coordinateurId),
           }),
           gestionnaire: gestionnaireDe(user),

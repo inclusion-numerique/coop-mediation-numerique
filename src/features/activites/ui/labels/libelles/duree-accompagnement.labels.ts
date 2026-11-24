@@ -12,7 +12,7 @@ export const dureeAccompagnementParDefautLabels = {
   [dureeAccompagnementPersonnaliseeValue]: 'Personnaliser',
 } as const
 
-export const dureeAccompagnementStatisticsRanges = [
+export const tranchesDeDureeDesStatistiques = [
   {
     key: '30',
     min: 0,

@@ -2,7 +2,7 @@
 
 import { environnementServeur } from '@/configuration/environnement/serveur'
 import { actionBuilder } from '@/configuration/nextjs'
-import { getLoginRedirectUrl } from '@/features/authentification/domain/page-d-accueil'
+import { adresseDeRetourApresConnexion } from '@/features/authentification/domain/page-d-accueil'
 import { getAuthenticatedSessionToken } from '@/features/authentification/implementations/session/session-user'
 import { withAdmin } from '@/features/authentification/middlewares/with-admin'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
@@ -40,7 +40,7 @@ export const usurperUnUtilisateurAction = actionBuilder()
         )
         return success({
           nom: cible.nom,
-          redirection: getLoginRedirectUrl({
+          redirection: adresseDeRetourApresConnexion({
             role: cible.role,
             inscriptionValidee:
               cible.inscription._tag === 'Le' ? cible.inscription.date : null,

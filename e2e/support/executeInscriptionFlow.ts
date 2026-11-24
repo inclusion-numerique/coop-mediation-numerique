@@ -1,7 +1,7 @@
 import { appUrl } from '@e2e/support/helpers'
 import { CreateUserInput } from '@e2e/tasks/handlers/user.tasks'
 import { profilInscriptionLabels } from '@/features/inscription/domain'
-import { stepPath } from '@/features/inscription/ui/presenters/chemin-de-l-etape.presenter'
+import { cheminDeLEtape } from '@/features/inscription/ui/presenters/chemin-de-l-etape.presenter'
 
 export type InscriptionFlowE2eExpectedStep =
   | {
@@ -47,7 +47,7 @@ const cguLabelMatch = /J’ai lu et j’accepte/
 
 const handleStep = (step: InscriptionFlowE2eExpectedStep) => {
   if (step.step === 'choisir-role') {
-    cy.appUrlShouldBe(stepPath('choisir-role'), {
+    cy.appUrlShouldBe(cheminDeLEtape('choisir-role'), {
       timeout: mutationAndNavigationTimeout,
     })
 
@@ -75,14 +75,14 @@ const handleStep = (step: InscriptionFlowE2eExpectedStep) => {
     // vérifie l'absence de la checkbox CGU, qui est présente ici).
     cy.url({ timeout: mutationAndNavigationTimeout }).should(
       'not.contain',
-      stepPath('choisir-role'),
+      cheminDeLEtape('choisir-role'),
     )
 
     return
   }
 
   if (step.step === 'verifier-informations') {
-    cy.appUrlShouldBe(stepPath('verifier-informations'), {
+    cy.appUrlShouldBe(cheminDeLEtape('verifier-informations'), {
       timeout: mutationAndNavigationTimeout,
     })
     step.check?.()
@@ -95,7 +95,7 @@ const handleStep = (step: InscriptionFlowE2eExpectedStep) => {
   }
 
   if (step.step === 'renseigner-structure-employeuse') {
-    cy.appUrlShouldBe(stepPath('renseigner-structure-employeuse'), {
+    cy.appUrlShouldBe(cheminDeLEtape('renseigner-structure-employeuse'), {
       timeout: mutationAndNavigationTimeout,
     })
 
@@ -117,9 +117,12 @@ const handleStep = (step: InscriptionFlowE2eExpectedStep) => {
     step.step === 'lieux-activite' &&
     'structureEmployeuseIsLieuActivite' in step
   ) {
-    cy.appUrlShouldBe(`${stepPath('lieux-activite')}/structure-employeuse`, {
-      timeout: mutationAndNavigationTimeout,
-    })
+    cy.appUrlShouldBe(
+      `${cheminDeLEtape('lieux-activite')}/structure-employeuse`,
+      {
+        timeout: mutationAndNavigationTimeout,
+      },
+    )
 
     // Cette étape passe désormais par une server action, pas par tRPC : aucune
     // requête nommée à intercepter. On synchronise sur la sortie de l'étape
@@ -132,7 +135,7 @@ const handleStep = (step: InscriptionFlowE2eExpectedStep) => {
       .should('be.enabled', { timeout: mutationAndNavigationTimeout })
       .click()
 
-    cy.appUrlShouldBe(stepPath('lieux-activite'), {
+    cy.appUrlShouldBe(cheminDeLEtape('lieux-activite'), {
       timeout: mutationAndNavigationTimeout,
     })
 
@@ -142,7 +145,7 @@ const handleStep = (step: InscriptionFlowE2eExpectedStep) => {
     step.step === 'lieux-activite' &&
     !('structureEmployeuseIsLieuActivite' in step)
   ) {
-    cy.appUrlShouldBe(stepPath('lieux-activite'), {
+    cy.appUrlShouldBe(cheminDeLEtape('lieux-activite'), {
       timeout: mutationAndNavigationTimeout,
     })
 
@@ -153,7 +156,7 @@ const handleStep = (step: InscriptionFlowE2eExpectedStep) => {
 
     cy.contains('Suivant').click()
 
-    cy.appUrlShouldBe(stepPath('recapitulatif'), {
+    cy.appUrlShouldBe(cheminDeLEtape('recapitulatif'), {
       timeout: mutationAndNavigationTimeout,
     })
 
@@ -176,7 +179,7 @@ const handleStep = (step: InscriptionFlowE2eExpectedStep) => {
       cy.findByRole('checkbox', { name: cguLabelMatch }).should('be.visible')
     }
 
-    cy.appUrlShouldBe(stepPath('recapitulatif'), {
+    cy.appUrlShouldBe(cheminDeLEtape('recapitulatif'), {
       timeout: mutationAndNavigationTimeout,
     })
 
@@ -204,7 +207,7 @@ const handleStep = (step: InscriptionFlowE2eExpectedStep) => {
     // fixtures, ait abouti — sa fenêtre de retry par défaut (4s) perdrait la course.
     cy.url({ timeout: mutationAndNavigationTimeout }).should(
       'not.contain',
-      stepPath('recapitulatif'),
+      cheminDeLEtape('recapitulatif'),
     )
 
     return
@@ -235,7 +238,7 @@ export const executeInscriptionFlow = ({
     cy.signin(user)
   }
 
-  cy.visit(appUrl(stepPath('initialize')))
+  cy.visit(appUrl(cheminDeLEtape('initialize')))
 
   for (const step of expectedSteps) {
     handleStep(step)

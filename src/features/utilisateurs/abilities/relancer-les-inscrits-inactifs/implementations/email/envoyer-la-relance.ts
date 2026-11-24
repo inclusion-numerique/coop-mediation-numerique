@@ -2,10 +2,10 @@ import { contactEmail } from '@/configuration/projet/config'
 import { emailTransport } from '@/configuration/smtp/emailTransport'
 import { expediteur } from '@/configuration/smtp/serveur'
 import { throwOnSendMailFailure } from '@/configuration/smtp/throwOnSendMailFailure'
-import { nouveauAccountEmail } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/implementations/email/relance'
+import { relance } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/implementations/email/relance'
 import { compileMjml } from '@/libraries/emails/mjml'
 
-export const sendNouveauAccountEmail = async ({
+export const envoyerLaRelance = async ({
   email,
   firstname,
   totalUsers,
@@ -27,7 +27,7 @@ export const sendNouveauAccountEmail = async ({
     from: expediteur,
     replyTo: contactEmail,
     subject: 'Votre compte est prêt, il ne manque que vous !',
-    text: nouveauAccountEmail.text({
+    text: relance.text({
       firstname,
       totalUsers,
       matomoCampaignId,
@@ -36,7 +36,7 @@ export const sendNouveauAccountEmail = async ({
       monthsCount,
     }),
     html: await compileMjml(
-      nouveauAccountEmail.mjml({
+      relance.mjml({
         firstname,
         totalUsers,
         matomoCampaignId,

@@ -7,7 +7,7 @@ import { type CodeDepartement, CodeInsee } from '@/libraries/insee'
 import { nomAffiche } from '@/libraries/nom-affiche'
 import { MediateurId } from '../../../../domain/identifiants/mediateur-id'
 import { RattachementId } from '../../../../domain/identifiants/rattachement-id'
-import { UserId } from '../../../../domain/identifiants/utilisateur-id'
+import { UtilisateurId } from '../../../../domain/identifiants/utilisateur-id'
 import {
   type CoordinateurDuMediateur,
   Courriel,
@@ -117,7 +117,7 @@ const departementDuCoordinateur = (
 const versCoordinateur = (
   coordinateur: LigneCoordinateur,
 ): CoordinateurDuMediateur | null => {
-  const acteurId = UserId.safe(coordinateur.id)
+  const acteurId = UtilisateurId.safe(coordinateur.id)
   return acteurId === null
     ? null
     : {
@@ -142,7 +142,7 @@ export const versMediateurDuLieu = ({
 }: LigneMediateurDuLieu): MediateurDuLieu | null => {
   const rattachementId = RattachementId.safe(id)
   const mediateurId = MediateurId.safe(mediateur.id)
-  const acteurId = UserId.safe(mediateur.user.id)
+  const acteurId = UtilisateurId.safe(mediateur.user.id)
   const courriel = Courriel.safe(mediateur.user.email)
   const nombreDeLieux = NombreDeLieux.safe(mediateur._count.enActivite)
 

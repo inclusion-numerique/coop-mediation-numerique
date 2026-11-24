@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { encodeSerializableState } from '@/libraries/etat-encode/encodeSerializableState'
 import { CoordinateurId } from '../identifiants/coordinateur-id'
-import { Email } from '../identite/courriel'
+import { Courriel } from '../identite/courriel'
 import {
   codeInvitation,
   lienInvitation,
@@ -10,7 +10,7 @@ import {
 import { ReferenceInvitation } from './reference-invitation'
 
 const reference = ReferenceInvitation({
-  email: Email('Invite@Example.com'),
+  email: Courriel('Invite@Example.com'),
   coordinateurId: CoordinateurId('550e8400-e29b-41d4-a716-446655440001'),
 })
 

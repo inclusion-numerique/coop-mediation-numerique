@@ -2,7 +2,7 @@ import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { Prisma } from '@/generated/prisma/client'
 import {
   CoordinateurId,
-  Email,
+  Courriel,
   Nom,
   NomAffiche,
   nomAffiche,
@@ -59,7 +59,7 @@ export const mediateursAAjouter = async ({
   })
 
   return trouves.flatMap(({ user }) => {
-    const email = Email.safe(user.email)
+    const email = Courriel.safe(user.email)
     return email === null
       ? []
       : [
@@ -96,7 +96,7 @@ export const equipeAComplementer = async (
 
   if (coordinateur?.coordinateur == null) return null
 
-  const email = Email.safe(coordinateur.email)
+  const email = Courriel.safe(coordinateur.email)
 
   return email === null
     ? null

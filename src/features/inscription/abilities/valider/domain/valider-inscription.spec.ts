@@ -1,11 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import { UserId } from '@/features/inscription/domain'
+import { UtilisateurId } from '@/features/inscription/domain'
 import {
   type FaitsInscription,
   validerInscription,
 } from './valider-inscription'
 
-const userId = UserId('11111111-1111-1111-1111-111111111111')
+const userId = UtilisateurId('11111111-1111-1111-1111-111111111111')
 const maintenant = new Date('2026-07-16T10:00:00.000Z')
 
 const faits = (

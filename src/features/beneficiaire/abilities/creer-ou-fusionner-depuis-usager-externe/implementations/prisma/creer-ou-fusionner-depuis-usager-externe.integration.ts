@@ -2,7 +2,7 @@ import { v4 } from 'uuid'
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { AdresseIndisponible } from '@/libraries/ban/apiAdresse'
-import type { ExternalUserToMerge } from '../../domain/creer-ou-fusionner-depuis-usager-externe'
+import type { UsagerExterneAFusionner } from '../../domain/creer-ou-fusionner-depuis-usager-externe'
 import { creerOuFusionnerBeneficiairesDepuisUsagersExternes } from './creer-ou-fusionner-depuis-usager-externe.mutation'
 
 const evreux = {
@@ -15,7 +15,7 @@ const rdvUserId = 990_101
 const utilisateurId = '45661444-bbca-4961-9944-32cfa9695a4a'
 const mediateurId = '44aed6e1-ffcd-433c-8018-e50f5f554709'
 
-const usager: ExternalUserToMerge = {
+const usager: UsagerExterneAFusionner = {
   rdvUserId,
   nom: 'Pitre-Test',
   prenom: 'Sylvie',

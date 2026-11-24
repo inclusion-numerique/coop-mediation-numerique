@@ -1,6 +1,6 @@
 import React from 'react'
 import CreateCraModal from '@/features/activites/ui/slots/CreateCraModal.slot'
-import { getHomepage } from '@/features/authentification/domain/page-d-accueil'
+import { pageDAccueil } from '@/features/authentification/domain/page-d-accueil'
 import { authenticateUser } from '@/features/authentification/implementations/session/authenticate-user'
 import Header from '@/features/navigation/ui/layouts/Header'
 import { MiseEnPageCoopPleineLargeur } from '@/features/navigation/ui/layouts/MiseEnPageCoopPleineLargeur'
@@ -18,7 +18,7 @@ const CoopFullWidthLayout = async ({
       entete={
         <Header
           user={user}
-          accueil={getHomepage(user)}
+          accueil={pageDAccueil(user)}
           terminerUsurpation={<TerminerUsurpationHeaderUserMenuItem />}
           fullWidth
           variant="coop"

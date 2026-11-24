@@ -154,7 +154,7 @@ const toLieuCarto = (lieu: LieuRow): LieuCarto | null => {
   }
 }
 
-export const findCartoStructuresByIds = async (
+export const structuresCartoParIds = async (
   cartoIds: readonly string[],
 ): Promise<ReadonlyMap<string, LieuCarto>> => {
   if (cartoIds.length === 0) return new Map()

@@ -1,7 +1,7 @@
 import { Route } from 'next'
 import ProConnectSigninButton from '@/features/authentification/abilities/se-connecter/ui/components/ProConnectSigninButton'
 import { EmailSigninForm } from '@/features/authentification/abilities/se-connecter/ui/forms/EmailSigninForm'
-import { signinErrorMessage } from '@/features/authentification/abilities/se-connecter/ui/labels/erreur-de-connexion.labels'
+import { messageDErreurDeConnexion } from '@/features/authentification/abilities/se-connecter/ui/labels/erreur-de-connexion.labels'
 import { AuthCard } from '@/features/authentification/ui/components/AuthCard'
 import LogoCoop from '@/libraries/ui/components/LogoCoop'
 
@@ -36,7 +36,7 @@ const SigninPanel = ({
 
     {error ? (
       <div className="fr-alert fr-alert--error fr-alert--sm fr-mb-6v">
-        <p>{signinErrorMessage(error)}</p>
+        <p>{messageDErreurDeConnexion(error)}</p>
       </div>
     ) : null}
     {connexion.via === 'proconnect' && (

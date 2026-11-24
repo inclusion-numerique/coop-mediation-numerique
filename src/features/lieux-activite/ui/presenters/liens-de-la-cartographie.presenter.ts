@@ -1,4 +1,4 @@
-export const getStructureCartographieLink = ({
+export const lienDuLieuDansLaCartographie = ({
   structureCartographieNationaleId,
 }: {
   structureCartographieNationaleId: string
@@ -6,7 +6,7 @@ export const getStructureCartographieLink = ({
   return `https://cartographie.societenumerique.gouv.fr/cartographie/${structureCartographieNationaleId}/details` as const
 }
 
-export const getCartographieDepartementLink = ({
+export const lienDuDepartementDansLaCartographie = ({
   region,
   departement,
 }: {

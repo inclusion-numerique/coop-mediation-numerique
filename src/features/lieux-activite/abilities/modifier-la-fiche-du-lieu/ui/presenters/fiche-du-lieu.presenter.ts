@@ -1,4 +1,4 @@
-import { getCartographieNationaleSourceLabel } from '@/features/lieux-activite/domain/cartographie-nationale/sources'
+import { libelleDeLaSource } from '@/features/lieux-activite/domain/cartographie-nationale/sources'
 import { nomAffiche } from '@/features/lieux-activite/domain/nom-affiche'
 import { CodeInsee, codeDepartementDuCodeInsee } from '@/libraries/insee'
 import { pluriel } from '@/libraries/pluriel'
@@ -76,7 +76,7 @@ const misAJourPar = (lieu: Lieu, auteurCoop: string | null): string | null => {
   const { derniereModification } = lieu.tracabilite
 
   return derniereModification._tag === 'ParSource'
-    ? getCartographieNationaleSourceLabel(derniereModification.source)
+    ? libelleDeLaSource(derniereModification.source)
     : auteurCoop
 }
 

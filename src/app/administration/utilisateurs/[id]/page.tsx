@@ -26,7 +26,7 @@ import { repartirLesAccompagnements } from '@/features/activites/abilities/repar
 import { repartitionPresentee } from '@/features/activites/abilities/repartir-les-accompagnements/ui/presenters/repartition.presenter'
 import { criteresSurLaPeriode, Jour } from '@/features/activites/domain'
 import { perimetreDeLUtilisateur } from '@/features/activites/implementations/session/perimetre'
-import { getSessionUserFromId } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
+import { utilisateurDeLaSessionParId } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
 import {
   authenticateAdmin,
   authenticateUser,
@@ -162,7 +162,7 @@ const sectionStatistiques = async (
   periode: PeriodeChoisie,
 ): Promise<ReactNode> => {
   const perimetre = perimetreDeLUtilisateur(
-    await getSessionUserFromId(fiche.id),
+    await utilisateurDeLaSessionParId(fiche.id),
   )
   if (perimetre === null) return null
 

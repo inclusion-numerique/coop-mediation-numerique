@@ -2,7 +2,7 @@ import {
   NomAffiche,
   nomAffiche as nomAfficheDeLaPersonne,
 } from '@/libraries/nom-affiche'
-import type { Email } from './courriel'
+import type { Courriel } from './courriel'
 import type { Nom } from './nom'
 import type { Prenom } from './prenom'
 
@@ -12,7 +12,7 @@ export type Identite = {
   readonly prenom: Prenom | null
   readonly nom: Nom | null
   readonly nomComplet: NomAffiche | null
-  readonly email: Email
+  readonly email: Courriel
 }
 
 export const nomAffiche = ({

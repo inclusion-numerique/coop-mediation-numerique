@@ -3,7 +3,7 @@ import type { CoordinateurDeLEquipe } from '../domain/coordinateur-de-l-equipe'
 import { AdhesionId } from '../domain/identifiants/adhesion-id'
 import { CoordinateurId } from '../domain/identifiants/coordinateur-id'
 import { MediateurId } from '../domain/identifiants/mediateur-id'
-import { Email } from '../domain/identite/courriel'
+import { Courriel } from '../domain/identite/courriel'
 import { NomAffiche } from '../domain/identite/nom-affiche'
 import type {
   InvitationAcceptee,
@@ -16,7 +16,7 @@ export const coordinateurId = CoordinateurId(
   '550e8400-e29b-41d4-a716-446655440001',
 )
 export const mediateurId = MediateurId('550e8400-e29b-41d4-a716-446655440011')
-export const email = Email('invite@example.com')
+export const email = Courriel('invite@example.com')
 const reference = ReferenceInvitation({ email, coordinateurId })
 
 export const invitationEnAttente: InvitationEnAttente = {
@@ -60,6 +60,6 @@ export const adhesionArchivee: AdhesionArchivee = {
 
 export const coordinateurDeLEquipe: CoordinateurDeLEquipe = {
   nom: NomAffiche('Camille Coordinatrice'),
-  email: Email('camille@example.com'),
+  email: Courriel('camille@example.com'),
   telephone: null,
 }

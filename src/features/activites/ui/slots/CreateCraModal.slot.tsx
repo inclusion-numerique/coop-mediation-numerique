@@ -1,7 +1,7 @@
 'use client'
 
 import CreateCraModalContent from '@/features/activites/ui/components/saisie/CreateCraModalContent'
-import { CreateCraModalDefinition } from '@/features/activites/ui/components/saisie/modale-de-saisie'
+import { ModaleDeSaisie } from '@/features/activites/ui/components/saisie/modale-de-saisie'
 
 const CreateCraModal = ({
   isMediateur,
@@ -10,13 +10,13 @@ const CreateCraModal = ({
   isMediateur: boolean
   isCoordinateur: boolean
 }) => (
-  <CreateCraModalDefinition.Component title="Compléter un compte-rendu d’activité">
+  <ModaleDeSaisie.Component title="Compléter un compte-rendu d’activité">
     <CreateCraModalContent
-      onClose={CreateCraModalDefinition.close}
+      onClose={ModaleDeSaisie.close}
       isMediateur={isMediateur}
       isCoordinateur={isCoordinateur}
     />
-  </CreateCraModalDefinition.Component>
+  </ModaleDeSaisie.Component>
 )
 
 export default CreateCraModal

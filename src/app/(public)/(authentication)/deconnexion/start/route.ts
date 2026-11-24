@@ -2,10 +2,10 @@ import type { NextRequest } from 'next/server'
 import { v4 } from 'uuid'
 import { getServerUrl } from '@/configuration/projet/baseUrl'
 import { idTokenPourDeconnexion } from '@/features/authentification/abilities/se-deconnecter/implementations/proconnect/se-deconnecter'
-import { getSessionUserFromSessionToken } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
+import { utilisateurDuJetonDeSession } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
 import type { ProconnectSignoutState } from '@/features/authentification/implementations/proconnect/proconnect-signout'
 import { generateProconnectSignoutUrl } from '@/features/authentification/implementations/proconnect/proconnect-signout'
-import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementations/session/session-token-from-cookies'
+import { jetonDeSessionDesCookies } from '@/features/authentification/implementations/session/session-token-from-cookies'
 import { cheminInterne } from '@/libraries/chemin-interne'
 import {
   type EncodedState,
@@ -24,9 +24,9 @@ export const GET = async (request: NextRequest) => {
     { absolutePath: true },
   )
 
-  const sessionToken = getSessionTokenFromNextRequestCookies(request.cookies)
+  const sessionToken = jetonDeSessionDesCookies(request.cookies)
   const user = sessionToken
-    ? await getSessionUserFromSessionToken(sessionToken)
+    ? await utilisateurDuJetonDeSession(sessionToken)
     : null
 
   if (!user) return redirectionVers(callbackUrl)

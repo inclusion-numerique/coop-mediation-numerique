@@ -3,7 +3,7 @@ import { Prisma } from '@/generated/prisma/client'
 import { departementsDesCodesInsee } from '@/libraries/departement'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 
-export const getMediateurCommunesAndDepartementsOptions = async ({
+export const communesDuMediateur = async ({
   mediateurIds,
 }: {
   mediateurIds: string[]

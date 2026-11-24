@@ -25,14 +25,14 @@ import { describe, expect, it } from 'vitest'
 import { VisibiliteCartographie } from '../../../domain/cartographie-nationale/visibilite-cartographie'
 import type { Fiche } from '../../../domain/fiche'
 import { LieuId } from '../../../domain/identifiants/lieu-id'
-import { UserId } from '../../../domain/identifiants/utilisateur-id'
+import { UtilisateurId } from '../../../domain/identifiants/utilisateur-id'
 import type { Lieu } from '../../../domain/lieu'
 import { ModificationInconnue } from '../../../domain/tracabilite'
 import { differences } from './differences'
 import { resoudreLesDifferences } from './resoudre-les-differences'
 
 const maintenant = new Date('2026-09-11T11:00:00Z')
-const auteur = UserId('550e8400-e29b-41d4-a716-446655440001')
+const auteur = UtilisateurId('550e8400-e29b-41d4-a716-446655440001')
 
 const fiche = (ajustements: Partial<Fiche>): Fiche => ({
   nom: Nom('Espace numérique'),

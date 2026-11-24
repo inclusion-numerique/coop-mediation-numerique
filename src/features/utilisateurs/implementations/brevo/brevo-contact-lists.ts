@@ -32,4 +32,4 @@ const getContactListsImmediate = async (
   }
 }
 
-export const getBrevoContactLists = brevoApiThrottle(getContactListsImmediate)
+export const listesDeContactsBrevo = brevoApiThrottle(getContactListsImmediate)

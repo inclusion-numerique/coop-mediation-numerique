@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from 'vitest'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { rattacherAUneEmployeuseDepuisSiret } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/prisma/rattacher-depuis-siret.mutation'
-import { importStructureEmployeuseFromProConnect } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/proconnect/importer-la-structure-employeuse-depuis-proconnect'
+import { importerLaStructureEmployeuseDepuisProConnect } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/proconnect/importer-la-structure-employeuse-depuis-proconnect'
 
 const MEDIATEUR = '93b7d259-61b0-4069-ae42-db887984777f'
 const CONSEILLER = '09d6e0af-56e7-43b8-a649-b7e9d3c70c51'
@@ -10,7 +10,7 @@ const NOS_UTILISATEURS = [MEDIATEUR, CONSEILLER]
 const PROCONNECT_SIRET = '11111111111111'
 const OTHER_SIRET = '22222222222222'
 
-const importer = importStructureEmployeuseFromProConnect(
+const importer = importerLaStructureEmployeuseDepuisProConnect(
   rattacherAUneEmployeuseDepuisSiret({
     geocoder: async () => null,
     signaler: () => undefined,
@@ -45,7 +45,7 @@ const employeusesActivesDe = async (userId: string) =>
     })
   ).map(({ structureAdministrativeId }) => structureAdministrativeId)
 
-describe('importStructureEmployeuseFromProConnect', () => {
+describe('importerLaStructureEmployeuseDepuisProConnect', () => {
   const state = { proconnectMainId: 0, otherMainId: 0 }
 
   beforeAll(async () => {

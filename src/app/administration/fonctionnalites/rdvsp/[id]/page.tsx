@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation'
 import { declencherSynchronisationAction } from '@/app/_actions/rdvsp/declencher-synchronisation.action'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticate-user'
-import { getAdministrationRdvspUserData } from '@/features/rdvsp/abilities/administrer-comptes-rdv/implementations/prisma/compte-rdv-detaille.query'
+import { compteRdvDetaille } from '@/features/rdvsp/abilities/administrer-comptes-rdv/implementations/prisma/compte-rdv-detaille.query'
 import { AdministrationRdvspUserPage } from '@/features/rdvsp/abilities/administrer-comptes-rdv/ui/pages/AdministrationRdvspUserPage'
 import { DECLENCHER_SYNCHRONISATION_ACTION_KEY } from '@/features/rdvsp/action/declencher-synchronisation.key'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
@@ -17,7 +17,7 @@ export const revalidate = 0
 const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
   await authenticateAdmin()
   const { id } = await params
-  const data = await getAdministrationRdvspUserData({
+  const data = await compteRdvDetaille({
     userId: id,
   })
 

@@ -24,12 +24,12 @@ const rdvOauthLinkAccountSuccessCallbackPath =
 const rdvOauthLinkAccountErrorCallbackPath =
   '/coop/mes-outils/rdv-service-public/connexion-erreur'
 
-export type RdvOauthLinkAccountState = {
+export type EtatDeLaLiaisonDuCompte = {
   redirectToSuccess?: string
   redirectToError?: string
 }
 
-const rdvOauthLinkAccountFlowUrl = (options: RdvOauthLinkAccountState) => {
+const rdvOauthLinkAccountFlowUrl = (options: EtatDeLaLiaisonDuCompte) => {
   // Configuration de l'OAuth
   const state = encodeSerializableState(options)
 

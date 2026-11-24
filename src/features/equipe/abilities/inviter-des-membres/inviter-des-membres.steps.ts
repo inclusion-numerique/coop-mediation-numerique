@@ -4,7 +4,11 @@ import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { type MediateursAInviter } from '@/features/equipe/abilities/inviter-des-membres/domain/index'
 import { inviterDesMembres } from '@/features/equipe/abilities/inviter-des-membres/implementations/prisma/inviter-des-membres.mutation'
 import { rechercherDesMediateursAInviter } from '@/features/equipe/abilities/inviter-des-membres/implementations/prisma/rechercher-des-mediateurs-a-inviter.query'
-import { CoordinateurId, Email, UtilisateurId } from '@/features/equipe/domain'
+import {
+  CoordinateurId,
+  Courriel,
+  UtilisateurId,
+} from '@/features/equipe/domain'
 import {
   type CoordinateurSeme,
   invitationDe,
@@ -38,7 +42,7 @@ const unique = (email: string): string =>
 const inviter = async (emails: readonly string[]) => {
   contexte.issue = await inviterDesMembres({
     coordinateurId: CoordinateurId(coordinateur().coordinateurId),
-    candidats: emails.map(Email),
+    candidats: emails.map(Courriel),
     auteurId: UtilisateurId(coordinateur().userId),
   })
 }

@@ -15,7 +15,7 @@ import { consulterLaFicheDuLieu } from '@/features/lieux-activite/abilities/modi
 import { modifierLaFicheDuLieu } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/implementations/prisma/modifier-la-fiche-du-lieu.mutation'
 import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
 import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
-import { UserId } from '@/features/lieux-activite/domain/identifiants/utilisateur-id'
+import { UtilisateurId } from '@/features/lieux-activite/domain/identifiants/utilisateur-id'
 import { SERVICES_PAR_DEFAUT } from '@/features/lieux-activite/domain/publication'
 import {
   ficheSemee,
@@ -26,7 +26,7 @@ import { depuisLaSaisie } from './action/saisie-de-la-fiche.transfer'
 import type { FicheDuLieu } from './domain'
 import { informationsGeneralesSoumises } from './ui/forms/informations-generales-soumises.form-data'
 
-const auteur = () => UserId(ficheSemee().userIds[0] ?? '')
+const auteur = () => UtilisateurId(ficheSemee().userIds[0] ?? '')
 
 const relire = async () => {
   const fiche = await consulterLaFicheDuLieu(LieuId(ficheSemee().lieuId))
@@ -95,7 +95,7 @@ When(
 When('un médiateur étranger au lieu enregistre la description', async () => {
   await modifierLaFicheDuLieu({
     id: LieuId(ficheSemee().lieuId),
-    par: UserId(ficheSemee().userIds[1] ?? ''),
+    par: UtilisateurId(ficheSemee().userIds[1] ?? ''),
     modification: {
       section: 'Description',
       presentation: Presentation({ resume: 'Une présentation du lieu' }),

@@ -2,8 +2,8 @@ import { cookies } from 'next/headers'
 import { cache } from 'react'
 import 'server-only'
 import { AuthenticationError } from '@/features/authentification/domain/errors'
-import type { SessionUser } from '@/features/authentification/domain/utilisateur-de-la-session'
-import { getSessionUserFromSessionToken } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
+import type { UtilisateurDeLaSession } from '@/features/authentification/domain/utilisateur-de-la-session'
+import { utilisateurDuJetonDeSession } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
 import {
   secureSessionCookie,
   sessionCookie,
@@ -29,19 +29,18 @@ export const getAuthenticatedSessionToken = async (): Promise<string> => {
 }
 
 // User session is cached per request https://beta.nextjs.org/docs/data-fetching/caching#per-request-caching
-const cachedGetSessionUserFromSessionToken = cache(
-  getSessionUserFromSessionToken,
-)
+const cachedGetSessionUserFromSessionToken = cache(utilisateurDuJetonDeSession)
 
-export const getSessionUser = async (): Promise<SessionUser | null> => {
-  const sessionToken = await getSessionToken()
+export const getSessionUser =
+  async (): Promise<UtilisateurDeLaSession | null> => {
+    const sessionToken = await getSessionToken()
 
-  if (!sessionToken) {
-    return null
+    if (!sessionToken) {
+      return null
+    }
+
+    return cachedGetSessionUserFromSessionToken(sessionToken)
   }
-
-  return cachedGetSessionUserFromSessionToken(sessionToken)
-}
 
 export const getAuthenticatedSessionUser = () =>
   getSessionUser().then((user) => {

@@ -2,7 +2,7 @@ import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { type Result, success } from '@/libraries/result'
 import { LieuId } from '../../../../domain/identifiants/lieu-id'
 import type { MediateurId } from '../../../../domain/identifiants/mediateur-id'
-import type { UserId } from '../../../../domain/identifiants/utilisateur-id'
+import type { UtilisateurId } from '../../../../domain/identifiants/utilisateur-id'
 import {
   type AjouterDesLieuxActivitePorts,
   demandeDAjout,
@@ -33,7 +33,7 @@ export const ajouterDesLieuxActivite = async ({
   maintenant = new Date(),
 }: {
   readonly demandes: readonly LieuDemande[]
-  readonly userId: UserId
+  readonly userId: UtilisateurId
   readonly mediateurId: MediateurId | null
   readonly ports: AjouterDesLieuxActivitePorts
   readonly maintenant?: Date

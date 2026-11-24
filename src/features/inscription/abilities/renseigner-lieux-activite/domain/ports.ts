@@ -1,9 +1,12 @@
-import type { InscriptionEnCours, UserId } from '@/features/inscription/domain'
+import type {
+  InscriptionEnCours,
+  UtilisateurId,
+} from '@/features/inscription/domain'
 import type { LieuActiviteExistant, LieuActiviteInput } from './reconcilier'
 
 /** Lit les activités en cours de l'utilisateur (pour la réconciliation). */
 export type LireLieuxActiviteExistants = (
-  userId: UserId,
+  userId: UtilisateurId,
 ) => Promise<readonly LieuActiviteExistant[]>
 
 /**
@@ -23,7 +26,7 @@ export type TrouverStructuresCarto<StructureCarto> = (
  */
 export type EnregistrerReconciliation<StructureCarto> = (input: {
   readonly etatFranchi: InscriptionEnCours
-  readonly userId: UserId
+  readonly userId: UtilisateurId
   readonly aCloturer: readonly string[]
   readonly aCreer: readonly LieuActiviteInput[]
   readonly structuresCarto: ReadonlyMap<string, StructureCarto>

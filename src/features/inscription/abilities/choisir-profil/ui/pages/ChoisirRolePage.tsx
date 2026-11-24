@@ -7,11 +7,11 @@ import {
   choisirProfilFormShape,
 } from '@/features/inscription/abilities/choisir-profil/action/choisir-profil.validation'
 import {
-  type InscriptionStep,
+  type EtapeDInscription,
   profilInscriptionLabels,
   type Role,
 } from '@/features/inscription/domain'
-import { stepPath } from '@/features/inscription/ui/presenters/chemin-de-l-etape.presenter'
+import { cheminDeLEtape } from '@/features/inscription/ui/presenters/chemin-de-l-etape.presenter'
 import { handleSubmit } from '@/libraries/formulaire/handle-submit'
 import {
   type DefaultValues,
@@ -25,7 +25,7 @@ import { createToast } from '@/libraries/ui/toast/createToast'
 type EnregistrerProfil = (data: ChoisirProfilFormData) => Promise<
   ServerActionResult<{
     role: Role
-    etapeSuivante: InscriptionStep
+    etapeSuivante: EtapeDInscription
   }>
 >
 
@@ -80,7 +80,7 @@ const ChoisirRolePage = ({ save }: { save: EnregistrerProfil }) => {
           return
         }
 
-        router.push(stepPath(result.data.etapeSuivante))
+        router.push(cheminDeLEtape(result.data.etapeSuivante))
       } catch {
         erreurEnregistrement()
       }

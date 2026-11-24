@@ -1,7 +1,7 @@
 import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
 import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
 import type { BeneficiairesRecherches } from '../domain/rechercher-beneficiaires'
-import { getInitialBeneficiairesOptions } from './prisma/rechercher-beneficiaires.query'
+import { beneficiairesProposes } from './prisma/rechercher-beneficiaires.query'
 
 const AUCUN: BeneficiairesRecherches = { beneficiaires: [], totalCount: 0 }
 
@@ -17,7 +17,7 @@ export const beneficiairesInitiauxAvec =
     presenter(
       mediateurId == null
         ? AUCUN
-        : await getInitialBeneficiairesOptions({
+        : await beneficiairesProposes({
             mediateurId: MediateurId(mediateurId),
             includeBeneficiaireIds: includeBeneficiaireIds?.map(BeneficiaireId),
           }),

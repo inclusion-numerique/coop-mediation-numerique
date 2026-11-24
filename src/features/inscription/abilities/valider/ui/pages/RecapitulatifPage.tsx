@@ -5,8 +5,8 @@ import type { ReactNode } from 'react'
 import InscriptionInvalidInformationContactSupportLink from '@/features/inscription/abilities/valider/ui/components/InscriptionInvalidInformationContactSupportLink'
 import ValiderInscriptionForm from '@/features/inscription/abilities/valider/ui/forms/ValiderInscriptionForm'
 import {
-  computeUserProfile,
   libelleDuProfil,
+  profilDInscription,
 } from '@/features/inscription/domain'
 import InscriptionCard from '@/features/inscription/ui/components/InscriptionCard'
 import { pluriel } from '@/libraries/pluriel'
@@ -55,7 +55,7 @@ const RecapitulatifPage = ({
       <InfoLabelValue
         label="Profession"
         value={libelleDuProfil(
-          computeUserProfile({
+          profilDInscription({
             isConseillerNumerique: user.isConseillerNumerique,
             isCoordinateur: user.coordinateur != null,
           }),

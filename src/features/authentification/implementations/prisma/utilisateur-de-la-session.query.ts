@@ -1,10 +1,10 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import type { SessionUser } from '@/features/authentification/domain/utilisateur-de-la-session'
-import { registerLastSeen } from '@/features/authentification/implementations/prisma/derniere-visite.mutation'
+import type { UtilisateurDeLaSession } from '@/features/authentification/domain/utilisateur-de-la-session'
+import { enregistrerLaDerniereVisite } from '@/features/authentification/implementations/prisma/derniere-visite.mutation'
 import { serializePrismaSessionUser } from '@/features/authentification/implementations/session/serialize-prisma-session-user'
 import type { Prisma } from '@/generated/prisma/client'
 
-export const sessionUserSelect = {
+export const utilisateurDeLaSessionSelect = {
   id: true,
   email: true,
   phone: true,
@@ -124,19 +124,19 @@ const querySessionUser = async (sessionToken: string) =>
         },
       },
       user: {
-        select: sessionUserSelect,
+        select: utilisateurDeLaSessionSelect,
       },
     },
   })
 
 type PrismaSession = Exclude<Awaited<ReturnType<typeof querySessionUser>>, null>
 
-export type PrismaSessionUser = PrismaSession['user']
+export type UtilisateurDeLaSessionRow = PrismaSession['user']
 export type PrismaSessionUsupper = PrismaSession['usurper']
 
-export const getSessionUserFromSessionToken = async (
+export const utilisateurDuJetonDeSession = async (
   sessionToken: string | null,
-): Promise<SessionUser | null> => {
+): Promise<UtilisateurDeLaSession | null> => {
   if (!sessionToken) {
     return null
   }
@@ -147,19 +147,22 @@ export const getSessionUserFromSessionToken = async (
     return null
   }
 
-  registerLastSeen({ userId: res.user.id, currentLastSeen: res.user.lastSeen })
+  enregistrerLaDerniereVisite({
+    userId: res.user.id,
+    currentLastSeen: res.user.lastSeen,
+  })
 
   return serializePrismaSessionUser(res.user, res.usurper)
 }
 
-export const getSessionUserFromId = async (
+export const utilisateurDeLaSessionParId = async (
   userId: string,
-): Promise<SessionUser> => {
+): Promise<UtilisateurDeLaSession> => {
   const prismaSessionUser = await prismaClient.user.findUniqueOrThrow({
     where: {
       id: userId,
     },
-    select: sessionUserSelect,
+    select: utilisateurDeLaSessionSelect,
   })
 
   return serializePrismaSessionUser(prismaSessionUser, null)

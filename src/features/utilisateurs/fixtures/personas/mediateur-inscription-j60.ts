@@ -1,11 +1,11 @@
-import { givenUser } from '@/features/utilisateurs/fixtures/utilisateur'
+import { utilisateur } from '@/features/utilisateurs/fixtures/utilisateur'
 
 const day = 24 * 60 * 60 * 1000
 
 const mediateurInscriptionJ60MediateurId =
   'c2dc8edd-8298-492f-b8e1-15599b38e43b'
 
-export const mediateurInscriptionJ60 = givenUser({
+export const mediateurInscriptionJ60 = utilisateur({
   id: '9197ce73-d9cc-41bd-8c48-5db85193240a',
   firstName: 'Médiateur',
   lastName: 'Inscription J+60',

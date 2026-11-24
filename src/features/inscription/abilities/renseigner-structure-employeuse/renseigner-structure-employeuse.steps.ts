@@ -7,8 +7,8 @@ import { type StructureEmployeuseInput } from '@/features/inscription/abilities/
 import { renseignerStructureEmployeuseAvec } from '@/features/inscription/abilities/renseigner-structure-employeuse/implementations/renseigner-structure-employeuse.binding'
 import { ProfilInscription } from '@/features/inscription/domain'
 import {
-  currentInscriptionUserId,
   seedProfilChoisi,
+  utilisateurDeLInscriptionEnCours,
 } from '@/features/inscription/inscription.cucumber'
 import type { Result } from '@/libraries/result'
 
@@ -50,7 +50,7 @@ Given('l’employeuse choisie n’est pas rattachable', () => {
 When('je renseigne ma structure employeuse', async () => {
   resultat = await renseignerStructureEmployeuseAvec(rattacherEmployeuse)({
     command: {
-      userId: currentInscriptionUserId(),
+      userId: utilisateurDeLInscriptionEnCours(),
       structureEmployeuse: structureEmployeuseInput,
     },
     maintenant: new Date(),
@@ -59,7 +59,7 @@ When('je renseigne ma structure employeuse', async () => {
 
 Then('ma structure employeuse est renseignée', async () => {
   const user = await prismaClient.user.findUniqueOrThrow({
-    where: { id: currentInscriptionUserId() },
+    where: { id: utilisateurDeLInscriptionEnCours() },
     select: { structureEmployeuseRenseignee: true },
   })
   assert.ok(
@@ -88,7 +88,7 @@ Then('le renseignement est refusé faute d’employeuse rattachable', () => {
 
 Then('ma structure employeuse n’est pas renseignée', async () => {
   const user = await prismaClient.user.findUniqueOrThrow({
-    where: { id: currentInscriptionUserId() },
+    where: { id: utilisateurDeLInscriptionEnCours() },
     select: { structureEmployeuseRenseignee: true },
   })
   assert.strictEqual(user.structureEmployeuseRenseignee, null)

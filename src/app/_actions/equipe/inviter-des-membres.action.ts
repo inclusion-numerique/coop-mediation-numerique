@@ -11,7 +11,7 @@ import {
   ActionNonAutorisee,
   CoordinateurId,
   type CoordinateurIntrouvable,
-  Email,
+  Courriel,
   UtilisateurId,
 } from '@/features/equipe/domain'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
@@ -39,7 +39,7 @@ export const inviterDesMembresAction = actionBuilder()
           ? failure(ActionNonAutorisee())
           : inviterDesMembres({
               coordinateurId: CoordinateurId(user.coordinateur.id),
-              candidats: input.emails.map(Email),
+              candidats: input.emails.map(Courriel),
               auteurId: UtilisateurId(user.id),
             }),
       { onError: INVITER_DES_MEMBRES_ERRORS },

@@ -2,8 +2,8 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import Link from 'next/link'
 import {
+  lienDeMonAgendaRdv,
   rdvIntegrationEnSavoirPlusLink,
-  rdvMyHomepageLink,
   rdvServicePublicGettingStartedLink,
 } from '@/features/rdvsp/ui/presenters/liens.presenter'
 import { RDVServicePublicLogo } from '@/libraries/pictograms/services/RDVServicePublicLogo'
@@ -106,7 +106,7 @@ const ConnexionReussiePage = ({
             <div className="fr-btns-group fr-my-0">
               <Button
                 linkProps={{
-                  href: rdvMyHomepageLink,
+                  href: lienDeMonAgendaRdv,
                   target: '_blank',
                 }}
                 className="fr-mb-0"

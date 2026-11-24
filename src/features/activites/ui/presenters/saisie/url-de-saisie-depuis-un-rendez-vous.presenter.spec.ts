@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { encodeSerializableState } from '@/libraries/etat-encode/encodeSerializableState'
 import {
-  minutesToCraDureeData,
-  minutesToCustomCraDureeData,
+  dureeDepuisLesMinutes,
+  dureePersonnaliseeDepuisLesMinutes,
 } from '../../forms/saisie/duree.form-data'
 import { cheminDeSaisieDepuisUnRendezVous } from './url-de-saisie-depuis-un-rendez-vous.presenter'
 
@@ -31,7 +31,7 @@ describe('saisie depuis un rendez-vous', () => {
     ).toBe(
       `/coop/mes-activites/cra/individuel?v=${encodeSerializableState({
         date: '2026-11-10',
-        duree: minutesToCraDureeData(60) ?? undefined,
+        duree: dureeDepuisLesMinutes(60) ?? undefined,
         rdvServicePublicId: 4242,
         beneficiaire: camille,
       })}`,
@@ -48,7 +48,7 @@ describe('saisie depuis un rendez-vous', () => {
     ).toBe(
       `/coop/mes-activites/cra/collectif?v=${encodeSerializableState({
         date: '2026-11-10',
-        duree: minutesToCustomCraDureeData(75),
+        duree: dureePersonnaliseeDepuisLesMinutes(75),
         rdvServicePublicId: 4242,
         titreAtelier: 'Atelier e-mail',
         participants: [camille],

@@ -7,7 +7,7 @@ import { RefuserUneInvitationValidation } from '@/features/equipe/abilities/refu
 import { refuserUneInvitation } from '@/features/equipe/abilities/refuser-une-invitation/implementations/prisma/refuser-une-invitation.mutation'
 import {
   CoordinateurId,
-  Email,
+  Courriel,
   ReferenceInvitation,
   UtilisateurId,
 } from '@/features/equipe/domain'
@@ -21,7 +21,7 @@ export const refuserUneInvitationAction = actionBuilder()
         const user = await getSessionUser()
         return refuserUneInvitation({
           reference: ReferenceInvitation({
-            email: Email(input.email),
+            email: Courriel(input.email),
             coordinateurId: CoordinateurId(input.coordinateurId),
           }),
           auteurId: user == null ? null : UtilisateurId(user.id),

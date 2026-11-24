@@ -10,7 +10,7 @@ import type { SuggestionAffichee } from '@/features/lieux-activite/abilities/ajo
 import CreerLieuActiviteForm from '@/features/lieux-activite/ui/forms/creation/CreerLieuActiviteForm'
 import {
   type CreerLieuActiviteFormData,
-  toCreerLieuData,
+  donneesDeCreation,
 } from '@/features/lieux-activite/ui/forms/creer-lieu-activite.form-data'
 import { geocoderPrecisement } from '@/libraries/ban/geocoder-precisement'
 import { handleSubmit } from '@/libraries/formulaire/handle-submit'
@@ -133,7 +133,7 @@ export const AjouterDesLieuxActivitePage = ({
   const isPending = isSubmitting || !isHydrated
 
   const creer = async (valeur: CreerLieuActiviteFormData) => {
-    const { adresseBan, ...donnees } = toCreerLieuData(valeur)
+    const { adresseBan, ...donnees } = donneesDeCreation(valeur)
     if (adresseBan == null) return
 
     const resultat = await inject(CREER_UN_LIEU_KEY)({ ...donnees, adresseBan })

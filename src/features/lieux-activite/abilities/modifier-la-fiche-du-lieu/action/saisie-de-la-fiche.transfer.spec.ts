@@ -4,7 +4,7 @@ import {
   PublicSpecifiquementAdresse,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { describe, expect, it } from 'vitest'
-import { emptyOpeningHours } from '@/features/lieux-activite/domain/horaires-d-ouverture'
+import { horairesVides } from '@/features/lieux-activite/domain/horaires-d-ouverture'
 import { depuisLaSaisie } from './saisie-de-la-fiche.transfer'
 
 const adresseBan = {
@@ -83,7 +83,7 @@ describe('la saisie devient un modèle du domaine', () => {
           siteWeb: 'https://un.example.fr|https://deux.example.fr',
           ficheAccesLibre: null,
           priseRdv: null,
-          openingHours: emptyOpeningHours,
+          openingHours: horairesVides,
           horairesComment: null,
         }),
       ).toMatchObject({

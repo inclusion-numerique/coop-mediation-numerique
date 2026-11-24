@@ -2,8 +2,8 @@ import assert from 'node:assert'
 import { PageSize, Search, Sort, SortDirection } from '@arckit/resultset'
 import { type DataTable, Given, Then, When } from '@cucumber/cucumber'
 import {
-  type BeneficiaireSortField,
-  beneficiaireSortFields,
+  type ColonneTriableDesBeneficiaires,
+  colonnesTriablesDesBeneficiaires,
 } from '@/features/beneficiaire/abilities/lister-beneficiaires/domain/lister-beneficiaires'
 import { listerBeneficiaires } from '@/features/beneficiaire/abilities/lister-beneficiaires/implementations/prisma/lister-beneficiaires.query'
 import {
@@ -15,8 +15,10 @@ type ListResult = Awaited<ReturnType<typeof listerBeneficiaires>>
 
 let listResult: ListResult | undefined
 
-const toSortField = (value: string): BeneficiaireSortField => {
-  const field = beneficiaireSortFields.find((candidate) => candidate === value)
+const toSortField = (value: string): ColonneTriableDesBeneficiaires => {
+  const field = colonnesTriablesDesBeneficiaires.find(
+    (candidate) => candidate === value,
+  )
   if (!field) throw new Error(`Champ de tri inconnu : ${value}`)
   return field
 }

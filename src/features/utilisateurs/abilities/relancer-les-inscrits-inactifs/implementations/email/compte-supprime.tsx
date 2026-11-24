@@ -38,7 +38,7 @@ const getInactivityReason = (isMediateur: boolean): string =>
     ? "vous n'avez enregistré aucune activité depuis votre inscription"
     : "aucun membre n'a été ajouté à votre équipe depuis votre inscription"
 
-export const nouveauAccountDeletedEmail = {
+export const compteSupprime = {
   text: ({ isMediateur }: InactiveAccountDeletedEmailProps): string => {
     const inactivityReason = getInactivityReason(isMediateur)
 

@@ -27,8 +27,8 @@ import { SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY } from '@/features/activ
 import { MediateurId } from '@/features/activites/domain'
 import { criteresDesFiltres } from '@/features/activites/ui/filtres/activites.filtre'
 import {
-  isCoordinateur,
-  isMediateur,
+  estCoordinateur,
+  estMediateur,
 } from '@/features/authentification/domain/profils-d-utilisateur'
 import { authenticateMediateur } from '@/features/authentification/implementations/session/authenticate-user'
 import { AFFICHER_RDVS_DANS_ACTIVITES_ACTION_KEY } from '@/features/rdvsp/abilities/afficher-rdvs-dans-activites/action/afficher-rdvs-dans-activites.key'
@@ -153,7 +153,7 @@ const MesActivitesRoute = async ({
                         />
                       }
                       aussiCoordinateur={
-                        isCoordinateur(user) && isMediateur(user)
+                        estCoordinateur(user) && estMediateur(user)
                       }
                       saisieDuStatutDesRendezVous={<SaisieDuStatutDuRdv />}
                       renseignerLeStatut={(rdv) => (

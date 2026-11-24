@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { createCommunesClient } from '@/features/beneficiaire/abilities/importer-beneficiaires/implementations/fichier/communes'
+import { clientDesCommunes } from '@/features/beneficiaire/abilities/importer-beneficiaires/implementations/fichier/communes'
 
 describe('findCommune', () => {
   describe('getCommunesClient', () => {
@@ -13,7 +13,7 @@ describe('findCommune', () => {
     ])(
       'findCommuneByInsee(%s) should return %o',
       async (inseeCode, expectedResult) => {
-        const client = await createCommunesClient()
+        const client = await clientDesCommunes()
         const result = client.findCommuneByInsee(inseeCode)
         expect(result).toEqual(expectedResult)
       },

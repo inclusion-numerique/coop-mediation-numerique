@@ -120,7 +120,7 @@ const MjmlActions = ({
   )
 }
 
-export const gettingStartedEmail = {
+export const bienDemarrer = {
   text: ({
     firstname,
     matomoCampaignId,

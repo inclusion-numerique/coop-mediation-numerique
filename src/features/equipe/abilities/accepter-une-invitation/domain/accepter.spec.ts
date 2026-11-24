@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { Email, MediateurId } from '../../../domain'
+import { Courriel, MediateurId } from '../../../domain'
 import {
   email,
   invitationAcceptee,
@@ -27,7 +27,7 @@ describe('accepter une invitation', () => {
     expect(
       accepter(invitationEnAttente, {
         type: 'InscriptionValidee',
-        email: Email('quelqu-un-d-autre@example.com'),
+        email: Courriel('quelqu-un-d-autre@example.com'),
         mediateurId,
       }),
     ).toEqual({ success: false, error: { _tag: 'MauvaisDestinataire' } })

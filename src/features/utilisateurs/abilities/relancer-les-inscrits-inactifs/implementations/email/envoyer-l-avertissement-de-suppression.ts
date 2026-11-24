@@ -2,10 +2,10 @@ import { contactEmail } from '@/configuration/projet/config'
 import { emailTransport } from '@/configuration/smtp/emailTransport'
 import { expediteur } from '@/configuration/smtp/serveur'
 import { throwOnSendMailFailure } from '@/configuration/smtp/throwOnSendMailFailure'
-import { nouveauAccountDeletionWarningEmail } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/implementations/email/avertissement-de-suppression'
+import { avertissementDeSuppression } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/implementations/email/avertissement-de-suppression'
 import { compileMjml } from '@/libraries/emails/mjml'
 
-export const sendNouveauAccountDeletionWarningEmail = async ({
+export const envoyerLAvertissementDeSuppression = async ({
   email,
   firstname,
   deletionDate,
@@ -27,7 +27,7 @@ export const sendNouveauAccountDeletionWarningEmail = async ({
     from: expediteur,
     replyTo: contactEmail,
     subject: `Votre compte va bientôt être supprimé ⚠️`,
-    text: nouveauAccountDeletionWarningEmail.text({
+    text: avertissementDeSuppression.text({
       firstname,
       deletionDate,
       daysRemaining,
@@ -36,7 +36,7 @@ export const sendNouveauAccountDeletionWarningEmail = async ({
       isCoordinateur,
     }),
     html: await compileMjml(
-      nouveauAccountDeletionWarningEmail.mjml({
+      avertissementDeSuppression.mjml({
         firstname,
         deletionDate,
         daysRemaining,

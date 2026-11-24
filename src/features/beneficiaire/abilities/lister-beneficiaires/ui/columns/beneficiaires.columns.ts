@@ -1,4 +1,4 @@
-import type { BeneficiaireSortField } from '@/features/beneficiaire/abilities/lister-beneficiaires/domain/lister-beneficiaires'
+import type { ColonneTriableDesBeneficiaires } from '@/features/beneficiaire/abilities/lister-beneficiaires/domain/lister-beneficiaires'
 import type { BeneficiaireRow } from '../presenters/ligne-du-beneficiaire.presenter'
 
 /**
@@ -6,7 +6,7 @@ import type { BeneficiaireRow } from '../presenters/ligne-du-beneficiaire.presen
  * de tri du domaine et sur la clé d'affichage du `BeneficiaireRow`.
  */
 export type BeneficiaireColumn = {
-  readonly tri: BeneficiaireSortField
+  readonly tri: ColonneTriableDesBeneficiaires
   readonly field: keyof Pick<
     BeneficiaireRow,
     'nom' | 'prenom' | 'anneeNaissance' | 'accompagnementsCount'

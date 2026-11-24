@@ -26,7 +26,7 @@ type CombinedQueryResult = {
   initial_conseillers: number
 }
 
-export const getAccompagnements = async () => {
+export const lireLesAccompagnements = async () => {
   const result = await prismaClient.$queryRaw<[CombinedQueryResult]>`
     WITH 
     -- Le dispositif conseiller numérique se DÉRIVE de main (affectation idposte active) : sous

@@ -12,7 +12,7 @@ import { AutonomieBeneficiaireField } from '@/features/activites/abilities/enreg
 import { BeneficiaireAnonymeFields } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/forms/fields/BeneficiaireAnonymeFields'
 import {
   BeneficiaireFields,
-  isAnonyme,
+  estAnonyme,
 } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/forms/fields/BeneficiaireFields'
 import { OrientationFields } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/forms/fields/OrientationFields'
 import { saisieDeLAccompagnementIndividuel } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/presenters/saisie-du-formulaire.presenter'
@@ -191,7 +191,7 @@ const CraIndividuelForm = ({
         />
         <form.AppField name="beneficiaire">
           {(field) =>
-            isAnonyme(field) && (
+            estAnonyme(field) && (
               <>
                 <hr className="fr-separator-12v" />
                 <BeneficiaireAnonymeFields

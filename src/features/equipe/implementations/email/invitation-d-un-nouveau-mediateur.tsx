@@ -15,7 +15,7 @@ import LayoutWithFooter from '@/libraries/emails/components/LayoutWithFooter'
 import { emailAssetUrl } from '@/libraries/emails/emailAssetUrl'
 import { backgroundColor } from '@/libraries/emails/styles'
 
-export const inviteNewMediateur = {
+export const invitationDUnNouveauMediateur = {
   text: ({ url, from }: { url: string; from: string }): string =>
     `Pour accepter l'invitation à rejoindre l’équipe de coordination de ${from}, merci d'utiliser le lien suivant :\n${emailAssetUrl(getServerBaseUrl(), url)}\n\n`,
   mjml: ({ url, from }: { url: string; from: string }): string =>

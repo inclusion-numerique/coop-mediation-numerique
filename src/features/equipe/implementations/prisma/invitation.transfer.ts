@@ -1,6 +1,6 @@
 import {
   CoordinateurId,
-  Email,
+  Courriel,
   type Invitation,
   type Invite,
   MediateurId,
@@ -34,7 +34,7 @@ const toInvite = (mediateurId: string | null): Invite | null => {
 }
 
 export const toInvitation = (row: InvitationRow): Invitation | null => {
-  const email = Email.safe(row.email)
+  const email = Courriel.safe(row.email)
   const coordinateurId = CoordinateurId.safe(row.coordinateurId)
   if (email === null || coordinateurId === null) return null
 

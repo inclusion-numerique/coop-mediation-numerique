@@ -1,7 +1,7 @@
 import { Button } from '@codegouvfr/react-dsfr/Button'
 import { CarteDActivite } from '../../../../ui/components/carte/CarteDActivite'
 import { DetailDeLActiviteModale } from '../../../../ui/components/detail/DetailDeLActiviteModale'
-import { CreateCraModalDefinition } from '../../../../ui/components/saisie/modale-de-saisie'
+import { ModaleDeSaisie } from '../../../../ui/components/saisie/modale-de-saisie'
 import type { DerniereActivite } from '../presenters/dernieres-activites.presenter'
 
 const AucuneActiviteEnregistree = () => (
@@ -15,7 +15,7 @@ const AucuneActiviteEnregistree = () => (
     </p>
     <Button
       type="button"
-      {...CreateCraModalDefinition.buttonProps}
+      {...ModaleDeSaisie.buttonProps}
       iconId="fr-icon-add-line"
     >
       Enregistrer une activité

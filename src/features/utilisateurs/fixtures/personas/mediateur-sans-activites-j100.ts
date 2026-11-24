@@ -1,4 +1,4 @@
-import { givenUser } from '@/features/utilisateurs/fixtures/utilisateur'
+import { utilisateur } from '@/features/utilisateurs/fixtures/utilisateur'
 
 const day = 24 * 60 * 60 * 1000
 const date = new Date(Date.now() - 100 * day)
@@ -8,7 +8,7 @@ const mediateurSansActivitesJ100UserId = 'a0b1c2d3-e4f5-6a7b-8c9d-0e1f2a3b4c5d'
 const mediateurSansActivitesJ100MediateurId =
   'b1c2d3e4-f5a6-7b8c-9d0e-1f2a3b4c5d6e'
 
-export const mediateurSansActivitesJ100 = givenUser({
+export const mediateurSansActivitesJ100 = utilisateur({
   id: mediateurSansActivitesJ100UserId,
   acceptationCgu: date,
   firstName: 'Médiateur',

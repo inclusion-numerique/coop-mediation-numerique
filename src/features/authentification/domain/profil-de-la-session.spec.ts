@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import { testSessionUser } from '../fixtures/utilisateur-de-la-session'
+import { utilisateurDeLaSession } from '../fixtures/utilisateur-de-la-session'
 import { profilDeLaSession } from './profil-de-la-session'
-import type { SessionUser } from './utilisateur-de-la-session'
+import type { UtilisateurDeLaSession } from './utilisateur-de-la-session'
 
 const coordination = (coordinateurId: string, nom: string | null) => ({
   coordinateur: {
@@ -11,8 +11,8 @@ const coordination = (coordinateurId: string, nom: string | null) => ({
   },
 })
 
-const mediateurCoordonne: SessionUser = {
-  ...testSessionUser,
+const mediateurCoordonne: UtilisateurDeLaSession = {
+  ...utilisateurDeLaSession,
   mediateur: {
     id: 'mediateur-1',
     isVisible: true,
@@ -23,7 +23,7 @@ const mediateurCoordonne: SessionUser = {
 
 describe('profil de la session', () => {
   it('ne porte aucun rôle pour un compte sans profil', () => {
-    expect(profilDeLaSession(testSessionUser)).toEqual({
+    expect(profilDeLaSession(utilisateurDeLaSession)).toEqual({
       mediateurId: null,
       coordinateurId: null,
       equipes: [],
@@ -43,7 +43,7 @@ describe('profil de la session', () => {
   it('compte l’équipe du coordinateur parmi ses équipes', () => {
     expect(
       profilDeLaSession({
-        ...testSessionUser,
+        ...utilisateurDeLaSession,
         name: 'Paul Martin',
         coordinateur: {
           id: 'coordinateur-3',
@@ -57,7 +57,7 @@ describe('profil de la session', () => {
   it('tire le département de la première employeuse', () => {
     expect(
       profilDeLaSession({
-        ...testSessionUser,
+        ...utilisateurDeLaSession,
         emplois: [
           { id: 'emploi-1', structure: { nom: 'Mairie', codeInsee: '69123' } },
         ],

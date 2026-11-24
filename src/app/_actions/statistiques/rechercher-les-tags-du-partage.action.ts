@@ -3,7 +3,7 @@
 import { z } from 'zod'
 import { actionBuilder } from '@/configuration/nextjs'
 import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
-import { getSessionUserFromId } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
+import { utilisateurDeLaSessionParId } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
 import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage/implementations/prisma/resoudre-un-lien-de-partage.query'
 import { utilisateurDuPartage } from '@/features/statistiques/domain/utilisateur-du-partage'
 import { RechercherDesTagsValidation } from '@/features/tags/abilities/rechercher-des-tags/action/rechercher-des-tags.validation'
@@ -21,7 +21,7 @@ const rechercherDansLePartage = actionBuilder()
       profilDeLaSession(
         utilisateurDuPartage(
           lien.data.proprietaire,
-          await getSessionUserFromId(lien.data.utilisateurId),
+          await utilisateurDeLaSessionParId(lien.data.utilisateurId),
         ),
       ),
     )

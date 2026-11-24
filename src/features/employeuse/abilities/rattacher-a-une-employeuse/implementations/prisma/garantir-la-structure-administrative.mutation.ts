@@ -3,7 +3,7 @@ import { type Feature, siIndisponible } from '@/libraries/ban/apiAdresse'
 import {
   type AdresseSource,
   adresseMainDepuis,
-  findAdresseMainId,
+  idDeLAdresseMain,
   insertAdresseMain,
   requeteDeGeocodage,
 } from './adresse-main.query'
@@ -119,7 +119,7 @@ export const ensureStructureAdministrativeMain =
       )
       const adresse = adresseMainDepuis(identite, feature)
       const adresseId =
-        (await findAdresseMainId(adresse))?.id ??
+        (await idDeLAdresseMain(adresse))?.id ??
         (await insertAdresseMain(adresse))
 
       return await prismaClient.structureAdministrativeMain.create({

@@ -26,14 +26,14 @@ import type {
 import { Telephone } from '@/libraries/telephone'
 import type {
   BeneficiaireListItem,
-  BeneficiaireSortField,
+  ColonneTriableDesBeneficiaires,
   ListerBeneficiaires,
 } from '../../domain/lister-beneficiaires'
 
 const DEFAULT_PAGE_SIZE = PageSize(20)
 
 const orderByFor: Record<
-  BeneficiaireSortField,
+  ColonneTriableDesBeneficiaires,
   (direction: SortDirection) => Prisma.BeneficiaireOrderByWithRelationInput
 > = {
   nom: (direction) => ({ nom: direction }),
@@ -43,7 +43,7 @@ const orderByFor: Record<
 }
 
 const toOrderBy = (
-  sort?: Sort<BeneficiaireSortField>,
+  sort?: Sort<ColonneTriableDesBeneficiaires>,
 ): Prisma.BeneficiaireOrderByWithRelationInput[] =>
   sort
     ? [

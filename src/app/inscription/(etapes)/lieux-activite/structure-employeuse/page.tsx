@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 import { ajouterStructureEmployeuseEnLieuAction } from '@/app/_actions/inscription/ajouter-structure-employeuse-en-lieu.action'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
-import { hasInscriptionComplete } from '@/features/authentification/domain/page-d-accueil'
+import { aTermineSonInscription } from '@/features/authentification/domain/page-d-accueil'
 import { authenticateUser } from '@/features/authentification/implementations/session/authenticate-user'
 import { consulterEmployeuseActuelle } from '@/features/employeuse/abilities/consulter-employeuse-actuelle/implementations/prisma/consulter-employeuse-actuelle.query'
 import { employeuseActuelleAffichage } from '@/features/employeuse/abilities/consulter-employeuse-actuelle/ui/presenters/employeuse-actuelle.presenter'
@@ -21,7 +21,7 @@ const StructureEmployeuseLieuxActivitePageRoute = async () => {
   const user = await authenticateUser()
 
   // If inscription is already complete (validated with a role profile), redirect to coop
-  if (hasInscriptionComplete(user)) {
+  if (aTermineSonInscription(user)) {
     redirect('/coop')
   }
 

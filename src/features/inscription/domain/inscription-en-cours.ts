@@ -13,7 +13,7 @@ export type RoleDuCompte = 'User' | 'Support' | 'Admin'
  * pour décider de NE PAS rediriger : un compte fantôme y est aujourd'hui renvoyé
  * vers `getHomepage`, donc vers l'inscription — ce qui est le comportement voulu.
  */
-export const isUserInscriptionEnCours = (user?: {
+export const inscriptionEnCours = (user?: {
   role: RoleDuCompte
   inscriptionValidee: string | Date | null
 }) => {

@@ -32,7 +32,7 @@ const tranchesAge = [
   'NonCommunique',
 ] as const satisfies readonly TrancheAge[]
 
-export const createCounterUuid = (root: string, index: number): string =>
+export const compteurDUuid = (root: string, index: number): string =>
   root.slice(0, -5) + index.toString(10).padStart(5, '0')
 
 type CreatedBeneficiairesForParticipantsAnonymes =
@@ -55,7 +55,7 @@ const repartis = <V extends string>(
     Array.from({ length: Math.max(effectifDe(valeur), 0) }, () => valeur),
   )
 
-export const createBeneficiairesForParticipantsAnonymes = ({
+export const beneficiairesDesParticipantsAnonymes = ({
   participantsAnonymes,
   rootUuid = v4(),
   mediateurId,
@@ -80,7 +80,7 @@ export const createBeneficiairesForParticipantsAnonymes = ({
   return Array.from(
     { length: Math.max(participantsAnonymes.total, 0) },
     (_, index) => ({
-      id: createCounterUuid(rootUuid, index),
+      id: compteurDUuid(rootUuid, index),
       mediateurId,
       anonyme: true,
       attributionsAleatoires: true,

@@ -1,10 +1,10 @@
-import { getBeneficiairesData } from './donnees-des-beneficiaires.query'
+import { donneesDesBeneficiaires } from './donnees-des-beneficiaires.query'
 import { getTotalBeneficiaires } from './total-des-beneficiaires.query'
 
-export const getBeneficiaires = async () => {
+export const lireLesBeneficiaires = async () => {
   const [beneficiaires, beneficiairesData] = await Promise.all([
     getTotalBeneficiaires(),
-    getBeneficiairesData(),
+    donneesDesBeneficiaires(),
   ])
 
   return {

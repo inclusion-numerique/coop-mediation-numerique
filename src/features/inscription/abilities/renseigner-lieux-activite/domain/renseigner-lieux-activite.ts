@@ -1,5 +1,5 @@
-import type { UserId } from '@/features/inscription/domain'
-import type { GetInscriptionEtat } from '@/features/inscription/domain/ports'
+import type { UtilisateurId } from '@/features/inscription/domain'
+import type { LireLEtatDeLInscription } from '@/features/inscription/domain/ports'
 import { onlyDefinedAndNotNull } from '@/libraries/collections/onlyDefinedAndNotNull'
 import { type Result, success } from '@/libraries/result'
 import {
@@ -14,7 +14,7 @@ import type {
 import { type LieuActiviteInput, reconcilierLieuxActivite } from './reconcilier'
 
 export type RenseignerLieuxActivitePorts<StructureCarto> = {
-  readonly lireLEtat: GetInscriptionEtat
+  readonly lireLEtat: LireLEtatDeLInscription
   readonly lireLieuxActiviteExistants: LireLieuxActiviteExistants
   readonly trouverStructuresCarto: TrouverStructuresCarto<StructureCarto>
   readonly enregistrerReconciliation: EnregistrerReconciliation<StructureCarto>
@@ -32,7 +32,7 @@ export const renseignerLieuxActivite =
     maintenant,
   }: {
     readonly command: {
-      readonly userId: UserId
+      readonly userId: UtilisateurId
       readonly lieuxActivite: readonly LieuActiviteInput[]
     }
     readonly maintenant: Date

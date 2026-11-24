@@ -1,9 +1,9 @@
-import { givenUser } from '@/features/utilisateurs/fixtures/utilisateur'
+import { utilisateur } from '@/features/utilisateurs/fixtures/utilisateur'
 
 export const coordinateurInscritCoordinateurId =
   'c2a5a5f3-56be-4632-9253-880fb3ff9ea4'
 
-export const coordinateurInscrit = givenUser({
+export const coordinateurInscrit = utilisateur({
   id: '28bd02a6-7096-4453-9cc3-5eb4f6efc955',
   firstName: 'Coordinateur',
   lastName: 'Inscrit',

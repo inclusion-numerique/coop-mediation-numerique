@@ -1,5 +1,5 @@
 import { Button } from '@codegouvfr/react-dsfr/Button'
-import { CreateCraModalDefinition } from '@/features/activites/ui/components/saisie/modale-de-saisie'
+import { ModaleDeSaisie } from '@/features/activites/ui/components/saisie/modale-de-saisie'
 
 export const CoordinationEmptyState = ({
   isFiltered = false,
@@ -21,7 +21,7 @@ export const CoordinationEmptyState = ({
       </p>
       <Button
         type="button"
-        {...CreateCraModalDefinition.buttonProps}
+        {...ModaleDeSaisie.buttonProps}
         iconId="fr-icon-add-line"
       >
         Enregistrer une activité

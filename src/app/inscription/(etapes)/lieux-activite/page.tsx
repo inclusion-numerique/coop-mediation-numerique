@@ -4,7 +4,7 @@ import { creerUnLieuActiviteAction } from '@/app/_actions/lieux-activite/creer-l
 import { rechercherDesLieuxAAjouterAction } from '@/app/_actions/lieux-activite/rechercher-des-lieux-a-ajouter.action'
 import { rechercherUnLieuActiviteAction } from '@/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
-import { hasInscriptionComplete } from '@/features/authentification/domain/page-d-accueil'
+import { aTermineSonInscription } from '@/features/authentification/domain/page-d-accueil'
 import { authenticateUser } from '@/features/authentification/implementations/session/authenticate-user'
 import LieuxActivitePage from '@/features/inscription/abilities/renseigner-lieux-activite/ui/pages/LieuxActivitePage'
 import { CREER_UN_LIEU_KEY } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/action/creer-un-lieu.key'
@@ -28,7 +28,7 @@ const LieuxActivitePageRoute = async () => {
   const user = await authenticateUser()
 
   // If inscription is already complete (validated with a role profile), redirect to coop
-  if (hasInscriptionComplete(user)) {
+  if (aTermineSonInscription(user)) {
     redirect('/coop')
   }
 

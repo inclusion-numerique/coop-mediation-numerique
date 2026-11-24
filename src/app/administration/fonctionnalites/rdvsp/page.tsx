@@ -1,6 +1,6 @@
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticate-user'
-import { getAdministrationRdvspData } from '@/features/rdvsp/abilities/administrer-comptes-rdv/implementations/prisma/comptes-rdv.query'
+import { comptesRdv } from '@/features/rdvsp/abilities/administrer-comptes-rdv/implementations/prisma/comptes-rdv.query'
 import AdministrationRdvspPage from '@/features/rdvsp/abilities/administrer-comptes-rdv/ui/pages/AdministrationRdvspPage'
 
 export const metadata = {
@@ -12,7 +12,7 @@ export const revalidate = 0
 
 const Page = async () => {
   await authenticateAdmin()
-  const data = await getAdministrationRdvspData()
+  const data = await comptesRdv()
 
   return <AdministrationRdvspPage data={data} />
 }

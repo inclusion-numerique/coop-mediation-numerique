@@ -2,7 +2,7 @@ import { v4 } from 'uuid'
 import type { Prisma, UserRole } from '@/generated/prisma/client'
 import { createSlug } from '@/libraries/texte/createSlug'
 
-export const givenUser = <
+export const utilisateur = <
   T extends Partial<Prisma.UserCreateInput> & {
     isConseillerNumerique?: boolean
     employeDeLaStructureEmployeuse?: boolean

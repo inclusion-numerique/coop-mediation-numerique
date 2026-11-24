@@ -1,6 +1,6 @@
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import {
-  isUserInscriptionEnCours,
+  inscriptionEnCours,
   type RoleDuCompte,
 } from '@/features/inscription/domain/inscription-en-cours'
 
@@ -19,10 +19,10 @@ export type EtatInscriptionUtilisateur = {
  *   n'est jamais allé au bout, il faut le relancer ;
  * - **validée sans compte de rôle** : l'état fantôme de l'incident des comptes
  *   sans rôle. Le compte a dépassé la première étape mais ne peut rien faire dans
- *   la coop, et `getHomepage` le renvoie indéfiniment vers l'inscription. Le
+ *   la coop, et `pageDAccueil` le renvoie indéfiniment vers l'inscription. Le
  *   remède fut une reprise en base, jouée le 08/07/2026, pas une relance.
  *
- * Le second échappe à `isUserInscriptionEnCours`, qui ne regarde que
+ * Le second échappe à `inscriptionEnCours`, qui ne regarde que
  * `inscriptionValidee` : c'est pourquoi il a sa propre condition.
  */
 export const AvertissementsEtatInscription = ({
@@ -34,8 +34,7 @@ export const AvertissementsEtatInscription = ({
   const estUtilisateurStandard =
     user.role !== 'Admin' && user.role !== 'Support'
 
-  const resteeALaPremiereEtape =
-    isUserInscriptionEnCours(user) && sansCompteDeRole
+  const resteeALaPremiereEtape = inscriptionEnCours(user) && sansCompteDeRole
 
   const valideeSansCompteDeRole =
     estUtilisateurStandard &&

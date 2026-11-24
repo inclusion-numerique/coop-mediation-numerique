@@ -1,4 +1,4 @@
-import { minutesToCraDureeData } from '@/features/activites/ui/forms/saisie/duree.form-data'
+import { dureeDepuisLesMinutes } from '@/features/activites/ui/forms/saisie/duree.form-data'
 import { communeDuCra } from '@/features/activites/ui/presenters/saisie/commune-du-cra.presenter'
 import type {
   ActiviteDeMediation,
@@ -64,7 +64,7 @@ export const formulaireCommunDeMediation = (
   id: activite.id,
   mediateurId: activite.mediateurId,
   date: activite.date,
-  duree: minutesToCraDureeData(activite.duree) ?? {},
+  duree: dureeDepuisLesMinutes(activite.duree) ?? {},
   typeLieu: activite.lieu._tag,
   ...lieuDuFormulaire(activite, affichage),
   thematiques: thematiquesDuFormulaire(activite.thematiques),

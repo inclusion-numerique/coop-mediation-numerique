@@ -5,9 +5,9 @@ import { useRouter } from 'next/navigation'
 import { Fragment, useCallback } from 'react'
 import { CraCollectifData } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/forms/cra-collectif.validation'
 import {
-  countGenreNonCommunique,
-  countStatutSocialNonCommunique,
-  countTrancheAgeNonCommunique,
+  nombreDeGenresNonCommuniques,
+  nombreDeStatutsSociauxNonCommuniques,
+  nombreDeTranchesDAgeNonCommuniquees,
   participantsAnonymesDefault,
 } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/forms/participants-anonymes'
 import {
@@ -89,7 +89,7 @@ export const BeneficiairesAtelierFields = withForm({
 
       form.setFieldValue(
         'participantsAnonymes.genreNonCommunique',
-        countGenreNonCommunique(form.state.values.participantsAnonymes),
+        nombreDeGenresNonCommuniques(form.state.values.participantsAnonymes),
       )
     }, [form])
 
@@ -97,7 +97,9 @@ export const BeneficiairesAtelierFields = withForm({
       if (!form.state.values.participantsAnonymes) return
       form.setFieldValue(
         'participantsAnonymes.trancheAgeNonCommunique',
-        countTrancheAgeNonCommunique(form.state.values.participantsAnonymes),
+        nombreDeTranchesDAgeNonCommuniquees(
+          form.state.values.participantsAnonymes,
+        ),
       )
     }, [form])
 
@@ -105,7 +107,9 @@ export const BeneficiairesAtelierFields = withForm({
       if (!form.state.values.participantsAnonymes) return
       form.setFieldValue(
         'participantsAnonymes.statutSocialNonCommunique',
-        countStatutSocialNonCommunique(form.state.values.participantsAnonymes),
+        nombreDeStatutsSociauxNonCommuniques(
+          form.state.values.participantsAnonymes,
+        ),
       )
     }, [form])
 
@@ -122,15 +126,17 @@ export const BeneficiairesAtelierFields = withForm({
 
         form.setFieldValue(
           'participantsAnonymes.genreNonCommunique',
-          countGenreNonCommunique(form.state.values.participantsAnonymes),
+          nombreDeGenresNonCommuniques(form.state.values.participantsAnonymes),
         )
         form.setFieldValue(
           'participantsAnonymes.trancheAgeNonCommunique',
-          countTrancheAgeNonCommunique(form.state.values.participantsAnonymes),
+          nombreDeTranchesDAgeNonCommuniquees(
+            form.state.values.participantsAnonymes,
+          ),
         )
         form.setFieldValue(
           'participantsAnonymes.statutSocialNonCommunique',
-          countStatutSocialNonCommunique(
+          nombreDeStatutsSociauxNonCommuniques(
             form.state.values.participantsAnonymes,
           ),
         )

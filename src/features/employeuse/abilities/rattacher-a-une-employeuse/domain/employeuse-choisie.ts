@@ -20,7 +20,7 @@ import { IdentiteEmployeuse } from '../../../domain/identite-employeuse'
  * navigateur : la référencer dans son module d'origine les ferait pointer un
  * module qui importe Prisma.
  */
-export type StructureSearchResult = {
+export type StructureTrouvee = {
   id?: string | null
   nom: string
   adresse: string

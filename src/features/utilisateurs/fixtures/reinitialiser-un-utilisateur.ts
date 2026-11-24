@@ -2,7 +2,7 @@ import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { sansDrapeauDispositif } from '@/features/utilisateurs/fixtures/enregistrer-les-utilisateurs'
 import {
   coordinations,
-  fixtureUsers,
+  personas,
 } from '@/features/utilisateurs/fixtures/personas'
 import {
   type EmployeuseDeDemonstration,
@@ -68,7 +68,7 @@ const toCoordinationFor =
     mediateurIds: [mediateur.id],
   })
 
-export const resetFixtureUser = async (
+export const reinitialiserUnUtilisateur = async (
   { id }: { id: string },
   demonstration: DonneesDeDemonstration,
   processCoordinations: boolean = true,
@@ -82,7 +82,7 @@ export const resetFixtureUser = async (
     select: compteSelect,
   })
 
-  const userFixture = fixtureUsers.find((u) => u.id === userId)
+  const userFixture = personas.find((u) => u.id === userId)
   if (!userFixture || (!!user && !user.isFixture)) {
     throw new Error(`User with id ${id} is not a fixture user`)
   }

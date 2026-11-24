@@ -3,7 +3,7 @@ import {
   crasDeDemonstration,
   type ReferencesDesCras,
 } from './cras-de-demonstration'
-import { upsertCraFixtures } from './enregistrer-les-cras'
+import { enregistrerLesCras } from './enregistrer-les-cras'
 
 const duMediateur =
   (mediateurId: string) =>
@@ -14,7 +14,7 @@ export const semerLesCrasDeDemonstration =
   (references: ReferencesDesCras) => (mediateurId: string) => {
     const cras = crasDeDemonstration(references)
 
-    return upsertCraFixtures({
+    return enregistrerLesCras({
       transaction: prismaClient,
       crasIndividuels: cras.crasIndividuels.filter(duMediateur(mediateurId)),
       crasDemarchesAdministratives: cras.crasDemarchesAdministratives.filter(

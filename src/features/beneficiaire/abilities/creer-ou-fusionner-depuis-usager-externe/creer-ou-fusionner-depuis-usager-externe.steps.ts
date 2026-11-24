@@ -1,12 +1,12 @@
 import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { type ExternalUserToMerge } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/domain/creer-ou-fusionner-depuis-usager-externe'
+import { type UsagerExterneAFusionner } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/domain/creer-ou-fusionner-depuis-usager-externe'
 import { creerOuFusionnerBeneficiairesDepuisUsagersExternes } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/creer-ou-fusionner-depuis-usager-externe.mutation'
 import {
   seedBeneficiaire,
+  suivreLeBeneficiaire,
   testMediateurId,
-  trackBeneficiaire,
 } from '@/features/beneficiaire/beneficiaire.cucumber'
 import { NOM_MAX_LENGTH } from '@/features/beneficiaire/domain/nom'
 
@@ -18,7 +18,7 @@ type PortResult = Awaited<
 
 const createdRdvUserIds = new Set<number>()
 
-let usagers: ExternalUserToMerge[] = []
+let usagers: UsagerExterneAFusionner[] = []
 let result: PortResult | undefined
 let existingBeneficiaireId: string | undefined
 
@@ -37,8 +37,8 @@ const seedRdvUser = async (id: number): Promise<void> => {
 
 const externalUser = (
   rdvUserId: number,
-  fields: Partial<Omit<ExternalUserToMerge, 'rdvUserId'>> = {},
-): ExternalUserToMerge => ({
+  fields: Partial<Omit<UsagerExterneAFusionner, 'rdvUserId'>> = {},
+): UsagerExterneAFusionner => ({
   rdvUserId,
   nom: fields.nom ?? null,
   prenom: fields.prenom ?? null,
@@ -131,7 +131,7 @@ When('je crée ou fusionne les bénéficiaires depuis ces usagers', async () => 
     usagers,
     mediateurId: testMediateurId,
   })
-  for (const merge of result.merges) trackBeneficiaire(merge.id)
+  for (const merge of result.merges) suivreLeBeneficiaire(merge.id)
 })
 
 Then('un bénéficiaire est créé et lié à cet usager', async () => {

@@ -4,7 +4,7 @@ import { Telephone } from '@/libraries/telephone'
 import {
   type AdresseStructure,
   Commune,
-  Email,
+  Courriel,
   type LigneEquipe,
   MediateurId,
   Nom,
@@ -96,7 +96,7 @@ const toStructureEmployeuse = (
 }
 
 export const toLigneEquipe = (row: LigneEquipeRow): LigneEquipe | null => {
-  const email = Email.safe(row.email)
+  const email = Courriel.safe(row.email)
   return email !== null && estUnStatut(row.statut)
     ? {
         email,

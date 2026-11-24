@@ -4,7 +4,7 @@ import type {
   ListerLesLieux,
   RecapitulatifLu,
 } from '../../domain/recapitulatif'
-import { getMediateursCoordonnesForInscription } from './mediateurs-coordonnes.query'
+import { lireLesMediateursCoordonnes } from './mediateurs-coordonnes.query'
 
 const getInscriptionDataContext = async <Lieu>({
   user,
@@ -26,7 +26,7 @@ const getInscriptionDataContext = async <Lieu>({
         : [],
       // Get mediateurs coordonnes count if coordinateur
       user.coordinateur
-        ? getMediateursCoordonnesForInscription({
+        ? lireLesMediateursCoordonnes({
             userId: user.id,
           })
         : undefined,

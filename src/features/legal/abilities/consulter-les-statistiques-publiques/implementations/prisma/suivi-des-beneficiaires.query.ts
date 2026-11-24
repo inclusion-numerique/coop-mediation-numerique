@@ -73,7 +73,7 @@ const getPercentage = (
     : Math.round((mediateursAvecBeneficiairesCount / totalMediateurs) * 1000) /
       10
 
-export const getSuiviBeneficiaires = async () => {
+export const suiviDesBeneficiaires = async () => {
   const [
     totalAccompagnements,
     totalBeneficiairesSuivis,

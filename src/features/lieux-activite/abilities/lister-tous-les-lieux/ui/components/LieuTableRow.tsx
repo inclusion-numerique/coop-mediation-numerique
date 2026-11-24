@@ -4,7 +4,7 @@ import Tag from '@codegouvfr/react-dsfr/Tag'
 import classNames from 'classnames'
 import Link from 'next/link'
 import { hrefDeModificationDuLieu } from '@/features/lieux-activite/ui/presenters/href-du-lieu.presenter'
-import { getStructureCartographieLink } from '@/features/lieux-activite/ui/presenters/liens-de-la-cartographie.presenter'
+import { lienDuLieuDansLaCartographie } from '@/features/lieux-activite/ui/presenters/liens-de-la-cartographie.presenter'
 import { dateAsDayAndTime } from '@/libraries/date/dateAsDayAndTime'
 import { optionalNumberToString } from '@/libraries/nombre/formatNumber'
 import type { LigneDeLaListe } from '../../domain/ligne-de-la-liste'
@@ -34,7 +34,7 @@ const VisibiliteCarto = ({
         style={{ position: 'relative', zIndex: 10 }}
         priority="tertiary"
         linkProps={{
-          href: getStructureCartographieLink({
+          href: lienDuLieuDansLaCartographie({
             structureCartographieNationaleId,
           }),
           target: '_blank',

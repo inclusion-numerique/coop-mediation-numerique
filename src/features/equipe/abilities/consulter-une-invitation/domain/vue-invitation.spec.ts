@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { Email } from '../../../domain'
+import { Courriel } from '../../../domain'
 import {
   coordinateurDeLEquipe,
   email,
@@ -43,7 +43,7 @@ describe('ce que voit une personne qui ouvre son invitation', () => {
     expect(
       vueInvitation({
         invitation: invitationEnAttente,
-        session: Email('autre@example.com'),
+        session: Courriel('autre@example.com'),
         coordinateur,
         tailleEquipe: 3,
       }),

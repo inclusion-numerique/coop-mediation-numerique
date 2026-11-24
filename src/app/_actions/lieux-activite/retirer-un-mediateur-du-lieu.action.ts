@@ -7,7 +7,7 @@ import { RetirerUnMediateurDuLieuValidation } from '@/features/lieux-activite/ab
 import { retirerUnMediateurDuLieu } from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/implementations/prisma/retirer-un-mediateur-du-lieu.mutation'
 import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
 import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
-import { UserId } from '@/features/lieux-activite/domain/identifiants/utilisateur-id'
+import { UtilisateurId } from '@/features/lieux-activite/domain/identifiants/utilisateur-id'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { fromResult, withInput } from '@/libraries/nextjs'
 
@@ -34,7 +34,7 @@ export const retirerUnMediateurDuLieuAction = actionBuilder()
           mediateurId: MediateurId(input.mediateurId),
           lieuId: LieuId(input.lieuId),
           auteur: {
-            userId: UserId(user.id),
+            userId: UtilisateurId(user.id),
             mediateurId:
               user.mediateur == null ? null : MediateurId(user.mediateur.id),
             estAdministrateur: user.role === 'Admin' || user.role === 'Support',

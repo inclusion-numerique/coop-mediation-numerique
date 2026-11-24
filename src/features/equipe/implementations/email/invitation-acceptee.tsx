@@ -5,7 +5,7 @@ import { projectTitle } from '@/configuration/projet/config'
 import LayoutWithFooter from '@/libraries/emails/components/LayoutWithFooter'
 import { brandColor } from '@/libraries/emails/styles'
 
-export const acceptInvitation = {
+export const invitationAcceptee = {
   text: ({ mediateur }: { mediateur: string }): string =>
     `${mediateur} a accepté votre invitation à rejoindre votre équipe.`,
   mjml: ({ mediateur }: { mediateur: string }): string =>

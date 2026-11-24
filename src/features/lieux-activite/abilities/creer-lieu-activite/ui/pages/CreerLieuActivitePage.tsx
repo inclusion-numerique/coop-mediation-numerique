@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation'
 import { CreerLieuActivitePageContent } from '@/features/lieux-activite/abilities/creer-lieu-activite/ui/components/CreerLieuActivitePageContent'
 import {
   type CreerLieuActiviteFormData,
-  toCreerLieuData,
+  donneesDeCreation,
 } from '@/features/lieux-activite/ui/forms/creer-lieu-activite.form-data'
 import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
 import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
@@ -29,7 +29,7 @@ const CreerLieuActivitePage = ({
   const router = useRouter()
 
   const onCreer = async (value: CreerLieuActiviteFormData) => {
-    const { adresseBan, ...data } = toCreerLieuData(value)
+    const { adresseBan, ...data } = donneesDeCreation(value)
     if (adresseBan == null) return
 
     const resultat = await inject(CREER_UN_LIEU_ACTIVITE_ACTION_KEY)({

@@ -2,12 +2,12 @@ import { v4 } from 'uuid'
 import { describe, expect, it, test } from 'vitest'
 import { participantsAnonymesDefault } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/forms/participants-anonymes'
 import {
-  createBeneficiairesForParticipantsAnonymes,
-  createCounterUuid,
+  beneficiairesDesParticipantsAnonymes,
+  compteurDUuid,
 } from '@/features/activites/fixtures/beneficiaires-des-participants-anonymes'
 
-describe('createBeneficiairesForParticipantsAnonymes', () => {
-  describe('createCounterUuid', () => {
+describe('beneficiairesDesParticipantsAnonymes', () => {
+  describe('compteurDUuid', () => {
     const uuid = '75bb7e05-9dd8-417e-b4c0-5b30d24a6e58'
 
     const cases = [
@@ -22,14 +22,14 @@ describe('createBeneficiairesForParticipantsAnonymes', () => {
     test.each(cases)(
       'should generate a uuid with the right length and counter at the end for index $index',
       ({ index, expected }) => {
-        expect(createCounterUuid(uuid, index)).toEqual(expected)
+        expect(compteurDUuid(uuid, index)).toEqual(expected)
       },
     )
   })
 
   it('should work for 0 beneficiaires', () => {
     expect(
-      createBeneficiairesForParticipantsAnonymes({
+      beneficiairesDesParticipantsAnonymes({
         participantsAnonymes: participantsAnonymesDefault,
         mediateurId: 'mediateur-id',
       }),
@@ -46,14 +46,14 @@ describe('createBeneficiairesForParticipantsAnonymes', () => {
 
     const id = v4()
     expect(
-      createBeneficiairesForParticipantsAnonymes({
+      beneficiairesDesParticipantsAnonymes({
         participantsAnonymes: participants,
         mediateurId: 'mediateur-id',
         rootUuid: id,
       }),
     ).toEqual([
       {
-        id: createCounterUuid(id, 0),
+        id: compteurDUuid(id, 0),
         mediateurId: 'mediateur-id',
         dejaAccompagne: false,
         anonyme: true,
@@ -75,14 +75,14 @@ describe('createBeneficiairesForParticipantsAnonymes', () => {
 
     const id = v4()
     expect(
-      createBeneficiairesForParticipantsAnonymes({
+      beneficiairesDesParticipantsAnonymes({
         participantsAnonymes: participants,
         mediateurId: 'mediateur-id',
         rootUuid: id,
       }),
     ).toEqual([
       {
-        id: createCounterUuid(id, 0),
+        id: compteurDUuid(id, 0),
         mediateurId: 'mediateur-id',
         dejaAccompagne: false,
         anonyme: true,
@@ -92,7 +92,7 @@ describe('createBeneficiairesForParticipantsAnonymes', () => {
         genre: 'Feminin',
       },
       {
-        id: createCounterUuid(id, 1),
+        id: compteurDUuid(id, 1),
         mediateurId: 'mediateur-id',
         dejaAccompagne: false,
         anonyme: true,

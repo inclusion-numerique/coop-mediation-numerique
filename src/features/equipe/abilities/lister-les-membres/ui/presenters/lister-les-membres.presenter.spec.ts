@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { CodeDepartement } from '@/libraries/insee'
 import {
-  Email,
+  Courriel,
   MediateurId,
   Nom,
   NomStructure,
@@ -24,7 +24,7 @@ describe('affichage d’une ligne de l’équipe', () => {
     const [ligne] = lignesAffichees(
       [
         {
-          email: Email('invite@example.com'),
+          email: Courriel('invite@example.com'),
           statut: { type: 'Invitation', envoyeeLe: new Date('2026-01-02') },
           personne: { type: 'SansCompte' },
           structureEmployeuse: { type: 'Inconnue' },
@@ -48,7 +48,7 @@ describe('affichage d’une ligne de l’équipe', () => {
     const [ligne] = lignesAffichees(
       [
         {
-          email: Email('camille@example.com'),
+          email: Courriel('camille@example.com'),
           statut: { type: 'Actif', derniereActivite: new Date() },
           personne: {
             type: 'Inscrite',
@@ -81,7 +81,7 @@ describe('affichage d’une ligne de l’équipe', () => {
     const [ligne] = lignesAffichees(
       [
         {
-          email: Email('supprime@example.com'),
+          email: Courriel('supprime@example.com'),
           statut: { type: 'ProfilSupprime', le: new Date('2026-01-02') },
           personne: {
             type: 'Inscrite',

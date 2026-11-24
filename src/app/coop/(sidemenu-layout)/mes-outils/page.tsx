@@ -1,8 +1,8 @@
 import type { Metadata } from 'next'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import {
-  isConseillerNumerique,
-  isCoordinateur,
+  estConseillerNumerique,
+  estCoordinateur,
 } from '@/features/authentification/domain/profils-d-utilisateur'
 import { getAuthenticatedSessionUser } from '@/features/authentification/implementations/session/session-user'
 import {
@@ -26,10 +26,10 @@ const Page = async () => {
     <MesOutilsPage
       profil={{
         coordination: Coordination(
-          isCoordinateur(user) ? 'Coordinateur' : 'SansCoordination',
+          estCoordinateur(user) ? 'Coordinateur' : 'SansCoordination',
         ),
         dispositif: Dispositif(
-          isConseillerNumerique(user)
+          estConseillerNumerique(user)
             ? 'ConseillerNumerique'
             : 'HorsDispositif',
         ),

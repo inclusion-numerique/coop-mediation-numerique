@@ -94,7 +94,7 @@ export const adresseMainDepuis = (
 // (données Entrepôt) avec un `code_ban` différent ou absent — chercher seulement par `code_ban`
 // manquait la ligne existante et l'INSERT violait la clé composant (bug révélé par l'e2e inscription
 // CN : adresse ANCT "20 Avenue de Ségur" déjà présente).
-export const findAdresseMainId = (resolved: ResolvedAdresseMain) =>
+export const idDeLAdresseMain = (resolved: ResolvedAdresseMain) =>
   prismaClient.adresseMain.findFirst({
     where: {
       OR: [

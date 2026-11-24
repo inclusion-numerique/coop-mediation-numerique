@@ -110,7 +110,7 @@ const toRunningTotalPerMonth = (
   },
 ]
 
-export const getBeneficiairesData = async () => {
+export const donneesDesBeneficiaires = async () => {
   const perMonth = await getBeneficiairesPerMonth()
 
   return {

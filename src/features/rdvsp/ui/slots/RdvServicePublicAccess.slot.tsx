@@ -3,8 +3,8 @@ import Link from 'next/link'
 import type { ComponentProps } from 'react'
 import GererRdvServicePublicButton from '@/features/rdvsp/ui/components/GererRdvServicePublicButton'
 import {
+  lienDeMonAgendaRdv,
   rdvIntegrationEnSavoirPlusLink,
-  rdvMyHomepageLink,
 } from '@/features/rdvsp/ui/presenters/liens.presenter'
 import { RDVServicePublicCoopConnexion } from '@/libraries/pictograms/services/RDVServicePublicCoopConnexion'
 import { statutDuCompteDeLaSession } from '../../domain/compte/sante-compte'
@@ -72,7 +72,7 @@ const RdvServicePublicAccess = ({
           <div className="fr-btns-group fr-btns-group--icon-left fr-mt-8v">
             <Button
               linkProps={{
-                href: rdvMyHomepageLink,
+                href: lienDeMonAgendaRdv,
                 target: '_blank',
               }}
               priority="primary"

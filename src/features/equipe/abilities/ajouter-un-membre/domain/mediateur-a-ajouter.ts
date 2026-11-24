@@ -1,6 +1,6 @@
 import type {
   CoordinateurId,
-  Email,
+  Courriel,
   NomAffiche,
   UtilisateurId,
 } from '../../../domain'
@@ -8,7 +8,7 @@ import type {
 export type MediateurAAjouter = {
   readonly utilisateurId: UtilisateurId
   readonly nom: NomAffiche
-  readonly email: Email
+  readonly email: Courriel
 }
 
 export type EquipeAComplementer = {

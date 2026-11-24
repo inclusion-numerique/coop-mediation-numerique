@@ -1,10 +1,10 @@
 import type { Franchissement } from './franchissement'
 import {
-  computeUserProfile,
   type ProfilInscription,
+  profilDInscription,
 } from './profil-inscription'
 import type { Role } from './role'
-import type { UserId } from './utilisateur-id'
+import type { UtilisateurId } from './utilisateur-id'
 
 /**
  * Les deux étapes intermédiaires voyagent toujours ensemble et sont
@@ -19,7 +19,7 @@ export type ProgressionEtapes = {
 /** Utilisateur authentifié, profil pas encore choisi : l'absence EST la variante. */
 export type InscriptionNonDemarree = {
   readonly _tag: 'NonDemarree'
-  readonly userId: UserId
+  readonly userId: UtilisateurId
 }
 
 /**
@@ -33,7 +33,7 @@ export type InscriptionNonDemarree = {
  */
 export type InscriptionEnCours = {
   readonly _tag: 'EnCours'
-  readonly userId: UserId
+  readonly userId: UtilisateurId
   readonly role: Role
   readonly conseillerNumerique: boolean
   readonly acceptationCgu: Date | null
@@ -43,7 +43,7 @@ export type InscriptionEnCours = {
 /** État terminal : inscription validée (les CGU y sont nécessairement posées). */
 export type InscriptionValidee = {
   readonly _tag: 'Validee'
-  readonly userId: UserId
+  readonly userId: UtilisateurId
   readonly role: Role
   readonly conseillerNumerique: boolean
   readonly acceptationCgu: Date | null
@@ -56,11 +56,11 @@ export type InscriptionEtat =
   | InscriptionEnCours
   | InscriptionValidee
 
-export const isNonDemarree = (
+export const estNonDemarree = (
   etat: InscriptionEtat,
 ): etat is InscriptionNonDemarree => etat._tag === 'NonDemarree'
 
-export const isValidee = (etat: InscriptionEtat): etat is InscriptionValidee =>
+export const estValidee = (etat: InscriptionEtat): etat is InscriptionValidee =>
   etat._tag === 'Validee'
 
 export const conseillerNumeriqueDeLInscription = (
@@ -77,7 +77,7 @@ export const profilDeLInscription = (
 ): ProfilInscription | null =>
   etat._tag === 'NonDemarree'
     ? null
-    : computeUserProfile({
+    : profilDInscription({
         isConseillerNumerique: etat.conseillerNumerique,
         isCoordinateur: etat.role === 'Coordinateur',
       })

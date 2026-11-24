@@ -1,4 +1,6 @@
-export const signinErrorMessage = (error?: string): string | undefined => {
+export const messageDErreurDeConnexion = (
+  error?: string,
+): string | undefined => {
   if (!error) {
     return error
   }

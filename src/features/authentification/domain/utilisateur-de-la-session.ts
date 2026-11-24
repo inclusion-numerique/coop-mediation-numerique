@@ -6,7 +6,7 @@ type ProfilDInscriptionDeLaSession =
   | 'Mediateur'
   | 'Coordinateur'
 
-export type SessionUser = {
+export type UtilisateurDeLaSession = {
   id: string
   firstName: string | null
   lastName: string | null
@@ -86,9 +86,7 @@ export type SessionUser = {
 // accepte aussi bien le SessionUser sérialisé (`emplois[].structure`) que le résultat Prisma brut de
 // `sessionUserSelect` (`emplois[].structureMain`, ADR-002 étape 6), en préservant la forme de chaque
 // appelant après narrowing.
-export const sessionUserHasStructureEmployeuse = <
-  T extends { emplois: unknown[] },
->(
+export const aUneStructureEmployeuse = <T extends { emplois: unknown[] }>(
   user: T,
 ): user is T & {
   emplois: [T['emplois'][number], ...T['emplois'][number][]]

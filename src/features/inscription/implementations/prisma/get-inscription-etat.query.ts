@@ -1,5 +1,5 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import type { GetInscriptionEtat } from '../../domain/ports'
+import type { LireLEtatDeLInscription } from '../../domain/ports'
 import { inscriptionEtatToDomain } from './inscription-etat.transfer'
 
 /**
@@ -7,7 +7,7 @@ import { inscriptionEtatToDomain } from './inscription-etat.transfer'
  * Socle partagé par les abilities du parcours plutôt que dupliqué dans chacune :
  * la forme de ligne et le mapper vivent déjà ici.
  */
-export const getInscriptionEtat: GetInscriptionEtat = async (userId) => {
+export const getInscriptionEtat: LireLEtatDeLInscription = async (userId) => {
   const row = await prismaClient.user.findUnique({
     where: { id: userId },
     select: {

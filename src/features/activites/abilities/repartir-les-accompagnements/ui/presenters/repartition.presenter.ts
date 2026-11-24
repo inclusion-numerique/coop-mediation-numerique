@@ -1,6 +1,6 @@
 import { valeurDe } from '../../../../../../libraries/collections/valeur-de'
 import { estAdministrative } from '../../../../domain'
-import { dureeAccompagnementStatisticsRanges } from '../../../../ui/labels/libelles/duree-accompagnement.labels'
+import { tranchesDeDureeDesStatistiques } from '../../../../ui/labels/libelles/duree-accompagnement.labels'
 import { materielLabels } from '../../../../ui/labels/libelles/materiel.labels'
 import { thematiqueLabels } from '../../../../ui/labels/libelles/thematique.labels'
 import { typeActiviteLabels } from '../../../../ui/labels/libelles/type-activite.labels'
@@ -18,8 +18,8 @@ const avecLibelle =
 
 const trancheAffichee = (tranche: TrancheDeDuree) => {
   const { key, label } =
-    dureeAccompagnementStatisticsRanges[tranchesDeDuree.indexOf(tranche)] ??
-    dureeAccompagnementStatisticsRanges[0]
+    tranchesDeDureeDesStatistiques[tranchesDeDuree.indexOf(tranche)] ??
+    tranchesDeDureeDesStatistiques[0]
   return { value: key, label }
 }
 

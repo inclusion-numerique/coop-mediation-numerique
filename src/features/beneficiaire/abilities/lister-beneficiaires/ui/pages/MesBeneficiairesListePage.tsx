@@ -3,7 +3,7 @@ import { BeneficiairesListHeader } from '../components/BeneficiairesListHeader'
 import { BeneficiairesNoResults } from '../components/BeneficiairesNoResults'
 import { BeneficiairesResults } from '../components/BeneficiairesResults'
 import type { LiensDeLaListe } from '../filtres/liste-des-beneficiaires.filtre'
-import type { MesBeneficiairesView } from '../presenters/lister-beneficiaires.presenter'
+import type { VueDeMesBeneficiaires } from '../presenters/lister-beneficiaires.presenter'
 
 const BASE_HREF = '/coop/mes-beneficiaires'
 
@@ -17,7 +17,7 @@ export const MesBeneficiairesListePage = ({
   view,
   liens,
 }: {
-  view: MesBeneficiairesView
+  view: VueDeMesBeneficiaires
   liens: LiensDeLaListe
 }) => {
   // Aucun bénéficiaire enregistré : ni recherche ni table.

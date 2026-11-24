@@ -1,5 +1,5 @@
-import type { UserFixture } from '@/features/utilisateurs/fixtures/enregistrer-les-utilisateurs'
-import { fixtureUsers } from '@/features/utilisateurs/fixtures/personas'
+import type { UtilisateurAEnregistrer } from '@/features/utilisateurs/fixtures/enregistrer-les-utilisateurs'
+import { personas } from '@/features/utilisateurs/fixtures/personas'
 import { conseillerInscriptionSansContrat } from '@/features/utilisateurs/fixtures/personas/conseiller-inscription-sans-contrat'
 import { conseillerSansLieuInscription } from '@/features/utilisateurs/fixtures/personas/conseiller-sans-lieu-inscription'
 import { coordinateurInscription } from '@/features/utilisateurs/fixtures/personas/coordinateur-inscription'
@@ -29,7 +29,7 @@ const cnInscriptionUserIds = [
 const idsConseillersNumeriques = (): string[] => [
   ...new Set([
     ...cnInscriptionUserIds,
-    ...fixtureUsers
+    ...personas
       .filter(({ isConseillerNumerique }) => isConseillerNumerique === true)
       .map(({ id }) => id),
   ]),
@@ -188,7 +188,7 @@ const idsPresentsDansCoop = async (
 export const seedPersonnesMain = async (
   transaction: Prisma.TransactionClient,
   employeuse: EmployeuseDeDemonstration,
-  utilisateurs: readonly UserFixture[],
+  utilisateurs: readonly UtilisateurAEnregistrer[],
 ) => {
   const employes = utilisateurs
     .filter(
@@ -224,7 +224,7 @@ export const seedPersonnesMain = async (
 export const effacerLesPersonnesMainDeDemonstration = async (
   transaction: Prisma.TransactionClient,
 ) => {
-  const coopId = { in: fixtureUsers.map(({ id }) => id) }
+  const coopId = { in: personas.map(({ id }) => id) }
 
   await transaction.contratMain.deleteMany({ where: { personne: { coopId } } })
   await transaction.personneAffectationEmploiMain.deleteMany({

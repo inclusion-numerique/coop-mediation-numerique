@@ -1,8 +1,8 @@
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
 import { encodeSerializableState } from '@/libraries/etat-encode/encodeSerializableState'
 import {
-  minutesToCraDureeData,
-  minutesToCustomCraDureeData,
+  dureeDepuisLesMinutes,
+  dureePersonnaliseeDepuisLesMinutes,
 } from '../../forms/saisie/duree.form-data'
 import { optionsDeDuree } from './options-de-duree.presenter'
 
@@ -25,8 +25,8 @@ const dureeDuRendezVous = (
   dureesProposees: readonly { readonly value: string }[],
 ) =>
   dureesProposees.some(({ value }) => value === dureeEnMinutes.toString())
-    ? (minutesToCraDureeData(dureeEnMinutes) ?? undefined)
-    : minutesToCustomCraDureeData(dureeEnMinutes)
+    ? (dureeDepuisLesMinutes(dureeEnMinutes) ?? undefined)
+    : dureePersonnaliseeDepuisLesMinutes(dureeEnMinutes)
 
 const participantDuFormulaire = ({
   id,

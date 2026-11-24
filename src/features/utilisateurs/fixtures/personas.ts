@@ -1,4 +1,4 @@
-import { givenMediateur } from '@/features/utilisateurs/fixtures/mediateur'
+import { mediateur } from '@/features/utilisateurs/fixtures/mediateur'
 import { administrateur } from '@/features/utilisateurs/fixtures/personas/administrateur'
 import { conseillerInscriptionSansContrat } from '@/features/utilisateurs/fixtures/personas/conseiller-inscription-sans-contrat'
 import {
@@ -62,10 +62,10 @@ import { mediateurSansActivitesJ90 } from '@/features/utilisateurs/fixtures/pers
 import { mediateurSansActivitesJ100 } from '@/features/utilisateurs/fixtures/personas/mediateur-sans-activites-j100'
 import { mediateurSansActivitesJ110 } from '@/features/utilisateurs/fixtures/personas/mediateur-sans-activites-j110'
 import { mediateurSansEmployeuseInscription } from '@/features/utilisateurs/fixtures/personas/mediateur-sans-employeuse-inscription'
-import { givenUser } from '@/features/utilisateurs/fixtures/utilisateur'
+import { utilisateur } from '@/features/utilisateurs/fixtures/utilisateur'
 import type { Prisma } from '@/generated/prisma/client'
 
-export const fixtureUsers = [
+export const personas = [
   administrateur,
   conseillerInscriptionSansContrat,
   conseillerSansLieuInscription,
@@ -155,7 +155,7 @@ const membresDeLEquipeProduit = [
   },
 ]
 
-export const teamMediateurs = membresDeLEquipeProduit.map(givenMediateur)
+export const mediateursDeLEquipe = membresDeLEquipeProduit.map(mediateur)
 
 const equipeRdvServicePublic = [
   {
@@ -240,44 +240,43 @@ const equipeRdvServicePublic = [
   },
 ]
 
-export const rdvServicePublicStagingUsers =
-  equipeRdvServicePublic.map(givenMediateur)
+export const utilisateursDeRecetteRdv = equipeRdvServicePublic.map(mediateur)
 
 export const mediateursDesEquipesProduit = [
   ...membresDeLEquipeProduit,
   ...equipeRdvServicePublic,
 ].map(({ mediateurId }) => mediateurId)
 
-export const teamAdministrateurs = [
-  givenUser({
+export const administrateursDeLEquipe = [
+  utilisateur({
     id: '50439602-1437-443e-b6d0-25d96e21d60c',
     firstName: 'Manon',
     lastName: 'Galle',
     email: 'manon.galle@anct.gouv.fr',
     role: 'Admin',
   }),
-  givenUser({
+  utilisateur({
     id: '82658fa2-b0ed-4fe8-8120-b462048957a0',
     firstName: 'Ferdinand',
     lastName: 'Rautureau',
     email: 'ferdinand.rautureau@anct.gouv.fr',
     role: 'Admin',
   }),
-  givenUser({
+  utilisateur({
     id: '1e8fa942-0491-41c7-a28c-b68da6b05a1c',
     firstName: 'Kévin',
     lastName: 'Troadec',
     email: 'kevin.troadec@beta.gouv.fr',
     role: 'Admin',
   }),
-  givenUser({
+  utilisateur({
     id: 'c059170d-cf32-452c-b3db-e05e2658ff49',
     firstName: 'Adrien',
     lastName: 'Turpin',
     email: 'adrien.turpin@ext.anct.gouv.fr',
     role: 'Admin',
   }),
-  givenUser({
+  utilisateur({
     id: 'a1b2c3d4-1111-4000-8000-000000000003',
     firstName: 'David',
     lastName: 'Bourchanin',

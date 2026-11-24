@@ -4,7 +4,7 @@ import type { Employeuse } from '../../../../domain/employeuse'
 // Modules visés directement plutôt que le barrel `../../../server` : celui-ci réexporte cette
 // implémentation, et l'atteindre depuis ici fermerait un cycle d'imports.
 import { rechercherEmployeuse } from '../../../../implementations/prisma/rechercher-employeuse.query'
-import type { StructureSearchResult } from '../../domain/employeuse-choisie'
+import type { StructureTrouvee } from '../../domain/employeuse-choisie'
 
 type EmployeuseRecherchee = {
   readonly id: string
@@ -16,12 +16,12 @@ type EmployeuseRecherchee = {
   readonly siret: string | null
 }
 
-export const searchStructureEmployeuseCombinedAvec =
+export const rechercheStructureEmployeuseAvec =
   (employeuseRecherchee: (employeuse: Employeuse) => EmployeuseRecherchee) =>
   async (
     query: string,
   ): Promise<{
-    structures: StructureSearchResult[]
+    structures: StructureTrouvee[]
     totalCount: number
     moreResults: number
     apiUnavailable: boolean
@@ -50,7 +50,7 @@ export const searchStructureEmployeuseCombinedAvec =
 
     // Le SIRET identifie le choix : une employeuse enregistrée qui n'en a pas ne
     // peut pas être proposée.
-    const dbStructures: StructureSearchResult[] = dbResult.employeuses
+    const dbStructures: StructureTrouvee[] = dbResult.employeuses
       .map(employeuseRecherchee)
       .filter((structure) => structure.siret)
       .map((structure) => ({
@@ -67,7 +67,7 @@ export const searchStructureEmployeuseCombinedAvec =
         source: 'database' as const,
       }))
 
-    const apiStructures: StructureSearchResult[] = apiResult
+    const apiStructures: StructureTrouvee[] = apiResult
       ? apiResult.results
           .flatMap(etablissementsDepuisUniteLegale)
           .filter((structure) => structure.siret)
@@ -89,7 +89,7 @@ export const searchStructureEmployeuseCombinedAvec =
       siretsSeen.add(s.siret)
       return true
     })
-    const deduplicatedStructures: StructureSearchResult[] = [
+    const deduplicatedStructures: StructureTrouvee[] = [
       ...uniqueDbStructures,
       ...apiStructures.filter((s) => !siretsSeen.has(s.siret)),
     ]

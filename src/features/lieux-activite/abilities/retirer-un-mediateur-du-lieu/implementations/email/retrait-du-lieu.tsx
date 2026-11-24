@@ -18,7 +18,7 @@ const STANDARD_PARAGRAPH = {
   paddingBottom: '16px',
 }
 
-export const removedFromLieuEmail = {
+export const retraitDuLieu = {
   text: ({
     mediateurFirstname,
     structureNom,

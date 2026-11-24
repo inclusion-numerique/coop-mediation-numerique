@@ -4,7 +4,7 @@ import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { retirerUnMediateurDuLieu } from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/implementations/prisma/retirer-un-mediateur-du-lieu.mutation'
 import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
 import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
-import { UserId } from '@/features/lieux-activite/domain/identifiants/utilisateur-id'
+import { UtilisateurId } from '@/features/lieux-activite/domain/identifiants/utilisateur-id'
 import {
   ficheSemee,
   semerUneFicheDeLieu,
@@ -18,7 +18,7 @@ const auteur = (options: {
   mediateurId: string | null
   coordonneLeMediateurRetire?: boolean
 }) => ({
-  userId: UserId(ficheSemee().userIds[0] ?? ''),
+  userId: UtilisateurId(ficheSemee().userIds[0] ?? ''),
   mediateurId:
     options.mediateurId == null ? null : MediateurId(options.mediateurId),
   estAdministrateur: false,

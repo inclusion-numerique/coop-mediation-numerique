@@ -10,7 +10,7 @@ const hasAideAuxDemarchesAdministratives = (thematiques: Thematique[]) =>
 const onlyNonAdministrativesThematiques = (thematique: Thematique) =>
   thematiquesNonAdministrativesValues.some((valeur) => valeur === thematique)
 
-export const clearAdministrativeData = <T>(
+export const effacerLesDonneesAdministratives = <T>(
   data: T & {
     thematiques: Thematique[]
     precisionsDemarche?: string | null

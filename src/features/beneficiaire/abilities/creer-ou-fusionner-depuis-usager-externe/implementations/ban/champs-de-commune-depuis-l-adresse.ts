@@ -22,7 +22,7 @@ export const communeDuResultat = (
   }
 }
 
-export const communeFieldsFromAddress = async (
+export const champsDeCommuneDepuisLAdresse = async (
   adresse: string,
 ): Promise<CommuneFields | null> =>
   communeDuResultat(await searchAdresse(adresse))

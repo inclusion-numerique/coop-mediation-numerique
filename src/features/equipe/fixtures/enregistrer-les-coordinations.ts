@@ -7,7 +7,7 @@ export type Coordination = {
   mediateurIds: string[]
 }
 
-export const upsertCoordinationFixtures =
+export const enregistrerLesCoordinations =
   (transaction: Prisma.TransactionClient) =>
   async (coordinations: Coordination[]) => {
     await enSerie(coordinations, async ({ coordinateurId, mediateurIds }) =>

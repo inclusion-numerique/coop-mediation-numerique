@@ -1,9 +1,9 @@
-import { givenUser } from '@/features/utilisateurs/fixtures/utilisateur'
+import { utilisateur } from '@/features/utilisateurs/fixtures/utilisateur'
 
 export const exConseillerApresRuptureMediateurId =
   '594f05c4-47d8-4d4a-9d52-26396da59e5a'
 
-export const exConseillerApresRupture = givenUser({
+export const exConseillerApresRupture = utilisateur({
   id: '28c91a4e-99ee-4d75-9af9-08993c01490e',
   acceptationCgu: new Date(),
   firstName: 'Ex Conseiller',

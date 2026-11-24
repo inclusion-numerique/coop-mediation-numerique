@@ -61,7 +61,7 @@ import { BarreDesStatistiques } from '@/features/activites/ui/components/filtres
 import { criteresDesStatistiquesDesFiltres } from '@/features/activites/ui/filtres/activites.filtre'
 import { filtresDesStatistiques } from '@/features/activites/ui/filtres/statistiques.filtre'
 import { barreDesStatistiquesAvec } from '@/features/activites/ui/presenters/barre-des-statistiques.presenter'
-import { getSessionUserFromId } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
+import { utilisateurDeLaSessionParId } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
 import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage/implementations/prisma/resoudre-un-lien-de-partage.query'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/rdvs-des-activites.query'
 import { StatistiquesPartagees } from '@/features/statistiques/abilities/consulter-des-statistiques-partagees/ui/pages/StatistiquesPartagees'
@@ -111,7 +111,7 @@ const Page = async ({ params, searchParams }: PageProps) => {
 
   const user = utilisateurDuPartage(
     partage.data.proprietaire,
-    await getSessionUserFromId(partage.data.utilisateurId),
+    await utilisateurDeLaSessionParId(partage.data.utilisateurId),
   )
 
   const perimetre = perimetreDeLUtilisateur(user)

@@ -1,7 +1,7 @@
 import { AccompagnementPieChart } from '@/features/activites/ui/components/graphiques/AccompagnementPieChart'
 import {
+  couleursDesStatuts,
   genresColors,
-  statusColors,
   tranchesAgeColors,
 } from '@/features/activites/ui/labels/couleurs.labels'
 import ProgressBar from '@/libraries/proportions/ProgressBar'
@@ -70,13 +70,13 @@ export const ProfilDesPersonnesAccompagnees = ({
           <ProgressBar
             size="large"
             progress={beneficiaires.statutsSocial.map(toProgress)}
-            colors={statusColors}
+            colors={couleursDesStatuts}
             tooltipKey="status-beneficiaires"
           />
         </div>
         <QuantifiedShareLegend
           quantifiedShares={beneficiaires.statutsSocial}
-          colors={statusColors}
+          colors={couleursDesStatuts}
         />
       </div>
     </div>

@@ -11,9 +11,9 @@ import {
   poserRole,
   valider,
 } from './transitions'
-import { UserId } from './utilisateur-id'
+import { UtilisateurId } from './utilisateur-id'
 
-const userId = UserId('00000000-0000-4000-8000-000000000001')
+const userId = UtilisateurId('00000000-0000-4000-8000-000000000001')
 const acceptationCgu = new Date('2026-01-01T10:00:00.000Z')
 const le = new Date('2026-02-02T09:00:00.000Z')
 

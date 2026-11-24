@@ -17,7 +17,7 @@ import { output } from '@/libraries/fixtures/output'
  * réel a déjà les siens, avec ses emplois et ses activités). Ces fixtures-là sont ignorées, avec
  * une trace : le compte réel, plus riche, reste intact.
  */
-export type UserFixture = Prisma.UserCreateInput & {
+export type UtilisateurAEnregistrer = Prisma.UserCreateInput & {
   id: string
   email: string
   /** Intention de fixture, écartée avant l'écriture : voir `givenUser` et `seedPersonnesMain`. */
@@ -30,16 +30,19 @@ export const sansDrapeauDispositif = ({
   isConseillerNumerique: _drapeau,
   employeDeLaStructureEmployeuse: _employe,
   ...user
-}: UserFixture): Prisma.UserCreateInput & { id: string; email: string } => user
+}: UtilisateurAEnregistrer): Prisma.UserCreateInput & {
+  id: string
+  email: string
+} => user
 
 const RELATIONS_UNIQUES = ['mediateur', 'coordinateur'] as const
 
-const relationsRattachees = (user: UserFixture) =>
+const relationsRattachees = (user: UtilisateurAEnregistrer) =>
   RELATIONS_UNIQUES.filter((relation) => user[relation] != null)
 
 const idsExistantsParEmail = async (
   transaction: Prisma.TransactionClient,
-  fixtures: UserFixture[],
+  fixtures: UtilisateurAEnregistrer[],
 ) => {
   const existants = await transaction.user.findMany({
     where: { email: { in: fixtures.map(({ email }) => email) } },
@@ -51,7 +54,7 @@ const idsExistantsParEmail = async (
 
 const upsertUserFixture =
   (transaction: Prisma.TransactionClient, libelle: string) =>
-  (user: UserFixture, idExistant?: string) => {
+  (user: UtilisateurAEnregistrer, idExistant?: string) => {
     const ligne = sansDrapeauDispositif(user)
 
     if (idExistant === undefined || idExistant === user.id) {
@@ -86,9 +89,9 @@ const upsertUserFixture =
       })
   }
 
-export const upsertUserFixtures =
+export const enregistrerLesUtilisateurs =
   (transaction: Prisma.TransactionClient) =>
-  async (libelle: string, fixtures: UserFixture[]) => {
+  async (libelle: string, fixtures: UtilisateurAEnregistrer[]) => {
     const idsExistants = await idsExistantsParEmail(transaction, fixtures)
 
     await enSerie(fixtures, (user) =>

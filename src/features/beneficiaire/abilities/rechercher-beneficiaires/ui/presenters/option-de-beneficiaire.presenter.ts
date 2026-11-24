@@ -2,7 +2,7 @@ import type { CommuneResidence } from '@/features/beneficiaire/domain/commune-re
 import type { BeneficiaireData } from '@/features/beneficiaire/ui/forms/beneficiaire.validation'
 import type { AdresseBanData } from '@/libraries/adresse/AdresseBanValidation'
 import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
-import type { BeneficiaireSearchItem } from '../../domain/rechercher-beneficiaires'
+import type { BeneficiaireTrouve } from '../../domain/rechercher-beneficiaires'
 
 /**
  * Adapte la projection domaine `BeneficiaireSearchItem` vers les formes
@@ -31,7 +31,7 @@ export const toPreviewBanData = (
 })
 
 export const toBeneficiaireData = (
-  item: BeneficiaireSearchItem,
+  item: BeneficiaireTrouve,
 ): BeneficiaireData => ({
   id: item.id,
   prenom: item.prenom,

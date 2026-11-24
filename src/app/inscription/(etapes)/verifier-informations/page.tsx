@@ -1,10 +1,10 @@
 import { redirect } from 'next/navigation'
 import { metadataTitle } from '@/configuration/projet/metadataTitle'
-import { hasInscriptionComplete } from '@/features/authentification/domain/page-d-accueil'
+import { aTermineSonInscription } from '@/features/authentification/domain/page-d-accueil'
 import { authenticateUser } from '@/features/authentification/implementations/session/authenticate-user'
 import StructureAdministrativeCard from '@/features/employeuse/ui/components/StructureAdministrativeCard'
 import VerifierInformationsPage from '@/features/inscription/abilities/verifier-informations/ui/pages/VerifierInformationsPage'
-import { getVerifierInformationsPageData } from '@/features/inscription/abilities/verifier-informations/ui/presenters/verifier-informations.presenter'
+import { donneesDeVerifierInformations } from '@/features/inscription/abilities/verifier-informations/ui/presenters/verifier-informations.presenter'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -17,11 +17,11 @@ const VerifierInformationsPageRoute = async () => {
   const user = await authenticateUser()
 
   // If inscription is already complete (validated with a role profile), redirect to coop
-  if (hasInscriptionComplete(user)) {
+  if (aTermineSonInscription(user)) {
     redirect('/coop')
   }
 
-  const data = getVerifierInformationsPageData(user)
+  const data = donneesDeVerifierInformations(user)
 
   return (
     <VerifierInformationsPage

@@ -2,7 +2,7 @@ import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { Prisma } from '@/generated/prisma/client'
 import type { CoordinateurId } from '../../../../domain/identifiants/coordinateur-id'
 import { MediateurId } from '../../../../domain/identifiants/mediateur-id'
-import { Email } from '../../../../domain/identite/courriel'
+import { Courriel } from '../../../../domain/identite/courriel'
 import { Nom } from '../../../../domain/identite/nom'
 import { NomAffiche, nomAffiche } from '../../../../domain/identite/nom-affiche'
 import { Prenom } from '../../../../domain/identite/prenom'
@@ -29,7 +29,7 @@ type Utilisateur = {
 const identiteDe = (id: string, utilisateur: Utilisateur) => {
   const prenom = Prenom.safe(utilisateur.firstName ?? '')
   const nomDeFamille = Nom.safe(utilisateur.lastName ?? '')
-  const email = Email(utilisateur.email)
+  const email = Courriel(utilisateur.email)
   return {
     membre: {
       mediateurId: MediateurId(id),

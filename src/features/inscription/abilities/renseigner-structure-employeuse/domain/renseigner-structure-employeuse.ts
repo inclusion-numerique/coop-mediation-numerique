@@ -1,5 +1,5 @@
-import type { UserId } from '@/features/inscription/domain'
-import type { GetInscriptionEtat } from '@/features/inscription/domain/ports'
+import type { UtilisateurId } from '@/features/inscription/domain'
+import type { LireLEtatDeLInscription } from '@/features/inscription/domain/ports'
 import { failure, type Result, success } from '@/libraries/result'
 import {
   deciderLaStructureEmployeuse,
@@ -13,7 +13,7 @@ import {
 } from './structure-employeuse-input'
 
 export type RenseignerStructureEmployeusePorts = {
-  readonly lireLEtat: GetInscriptionEtat
+  readonly lireLEtat: LireLEtatDeLInscription
   readonly rattacherEmployeuse: RattacherEmployeuse
   readonly projeterEtapeFranchie: ProjeterEtapeFranchie
 }
@@ -29,7 +29,7 @@ export const renseignerStructureEmployeuse =
     maintenant,
   }: {
     readonly command: {
-      readonly userId: UserId
+      readonly userId: UtilisateurId
       readonly structureEmployeuse: StructureEmployeuseInput
     }
     readonly maintenant: Date

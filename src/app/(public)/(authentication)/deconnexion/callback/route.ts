@@ -1,10 +1,10 @@
 import type { NextRequest } from 'next/server'
 import { getServerBaseUrl, getServerUrl } from '@/configuration/projet/baseUrl'
 import { supprimerSession } from '@/features/authentification/abilities/se-deconnecter/implementations/prisma/index'
-import { getSessionUserFromSessionToken } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
+import { utilisateurDuJetonDeSession } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
 import type { ProconnectSignoutState } from '@/features/authentification/implementations/proconnect/proconnect-signout'
 import {
-  getSessionTokenFromNextRequestCookies,
+  jetonDeSessionDesCookies,
   secureSessionCookie,
   sessionCookie,
 } from '@/features/authentification/implementations/session/session-token-from-cookies'
@@ -39,8 +39,8 @@ export const GET = async (request: NextRequest) => {
     nonce: '',
   })
 
-  const sessionToken = getSessionTokenFromNextRequestCookies(request.cookies)
-  const user = await getSessionUserFromSessionToken(sessionToken)
+  const sessionToken = jetonDeSessionDesCookies(request.cookies)
+  const user = await utilisateurDuJetonDeSession(sessionToken)
 
   if (!sessionToken || !user) {
     return new Response('Unauthorized', { status: 401 })

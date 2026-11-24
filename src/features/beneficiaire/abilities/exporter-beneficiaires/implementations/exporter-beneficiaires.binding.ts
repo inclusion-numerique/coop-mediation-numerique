@@ -4,7 +4,7 @@ import type {
   ExporterBeneficiaires,
   ListerLesBeneficiairesAExporter,
 } from '../domain/exporter-beneficiaires'
-import { buildBeneficiairesWorksheet } from './excel/classeur-des-beneficiaires'
+import { classeurDesBeneficiaires } from './excel/classeur-des-beneficiaires'
 
 // L'export liste tous les bénéficiaires correspondants (pas de pagination).
 const EXPORT_PAGE_SIZE = PageSize(10_000)
@@ -35,7 +35,7 @@ export const exporterBeneficiairesAvec =
       pageSize: EXPORT_PAGE_SIZE,
     })
 
-    return buildBeneficiairesWorksheet({
+    return classeurDesBeneficiaires({
       beneficiaires: items.map(toExportRow),
       filters,
       matchesCount: totalItems,

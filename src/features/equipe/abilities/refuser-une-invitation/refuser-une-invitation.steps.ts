@@ -3,7 +3,7 @@ import { Given, Then, When } from '@cucumber/cucumber'
 import { refuserUneInvitation } from '@/features/equipe/abilities/refuser-une-invitation/implementations/prisma/refuser-une-invitation.mutation'
 import {
   CoordinateurId,
-  Email,
+  Courriel,
   ReferenceInvitation,
 } from '@/features/equipe/domain'
 import {
@@ -56,7 +56,7 @@ Given('une personne qui a déjà accepté de rejoindre une équipe', async () =>
 When("cette personne refuse l'invitation", async () => {
   contexte.issue = await refuserUneInvitation({
     reference: ReferenceInvitation({
-      email: Email(emailInvite()),
+      email: Courriel(emailInvite()),
       coordinateurId: CoordinateurId(coordinateur().coordinateurId),
     }),
     auteurId: null,

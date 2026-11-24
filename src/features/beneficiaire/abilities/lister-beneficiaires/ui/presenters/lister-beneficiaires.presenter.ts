@@ -17,7 +17,7 @@ type BeneficiairesPaginationView = {
  * ViewModel de la liste, sous forme d'union discriminée : la page se contente
  * de filtrer sur `tag`, sans logique.
  */
-export type MesBeneficiairesView =
+export type VueDeMesBeneficiaires =
   | { readonly tag: 'empty' }
   | { readonly tag: 'noResults'; readonly recherche: string }
   | {
@@ -29,7 +29,7 @@ export type MesBeneficiairesView =
 export const presentMesBeneficiaires = (
   result: Paginated<BeneficiaireListItem>,
   recherche?: string,
-): MesBeneficiairesView => {
+): VueDeMesBeneficiaires => {
   if (result.totalItems === 0)
     return recherche ? { tag: 'noResults', recherche } : { tag: 'empty' }
 

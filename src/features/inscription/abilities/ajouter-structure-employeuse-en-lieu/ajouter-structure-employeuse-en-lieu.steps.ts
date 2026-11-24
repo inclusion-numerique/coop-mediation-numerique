@@ -8,8 +8,8 @@ import type {
   GeocoderLAdresse,
 } from '@/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/domain'
 import {
-  currentInscriptionUserId,
   seedEmployeuseMain,
+  utilisateurDeLInscriptionEnCours,
 } from '@/features/inscription/inscription.cucumber'
 import type { AdresseBanData } from '@/libraries/adresse/AdresseBanValidation'
 import { ajouterStructureEmployeuseEnLieu } from './domain/ajouter-structure-employeuse-en-lieu'
@@ -71,13 +71,13 @@ const declarer = async (estLieuActivite: boolean) => {
     detacherDuLieuDecrit: async ({ lieu }) => {
       etat.detaches.push(lieu)
     },
-  })({ userId: currentInscriptionUserId(), estLieuActivite })
+  })({ userId: utilisateurDeLInscriptionEnCours(), estLieuActivite })
   etat.refus = resultat.success ? null : resultat.error._tag
 }
 
 Given('je suis médiateur', async () => {
   await prismaClient.mediateur.create({
-    data: { id: v4(), userId: currentInscriptionUserId() },
+    data: { id: v4(), userId: utilisateurDeLInscriptionEnCours() },
   })
 })
 

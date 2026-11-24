@@ -1,6 +1,6 @@
 import {
-  givenBeneficiaire,
-  givenBeneficiaireAnonyme,
+  beneficiaire,
+  beneficiaireAnonyme,
 } from '@/features/beneficiaire/fixtures/beneficiaire'
 
 export const referencesDesBeneficiaires = {
@@ -23,7 +23,7 @@ export type MediateursDesBeneficiaires = {
 export const beneficiairesDeDemonstration = (
   mediateurs: MediateursDesBeneficiaires,
 ) => {
-  const beneficiaireMinimaleMediateurAvecActivite = givenBeneficiaire({
+  const beneficiaireMinimaleMediateurAvecActivite = beneficiaire({
     id: referencesDesBeneficiaires.minimaleMediateurAvecActivite,
     prenom: 'Jeanne',
     nom: 'Minimale',
@@ -47,7 +47,7 @@ export const beneficiairesDeDemonstration = (
     rdvUserId: null,
   })
 
-  const beneficiaireMaximaleMediateurAvecActivite = givenBeneficiaire({
+  const beneficiaireMaximaleMediateurAvecActivite = beneficiaire({
     id: referencesDesBeneficiaires.maximaleMediateurAvecActivite,
     prenom: 'Jean',
     nom: 'Maximal',
@@ -71,28 +71,27 @@ export const beneficiairesDeDemonstration = (
     rdvUserId: null,
   })
 
-  const beneficiaireSansAccompagnementsMediateurAvecActivite =
-    givenBeneficiaire({
-      id: 'b8a9306e-6e3d-410d-bf21-6ca4e17ee371',
-      mediateurId: mediateurs.mediateurAvecActivite,
-      anonyme: false,
-      rdvServicePublicId: null,
-      prenom: 'Félix',
-      nom: 'Sans accompagnements',
-      commune: 'Crolles',
-      communeCodePostal: '38920',
-      communeCodeInsee: '38140',
-      genre: 'Masculin',
-      trancheAge: 'VingtCinqTrenteNeuf',
-      statutSocial: 'EnEmploi',
-      notes: null,
-      creation: new Date('2024-03-03'),
-      modification: new Date('2024-06-06'),
-      suppression: null,
-      rdvUserId: null,
-    })
+  const beneficiaireSansAccompagnementsMediateurAvecActivite = beneficiaire({
+    id: 'b8a9306e-6e3d-410d-bf21-6ca4e17ee371',
+    mediateurId: mediateurs.mediateurAvecActivite,
+    anonyme: false,
+    rdvServicePublicId: null,
+    prenom: 'Félix',
+    nom: 'Sans accompagnements',
+    commune: 'Crolles',
+    communeCodePostal: '38920',
+    communeCodeInsee: '38140',
+    genre: 'Masculin',
+    trancheAge: 'VingtCinqTrenteNeuf',
+    statutSocial: 'EnEmploi',
+    notes: null,
+    creation: new Date('2024-03-03'),
+    modification: new Date('2024-06-06'),
+    suppression: null,
+    rdvUserId: null,
+  })
 
-  const beneficiaireAnonymeMediateurAvecActivite = givenBeneficiaireAnonyme({
+  const beneficiaireAnonymeMediateurAvecActivite = beneficiaireAnonyme({
     id: referencesDesBeneficiaires.anonymeMediateurAvecActivite,
     mediateurId: mediateurs.mediateurAvecActivite,
     anonyme: true,
@@ -114,7 +113,7 @@ export const beneficiairesDeDemonstration = (
     beneficiaireAnonymeMediateurAvecActivite,
   ]
 
-  const beneficiaireMinimaleConseillerNumerique = givenBeneficiaire({
+  const beneficiaireMinimaleConseillerNumerique = beneficiaire({
     id: referencesDesBeneficiaires.minimaleConseillerNumerique,
     prenom: 'Anna',
     nom: 'Minimale',
@@ -138,7 +137,7 @@ export const beneficiairesDeDemonstration = (
     rdvUserId: null,
   })
 
-  const beneficiaireMaximaleConseillerNumerique = givenBeneficiaire({
+  const beneficiaireMaximaleConseillerNumerique = beneficiaire({
     id: referencesDesBeneficiaires.maximaleConseillerNumerique,
     prenom: 'Anatole',
     nom: 'Maximal',
@@ -161,7 +160,7 @@ export const beneficiairesDeDemonstration = (
     suppression: null,
   })
 
-  const beneficiaireSansAccompagnementsConseillerNumerique = givenBeneficiaire({
+  const beneficiaireSansAccompagnementsConseillerNumerique = beneficiaire({
     id: '2bfb6e40-7add-47b8-86a7-cc58aa32fe01',
     mediateurId: mediateurs.conseillerNumerique,
     anonyme: false,
@@ -181,7 +180,7 @@ export const beneficiairesDeDemonstration = (
     rdvUserId: null,
   })
 
-  const beneficiaireAnonymeConseillerNumerique = givenBeneficiaireAnonyme({
+  const beneficiaireAnonymeConseillerNumerique = beneficiaireAnonyme({
     id: referencesDesBeneficiaires.anonymeConseillerNumerique,
     mediateurId: mediateurs.conseillerNumerique,
     rdvServicePublicId: null,
@@ -204,7 +203,7 @@ export const beneficiairesDeDemonstration = (
     beneficiaireAnonymeConseillerNumerique,
   ]
 
-  const beneficiaireMinimaleCoordinateur = givenBeneficiaire({
+  const beneficiaireMinimaleCoordinateur = beneficiaire({
     id: referencesDesBeneficiaires.minimaleCoordinateur,
     prenom: 'Juliette',
     nom: 'Minimale',
@@ -227,7 +226,7 @@ export const beneficiairesDeDemonstration = (
     suppression: null,
   })
 
-  const beneficiaireMaximaleCoordinateur = givenBeneficiaire({
+  const beneficiaireMaximaleCoordinateur = beneficiaire({
     id: referencesDesBeneficiaires.maximaleCoordinateur,
     prenom: 'Georges',
     nom: 'Maximal',
@@ -251,7 +250,7 @@ export const beneficiairesDeDemonstration = (
     rdvUserId: null,
   })
 
-  const beneficiaireSansAccompagnementsCoordinateur = givenBeneficiaire({
+  const beneficiaireSansAccompagnementsCoordinateur = beneficiaire({
     id: 'afcbdd63-7dd9-4342-9fa6-084e7a785406',
     mediateurId: mediateurs.coordinateurInscritAvecTout,
     anonyme: false,
@@ -271,7 +270,7 @@ export const beneficiairesDeDemonstration = (
     rdvUserId: null,
   })
 
-  const beneficiaireAnonymeCoordinateur = givenBeneficiaireAnonyme({
+  const beneficiaireAnonymeCoordinateur = beneficiaireAnonyme({
     id: '6085814c-8ac0-483f-a5d8-3a15493974cd',
     mediateurId: mediateurs.coordinateurInscritAvecTout,
     rdvServicePublicId: null,

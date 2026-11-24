@@ -4,9 +4,9 @@ import { AnneeNaissance } from './annee-naissance'
 import type { BeneficiaireAnonyme, BeneficiaireIdentifie } from './beneficiaire'
 import {
   beneficiaireAdresseString,
-  beneficiaireDisplayName,
-  displayNameFromIdentity,
-  isBeneficiaireAnonymous,
+  estAnonyme,
+  nomAfficheDepuisLIdentite,
+  nomAfficheDuBeneficiaire,
   toBeneficiaireIdentifie,
 } from './beneficiaire'
 import { BeneficiaireId } from './beneficiaire-id'
@@ -48,45 +48,47 @@ const identifie: BeneficiaireIdentifie = {
   notes: null,
 }
 
-describe('isBeneficiaireAnonymous', () => {
+describe('estAnonyme', () => {
   it('returns true for anonymous beneficiaire', () => {
-    expect(isBeneficiaireAnonymous(anonyme)).toBe(true)
+    expect(estAnonyme(anonyme)).toBe(true)
   })
 
   it('returns false for identified beneficiaire', () => {
-    expect(isBeneficiaireAnonymous(identifie)).toBe(false)
+    expect(estAnonyme(identifie)).toBe(false)
   })
 })
 
-describe('beneficiaireDisplayName', () => {
+describe('nomAfficheDuBeneficiaire', () => {
   it('returns "Bénéficiaire anonyme" for anonymous', () => {
-    expect(beneficiaireDisplayName(anonyme)).toBe('Bénéficiaire anonyme')
+    expect(nomAfficheDuBeneficiaire(anonyme)).toBe('Bénéficiaire anonyme')
   })
 
   it('returns full name for identified', () => {
-    expect(beneficiaireDisplayName(identifie)).toBe('Jean Dupont')
+    expect(nomAfficheDuBeneficiaire(identifie)).toBe('Jean Dupont')
   })
 })
 
-describe('displayNameFromIdentity', () => {
+describe('nomAfficheDepuisLIdentite', () => {
   it('joins prénom and nom', () => {
-    expect(displayNameFromIdentity({ prenom: 'Jean', nom: 'Dupont' })).toBe(
+    expect(nomAfficheDepuisLIdentite({ prenom: 'Jean', nom: 'Dupont' })).toBe(
       'Jean Dupont',
     )
   })
 
   it('falls back to "Bénéficiaire anonyme" when both are absent', () => {
-    expect(displayNameFromIdentity({ prenom: null, nom: null })).toBe(
+    expect(nomAfficheDepuisLIdentite({ prenom: null, nom: null })).toBe(
       'Bénéficiaire anonyme',
     )
-    expect(displayNameFromIdentity({})).toBe('Bénéficiaire anonyme')
+    expect(nomAfficheDepuisLIdentite({})).toBe('Bénéficiaire anonyme')
   })
 
   it('keeps the only provided part without leaking the missing one', () => {
-    expect(displayNameFromIdentity({ prenom: null, nom: 'Dupont' })).toBe(
+    expect(nomAfficheDepuisLIdentite({ prenom: null, nom: 'Dupont' })).toBe(
       'Dupont',
     )
-    expect(displayNameFromIdentity({ prenom: 'Jean', nom: null })).toBe('Jean')
+    expect(nomAfficheDepuisLIdentite({ prenom: 'Jean', nom: null })).toBe(
+      'Jean',
+    )
   })
 })
 

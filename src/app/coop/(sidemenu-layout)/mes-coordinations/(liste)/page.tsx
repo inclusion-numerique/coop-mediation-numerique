@@ -16,7 +16,7 @@ import {
   criteresDesFiltresDeCoordination,
   filtresDesCoordinations,
 } from '@/features/activites/ui/filtres/coordinations.filtre'
-import { isMediateur } from '@/features/authentification/domain/profils-d-utilisateur'
+import { estMediateur } from '@/features/authentification/domain/profils-d-utilisateur'
 import { authenticateCoordinateur } from '@/features/authentification/implementations/session/authenticate-user'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
 
@@ -49,7 +49,7 @@ const MesCoordinationsRoute = async ({
       parametres,
       criteres: criteresDesFiltresDeCoordination(valeurs),
       timezone: user.timezone,
-      aussiMediateur: isMediateur(user),
+      aussiMediateur: estMediateur(user),
       lectures: {
         activites: listerLesActivitesDeCoordination,
         options: optionsDeFiltre,

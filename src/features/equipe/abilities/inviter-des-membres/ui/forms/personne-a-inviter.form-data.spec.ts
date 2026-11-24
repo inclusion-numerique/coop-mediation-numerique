@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
-  Email,
+  Courriel,
   MediateurId,
   NomAffiche,
   RoleMembre,
@@ -11,7 +11,7 @@ const edith: PersonneAInviter = {
   _tag: 'Mediateur',
   mediateurId: MediateurId('1a2b3c4d-5e6f-4708-8192-a3b4c5d6e7f8'),
   nom: NomAffiche('Edith Piaf'),
-  email: Email('edith@piaf.com'),
+  email: Courriel('edith@piaf.com'),
   role: RoleMembre('MediateurNumerique'),
 }
 
@@ -24,7 +24,7 @@ describe('ajouter', () => {
     expect(
       ajouter([edith], {
         _tag: 'Email',
-        email: Email('Edith@Piaf.com'),
+        email: Courriel('Edith@Piaf.com'),
       }),
     ).toEqual([edith])
   })

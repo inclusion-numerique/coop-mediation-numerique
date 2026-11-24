@@ -1,6 +1,10 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 
-export const registerLastLogin = async ({ userId }: { userId: string }) => {
+export const enregistrerLaDerniereConnexion = async ({
+  userId,
+}: {
+  userId: string
+}) => {
   await prismaClient.user.update({
     data: {
       lastLogin: new Date(),

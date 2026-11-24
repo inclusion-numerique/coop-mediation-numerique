@@ -2,7 +2,7 @@ import { After, Before, setDefaultTimeout } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { ProfilInscription } from '@/features/inscription/domain'
-import { UserId } from '@/features/inscription/domain'
+import { UtilisateurId } from '@/features/inscription/domain'
 import type { Typologie } from '@/generated/prisma/client'
 
 setDefaultTimeout(60_000)
@@ -35,7 +35,8 @@ const adresseDeTest = {
   codeInsee: '75101',
 }
 
-export const currentInscriptionUserId = (): UserId => UserId(inscriptionUserId)
+export const utilisateurDeLInscriptionEnCours = (): UtilisateurId =>
+  UtilisateurId(inscriptionUserId)
 
 export const seedInvitationEnAttente = async (): Promise<string> => {
   const userId = v4()

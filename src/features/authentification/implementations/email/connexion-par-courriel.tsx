@@ -11,7 +11,7 @@ import { projectTitle } from '@/configuration/projet/config'
 import LayoutWithFooter from '@/libraries/emails/components/LayoutWithFooter'
 import { brandColor } from '@/libraries/emails/styles'
 
-export const emailSignin = {
+export const connexionParCourriel = {
   text: ({ url }: { url: string }): string =>
     `Pour vous connecter à ${projectTitle}, merci d'utiliser le lien suivant :\n${url}\n\n`,
   mjml: ({ url }: { url: string }): string =>

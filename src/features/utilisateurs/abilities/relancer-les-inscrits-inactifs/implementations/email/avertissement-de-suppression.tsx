@@ -57,7 +57,7 @@ const getInactivityReason = ({
   return "vous n'avez enregistré aucune activité"
 }
 
-export const nouveauAccountDeletionWarningEmail = {
+export const avertissementDeSuppression = {
   text: ({
     firstname,
     deletionDate,

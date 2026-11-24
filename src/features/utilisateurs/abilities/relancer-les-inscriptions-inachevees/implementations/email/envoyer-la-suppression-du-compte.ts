@@ -2,10 +2,10 @@ import { contactEmail } from '@/configuration/projet/config'
 import { emailTransport } from '@/configuration/smtp/emailTransport'
 import { expediteur } from '@/configuration/smtp/serveur'
 import { throwOnSendMailFailure } from '@/configuration/smtp/throwOnSendMailFailure'
-import { finishYourSignupAccountDeletedEmail } from '@/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees/implementations/email/compte-supprime'
+import { compteSupprime } from '@/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees/implementations/email/compte-supprime'
 import { compileMjml } from '@/libraries/emails/mjml'
 
-export const sendAccountDeletedEmail = async ({
+export const envoyerLaSuppressionDuCompte = async ({
   email,
   firstname,
 }: {
@@ -18,10 +18,8 @@ export const sendAccountDeletedEmail = async ({
     replyTo: contactEmail,
 
     subject: 'Votre compte a été supprimé',
-    text: finishYourSignupAccountDeletedEmail.text({ firstname }),
-    html: await compileMjml(
-      finishYourSignupAccountDeletedEmail.mjml({ firstname }),
-    ),
+    text: compteSupprime.text({ firstname }),
+    html: await compileMjml(compteSupprime.mjml({ firstname })),
   })
 
   throwOnSendMailFailure(result)

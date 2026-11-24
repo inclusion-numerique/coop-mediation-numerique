@@ -1,6 +1,6 @@
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 
-export const CreateCraModalDefinition = createModal({
+export const ModaleDeSaisie = createModal({
   id: 'create-cra',
   isOpenedByDefault: false,
 })

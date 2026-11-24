@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { Email } from './courriel'
+import { Courriel } from './courriel'
 import { Nom } from './nom'
 import { NomAffiche, nomAffiche } from './nom-affiche'
 import { Prenom } from './prenom'
@@ -8,7 +8,7 @@ const identite = {
   prenom: Prenom('Camille'),
   nom: Nom('Martin'),
   nomComplet: NomAffiche('C. Martin'),
-  email: Email('camille@example.com'),
+  email: Courriel('camille@example.com'),
 }
 
 describe('nom affiché d’une personne', () => {

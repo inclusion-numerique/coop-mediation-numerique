@@ -7,7 +7,7 @@ export type InvitationEquipeFixture = {
   mediateurId: string | null
 }
 
-export const upsertInvitationEquipeFixtures =
+export const enregistrerLesInvitations =
   (transaction: Prisma.TransactionClient) =>
   async (invitations: InvitationEquipeFixture[]) => {
     await enSerie(invitations, ({ email, coordinateurId, mediateurId }) =>

@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import type { ModifierBeneficiaireView } from '@/features/beneficiaire/abilities/modifier-beneficiaire/ui/presenters/modifier-beneficiaire.presenter'
+import type { VueDeModificationDuBeneficiaire } from '@/features/beneficiaire/abilities/modifier-beneficiaire/ui/presenters/modifier-beneficiaire.presenter'
 import BeneficiaireForm, {
   type EnregistrerBeneficiaire,
 } from '@/features/beneficiaire/ui/forms/formulaire/BeneficiaireForm'
@@ -15,7 +15,7 @@ export const ModifierBeneficiairePage = ({
   save,
   retour,
 }: {
-  view: ModifierBeneficiaireView
+  view: VueDeModificationDuBeneficiaire
   save: EnregistrerBeneficiaire
   retour?: string
 }) => (

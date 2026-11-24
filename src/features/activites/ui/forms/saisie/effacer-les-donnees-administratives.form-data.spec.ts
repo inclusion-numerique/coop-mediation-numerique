@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { clearAdministrativeData } from '@/features/activites/ui/forms/saisie/effacer-les-donnees-administratives.form-data'
+import { effacerLesDonneesAdministratives } from '@/features/activites/ui/forms/saisie/effacer-les-donnees-administratives.form-data'
 
 describe('clear administrative data', () => {
   it('removes all administrative thematiques when aide aux demarches administratives is absent', () => {
@@ -7,7 +7,7 @@ describe('clear administrative data', () => {
       thematiques: ['PapiersElectionsCitoyennete' as const],
     }
 
-    const clearedData = clearAdministrativeData(data)
+    const clearedData = effacerLesDonneesAdministratives(data)
 
     expect(clearedData).toStrictEqual({
       precisionsDemarche: null,
@@ -23,7 +23,7 @@ describe('clear administrative data', () => {
       ],
     }
 
-    const clearedData = clearAdministrativeData(data)
+    const clearedData = effacerLesDonneesAdministratives(data)
 
     expect(clearedData).toStrictEqual({
       precisionsDemarche: null,
@@ -40,7 +40,7 @@ describe('clear administrative data', () => {
       ],
     }
 
-    const clearedData = clearAdministrativeData(data)
+    const clearedData = effacerLesDonneesAdministratives(data)
 
     expect(clearedData).toStrictEqual({
       precisionsDemarche: undefined,
@@ -58,7 +58,7 @@ describe('clear administrative data', () => {
       thematiques: ['PapiersElectionsCitoyennete' as const],
     }
 
-    const clearedData = clearAdministrativeData(data)
+    const clearedData = effacerLesDonneesAdministratives(data)
 
     expect(clearedData).toStrictEqual({
       precisionsDemarche: null,
@@ -72,7 +72,7 @@ describe('clear administrative data', () => {
       thematiques: ['AideAuxDemarchesAdministratives' as const],
     }
 
-    const clearedData = clearAdministrativeData(data)
+    const clearedData = effacerLesDonneesAdministratives(data)
 
     expect(clearedData).toStrictEqual({
       precisionsDemarche: 'test',

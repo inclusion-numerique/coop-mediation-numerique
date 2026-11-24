@@ -5,9 +5,9 @@ import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { renseignerLieuxActiviteAvec } from '@/features/inscription/abilities/renseigner-lieux-activite/implementations/renseigner-lieux-activite.binding'
 import { ProfilInscription } from '@/features/inscription/domain'
 import {
-  currentInscriptionUserId,
   seedLieuActivite,
   seedProfilChoisi,
+  utilisateurDeLInscriptionEnCours,
 } from '@/features/inscription/inscription.cucumber'
 
 const etat: {
@@ -39,7 +39,7 @@ const confierAuRattachement = async (
 Given('je suis un médiateur en cours d’inscription', async () => {
   await seedProfilChoisi(ProfilInscription.schema.parse('Mediateur'))
   await prismaClient.mediateur.create({
-    data: { id: v4(), userId: currentInscriptionUserId() },
+    data: { id: v4(), userId: utilisateurDeLInscriptionEnCours() },
   })
 })
 
@@ -48,7 +48,7 @@ Given('j’exerce déjà dans un ancien lieu', async () => {
   const { id } = await prismaClient.mediateurEnActivite.create({
     data: {
       id: v4(),
-      mediateur: { connect: { userId: currentInscriptionUserId() } },
+      mediateur: { connect: { userId: utilisateurDeLInscriptionEnCours() } },
       lieuInclusion: { connect: { id: lieuId } },
       debut: new Date(),
     },
@@ -67,7 +67,7 @@ When(
       rattacherAuLieuDesire: confierAuRattachement,
     })({
       command: {
-        userId: currentInscriptionUserId(),
+        userId: utilisateurDeLInscriptionEnCours(),
         lieuxActivite: [
           {
             id: etat.lieuRenseigne,
@@ -87,7 +87,7 @@ When(
 
 Then('l’étape lieux d’activité est franchie', async () => {
   const user = await prismaClient.user.findUniqueOrThrow({
-    where: { id: currentInscriptionUserId() },
+    where: { id: utilisateurDeLInscriptionEnCours() },
     select: { lieuxActiviteRenseignes: true },
   })
   assert.ok(

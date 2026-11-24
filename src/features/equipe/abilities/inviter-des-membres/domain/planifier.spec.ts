@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { Email, MediateurId } from '../../../domain'
+import { Courriel, MediateurId } from '../../../domain'
 import {
   coordinateurId,
   invitationAcceptee,
@@ -9,15 +9,15 @@ import {
 import { planifier } from './planifier'
 
 const maintenant = new Date('2026-10-14T09:00:00Z')
-const nouveau = Email('nouveau@example.com')
-const inscrit = Email('inscrit@example.com')
-const membre = Email('membre@example.com')
+const nouveau = Courriel('nouveau@example.com')
+const inscrit = Courriel('inscrit@example.com')
+const membre = Courriel('membre@example.com')
 const mediateurInscrit = MediateurId('550e8400-e29b-41d4-a716-446655440041')
 
 const existant = {
   invitations: [],
-  membresActifs: new Set<Email>(),
-  mediateursConnus: new Map<Email, MediateurId>(),
+  membresActifs: new Set<Courriel>(),
+  mediateursConnus: new Map<Courriel, MediateurId>(),
 }
 
 const emailsPlanifies = (resultat: ReturnType<typeof planifier>) =>
@@ -27,7 +27,7 @@ describe('planifier des invitations', () => {
   it('invite chaque adresse une seule fois, même saisie deux fois', () => {
     const resultat = planifier({
       coordinateurId,
-      candidats: [nouveau, Email('NOUVEAU@example.com')],
+      candidats: [nouveau, Courriel('NOUVEAU@example.com')],
       existant,
       maintenant,
     })

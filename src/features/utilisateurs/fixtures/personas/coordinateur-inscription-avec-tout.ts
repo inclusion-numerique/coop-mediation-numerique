@@ -1,5 +1,5 @@
 import { previewBranchAuthFallbacks } from '@/configuration/projet/previewBranchAuthFallbacks'
-import { givenUser } from '@/features/utilisateurs/fixtures/utilisateur'
+import { utilisateur } from '@/features/utilisateurs/fixtures/utilisateur'
 import type { Prisma } from '@/generated/prisma/client'
 
 export const coordinateurInscriptionAvecToutCoordinateurId =
@@ -11,7 +11,7 @@ export const coordinateurInscriptionAvecToutMediateurId =
 const coordinateurInscriptionAvecToutEmail =
   'coordinateur-inscription-avec-tout@coop-numerique.anct.gouv.fr'
 
-export const coordinateurInscriptionAvecTout = givenUser({
+export const coordinateurInscriptionAvecTout = utilisateur({
   id: '057c3fce-3c7e-4bc7-9596-8d30ef559c1a',
   firstName: 'Coordinateur',
   lastName: 'Inscription avec tout',

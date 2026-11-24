@@ -26,14 +26,14 @@ import { partsFixees } from '@/libraries/proportions/parts-fixees'
 import type { QuantifiedShare } from '@/libraries/proportions/quantifiedShare'
 import { MediateurId, perimetreDuDemandeur } from './domain'
 import { crasDeDemonstration } from './fixtures/cras-de-demonstration'
-import { upsertCraFixtures } from './fixtures/enregistrer-les-cras'
+import { enregistrerLesCras } from './fixtures/enregistrer-les-cras'
 import { statistiquesDuPerimetre } from './implementations/statistiques-du-perimetre.binding'
 import {
   source,
   sourceOptionnelle,
   statistiquesAvec,
 } from './implementations/statistiques-en-cours.binding'
-import { dureeAccompagnementStatisticsRanges } from './ui/labels/libelles/duree-accompagnement.labels'
+import { tranchesDeDureeDesStatistiques } from './ui/labels/libelles/duree-accompagnement.labels'
 import {
   materielLabels,
   materielValues,
@@ -379,7 +379,7 @@ const emptyData: MesStatistiquesPageData = {
     ),
     materiels: partsFixees(materielValues, materielLabels),
     typeLieu: partsFixees(typeLieuValues, typeLieuLabels),
-    durees: dureeAccompagnementStatisticsRanges.map(({ key, label }) => ({
+    durees: tranchesDeDureeDesStatistiques.map(({ key, label }) => ({
       value: key,
       label,
       count: 0,
@@ -468,7 +468,7 @@ describe('statistiques du périmètre d’un médiateur', () => {
         mediateurId: avecActivites.mediateur,
       })),
     })
-    await upsertCraFixtures({ transaction: prismaClient, ...crasDuTest })
+    await enregistrerLesCras({ transaction: prismaClient, ...crasDuTest })
   })
 
   afterAll(effacerLeJeuDuTest)

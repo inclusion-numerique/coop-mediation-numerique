@@ -5,11 +5,11 @@ import {
   type InscriptionEnCours,
   type InscriptionEtat,
   Role,
-  UserId,
+  UtilisateurId,
 } from '@/features/inscription/domain'
 import { deciderLesLieux } from './decider-les-lieux'
 
-const userId = UserId('11111111-1111-1111-1111-111111111111')
+const userId = UtilisateurId('11111111-1111-1111-1111-111111111111')
 const maintenant = new Date('2026-07-16T10:00:00.000Z')
 
 const enCours: InscriptionEnCours = {

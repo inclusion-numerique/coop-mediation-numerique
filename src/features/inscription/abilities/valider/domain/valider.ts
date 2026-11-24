@@ -1,4 +1,4 @@
-import type { UserId } from '@/features/inscription/domain'
+import type { UtilisateurId } from '@/features/inscription/domain'
 import { type Result, success } from '@/libraries/result'
 import type {
   EffetsApresValidation,
@@ -26,7 +26,7 @@ export const valider =
     effetsApresValidation,
   }: ValiderPorts) =>
   async (
-    userId: UserId,
+    userId: UtilisateurId,
     maintenant: Date,
   ): Promise<Result<void, ValiderInscriptionError>> => {
     const decision = deciderLaValidation(

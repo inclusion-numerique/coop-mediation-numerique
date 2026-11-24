@@ -8,7 +8,7 @@ import {
 import type { Schedule } from '@gouvfr-anct/timetable-to-osm-opening-hours'
 import { describe, expect, it } from 'vitest'
 import {
-  emptyOpeningHours,
+  horairesVides,
   safeToTimetableOpeningHours,
 } from '@/features/lieux-activite/domain/horaires-d-ouverture'
 import {
@@ -82,7 +82,7 @@ describe('le numéro de téléphone', () => {
 
 describe('les horaires', () => {
   const lundiMatin: Schedule = {
-    ...emptyOpeningHours,
+    ...horairesVides,
     Mo: {
       am: { startTime: '09:00', endTime: '12:00', isOpen: true },
       pm: { startTime: null, endTime: null, isOpen: false },
@@ -100,12 +100,12 @@ describe('les horaires', () => {
   })
 
   it('valent null quand la grille est vide et qu’il n’y a rien à commenter', () => {
-    expect(horairesSaisis(emptyOpeningHours, null)).toBeNull()
-    expect(horairesSaisis(emptyOpeningHours, '   ')).toBeNull()
+    expect(horairesSaisis(horairesVides, null)).toBeNull()
+    expect(horairesSaisis(horairesVides, '   ')).toBeNull()
   })
 
   it('valent null quand un commentaire n’a aucun créneau où s’adosser', () => {
-    expect(horairesSaisis(emptyOpeningHours, 'Sur rendez-vous')).toBeNull()
+    expect(horairesSaisis(horairesVides, 'Sur rendez-vous')).toBeNull()
   })
 
   it('gardent ouverts le jeudi et le vendredi après-midi d’une semaine qui ferme ces matins-là', () => {
@@ -118,7 +118,7 @@ describe('les horaires', () => {
       pm: { startTime: null, endTime: null, isOpen: false },
     } as const
     const grille: Schedule = {
-      ...emptyOpeningHours,
+      ...horairesVides,
       Mo: apresMidi,
       Tu: journeeContinue,
       We: journeeContinue,

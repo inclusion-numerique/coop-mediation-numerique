@@ -1,7 +1,7 @@
 import { CraDureeData } from '@/features/activites/ui/forms/duree-du-cra.validation'
 import { dureeAccompagnementPersonnaliseeValue } from '@/features/activites/ui/labels/libelles/duree-accompagnement.labels'
 
-export const craDureeDataToMinutes = ({
+export const minutesDeLaDuree = ({
   duree,
   dureePersonnaliseeHeures,
   dureePersonnaliseeMinutes,
@@ -25,7 +25,7 @@ export const craDureeDataToMinutes = ({
   return hours * 60 + minutes
 }
 
-export const minutesToCraDureeData = (
+export const dureeDepuisLesMinutes = (
   minutes: number | undefined | null,
 ): CraDureeData | null => {
   if (minutes === undefined || minutes === null) {
@@ -51,7 +51,9 @@ export const minutesToCraDureeData = (
   }
 }
 
-export const minutesToCustomCraDureeData = (minutes: number): CraDureeData => {
+export const dureePersonnaliseeDepuisLesMinutes = (
+  minutes: number,
+): CraDureeData => {
   const hours = Math.floor(minutes / 60)
   const remainingMinutes = minutes % 60
 

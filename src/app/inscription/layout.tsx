@@ -1,8 +1,8 @@
 import { redirect } from 'next/navigation'
 import { PropsWithChildren } from 'react'
 import {
-  getHomepage,
-  hasInscriptionComplete,
+  aTermineSonInscription,
+  pageDAccueil,
 } from '@/features/authentification/domain/page-d-accueil'
 import { authenticateUser } from '@/features/authentification/implementations/session/authenticate-user'
 import { InscriptionReserveeAuxUtilisateurs } from '@/features/inscription/ui/pages/InscriptionReserveeAuxUtilisateurs'
@@ -14,7 +14,7 @@ import TerminerUsurpationHeaderUserMenuItem from '@/features/utilisateurs/abilit
 const InscriptionLayout = async ({ children }: PropsWithChildren) => {
   const user = await authenticateUser()
 
-  if (hasInscriptionComplete(user)) {
+  if (aTermineSonInscription(user)) {
     redirect('/coop')
   }
 
@@ -23,7 +23,7 @@ const InscriptionLayout = async ({ children }: PropsWithChildren) => {
       entete={
         <Header
           user={user}
-          accueil={getHomepage(user)}
+          accueil={pageDAccueil(user)}
           terminerUsurpation={<TerminerUsurpationHeaderUserMenuItem />}
           variant="coop"
         />

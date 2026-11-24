@@ -5,14 +5,14 @@ import { criteresDesFiltres } from '@/features/activites/ui/filtres/activites.fi
 import { filtresDeToutesLesActivites } from '@/features/activites/ui/filtres/toutes-les-activites.filtre'
 import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
 import {
-  getSessionUserFromId,
-  getSessionUserFromSessionToken,
+  utilisateurDeLaSessionParId,
+  utilisateurDuJetonDeSession,
 } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
-import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementations/session/session-token-from-cookies'
+import { jetonDeSessionDesCookies } from '@/features/authentification/implementations/session/session-token-from-cookies'
 import { beneficiairesInitiauxAvec } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/implementations/beneficiaires-initiaux.binding'
 import { optionsDesBeneficiairesInitiaux } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/ui/presenters/options-des-beneficiaires-initiaux.presenter'
 import { mediateurCoordonnesEtAnciensIdsFor } from '@/features/equipe/domain/mediateurs-coordonnes'
-import { getMediateurCommunesAndDepartementsOptions } from '@/features/lieux-activite/abilities/lister-les-options-de-lieux/implementations/prisma/communes-du-mediateur.query'
+import { communesDuMediateur } from '@/features/lieux-activite/abilities/lister-les-options-de-lieux/implementations/prisma/communes-du-mediateur.query'
 import { getLieuxDesActivitesOptions } from '@/features/lieux-activite/abilities/lister-les-options-de-lieux/implementations/prisma/options-de-lieux-des-activites.query'
 import { tagsVisiblesPar } from '@/features/tags/abilities/lire-les-tags-visibles/implementations/session/tags-visibles-par'
 import { acteurDe } from '@/features/tags/domain'
@@ -28,8 +28,8 @@ export const GET = async (
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) => {
-  const administrateur = await getSessionUserFromSessionToken(
-    getSessionTokenFromNextRequestCookies(request.cookies),
+  const administrateur = await utilisateurDuJetonDeSession(
+    jetonDeSessionDesCookies(request.cookies),
   )
 
   if (!administrateur) return new Response('Unauthorized', { status: 401 })
@@ -39,7 +39,7 @@ export const GET = async (
   const utilisateurId = UtilisateurId.safe((await params).id)
   if (utilisateurId === null) return new Response('Not found', { status: 404 })
 
-  const user = await getSessionUserFromId(utilisateurId)
+  const user = await utilisateurDeLaSessionParId(utilisateurId)
 
   const valeurs = filtresDeToutesLesActivites.charger(
     request.nextUrl.searchParams,
@@ -56,7 +56,7 @@ export const GET = async (
     presenter: classeurPresenteAvec(valeurs),
     fournisseurs: {
       lieuxDesActivites: getLieuxDesActivitesOptions,
-      communesEtDepartements: getMediateurCommunesAndDepartementsOptions,
+      communesEtDepartements: communesDuMediateur,
       tagsVisibles: tagsVisiblesPar(acteurDe(profilDeLaSession(user))),
       beneficiaires: (ids) =>
         beneficiairesInitiauxAvec(optionsDesBeneficiairesInitiaux)({

@@ -10,8 +10,8 @@ import type {
   RenseignerLieuxActiviteError,
 } from '@/features/inscription/abilities/renseigner-lieux-activite/domain'
 import { renseignerLieuxActiviteAvec } from '@/features/inscription/abilities/renseigner-lieux-activite/implementations/renseigner-lieux-activite.binding'
-import { UserId } from '@/features/inscription/domain'
-import { findCartoStructuresByIds } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/entrepot/structures-carto'
+import { UtilisateurId } from '@/features/inscription/domain'
+import { structuresCartoParIds } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/entrepot/structures-carto'
 import { activitesEnCoursDeLUtilisateur } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/activites-en-cours.query'
 import { rattacherAuLieuDesire } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/rattacher-au-lieu-desire.mutation'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
@@ -35,12 +35,12 @@ export const renseignerLieuxActiviteAction = actionBuilder()
         if (!lieuxActivite.success) return lieuxActivite
 
         return renseignerLieuxActiviteAvec({
-          trouverStructuresCarto: findCartoStructuresByIds,
+          trouverStructuresCarto: structuresCartoParIds,
           lireLieuxActiviteExistants: activitesEnCoursDeLUtilisateur,
           rattacherAuLieuDesire,
         })({
           command: {
-            userId: UserId(user.id),
+            userId: UtilisateurId(user.id),
             lieuxActivite: lieuxActivite.data,
           },
           maintenant: new Date(),

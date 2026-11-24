@@ -6,8 +6,8 @@ import {
   filtresDesCoordinations,
 } from '@/features/activites/ui/filtres/coordinations.filtre'
 import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
-import { getSessionUserFromSessionToken } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
-import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementations/session/session-token-from-cookies'
+import { utilisateurDuJetonDeSession } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
+import { jetonDeSessionDesCookies } from '@/features/authentification/implementations/session/session-token-from-cookies'
 import { tagsVisiblesPar } from '@/features/tags/abilities/lire-les-tags-visibles/implementations/session/tags-visibles-par'
 import { acteurDe } from '@/features/tags/domain'
 import { auteurDeLExport } from '@/features/utilisateurs/ui/presenters/auteur-de-l-export.presenter'
@@ -17,8 +17,8 @@ export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
 export const GET = async (request: NextRequest) => {
-  const user = await getSessionUserFromSessionToken(
-    getSessionTokenFromNextRequestCookies(request.cookies),
+  const user = await utilisateurDuJetonDeSession(
+    jetonDeSessionDesCookies(request.cookies),
   )
   if (!user?.coordinateur) return new Response('Unauthorized', { status: 401 })
 

@@ -1,7 +1,7 @@
 'use server'
 
 import { actionBuilder } from '@/configuration/nextjs'
-import type { SessionUser } from '@/features/authentification/domain/utilisateur-de-la-session'
+import type { UtilisateurDeLaSession } from '@/features/authentification/domain/utilisateur-de-la-session'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { REGLER_LE_PARTAGE_STATISTIQUES_ERRORS } from '@/features/mediateurs/abilities/regler-le-partage-statistiques/action/regler-le-partage-statistiques.errors'
@@ -15,7 +15,7 @@ import {
 } from '@/features/mediateurs/domain'
 import { fromResult, withInput } from '@/libraries/nextjs'
 
-const rattachementsDe = (user: SessionUser): Rattachements => ({
+const rattachementsDe = (user: UtilisateurDeLaSession): Rattachements => ({
   mediateurId: user.mediateur?.id ? MediateurId(user.mediateur.id) : null,
   coordinateurId: user.coordinateur?.id
     ? CoordinateurId(user.coordinateur.id)

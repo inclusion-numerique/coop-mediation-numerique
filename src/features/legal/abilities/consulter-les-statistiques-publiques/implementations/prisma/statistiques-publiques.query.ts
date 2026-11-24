@@ -1,9 +1,9 @@
 import { unstable_cache } from 'next/cache'
 import type { MesureDesUtilisateursActifs } from '../../domain/ports'
-import { getAccompagnements } from './accompagnements.query'
-import { getBeneficiaires } from './beneficiaires'
-import { getSuiviBeneficiaires } from './suivi-des-beneficiaires.query'
-import { getUtilisateursActifs } from './utilisateurs-actifs'
+import { lireLesAccompagnements } from './accompagnements.query'
+import { lireLesBeneficiaires } from './beneficiaires'
+import { suiviDesBeneficiaires } from './suivi-des-beneficiaires.query'
+import { lireLesUtilisateursActifs } from './utilisateurs-actifs'
 
 const getStatistiquesPubliquesPageDataUncached = async (
   mesure: MesureDesUtilisateursActifs,
@@ -16,10 +16,10 @@ const getStatistiquesPubliquesPageDataUncached = async (
     utilisateursActifs,
   ] = await Promise.all([
     mesure.mesurerLesUtilisateursActifs(new Date()),
-    getAccompagnements(),
-    getBeneficiaires(),
-    getSuiviBeneficiaires(),
-    getUtilisateursActifs(mesure),
+    lireLesAccompagnements(),
+    lireLesBeneficiaires(),
+    suiviDesBeneficiaires(),
+    lireLesUtilisateursActifs(mesure),
   ])
 
   return {
@@ -31,9 +31,7 @@ const getStatistiquesPubliquesPageDataUncached = async (
   }
 }
 
-export const getStatistiquesPubliquesPageData = (
-  mesure: MesureDesUtilisateursActifs,
-) =>
+export const statistiquesPubliques = (mesure: MesureDesUtilisateursActifs) =>
   unstable_cache(
     () => getStatistiquesPubliquesPageDataUncached(mesure),
     ['statistiques-publiques'],

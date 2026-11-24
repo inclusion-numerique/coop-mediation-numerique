@@ -12,7 +12,7 @@ import { telephoneDisplayString } from '@/libraries/telephone'
 import { htmlToText } from '@/libraries/texte/htmlToText'
 import type {
   BeneficiaireExportRow,
-  BuildBeneficiairesWorksheet,
+  ConstruireLeClasseurDesBeneficiaires,
 } from '../../domain/exporter-beneficiaires'
 
 const beneficiairesTableHeaders = [
@@ -47,7 +47,7 @@ const toRow = (beneficiaire: BeneficiaireExportRow) => [
   beneficiaire.notes ? htmlToText(beneficiaire.notes) : '',
 ]
 
-export const buildBeneficiairesWorksheet: BuildBeneficiairesWorksheet = ({
+export const classeurDesBeneficiaires: ConstruireLeClasseurDesBeneficiaires = ({
   beneficiaires,
   filters,
   auteur,

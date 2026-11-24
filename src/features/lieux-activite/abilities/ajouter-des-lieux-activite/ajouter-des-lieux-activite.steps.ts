@@ -39,7 +39,7 @@ import type { Fiche } from '@/features/lieux-activite/domain/fiche'
 import { BanId } from '@/features/lieux-activite/domain/identifiants/ban-id'
 import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
 import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
-import { UserId } from '@/features/lieux-activite/domain/identifiants/utilisateur-id'
+import { UtilisateurId } from '@/features/lieux-activite/domain/identifiants/utilisateur-id'
 import {
   effacerDuRegistre,
   lieuxSemes,
@@ -68,7 +68,7 @@ const ajouter = async (
 ) => {
   dernier.ajout = await ajouterDesLieuxActivite({
     demandes,
-    userId: UserId(lieuxSemes().userId),
+    userId: UtilisateurId(lieuxSemes().userId),
     mediateurId: mediateurId == null ? null : MediateurId(mediateurId),
     ports: { ...ports, trouverStructuresCarto: async () => structuresCarto },
   })

@@ -2,10 +2,10 @@ import { contactEmail } from '@/configuration/projet/config'
 import { emailTransport } from '@/configuration/smtp/emailTransport'
 import { expediteur } from '@/configuration/smtp/serveur'
 import { throwOnSendMailFailure } from '@/configuration/smtp/throwOnSendMailFailure'
-import { finishYourSignupDeletionWarningEmail } from '@/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees/implementations/email/avertissement-de-suppression'
+import { avertissementDeSuppression } from '@/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees/implementations/email/avertissement-de-suppression'
 import { compileMjml } from '@/libraries/emails/mjml'
 
-export const sendDeletionWarningEmail = async ({
+export const envoyerLAvertissementDeSuppression = async ({
   email,
   firstname,
   deletionDate,
@@ -23,14 +23,14 @@ export const sendDeletionWarningEmail = async ({
     from: expediteur,
     replyTo: contactEmail,
     subject: `Votre compte va bientôt être supprimé ⚠️`,
-    text: finishYourSignupDeletionWarningEmail.text({
+    text: avertissementDeSuppression.text({
       firstname,
       deletionDate,
       daysRemaining,
       matomoCampaignId,
     }),
     html: await compileMjml(
-      finishYourSignupDeletionWarningEmail.mjml({
+      avertissementDeSuppression.mjml({
         firstname,
         deletionDate,
         daysRemaining,

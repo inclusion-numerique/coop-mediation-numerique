@@ -2,7 +2,7 @@ import { appUrl } from '@e2e/support/helpers'
 import { goToMostRecentEmailReceived } from '@e2e/support/maildev'
 import {
   CoordinateurId,
-  Email,
+  Courriel,
   lienInvitation,
   ReferenceInvitation,
 } from '@/features/equipe/domain'
@@ -28,7 +28,7 @@ const createInvitationUrl = ({
 }) =>
   lienInvitation(
     ReferenceInvitation({
-      email: Email(email),
+      email: Courriel(email),
       coordinateurId: CoordinateurId(coordinateurId),
     }),
   )

@@ -1,16 +1,16 @@
 import {
-  InscriptionStep,
-  type InscriptionStepValue,
+  EtapeDInscription,
+  type ValeurDEtapeDInscription,
 } from './etape-d-inscription'
 import type { ProfilInscription } from './profil-inscription'
-import { InscriptionFlowType } from './type-de-parcours'
+import { TypeDeParcours } from './type-de-parcours'
 
 /**
  * Les quatre signaux qui pilotent la navigation. Toujours passés ensemble, donc
  * regroupés en composite d'entrée de la machine à états.
  */
 export type InscriptionContexte = {
-  readonly flowType: InscriptionFlowType
+  readonly flowType: TypeDeParcours
   readonly profil: ProfilInscription | null
   readonly hasLieuxActivite: boolean
   readonly isConseillerNumerique: boolean
@@ -18,21 +18,21 @@ export type InscriptionContexte = {
 
 /** Une transition : depuis un step, si la garde passe, vers un step (ou fin). */
 type Transition = {
-  readonly de: InscriptionStepValue
+  readonly de: ValeurDEtapeDInscription
   readonly si?: (contexte: InscriptionContexte) => boolean
-  readonly vers: InscriptionStepValue | null
+  readonly vers: ValeurDEtapeDInscription | null
 }
 
 const premiereTransition = (
   table: readonly Transition[],
-  courant: InscriptionStep,
+  courant: EtapeDInscription,
   contexte: InscriptionContexte,
-): InscriptionStep | null => {
+): EtapeDInscription | null => {
   const vers = table.find(
     (transition) =>
       transition.de === courant && (transition.si?.(contexte) ?? true),
   )?.vers
-  return vers == null ? null : InscriptionStep(vers)
+  return vers == null ? null : EtapeDInscription(vers)
 }
 
 /** Parcours complet : flow sans Dataspace, ou pour un non-conseiller numérique. */
@@ -75,22 +75,22 @@ const fluxDataspace: readonly Transition[] = [
 ]
 
 /** Détermine le type de flow selon la présence de données Dataspace. */
-export const getInscriptionFlow = ({
+export const parcoursDInscription = ({
   hasDataspaceData,
 }: {
   readonly hasDataspaceData: boolean
-}): InscriptionFlowType =>
-  InscriptionFlowType(hasDataspaceData ? 'withDataspace' : 'withoutDataspace')
+}): TypeDeParcours =>
+  TypeDeParcours(hasDataspaceData ? 'withDataspace' : 'withoutDataspace')
 
 /**
  * Étape suivante du parcours, ou `null` si terminale. Le flow sans Dataspace (ou
  * pour un non-conseiller numérique) suit le parcours complet ; le flow Dataspace
  * raccourcit selon le profil et la présence de lieux déjà connus.
  */
-export const getNextInscriptionStep = (
-  courant: InscriptionStep,
+export const etapeSuivante = (
+  courant: EtapeDInscription,
   contexte: InscriptionContexte,
-): InscriptionStep | null =>
+): EtapeDInscription | null =>
   premiereTransition(
     contexte.flowType === 'withoutDataspace' || !contexte.isConseillerNumerique
       ? fluxStandard

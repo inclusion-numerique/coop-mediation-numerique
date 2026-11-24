@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
-import { getSessionUserFromSessionToken } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
-import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementations/session/session-token-from-cookies'
+import { utilisateurDuJetonDeSession } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
+import { jetonDeSessionDesCookies } from '@/features/authentification/implementations/session/session-token-from-cookies'
 import { creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/creer-ou-fusionner-depuis-usager-externe.binding'
 import {
   CODE_AUTORISATION_MANQUANT,
@@ -30,8 +30,8 @@ export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
 export const GET = async (request: NextRequest) => {
-  const sessionToken = getSessionTokenFromNextRequestCookies(request.cookies)
-  const user = await getSessionUserFromSessionToken(sessionToken)
+  const sessionToken = jetonDeSessionDesCookies(request.cookies)
+  const user = await utilisateurDuJetonDeSession(sessionToken)
 
   if (!sessionToken || !user) {
     return new Response('Unauthorized', { status: 401 })

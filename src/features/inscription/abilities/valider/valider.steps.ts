@@ -6,9 +6,9 @@ import { type ValiderInscriptionError } from '@/features/inscription/abilities/v
 import { validerAvec } from '@/features/inscription/abilities/valider/implementations/valider.binding'
 import { ProfilInscription } from '@/features/inscription/domain'
 import {
-  currentInscriptionUserId,
   seedInvitationEnAttente,
   seedProfilChoisi,
+  utilisateurDeLInscriptionEnCours,
 } from '@/features/inscription/inscription.cucumber'
 import type { Result } from '@/libraries/result'
 
@@ -21,26 +21,26 @@ Given('mon profil d’inscription est {string}', async (profil: string) => {
 
 Given('un compte médiateur existe pour mon inscription', async () => {
   await prismaClient.mediateur.create({
-    data: { id: v4(), userId: currentInscriptionUserId() },
+    data: { id: v4(), userId: utilisateurDeLInscriptionEnCours() },
   })
 })
 
 Given('un compte coordinateur existe pour mon inscription', async () => {
   await prismaClient.coordinateur.create({
-    data: { id: v4(), userId: currentInscriptionUserId() },
+    data: { id: v4(), userId: utilisateurDeLInscriptionEnCours() },
   })
 })
 
 Given('je n’ai pas encore accepté les CGU', async () => {
   await prismaClient.user.update({
-    where: { id: currentInscriptionUserId() },
+    where: { id: utilisateurDeLInscriptionEnCours() },
     data: { acceptationCgu: null },
   })
 })
 
 Given('mon inscription est déjà validée', async () => {
   await prismaClient.user.update({
-    where: { id: currentInscriptionUserId() },
+    where: { id: utilisateurDeLInscriptionEnCours() },
     data: { inscriptionValidee: new Date() },
   })
 })
@@ -51,7 +51,7 @@ Given('une équipe m’a invité avant mon inscription', async () => {
 
 When('je valide mon inscription', async () => {
   resultat = await validerAvec(async () => undefined)(
-    currentInscriptionUserId(),
+    utilisateurDeLInscriptionEnCours(),
     new Date(),
   )
 })
@@ -59,7 +59,7 @@ When('je valide mon inscription', async () => {
 Then('mon inscription est validée', async () => {
   assert.ok(resultat.success, 'La validation aurait dû réussir')
   const user = await prismaClient.user.findUniqueOrThrow({
-    where: { id: currentInscriptionUserId() },
+    where: { id: utilisateurDeLInscriptionEnCours() },
     select: { inscriptionValidee: true },
   })
   assert.ok(user.inscriptionValidee, 'La date de validation n’a pas été posée')
@@ -67,7 +67,7 @@ Then('mon inscription est validée', async () => {
 
 Then('mes CGU sont acceptées', async () => {
   const user = await prismaClient.user.findUniqueOrThrow({
-    where: { id: currentInscriptionUserId() },
+    where: { id: utilisateurDeLInscriptionEnCours() },
     select: { acceptationCgu: true },
   })
   assert.ok(user.acceptationCgu, 'Les CGU n’ont pas été acceptées')
@@ -75,7 +75,7 @@ Then('mes CGU sont acceptées', async () => {
 
 Then('mon inscription n’est pas validée', async () => {
   const user = await prismaClient.user.findUniqueOrThrow({
-    where: { id: currentInscriptionUserId() },
+    where: { id: utilisateurDeLInscriptionEnCours() },
     select: { inscriptionValidee: true },
   })
   assert.strictEqual(user.inscriptionValidee, null)
@@ -100,7 +100,7 @@ Then(
         select: { acceptee: true, mediateurId: true },
       }),
       prismaClient.mediateur.findUniqueOrThrow({
-        where: { userId: currentInscriptionUserId() },
+        where: { userId: utilisateurDeLInscriptionEnCours() },
         select: { id: true },
       }),
     ])

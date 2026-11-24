@@ -4,7 +4,7 @@ import { CodeInsee } from '@/libraries/insee'
 import { Telephone } from '@/libraries/telephone'
 import {
   Commune,
-  Email,
+  Courriel,
   MediateurId,
   Nom,
   NomStructure,
@@ -22,7 +22,7 @@ describe('membre exporté', () => {
     expect(
       membreExporte(
         {
-          email: Email('invite@example.com'),
+          email: Courriel('invite@example.com'),
           statut: { type: 'Invitation', envoyeeLe: depuis },
           personne: { type: 'SansCompte' },
           structureEmployeuse: { type: 'Inconnue' },
@@ -46,7 +46,7 @@ describe('membre exporté', () => {
     expect(
       membreExporte(
         {
-          email: Email('camille@example.com'),
+          email: Courriel('camille@example.com'),
           statut: { type: 'Actif', derniereActivite: depuis },
           personne: {
             type: 'Inscrite',

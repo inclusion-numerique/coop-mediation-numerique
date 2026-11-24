@@ -2,7 +2,7 @@ import type { EmailConfig } from 'next-auth/providers/email'
 import { createTransport } from 'nodemailer'
 import { environnementServeur } from '@/configuration/environnement/serveur'
 import { contactEmail, projectTitle } from '@/configuration/projet/config'
-import { emailSignin } from '@/features/authentification/implementations/email/connexion-par-courriel'
+import { connexionParCourriel } from '@/features/authentification/implementations/email/connexion-par-courriel'
 import { compileMjml } from '@/libraries/emails/mjml'
 
 const debugMagicLink = environnementServeur.NODE_ENV === 'development'
@@ -21,8 +21,8 @@ export const sendVerificationRequest: EmailConfig['sendVerificationRequest'] =
       from: provider.from,
       replyTo: contactEmail,
       subject: `Connexion à ${projectTitle}`,
-      text: emailSignin.text({ url }),
-      html: await compileMjml(emailSignin.mjml({ url })),
+      text: connexionParCourriel.text({ url }),
+      html: await compileMjml(connexionParCourriel.mjml({ url })),
     })
     const failed = [...result.rejected].filter(Boolean)
     if (failed.length > 0) {

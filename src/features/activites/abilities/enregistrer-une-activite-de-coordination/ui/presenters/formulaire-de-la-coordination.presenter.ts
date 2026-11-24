@@ -1,4 +1,4 @@
-import { minutesToCraDureeData } from '@/features/activites/ui/forms/saisie/duree.form-data'
+import { dureeDepuisLesMinutes } from '@/features/activites/ui/forms/saisie/duree.form-data'
 import type { DefaultValues } from '@/libraries/formulaire/use-app-form'
 import type {
   Animation,
@@ -38,7 +38,7 @@ export const formulaireDeLAnimation = (
   animation: Animation,
 ): DefaultValues<CraAnimationData> => ({
   ...communDe(animation),
-  duree: minutesToCraDureeData(animation.duree) ?? {},
+  duree: dureeDepuisLesMinutes(animation.duree) ?? {},
   typeAnimation: valeurDuChoix(animation.typeDAnimation),
   typeAnimationAutre: precisionDuChoix(animation.typeDAnimation),
   thematiquesAnimation: valeursDesChoix(animation.thematiques),

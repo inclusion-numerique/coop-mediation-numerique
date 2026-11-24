@@ -27,7 +27,7 @@ const isBeneficiaire = (field: {
 }): field is { state: { value: { prenom: string; nom: string } } } =>
   field.state.value?.prenom != null && field.state.value?.nom != null
 
-export const isAnonyme = (field: {
+export const estAnonyme = (field: {
   state: { value?: { prenom?: string | null; nom?: string | null } | null }
 }) => !isBeneficiaire(field)
 
@@ -73,7 +73,7 @@ export const BeneficiaireFields = withForm({
                   BÉNÉFICIAIRE DE L’ACCOMPAGNEMENT
                 </p>
               )}
-              {isAnonyme(field) && !isSearching && (
+              {estAnonyme(field) && !isSearching && (
                 <>
                   <p className="fr-text--bold fr-mb-1v">
                     Lier à un bénéficiaire
@@ -84,7 +84,7 @@ export const BeneficiaireFields = withForm({
                   </p>
                 </>
               )}
-              {isAnonyme(field) && isSearching && (
+              {estAnonyme(field) && isSearching && (
                 <>
                   <field.ComboBox
                     isPending={isPending}
@@ -141,7 +141,7 @@ export const BeneficiaireFields = withForm({
                 </p>
               )}
             </div>
-            {isAnonyme(field) && !isSearching && (
+            {estAnonyme(field) && !isSearching && (
               <Button
                 type="button"
                 priority="secondary"

@@ -10,11 +10,11 @@ const inscriptionSteps = [
   'recapitulatif',
 ] as const
 
-export const InscriptionStep = defineModel(
+export const EtapeDInscription = defineModel(
   z.enum(inscriptionSteps).brand('InscriptionStep'),
 )
 
-export type InscriptionStep = Model.TypeOf<typeof InscriptionStep>
+export type EtapeDInscription = Model.TypeOf<typeof EtapeDInscription>
 
 /** Union des valeurs brutes (non brandées) — clés de mapping (URLs, etc.). */
-export type InscriptionStepValue = (typeof inscriptionSteps)[number]
+export type ValeurDEtapeDInscription = (typeof inscriptionSteps)[number]

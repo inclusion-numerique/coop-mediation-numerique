@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { getCartographyStatus } from './statut-cartographie.presenter'
+import { statutCartographie } from './statut-cartographie.presenter'
 
 describe('statut d’un lieu sur la cartographie nationale', () => {
   it.each([
@@ -13,7 +13,7 @@ describe('statut d’un lieu sur la cartographie nationale', () => {
     'déclaré visible : %s, identifiant carto : %s, modifié récemment : %s → %s',
     (visiblePourCartographieNationale, structureCartographieNationaleId, hasRecentModification, attendu) => {
       expect(
-        getCartographyStatus({
+        statutCartographie({
           visiblePourCartographieNationale,
           structureCartographieNationaleId,
           hasRecentModification,

@@ -1,7 +1,7 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import type { CompteAdministre } from '../../domain/comptes-administres'
 
-export const getAdministrationRdvspUserData = async ({
+export const compteRdvDetaille = async ({
   userId,
 }: {
   userId: string

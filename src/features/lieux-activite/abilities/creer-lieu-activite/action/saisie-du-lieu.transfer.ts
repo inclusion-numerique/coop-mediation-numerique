@@ -18,7 +18,7 @@ import { VisibiliteCartographie } from '../../../domain/cartographie-nationale/v
 import type { Fiche } from '../../../domain/fiche'
 import { BanId } from '../../../domain/identifiants/ban-id'
 import { LieuId } from '../../../domain/identifiants/lieu-id'
-import type { UserId } from '../../../domain/identifiants/utilisateur-id'
+import type { UtilisateurId } from '../../../domain/identifiants/utilisateur-id'
 import type { Lieu } from '../../../domain/lieu'
 import {
   adresseSaisie,
@@ -142,7 +142,7 @@ const ficheSaisie = (saisie: CreerLieuActiviteData): Fiche => ({
 
 export const nouveauLieu = (
   saisie: CreerLieuActiviteData,
-  par: UserId,
+  par: UtilisateurId,
   maintenant: Date,
 ): Lieu => ({
   id: LieuId(v4()),

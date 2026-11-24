@@ -1,4 +1,4 @@
-import { getCartographieNationaleSourceLabel } from '@/features/lieux-activite/domain/cartographie-nationale/sources'
+import { libelleDeLaSource } from '@/features/lieux-activite/domain/cartographie-nationale/sources'
 import { type ChampCompare, differences } from '../../domain/differences'
 import type { FicheDuLieu } from '../../domain/index'
 import { affichee, type ValeurAffichee } from './valeur-affichee.presenter'
@@ -27,7 +27,7 @@ export const repriseExterne = ({
   if (derniereModification._tag !== 'ParSource') return null
 
   return {
-    source: getCartographieNationaleSourceLabel(derniereModification.source),
+    source: libelleDeLaSource(derniereModification.source),
     le: derniereModification.date,
     votreDerniereModificationLe: derniereModificationCoop,
     differences: differences(ficheCoop, lieu.fiche).map(

@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import { emailSignin } from '@/features/authentification/implementations/email/connexion-par-courriel'
+import { connexionParCourriel } from '@/features/authentification/implementations/email/connexion-par-courriel'
 import { createMjmlTemplateOutput } from '@/libraries/emails/outputTemplateHtml'
 
-describe('Template: emailSignin', () => {
+describe('Template: connexionParCourriel', () => {
   const output = createMjmlTemplateOutput('emailSignin')
 
   it('Compiles hello world react mjml template', async () => {
-    const mjml = emailSignin.mjml({
+    const mjml = connexionParCourriel.mjml({
       url: 'https://test.local?token=oui',
     })
 

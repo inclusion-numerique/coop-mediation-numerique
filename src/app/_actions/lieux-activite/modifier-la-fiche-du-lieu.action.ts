@@ -8,7 +8,7 @@ import { ModifierLaFicheDuLieuValidation } from '@/features/lieux-activite/abili
 import { depuisLaSaisie } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/action/saisie-de-la-fiche.transfer'
 import { modifierLaFicheDuLieu } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/implementations/prisma/modifier-la-fiche-du-lieu.mutation'
 import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
-import { UserId } from '@/features/lieux-activite/domain/identifiants/utilisateur-id'
+import { UtilisateurId } from '@/features/lieux-activite/domain/identifiants/utilisateur-id'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { fromResult, withInput } from '@/libraries/nextjs'
 
@@ -23,7 +23,7 @@ export const modifierLaFicheDuLieuAction = actionBuilder()
         modifierLaFicheDuLieu({
           id: LieuId(input.id),
           modification: depuisLaSaisie(input.modification),
-          par: UserId(user.id),
+          par: UtilisateurId(user.id),
         }),
       { onError: MODIFIER_LA_FICHE_DU_LIEU_ERRORS },
     ),

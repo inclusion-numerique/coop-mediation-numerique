@@ -11,7 +11,7 @@ import BeneficiaireConsultationLayout from '@/features/beneficiaire/abilities/co
 import { findDuplicatesForBeneficiaireById } from '@/features/beneficiaire/abilities/detecter-doublons/implementations/prisma/index'
 import { SUPPRIMER_BENEFICIAIRES_ACTION_KEY } from '@/features/beneficiaire/abilities/supprimer-beneficiaires/action/supprimer-beneficiaires.key'
 import DeleteBeneficiaireModalContent from '@/features/beneficiaire/abilities/supprimer-beneficiaires/ui/slots/DeleteBeneficiaireModalContent.slot'
-import { displayNameFromIdentity } from '@/features/beneficiaire/domain/beneficiaire'
+import { nomAfficheDepuisLIdentite } from '@/features/beneficiaire/domain/beneficiaire'
 import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
 import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
 import { PRENDRE_RENDEZ_VOUS_ACTION_KEY } from '@/features/rdvsp/abilities/prendre-rendez-vous/action/prendre-rendez-vous.key'
@@ -48,7 +48,7 @@ const BeneficiaireLayout = async (
     mediateurId,
   })
 
-  const displayName = displayNameFromIdentity(beneficiaire)
+  const displayName = nomAfficheDepuisLIdentite(beneficiaire)
   const beneficiaireCraData = {
     id: beneficiaire.id,
     prenom: beneficiaire.prenom ?? '',

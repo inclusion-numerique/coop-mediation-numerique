@@ -2,10 +2,10 @@ import { contactEmail } from '@/configuration/projet/config'
 import { emailTransport } from '@/configuration/smtp/emailTransport'
 import { expediteur } from '@/configuration/smtp/serveur'
 import { throwOnSendMailFailure } from '@/configuration/smtp/throwOnSendMailFailure'
-import { nouveauAccountDeletedEmail } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/implementations/email/compte-supprime'
+import { compteSupprime } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/implementations/email/compte-supprime'
 import { compileMjml } from '@/libraries/emails/mjml'
 
-export const sendNouveauAccountDeletedEmail = async ({
+export const envoyerLaSuppressionDuCompte = async ({
   email,
   isMediateur,
 }: {
@@ -17,8 +17,8 @@ export const sendNouveauAccountDeletedEmail = async ({
     from: expediteur,
     replyTo: contactEmail,
     subject: 'Votre compte a été supprimé',
-    text: nouveauAccountDeletedEmail.text({ isMediateur }),
-    html: await compileMjml(nouveauAccountDeletedEmail.mjml({ isMediateur })),
+    text: compteSupprime.text({ isMediateur }),
+    html: await compileMjml(compteSupprime.mjml({ isMediateur })),
   })
 
   throwOnSendMailFailure(result)

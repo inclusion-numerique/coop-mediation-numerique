@@ -20,8 +20,8 @@ import { SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY } from '@/features/activ
 import { MediateurId } from '@/features/activites/domain'
 import { criteresDesFiltres } from '@/features/activites/ui/filtres/activites.filtre'
 import {
-  isCoordinateur,
-  isMediateur,
+  estCoordinateur,
+  estMediateur,
 } from '@/features/authentification/domain/profils-d-utilisateur'
 import { authenticateMediateur } from '@/features/authentification/implementations/session/authenticate-user'
 import { periodeDesRendezVous } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/periode-des-rendez-vous.query'
@@ -123,7 +123,7 @@ const MesActivitesTableauRoute = async ({
                   />
                 )
               }
-              aussiCoordinateur={isCoordinateur(user) && isMediateur(user)}
+              aussiCoordinateur={estCoordinateur(user) && estMediateur(user)}
             />
           </ClientBinder>
         </ClientBinder>

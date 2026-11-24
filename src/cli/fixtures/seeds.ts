@@ -1,13 +1,13 @@
 import { crasDeDemonstration } from '@/features/activites/fixtures/cras-de-demonstration'
-import { upsertCraFixtures } from '@/features/activites/fixtures/enregistrer-les-cras'
+import { enregistrerLesCras } from '@/features/activites/fixtures/enregistrer-les-cras'
 import {
   beneficiairesDeDemonstration,
   referencesDesBeneficiaires,
 } from '@/features/beneficiaire/fixtures/beneficiaires-de-demonstration'
 import { semerLesEmployeusesDeDemonstration } from '@/features/employeuse/fixtures/employeuses-de-demonstration'
-import { upsertCoordinationFixtures } from '@/features/equipe/fixtures/enregistrer-les-coordinations'
-import { upsertInvitationEquipeFixtures } from '@/features/equipe/fixtures/enregistrer-les-invitations'
-import { upsertMediateurCoordonneFixtures } from '@/features/equipe/fixtures/enregistrer-les-mediateurs-coordonnes'
+import { enregistrerLesCoordinations } from '@/features/equipe/fixtures/enregistrer-les-coordinations'
+import { enregistrerLesInvitations } from '@/features/equipe/fixtures/enregistrer-les-invitations'
+import { enregistrerLesMediateursCoordonnes } from '@/features/equipe/fixtures/enregistrer-les-mediateurs-coordonnes'
 import {
   coordinationDeLEquipe,
   departsDeLEquipe,
@@ -24,15 +24,15 @@ import {
   semerLesLieuxDeDemonstration,
   structureEmployeuse,
 } from '@/features/lieux-activite/fixtures/lieux-de-demonstration'
-import { upsertUserFixtures } from '@/features/utilisateurs/fixtures/enregistrer-les-utilisateurs'
+import { enregistrerLesUtilisateurs } from '@/features/utilisateurs/fixtures/enregistrer-les-utilisateurs'
 import {
+  administrateursDeLEquipe,
   coordinations,
-  fixtureUsers,
+  mediateursDeLEquipe,
   mediateursDesEquipesProduit,
   mediateursDesPersonas,
-  rdvServicePublicStagingUsers,
-  teamAdministrateurs,
-  teamMediateurs,
+  personas,
+  utilisateursDeRecetteRdv,
 } from '@/features/utilisateurs/fixtures/personas'
 import { coordinateurInscritAvecToutCoordinateurId } from '@/features/utilisateurs/fixtures/personas/coordinateur-inscrit-avec-tout'
 import {
@@ -83,16 +83,16 @@ export const seed = async (transaction: Prisma.TransactionClient) => {
     mediateque,
   })
 
-  await upsertUserFixtures(transaction)('user', fixtureUsers)
+  await enregistrerLesUtilisateurs(transaction)('user', personas)
 
-  await upsertUserFixtures(transaction)(
+  await enregistrerLesUtilisateurs(transaction)(
     'team administrator',
-    teamAdministrateurs,
+    administrateursDeLEquipe,
   )
 
-  await upsertUserFixtures(transaction)('team mediateur', [
-    ...teamMediateurs,
-    ...rdvServicePublicStagingUsers,
+  await enregistrerLesUtilisateurs(transaction)('team mediateur', [
+    ...mediateursDeLEquipe,
+    ...utilisateursDeRecetteRdv,
   ])
 
   await enSerie(
@@ -110,7 +110,7 @@ export const seed = async (transaction: Prisma.TransactionClient) => {
         }),
   )
 
-  await upsertUserFixtures(transaction)('equipe user', equipeCoordonnee)
+  await enregistrerLesUtilisateurs(transaction)('equipe user', equipeCoordonnee)
 
   await semerLesActivitesDansLesLieux(transaction, [
     ...activitesDesPersonas(mediateursDesPersonas),
@@ -122,17 +122,17 @@ export const seed = async (transaction: Prisma.TransactionClient) => {
     ...coordinations,
     coordinationDeLEquipe(equipeDeDemonstration),
   ]
-  await upsertCoordinationFixtures(transaction)(allCoordinations)
+  await enregistrerLesCoordinations(transaction)(allCoordinations)
 
-  await upsertMediateurCoordonneFixtures(transaction)(
+  await enregistrerLesMediateursCoordonnes(transaction)(
     departsDeLEquipe(equipeDeDemonstration),
   )
 
-  await upsertInvitationEquipeFixtures(transaction)(
+  await enregistrerLesInvitations(transaction)(
     invitationsDeLEquipe(equipeDeDemonstration),
   )
 
-  await upsertCraFixtures({
+  await enregistrerLesCras({
     transaction,
     ...crasDeDemonstration({
       mediateurs: mediateursDesPersonas,
@@ -145,10 +145,10 @@ export const seed = async (transaction: Prisma.TransactionClient) => {
     transaction,
     { structureCoopId: structureEmployeuse.id },
     [
-      ...fixtureUsers,
-      ...teamAdministrateurs,
-      ...teamMediateurs,
-      ...rdvServicePublicStagingUsers,
+      ...personas,
+      ...administrateursDeLEquipe,
+      ...mediateursDeLEquipe,
+      ...utilisateursDeRecetteRdv,
       ...equipeCoordonnee,
     ],
   )

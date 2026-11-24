@@ -17,8 +17,8 @@ import { siIndisponible } from '@/libraries/ban/apiAdresse'
 import { Telephone } from '@/libraries/telephone'
 import type {
   CreerOuFusionnerBeneficiairesDepuisUsagersExternes,
-  ExternalUserToMerge,
   MergedBeneficiaire,
+  UsagerExterneAFusionner,
 } from '../../domain/creer-ou-fusionner-depuis-usager-externe'
 
 export type ServicesDuBeneficiaireExterne = {
@@ -80,7 +80,7 @@ const anneeNaissanceFromBirthDate = (
 }
 
 const normalizeExternalUser = (
-  usager: ExternalUserToMerge,
+  usager: UsagerExterneAFusionner,
 ): NormalizedExternalUser => ({
   rdvUserId: usager.rdvUserId,
   nom: usager.nom ? Nom.safe(tronque(usager.nom, NOM_MAX_LENGTH)) : null,
@@ -214,7 +214,7 @@ const createBeneficiaire = async (
 // niveau du lot transforme ces throws en `Skipped` sans bloquer les autres.
 const mergeOneUsager = async (
   services: ServicesDuBeneficiaireExterne,
-  usager: ExternalUserToMerge,
+  usager: UsagerExterneAFusionner,
   mediateurId: string,
 ): Promise<MergedBeneficiaire> => {
   const normalized = normalizeExternalUser(usager)

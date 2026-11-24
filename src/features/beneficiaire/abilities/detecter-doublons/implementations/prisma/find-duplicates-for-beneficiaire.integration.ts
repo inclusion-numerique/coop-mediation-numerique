@@ -6,7 +6,7 @@ import { Email } from '@/features/beneficiaire/domain/email'
 import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
 import { Nom } from '@/features/beneficiaire/domain/nom'
 import { Prenom } from '@/features/beneficiaire/domain/prenom'
-import { givenBeneficiaire } from '@/features/beneficiaire/fixtures/beneficiaire'
+import { beneficiaire } from '@/features/beneficiaire/fixtures/beneficiaire'
 import { Telephone } from '@/libraries/telephone'
 
 const withBrandedFields = (fixture: {
@@ -29,7 +29,7 @@ const UTILISATEUR = '4f59e05a-ce35-4c17-81fb-1716152596aa'
 const testMediateurId = '31825eb3-b6cb-4c1d-a272-5a5768304a96'
 
 // Test beneficiaires with similar names for fuzzy matching tests
-const beneficiaireMueller = givenBeneficiaire({
+const beneficiaireMueller = beneficiaire({
   id: 'e1111111-1111-1111-1111-111111111111',
   prenom: 'Hans',
   nom: 'Mueller',
@@ -37,7 +37,7 @@ const beneficiaireMueller = givenBeneficiaire({
   mediateurId: testMediateurId,
 })
 
-const beneficiaireMuller = givenBeneficiaire({
+const beneficiaireMuller = beneficiaire({
   id: 'e2222222-2222-2222-2222-222222222222',
   prenom: 'Hans',
   nom: 'Müller',
@@ -46,7 +46,7 @@ const beneficiaireMuller = givenBeneficiaire({
 })
 
 // Test beneficiaires with exact match (same normalized name)
-const beneficiaireJeanPierre = givenBeneficiaire({
+const beneficiaireJeanPierre = beneficiaire({
   id: 'e3333333-3333-3333-3333-333333333333',
   prenom: 'Jean-Pierre',
   nom: 'Dupont',
@@ -54,7 +54,7 @@ const beneficiaireJeanPierre = givenBeneficiaire({
   mediateurId: testMediateurId,
 })
 
-const beneficiaireJeanPierreNoHyphen = givenBeneficiaire({
+const beneficiaireJeanPierreNoHyphen = beneficiaire({
   id: 'e4444444-4444-4444-4444-444444444444',
   prenom: 'Jean Pierre',
   nom: 'Dupont',
@@ -63,7 +63,7 @@ const beneficiaireJeanPierreNoHyphen = givenBeneficiaire({
 })
 
 // Test beneficiaires with same email (should always match)
-const beneficiaireSameEmail1 = givenBeneficiaire({
+const beneficiaireSameEmail1 = beneficiaire({
   id: 'e5555555-5555-5555-5555-555555555555',
   prenom: 'Alice',
   nom: 'Martin',
@@ -72,7 +72,7 @@ const beneficiaireSameEmail1 = givenBeneficiaire({
   mediateurId: testMediateurId,
 })
 
-const beneficiaireSameEmail2 = givenBeneficiaire({
+const beneficiaireSameEmail2 = beneficiaire({
   id: 'e6666666-6666-6666-6666-666666666666',
   prenom: 'Alicia',
   nom: 'Martinez',
@@ -84,7 +84,7 @@ const beneficiaireSameEmail2 = givenBeneficiaire({
 // Frontière de transfert : un candidat legacy dont le téléphone ne satisfait
 // plus la validation stricte (numéro non valide selon libphonenumber). La cible
 // le matche sur nom + email (≥ 2 champs).
-const beneficiaireLegacyTarget = givenBeneficiaire({
+const beneficiaireLegacyTarget = beneficiaire({
   id: 'e7777777-7777-7777-7777-777777777777',
   prenom: 'Bob',
   nom: 'Legacy',
@@ -92,7 +92,7 @@ const beneficiaireLegacyTarget = givenBeneficiaire({
   mediateurId: testMediateurId,
 })
 
-const beneficiaireLegacyBadPhone = givenBeneficiaire({
+const beneficiaireLegacyBadPhone = beneficiaire({
   id: 'e8888888-8888-8888-8888-888888888888',
   prenom: 'Bob',
   nom: 'Legacy',

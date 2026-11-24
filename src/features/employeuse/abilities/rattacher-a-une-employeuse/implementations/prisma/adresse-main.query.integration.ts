@@ -3,12 +3,12 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
 import {
   adresseMainDepuis,
-  findAdresseMainId,
+  idDeLAdresseMain,
   insertAdresseMain,
   type ResolvedAdresseMain,
 } from './adresse-main.query'
 
-describe('findAdresseMainId — dédup par clé composant', () => {
+describe('idDeLAdresseMain — dédup par clé composant', () => {
   const codeBanExistant = v4()
   const base = {
     nomVoie: 'Rue du Test Dédup',
@@ -40,17 +40,17 @@ describe('findAdresseMainId — dédup par clé composant', () => {
   })
 
   it('retrouve l’adresse par la clé composant même avec un code_ban différent', async () => {
-    const found = await findAdresseMainId(resolved(v4()))
+    const found = await idDeLAdresseMain(resolved(v4()))
     expect(found?.id).toBe(state.adresseId)
   })
 
   it('retrouve l’adresse par la clé composant sans code_ban', async () => {
-    const found = await findAdresseMainId(resolved(null))
+    const found = await idDeLAdresseMain(resolved(null))
     expect(found?.id).toBe(state.adresseId)
   })
 
   it('retrouve l’adresse par code_ban (clé alternative)', async () => {
-    const found = await findAdresseMainId({
+    const found = await idDeLAdresseMain({
       ...resolved(codeBanExistant),
       nomVoie: 'Autre libellé de voie',
     })

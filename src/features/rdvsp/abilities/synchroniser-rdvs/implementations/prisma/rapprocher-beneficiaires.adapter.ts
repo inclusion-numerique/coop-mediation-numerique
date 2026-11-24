@@ -1,5 +1,5 @@
 import type { CreerOuFusionnerDepuisUsagersExternes } from '../../../../domain/ports'
-import { createOrMergeBeneficiairesFromRdvUserIds } from '../../../../implementations/prisma/creer-ou-fusionner-beneficiaires.adapter'
+import { creerOuFusionnerLesBeneficiaires } from '../../../../implementations/prisma/creer-ou-fusionner-beneficiaires.adapter'
 import type { RapprocherBeneficiaires } from '../../domain/synchroniser-rdvs'
 
 export type DependancesRapprochement = {
@@ -28,7 +28,7 @@ export const rapprocherBeneficiaires =
       return
     }
 
-    const { skipped } = await createOrMergeBeneficiairesFromRdvUserIds(
+    const { skipped } = await creerOuFusionnerLesBeneficiaires(
       creerOuFusionner,
     )({
       rdvUsers: usagerIds.map((id) => ({ id })),

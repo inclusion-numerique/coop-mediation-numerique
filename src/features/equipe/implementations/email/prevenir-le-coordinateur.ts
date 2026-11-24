@@ -3,19 +3,19 @@ import { emailTransport } from '@/configuration/smtp/emailTransport'
 import { expediteur } from '@/configuration/smtp/serveur'
 import { throwOnSendMailFailure } from '@/configuration/smtp/throwOnSendMailFailure'
 import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
-import { acceptInvitation } from '@/features/equipe/implementations/email/invitation-acceptee'
-import { declineInvitation } from '@/features/equipe/implementations/email/invitation-refusee'
+import { invitationAcceptee } from '@/features/equipe/implementations/email/invitation-acceptee'
+import { invitationRefusee } from '@/features/equipe/implementations/email/invitation-refusee'
 import { compileMjml } from '@/libraries/emails/mjml'
-import type { Email } from '../../domain'
+import type { Courriel } from '../../domain'
 
 const reponses = {
   Acceptee: {
-    gabarit: acceptInvitation,
+    gabarit: invitationAcceptee,
     sujet: (invite: string) =>
       `${invite} a accepté votre invitation à rejoindre votre équipe`,
   },
   Refusee: {
-    gabarit: declineInvitation,
+    gabarit: invitationRefusee,
     sujet: (invite: string) =>
       `${invite} a refusé l‘invitation à rejoindre votre équipe`,
   },
@@ -27,7 +27,7 @@ const envoyer = async ({
   reponse,
 }: {
   coordinateur: string
-  invite: Email
+  invite: Courriel
   reponse: keyof typeof reponses
 }): Promise<void> => {
   const { gabarit, sujet } = reponses[reponse]

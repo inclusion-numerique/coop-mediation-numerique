@@ -16,7 +16,7 @@ import { createToast } from '@/libraries/ui/toast/createToast'
 import { RENSEIGNER_STRUCTURE_EMPLOYEUSE_ACTION_KEY } from '../../action/renseigner-structure-employeuse.key'
 import {
   RenseignerStructureEmployeuseValidation,
-  type StructureSearchResult,
+  type StructureTrouvee,
 } from '../../domain/employeuse-choisie'
 import {
   StructureEmployeuseComboBox,
@@ -49,7 +49,7 @@ const RattacherEmployeuseForm = ({
 
   const form = useAppForm({
     validators: { onSubmit: RenseignerStructureEmployeuseValidation },
-    defaultValues: { structure: null as StructureSearchResult | null },
+    defaultValues: { structure: null as StructureTrouvee | null },
     onSubmit: async ({ value: { structure } }) => {
       if (!structure) return
 

@@ -1,5 +1,5 @@
 import type { CreerOuFusionnerDepuisUsagersExternes } from '../../../../domain/ports'
-import { createOrMergeBeneficiairesFromRdvUserIds } from '../../../../implementations/prisma/creer-ou-fusionner-beneficiaires.adapter'
+import { creerOuFusionnerLesBeneficiaires } from '../../../../implementations/prisma/creer-ou-fusionner-beneficiaires.adapter'
 import type { RapprocherBeneficiairesDuRdv } from '../../domain/recevoir-webhook-rdv'
 
 /**
@@ -25,7 +25,7 @@ export const rapprocherBeneficiairesDuRdv =
       return
     }
 
-    await createOrMergeBeneficiairesFromRdvUserIds(creerOuFusionner)({
+    await creerOuFusionnerLesBeneficiaires(creerOuFusionner)({
       rdvUsers: usagerIds.map((id) => ({ id })),
       mediateurId,
     }).catch((erreur) => {

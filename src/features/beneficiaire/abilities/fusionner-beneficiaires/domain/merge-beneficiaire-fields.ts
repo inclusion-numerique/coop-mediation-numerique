@@ -29,7 +29,7 @@ export type MergeableBeneficiaire = Pick<
 
 // Une valeur absente = null, undefined ou chaîne vide/espaces. Un booléen
 // `false` ou un nombre `0` sont des valeurs présentes.
-export const isValuePresent = (value: unknown): boolean => {
+export const estRenseignee = (value: unknown): boolean => {
   if (value === null || value === undefined) return false
   if (typeof value === 'string') return value.trim() !== ''
   return true
@@ -42,9 +42,9 @@ export const mergeBeneficiaireFields = (
   fieldsToMerge.reduce<Partial<MergeableBeneficiaire>>(
     (merged, field) => ({
       ...merged,
-      ...(isValuePresent(destination[field])
+      ...(estRenseignee(destination[field])
         ? { [field]: destination[field] }
-        : isValuePresent(source[field])
+        : estRenseignee(source[field])
           ? { [field]: source[field] }
           : {}),
     }),

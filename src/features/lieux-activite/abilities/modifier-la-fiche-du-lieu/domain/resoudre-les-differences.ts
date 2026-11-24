@@ -1,5 +1,5 @@
 import type { Fiche } from '../../../domain/fiche'
-import type { UserId } from '../../../domain/identifiants/utilisateur-id'
+import type { UtilisateurId } from '../../../domain/identifiants/utilisateur-id'
 import type { Lieu } from '../../../domain/lieu'
 import { ModifieParUtilisateur } from '../../../domain/tracabilite'
 import type { ChoixDesDifferences, Difference } from './differences'
@@ -16,7 +16,7 @@ export const resoudreLesDifferences = ({
   readonly ficheCoop: Fiche
   readonly ecarts: readonly Difference[]
   readonly choix: ChoixDesDifferences
-  readonly par: UserId
+  readonly par: UtilisateurId
   readonly maintenant: Date
 }): Lieu => ({
   ...lieu,

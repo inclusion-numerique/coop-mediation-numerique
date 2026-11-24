@@ -1,13 +1,13 @@
 import { v4 } from 'uuid'
 import { ParticipantsAnonymesCraCollectifData } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/forms/participants-anonymes-du-cra-collectif.validation'
-import { createBeneficiairesForParticipantsAnonymes } from '@/features/activites/fixtures/beneficiaires-des-participants-anonymes'
+import { beneficiairesDesParticipantsAnonymes } from '@/features/activites/fixtures/beneficiaires-des-participants-anonymes'
 import type { Prisma, TypeLieu } from '@/generated/prisma/client'
 import { mergeUuids } from '@/libraries/fixtures/mergeUuids'
 
 /**
  * Create a CRA individuel prisma data with associated entities
  */
-export const givenCraIndividuel = <
+export const craIndividuel = <
   T extends Partial<Prisma.ActiviteUncheckedCreateInput> & {
     mediateurId: string
     beneficiaireId: string
@@ -66,7 +66,7 @@ export const givenCraIndividuel = <
 /**
  * Create a CRA demarche prisma data with associated entities
  */
-export const givenCraDemarcheAdministrative = <
+export const craDeDemarcheAdministrative = <
   T extends Partial<Prisma.ActiviteUncheckedCreateInput> & {
     mediateurId: string
     beneficiaireId: string
@@ -125,7 +125,7 @@ export const givenCraDemarcheAdministrative = <
 /**
  * Create a CRA collectif prisma data with associated entities
  */
-export const givenCraCollectif = <
+export const craCollectif = <
   T extends Partial<Prisma.ActiviteUncheckedCreateInput> & {
     mediateurId: string
     beneficiaireIds: string[]
@@ -173,7 +173,7 @@ export const givenCraCollectif = <
   )
 
   // Create beneficiaires anonymes based on participantsAnonymes counters
-  const beneficiairesAnonymes = createBeneficiairesForParticipantsAnonymes({
+  const beneficiairesAnonymes = beneficiairesDesParticipantsAnonymes({
     participantsAnonymes,
     rootUuid: givenId,
     mediateurId: rest.mediateurId,

@@ -9,7 +9,7 @@ import type { Prenom } from '@/features/beneficiaire/domain/prenom'
  * (autocomplétion de formulaire, pré-remplissage de filtre) : on ne lit que ce
  * qu'un libellé d'option a besoin d'afficher.
  */
-export type BeneficiaireSearchItem = {
+export type BeneficiaireTrouve = {
   readonly id: BeneficiaireId
   readonly prenom: Prenom
   readonly nom: Nom
@@ -22,7 +22,7 @@ export type BeneficiaireSearchItem = {
  * bénéficiaires non affichés (`totalCount - beneficiaires.length`).
  */
 export type BeneficiairesRecherches = {
-  readonly beneficiaires: readonly BeneficiaireSearchItem[]
+  readonly beneficiaires: readonly BeneficiaireTrouve[]
   readonly totalCount: number
 }
 
@@ -41,7 +41,7 @@ export type RechercherBeneficiaires = (input: {
  * `includeBeneficiaireIds` déjà sélectionnés (pour que leur libellé soit
  * disponible même hors du haut de liste).
  */
-export type GetInitialBeneficiairesOptions = (input: {
+export type ProposerDesBeneficiaires = (input: {
   mediateurId: MediateurId
   includeBeneficiaireIds?: readonly BeneficiaireId[]
 }) => Promise<BeneficiairesRecherches>

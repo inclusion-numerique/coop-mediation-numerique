@@ -1,7 +1,7 @@
-import { givenUser } from '@/features/utilisateurs/fixtures/utilisateur'
+import { utilisateur } from '@/features/utilisateurs/fixtures/utilisateur'
 import type { Prisma } from '@/generated/prisma/client'
 
-export type GivenMediateurInput = {
+export type MediateurAFabriquer = {
   firstName: string
   lastName: string
   email: string
@@ -10,15 +10,15 @@ export type GivenMediateurInput = {
   emploiId: string
 }
 
-export const givenMediateur = ({
+export const mediateur = ({
   firstName,
   lastName,
   email,
   id,
   mediateurId,
   emploiId,
-}: GivenMediateurInput) =>
-  givenUser({
+}: MediateurAFabriquer) =>
+  utilisateur({
     id,
     firstName,
     lastName,

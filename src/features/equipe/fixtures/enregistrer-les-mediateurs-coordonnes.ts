@@ -8,7 +8,7 @@ export type MediateurCoordonneFixture = {
   suppression?: Date | null
 }
 
-export const upsertMediateurCoordonneFixtures =
+export const enregistrerLesMediateursCoordonnes =
   (transaction: Prisma.TransactionClient) =>
   async (coordinations: MediateurCoordonneFixture[]) => {
     await enSerie(

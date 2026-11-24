@@ -1,7 +1,7 @@
 import type { NextRequest } from 'next/server'
-import { isMediateur } from '@/features/authentification/domain/profils-d-utilisateur'
-import { getSessionUserFromSessionToken } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
-import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementations/session/session-token-from-cookies'
+import { estMediateur } from '@/features/authentification/domain/profils-d-utilisateur'
+import { utilisateurDuJetonDeSession } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
+import { jetonDeSessionDesCookies } from '@/features/authentification/implementations/session/session-token-from-cookies'
 import { ExportBeneficiairesFilterValidations } from '@/features/beneficiaire/abilities/exporter-beneficiaires/action/filtres-de-l-export.validation'
 import { exporterBeneficiairesAvec } from '@/features/beneficiaire/abilities/exporter-beneficiaires/implementations/exporter-beneficiaires.binding'
 import { listerBeneficiaires } from '@/features/beneficiaire/abilities/lister-beneficiaires/implementations/prisma/lister-beneficiaires.query'
@@ -10,14 +10,14 @@ import { auteurDeLExport } from '@/features/utilisateurs/ui/presenters/auteur-de
 import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
 
 export const GET = async (request: NextRequest) => {
-  const sessionToken = getSessionTokenFromNextRequestCookies(request.cookies)
-  const user = await getSessionUserFromSessionToken(sessionToken)
+  const sessionToken = jetonDeSessionDesCookies(request.cookies)
+  const user = await utilisateurDuJetonDeSession(sessionToken)
 
   if (!user) {
     return new Response('Unauthorized', { status: 401 })
   }
 
-  if (!isMediateur(user)) {
+  if (!estMediateur(user)) {
     return new Response('Forbidden', { status: 403 })
   }
 

@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest'
 import {
   creerLieuActiviteDefaultValues,
-  toCreerLieuData,
+  donneesDeCreation,
 } from './creer-lieu-activite.form-data'
 
 describe('saisie de création projetée vers le contrat de création', () => {
   it('un champ texte vidé devient une absence', () => {
-    const data = toCreerLieuData(creerLieuActiviteDefaultValues('Tiers-lieu'))
+    const data = donneesDeCreation(creerLieuActiviteDefaultValues('Tiers-lieu'))
 
     expect(data).toMatchObject({
       nom: 'Tiers-lieu',
@@ -22,7 +22,7 @@ describe('saisie de création projetée vers le contrat de création', () => {
   })
 
   it('un champ texte qui ne contient que des espaces devient une absence', () => {
-    const data = toCreerLieuData({
+    const data = donneesDeCreation({
       ...creerLieuActiviteDefaultValues(),
       siteWeb: '   ',
       modalitesAcces: {
@@ -36,7 +36,7 @@ describe('saisie de création projetée vers le contrat de création', () => {
   })
 
   it('un champ texte renseigné est transmis tel quel', () => {
-    const data = toCreerLieuData({
+    const data = donneesDeCreation({
       ...creerLieuActiviteDefaultValues(),
       complementAdresse: 'Bâtiment B',
       horairesComment: 'Fermé les jours fériés',

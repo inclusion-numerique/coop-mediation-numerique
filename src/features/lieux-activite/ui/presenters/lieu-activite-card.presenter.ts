@@ -1,6 +1,6 @@
 import type { Adresse } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { format, isAfter, isBefore, subDays, subYears } from 'date-fns'
-import { getCartographieNationaleSourceLabel } from '@/features/lieux-activite/domain/cartographie-nationale/sources'
+import { libelleDeLaSource } from '@/features/lieux-activite/domain/cartographie-nationale/sources'
 import { pluriel } from '@/libraries/pluriel'
 import { estPublie } from '../../domain/cartographie-nationale/visibilite-cartographie'
 import type {
@@ -9,8 +9,8 @@ import type {
 } from '../../domain/lieu-en-liste'
 import { nomAffiche } from '../../domain/nom-affiche'
 import {
-  type CartographyStatus,
-  getCartographyStatus,
+  type StatutCartographie,
+  statutCartographie,
 } from './statut-cartographie.presenter'
 
 export type MiseAJourAffichee =
@@ -21,7 +21,7 @@ export type CarteDuLieu = {
   readonly nom: string
   readonly adresse: string
   readonly miseAJour: MiseAJourAffichee
-  readonly statutCartographie: CartographyStatus
+  readonly statutCartographie: StatutCartographie
   readonly mediateurs: string
 }
 
@@ -29,7 +29,7 @@ const parQui = (modification: ModificationEnListe): string =>
   modification._tag === 'ParUtilisateur'
     ? ` par ${modification.auteur}`
     : modification._tag === 'ParSource'
-      ? ` par ${getCartographieNationaleSourceLabel(modification.source)}`
+      ? ` par ${libelleDeLaSource(modification.source)}`
       : ''
 
 const miseAJour = (
@@ -65,7 +65,7 @@ export const carteDuLieu = (
   nom: nomAffiche(lieu.nom, lieu.nomUsage),
   adresse: adresse(lieu.adresse),
   miseAJour: miseAJour(lieu.derniereModification, maintenant),
-  statutCartographie: getCartographyStatus({
+  statutCartographie: statutCartographie({
     visiblePourCartographieNationale: estPublie(lieu.visibilite),
     structureCartographieNationaleId: lieu.identifiantCartographie,
     hasRecentModification: isAfter(

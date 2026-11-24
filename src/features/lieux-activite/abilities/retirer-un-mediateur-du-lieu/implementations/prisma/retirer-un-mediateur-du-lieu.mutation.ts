@@ -1,9 +1,9 @@
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { sendRemovedFromLieuEmail } from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/implementations/email/envoyer-le-retrait-du-lieu'
+import { envoyerLeRetraitDuLieu } from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/implementations/email/envoyer-le-retrait-du-lieu'
 import { failure, type Result, success } from '@/libraries/result'
 import type { LieuId } from '../../../../domain/identifiants/lieu-id'
 import type { MediateurId } from '../../../../domain/identifiants/mediateur-id'
-import type { UserId } from '../../../../domain/identifiants/utilisateur-id'
+import type { UtilisateurId } from '../../../../domain/identifiants/utilisateur-id'
 import {
   type EchecDeRetrait,
   PasEnActiviteSurCeLieu,
@@ -16,7 +16,7 @@ import {
 } from '../../domain/qui-retire'
 
 export type AuteurDuRetrait = {
-  readonly userId: UserId
+  readonly userId: UtilisateurId
   readonly mediateurId: MediateurId | null
   readonly estAdministrateur: boolean
   readonly coordonneLeMediateurRetire: boolean
@@ -58,7 +58,7 @@ export const retirerUnMediateurDuLieu = async ({
     return failure(PasEnActiviteSurCeLieu(mediateurId, lieuId))
 
   if (doitEtrePrevenu(qui))
-    await sendRemovedFromLieuEmail({
+    await envoyerLeRetraitDuLieu({
       mediateurEmail: rattachement.mediateur.user.email,
       mediateurFirstname: rattachement.mediateur.user.firstName,
       structureNom: rattachement.lieuInclusion.nom,

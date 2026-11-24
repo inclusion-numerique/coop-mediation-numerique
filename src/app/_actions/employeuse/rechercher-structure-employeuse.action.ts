@@ -3,7 +3,7 @@
 import { z } from 'zod'
 import { actionBuilder } from '@/configuration/nextjs'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
-import { searchStructureEmployeuseCombinedAvec } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/recherche-entreprises/recherche-structure-employeuse'
+import { rechercheStructureEmployeuseAvec } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/recherche-entreprises/recherche-structure-employeuse'
 import { employeuseRecherchee } from '@/features/employeuse/ui/presenters/employeuse-recherchee.presenter'
 import { withInput } from '@/libraries/nextjs'
 
@@ -20,5 +20,5 @@ export const rechercherStructureEmployeuseAction = actionBuilder()
   .use(withAuth())
   .use(withInput(z.object({ query: z.string() })))
   .execute(async ({ input: { query } }) =>
-    searchStructureEmployeuseCombinedAvec(employeuseRecherchee)(query),
+    rechercheStructureEmployeuseAvec(employeuseRecherchee)(query),
   )

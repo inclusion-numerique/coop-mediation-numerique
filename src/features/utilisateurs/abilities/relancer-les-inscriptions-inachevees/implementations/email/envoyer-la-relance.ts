@@ -2,10 +2,10 @@ import { contactEmail } from '@/configuration/projet/config'
 import { emailTransport } from '@/configuration/smtp/emailTransport'
 import { expediteur } from '@/configuration/smtp/serveur'
 import { throwOnSendMailFailure } from '@/configuration/smtp/throwOnSendMailFailure'
-import { finishYourSignupEmail } from '@/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees/implementations/email/relance'
+import { relance } from '@/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees/implementations/email/relance'
 import { compileMjml } from '@/libraries/emails/mjml'
 
-export const sendFinishYourSignupEmail = async ({
+export const envoyerLaRelance = async ({
   email,
   firstname,
   totalUsers,
@@ -21,13 +21,13 @@ export const sendFinishYourSignupEmail = async ({
     from: expediteur,
     replyTo: contactEmail,
     subject: `${firstname}, votre inscription sur La Coop n’est pas terminée 💌`,
-    text: finishYourSignupEmail.text({
+    text: relance.text({
       firstname,
       totalUsers,
       matomoCampaignId,
     }),
     html: await compileMjml(
-      finishYourSignupEmail.mjml({ firstname, totalUsers, matomoCampaignId }),
+      relance.mjml({ firstname, totalUsers, matomoCampaignId }),
     ),
   })
 

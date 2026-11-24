@@ -1,12 +1,12 @@
 import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
-import type { BeneficiaireSearchItem } from '../../domain/rechercher-beneficiaires'
-import { getInitialBeneficiairesOptions } from './rechercher-beneficiaires.query'
+import type { BeneficiaireTrouve } from '../../domain/rechercher-beneficiaires'
+import { beneficiairesProposes } from './rechercher-beneficiaires.query'
 
 export const beneficiairesLesPlusSuivis = async (
   mediateurId: string,
-): Promise<readonly BeneficiaireSearchItem[]> =>
+): Promise<readonly BeneficiaireTrouve[]> =>
   (
-    await getInitialBeneficiairesOptions({
+    await beneficiairesProposes({
       mediateurId: MediateurId(mediateurId),
     })
   ).beneficiaires

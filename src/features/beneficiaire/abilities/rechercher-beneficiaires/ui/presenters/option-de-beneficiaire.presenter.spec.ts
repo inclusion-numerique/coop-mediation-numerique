@@ -3,7 +3,7 @@ import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
 import { CommuneResidence } from '@/features/beneficiaire/domain/commune-residence'
 import { Nom } from '@/features/beneficiaire/domain/nom'
 import { Prenom } from '@/features/beneficiaire/domain/prenom'
-import type { BeneficiaireSearchItem } from '../../domain/rechercher-beneficiaires'
+import type { BeneficiaireTrouve } from '../../domain/rechercher-beneficiaires'
 import {
   toBeneficiaireData,
   toPreviewBanData,
@@ -15,9 +15,7 @@ const lyon = CommuneResidence({
   codeInsee: '69381',
 })
 
-const item = (
-  overrides?: Partial<BeneficiaireSearchItem>,
-): BeneficiaireSearchItem => ({
+const item = (overrides?: Partial<BeneficiaireTrouve>): BeneficiaireTrouve => ({
   id: BeneficiaireId('00000000-0000-0000-0000-000000000001'),
   prenom: Prenom('Ada'),
   nom: Nom('Lovelace'),

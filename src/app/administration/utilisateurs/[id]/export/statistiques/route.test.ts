@@ -1,14 +1,14 @@
 import { appUrl } from '@e2e/support/helpers'
 import {
+  idDuMediateurSansActivites,
   mediateurSansActivites,
-  mediateurSansActivitesUserId,
 } from '@/features/utilisateurs/fixtures/personas/mediateur-sans-activites'
 
 const statutDeLExport = () =>
   cy
     .request({
       url: appUrl(
-        `/administration/utilisateurs/${mediateurSansActivitesUserId}/export/statistiques`,
+        `/administration/utilisateurs/${idDuMediateurSansActivites}/export/statistiques`,
       ),
       failOnStatusCode: false,
     })

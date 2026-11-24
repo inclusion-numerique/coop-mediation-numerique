@@ -44,7 +44,7 @@ export const tranchesAgeColors = [
   '#c3992a',
   '#e3e3fd',
 ]
-export const statusColors = [
+export const couleursDesStatuts = [
   '#e4794a',
   '#a558a0',
   '#009099',

@@ -5,11 +5,11 @@ import {
   Franchissement,
 } from '../../domain/franchissement'
 import {
-  computeUserProfile,
   ProfilInscription,
+  profilDInscription,
 } from '../../domain/profil-inscription'
 import { Role } from '../../domain/role'
-import { UserId } from '../../domain/utilisateur-id'
+import { UtilisateurId } from '../../domain/utilisateur-id'
 
 type InscriptionRow = Pick<
   PrismaUser,
@@ -60,12 +60,12 @@ export const inscriptionEtatToDomain = (
   row: InscriptionRow,
 ): InscriptionEtat => {
   if (row.profilInscription === null)
-    return { _tag: 'NonDemarree', userId: UserId(row.id) }
+    return { _tag: 'NonDemarree', userId: UtilisateurId(row.id) }
 
   const profil = ProfilInscription(row.profilInscription)
 
   const ouvert = {
-    userId: UserId(row.id),
+    userId: UtilisateurId(row.id),
     role: roleDepuisProfil(profil),
     conseillerNumerique: conseillerNumeriqueDepuisProfil(profil),
     acceptationCgu: row.acceptationCgu,
@@ -101,7 +101,7 @@ export const inscriptionEtatFromDomain = (
         inscriptionValidee: null,
       }
     : {
-        profilInscription: computeUserProfile({
+        profilInscription: profilDInscription({
           isConseillerNumerique: etat.conseillerNumerique,
           isCoordinateur: etat.role === 'Coordinateur',
         }),

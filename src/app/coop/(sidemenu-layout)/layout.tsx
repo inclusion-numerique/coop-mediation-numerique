@@ -1,7 +1,7 @@
 import React from 'react'
-import { CreateCraModalDefinition } from '@/features/activites/ui/components/saisie/modale-de-saisie'
+import { ModaleDeSaisie } from '@/features/activites/ui/components/saisie/modale-de-saisie'
 import CreateCraModal from '@/features/activites/ui/slots/CreateCraModal.slot'
-import { getHomepage } from '@/features/authentification/domain/page-d-accueil'
+import { pageDAccueil } from '@/features/authentification/domain/page-d-accueil'
 import { authenticateUser } from '@/features/authentification/implementations/session/authenticate-user'
 import Header from '@/features/navigation/ui/layouts/Header'
 import { MiseEnPageCoopAvecMenu } from '@/features/navigation/ui/layouts/MiseEnPageCoopAvecMenu'
@@ -21,7 +21,7 @@ const CoopSidemenuLayout = async ({
       entete={
         <Header
           user={user}
-          accueil={getHomepage(user)}
+          accueil={pageDAccueil(user)}
           terminerUsurpation={<TerminerUsurpationHeaderUserMenuItem />}
           fullWidth
           variant="coop"
@@ -31,7 +31,7 @@ const CoopSidemenuLayout = async ({
         <CoopSideMenu
           user={user}
           titreDesStatistiques={titreDesStatistiques(user)}
-          saisieDUneActivite={CreateCraModalDefinition.id}
+          saisieDUneActivite={ModaleDeSaisie.id}
         />
       }
       modales={

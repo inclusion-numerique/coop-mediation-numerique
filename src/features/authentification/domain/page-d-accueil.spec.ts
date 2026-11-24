@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
-  getHomepage,
-  getLoginRedirectUrl,
+  adresseDeRetourApresConnexion,
+  pageDAccueil,
 } from '@/features/authentification/domain/page-d-accueil'
 
 const utilisateur = ({
@@ -16,28 +16,28 @@ const utilisateur = ({
   coordinateur?: { id: string } | null
 } = {}) => ({ role, inscriptionValidee, mediateur, coordinateur })
 
-describe('getHomepage', () => {
+describe('pageDAccueil', () => {
   it('renvoie la landing sans utilisateur', () => {
-    expect(getHomepage(null)).toBe('/')
+    expect(pageDAccueil(null)).toBe('/')
   })
 
   it('renvoie l’administration pour un admin', () => {
-    expect(getHomepage(utilisateur({ role: 'Admin' }))).toBe('/administration')
+    expect(pageDAccueil(utilisateur({ role: 'Admin' }))).toBe('/administration')
   })
 
   it('renvoie l’inscription quand elle n’est pas validée', () => {
-    expect(getHomepage(utilisateur())).toBe('/inscription')
+    expect(pageDAccueil(utilisateur())).toBe('/inscription')
   })
 
   it('renvoie l’inscription quand elle est validée sans aucun profil de rôle', () => {
-    expect(getHomepage(utilisateur({ inscriptionValidee: new Date() }))).toBe(
+    expect(pageDAccueil(utilisateur({ inscriptionValidee: new Date() }))).toBe(
       '/inscription',
     )
   })
 
   it('renvoie la coop pour un médiateur inscrit', () => {
     expect(
-      getHomepage(
+      pageDAccueil(
         utilisateur({
           inscriptionValidee: new Date(),
           mediateur: { id: 'mediateur-id' },
@@ -48,7 +48,7 @@ describe('getHomepage', () => {
 
   it('renvoie la coop pour un coordinateur inscrit', () => {
     expect(
-      getHomepage(
+      pageDAccueil(
         utilisateur({
           inscriptionValidee: new Date(),
           coordinateur: { id: 'coordinateur-id' },
@@ -58,36 +58,38 @@ describe('getHomepage', () => {
   })
 })
 
-describe('getLoginRedirectUrl', () => {
+describe('adresseDeRetourApresConnexion', () => {
   it('renvoie la connexion sans utilisateur', () => {
-    expect(getLoginRedirectUrl(null)).toBe('/connexion')
+    expect(adresseDeRetourApresConnexion(null)).toBe('/connexion')
   })
 
   it('renvoie les utilisateurs de l’administration pour un admin', () => {
-    expect(getLoginRedirectUrl(utilisateur({ role: 'Admin' }))).toBe(
+    expect(adresseDeRetourApresConnexion(utilisateur({ role: 'Admin' }))).toBe(
       '/administration/utilisateurs',
     )
   })
 
   it('renvoie les utilisateurs de l’administration pour le support', () => {
-    expect(getLoginRedirectUrl(utilisateur({ role: 'Support' }))).toBe(
-      '/administration/utilisateurs',
-    )
+    expect(
+      adresseDeRetourApresConnexion(utilisateur({ role: 'Support' })),
+    ).toBe('/administration/utilisateurs')
   })
 
   it('renvoie l’inscription quand elle n’est pas validée', () => {
-    expect(getLoginRedirectUrl(utilisateur())).toBe('/inscription')
+    expect(adresseDeRetourApresConnexion(utilisateur())).toBe('/inscription')
   })
 
   it('renvoie l’inscription quand elle est validée sans aucun profil de rôle', () => {
     expect(
-      getLoginRedirectUrl(utilisateur({ inscriptionValidee: new Date() })),
+      adresseDeRetourApresConnexion(
+        utilisateur({ inscriptionValidee: new Date() }),
+      ),
     ).toBe('/inscription')
   })
 
   it('renvoie la coop pour un médiateur inscrit', () => {
     expect(
-      getLoginRedirectUrl(
+      adresseDeRetourApresConnexion(
         utilisateur({
           inscriptionValidee: new Date(),
           mediateur: { id: 'mediateur-id' },
@@ -98,7 +100,7 @@ describe('getLoginRedirectUrl', () => {
 
   it('renvoie la coop pour un coordinateur inscrit', () => {
     expect(
-      getLoginRedirectUrl(
+      adresseDeRetourApresConnexion(
         utilisateur({
           inscriptionValidee: new Date(),
           coordinateur: { id: 'coordinateur-id' },

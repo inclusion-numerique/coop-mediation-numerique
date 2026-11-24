@@ -58,7 +58,7 @@ const cleanupCommuneCodePostal = (commune: Commune) => {
   return commune
 }
 
-export const createCommunesClient = async () => {
+export const clientDesCommunes = async () => {
   const communeMap = await chargerLesCommunes()
 
   return {

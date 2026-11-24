@@ -3,8 +3,8 @@ import { defineModel, type Model } from '@/libraries/model'
 
 const inscriptionFlowTypes = ['withDataspace', 'withoutDataspace'] as const
 
-export const InscriptionFlowType = defineModel(
+export const TypeDeParcours = defineModel(
   z.enum(inscriptionFlowTypes).brand('InscriptionFlowType'),
 )
 
-export type InscriptionFlowType = Model.TypeOf<typeof InscriptionFlowType>
+export type TypeDeParcours = Model.TypeOf<typeof TypeDeParcours>

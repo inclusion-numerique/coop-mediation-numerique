@@ -1,6 +1,6 @@
 import type { NextRequest } from 'next/server'
-import { getSessionUserFromSessionToken } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
-import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementations/session/session-token-from-cookies'
+import { utilisateurDuJetonDeSession } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
+import { jetonDeSessionDesCookies } from '@/features/authentification/implementations/session/session-token-from-cookies'
 import { nomDeLEmployeuse } from '@/features/employeuse/abilities/consulter-employeuse/implementations/prisma/nom-de-l-employeuse.query'
 import { communesDesEmployeuses } from '@/features/employeuse/abilities/rechercher-employeuse/implementations/prisma/communes-des-employeuses.query'
 import { lieuxChoisis } from '@/features/lieux-activite/abilities/lister-les-options-de-lieux/implementations/prisma/lieux-a-choisir.query'
@@ -22,8 +22,8 @@ export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
 export const GET = async (request: NextRequest) => {
-  const auteur = await getSessionUserFromSessionToken(
-    getSessionTokenFromNextRequestCookies(request.cookies),
+  const auteur = await utilisateurDuJetonDeSession(
+    jetonDeSessionDesCookies(request.cookies),
   )
 
   if (auteur?.role !== 'Admin') return new Response(null, { status: 403 })

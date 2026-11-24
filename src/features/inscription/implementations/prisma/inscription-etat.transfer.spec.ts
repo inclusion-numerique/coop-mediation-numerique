@@ -7,13 +7,13 @@ import type {
 } from '../../domain/etat-de-l-inscription'
 import { Franchissement } from '../../domain/franchissement'
 import { Role } from '../../domain/role'
-import { UserId } from '../../domain/utilisateur-id'
+import { UtilisateurId } from '../../domain/utilisateur-id'
 import {
   inscriptionEtatFromDomain,
   inscriptionEtatToDomain,
 } from './inscription-etat.transfer'
 
-const userId = UserId('550e8400-e29b-41d4-a716-446655440000')
+const userId = UtilisateurId('550e8400-e29b-41d4-a716-446655440000')
 const id = '550e8400-e29b-41d4-a716-446655440000'
 const cgu = new Date('2026-04-01T09:00:00Z')
 const validee = new Date('2026-04-29T10:00:00Z')

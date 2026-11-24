@@ -7,7 +7,7 @@ import { AnnulerUneInvitationValidation } from '@/features/equipe/abilities/annu
 import { annulerUneInvitation } from '@/features/equipe/abilities/annuler-une-invitation/implementations/prisma/annuler-une-invitation.mutation'
 import {
   CoordinateurId,
-  Email,
+  Courriel,
   ReferenceInvitation,
   UtilisateurId,
 } from '@/features/equipe/domain'
@@ -24,7 +24,7 @@ export const annulerUneInvitationAction = actionBuilder()
       async ({ user, input }) =>
         annulerUneInvitation({
           reference: ReferenceInvitation({
-            email: Email(input.email),
+            email: Courriel(input.email),
             coordinateurId: CoordinateurId(input.coordinateurId),
           }),
           gestionnaire: gestionnaireDe(user),

@@ -28,7 +28,7 @@ import {
 import type { Fiche } from '../../domain/fiche'
 import { BanId } from '../../domain/identifiants/ban-id'
 import { LieuId } from '../../domain/identifiants/lieu-id'
-import { UserId } from '../../domain/identifiants/utilisateur-id'
+import { UtilisateurId } from '../../domain/identifiants/utilisateur-id'
 import { NomUsage } from '../../domain/identite-sirene'
 import type { Lieu } from '../../domain/lieu'
 import {
@@ -129,7 +129,7 @@ const toDerniereModificationCoop = (
     ? ModificationInconnue(row.modification)
     : ModifieParUtilisateur(
         row.modification,
-        UserId(row.derniereModificationParId),
+        UtilisateurId(row.derniereModificationParId),
       )
 }
 
@@ -144,7 +144,9 @@ const toSuppression = (row: LigneDuLieuCoop): Suppression =>
     ? Actif
     : Supprime(
         row.suppression,
-        row.suppressionParId == null ? null : UserId(row.suppressionParId),
+        row.suppressionParId == null
+          ? null
+          : UtilisateurId(row.suppressionParId),
       )
 
 const toFiche = (row: LigneDuLieuCoop): Fiche => ({
@@ -238,7 +240,7 @@ const enveloppe = (row: LigneDuLieuCoop) => ({
   },
   creation: {
     date: row.creation,
-    par: row.creationParId == null ? null : UserId(row.creationParId),
+    par: row.creationParId == null ? null : UtilisateurId(row.creationParId),
   },
 })
 

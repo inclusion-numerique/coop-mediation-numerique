@@ -1,6 +1,6 @@
 import type { MesureDesUtilisateursActifs } from '../../domain/ports'
 
-export const getUtilisateursActifs = async ({
+export const lireLesUtilisateursActifs = async ({
   mesurerLesUtilisateursActifs,
   utilisateursActifsParMois,
 }: MesureDesUtilisateursActifs) => {

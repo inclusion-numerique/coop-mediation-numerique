@@ -2,10 +2,10 @@ import { contactEmail } from '@/configuration/projet/config'
 import { emailTransport } from '@/configuration/smtp/emailTransport'
 import { expediteur } from '@/configuration/smtp/serveur'
 import { throwOnSendMailFailure } from '@/configuration/smtp/throwOnSendMailFailure'
-import { removedFromLieuEmail } from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/implementations/email/retrait-du-lieu'
+import { retraitDuLieu } from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/implementations/email/retrait-du-lieu'
 import { compileMjml } from '@/libraries/emails/mjml'
 
-export const sendRemovedFromLieuEmail = async ({
+export const envoyerLeRetraitDuLieu = async ({
   mediateurEmail,
   mediateurFirstname,
   structureNom,
@@ -21,13 +21,13 @@ export const sendRemovedFromLieuEmail = async ({
     from: expediteur,
     replyTo: contactEmail,
     subject: `Vous avez été retiré du lieu ${structureNom}`,
-    text: removedFromLieuEmail.text({
+    text: retraitDuLieu.text({
       mediateurFirstname,
       structureNom,
       removedByName,
     }),
     html: await compileMjml(
-      removedFromLieuEmail.mjml({
+      retraitDuLieu.mjml({
         mediateurFirstname,
         structureNom,
         removedByName,

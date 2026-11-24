@@ -1,4 +1,4 @@
-import type { UserId } from '@/features/inscription/domain'
+import type { UtilisateurId } from '@/features/inscription/domain'
 import type { AdresseBanData } from '@/libraries/adresse/AdresseBanValidation'
 import type { EmployeuseId } from './employeuse-id'
 
@@ -31,7 +31,7 @@ export type EmployeuseLue = {
 }
 
 export type ConsulterEmployeuseActuelle = (input: {
-  readonly userId: UserId
+  readonly userId: UtilisateurId
 }) => Promise<{ readonly employeuse: EmployeuseLue } | null>
 
 type LieuDecrit = {
@@ -53,18 +53,18 @@ type LieuDecrit = {
 }
 
 type TraceDeLEmployeuse = {
-  readonly userId: UserId
+  readonly userId: UtilisateurId
   readonly structureId: number
 }
 
 export type RattacherAuLieuDecrit = (input: {
-  readonly userId: UserId
+  readonly userId: UtilisateurId
   readonly lieu: LieuDecrit
   readonly trace: TraceDeLEmployeuse
 }) => Promise<void>
 
 export type DetacherDuLieuDecrit = (input: {
-  readonly userId: UserId
+  readonly userId: UtilisateurId
   readonly lieu: LieuDecrit
   readonly trace: TraceDeLEmployeuse
 }) => Promise<void>

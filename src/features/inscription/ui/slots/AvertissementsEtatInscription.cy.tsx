@@ -50,7 +50,7 @@ describe('<AvertissementsEtatInscription />', () => {
     avertissements().should('not.contain.text', VALIDEE_SANS_ROLE)
   })
 
-  // Le cas que `isUserInscriptionEnCours` ne voit pas : elle ne regarde que
+  // Le cas que `inscriptionEnCours` ne voit pas : elle ne regarde que
   // `inscriptionValidee`, donc ce compte échappait aux deux avertissements.
   it('signale une inscription validée sans compte de rôle', () => {
     monter(utilisateur({ inscriptionValidee: new Date('2026-08-24') }))

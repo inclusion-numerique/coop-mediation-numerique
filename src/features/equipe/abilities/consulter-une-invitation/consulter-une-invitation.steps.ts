@@ -4,8 +4,8 @@ import { type VueInvitation } from '@/features/equipe/abilities/consulter-une-in
 import { consulterUneInvitation } from '@/features/equipe/abilities/consulter-une-invitation/implementations/prisma/consulter-une-invitation.query'
 import {
   CoordinateurId,
+  Courriel,
   codeInvitation,
-  Email,
   ReferenceInvitation,
 } from '@/features/equipe/domain'
 import {
@@ -61,11 +61,11 @@ const ouvrir = async (session: string | null) => {
   contexte.vue = await consulterUneInvitation({
     code: codeInvitation(
       ReferenceInvitation({
-        email: Email(emailInvite()),
+        email: Courriel(emailInvite()),
         coordinateurId: CoordinateurId(coordinateur().coordinateurId),
       }),
     ),
-    session: session === null ? null : Email(session),
+    session: session === null ? null : Courriel(session),
   })
 }
 

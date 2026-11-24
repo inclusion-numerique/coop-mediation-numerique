@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { MediateurId } from '../../../domain/identifiants/mediateur-id'
-import { Email } from '../../../domain/identite/courriel'
+import { Courriel } from '../../../domain/identite/courriel'
 import { NomAffiche } from '../../../domain/identite/nom-affiche'
 import type { MembreAFiltrer } from './membre-a-filtrer'
 import { membresRecherches } from './recherche-de-membres'
@@ -10,7 +10,7 @@ const membre = (rang: number, nom: string, email: string): MembreAFiltrer => ({
     `0b3c4f62-2d6a-4f6e-9a39-3a4c8f1d2e${String(rang).padStart(2, '0')}`,
   ),
   nom: NomAffiche(nom),
-  email: Email(email),
+  email: Courriel(email),
   situation: 'Membre',
 })
 

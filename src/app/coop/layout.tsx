@@ -2,8 +2,8 @@ import { redirect } from 'next/navigation'
 import { PropsWithChildren } from 'react'
 import { choisirLaVisibiliteApresRuptureAction } from '@/app/_actions/mediateurs/choisir-la-visibilite-apres-rupture.action'
 import {
-  getHomepage,
-  hasInscriptionComplete,
+  aTermineSonInscription,
+  pageDAccueil,
 } from '@/features/authentification/domain/page-d-accueil'
 import { authenticateUser } from '@/features/authentification/implementations/session/authenticate-user'
 import InscriptionStepsLayout from '@/features/inscription/ui/slots/InscriptionStepsLayout.slot'
@@ -24,7 +24,7 @@ const Layout = async ({ children }: PropsWithChildren) => {
   const user = await authenticateUser()
   const acces = accesALaCoop({
     role: user.role,
-    inscriptionAchevee: hasInscriptionComplete(user),
+    inscriptionAchevee: aTermineSonInscription(user),
   })
 
   if (acces._tag === 'ReserveAuxUtilisateurs') {
@@ -32,7 +32,7 @@ const Layout = async ({ children }: PropsWithChildren) => {
       <CoopShell
         cadre="etape"
         user={user}
-        accueil={getHomepage(user)}
+        accueil={pageDAccueil(user)}
         terminerUsurpation={<TerminerUsurpationHeaderUserMenuItem />}
       >
         <InscriptionStepsLayout>
@@ -58,7 +58,7 @@ const Layout = async ({ children }: PropsWithChildren) => {
       <CoopShell
         cadre="etape"
         user={user}
-        accueil={getHomepage(user)}
+        accueil={pageDAccueil(user)}
         terminerUsurpation={<TerminerUsurpationHeaderUserMenuItem />}
       >
         <InscriptionStepsLayout>

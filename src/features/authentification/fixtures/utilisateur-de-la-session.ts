@@ -1,7 +1,7 @@
 import { previewBranchAuthFallbacks } from '@/configuration/projet/previewBranchAuthFallbacks'
-import type { SessionUser } from '@/features/authentification/domain/utilisateur-de-la-session'
+import type { UtilisateurDeLaSession } from '@/features/authentification/domain/utilisateur-de-la-session'
 
-export const testSessionUser = {
+export const utilisateurDeLaSession = {
   id: 'test',
   email: 'jean.biche@example.com',
   phone: '0123456789',
@@ -27,4 +27,4 @@ export const testSessionUser = {
   structureEmployeuseRenseignee: null,
   rdvAccount: null,
   timezone: 'Europe/Paris',
-} satisfies SessionUser
+} satisfies UtilisateurDeLaSession

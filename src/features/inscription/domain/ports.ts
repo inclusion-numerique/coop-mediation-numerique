@@ -1,6 +1,6 @@
 import type { InscriptionEtat } from './etat-de-l-inscription'
-import type { UserId } from './utilisateur-id'
+import type { UtilisateurId } from './utilisateur-id'
 
-export type GetInscriptionEtat = (
-  userId: UserId,
+export type LireLEtatDeLInscription = (
+  userId: UtilisateurId,
 ) => Promise<InscriptionEtat | null>

@@ -1,7 +1,7 @@
 import type { z } from 'zod'
 import type { CraCollectifData } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/forms/cra-collectif.validation'
-import { craDureeDataToMinutes } from '@/features/activites/ui/forms/saisie/duree.form-data'
-import { clearAdministrativeData } from '@/features/activites/ui/forms/saisie/effacer-les-donnees-administratives.form-data'
+import { minutesDeLaDuree } from '@/features/activites/ui/forms/saisie/duree.form-data'
+import { effacerLesDonneesAdministratives } from '@/features/activites/ui/forms/saisie/effacer-les-donnees-administratives.form-data'
 import type { EnregistrerUnAtelierCollectifValidation } from '../../action/enregistrer-un-atelier-collectif.validation'
 
 type Saisie = z.input<typeof EnregistrerUnAtelierCollectifValidation>
@@ -24,12 +24,12 @@ const communeDu = (adresse: AdresseDuFormulaire | null | undefined) =>
 export const saisieDeLAtelierCollectif = (
   formulaire: CraCollectifData,
 ): Saisie => {
-  const nettoye = clearAdministrativeData(formulaire)
+  const nettoye = effacerLesDonneesAdministratives(formulaire)
   const anonymes = formulaire.participantsAnonymes
   return {
     id: formulaire.id,
     date: formulaire.date,
-    duree: craDureeDataToMinutes(formulaire.duree),
+    duree: minutesDeLaDuree(formulaire.duree),
     typeLieu: formulaire.typeLieu,
     lieuActiviteId: formulaire.structure?.id,
     lieuCommune: communeDu(formulaire.lieuCommuneData),

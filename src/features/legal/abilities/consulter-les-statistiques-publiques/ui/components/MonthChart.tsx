@@ -16,7 +16,7 @@ import {
 import { numberToString } from '@/libraries/nombre/formatNumber'
 import CustomTooltip from './CustomTooltip'
 
-export type StatisticsLegend<T extends object = object> = {
+export type LegendeDesStatistiques<T extends object = object> = {
   label: string
   value?: string
   key: keyof T
@@ -30,7 +30,7 @@ export type ChartSerie = {
   key: string
 }
 
-export type ChartData =
+export type DonneesDuGraphique =
   | {
       mois: string
     }
@@ -41,7 +41,7 @@ const StatisticsTooltip = <T extends object>({
   legends = [],
 }: {
   tooltipLabelDataKey?: keyof T
-  legends?: StatisticsLegend<T>[]
+  legends?: LegendeDesStatistiques<T>[]
 }) => (
   <Tooltip
     wrapperClassName="fr-text--sm fr-text-default--grey "
@@ -87,8 +87,8 @@ export const MonthChart = ({
   nextForTitleAs: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'div'
   chartColors: { fill: string }[]
   series: ChartSerie[]
-  counts: ChartData[]
-  runningTotal?: ChartData[]
+  counts: DonneesDuGraphique[]
+  runningTotal?: DonneesDuGraphique[]
   showCumulativeToggle?: boolean
 }) => {
   const [isCumulative, setIsCumulative] = useState(false)

@@ -1,4 +1,4 @@
-import { displayNameFromIdentity } from '@/features/beneficiaire/domain/beneficiaire'
+import { nomAfficheDepuisLIdentite } from '@/features/beneficiaire/domain/beneficiaire'
 import type { BeneficiairesRecherches } from '../../domain/rechercher-beneficiaires'
 import {
   type BeneficiaireOption,
@@ -17,7 +17,7 @@ export const optionsDesBeneficiairesInitiaux = ({
   totalCount,
 }: BeneficiairesRecherches): BeneficiaireOption[] => {
   const options: BeneficiaireOption[] = beneficiaires.map((beneficiaire) => ({
-    label: displayNameFromIdentity(beneficiaire),
+    label: nomAfficheDepuisLIdentite(beneficiaire),
     value: toBeneficiaireData(beneficiaire),
   }))
 

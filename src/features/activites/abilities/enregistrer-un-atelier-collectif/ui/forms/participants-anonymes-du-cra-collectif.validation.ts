@@ -1,8 +1,8 @@
 import z from 'zod'
 import {
-  countTotalGenre,
-  countTotalStatutSocial,
-  countTotalTrancheAge,
+  totalDesGenres,
+  totalDesStatutsSociaux,
+  totalDesTranchesDAge,
 } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/forms/participants-anonymes'
 import { numberToString } from '@/libraries/nombre/formatNumber'
 
@@ -85,17 +85,17 @@ export const ParticipantsAnonymesCraCollectifValidation = z
       'La somme des données socio-démographiques dépasse le total des bénéficiaires anonymes',
     path: ['total'],
   })
-  .refine((data) => countTotalGenre(data) <= (data.total ?? 0), {
+  .refine((data) => totalDesGenres(data) <= (data.total ?? 0), {
     message:
       'La somme des données socio-démographiques dépasse le total des bénéficiaires anonymes',
     path: ['total'],
   })
-  .refine((data) => countTotalTrancheAge(data) <= (data.total ?? 0), {
+  .refine((data) => totalDesTranchesDAge(data) <= (data.total ?? 0), {
     message:
       'La somme des données socio-démographiques dépasse le total des bénéficiaires anonymes',
     path: ['total'],
   })
-  .refine((data) => countTotalStatutSocial(data) <= (data.total ?? 0), {
+  .refine((data) => totalDesStatutsSociaux(data) <= (data.total ?? 0), {
     message:
       'La somme des données socio-démographiques dépasse le total des bénéficiaires anonymes',
     path: ['total'],

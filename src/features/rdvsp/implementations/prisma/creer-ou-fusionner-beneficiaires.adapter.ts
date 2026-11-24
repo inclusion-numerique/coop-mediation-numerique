@@ -31,7 +31,7 @@ const toExternalUser = (rdvUser: RdvUserForMerge) => ({
  * au port. Renvoie aussi les usagers écartés (donnée d'infra en échec) pour
  * l'observabilité du job, sans jamais interrompre la synchro.
  */
-export const createOrMergeBeneficiairesFromRdvUserIds =
+export const creerOuFusionnerLesBeneficiaires =
   (creerOuFusionner: CreerOuFusionnerDepuisUsagersExternes) =>
   async ({
     rdvUsers,

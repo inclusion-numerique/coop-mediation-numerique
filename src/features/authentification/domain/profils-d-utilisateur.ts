@@ -1,37 +1,52 @@
-import type { SessionUser } from '@/features/authentification/domain/utilisateur-de-la-session'
+import type { UtilisateurDeLaSession } from '@/features/authentification/domain/utilisateur-de-la-session'
 
-export type MediateurUser<
-  T extends Pick<SessionUser, 'mediateur'> = SessionUser,
+export type UtilisateurMediateur<
+  T extends Pick<UtilisateurDeLaSession, 'mediateur'> = UtilisateurDeLaSession,
 > = T & {
   mediateur: Exclude<T['mediateur'], null>
 }
 
-export type CoordinateurUser<
-  T extends Pick<SessionUser, 'coordinateur'> = SessionUser,
+export type UtilisateurCoordinateur<
+  T extends Pick<
+    UtilisateurDeLaSession,
+    'coordinateur'
+  > = UtilisateurDeLaSession,
 > = T & {
   coordinateur: Exclude<T['coordinateur'], null>
 }
 
-export type ConseillerNumeriqueUser<
-  T extends Pick<SessionUser, 'isConseillerNumerique'> = SessionUser,
+export type UtilisateurConseillerNumerique<
+  T extends Pick<
+    UtilisateurDeLaSession,
+    'isConseillerNumerique'
+  > = UtilisateurDeLaSession,
 > = T & {
   isConseillerNumerique: true
 }
 
-export const isMediateur = <
-  T extends Pick<SessionUser, 'mediateur' | 'emplois'> = SessionUser,
+export const estMediateur = <
+  T extends Pick<
+    UtilisateurDeLaSession,
+    'mediateur' | 'emplois'
+  > = UtilisateurDeLaSession,
 >(
   user: T,
-): user is MediateurUser<T> => !!user.mediateur
+): user is UtilisateurMediateur<T> => !!user.mediateur
 
-export const isConseillerNumerique = <
-  T extends Pick<SessionUser, 'isConseillerNumerique'> = SessionUser,
+export const estConseillerNumerique = <
+  T extends Pick<
+    UtilisateurDeLaSession,
+    'isConseillerNumerique'
+  > = UtilisateurDeLaSession,
 >(
   user: T | null,
-): user is ConseillerNumeriqueUser<T> => !!user?.isConseillerNumerique
+): user is UtilisateurConseillerNumerique<T> => !!user?.isConseillerNumerique
 
-export const isCoordinateur = <
-  T extends Pick<SessionUser, 'coordinateur' | 'emplois'> = SessionUser,
+export const estCoordinateur = <
+  T extends Pick<
+    UtilisateurDeLaSession,
+    'coordinateur' | 'emplois'
+  > = UtilisateurDeLaSession,
 >(
   user: T,
-): user is CoordinateurUser<T> => !!user.coordinateur
+): user is UtilisateurCoordinateur<T> => !!user.coordinateur

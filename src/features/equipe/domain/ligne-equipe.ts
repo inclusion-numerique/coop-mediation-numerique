@@ -4,7 +4,7 @@ import type { Telephone } from '@/libraries/telephone'
 import type { Commune } from './commune'
 import type { MediateurId } from './identifiants/mediateur-id'
 import type { UtilisateurId } from './identifiants/utilisateur-id'
-import type { Email } from './identite/courriel'
+import type { Courriel } from './identite/courriel'
 import type { Nom } from './identite/nom'
 import type { Prenom } from './identite/prenom'
 import type { NomStructure } from './nom-structure'
@@ -50,7 +50,7 @@ export const profilDe = ({ personne }: LigneEquipe): ProfilMembre | null =>
   personne.type === 'Inscrite' ? personne.profil : null
 
 export type LigneEquipe = {
-  readonly email: Email
+  readonly email: Courriel
   readonly statut: StatutMembre
   readonly personne: PersonneDeLEquipe
   readonly structureEmployeuse: StructureEmployeuseMembre

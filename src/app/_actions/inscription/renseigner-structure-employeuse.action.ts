@@ -6,7 +6,7 @@ import { RenseignerStructureEmployeuseValidation } from '@/features/employeuse/a
 import { rattacherAUneEmployeuseSaisieBinding } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/rattacher-a-une-employeuse.binding'
 import { RENSEIGNER_STRUCTURE_EMPLOYEUSE_ERRORS } from '@/features/inscription/abilities/renseigner-structure-employeuse/action/renseigner-structure-employeuse.errors'
 import { renseignerStructureEmployeuseAvec } from '@/features/inscription/abilities/renseigner-structure-employeuse/implementations/renseigner-structure-employeuse.binding'
-import { UserId } from '@/features/inscription/domain'
+import { UtilisateurId } from '@/features/inscription/domain'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import {
   ensurePersonneMain,
@@ -41,7 +41,7 @@ export const renseignerStructureEmployeuseAction = actionBuilder()
           rattacherAUneEmployeuseSaisieBinding(registreDesPersonnes),
         )({
           command: {
-            userId: UserId(user.id),
+            userId: UtilisateurId(user.id),
             structureEmployeuse: input.structure,
           },
           maintenant: new Date(),

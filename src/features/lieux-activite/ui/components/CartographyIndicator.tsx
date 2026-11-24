@@ -1,9 +1,9 @@
 import classNames from 'classnames'
 import Link from 'next/link'
-import { getStructureCartographieLink } from '@/features/lieux-activite/ui/presenters/liens-de-la-cartographie.presenter'
+import { lienDuLieuDansLaCartographie } from '@/features/lieux-activite/ui/presenters/liens-de-la-cartographie.presenter'
 import TooltipIcon from '@/libraries/ui/components/TooltipIcon'
 
-import type { CartographyStatus } from '../presenters/statut-cartographie.presenter'
+import type { StatutCartographie } from '../presenters/statut-cartographie.presenter'
 
 const CartographyIndicator = ({
   status,
@@ -11,7 +11,7 @@ const CartographyIndicator = ({
   structureId,
   className,
 }: {
-  status: CartographyStatus
+  status: StatutCartographie
   structureCartographieNationaleId?: string | null
   structureId: string
   className?: string
@@ -26,7 +26,7 @@ const CartographyIndicator = ({
           'fr-tag--carto-visible',
           className,
         )}
-        href={getStructureCartographieLink({
+        href={lienDuLieuDansLaCartographie({
           structureCartographieNationaleId,
         })}
         target="_blank"
@@ -76,7 +76,7 @@ const CartographyIndicator = ({
             'fr-tag--carto-mise-a-jour',
             className,
           )}
-          href={getStructureCartographieLink({
+          href={lienDuLieuDansLaCartographie({
             structureCartographieNationaleId,
           })}
           target="_blank"

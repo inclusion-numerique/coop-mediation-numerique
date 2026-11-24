@@ -1,4 +1,4 @@
-export const getUserRoleLabel = (user: {
+export const libelleDuRole = (user: {
   role: string
   isConseillerNumerique: boolean
   mediateur: { id: string } | null

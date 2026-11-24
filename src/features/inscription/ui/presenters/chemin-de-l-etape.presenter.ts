@@ -1,7 +1,7 @@
 import type { Route } from 'next'
-import type { InscriptionStepValue } from '@/features/inscription/domain'
+import type { ValeurDEtapeDInscription } from '@/features/inscription/domain'
 
-const stepPaths: Record<InscriptionStepValue, Route> = {
+const stepPaths: Record<ValeurDEtapeDInscription, Route> = {
   initialize: '/inscription/initialiser',
   'choisir-role': '/inscription/choisir-role',
   'verifier-informations': '/inscription/verifier-informations',
@@ -17,4 +17,5 @@ const stepPaths: Record<InscriptionStepValue, Route> = {
  * rester un drop-in du `getStepPath` legacy tant que le parcours n'est pas
  * entièrement migré.
  */
-export const stepPath = (step: InscriptionStepValue): Route => stepPaths[step]
+export const cheminDeLEtape = (step: ValeurDEtapeDInscription): Route =>
+  stepPaths[step]

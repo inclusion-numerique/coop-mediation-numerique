@@ -1,4 +1,4 @@
-import type { UserId } from '@/features/inscription/domain'
+import type { UtilisateurId } from '@/features/inscription/domain'
 
 /**
  * Le « Oui/Non » porte sur l'employeuse de l'utilisateur : sans employeuse, la
@@ -7,11 +7,11 @@ import type { UserId } from '@/features/inscription/domain'
  */
 export type EmployeuseIntrouvable = {
   readonly _tag: 'EmployeuseIntrouvable'
-  readonly userId: UserId
+  readonly userId: UtilisateurId
 }
 
 export const EmployeuseIntrouvable = (
-  userId: UserId,
+  userId: UtilisateurId,
 ): EmployeuseIntrouvable => ({
   _tag: 'EmployeuseIntrouvable',
   userId,

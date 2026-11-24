@@ -9,7 +9,7 @@ export const rdvWebsiteLink = estMain
 
 export const rdvServicePublicGettingStartedLink = `https://aide.rdv-service-public.fr/demarrer-sur-rdv-service-public/configurer-son-espace`
 
-export const rdvMyHomepageLink = `${rdvWebsiteLink}/agents/agenda`
+export const lienDeMonAgendaRdv = `${rdvWebsiteLink}/agents/agenda`
 
 export const rdvSupportEmail = 'support@rdv-service-public.fr'
 

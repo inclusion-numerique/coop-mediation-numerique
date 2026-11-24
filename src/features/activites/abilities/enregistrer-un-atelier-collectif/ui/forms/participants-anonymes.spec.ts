@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
-  countGenreNonCommunique,
+  nombreDeGenresNonCommuniques,
   participantsAnonymesDefault,
 } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/forms/participants-anonymes'
 import {
@@ -55,7 +55,7 @@ describe('participantsAnonymes', () => {
       genreMasculin: 2,
     }
 
-    const result = countGenreNonCommunique(data)
+    const result = nombreDeGenresNonCommuniques(data)
 
     expect(result).toEqual(2)
   })

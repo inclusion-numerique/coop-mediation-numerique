@@ -1,7 +1,7 @@
 import { appUrl } from '@e2e/support/helpers'
 import {
+  idDuMediateurSansActivites,
   mediateurSansActivites,
-  mediateurSansActivitesUserId,
 } from '@/features/utilisateurs/fixtures/personas/mediateur-sans-activites'
 
 describe('ETQ Visiteur, je ne vois aucune donnée de l’administration', () => {
@@ -11,9 +11,7 @@ describe('ETQ Visiteur, je ne vois aucune donnée de l’administration', () => 
 
   it('La fiche d’un utilisateur ne contient pas son e-mail', () => {
     cy.request({
-      url: appUrl(
-        `/administration/utilisateurs/${mediateurSansActivitesUserId}`,
-      ),
+      url: appUrl(`/administration/utilisateurs/${idDuMediateurSansActivites}`),
       failOnStatusCode: false,
     })
       .its('body')

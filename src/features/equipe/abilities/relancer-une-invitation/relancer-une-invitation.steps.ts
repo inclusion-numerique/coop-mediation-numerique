@@ -3,7 +3,7 @@ import { Given, Then, When } from '@cucumber/cucumber'
 import { relancerUneInvitation } from '@/features/equipe/abilities/relancer-une-invitation/implementations/prisma/relancer-une-invitation.mutation'
 import {
   CoordinateurId,
-  Email,
+  Courriel,
   ReferenceInvitation,
   UtilisateurId,
 } from '@/features/equipe/domain'
@@ -49,7 +49,7 @@ const inviter = async (
 const relancerPar = async (auteur: CoordinateurSeme) => {
   contexte.issue = await relancerUneInvitation({
     reference: ReferenceInvitation({
-      email: Email(emailInvite()),
+      email: Courriel(emailInvite()),
       coordinateurId: CoordinateurId(coordinateur().coordinateurId),
     }),
     gestionnaire: {

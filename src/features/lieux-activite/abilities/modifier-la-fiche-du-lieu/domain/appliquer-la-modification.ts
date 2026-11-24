@@ -5,7 +5,7 @@ import {
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { estPublie } from '../../../domain/cartographie-nationale/visibilite-cartographie'
 import type { Fiche } from '../../../domain/fiche'
-import type { UserId } from '../../../domain/identifiants/utilisateur-id'
+import type { UtilisateurId } from '../../../domain/identifiants/utilisateur-id'
 import type { NomUsage } from '../../../domain/identite-sirene'
 import type { Lieu } from '../../../domain/lieu'
 import { servicesALaPublication } from '../../../domain/publication'
@@ -158,7 +158,7 @@ const enveloppeApres = (lieu: Lieu, modification: ModificationLieu) => ({
 export const appliquerModification = (
   lieu: Lieu,
   modification: ModificationLieu,
-  par: UserId,
+  par: UtilisateurId,
   maintenant: Date,
 ): Lieu => ({
   ...lieu,

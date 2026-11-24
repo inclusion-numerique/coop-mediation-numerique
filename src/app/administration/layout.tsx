@@ -1,5 +1,5 @@
 import { PropsWithChildren } from 'react'
-import { getHomepage } from '@/features/authentification/domain/page-d-accueil'
+import { pageDAccueil } from '@/features/authentification/domain/page-d-accueil'
 import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticate-user'
 import Header from '@/features/navigation/ui/layouts/Header'
 import { MiseEnPageAdministration } from '@/features/navigation/ui/layouts/MiseEnPageAdministration'
@@ -14,7 +14,7 @@ const AdministrationLayout = async ({ children }: PropsWithChildren) => {
       entete={
         <Header
           user={user}
-          accueil={getHomepage(user)}
+          accueil={pageDAccueil(user)}
           terminerUsurpation={<TerminerUsurpationHeaderUserMenuItem />}
           variant="coop"
         />

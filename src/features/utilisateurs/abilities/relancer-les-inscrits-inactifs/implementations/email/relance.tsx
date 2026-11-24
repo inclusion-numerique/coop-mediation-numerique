@@ -123,7 +123,7 @@ const MjmlActions = ({
   )
 }
 
-export const nouveauAccountEmail = {
+export const relance = {
   text: ({
     firstname,
     totalUsers,

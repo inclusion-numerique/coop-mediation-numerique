@@ -9,7 +9,7 @@ import { trouverStructuresCarto } from '@/features/lieux-activite/abilities/ajou
 import { ajouterDesLieuxActivite } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/ajouter-des-lieux-activite.mutation'
 import { lireLieuxDejaRattaches } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/lieux-deja-rattaches.query'
 import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
-import { UserId } from '@/features/lieux-activite/domain/identifiants/utilisateur-id'
+import { UtilisateurId } from '@/features/lieux-activite/domain/identifiants/utilisateur-id'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { fromResult, withInput } from '@/libraries/nextjs'
 
@@ -31,7 +31,7 @@ export const ajouterDesLieuxActiviteAction = actionBuilder()
 
         return ajouterDesLieuxActivite({
           demandes: demandes.data,
-          userId: UserId(user.id),
+          userId: UtilisateurId(user.id),
           mediateurId:
             user.mediateur == null ? null : MediateurId(user.mediateur.id),
           ports: { lireLieuxDejaRattaches, trouverStructuresCarto },

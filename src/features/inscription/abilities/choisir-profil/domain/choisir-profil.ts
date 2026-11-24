@@ -1,10 +1,10 @@
 import {
-  InscriptionFlowType,
-  type InscriptionStep,
+  type EtapeDInscription,
   prochaineEtape,
   type Role,
+  TypeDeParcours,
 } from '@/features/inscription/domain'
-import type { GetInscriptionEtat } from '@/features/inscription/domain/ports'
+import type { LireLEtatDeLInscription } from '@/features/inscription/domain/ports'
 import { type Result, success } from '@/libraries/result'
 import {
   type ChoisirProfilError,
@@ -14,7 +14,7 @@ import {
 import type { EnregistrerProfilChoisi } from './ports'
 
 export type ChoisirProfilPorts = {
-  readonly lireLEtat: GetInscriptionEtat
+  readonly lireLEtat: LireLEtatDeLInscription
   readonly enregistrerProfilChoisi: EnregistrerProfilChoisi
 }
 
@@ -25,7 +25,7 @@ export const choisirProfil =
     maintenant: Date,
   ): Promise<
     Result<
-      { readonly role: Role; readonly etapeSuivante: InscriptionStep },
+      { readonly role: Role; readonly etapeSuivante: EtapeDInscription },
       ChoisirProfilError
     >
   > => {
@@ -42,7 +42,7 @@ export const choisirProfil =
     return success({
       role: decision.data.role,
       etapeSuivante: prochaineEtape(decision.data.aEnregistrer.etat, {
-        flowType: InscriptionFlowType('withoutDataspace'),
+        flowType: TypeDeParcours('withoutDataspace'),
         hasLieuxActivite: false,
       }),
     })

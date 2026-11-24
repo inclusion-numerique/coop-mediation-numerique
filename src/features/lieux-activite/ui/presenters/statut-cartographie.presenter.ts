@@ -1,4 +1,4 @@
-export type CartographyStatus =
+export type StatutCartographie =
   | 'visible'
   | 'pending'
   | 'updating'
@@ -10,14 +10,14 @@ const statutDUnLieuVisible = ({
 }: {
   structureCartographieNationaleId: string | null
   hasRecentModification: boolean
-}): CartographyStatus =>
+}): StatutCartographie =>
   structureCartographieNationaleId == null
     ? 'pending'
     : hasRecentModification
       ? 'updating'
       : 'visible'
 
-export const getCartographyStatus = ({
+export const statutCartographie = ({
   visiblePourCartographieNationale,
   structureCartographieNationaleId,
   hasRecentModification = false,
@@ -25,7 +25,7 @@ export const getCartographyStatus = ({
   visiblePourCartographieNationale: boolean
   structureCartographieNationaleId: string | null
   hasRecentModification?: boolean
-}): CartographyStatus =>
+}): StatutCartographie =>
   visiblePourCartographieNationale
     ? statutDUnLieuVisible({
         structureCartographieNationaleId,

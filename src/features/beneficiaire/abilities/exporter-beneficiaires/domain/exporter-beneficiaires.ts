@@ -32,7 +32,7 @@ type ExportBeneficiairesFilters = {
   readonly recherche?: string
 }
 
-export type BuildBeneficiairesWorksheet = (input: {
+export type ConstruireLeClasseurDesBeneficiaires = (input: {
   beneficiaires: readonly BeneficiaireExportRow[]
   filters: ExportBeneficiairesFilters
   matchesCount: number

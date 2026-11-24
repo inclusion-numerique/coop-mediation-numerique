@@ -10,9 +10,9 @@ import {
   type CreerLieuActiviteData,
   CreerLieuActiviteValidation,
 } from '@/features/lieux-activite/action/creer-lieu-activite.validation'
-import { emptyOpeningHours } from '@/features/lieux-activite/domain/horaires-d-ouverture'
+import { horairesVides } from '@/features/lieux-activite/domain/horaires-d-ouverture'
 import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
-import { UserId } from '@/features/lieux-activite/domain/identifiants/utilisateur-id'
+import { UtilisateurId } from '@/features/lieux-activite/domain/identifiants/utilisateur-id'
 import type { Typologie } from '@/generated/prisma/client'
 
 setDefaultTimeout(60_000)
@@ -381,7 +381,7 @@ const renseigner = (
 
 const creerUnLieuDActivite = (saisie: CreerLieuActiviteData) =>
   creerLieuActivite({
-    lieu: nouveauLieu(saisie, UserId(utilisateurCourant()), new Date()),
+    lieu: nouveauLieu(saisie, UtilisateurId(utilisateurCourant()), new Date()),
     mediateurId: MediateurId(mediateurCourant()),
   })
 
@@ -431,7 +431,7 @@ const saisieDeCreation = (
     nom,
     siret,
     typologies: ['ASSO'],
-    openingHours: emptyOpeningHours,
+    openingHours: horairesVides,
     adresseBan: {
       id: 'ban-test',
       nom: ailleurs?.adresse ?? adresseDuLieuDisponible.adresse,

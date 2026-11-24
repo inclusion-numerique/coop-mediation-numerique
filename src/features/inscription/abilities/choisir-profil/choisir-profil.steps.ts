@@ -4,18 +4,18 @@ import { prismaClient } from '@/configuration/prisma/prismaClient'
 import { type ChoisirProfilError } from '@/features/inscription/abilities/choisir-profil/domain/decider-le-role'
 import { choisirProfilAvec } from '@/features/inscription/abilities/choisir-profil/implementations/choisir-profil.binding'
 import {
-  type InscriptionStep,
+  type EtapeDInscription,
   ProfilInscription,
   Role,
 } from '@/features/inscription/domain'
 import {
-  currentInscriptionUserId,
   seedInscriptionValidee,
+  utilisateurDeLInscriptionEnCours,
 } from '@/features/inscription/inscription.cucumber'
 import type { Result } from '@/libraries/result'
 
 let resultat: Result<
-  { readonly role: Role; readonly etapeSuivante: InscriptionStep },
+  { readonly role: Role; readonly etapeSuivante: EtapeDInscription },
   ChoisirProfilError
 >
 
@@ -29,7 +29,7 @@ Given(
 When('je choisis le profil {string}', async (role: string) => {
   resultat = await choisirProfilAvec(async () => undefined)(
     {
-      userId: currentInscriptionUserId(),
+      userId: utilisateurDeLInscriptionEnCours(),
       role: Role.schema.parse(role),
     },
     new Date(),
@@ -40,7 +40,7 @@ Then(
   'le profil d’inscription de l’utilisateur est {string}',
   async (expected: string) => {
     const user = await prismaClient.user.findUniqueOrThrow({
-      where: { id: currentInscriptionUserId() },
+      where: { id: utilisateurDeLInscriptionEnCours() },
       select: { profilInscription: true, acceptationCgu: true },
     })
     assert.strictEqual(user.profilInscription, expected)
@@ -55,28 +55,28 @@ Then('le choix du profil est refusé car l’inscription est déjà validée', (
 
 Then('un compte médiateur existe pour l’utilisateur', async () => {
   const mediateur = await prismaClient.mediateur.findUnique({
-    where: { userId: currentInscriptionUserId() },
+    where: { userId: utilisateurDeLInscriptionEnCours() },
   })
   assert.ok(mediateur, 'Aucun compte médiateur créé')
 })
 
 Then('aucun compte médiateur n’existe pour l’utilisateur', async () => {
   const mediateur = await prismaClient.mediateur.findUnique({
-    where: { userId: currentInscriptionUserId() },
+    where: { userId: utilisateurDeLInscriptionEnCours() },
   })
   assert.strictEqual(mediateur, null)
 })
 
 Then('un compte coordinateur existe pour l’utilisateur', async () => {
   const coordinateur = await prismaClient.coordinateur.findUnique({
-    where: { userId: currentInscriptionUserId() },
+    where: { userId: utilisateurDeLInscriptionEnCours() },
   })
   assert.ok(coordinateur, 'Aucun compte coordinateur créé')
 })
 
 Then('aucun compte coordinateur n’existe pour l’utilisateur', async () => {
   const coordinateur = await prismaClient.coordinateur.findUnique({
-    where: { userId: currentInscriptionUserId() },
+    where: { userId: utilisateurDeLInscriptionEnCours() },
   })
   assert.strictEqual(coordinateur, null)
 })

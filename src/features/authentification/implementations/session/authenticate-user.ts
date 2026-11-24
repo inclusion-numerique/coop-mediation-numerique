@@ -2,10 +2,10 @@ import type { Route } from 'next'
 import { notFound, redirect } from 'next/navigation'
 import { AuthenticationError } from '@/features/authentification/domain/errors'
 import {
-  type CoordinateurUser,
-  isCoordinateur,
-  isMediateur,
-  type MediateurUser,
+  estCoordinateur,
+  estMediateur,
+  type UtilisateurCoordinateur,
+  type UtilisateurMediateur,
 } from '@/features/authentification/domain/profils-d-utilisateur'
 import {
   getAuthenticatedSessionUser,
@@ -33,25 +33,25 @@ export const authenticateUser = async (redirectTo: Route = '/connexion') => {
 
 export const authenticateMediateur = async (
   redirectTo: Route = '/connexion',
-): Promise<MediateurUser> => {
+): Promise<UtilisateurMediateur> => {
   const user = await authenticateUser(redirectTo)
-  if (isMediateur(user)) return user
+  if (estMediateur(user)) return user
   redirect(redirectTo)
 }
 
 export const authenticateCoordinateur = async (
   redirectTo: Route = '/connexion',
-): Promise<CoordinateurUser> => {
+): Promise<UtilisateurCoordinateur> => {
   const user = await authenticateUser(redirectTo)
-  if (isCoordinateur(user)) return user
+  if (estCoordinateur(user)) return user
   redirect(redirectTo)
 }
 
 export const authenticateMediateurOrCoordinateur = async (
   redirectTo: Route = '/connexion',
-): Promise<MediateurUser | CoordinateurUser> => {
+): Promise<UtilisateurMediateur | UtilisateurCoordinateur> => {
   const user = await authenticateUser(redirectTo)
-  if (isMediateur(user) || isCoordinateur(user)) return user
+  if (estMediateur(user) || estCoordinateur(user)) return user
 
   redirect(redirectTo)
 }

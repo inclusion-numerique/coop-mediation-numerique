@@ -9,7 +9,7 @@ import { default as InvitationEnAttente } from '@/features/equipe/abilities/cons
 import { default as InvitationPlusValide } from '@/features/equipe/abilities/consulter-une-invitation/ui/slots/InvitationPlusValide.slot'
 import { ACCEPTER_UNE_INVITATION_ACTION_KEY } from '@/features/equipe/action/accepter-une-invitation.key'
 import { REFUSER_UNE_INVITATION_ACTION_KEY } from '@/features/equipe/action/refuser-une-invitation.key'
-import { Email, lienInvitation } from '@/features/equipe/domain'
+import { Courriel, lienInvitation } from '@/features/equipe/domain'
 import { default as ReponseAInvitation } from '@/features/equipe/ui/slots/ReponseAInvitation.slot'
 import type { EncodedState } from '@/libraries/etat-encode/encodeSerializableState'
 import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
@@ -26,7 +26,7 @@ const InvitationPage = async (props: {
 
   const vue = await consulterUneInvitation({
     code: data,
-    session: user == null ? null : Email.safe(user.email),
+    session: user == null ? null : Courriel.safe(user.email),
   })
 
   if (vue.type === 'Illisible') redirect('/')

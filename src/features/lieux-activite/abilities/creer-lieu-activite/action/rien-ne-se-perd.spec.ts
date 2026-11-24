@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { CreerLieuActiviteValidation } from '@/features/lieux-activite/action/creer-lieu-activite.validation'
 import type { Fiche } from '@/features/lieux-activite/domain/fiche'
-import { UserId } from '@/features/lieux-activite/domain/identifiants/utilisateur-id'
+import { UtilisateurId } from '@/features/lieux-activite/domain/identifiants/utilisateur-id'
 import { nouveauLieu } from './saisie-du-lieu.transfer'
 
 const adresseBan = {
@@ -58,7 +58,7 @@ const saisieMinimale = {
   publicsSpecifiquementAdresses: [],
 }
 
-const auteur = UserId('550e8400-e29b-41d4-a716-446655440001')
+const auteur = UtilisateurId('550e8400-e29b-41d4-a716-446655440001')
 
 const ficheDe = (champs: Record<string, unknown>): Fiche | null => {
   const analyse = CreerLieuActiviteValidation.safeParse({

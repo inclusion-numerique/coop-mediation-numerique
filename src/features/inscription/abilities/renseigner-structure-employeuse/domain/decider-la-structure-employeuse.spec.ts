@@ -3,11 +3,11 @@ import {
   Franchissement,
   type InscriptionEnCours,
   Role,
-  UserId,
+  UtilisateurId,
 } from '@/features/inscription/domain'
 import { deciderLaStructureEmployeuse } from './decider-la-structure-employeuse'
 
-const userId = UserId('550e8400-e29b-41d4-a716-446655440000')
+const userId = UtilisateurId('550e8400-e29b-41d4-a716-446655440000')
 const acceptationCgu = new Date('2026-01-01T10:00:00.000Z')
 const le = new Date('2026-02-02T09:00:00.000Z')
 

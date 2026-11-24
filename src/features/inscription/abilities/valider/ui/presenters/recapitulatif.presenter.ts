@@ -1,4 +1,4 @@
-import { stepPath } from '@/features/inscription/ui/presenters/chemin-de-l-etape.presenter'
+import { cheminDeLEtape } from '@/features/inscription/ui/presenters/chemin-de-l-etape.presenter'
 import type { EmployeuseAffichee } from '@/features/inscription/ui/presenters/employeuse-affichee.presenter'
 import type {
   InscritDuRecapitulatif,
@@ -19,9 +19,9 @@ export const recapitulatifPresente = <Lieu>({
   lieuxActivite,
   mediateursCoordonnesCount,
   backHref: user.mediateur
-    ? stepPath('lieux-activite')
+    ? cheminDeLEtape('lieux-activite')
     : user.profilInscription === 'Coordinateur'
-      ? stepPath('choisir-role')
+      ? cheminDeLEtape('choisir-role')
       : null,
   mustAcceptCgu: !user.acceptationCgu,
   canCancelInscription:

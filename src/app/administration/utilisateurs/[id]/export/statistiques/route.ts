@@ -34,10 +34,10 @@ import { criteresDesStatistiquesDesFiltres } from '@/features/activites/ui/filtr
 import { filtresDesStatistiques } from '@/features/activites/ui/filtres/statistiques.filtre'
 import { barreDesStatistiquesAvec } from '@/features/activites/ui/presenters/barre-des-statistiques.presenter'
 import {
-  getSessionUserFromId,
-  getSessionUserFromSessionToken,
+  utilisateurDeLaSessionParId,
+  utilisateurDuJetonDeSession,
 } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
-import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementations/session/session-token-from-cookies'
+import { jetonDeSessionDesCookies } from '@/features/authentification/implementations/session/session-token-from-cookies'
 import { membresAFiltrerDuDemandeur } from '@/features/equipe/abilities/lister-les-membres-a-filtrer/implementations/prisma/membres-a-filtrer-du-demandeur.query'
 import { optionDeMembre } from '@/features/equipe/abilities/lister-les-membres-a-filtrer/ui/presenters/options-de-membres.presenter'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/rdvs-des-activites.query'
@@ -114,8 +114,8 @@ export const GET = async (
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) => {
-  const administrateur = await getSessionUserFromSessionToken(
-    getSessionTokenFromNextRequestCookies(request.cookies),
+  const administrateur = await utilisateurDuJetonDeSession(
+    jetonDeSessionDesCookies(request.cookies),
   )
 
   if (!administrateur) return new Response('Unauthorized', { status: 401 })
@@ -125,7 +125,7 @@ export const GET = async (
   const utilisateurId = UtilisateurId.safe((await params).id)
   if (utilisateurId === null) return new Response('Not found', { status: 404 })
 
-  const user = await getSessionUserFromId(utilisateurId)
+  const user = await utilisateurDeLaSessionParId(utilisateurId)
   const perimetre = perimetreDeLUtilisateur(user)
   if (perimetre === null) return new Response('Not found', { status: 404 })
 

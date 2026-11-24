@@ -2,10 +2,10 @@ import { contactEmail } from '@/configuration/projet/config'
 import { emailTransport } from '@/configuration/smtp/emailTransport'
 import { expediteur } from '@/configuration/smtp/serveur'
 import { throwOnSendMailFailure } from '@/configuration/smtp/throwOnSendMailFailure'
-import { gettingStartedEmail } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/implementations/email/bien-demarrer'
+import { bienDemarrer } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/implementations/email/bien-demarrer'
 import { compileMjml } from '@/libraries/emails/mjml'
 
-export const sendGettingStartedEmail = async ({
+export const envoyerBienDemarrer = async ({
   email,
   firstname,
   matomoCampaignId,
@@ -23,14 +23,14 @@ export const sendGettingStartedEmail = async ({
     from: expediteur,
     replyTo: contactEmail,
     subject: 'Bien commencer sur La Coop 🚀',
-    text: gettingStartedEmail.text({
+    text: bienDemarrer.text({
       firstname,
       matomoCampaignId,
       isMediateur,
       isCoordinateur,
     }),
     html: await compileMjml(
-      gettingStartedEmail.mjml({
+      bienDemarrer.mjml({
         firstname,
         matomoCampaignId,
         isMediateur,

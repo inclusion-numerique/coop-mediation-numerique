@@ -1,7 +1,7 @@
 import { v4 } from 'uuid'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { prismaClient } from '@/configuration/prisma/prismaClient'
-import type { UserFixture } from '@/features/utilisateurs/fixtures/enregistrer-les-utilisateurs'
+import type { UtilisateurAEnregistrer } from '@/features/utilisateurs/fixtures/enregistrer-les-utilisateurs'
 import { seedPersonnesMain } from '@/features/utilisateurs/fixtures/personnes-main-conseiller-numerique'
 
 describe('seedPersonnesMain', () => {
@@ -9,7 +9,7 @@ describe('seedPersonnesMain', () => {
   const idDuCompteReel = v4()
   const structureCoopId = v4()
 
-  const fixtureIgnoree: UserFixture = {
+  const fixtureIgnoree: UtilisateurAEnregistrer = {
     id: v4(),
     email,
     isFixture: true,

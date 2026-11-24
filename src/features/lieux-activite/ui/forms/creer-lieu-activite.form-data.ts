@@ -9,7 +9,7 @@ import type {
 import z from 'zod'
 import { CreerLieuActiviteValidation } from '@/features/lieux-activite/action/creer-lieu-activite.validation'
 import type { HorairesSaisis } from '@/features/lieux-activite/action/horaires.validation'
-import { emptyOpeningHours } from '@/features/lieux-activite/domain/horaires-d-ouverture'
+import { horairesVides } from '@/features/lieux-activite/domain/horaires-d-ouverture'
 import type { FormationLabelPropose as FormationLabel } from '@/features/lieux-activite/domain/nomenclatures'
 import type { AdresseBanData } from '@/libraries/adresse/AdresseBanValidation'
 
@@ -46,7 +46,7 @@ export type CreerLieuActiviteFormData = {
 const emptyToNull = (value: string): string | null =>
   value.trim() === '' ? null : value
 
-export const toCreerLieuData = (value: CreerLieuActiviteFormData) => ({
+export const donneesDeCreation = (value: CreerLieuActiviteFormData) => ({
   ...value,
   complementAdresse: emptyToNull(value.complementAdresse),
   presentationResume: emptyToNull(value.presentationResume),
@@ -65,7 +65,9 @@ export const toCreerLieuData = (value: CreerLieuActiviteFormData) => ({
 export const CreerLieuActiviteFormValidation = z
   .custom<CreerLieuActiviteFormData>()
   .superRefine((value, context) => {
-    const parsed = CreerLieuActiviteValidation.safeParse(toCreerLieuData(value))
+    const parsed = CreerLieuActiviteValidation.safeParse(
+      donneesDeCreation(value),
+    )
     if (parsed.success) return
     context.issues.push(
       ...parsed.error.issues.map(({ path, message }) => ({
@@ -93,7 +95,7 @@ export const creerLieuActiviteDefaultValues = (
   ficheAccesLibre: '',
   priseRdv: '',
   horairesComment: '',
-  openingHours: emptyOpeningHours,
+  openingHours: horairesVides,
   services: [],
   modalitesAccompagnement: [],
   modalitesAcces: {
