@@ -192,6 +192,7 @@ export {
   criteresDesStatistiques,
   type PeriodeDesStatistiques,
 } from './statistiques/criteres-des-statistiques'
+export { criteresSurLaPeriode } from './statistiques/criteres-sur-la-periode'
 export type {
   EmployeuseDesActivites,
   PerimetreDesActivites,

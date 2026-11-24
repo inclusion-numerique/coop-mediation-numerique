@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   adresseDExport,
   adressesDesExports,
-  bornesDuFiltreDePeriode,
+  debutDuFiltreDePeriode,
   groupesDesStatistiques,
   periodeChoisieDans,
   periodeDActivite,
@@ -59,22 +59,11 @@ describe('statistiques en administration', () => {
   })
 
   it('borne le filtre de période à la première activité', () => {
-    expect(
-      bornesDuFiltreDePeriode('2022-03-15', {
-        du: '2023-01-01',
-        au: '2023-12-31',
-      }),
-    ).toEqual({
-      minDate: new Date('2022-03-15'),
-      defaultValue: { du: '2023-01-01', au: '2023-12-31' },
-    })
+    expect(debutDuFiltreDePeriode('2022-03-15')).toEqual(new Date('2022-03-15'))
   })
 
-  it('laisse le filtre de période ouvert sans activité ni période complète', () => {
-    expect(bornesDuFiltreDePeriode(null, { du: '2023-01-01' })).toEqual({
-      minDate: undefined,
-      defaultValue: undefined,
-    })
+  it('laisse le filtre de période ouvert sans activité', () => {
+    expect(debutDuFiltreDePeriode(null)).toBeUndefined()
   })
 })
 

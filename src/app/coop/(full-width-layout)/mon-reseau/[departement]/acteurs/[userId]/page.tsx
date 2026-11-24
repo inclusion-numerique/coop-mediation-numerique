@@ -8,7 +8,8 @@ import { metadataTitle } from '@/configuration/projet/metadataTitle'
 import { compterLesAccompagnements } from '@/features/activites/abilities/compter-les-accompagnements/implementations/prisma/totaux-des-accompagnements.query'
 import {
   CoordinateurId as CoordinateurIdDesActivites,
-  criteresDesStatistiques,
+  criteresSurLaPeriode,
+  Jour,
   MediateurId as MediateurIdDesActivites,
 } from '@/features/activites/domain'
 import { authenticateMediateurOrCoordinateur } from '@/features/authentification/implementations/session/authenticate-user'
@@ -67,7 +68,10 @@ const lireLesStatistiquesSur30Jours = async (
       coordinateur: CoordinateurIdDesActivites(coordinateurId),
       membres: [MediateurIdDesActivites(mediateurId)],
     },
-    criteres: criteresDesStatistiques(periode),
+    criteres: criteresSurLaPeriode({
+      du: Jour.safe(periode.du),
+      au: Jour.safe(periode.au),
+    }),
     rendezVousAuxStatuts: rendezVousAuxStatutsSql,
   })
   return {

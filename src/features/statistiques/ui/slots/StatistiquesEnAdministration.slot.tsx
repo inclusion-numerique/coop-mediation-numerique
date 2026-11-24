@@ -1,11 +1,11 @@
 import Button from '@codegouvfr/react-dsfr/Button'
+import { PeriodeEnPopover } from '@/libraries/filtres/PeriodeEnPopover'
 import AdministrationInfoCard from '@/libraries/ui/components/administration/AdministrationInfoCard'
 import AdministrationInlineLabelsValues from '@/libraries/ui/components/administration/AdministrationInlineLabelsValues'
-import { PeriodeFilter } from '../components/filtres/PeriodeFilter'
 import {
   adresseDExport,
   adressesDesExports,
-  bornesDuFiltreDePeriode,
+  debutDuFiltreDePeriode,
   groupesDesStatistiques,
   type PeriodeChoisie,
   periodeDActivite,
@@ -71,9 +71,9 @@ export const StatistiquesEnAdministration = ({
         ]}
       />
       <div className="fr-mb-8v">
-        <PeriodeFilter
-          {...bornesDuFiltreDePeriode(premiere, periode)}
-          maxDate={new Date()}
+        <PeriodeEnPopover
+          debut={debutDuFiltreDePeriode(premiere)}
+          fin={new Date()}
         />
       </div>
       <div className="fr-grid-row fr-grid-row--gutters">

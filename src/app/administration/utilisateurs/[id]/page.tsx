@@ -23,7 +23,7 @@ import { decrireLesPersonnesAccompagnees } from '@/features/activites/abilities/
 import { profilPresente } from '@/features/activites/abilities/decrire-les-personnes-accompagnees/ui/presenters/profil.presenter'
 import { repartirLesAccompagnements } from '@/features/activites/abilities/repartir-les-accompagnements/implementations/prisma/repartition-des-accompagnements.query'
 import { repartitionPresentee } from '@/features/activites/abilities/repartir-les-accompagnements/ui/presenters/repartition.presenter'
-import { criteresDesStatistiques } from '@/features/activites/domain'
+import { criteresSurLaPeriode, Jour } from '@/features/activites/domain'
 import { perimetreDeLUtilisateur } from '@/features/activites/implementations/session/perimetre'
 import { getSessionUserFromId } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
 import {
@@ -167,7 +167,10 @@ const sectionStatistiques = async (
   const coordinateur = coordinateurDe(fiche.rattachements)
   const demande = {
     perimetre,
-    criteres: criteresDesStatistiques(periode),
+    criteres: criteresSurLaPeriode({
+      du: periode.du === undefined ? null : Jour.safe(periode.du),
+      au: periode.au === undefined ? null : Jour.safe(periode.au),
+    }),
     rendezVousAuxStatuts: rendezVousAuxStatutsSql,
   }
 

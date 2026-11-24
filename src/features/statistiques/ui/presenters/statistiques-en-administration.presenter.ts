@@ -1,27 +1,31 @@
-import { z } from 'zod'
-import { ActivitesFilterValidations } from '@/features/statistiques/domain/filtres-des-activites'
 import { dateAsDayConventional } from '@/libraries/date/dateAsDay'
+import { composerLesFiltres } from '@/libraries/filtres/definition/composition'
+import { filtreDePeriode } from '@/libraries/filtres/definition/filtre-de-periode'
 import { numberToString } from '@/libraries/nombre/formatNumber'
-import { adresseDesFiltres } from '../search-params/filtres-de-la-barre.search-params'
 
 export type PeriodeChoisie = {
   readonly du?: string
   readonly au?: string
 }
 
-const PeriodeLue = z.object({
-  du: ActivitesFilterValidations.du.catch(undefined),
-  au: ActivitesFilterValidations.au.catch(undefined),
-})
+const filtresDeLaPeriode = composerLesFiltres(filtreDePeriode)
+
+const jour = (date: Date | null): string | undefined =>
+  date?.toISOString().slice(0, 10)
+
+const enDate = (jourChoisi: string | undefined): Date | null =>
+  jourChoisi === undefined ? null : new Date(jourChoisi)
 
 export const periodeChoisieDans = (
-  parametres: Readonly<Record<string, unknown>>,
-): PeriodeChoisie =>
-  Object.fromEntries(
-    Object.entries(PeriodeLue.parse(parametres)).filter(
+  parametres: Readonly<Record<string, string | string[] | undefined>>,
+): PeriodeChoisie => {
+  const { du, au } = filtresDeLaPeriode.charger(parametres)
+  return Object.fromEntries(
+    Object.entries({ du: jour(du), au: jour(au) }).filter(
       ([, valeur]) => valeur !== undefined,
     ),
   )
+}
 
 export const periodeDActivite = (
   premiere: string | null,
@@ -34,7 +38,11 @@ export const periodeDActivite = (
 export const adresseDExport = (
   chemin: string,
   { du, au }: PeriodeChoisie,
-): string => adresseDesFiltres(chemin, { du, au })
+): string =>
+  filtresDeLaPeriode.adresse(
+    { chemin, parametres: {} },
+    { du: enDate(du), au: enDate(au) },
+  )
 
 export const titreDesStatistiques = ({
   coordinateur,
@@ -47,13 +55,9 @@ export const adressesDesExports = (utilisateurId: string) => ({
   accompagnements: `/administration/utilisateurs/${utilisateurId}/export/accompagnements`,
 })
 
-export const bornesDuFiltreDePeriode = (
+export const debutDuFiltreDePeriode = (
   premiere: string | null,
-  { du, au }: PeriodeChoisie,
-) => ({
-  minDate: premiere === null ? undefined : new Date(premiere),
-  defaultValue: du === undefined || au === undefined ? undefined : { du, au },
-})
+): Date | undefined => (premiere === null ? undefined : new Date(premiere))
 
 type Part = {
   readonly label: string
