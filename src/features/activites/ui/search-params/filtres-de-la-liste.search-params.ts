@@ -99,16 +99,6 @@ export const filtresDeLaListe = (
   }
 }
 
-export type OptionDeBeneficiaire = {
-  readonly label: string
-  readonly value: { readonly id: string } | null
-}
-
-export type OptionDeMediateur = {
-  readonly label: string
-  readonly value: { readonly mediateurId?: string | null } | null
-}
-
 type Parametres = Readonly<Record<string, string | null>>
 
 export const typesEnParametres = (

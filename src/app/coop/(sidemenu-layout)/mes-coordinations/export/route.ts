@@ -1,8 +1,8 @@
 import type { NextRequest } from 'next/server'
 import { classeurDeMesCoordinations } from '@/features/activites/abilities/exporter-les-activites-de-coordination/implementations/excel/classeur-de-mes-coordinations'
 import { lignesDesCoordinations } from '@/features/activites/abilities/exporter-les-activites-de-coordination/ui/presenters/lignes-des-coordinations.presenter'
-import { parametresDeLaRecherche } from '@/features/activites/abilities/exporter-les-activites-de-coordination/ui/search-params/parametres-de-la-recherche.search-params'
-import { criteresDesCoordinations } from '@/features/activites/domain'
+import { filtresDesCoordinations } from '@/features/activites/abilities/lister-les-activites-de-coordination/ui/filtres/filtres-des-coordinations.filtre'
+import { criteresDesFiltresDeCoordination } from '@/features/activites/ui/filtres/coordinations.filtre'
 import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
 import { getSessionUserFromSessionToken } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
 import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementations/session/session-token-from-cookies'
@@ -21,8 +21,8 @@ export const GET = async (request: NextRequest) => {
   if (!user?.coordinateur) return new Response('Unauthorized', { status: 401 })
 
   const classeur = await classeurDeMesCoordinations({
-    criteres: criteresDesCoordinations(
-      parametresDeLaRecherche(request.nextUrl.searchParams),
+    criteres: criteresDesFiltresDeCoordination(
+      filtresDesCoordinations.charger(request.nextUrl.searchParams),
     ),
     coordinateurId: user.coordinateur.id,
     auteur: auteurDeLExport(user),

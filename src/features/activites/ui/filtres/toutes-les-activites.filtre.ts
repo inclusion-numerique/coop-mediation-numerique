@@ -36,3 +36,7 @@ export const filtresDeToutesLesActivites = composerLesFiltres(
   filtreDesEmployeuses,
   filtreDeLaSource,
 )
+
+export type ValeursDeToutesLesActivites = ReturnType<
+  typeof filtresDeToutesLesActivites.charger
+>

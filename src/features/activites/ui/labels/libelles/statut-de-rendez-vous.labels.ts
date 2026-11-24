@@ -1,4 +1,3 @@
-import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
 import type { StatutDeRendezVous } from '../../../domain'
 
 export type SeveriteDeBadge = 'new' | 'success' | 'error' | 'warning' | 'info'
@@ -45,28 +44,3 @@ export type StatutDeRendezVousDansLURL =
   | 'revoked'
   | 'excused'
   | 'noshow'
-
-const libellesDesStatutsDansLURL: Readonly<
-  Record<StatutDeRendezVousDansLURL, string>
-> = {
-  unknown: 'À venir',
-  past: 'Passé',
-  seen: 'Honoré',
-  revoked: 'Annulé',
-  excused: 'Annulé par bénéficiaire',
-  noshow: 'Absence',
-}
-
-const optionsDesStatutsDeRendezVous: readonly SelectOption<StatutDeRendezVousDansLURL>[] =
-  [
-    { value: 'unknown', label: libellesDesStatutsDansLURL.unknown },
-    { value: 'past', label: libellesDesStatutsDansLURL.past },
-    { value: 'seen', label: libellesDesStatutsDansLURL.seen },
-    { value: 'revoked', label: libellesDesStatutsDansLURL.revoked },
-    { value: 'excused', label: libellesDesStatutsDansLURL.excused },
-    { value: 'noshow', label: libellesDesStatutsDansLURL.noshow },
-  ]
-
-export const libelleDuStatutDansLURL = (valeur: string): string =>
-  optionsDesStatutsDeRendezVous.find((option) => option.value === valeur)
-    ?.label ?? valeur

@@ -1,6 +1,5 @@
 import { notFound } from 'next/navigation'
 import { NextRequest } from 'next/server'
-import { z } from 'zod'
 import { compterLesAccompagnements } from '@/features/activites/abilities/compter-les-accompagnements/implementations/prisma/totaux-des-accompagnements.query'
 import { totauxPresentes } from '@/features/activites/abilities/compter-les-accompagnements/ui/presenters/totaux.presenter'
 import { compterLesAccompagnementsParCommune } from '@/features/activites/abilities/compter-les-accompagnements-par-commune/implementations/prisma/accompagnements-par-commune.query'
@@ -38,7 +37,6 @@ import { barreDesStatistiquesAvec } from '@/features/activites/ui/presenters/bar
 import { getSessionUserFromId } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
 import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage/implementations/prisma/resoudre-un-lien-de-partage.query'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/rdvs-des-activites.query'
-import { ActivitesFilterValidations } from '@/features/statistiques/domain/filtres-des-activites'
 import { utilisateurDuPartage } from '@/features/statistiques/domain/utilisateur-du-partage'
 import { buildStatistiquesWorksheet } from '@/features/statistiques/implementations/excel/classeur-des-statistiques'
 import { entreeDuClasseur } from '@/features/statistiques/ui/presenters/entree-du-classeur.presenter'
@@ -107,10 +105,6 @@ const classeurDuPerimetre = async (
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
-
-const _ExportActivitesValidation = z
-  .object(ActivitesFilterValidations)
-  .omit({ beneficiaires: true })
 
 export const GET = async (
   request: NextRequest,

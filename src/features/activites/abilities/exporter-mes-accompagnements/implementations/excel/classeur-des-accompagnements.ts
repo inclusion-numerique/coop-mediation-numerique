@@ -15,21 +15,21 @@ export type LibelleDeFiltre = { readonly type: string; readonly label: string }
 const COLONNE_DE_LA_DATE = 1
 
 const filtresDisponibles = [
-  { label: 'Période', type: 'periode' },
-  { label: 'Source', type: 'source' },
-  { label: 'Lieux d’accompagnement', type: 'lieux' },
-  { label: 'Communes', type: 'communes' },
-  { label: 'Départements', type: 'departements' },
-  { label: 'Type d’accompagnement', type: 'types' },
-  { label: 'Rôle', type: 'conseiller_numerique' },
+  { label: 'Période', type: 'Période' },
+  { label: 'Source', type: 'Source' },
+  { label: 'Lieux d’accompagnement', type: 'Lieux d’accompagnement' },
+  { label: 'Communes', type: 'Communes' },
+  { label: 'Départements', type: 'Départements' },
+  { label: 'Type d’accompagnement', type: 'Type d’accompagnement' },
+  { label: 'Rôle', type: 'Rôle' },
   {
     label: 'Thématiques non administratives',
-    type: 'thematiqueNonAdministratives',
+    type: 'Thématiques non administratives',
   },
-  { label: 'Thématiques administratives', type: 'thematiqueAdministratives' },
-  { label: 'Tags', type: 'tags' },
-  { label: 'Bénéficiaires', type: 'beneficiaires', masqueSiVide: true },
-  { label: 'Médiateurs', type: 'mediateurs', masqueSiVide: true },
+  { label: 'Thématiques administratives', type: 'Thématiques administratives' },
+  { label: 'Tags', type: 'Tags' },
+  { label: 'Bénéficiaires', type: 'Bénéficiaires', masqueSiVide: true },
+  { label: 'Médiateurs', type: 'Médiateurs', masqueSiVide: true },
 ]
 
 export const classeurDesAccompagnements = ({

@@ -1,6 +1,8 @@
 import type { NextRequest } from 'next/server'
 import { classeurDeMesAccompagnements } from '@/features/activites/abilities/exporter-mes-accompagnements/implementations/excel/classeur-de-mes-accompagnements'
-import { classeurPresente } from '@/features/activites/abilities/exporter-mes-accompagnements/ui/presenters/export.presenter'
+import { classeurPresenteAvec } from '@/features/activites/abilities/exporter-mes-accompagnements/ui/presenters/export.presenter'
+import { criteresDesFiltres } from '@/features/activites/ui/filtres/activites.filtre'
+import { filtresDeToutesLesActivites } from '@/features/activites/ui/filtres/toutes-les-activites.filtre'
 import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
 import { getSessionUserFromSessionToken } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
 import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementations/session/session-token-from-cookies'
@@ -27,8 +29,11 @@ export const GET = async (request: NextRequest) => {
     return new Response('Unauthorized', { status: 401 })
   }
 
+  const valeurs = filtresDeToutesLesActivites.charger(
+    request.nextUrl.searchParams,
+  )
   const classeur = await classeurDeMesAccompagnements({
-    parametres: Object.fromEntries(request.nextUrl.searchParams.entries()),
+    criteres: criteresDesFiltres(valeurs),
     demandeur: {
       mediateurId: user.mediateur?.id ?? null,
       coordinateurId: user.coordinateur?.id ?? null,
@@ -36,7 +41,7 @@ export const GET = async (request: NextRequest) => {
     },
     auteur: auteurDeLExport(user),
     fuseau: user.timezone,
-    presenter: classeurPresente,
+    presenter: classeurPresenteAvec(valeurs),
     fournisseurs: {
       lieuxDesActivites: getLieuxDesActivitesOptions,
       communesEtDepartements: getMediateurCommunesAndDepartementsOptions,

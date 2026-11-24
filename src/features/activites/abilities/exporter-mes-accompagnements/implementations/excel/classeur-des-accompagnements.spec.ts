@@ -10,8 +10,8 @@ const demandeur: AuteurDExport = {
 }
 
 const filtres = [
-  { label: 'Commune : Lyon 2eme · 69002', type: 'communes' },
-  { label: 'Accompagnement individuel', type: 'types' },
+  { label: 'Commune : Lyon 2eme · 69002', type: 'Communes' },
+  { label: 'Accompagnement individuel', type: 'Type d’accompagnement' },
 ]
 
 const entetes = ['Date', 'Enregistré le', 'Type']

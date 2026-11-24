@@ -25,18 +25,6 @@ export const typeActiviteLabels: {
   Collectif: 'Atelier collectif',
 }
 
-const typeActiviteForSlug: { [key in TypeActiviteSlug]: TypeActivite } = {
-  individuel: 'Individuel',
-  collectif: 'Collectif',
-}
-
-export const typeActiviteSlugLabels: {
-  [key in TypeActiviteSlug]: string
-} = {
-  individuel: typeActiviteLabels[typeActiviteForSlug.individuel],
-  collectif: typeActiviteLabels[typeActiviteForSlug.collectif],
-}
-
 export const typeActivitePictograms: Record<TypeActivite, Pictogram> = {
   Individuel: SittingAtATableIcon,
   Collectif: TeacherIcon,

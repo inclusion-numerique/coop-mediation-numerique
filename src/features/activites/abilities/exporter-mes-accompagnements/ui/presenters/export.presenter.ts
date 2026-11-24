@@ -1,13 +1,7 @@
-import type { CriteresDesActivites } from '../../../../domain'
 import {
-  type ActivitesFiltersLabels,
-  generateActivitesFiltersLabels,
-} from '../../../../ui/labels/filtres/filtres.labels'
-import { optionsDesSources } from '../../../../ui/labels/libelles/source-de-l-activite.labels'
-import {
-  type FiltresDeLaListe,
-  filtresDeLaListe,
-} from '../../../../ui/search-params/filtres-de-la-liste.search-params'
+  filtresDeToutesLesActivites,
+  type ValeursDeToutesLesActivites,
+} from '../../../../ui/filtres/toutes-les-activites.filtre'
 import type { ExportDesAccompagnements } from '../../domain'
 import { contenuDuClasseur } from './lignes-du-classeur.presenter'
 
@@ -36,46 +30,59 @@ type NomsDesFiltres = {
   readonly tags: readonly { readonly id: string; readonly nom: string }[]
 }
 
-const libellesDuClasseur = (
-  filtres: FiltresDeLaListe,
-  noms: NomsDesFiltres,
-  avecImportsV1: boolean,
-): ActivitesFiltersLabels =>
-  generateActivitesFiltersLabels(filtres, {
-    communesOptions: [...noms.communes],
-    departementsOptions: [...noms.departements],
-    lieuxActiviteOptions: [...noms.lieux],
-    structuresEmployeusesOptions: noms.employeuses.map(({ id, nom }) => ({
-      id: String(id),
-      nom: nom ?? '',
-    })),
-    tagsOptions: noms.tags.map(({ id, nom }) => ({ id, nom })),
-    beneficiairesOptions: noms.beneficiaires.map(({ label, value }) => ({
-      label,
-      value: value?.id ? { id: value.id } : null,
-    })),
-    mediateursOptions: [...noms.mediateurs],
-    optionsDesSources: avecImportsV1 ? [...optionsDesSources] : [],
-  })
+const libelles = (noms: readonly { label: string; value: string }[]) =>
+  new Map(noms.map(({ value, label }) => [value, label]))
 
-export const classeurPresente = ({
-  criteres,
-  noms,
-  exportDes,
-  fuseau,
-}: {
-  readonly criteres: CriteresDesActivites
-  readonly noms: NomsDesFiltres
-  readonly exportDes: ExportDesAccompagnements
-  readonly fuseau: string
-}) => ({
-  filtres: libellesDuClasseur(
-    filtresDeLaListe(criteres),
+const etiquettesDuClasseur = (
+  valeurs: ValeursDeToutesLesActivites,
+  noms: NomsDesFiltres,
+) =>
+  filtresDeToutesLesActivites.etiquettes(
+    { chemin: '', parametres: {} },
+    valeurs,
+    {
+      lieux: libelles(noms.lieux),
+      communes: libelles(noms.communes),
+      departements: libelles(noms.departements),
+      tags: libelles(
+        noms.tags.map(({ id, nom }) => ({ value: id, label: nom })),
+      ),
+      structuresEmployeuses: libelles(
+        noms.employeuses.map(({ id, nom }) => ({
+          value: String(id),
+          label: nom ?? '',
+        })),
+      ),
+      mediateurs: libelles(
+        noms.mediateurs.flatMap(({ label, value }) =>
+          value === null ? [] : [{ value: value.mediateurId, label }],
+        ),
+      ),
+      beneficiaires: libelles(
+        noms.beneficiaires.flatMap(({ label, value }) =>
+          value?.id ? [{ value: value.id, label }] : [],
+        ),
+      ),
+    },
+  )
+
+export const classeurPresenteAvec =
+  (valeurs: ValeursDeToutesLesActivites) =>
+  ({
     noms,
-    exportDes.colonnes.source,
-  ),
-  ...contenuDuClasseur(exportDes, fuseau),
-})
+    exportDes,
+    fuseau,
+  }: {
+    readonly noms: NomsDesFiltres
+    readonly exportDes: ExportDesAccompagnements
+    readonly fuseau: string
+  }) => ({
+    filtres: etiquettesDuClasseur(valeurs, noms).map(({ titre, libelle }) => ({
+      type: titre,
+      label: libelle,
+    })),
+    ...contenuDuClasseur(exportDes, fuseau),
+  })
 
 export const cheminDImpressionDesStatistiques = (requete: string) =>
   `/coop/mes-statistiques?print=true${requete === '' ? '' : (`&${requete}` as const)}` as const
