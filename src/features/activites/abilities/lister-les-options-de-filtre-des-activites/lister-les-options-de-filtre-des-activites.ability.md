@@ -46,3 +46,13 @@
 * Given une activité supprimée du médiateur le "2025-01-05" pour l'employeuse "Centre Social" taguée "Santé"
 * When je liste les options de filtre de mes activités
 * Then le médiateur n'a aucune activité
+
+## Rule: Les statistiques proposent les tags les plus utilisés du périmètre
+
+### Scenario: Le tag le plus utilisé vient en premier
+
+* Given le médiateur a une activité le "2026-02-10" pour l'employeuse "Mairie de Lyon" taguée "Parentalité"
+* And le médiateur a une activité le "2026-02-11" pour l'employeuse "Mairie de Lyon" taguée "Numérique"
+* And le médiateur a une activité le "2026-02-12" pour l'employeuse "Mairie de Lyon" taguée "Numérique"
+* When je liste les tags les plus utilisés de mon périmètre
+* Then les tags les plus utilisés sont "Numérique, Parentalité"

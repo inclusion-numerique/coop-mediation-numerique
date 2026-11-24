@@ -7,6 +7,7 @@ import {
   type OptionsDeFiltreDesActivites,
   optionsDeFiltreDesActivites,
 } from './implementations/prisma/options-de-filtre-des-activites.query'
+import { tagsLesPlusUtilisesDuPerimetre } from './implementations/prisma/tags-du-perimetre.query'
 
 type Semis = {
   readonly userIds: readonly string[]
@@ -24,6 +25,7 @@ const semisVide: Semis = {
 
 let semis: Semis = semisVide
 let options: OptionsDeFiltreDesActivites | undefined
+let tagsDuPerimetre: readonly { readonly nom: string }[] = []
 
 const semerUnMediateur = async (): Promise<string> => {
   const userId = v4()
@@ -58,6 +60,8 @@ const semerUnTag = async (
   nom: string,
   mediateurId: string,
 ): Promise<string> => {
+  const deja = semis.tags[nom]
+  if (deja !== undefined) return deja
   const { id } = await prismaClient.tag.create({
     data: { nom, mediateurId },
     select: { id: true },
@@ -209,6 +213,17 @@ Then('les tags proposés sont {string}', (attendus: string) => {
       .join(', '),
     attendus,
   )
+})
+
+When('je liste les tags les plus utilisés de mon périmètre', async () => {
+  tagsDuPerimetre = await tagsLesPlusUtilisesDuPerimetre({
+    type: 'Mediateur',
+    mediateur: MediateurId(await mediateurCourant()),
+  })
+})
+
+Then('les tags les plus utilisés sont {string}', (attendus: string) => {
+  assert.strictEqual(tagsDuPerimetre.map(({ nom }) => nom).join(', '), attendus)
 })
 
 Then("aucun tag n'est proposé", () => {
