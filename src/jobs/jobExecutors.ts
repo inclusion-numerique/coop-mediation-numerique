@@ -35,7 +35,7 @@ export const executeJob = async (job: Job) => {
     data: {
       id,
       name: job.name,
-      data: job.payload,
+      ...(job.payload === undefined ? {} : { data: job.payload }),
       started: stopWatch.started,
     },
   })
