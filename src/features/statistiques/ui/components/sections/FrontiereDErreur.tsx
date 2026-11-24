@@ -5,7 +5,7 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import { catchError } from 'next/error'
 
 export const FrontiereDErreur = catchError(
-  ({ className }: { className?: string }, { retry }) => (
+  ({ className }: { className?: string | undefined }, { retry }) => (
     <div className={className}>
       <Alert
         severity="error"

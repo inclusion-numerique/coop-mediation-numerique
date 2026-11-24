@@ -19,8 +19,9 @@ const personnes: Readonly<Record<string, Personne>> = {
 const consultation: { personne?: Personne; titre?: string } = {}
 
 Given('une personne connectée qui est {string}', (personne: string) => {
-  assert.ok(personne in personnes, `Personne inconnue : ${personne}`)
-  consultation.personne = personnes[personne]
+  const decrite = personnes[personne]
+  assert.ok(decrite, `Personne inconnue : ${personne}`)
+  consultation.personne = decrite
 })
 
 When('elle consulte ses statistiques', () => {

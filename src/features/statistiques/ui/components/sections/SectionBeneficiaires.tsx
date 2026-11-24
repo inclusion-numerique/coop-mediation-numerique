@@ -8,7 +8,7 @@ export const SectionBeneficiaires = ({
   profil,
   communes,
 }: {
-  wording?: 'personnel' | 'generique'
+  wording?: 'personnel' | 'generique' | undefined
   profil: ReactNode
   communes?: ReactNode
 }) => {

@@ -8,7 +8,7 @@ export const SectionGenerale = ({
   chiffresCles,
   graphique,
 }: {
-  wording?: 'personnel' | 'generique'
+  wording?: 'personnel' | 'generique' | undefined
   chiffresCles: ReactNode
   graphique: ReactNode
 }) => {

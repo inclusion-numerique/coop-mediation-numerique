@@ -10,7 +10,7 @@ const buildDonneesTerritoralesUrl = (codeDepartement?: string) =>
 export const StatistiquesImpact = ({
   codeDepartement,
 }: {
-  codeDepartement?: string
+  codeDepartement?: string | undefined
 }) => (
   <>
     <h2 className="fr-h5 fr-text-mention--grey">

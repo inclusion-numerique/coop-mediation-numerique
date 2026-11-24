@@ -20,8 +20,8 @@ export const SectionActivites = ({
   lieux,
   communes,
 }: {
-  wording?: 'personnel' | 'generique'
-  canManageTags?: boolean
+  wording?: 'personnel' | 'generique' | undefined
+  canManageTags?: boolean | undefined
   types: ReactNode
   thematiques: ReactNode
   demarches: ReactNode

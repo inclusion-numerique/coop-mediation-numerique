@@ -9,7 +9,7 @@ export const BlocEnAttente = ({
   attente,
 }: {
   children: ReactNode
-  className?: string
+  className?: string | undefined
   attente?: ReactNode
 }) => (
   <FrontiereDErreur className={className}>

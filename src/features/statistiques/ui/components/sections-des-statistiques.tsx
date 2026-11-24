@@ -44,7 +44,7 @@ export const sectionGenerale = (
     chiffresCles,
     graphique,
   }: { chiffresCles: ReactNode; graphique: ReactNode },
-  { wording }: { wording?: Wording } = {},
+  { wording }: { wording?: Wording | undefined } = {},
 ) => (
   <SectionGenerale
     wording={wording}
@@ -55,7 +55,7 @@ export const sectionGenerale = (
 
 export const sectionBeneficiaires = (
   { profil, communes }: { profil: ReactNode; communes: ReactNode },
-  { wording }: { wording?: Wording } = {},
+  { wording }: { wording?: Wording | undefined } = {},
 ) => (
   <SectionBeneficiaires
     wording={wording}
@@ -78,7 +78,10 @@ export const sectionActivites = (
   {
     wording,
     canManageTags,
-  }: { wording?: Wording; canManageTags?: boolean } = {},
+  }: {
+    wording?: Wording | undefined
+    canManageTags?: boolean | undefined
+  } = {},
 ) => (
   <SectionActivites
     wording={wording}
