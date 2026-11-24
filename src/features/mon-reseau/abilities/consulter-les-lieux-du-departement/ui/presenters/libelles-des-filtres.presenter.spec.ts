@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { libelleDesResultats } from '../presenters/libelles-des-filtres.presenter'
+import { libelleDesResultats } from './libelles-des-filtres.presenter'
 
 describe('étiquettes des filtres de l’annuaire des lieux', () => {
   it.each([
