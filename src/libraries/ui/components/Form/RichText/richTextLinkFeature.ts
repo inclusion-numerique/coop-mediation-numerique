@@ -5,9 +5,9 @@ import {
 } from '@/libraries/ui/components/Form/RichText/RichTextLinkModalForm'
 
 export type EditLinkOptions = {
-  url?: string
+  url?: string | undefined
   onSubmit: (data: RichTextLink) => void
-  onCancel?: () => void
+  onCancel?: (() => void) | undefined
 }
 
 export const linkCommandHandler =

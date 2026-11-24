@@ -6,8 +6,8 @@ const Stars = ({
   max,
 }: {
   count: number
-  className?: string
-  max?: number
+  className?: string | undefined
+  max?: number | undefined
 }) => (
   <div
     className={classNames(

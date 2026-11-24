@@ -27,8 +27,8 @@ export const createToast = ({
 }: {
   priority: ToastPriority
   message: JSX.Element | string | null
-  action?: ButtonProps
-  duration?: number
+  action?: ButtonProps | undefined
+  duration?: number | undefined
 }) => {
   toast(
     action ? (
@@ -45,7 +45,7 @@ export const createToast = ({
       <span className="fr-no-print">{message}</span>
     ),
     {
-      duration,
+      ...(duration === undefined ? {} : { duration }),
       className: classNames('notification', variantes[priority]),
       icon: (
         <span className={classNames('notification__icone', icons[priority])} />

@@ -14,10 +14,11 @@ import { useNavigationSideMenu } from '@/libraries/ui/hooks/useNavigationSideMen
  */
 
 type CompactNavigationSideMenuProps = {
-  className?: string
+  className?: string | undefined
   contentId: string
-  id?: string
-} & Omit<SideMenuProps, 'id'>
+  id?: string | undefined
+  style?: SideMenuProps['style'] | undefined
+} & Omit<SideMenuProps, 'id' | 'style' | 'className'>
 
 const CompactNavigationSideMenu = memo(
   ({

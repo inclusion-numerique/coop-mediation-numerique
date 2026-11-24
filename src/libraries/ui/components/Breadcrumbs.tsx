@@ -14,9 +14,9 @@ const Breadcrumbs = <T extends string, Accueil extends string = '/'>({
   className,
 }: {
   currentPage: string
-  parents?: BreadcrumbParents<T>
-  homeLinkHref?: Route<Accueil>
-  className?: string
+  parents?: BreadcrumbParents<T> | undefined
+  homeLinkHref?: Route<Accueil> | undefined
+  className?: string | undefined
 }) => (
   <Breadcrumb
     currentPageLabel={currentPage}
@@ -24,7 +24,7 @@ const Breadcrumbs = <T extends string, Accueil extends string = '/'>({
       href: homeLinkHref ?? '/',
     }}
     segments={parents}
-    className={className}
+    {...(className === undefined ? {} : { className })}
   />
 )
 

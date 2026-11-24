@@ -10,8 +10,8 @@ export type SelectedItemsProps<T> = {
   values: T[]
   itemToKey: (value: T) => string
   itemToString: (value: T) => string
-  onClick?: (value: T) => () => void
-  className?: string
+  onClick?: ((value: T) => () => void) | undefined
+  className?: string | undefined
 }
 
 export const SelectedItems = <T,>({
@@ -22,7 +22,7 @@ export const SelectedItems = <T,>({
 }: SelectedItemsProps<T>) =>
   values.length > 0 && (
     <TagsGroup
-      className={className}
+      {...(className === undefined ? {} : { className })}
       tags={
         values.map((value) =>
           onClick

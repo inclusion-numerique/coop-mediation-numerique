@@ -27,8 +27,8 @@ const RichTextLinkModalForm = ({
   url,
 }: {
   onSubmit: (data: RichTextLink) => void
-  onCancel?: () => void
-  url?: string
+  onCancel?: (() => void) | undefined
+  url?: string | undefined
 }) => {
   const { title, cancelLabel, confirmLabel } = url
     ? {
@@ -49,14 +49,12 @@ const RichTextLinkModalForm = ({
     formState: { isSubmitting },
   } = useForm<RichTextLink>({
     resolver: zodResolver(RichTextLinkValidation),
-    defaultValues: {
-      url,
-    },
+    defaultValues: url === undefined ? {} : { url },
   })
 
   useModalVisibility(RichTextLinkModal.id, {
     onClosed: () => {
-      reset({ url: undefined })
+      reset({})
     },
   })
 
@@ -71,7 +69,7 @@ const RichTextLinkModalForm = ({
   }
 
   useEffect(() => {
-    reset({ url })
+    reset(url === undefined ? {} : { url })
   }, [reset, url])
 
   const disabled = isSubmitting
@@ -87,7 +85,9 @@ const RichTextLinkModalForm = ({
             doClosesModal: true,
             children: cancelLabel,
             type: 'button',
-            onClick: onCancelProperty,
+            ...(onCancelProperty === undefined
+              ? {}
+              : { onClick: onCancelProperty }),
             disabled,
           },
           {

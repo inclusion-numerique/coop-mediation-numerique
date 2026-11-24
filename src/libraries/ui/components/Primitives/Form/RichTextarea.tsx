@@ -16,16 +16,16 @@ const editorExtensions = [
 export type RichTextareaProps = {
   id: string
   name: string
-  label?: ReactNode
-  placeholder?: string
-  hint?: ReactNode
-  value?: string
-  ariaDescribedBy?: string
-  'data-testid'?: string
-  disabled?: boolean
-  className?: string
-  onChange?: (text: string) => void
-  onBlur?: (text: string) => void
+  label?: ReactNode | undefined
+  placeholder?: string | undefined
+  hint?: ReactNode | undefined
+  value?: string | undefined
+  ariaDescribedBy?: string | undefined
+  'data-testid'?: string | undefined
+  disabled?: boolean | undefined
+  className?: string | undefined
+  onChange?: ((text: string) => void) | undefined
+  onBlur?: ((text: string) => void) | undefined
 }
 
 export const RichTextarea = ({
@@ -44,7 +44,7 @@ export const RichTextarea = ({
 }: RichTextareaProps) => {
   const editor = useEditor({
     extensions: editorExtensions,
-    content: value,
+    ...(value === undefined ? {} : { content: value }),
     immediatelyRender: false,
     onUpdate: (event) => {
       if (onChange) {

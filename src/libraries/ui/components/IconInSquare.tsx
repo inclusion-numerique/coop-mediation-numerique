@@ -21,9 +21,11 @@ const IconInSquare = ({
   className?: string
   iconId: ButtonProps.IconOnly['iconId']
   size?: IconInSquareSize
-  classes?: {
-    icon?: string
-  }
+  classes?:
+    | {
+        icon?: string | undefined
+      }
+    | undefined
 }) => (
   <div
     className={classNames(

@@ -15,7 +15,7 @@ export const BadgeAvecInfobulle = ({
   libelle: string
   classe: string
   infobulle: string | null
-  small?: boolean
+  small?: boolean | undefined
 }) => {
   const [estMonte, setEstMonte] = useState(false)
   const infobulleId = useId()
@@ -25,7 +25,7 @@ export const BadgeAvecInfobulle = ({
   return (
     <Badge
       as="span"
-      small={small}
+      {...(small === undefined ? {} : { small })}
       className={classNames('fr-text--nowrap', classe)}
       noIcon
     >

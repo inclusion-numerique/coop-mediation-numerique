@@ -12,30 +12,32 @@ import { UiComponentProps } from '@/libraries/ui/utils/uiComponentProps'
 type CommonProps<T extends FieldValues> = {
   control: Control<T>
   path: FieldPath<T>
-  disabled?: boolean
-  label?: ReactNode
-  hint?: ReactNode
-  placeholder?: string
-  valid?: string
-  icon?: string
-  info?: ReactNode | ((value?: string | null) => ReactNode)
-  asterisk?: boolean
-  classes?: {
-    container?: string
-    label?: string
-    input?: string
-    inputWrap?: string
-  }
-  inputPre?: ReactNode
-  inputPost?: ReactNode
-  labelSrOnly?: boolean
+  disabled?: boolean | undefined
+  label?: ReactNode | undefined
+  hint?: ReactNode | undefined
+  placeholder?: string | undefined
+  valid?: string | undefined
+  icon?: string | undefined
+  info?: ReactNode | ((value?: string | null) => ReactNode) | undefined
+  asterisk?: boolean | undefined
+  classes?:
+    | {
+        container?: string | undefined
+        label?: string | undefined
+        input?: string | undefined
+        inputWrap?: string | undefined
+      }
+    | undefined
+  inputPre?: ReactNode | undefined
+  inputPost?: ReactNode | undefined
+  labelSrOnly?: boolean | undefined
 }
 
 type InputProps = {
-  type?: Exclude<HTMLInputTypeAttribute, 'checkbox' | 'textarea'>
-  min?: number | string
-  max?: number | string
-  step?: number | string
+  type?: Exclude<HTMLInputTypeAttribute, 'checkbox' | 'textarea'> | undefined
+  min?: number | string | undefined
+  max?: number | string | undefined
+  step?: number | string | undefined
 }
 
 type TextareaProps = {

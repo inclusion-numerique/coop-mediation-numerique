@@ -18,60 +18,70 @@ export type InputProps = InputProps.RegularInput | InputProps.TextArea
 
 export namespace InputProps {
   export type Common = {
-    className?: string
-    id?: string
+    className?: string | undefined
+    id?: string | undefined
     label: ReactNode
-    info?: ReactNode
-    hintText?: ReactNode
-    hideLabel?: boolean
-    disabled?: boolean
-    iconId?: FrIconClassName | RiIconClassName
-    size?: 'small' | 'medium' | 'large' | 'x-large'
-    classes?: Partial<
-      Record<
-        | 'root'
-        | 'label'
-        | 'description'
-        | 'nativeInputOrTextArea'
-        | 'message'
-        | 'wrap',
-        string
-      >
-    >
-    style?: CSSProperties
-    state?: 'success' | 'error' | 'info' | 'default'
-    stateRelatedMessage?: ReactNode
-    addinStart?: ReactNode
-    addinEnd?: ReactNode
-    addonStart?: ReactNode
-    addonEnd?: ReactNode
-    action?: ReactNode
+    info?: ReactNode | undefined
+    hintText?: ReactNode | undefined
+    hideLabel?: boolean | undefined
+    disabled?: boolean | undefined
+    iconId?: FrIconClassName | RiIconClassName | undefined
+    size?: 'small' | 'medium' | 'large' | 'x-large' | undefined
+    classes?:
+      | Partial<
+          Record<
+            | 'root'
+            | 'label'
+            | 'description'
+            | 'nativeInputOrTextArea'
+            | 'message'
+            | 'wrap',
+            string
+          >
+        >
+      | undefined
+    style?: CSSProperties | undefined
+    state?: 'success' | 'error' | 'info' | 'default' | undefined
+    stateRelatedMessage?: ReactNode | undefined
+    addinStart?: ReactNode | undefined
+    addinEnd?: ReactNode | undefined
+    addonStart?: ReactNode | undefined
+    addonEnd?: ReactNode | undefined
+    action?: ReactNode | undefined
   }
 
   export type RegularInput = Common & {
-    textArea?: false
-    nativeInputProps?: DetailedHTMLProps<
-      InputHTMLAttributes<HTMLInputElement>,
-      HTMLInputElement
-    >
-    nativeLabelProps?: DetailedHTMLProps<
-      LabelHTMLAttributes<HTMLInputElement>,
-      HTMLInputElement
-    >
+    textArea?: false | undefined
+    nativeInputProps?:
+      | DetailedHTMLProps<
+          InputHTMLAttributes<HTMLInputElement>,
+          HTMLInputElement
+        >
+      | undefined
+    nativeLabelProps?:
+      | DetailedHTMLProps<
+          LabelHTMLAttributes<HTMLInputElement>,
+          HTMLInputElement
+        >
+      | undefined
 
     nativeTextAreaProps?: never
   }
 
   export type TextArea = Common & {
     textArea: true
-    nativeTextAreaProps?: DetailedHTMLProps<
-      TextareaHTMLAttributes<HTMLTextAreaElement>,
-      HTMLTextAreaElement
-    >
-    nativeLabelProps?: DetailedHTMLProps<
-      LabelHTMLAttributes<HTMLTextAreaElement>,
-      HTMLTextAreaElement
-    >
+    nativeTextAreaProps?:
+      | DetailedHTMLProps<
+          TextareaHTMLAttributes<HTMLTextAreaElement>,
+          HTMLTextAreaElement
+        >
+      | undefined
+    nativeLabelProps?:
+      | DetailedHTMLProps<
+          LabelHTMLAttributes<HTMLTextAreaElement>,
+          HTMLTextAreaElement
+        >
+      | undefined
 
     nativeInputProps?: never
   }

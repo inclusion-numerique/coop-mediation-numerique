@@ -10,9 +10,9 @@ const formatWeekdayName = (date: Date) =>
   format(date, 'EEEEE', { locale: fr }).toUpperCase()
 
 type CustomNavProps = {
-  selected?: DateRange
-  minDate?: Date
-  maxDate?: Date
+  selected?: DateRange | undefined
+  minDate?: Date | undefined
+  maxDate?: Date | undefined
 }
 
 const CustomNav = ({ selected, minDate, maxDate }: CustomNavProps) => {
@@ -92,10 +92,10 @@ const CustomNav = ({ selected, minDate, maxDate }: CustomNavProps) => {
 }
 
 export type DateRangePickerProps = {
-  value?: DateRange
-  onChange?: (range: DateRange | undefined) => void
-  minDate?: Date
-  maxDate?: Date
+  value?: DateRange | undefined
+  onChange?: ((range: DateRange | undefined) => void) | undefined
+  minDate?: Date | undefined
+  maxDate?: Date | undefined
 }
 
 export const DateRangePicker = ({
@@ -107,14 +107,14 @@ export const DateRangePicker = ({
   <DayPicker
     className="fr-position-relative"
     mode="range"
-    selected={value}
-    onSelect={onChange}
+    {...(value === undefined ? {} : { selected: value })}
+    {...(onChange === undefined ? {} : { onSelect: onChange })}
     numberOfMonths={2}
     locale={fr}
-    defaultMonth={value?.to}
+    {...(value?.to === undefined ? {} : { defaultMonth: value.to })}
     captionLayout="dropdown"
-    startMonth={minDate}
-    endMonth={maxDate}
+    {...(minDate === undefined ? {} : { startMonth: minDate })}
+    {...(maxDate === undefined ? {} : { endMonth: maxDate })}
     disabled={[
       ...(minDate ? [{ before: minDate }] : []),
       ...(maxDate ? [{ after: maxDate }] : []),

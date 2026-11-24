@@ -5,9 +5,10 @@
  */
 export const buttonLoadingClassname = (
   isLoading: boolean,
-  className?: string,
-) => ({
-  className: isLoading
-    ? [className, 'fr-btn--loading'].filter(Boolean).join(' ')
-    : className,
-})
+  className?: string | undefined,
+) =>
+  isLoading
+    ? { className: [className, 'fr-btn--loading'].filter(Boolean).join(' ') }
+    : className === undefined
+      ? {}
+      : { className }
