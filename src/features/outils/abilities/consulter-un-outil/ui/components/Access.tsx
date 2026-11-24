@@ -37,11 +37,9 @@ export const Access = ({
     {callToActionComponent ||
       (callToAction ? (
         <Button
-          iconId={
-            callToAction.label === 'Se connecter'
-              ? 'fr-icon-account-circle-line'
-              : undefined
-          }
+          {...(callToAction.label === 'Se connecter'
+            ? { iconId: 'fr-icon-account-circle-line' as const }
+            : {})}
           className="fr-btn--responsive"
           size="large"
           title={`${callToAction.label} - nouvel onglet`}

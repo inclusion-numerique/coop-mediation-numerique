@@ -18,7 +18,7 @@ export const CardOutil = ({
 }: {
   pictogram: Pictogram
   title: string
-  slug?: string
+  slug?: string | undefined
   accessUrl: string
   children: ReactNode
   isNew?: boolean

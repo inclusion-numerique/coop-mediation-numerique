@@ -8,7 +8,13 @@ export const Hero = ({
   description,
   website,
   websiteLinkLabel,
-}: FicheOutil) => (
+}: Pick<
+  FicheOutil,
+  'title' | 'illustration' | 'pictogram' | 'description' | 'website'
+> & {
+  illustrationWidth?: number | undefined
+  websiteLinkLabel?: string | undefined
+}) => (
   <section className="fr-py-8v fr-px-12v fr-mb-3w fr-border-radius--16 fr-background-alt--brown-caramel fr-grid-row">
     <div className="fr-col-lg-8">
       <Pictogram width={illustrationWidth ?? 36} height={36} aria-hidden />

@@ -1,17 +1,21 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { routeConstruite } from '@/libraries/nextjs/route/route-construite'
-import type { FicheOutil } from '../presenters/fiche-de-l-outil.presenter'
+import type {
+  FicheOutil,
+  InformationDAcces,
+} from '../presenters/fiche-de-l-outil.presenter'
 
 export const AccessInfoLink = ({
   illustration,
   icon,
   how,
   info,
-}: Pick<
-  NonNullable<FicheOutil['access']>,
-  'illustration' | 'icon' | 'info' | 'how'
->) => (
+}: Pick<NonNullable<FicheOutil['access']>, 'how'> & {
+  illustration?: string | undefined
+  icon?: string | undefined
+  info?: InformationDAcces | undefined
+}) => (
   <div className="fr-text--center fr-background-alt--blue-france fr-border-radius--8 fr-p-3w fr-mb-3w">
     {illustration && <Image width={84} height={56} src={illustration} alt="" />}
     {icon && (
