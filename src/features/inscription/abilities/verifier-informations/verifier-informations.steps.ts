@@ -48,8 +48,9 @@ const employer = (nom: string | null) => {
 }
 
 Given('un inscrit au profil {string}', (profil: string) => {
-  assert.ok(profil in profils, `Profil inconnu : ${profil}`)
-  verification.inscrit = inscrit(profils[profil])
+  const profilDecrit = profils[profil]
+  assert.ok(profilDecrit, `Profil inconnu : ${profil}`)
+  verification.inscrit = inscrit(profilDecrit)
 })
 
 Given("un inscrit qui n'a pas encore choisi de profil", () => {
