@@ -17,10 +17,10 @@ export const QuantifiedShareLegend = ({
 }: {
   colors: string[]
   quantifiedShares: QuantifiedShare[]
-  className?: string
-  truncateLabel?: boolean // If true, the label will be truncated to the first line and an ellipsis will be added
-  oneLineLabel?: boolean // If true, the label will be displayed on one line only, may break the layout
-  tooltipKey?: string // Used to generate unique tooltip IDs
+  className?: string | undefined
+  truncateLabel?: boolean | undefined // If true, the label will be truncated to the first line and an ellipsis will be added
+  oneLineLabel?: boolean | undefined // If true, the label will be displayed on one line only, may break the layout
+  tooltipKey?: string | undefined // Used to generate unique tooltip IDs
 }) => (
   <div
     className={classNames(

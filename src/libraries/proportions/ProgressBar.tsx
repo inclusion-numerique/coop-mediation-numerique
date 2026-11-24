@@ -16,15 +16,15 @@ const ProgressBar = ({
   tooltipKey,
   style,
 }: {
-  progress?: { percentage: number; count?: number; label: string }[]
-  displayProgress?: boolean
-  min?: number
-  max?: number
-  size?: 'medium' | 'small' | 'large'
-  colors?: string[]
-  className?: string
-  tooltipKey?: string
-  style?: CSSProperties
+  progress?: { percentage: number; count?: number; label: string }[] | undefined
+  displayProgress?: boolean | undefined
+  min?: number | undefined
+  max?: number | undefined
+  size?: 'medium' | 'small' | 'large' | undefined
+  colors?: string[] | undefined
+  className?: string | undefined
+  tooltipKey?: string | undefined
+  style?: CSSProperties | undefined
 }) => (
   <span
     className={classNames(

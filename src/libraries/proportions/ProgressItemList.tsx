@@ -22,23 +22,27 @@ export const ProgressItemList = ({
 }: {
   items: QuantifiedShare[]
   maxProportion: number
-  truncateLabel?: boolean // If true, the label will be truncated to the first line and an ellipsis will be added
-  color?: string // Can be used with a single color
-  colors?: string[] // Or an array of colors for each item
-  oneLineLabel?: boolean // If true, the label will be displayed on one line only, may break the layout
-  tooltipKey?: string // Used to generate unique tooltip IDs
-  classes?: {
-    label?: string
-    count?: string
-    proportion?: string
-    progressBar?: string
-  }
-  style?: {
-    label?: CSSProperties
-    count?: CSSProperties
-    proportion?: CSSProperties
-    progressBar?: CSSProperties
-  }
+  truncateLabel?: boolean | undefined // If true, the label will be truncated to the first line and an ellipsis will be added
+  color?: string | undefined // Can be used with a single color
+  colors?: string[] | undefined // Or an array of colors for each item
+  oneLineLabel?: boolean | undefined // If true, the label will be displayed on one line only, may break the layout
+  tooltipKey?: string | undefined // Used to generate unique tooltip IDs
+  classes?:
+    | {
+        label?: string | undefined
+        count?: string | undefined
+        proportion?: string | undefined
+        progressBar?: string | undefined
+      }
+    | undefined
+  style?:
+    | {
+        label?: CSSProperties | undefined
+        count?: CSSProperties | undefined
+        proportion?: CSSProperties | undefined
+        progressBar?: CSSProperties | undefined
+      }
+    | undefined
 }) => (
   <div
     className={classNames('fr-width-full', 'proportions proportions--barres')}

@@ -7,7 +7,7 @@ import { ProgressItemList } from './ProgressItemList'
 
 const orderQuantifiedShares = (
   quantifiedShares: QuantifiedShare[],
-  order?: 'asc' | 'desc',
+  order?: 'asc' | 'desc' | undefined,
 ) => {
   if (!order) return quantifiedShares
   return quantifiedShares.toSorted((a, b) => {
@@ -34,31 +34,37 @@ export const QuantifiedShareList = ({
   style,
 }: {
   quantifiedShares: QuantifiedShare[]
-  order?: 'asc' | 'desc'
-  truncateLabel?: boolean // If true, the label will be truncated to the first line and an ellipsis will be added
-  oneLineLabel?: boolean // If true, the label will be displayed on one line only, may break the layout
-  tooltipKey?: string // Used to generate unique tooltip IDs
-  colors?: string[]
-  color?: string
+  order?: 'asc' | 'desc' | undefined
+  truncateLabel?: boolean | undefined // If true, the label will be truncated to the first line and an ellipsis will be added
+  oneLineLabel?: boolean | undefined // If true, the label will be displayed on one line only, may break the layout
+  tooltipKey?: string | undefined // Used to generate unique tooltip IDs
+  colors?: string[] | undefined
+  color?: string | undefined
   // If limit is defined, the list will be truncated to the first limit.count items
   // and a button will be displayed to display the full list
-  limit?: {
-    showLabel: string
-    hideLabel: string
-    count: number
-  }
-  classes?: {
-    label?: string
-    count?: string
-    proportion?: string
-    progressBar?: string
-  }
-  style?: {
-    label?: CSSProperties
-    count?: CSSProperties
-    proportion?: CSSProperties
-    progressBar?: CSSProperties
-  }
+  limit?:
+    | {
+        showLabel: string
+        hideLabel: string
+        count: number
+      }
+    | undefined
+  classes?:
+    | {
+        label?: string | undefined
+        count?: string | undefined
+        proportion?: string | undefined
+        progressBar?: string | undefined
+      }
+    | undefined
+  style?:
+    | {
+        label?: CSSProperties | undefined
+        count?: CSSProperties | undefined
+        proportion?: CSSProperties | undefined
+        progressBar?: CSSProperties | undefined
+      }
+    | undefined
 }) => {
   const listShouldBeTruncacted =
     !!limit?.count && quantifiedShares.length > limit.count
