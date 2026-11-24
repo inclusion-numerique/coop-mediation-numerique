@@ -51,12 +51,12 @@ export const pageParCurseur = <
   data,
   links: {
     self: { href: lien(curseurDeLaPage(pagination)) },
-    next: suivant
-      ? { href: lien({ direction: 'after', value: suivant }) }
-      : undefined,
-    prev: precedent
-      ? { href: lien({ direction: 'before', value: precedent }) }
-      : undefined,
+    ...(suivant
+      ? { next: { href: lien({ direction: 'after', value: suivant }) } }
+      : {}),
+    ...(precedent
+      ? { prev: { href: lien({ direction: 'before', value: precedent }) } }
+      : {}),
   },
   meta: cursorListMeta({
     totalCount: total,

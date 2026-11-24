@@ -78,8 +78,8 @@ export const cursorPageHref = (
     cursor,
     query = '',
   }: {
-    cursor?: { direction: CursorDirection; value: string }
-    query?: string
+    cursor?: { direction: CursorDirection; value: string } | undefined
+    query?: string | undefined
   } = {},
 ) => {
   const parts = [
