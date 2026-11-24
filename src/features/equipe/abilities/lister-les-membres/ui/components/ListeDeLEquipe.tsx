@@ -13,7 +13,7 @@ import {
 import { lignesAffichees } from '../presenters/lister-les-membres.presenter'
 import { EquipeTable } from './EquipeTable'
 import EquipeVide from './EquipeVide'
-import { FiltresDeLEquipe } from './filtres/FiltresDeLEquipe'
+import { FiltresDeLEquipe } from './FiltresDeLEquipe'
 
 export const ListeDeLEquipe = ({
   membres,
