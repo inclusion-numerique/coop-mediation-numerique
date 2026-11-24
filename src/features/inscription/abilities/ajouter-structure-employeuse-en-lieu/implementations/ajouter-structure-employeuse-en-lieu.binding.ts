@@ -2,7 +2,7 @@ import {
   type AjouterStructureEmployeuseEnLieuPorts,
   ajouterStructureEmployeuseEnLieu,
 } from '../domain/ajouter-structure-employeuse-en-lieu'
-import { geocoderLAdresse } from './ban/geocoder-l-adresse'
+import { geocoderLAdresse } from './ban/geocoder-l-adresse.query'
 import { lireLAdresseDeLEmployeuse } from './prisma/adresse-de-l-employeuse.query'
 
 export const ajouterStructureEmployeuseEnLieuAvec = (
