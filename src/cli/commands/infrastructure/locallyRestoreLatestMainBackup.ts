@@ -178,12 +178,13 @@ const selectBackup = (
     ({ status }) => status === 'ready' || status === 'exporting',
   )
 
-  if (elligibleBackups.length === 0) {
+  const [plusRecent] = elligibleBackups
+  if (plusRecent === undefined) {
     throw new Error('No eligible backup found')
   }
 
   if (!date) {
-    return elligibleBackups[0]
+    return plusRecent
   }
 
   const targetDate = new Date(date)
@@ -506,9 +507,10 @@ export const locallyRestoreLatestMainBackup = new Command(
     // L'unique source est désormais le backup de la base de l'Entrepôt (dataspace_prod), où vit le
     // schéma coop depuis la bascule prod. L'ancienne base coop (DATABASE_INSTANCE_ID /
     // BACKUP_DATABASE_NAME), plus alimentée en prod, n'est plus utilisée ici.
-    const entrepotInstanceId = (
-      environnementOutillage.DATASPACE_DATABASE_INSTANCE_ID ?? ''
-    ).split('/')[1]
+    const entrepotInstanceId =
+      (environnementOutillage.DATASPACE_DATABASE_INSTANCE_ID ?? '').split(
+        '/',
+      )[1] ?? ''
     const entrepotBackupDatabaseName =
       environnementOutillage.DATASPACE_BACKUP_DATABASE_NAME ?? ''
     const secretKey = environnementOutillage.SCW_SECRET_KEY ?? ''
@@ -552,7 +554,7 @@ export const locallyRestoreLatestMainBackup = new Command(
       output('\nAvailable backups:')
       const groupedByDate = new Map<string, string[]>()
       for (const backup of elligibleBackups) {
-        const date = backup.created_at.split('T')[0]
+        const date = backup.created_at.slice(0, 10)
         const type = backup.name.includes('_weekly_')
           ? 'weekly'
           : backup.name.includes('_daily_')
