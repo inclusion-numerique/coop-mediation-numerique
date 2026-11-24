@@ -1,7 +1,7 @@
 import type { SideMenuProps } from '@codegouvfr/react-dsfr/SideMenu'
 import { useEffect, useMemo, useState } from 'react'
-import { onlyDefinedAndNotNull } from '@/libraries/collections/onlyDefinedAndNotNull'
-import { isBrowser } from '@/libraries/navigateur/isBrowser'
+import { onlyDefinedAndNotNull } from '@/libraries/collections/only-defined-and-not-null'
+import { isBrowser } from '@/libraries/navigateur/is-browser'
 
 const getIdFromItem = (item: SideMenuProps.Item): string | null =>
   'linkProps' in item

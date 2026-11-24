@@ -1,6 +1,6 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import { Meta, StoryObj } from '@storybook/react'
-import { buttonLoadingClassname } from './buttonLoadingClassname'
+import { buttonLoadingClassname } from './button-loading-classname'
 
 const meta: Meta<typeof Button> = {
   title: 'DSFR Component/Button/Loading',

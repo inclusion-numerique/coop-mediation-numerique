@@ -1,7 +1,7 @@
 import classNames from 'classnames'
 import type { Route } from 'next'
 import Link from 'next/link'
-import RedAsterisk from '@/libraries/ui/components/Form/RedAsterisk'
+import RedAsterisk from '@/libraries/ui/components/form/RedAsterisk'
 
 const RequiredFieldsDisclamer = <T extends string>({
   className,

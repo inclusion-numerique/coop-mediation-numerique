@@ -1,5 +1,5 @@
 import classNames from 'classnames'
-import RedAsterisk from '@/libraries/ui/components/Form/RedAsterisk'
+import RedAsterisk from '@/libraries/ui/components/form/RedAsterisk'
 
 const RequiredFieldsDisclaimer = ({ className }: { className?: string }) => (
   <span className={classNames('fr-text--sm fr-hint-text', className)}>

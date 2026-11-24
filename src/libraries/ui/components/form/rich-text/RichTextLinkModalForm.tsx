@@ -6,8 +6,8 @@ import { FormEventHandler, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { useForm } from 'react-hook-form'
 import z from 'zod'
-import InputFormField from '@/libraries/ui/components/Form/InputFormField'
-import { useModalVisibility } from '@/libraries/ui/hooks/useModalVisibility'
+import InputFormField from '@/libraries/ui/components/form/InputFormField'
+import { useModalVisibility } from '@/libraries/ui/hooks/use-modal-visibility'
 
 export const RichTextLinkModal = createModal({
   id: 'rich-input-form-link-config',
