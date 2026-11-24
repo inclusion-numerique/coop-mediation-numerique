@@ -2,7 +2,6 @@
 
 import { Popover } from 'radix-ui'
 import { useState } from 'react'
-import styles from '@/features/navigation/ui/components/en-tete/HeaderQuickAccess.module.css'
 import { Pictogram } from '@/libraries/pictograms/pictogram'
 import { AbcDiagLogo } from '@/libraries/pictograms/services/AbcDiagLogo'
 import { AidantsConnectLogo } from '@/libraries/pictograms/services/AidantsConnectLogo'
@@ -59,27 +58,23 @@ export const HeaderQuickAccess = () => {
         </button>
       </Popover.Trigger>
       <Popover.Portal>
-        <Popover.Content
-          align="end"
-          sideOffset={8}
-          className={styles.popoverContent}
-        >
+        <Popover.Content align="end" sideOffset={8} className="acces-rapide">
           <p className="fr-text--bold fr-text--sm fr-text--uppercase fr-mb-3w fr-text-label--blue-france fr-text--center">
             Accès rapide à mes outils
           </p>
-          <div className={styles.grid}>
+          <div className="acces-rapide__grille fr-display-grid fr-grid-cols-3">
             {tools.map((tool) => (
               <a
                 key={tool.label}
                 href={tool.href}
                 target="_blank"
                 rel="noreferrer"
-                className={styles.toolItem}
+                className="acces-rapide__outil"
               >
-                <div className={styles.iconContainer}>
+                <div className="acces-rapide__icone">
                   <tool.icon width={40} height={40} />
                 </div>
-                <span className={styles.toolLabel}>{tool.label}</span>
+                <span className="acces-rapide__libelle">{tool.label}</span>
               </a>
             ))}
           </div>

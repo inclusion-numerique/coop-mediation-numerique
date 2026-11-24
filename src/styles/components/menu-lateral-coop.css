@@ -1,46 +1,30 @@
-.sideMenu {
+.menu-lateral-coop {
   padding: 0;
 
-  /* md */
   @media (min-width: 48em) {
-    :global(.fr-sidemenu__inner) {
+    .fr-sidemenu__inner {
       padding: 24px !important;
       display: flex;
       flex-direction: column;
-
-      > .fr-collapse {
-        /* we want full height to display last button at the bottom */
-
-        /* 72px for header, 48 for the 2 24px paddings */
-        min-height: calc(100vh - 72px - 48px);
-        display: flex;
-        flex-direction: column;
-
-        .fr-sidemenu__list {
-          flex-grow: 1;
-          display: flex;
-          flex-direction: column;
-        }
-      }
     }
   }
 }
 
-.item {
+.menu-lateral-coop__element {
   margin-bottom: 8px;
 
-  :global(.fr-sidemenu__list) {
+  .fr-sidemenu__list {
     margin-top: 12px;
     margin-bottom: 0;
   }
 
-  :global(.fr-sidemenu__btn[aria-expanded]) {
+  .fr-sidemenu__btn[aria-expanded] {
     padding-left: 8px !important;
     padding-top: 8px !important;
     padding-bottom: 8px !important;
   }
 
-  :global(.fr-sidemenu__link) {
+  .fr-sidemenu__link {
     font-weight: 500;
     padding: 8px;
     line-height: 24px;
@@ -52,7 +36,7 @@
     }
   }
 
-  :global(.fr-sidemenu__link.fr-btn) {
+  .fr-sidemenu__link.fr-btn {
     padding: 0.5rem 1rem;
     color: var(--text-inverted-blue-france);
 
@@ -61,7 +45,7 @@
     }
   }
 
-  :global(.fr-sidemenu__link.fr-btn--tertiary) {
+  .fr-sidemenu__link.fr-btn--tertiary {
     color: var(--text-action-high-blue-france);
   }
 
@@ -70,9 +54,8 @@
   }
 }
 
-.lastItemAtTheBottom {
+.menu-lateral-coop__element--en-bas {
   @media (min-width: 48em) {
-    /* put last button at the bottom */
     &:last-of-type {
       margin-top: auto;
     }

@@ -10,7 +10,6 @@ import {
   useRef,
 } from 'react'
 import { useOnClickOutside } from 'usehooks-ts'
-import styles from '@/features/navigation/ui/components/en-tete/HeaderUserMenu.module.css'
 import { hrefDeLEquipe } from '@/features/navigation/ui/presenters/liens.presenter'
 import { nomAffiche } from '@/libraries/nom-affiche'
 import type { UtilisateurDeLaNavigation } from '../../layouts/CoopShell'
@@ -263,7 +262,11 @@ export const HeaderUserMenu = ({
       </button>
       <div
         role="navigation"
-        className={classNames('fr-collapse', 'fr-menu', styles.collapse)}
+        className={classNames(
+          'fr-collapse',
+          'fr-menu',
+          'menu-utilisateur__deroulant',
+        )}
         id="header-user-menu"
         ref={collapseRef}
         onClick={onClickOrEnterInsideDropdown}
@@ -273,7 +276,11 @@ export const HeaderUserMenu = ({
       </div>
       <div
         role="navigation"
-        className={classNames('fr-hidden-lg', 'fr-px-1w', styles.mobile)}
+        className={classNames(
+          'fr-hidden-lg',
+          'fr-px-1w',
+          'menu-utilisateur__mobile',
+        )}
       >
         {menuContent}
       </div>

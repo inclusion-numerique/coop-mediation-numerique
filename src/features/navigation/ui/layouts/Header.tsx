@@ -6,7 +6,6 @@ import { projectTitle } from '@/configuration/projet/config'
 import HeaderBackLink from '@/features/navigation/ui/components/en-tete/HeaderBackLink'
 import { HeaderQuickAccess } from '@/features/navigation/ui/components/en-tete/HeaderQuickAccess'
 import { HeaderUserMenu } from '@/features/navigation/ui/components/en-tete/HeaderUserMenu'
-import styles from '@/features/navigation/ui/layouts/Header.module.css'
 import LogoCoop from '@/libraries/ui/components/LogoCoop'
 import type { UtilisateurDeLaNavigation } from './CoopShell'
 
@@ -30,15 +29,11 @@ const Header = ({
   const isPublic = variant === 'public'
   const isNonPublic = variant !== 'public'
   const isFullWidth = fullWidth || isNonPublic
-  const variantStyle = classNames(
-    isPublic && styles.public,
-    isNonPublic && styles.nonPublic,
-  )
 
   return (
     <header role="banner" className="fr-header">
       <div className="fr-header__body">
-        <div className={isFullWidth ? styles.bodyContainer : 'fr-container'}>
+        <div className={isFullWidth ? 'en-tete__corps' : 'fr-container'}>
           <div className="fr-header__body-row">
             <div
               className={classNames(
@@ -94,15 +89,16 @@ const Header = ({
                     <p
                       className={classNames(
                         'fr-header__service-title fr-flex fr-align-items-center',
-                        styles.serviceTitle,
-                        variantStyle,
+                        'en-tete__titre',
+                        isPublic && 'en-tete__titre--public',
+                        isNonPublic && 'en-tete__titre--non-public',
                       )}
                     >
                       <LogoCoop
                         className={classNames(
-                          styles.logo,
+                          'en-tete__logo',
                           'fr-mr-4v',
-                          variantStyle,
+                          isNonPublic && 'en-tete__logo--non-public',
                         )}
                       />
                       {projectTitle}

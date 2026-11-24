@@ -1,4 +1,4 @@
-.bodyContainer {
+.en-tete__corps {
   padding-left: 12px;
   padding-right: 12px;
 
@@ -13,30 +13,30 @@
   }
 }
 
-.logo {
+.en-tete__logo {
   width: 56px;
   height: 56px;
   flex-basis: 56px;
   flex-shrink: 0;
 
-  &.nonPublic {
+  &.en-tete__logo--non-public {
     width: 40px;
     height: 40px;
     margin-right: 4px !important;
   }
 }
 
-.serviceTitle {
+.en-tete__titre {
   font-weight: 500;
   font-size: 16px;
   line-height: 24px;
 
-  &.nonPublic {
+  &.en-tete__titre--non-public {
     white-space: nowrap;
     width: 352px;
   }
 
-  &.public {
+  &.en-tete__titre--public {
     max-width: 290px;
     font-size: 18px;
   }

@@ -3,10 +3,8 @@
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import type { SideMenuProps } from '@codegouvfr/react-dsfr/SideMenu'
 import SideMenu from '@codegouvfr/react-dsfr/SideMenu'
-import classNames from 'classnames'
 import { usePathname } from 'next/navigation'
 import { contactEmail } from '@/configuration/projet/config'
-import styles from '@/features/navigation/ui/components/CoopSideMenu.module.css'
 import { hrefDesStatistiquesDeLaPeriode } from '@/features/navigation/ui/presenters/liens.presenter'
 import type { UtilisateurDeLaNavigation } from '../layouts/CoopShell'
 
@@ -176,8 +174,8 @@ const CoopSideMenu = ({
   return (
     <SideMenu
       classes={{
-        item: classNames(styles.item, styles.lastItemAtTheBottom),
-        root: styles.sideMenu,
+        item: 'menu-lateral-coop__element menu-lateral-coop__element--en-bas',
+        root: 'menu-lateral-coop',
       }}
       items={items.filter(onlyFor(user))}
       burgerMenuButtonText="Menu"

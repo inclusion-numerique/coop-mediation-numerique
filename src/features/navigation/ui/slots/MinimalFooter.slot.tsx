@@ -1,18 +1,13 @@
 import { headerFooterDisplayItem } from '@codegouvfr/react-dsfr/Display'
 import { FooterBottomItem } from '@codegouvfr/react-dsfr/Footer'
-import classNames from 'classnames'
 import { publicFooterProps } from '@/features/navigation/ui/components/pied-de-page/PublicFooter'
-import styles from '@/features/navigation/ui/slots/MinimalFooter.module.css'
 
 const MinimalFooter = () => {
   return (
     <footer
       role="contentinfo"
       id="fr-footer"
-      className={classNames(
-        'fr-footer__bottom fr-px-8v fr-no-print',
-        styles.footer,
-      )}
+      className="fr-footer__bottom fr-px-8v fr-no-print fr-mt-0"
     >
       <ul className="fr-footer__bottom-list">
         {...publicFooterProps.bottomItems.map((bottomItem, index) => (

@@ -3,7 +3,6 @@
 import type { SideMenuProps } from '@codegouvfr/react-dsfr/SideMenu'
 import SideMenu from '@codegouvfr/react-dsfr/SideMenu'
 import { usePathname } from 'next/navigation'
-import styles from '@/features/navigation/ui/components/CoopSideMenu.module.css'
 
 const AdministrationSideMenu = () => {
   const pathname = usePathname()
@@ -163,7 +162,10 @@ const AdministrationSideMenu = () => {
           Administration
         </p>
       }
-      classes={{ item: styles.item, root: styles.sideMenu }}
+      classes={{
+        item: 'menu-lateral-coop__element',
+        root: 'menu-lateral-coop',
+      }}
       items={items}
       burgerMenuButtonText="Menu Administration"
       sticky

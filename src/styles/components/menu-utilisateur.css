@@ -1,9 +1,9 @@
-.collapse {
+.menu-utilisateur__deroulant {
   right: 0;
   left: auto;
 }
 
-.mobile {
+.menu-utilisateur__mobile {
   > ul {
     border-top: var(--slim-grey-border);
     padding: 0 !important;
