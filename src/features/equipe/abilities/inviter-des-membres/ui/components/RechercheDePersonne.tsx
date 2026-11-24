@@ -1,11 +1,11 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import type { ComboBoxProps } from '@/libraries/formulaire/fields-components/ComboBox'
 import { Input } from '@/libraries/formulaire/fields-components/Input'
-import { Options } from '@/libraries/ui/components/primitives/Options'
+import { Options } from '@/libraries/ui/primitives/Options'
+import { PersonneAInviterOptions } from '../forms/PersonneAInviterComboBox'
 import type { PersonneAInviter } from '../forms/personne-a-inviter.form-data'
 import type { EtatDeLaRecherche } from '../presenters/mediateurs-a-inviter.presenter'
 import { messagesDe } from '../presenters/mediateurs-a-inviter.presenter'
-import { PersonneAInviterOptions } from './personne-a-inviter-combo-box'
 
 type RenduDuComboBox = Parameters<
   ComboBoxProps<PersonneAInviter, EtatDeLaRecherche>['children']

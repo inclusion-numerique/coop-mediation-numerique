@@ -8,10 +8,10 @@ import {
   AdresseBanOptions,
 } from '@/libraries/adresse/AdresseBanComboBox'
 import { withForm } from '@/libraries/formulaire/use-app-form'
-import RedAsterisk from '@/libraries/ui/components/form/RedAsterisk'
-import RequiredFieldsDisclaimer from '@/libraries/ui/components/form/RequiredFieldsDisclaimer'
-import { optionsWithEmptyValue } from '@/libraries/ui/components/form/utils/options'
-import { Options } from '@/libraries/ui/components/primitives/Options'
+import RedAsterisk from '@/libraries/ui/form/RedAsterisk'
+import RequiredFieldsDisclaimer from '@/libraries/ui/form/RequiredFieldsDisclaimer'
+import { optionsWithEmptyValue } from '@/libraries/ui/form/utils/options'
+import { Options } from '@/libraries/ui/primitives/Options'
 import { creerLieuActiviteFormOptions } from '../creer-lieu-activite.form-options'
 
 export const InformationsGeneralesFields = withForm({

@@ -12,9 +12,9 @@ import { useHydrated } from '@/libraries/formulaire/use-hydrated'
 import { inject } from '@/libraries/nextjs/injection/client'
 import { createToast } from '@/libraries/ui/toast/create-toast'
 import { INVITER_DES_MEMBRES_ACTION_KEY } from '../../action/inviter-des-membres.key'
-import { personneAInviterComboBox } from '../components/personne-a-inviter-combo-box'
 import { RechercheDePersonne } from '../components/RechercheDePersonne'
 import { issueDeLInvitation } from '../presenters/mediateurs-a-inviter.presenter'
+import { personneAInviterComboBox } from './PersonneAInviterComboBox'
 import {
   ajouter,
   cleDe,

@@ -1,6 +1,6 @@
 import type { ComboBoxData } from '@/libraries/formulaire/fields-components/ComboBox'
 import { inject } from '@/libraries/nextjs/injection/client'
-import type { OptionsData } from '@/libraries/ui/components/primitives/Options'
+import type { OptionsData } from '@/libraries/ui/primitives/Options'
 import { RECHERCHER_UN_LIEU_A_FUSIONNER_ACTION_KEY } from '../../action/rechercher-un-lieu-a-fusionner.key'
 
 export type LieuChoisi = {

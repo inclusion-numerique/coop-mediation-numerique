@@ -1,7 +1,7 @@
 import { addresseFromParts } from '@/libraries/adresse/addresse-from-parts'
 import type { ComboBoxData } from '@/libraries/formulaire/fields-components/ComboBox'
 import { inject } from '@/libraries/nextjs/injection/client'
-import type { OptionsData } from '@/libraries/ui/components/primitives/Options'
+import type { OptionsData } from '@/libraries/ui/primitives/Options'
 import {
   type EtablissementTrouve,
   RECHERCHER_UN_ETABLISSEMENT_KEY,

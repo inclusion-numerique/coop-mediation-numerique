@@ -10,7 +10,7 @@ import { ServiceInclusionNumeriqueTitle } from '@/features/lieux-activite/ui/com
 import { handleSubmit } from '@/libraries/formulaire/handle-submit'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
 import { useHydrated } from '@/libraries/formulaire/use-hydrated'
-import { CompleteFields } from '@/libraries/ui/components/form/CompleteFields'
+import { CompleteFields } from '@/libraries/ui/form/CompleteFields'
 import {
   type CreerLieuActiviteFormData,
   CreerLieuActiviteFormValidation,

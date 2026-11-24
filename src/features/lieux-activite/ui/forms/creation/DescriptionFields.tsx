@@ -4,7 +4,7 @@ import { useSelector } from '@tanstack/react-form'
 import { RESUME_MAX_LENGTH } from '@/features/lieux-activite/domain/saisie/regles-de-saisie'
 import { formationLabelOptions } from '@/features/lieux-activite/ui/labels/options-du-lieu.labels'
 import { withForm } from '@/libraries/formulaire/use-app-form'
-import { optionsWithEmptyValue } from '@/libraries/ui/components/form/utils/options'
+import { optionsWithEmptyValue } from '@/libraries/ui/form/utils/options'
 import { creerLieuActiviteFormOptions } from '../creer-lieu-activite.form-options'
 
 export const DescriptionFields = withForm({

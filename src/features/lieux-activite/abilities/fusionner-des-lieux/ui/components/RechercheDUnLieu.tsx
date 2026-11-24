@@ -4,14 +4,14 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import { useAppForm } from '@/libraries/formulaire/use-app-form'
 import { useHydrated } from '@/libraries/formulaire/use-hydrated'
 import { pluriel } from '@/libraries/pluriel'
-import { Options } from '@/libraries/ui/components/primitives/Options'
+import { Options } from '@/libraries/ui/primitives/Options'
 import {
   LieuAFusionnerOptions,
   type LieuChoisi,
   lieuAFusionnerComboBox,
   type RechercheDeFusion,
   rechercheMinimum,
-} from './lieu-a-fusionner-combo-box'
+} from '../forms/LieuAFusionnerComboBox'
 
 const RechercheDUnLieu = ({
   excludeStructureIds = [],

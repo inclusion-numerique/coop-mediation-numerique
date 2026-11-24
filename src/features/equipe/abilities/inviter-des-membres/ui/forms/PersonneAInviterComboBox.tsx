@@ -1,18 +1,18 @@
 import type { ComboBoxData } from '@/libraries/formulaire/fields-components/ComboBox'
 import { inject } from '@/libraries/nextjs/injection/client'
-import type { OptionsData } from '@/libraries/ui/components/primitives/Options'
+import type { OptionsData } from '@/libraries/ui/primitives/Options'
 import { RECHERCHER_DES_MEDIATEURS_A_INVITER_ACTION_KEY } from '../../action/rechercher-des-mediateurs-a-inviter.key'
-import {
-  cleDe,
-  libelleDe,
-  type PersonneAInviter,
-} from '../forms/personne-a-inviter.form-data'
+import { UserRole } from '../components/UserRole'
 import {
   type EtatDeLaRecherche,
   rechercheTropCourte,
   suggestionsDe,
 } from '../presenters/mediateurs-a-inviter.presenter'
-import { UserRole } from './UserRole'
+import {
+  cleDe,
+  libelleDe,
+  type PersonneAInviter,
+} from './personne-a-inviter.form-data'
 
 const chargerLesSuggestions =
   (dejaChoisis: () => readonly PersonneAInviter[]) =>
