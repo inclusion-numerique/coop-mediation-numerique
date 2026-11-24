@@ -8,7 +8,7 @@
 @import url("./card.css");
 @import url("./carte-d-authentification.css");
 @import url("./copied.css");
-@import url("./en-tete.css");
+@import url("./navigation/en-tete.css");
 @import url("./graphique-des-accompagnements.css");
 @import url("./icone-dans-un-carre.css");
 @import url("./indicateur-de-chargement.css");
@@ -16,12 +16,12 @@
 @import url("./input.css");
 @import url("./lieu-activite-card.css");
 @import url("./list-group.css");
-@import url("./menu.css");
-@import url("./menu-lateral-compact.css");
-@import url("./menu-lateral-coop.css");
-@import url("./menu-utilisateur.css");
+@import url("./navigation/menu.css");
+@import url("./navigation/menu-lateral-compact.css");
+@import url("./navigation/menu-lateral-coop.css");
+@import url("./navigation/menu-utilisateur.css");
 @import url("./modale-de-detail.css");
-@import url("./nav.css");
+@import url("./navigation/nav.css");
 @import url("./notification.css");
 @import url("./onboarding.css");
 @import url("./progress.css");
