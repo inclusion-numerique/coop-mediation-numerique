@@ -1,11 +1,5 @@
-export * from './Calendar'
-export * from './Checkbox'
-export * from './ComboBox'
-export * from './File'
-export * from './Input'
-export * from './RadioButtons'
-export * from './RichTextarea'
-export * from './Select'
-export * from './SelectedItems'
-export * from './Stepper'
-export * from './StepperStacked'
+export type { ComboBoxData, ComboBoxProps } from './ComboBox'
+
+export { Input } from './Input'
+
+export type { SelectedItemProps } from './SelectedItems'

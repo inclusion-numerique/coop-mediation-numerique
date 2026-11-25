@@ -1,3 +1,5 @@
+'use client'
+
 import { useFieldContext } from '@/libraries/formulaire/form-context'
 import {
   Calendar as CalendarBase,

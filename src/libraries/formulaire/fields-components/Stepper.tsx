@@ -1,3 +1,5 @@
+'use client'
+
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useFieldContext } from '@/libraries/formulaire/form-context'
 import { Input, type InputProps } from './Input'

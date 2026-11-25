@@ -1,2 +1,2 @@
 export { default as EditCardTanStack } from './EditCardTanStack'
-export * from './Submit'
+export { Submit } from './Submit'

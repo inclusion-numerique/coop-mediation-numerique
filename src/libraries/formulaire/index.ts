@@ -1,2 +1,1 @@
-export * from './form-context'
-export * from './handle-submit'
+export { handleSubmit } from './handle-submit'

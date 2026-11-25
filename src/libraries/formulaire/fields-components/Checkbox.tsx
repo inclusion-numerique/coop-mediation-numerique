@@ -12,7 +12,7 @@ import {
 } from 'react'
 import { useFieldContext } from '@/libraries/formulaire/form-context'
 import { Pictogram } from '@/libraries/pictograms'
-import { casesCochees } from './cases-cochees'
+import { casesCochees } from '../cases-cochees'
 
 type CheckboxProps<T> = Omit<DsfrCheckboxProps, 'name' | 'options'> & {
   isPending: boolean
