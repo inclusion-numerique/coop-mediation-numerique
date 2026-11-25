@@ -1,6 +1,8 @@
-import { composerLEtat } from '@/libraries/etat-d-url/definition/composition'
-import { filtreDeChoix } from '@/libraries/etat-d-url/definition/filtre-de-choix'
-import { filtreDePeriode } from '@/libraries/etat-d-url/definition/filtre-de-periode'
+import {
+  composerLEtat,
+  filtreDeChoix,
+  filtreDePeriode,
+} from '@/libraries/etat-d-url'
 import {
   type CriteresDesCoordinations,
   type TagId,

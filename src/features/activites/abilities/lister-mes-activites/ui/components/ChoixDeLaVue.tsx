@@ -3,7 +3,7 @@
 import { SegmentedControl } from '@codegouvfr/react-dsfr/SegmentedControl'
 import { useRouter, useSearchParams } from 'next/navigation'
 import type { ComponentProps, FormEvent } from 'react'
-import { routeConstruite } from '@/libraries/nextjs/route/route-construite'
+import { routeConstruite } from '@/libraries/nextjs'
 
 type ChampDeVue = ComponentProps<'input'> & Record<'data-vue', string>
 

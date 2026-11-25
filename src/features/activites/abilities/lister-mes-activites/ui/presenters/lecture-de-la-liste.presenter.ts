@@ -1,5 +1,5 @@
 import { lectureDeLaPagination } from '@/features/activites/ui/filtres/liste-des-activites.filtre'
-import type { AdresseCourante } from '@/libraries/etat-d-url/definition/composition'
+import type { AdresseCourante } from '@/libraries/etat-d-url'
 import {
   type CriteresDesActivites,
   contenuDeLaChronologie,

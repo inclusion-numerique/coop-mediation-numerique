@@ -1,4 +1,4 @@
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 import type { Prisma } from '@/generated/prisma/client'
 import type { Horodatage } from '../../domain'
 

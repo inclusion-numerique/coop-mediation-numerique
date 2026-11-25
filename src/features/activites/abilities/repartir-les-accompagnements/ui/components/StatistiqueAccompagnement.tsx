@@ -4,10 +4,7 @@ import {
   typeActivitePictograms,
   typeActivitePluralLabels,
 } from '@/features/activites/ui/labels/libelles/type-activite.labels'
-import {
-  numberToPercentage,
-  numberToString,
-} from '@/libraries/nombre/format-number'
+import { numberToPercentage, numberToString } from '@/libraries/nombre'
 
 export const StatistiqueAccompagnement = ({
   typeActivite,

@@ -1,5 +1,4 @@
-import { addMutationLog } from '@/configuration/prisma/add-mutation-log'
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { addMutationLog, prismaClient } from '@/configuration/prisma'
 import { failure, type Result, success } from '@/libraries/result'
 import type {
   ActiviteDeCoordinationId,

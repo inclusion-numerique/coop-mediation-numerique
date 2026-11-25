@@ -1,32 +1,36 @@
-import { HouseIcon } from '@/libraries/pictograms/buildings/HouseIcon'
-import { AIIcon } from '@/libraries/pictograms/digital/AIIcon'
-import { DevicesIcon } from '@/libraries/pictograms/digital/DevicesIcon'
-import { InternetIcon } from '@/libraries/pictograms/digital/InternetIcon'
-import { MailSendIcon } from '@/libraries/pictograms/digital/MailSendIcon'
-import { MediaIcon } from '@/libraries/pictograms/digital/MediaIcon'
-import { NetworkIcon } from '@/libraries/pictograms/digital/NetworkIcon'
-import { DocumentContentIcon } from '@/libraries/pictograms/document/DocumentContentIcon'
-import { DocumentSearchIcon } from '@/libraries/pictograms/document/DocumentSearchIcon'
-import { NationalIdentityCardIcon } from '@/libraries/pictograms/document/NationalIdentityCardIcon'
-import { PapersIcon } from '@/libraries/pictograms/document/PapersIcon'
-import { HumanCooperationIcon } from '@/libraries/pictograms/environment/HumanCooperationIcon'
-import { CareIcon } from '@/libraries/pictograms/health/CareIcon'
-import { HealthIcon } from '@/libraries/pictograms/health/HealthIcon'
-import { JusticeIcon } from '@/libraries/pictograms/institutions/JusticeIcon'
-import { MoneyIcon } from '@/libraries/pictograms/institutions/MoneyIcon'
-import { ActivitiesIcon } from '@/libraries/pictograms/leisure/ActivitiesIcon'
-import { CommunityIcon } from '@/libraries/pictograms/leisure/CommunityIcon'
-import { JourneyIcon } from '@/libraries/pictograms/leisure/JourneyIcon'
-import { TransportationIcon } from '@/libraries/pictograms/map/TransportationIcon'
-import { Pictogram } from '@/libraries/pictograms/pictogram'
-import { PadlockIcon } from '@/libraries/pictograms/system/PadlockIcon'
-import { SystemIcon } from '@/libraries/pictograms/system/SystemIcon'
-import { ParentIcon } from '@/libraries/pictograms/user/ParentIcon'
-import { UserStatsIcon } from '@/libraries/pictograms/user/UserStatsIcon'
-import { PairIcon } from '@/libraries/pictograms/work/PairIcon'
-import { ProfessionalIcon } from '@/libraries/pictograms/work/ProfessionalIcon'
-import { ScolarshipIcon } from '@/libraries/pictograms/work/ScolarshipIcon'
-import { labelsToOptions } from '@/libraries/ui/form/utils/options'
+import { Pictogram } from '@/libraries/pictograms'
+import { HouseIcon } from '@/libraries/pictograms/buildings'
+import {
+  AIIcon,
+  DevicesIcon,
+  InternetIcon,
+  MailSendIcon,
+  MediaIcon,
+  NetworkIcon,
+} from '@/libraries/pictograms/digital'
+import {
+  DocumentContentIcon,
+  DocumentSearchIcon,
+  NationalIdentityCardIcon,
+  PapersIcon,
+} from '@/libraries/pictograms/document'
+import { HumanCooperationIcon } from '@/libraries/pictograms/environment'
+import { CareIcon, HealthIcon } from '@/libraries/pictograms/health'
+import { JusticeIcon, MoneyIcon } from '@/libraries/pictograms/institutions'
+import {
+  ActivitiesIcon,
+  CommunityIcon,
+  JourneyIcon,
+} from '@/libraries/pictograms/leisure'
+import { TransportationIcon } from '@/libraries/pictograms/map'
+import { PadlockIcon, SystemIcon } from '@/libraries/pictograms/system'
+import { ParentIcon, UserStatsIcon } from '@/libraries/pictograms/user'
+import {
+  PairIcon,
+  ProfessionalIcon,
+  ScolarshipIcon,
+} from '@/libraries/pictograms/work'
+import { labelsToOptions } from '@/libraries/ui/form'
 import {
   THEMATIQUES_ADMINISTRATIVES,
   THEMATIQUES_DE_MEDIATION,

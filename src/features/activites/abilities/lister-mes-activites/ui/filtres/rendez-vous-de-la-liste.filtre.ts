@@ -1,5 +1,4 @@
-import { composerLEtat } from '@/libraries/etat-d-url/definition/composition'
-import { filtreDeChoixUnique } from '@/libraries/etat-d-url/definition/filtre-de-choix'
+import { composerLEtat, filtreDeChoixUnique } from '@/libraries/etat-d-url'
 import { filtreDuStatutDeRendezVous } from '../../../../ui/filtres/activites.filtre'
 
 const filtreDeLAffichageDesRendezVous = filtreDeChoixUnique({

@@ -7,7 +7,7 @@ import {
   trancheAgeLabels,
   tranchesAgeAffichees,
 } from '@/features/activites/ui/labels/libelles/profil.labels'
-import { partsFixees } from '@/libraries/proportions/parts-fixees'
+import { partsFixees } from '@/libraries/proportions'
 import { ProfilImprime } from '../slots/ProfilImprime.slot'
 import { ProfilDesPersonnesAccompagnees } from './ProfilDesPersonnesAccompagnees'
 

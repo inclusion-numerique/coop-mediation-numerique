@@ -1,5 +1,5 @@
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 import type { Prisma } from '@/generated/prisma/client'
 import type { ActiviteDeMediation } from '../../domain'
 import { activiteDeMediationFromDomain } from './activite-de-mediation.transfer'

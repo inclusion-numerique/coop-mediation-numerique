@@ -14,7 +14,7 @@ import {
 } from '@/features/activites/activites.cucumber'
 import { CoordinateurId } from '@/features/activites/domain'
 import { criteresDesCoordinationsDepuisLURL } from '@/features/activites/fixtures/criteres-depuis-l-url'
-import { dateAsIsoDay } from '@/libraries/date/date-as-iso-day'
+import { dateAsIsoDay } from '@/libraries/date'
 
 let listees: ActivitesDeCoordinationListees | undefined
 let options: OptionsDeFiltre | undefined

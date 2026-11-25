@@ -1,5 +1,5 @@
 import { type ReactNode, Suspense } from 'react'
-import { Spinner } from '@/libraries/ui/components/Spinner'
+import { Spinner } from '@/libraries/ui/components'
 import { CarteDActivite } from '../../../../ui/components/carte/CarteDActivite'
 import { PaginationDesActivites } from '../../../../ui/components/PaginationDesActivites'
 import type { JourDeLaListe } from '../presenters/mes-activites.presenter'

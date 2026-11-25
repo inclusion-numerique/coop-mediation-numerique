@@ -1,5 +1,5 @@
 import { thematiquesAccompagnementColors } from '@/features/activites/ui/labels/couleurs.labels'
-import { ProgressItemList } from '@/libraries/proportions/ProgressItemList'
+import { ProgressItemList } from '@/libraries/proportions/composants'
 import type { RepartitionPresentee } from '../presenters/repartition.presenter'
 
 const desc = (

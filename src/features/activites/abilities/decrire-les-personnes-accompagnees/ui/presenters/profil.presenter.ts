@@ -1,4 +1,4 @@
-import { valeurDe } from '../../../../../../libraries/collections/valeur-de'
+import { valeurDe } from '../../../../../../libraries/collections'
 import type { Repartition } from '../../../../domain'
 import {
   genreLabels,

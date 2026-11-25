@@ -1,6 +1,6 @@
-import { dureeAsString } from '@/libraries/date/duree-as-string'
+import { dureeAsString } from '@/libraries/date'
 import { pluriel } from '@/libraries/pluriel'
-import { valeurDe } from '../../../../libraries/collections/valeur-de'
+import { valeurDe } from '../../../../libraries/collections'
 import type { ActiviteConsultee, ActiviteDeMediation } from '../../domain'
 import { thematiqueLabels } from '../labels/libelles/thematique.labels'
 import { typeActiviteLabels } from '../labels/libelles/type-activite.labels'

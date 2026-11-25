@@ -1,7 +1,6 @@
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 import { Prisma } from '@/generated/prisma/client'
-import { NomDepartement } from '@/libraries/departement'
-import { departements } from '@/libraries/departement/departements'
+import { departements, NomDepartement } from '@/libraries/departement'
 import { CodeDepartement } from '@/libraries/insee'
 import { enPosteSql } from '../../../../implementations/prisma/statistiques/conseiller-numerique-en-poste.sql'
 import {

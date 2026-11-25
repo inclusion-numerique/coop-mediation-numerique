@@ -2,7 +2,7 @@ import { v4 } from 'uuid'
 import { ParticipantsAnonymesCraCollectifData } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/forms/participants-anonymes-du-cra-collectif.validation'
 import { beneficiairesDesParticipantsAnonymes } from '@/features/activites/fixtures/beneficiaires-des-participants-anonymes'
 import type { Prisma, TypeLieu } from '@/generated/prisma/client'
-import { mergeUuids } from '@/libraries/fixtures/merge-uuids'
+import { mergeUuids } from '@/libraries/fixtures'
 
 /**
  * Create a CRA individuel prisma data with associated entities

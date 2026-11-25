@@ -10,8 +10,8 @@ import type { Tag } from '@/features/activites/ui/presenters/saisie/tag-du-cra.p
 import {
   type DefaultValues,
   withFieldGroup,
-} from '@/libraries/formulaire/use-app-form'
-import { Options } from '@/libraries/ui/primitives/Options'
+} from '@/libraries/formulaire/hooks'
+import { Options } from '@/libraries/ui/primitives'
 
 const valeursDuGroupe: Pick<DefaultValues<CraData>, 'tags'> = {}
 

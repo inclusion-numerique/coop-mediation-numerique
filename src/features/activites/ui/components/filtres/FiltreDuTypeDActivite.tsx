@@ -1,7 +1,7 @@
 'use client'
 
-import { ChoixEnPopover } from '@/libraries/etat-d-url/filtres/ChoixEnPopover'
-import { RDVServicePublicLogo } from '@/libraries/pictograms/services/RDVServicePublicLogo'
+import { ChoixEnPopover } from '@/libraries/etat-d-url/filtres'
+import { RDVServicePublicLogo } from '@/libraries/pictograms/services'
 import {
   filtreDuStatutDeRendezVous,
   filtreDuTypeDActivite,

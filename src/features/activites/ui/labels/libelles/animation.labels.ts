@@ -1,10 +1,9 @@
 import type { Model } from '@/libraries/model'
-import { EcosystemIcon } from '@/libraries/pictograms/digital/EcosystemIcon'
-import { InnovationIcon } from '@/libraries/pictograms/digital/InnovationIcon'
-import { DocumentSignature } from '@/libraries/pictograms/document/DocumentSignature'
-import { CommunityIcon } from '@/libraries/pictograms/leisure/CommunityIcon'
-import { Compass } from '@/libraries/pictograms/map/Compass'
-import type { SelectOption } from '@/libraries/ui/form/utils/options'
+import { EcosystemIcon, InnovationIcon } from '@/libraries/pictograms/digital'
+import { DocumentSignature } from '@/libraries/pictograms/document'
+import { CommunityIcon } from '@/libraries/pictograms/leisure'
+import { Compass } from '@/libraries/pictograms/map'
+import type { SelectOption } from '@/libraries/ui/form'
 import type {
   Initiative,
   ThematiqueDAnimation,

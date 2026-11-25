@@ -1,10 +1,12 @@
 'use client'
 
 import type { ReactNode } from 'react'
-import { BarreDeFiltres } from '@/libraries/etat-d-url/filtres/BarreDeFiltres'
-import { ChoixEnPopover } from '@/libraries/etat-d-url/filtres/ChoixEnPopover'
-import { FiltresEnPopover } from '@/libraries/etat-d-url/filtres/FiltresEnPopover'
-import { PeriodeEnPopover } from '@/libraries/etat-d-url/filtres/PeriodeEnPopover'
+import {
+  BarreDeFiltres,
+  ChoixEnPopover,
+  FiltresEnPopover,
+  PeriodeEnPopover,
+} from '@/libraries/etat-d-url/filtres'
 import { RechercheDesTags } from '../../../../ui/components/filtres/RechercheDesTags'
 import { filtreDesTags } from '../../../../ui/filtres/activites.filtre'
 import { filtreDuTypeDeCoordination } from '../../../../ui/filtres/coordinations.filtre'

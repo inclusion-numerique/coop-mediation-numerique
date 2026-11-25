@@ -1,4 +1,4 @@
-import { dureeAsString } from '@/libraries/date/duree-as-string'
+import { dureeAsString } from '@/libraries/date'
 
 export const dureeAccompagnementPersonnaliseeValue = 'personnaliser' as const
 

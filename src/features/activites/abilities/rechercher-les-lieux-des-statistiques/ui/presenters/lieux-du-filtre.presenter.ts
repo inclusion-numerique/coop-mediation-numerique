@@ -1,4 +1,4 @@
-import type { SelectOption } from '@/libraries/ui/form/utils/options'
+import type { SelectOption } from '@/libraries/ui/form'
 import type { LieuDesStatistiques } from '../../domain'
 import { optionDeLieu } from './options-de-lieux.presenter'
 

@@ -1,4 +1,4 @@
-import { valeurDe } from '../../../../../../libraries/collections/valeur-de'
+import { valeurDe } from '../../../../../../libraries/collections'
 import { estAdministrative } from '../../../../domain'
 import { tranchesDeDureeDesStatistiques } from '../../../../ui/labels/libelles/duree-accompagnement.labels'
 import { materielLabels } from '../../../../ui/labels/libelles/materiel.labels'

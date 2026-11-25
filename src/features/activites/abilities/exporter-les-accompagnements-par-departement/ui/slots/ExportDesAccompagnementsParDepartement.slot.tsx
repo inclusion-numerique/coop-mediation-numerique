@@ -3,7 +3,7 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import { Input } from '@codegouvfr/react-dsfr/Input'
 import { useState } from 'react'
-import { signaler } from '@/configuration/telemetry/error-reporter/client/signaler'
+import { signaler } from '@/configuration/telemetry'
 
 export const ExportDesAccompagnementsParDepartement = () => {
   const [date, setDate] = useState('')

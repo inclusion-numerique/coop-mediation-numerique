@@ -1,4 +1,4 @@
-import { PiedDeListe } from '@/libraries/etat-d-url/liste/PiedDeListe'
+import { PiedDeListe } from '@/libraries/etat-d-url/liste'
 import {
   listeDesActivites,
   paginationDesActivites,

@@ -1,6 +1,5 @@
 import { v4 } from 'uuid'
-import { addMutationLog } from '@/configuration/prisma/add-mutation-log'
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { addMutationLog, prismaClient } from '@/configuration/prisma'
 import { Prisma } from '@/generated/prisma/client'
 import { failure, type Result, success } from '@/libraries/result'
 import {

@@ -1,9 +1,6 @@
 import classNames from 'classnames'
 import { materielIcons } from '@/features/activites/ui/labels/libelles/materiel.labels'
-import {
-  numberToPercentage,
-  numberToString,
-} from '@/libraries/nombre/format-number'
+import { numberToPercentage, numberToString } from '@/libraries/nombre'
 
 export const StatistiqueMateriel = ({
   label,

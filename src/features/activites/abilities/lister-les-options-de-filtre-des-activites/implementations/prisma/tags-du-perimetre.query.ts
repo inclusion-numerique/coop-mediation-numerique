@@ -1,4 +1,4 @@
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 import type { PerimetreDesStatistiques } from '../../../../domain'
 import { dansLePerimetre } from '../../../../implementations/prisma/statistiques/perimetre-des-statistiques.sql'
 

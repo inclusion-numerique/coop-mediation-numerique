@@ -1,4 +1,4 @@
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 import type { MediateurId, PerimetreDesStatistiques } from '../../../../domain'
 import { PresenceDeCrasV1 } from '../../domain'
 

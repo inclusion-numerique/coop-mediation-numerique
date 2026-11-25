@@ -4,7 +4,7 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import { SegmentedControl } from '@codegouvfr/react-dsfr/SegmentedControl'
 import { useState } from 'react'
 import { AccompagnementBarChart } from '@/features/activites/abilities/compter-les-accompagnements-par-periode/ui/components/AccompagnementBarChart'
-import type { LabelAndCount } from '@/libraries/proportions/quantified-share'
+import type { LabelAndCount } from '@/libraries/proportions'
 
 export const GraphiqueDesAccompagnements = ({
   accompagnementsParMois,

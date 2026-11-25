@@ -3,11 +3,10 @@ import {
   type Tag,
   tagDuFormulaire,
 } from '@/features/activites/ui/presenters/saisie/tag-du-cra.presenter'
-import { ComboBoxData } from '@/libraries/formulaire/fields-components/ComboBox'
-import { inject } from '@/libraries/nextjs/injection/client'
-import { BadgeAvecInfobulle } from '@/libraries/ui/components/BadgeAvecInfobulle'
-import { OptionsData } from '@/libraries/ui/primitives/Options'
-import { SelectedItemsData } from '@/libraries/ui/primitives/SelectedItems'
+import { ComboBoxData } from '@/libraries/formulaire/fields-components'
+import { inject } from '@/libraries/nextjs/injection'
+import { BadgeAvecInfobulle } from '@/libraries/ui/components'
+import { OptionsData, SelectedItemsData } from '@/libraries/ui/primitives'
 
 const itemToKey = (item: { id: string }): string => item.id
 

@@ -1,4 +1,4 @@
-import { valeurDe } from '../../../../../../libraries/collections/valeur-de'
+import { valeurDe } from '../../../../../../libraries/collections'
 import { thematiqueLabels } from '../../../../ui/labels/libelles/thematique.labels'
 import type { ThematiqueAbordee } from '../../domain'
 

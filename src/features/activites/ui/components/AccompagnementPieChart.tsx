@@ -8,10 +8,7 @@ import {
   Tooltip,
   TooltipProps,
 } from 'recharts'
-import {
-  numberToPercentage,
-  numberToString,
-} from '@/libraries/nombre/format-number'
+import { numberToPercentage, numberToString } from '@/libraries/nombre'
 
 type PieData = { label: string; count: number; proportion: number }
 

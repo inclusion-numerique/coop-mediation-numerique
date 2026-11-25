@@ -1,6 +1,5 @@
-import { Pictogram } from '@/libraries/pictograms/pictogram'
-import { SittingAtATableIcon } from '@/libraries/pictograms/user/SittingAtATableIcon'
-import { TeacherIcon } from '@/libraries/pictograms/user/TeacherIcon'
+import { Pictogram } from '@/libraries/pictograms'
+import { SittingAtATableIcon, TeacherIcon } from '@/libraries/pictograms/user'
 import { TYPES_D_ACTIVITE } from '../../../domain'
 
 export const typeActiviteValues = TYPES_D_ACTIVITE

@@ -1,6 +1,6 @@
-import { rechercherDesCommunes } from '@/libraries/ban/rechercher-des-communes'
-import type { ComboBoxData } from '@/libraries/formulaire/fields-components/ComboBox'
-import type { OptionsData } from '@/libraries/ui/primitives/Options'
+import { rechercherDesCommunes } from '@/libraries/ban'
+import type { ComboBoxData } from '@/libraries/formulaire/fields-components'
+import type { OptionsData } from '@/libraries/ui/primitives'
 import type { CommuneDuCra } from '../commune-du-cra.validation'
 
 const loadSuggestions = async (

@@ -20,7 +20,7 @@ import {
   typeLieuLabels,
   typeLieuValues,
 } from '@/features/activites/ui/labels/libelles/type-lieu.labels'
-import { partsFixees } from '@/libraries/proportions/parts-fixees'
+import { partsFixees } from '@/libraries/proportions'
 export const repartition = {
   total: 1000,
   typeActivites: partsFixees(

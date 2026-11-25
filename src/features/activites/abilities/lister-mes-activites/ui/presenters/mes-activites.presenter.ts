@@ -3,10 +3,10 @@ import { formatActiviteDayDate } from '@/features/activites/ui/presenters/format
 import {
   dateAsDay,
   dateAsDayWithHourInTimezone,
-} from '@/libraries/date/date-as-day'
-import { dureeAsString } from '@/libraries/date/duree-as-string'
+  dureeAsString,
+} from '@/libraries/date'
 import { pluriel } from '@/libraries/pluriel'
-import { valeurDe } from '../../../../../../libraries/collections/valeur-de'
+import { valeurDe } from '../../../../../../libraries/collections'
 import type {
   ActiviteConsultee,
   ChronologieDesActivites,

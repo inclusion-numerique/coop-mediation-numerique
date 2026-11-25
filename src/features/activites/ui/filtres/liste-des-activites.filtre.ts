@@ -2,9 +2,9 @@ import { Sort } from '@arckit/resultset'
 import {
   type AdresseCourante,
   composerLEtat,
-} from '@/libraries/etat-d-url/definition/composition'
-import { pagination } from '@/libraries/etat-d-url/definition/pagination'
-import { triParmi } from '@/libraries/etat-d-url/definition/tri-parmi'
+  pagination,
+  triParmi,
+} from '@/libraries/etat-d-url'
 
 export const paginationDesActivites = pagination({
   lignes: [10, 20, 50, 100],

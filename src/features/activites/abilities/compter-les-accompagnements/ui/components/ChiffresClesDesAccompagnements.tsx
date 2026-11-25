@@ -1,6 +1,6 @@
 import Button from '@codegouvfr/react-dsfr/Button'
-import { dateAsDayConventional } from '@/libraries/date/date-as-day'
-import { numberToString } from '@/libraries/nombre/format-number'
+import { dateAsDayConventional } from '@/libraries/date'
+import { numberToString } from '@/libraries/nombre'
 import { pluriel } from '@/libraries/pluriel'
 import type { TotauxPresentes } from '../presenters/totaux.presenter'
 

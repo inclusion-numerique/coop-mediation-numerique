@@ -1,5 +1,5 @@
-import type { ServerActionResult } from '@/libraries/nextjs/action/result'
-import { keyFor } from '@/libraries/nextjs/injection/client'
+import type { ServerActionResult } from '@/libraries/nextjs'
+import { keyFor } from '@/libraries/nextjs/injection'
 
 export const RECHERCHER_LES_EMPLOYEUSES_DE_LA_LISTE_KEY = keyFor<
   (input: {

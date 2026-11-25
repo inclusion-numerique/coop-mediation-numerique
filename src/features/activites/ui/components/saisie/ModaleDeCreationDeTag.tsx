@@ -9,13 +9,13 @@ import {
   tagDuFormulaire,
   type VisibiliteDuTagDuCra,
 } from '@/features/activites/ui/presenters/saisie/tag-du-cra.presenter'
-import { handleSubmit } from '@/libraries/formulaire/handle-submit'
-import { useAppForm } from '@/libraries/formulaire/use-app-form'
-import { inject } from '@/libraries/nextjs/injection/client'
-import { createDynamicModal } from '@/libraries/ui/components/modal/create-dynamic-modal'
-import RedAsterisk from '@/libraries/ui/form/RedAsterisk'
-import { createToast } from '@/libraries/ui/toast/create-toast'
-import { buttonLoadingClassname } from '@/libraries/ui/utils/button-loading-classname'
+import { handleSubmit } from '@/libraries/formulaire'
+import { useAppForm } from '@/libraries/formulaire/hooks'
+import { inject } from '@/libraries/nextjs/injection'
+import { createDynamicModal } from '@/libraries/ui/components'
+import { RedAsterisk } from '@/libraries/ui/form'
+import { createToast } from '@/libraries/ui/toast'
+import { buttonLoadingClassname } from '@/libraries/ui/utils'
 
 const NOM_LONGUEUR_MAX = 80
 const DESCRIPTION_LONGUEUR_MAX = 280

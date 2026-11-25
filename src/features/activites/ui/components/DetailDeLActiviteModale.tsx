@@ -11,11 +11,10 @@ import {
   hrefDeLActivite,
   hrefDuBeneficiaire,
 } from '@/features/activites/ui/presenters/liens.presenter'
-import { inject } from '@/libraries/nextjs/injection/client'
-import { RDVServicePublicLogo } from '@/libraries/pictograms/services/RDVServicePublicLogo'
-import { createDynamicModal } from '@/libraries/ui/components/modal/create-dynamic-modal'
-import Stars from '@/libraries/ui/components/Stars'
-import { createToast } from '@/libraries/ui/toast/create-toast'
+import { inject } from '@/libraries/nextjs/injection'
+import { RDVServicePublicLogo } from '@/libraries/pictograms/services'
+import { createDynamicModal, Stars } from '@/libraries/ui/components'
+import { createToast } from '@/libraries/ui/toast'
 import { SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY } from '../../action/supprimer-une-activite-de-mediation.key'
 import type {
   DetailDActivite,

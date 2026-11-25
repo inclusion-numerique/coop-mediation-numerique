@@ -1,4 +1,4 @@
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 import { type MediateurId, NomDeTag, TagId } from '../../../../domain'
 
 const TAGS_LES_PLUS_UTILISES = 10

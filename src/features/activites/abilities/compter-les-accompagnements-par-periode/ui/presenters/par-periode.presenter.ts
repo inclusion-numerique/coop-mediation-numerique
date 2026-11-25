@@ -1,4 +1,4 @@
-import type { LabelAndCount } from '@/libraries/proportions/quantified-share'
+import type { LabelAndCount } from '@/libraries/proportions'
 import type { AccompagnementsParPeriode } from '../../domain'
 
 const libelleDuJour = (jour: string): string =>

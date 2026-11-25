@@ -22,13 +22,13 @@ import {
 import { cheminDeLaSaisie } from '@/features/activites/ui/presenters/saisie/chemin-de-la-copie.presenter'
 import type { Tag } from '@/features/activites/ui/presenters/saisie/tag-du-cra.presenter'
 import { cheminInterne } from '@/libraries/chemin-interne'
-import { handleSubmit } from '@/libraries/formulaire/handle-submit'
-import type { DefaultValues } from '@/libraries/formulaire/use-app-form'
-import { useAppForm } from '@/libraries/formulaire/use-app-form'
-import { replaceRouteWithoutRerender } from '@/libraries/navigateur/replace-route-without-rerender'
-import { inject } from '@/libraries/nextjs/injection/client'
-import RedAsterisk from '@/libraries/ui/form/RedAsterisk'
-import { createToast } from '@/libraries/ui/toast/create-toast'
+import { handleSubmit } from '@/libraries/formulaire'
+import type { DefaultValues } from '@/libraries/formulaire/hooks'
+import { useAppForm } from '@/libraries/formulaire/hooks'
+import { replaceRouteWithoutRerender } from '@/libraries/navigateur'
+import { inject } from '@/libraries/nextjs/injection'
+import { RedAsterisk } from '@/libraries/ui/form'
+import { createToast } from '@/libraries/ui/toast'
 
 type CraEvenementFormProps = {
   defaultValues: DefaultValues<CraEvenementData> & { coordinateurId: string }

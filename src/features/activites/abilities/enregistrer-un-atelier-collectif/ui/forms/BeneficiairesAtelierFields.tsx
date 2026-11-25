@@ -25,10 +25,10 @@ import {
 } from '@/features/activites/ui/labels/libelles/profil.labels'
 import { hrefDeCreationDuBeneficiaire } from '@/features/activites/ui/presenters/liens.presenter'
 import type { BeneficiaireDuCra } from '@/features/activites/ui/presenters/saisie/beneficiaire-du-cra.presenter'
-import { DefaultValues, withForm } from '@/libraries/formulaire/use-app-form'
+import { DefaultValues, withForm } from '@/libraries/formulaire/hooks'
 import { pluriel } from '@/libraries/pluriel'
-import IconInSquare from '@/libraries/ui/components/IconInSquare'
-import { Options } from '@/libraries/ui/primitives/Options'
+import { IconInSquare } from '@/libraries/ui/components'
+import { Options } from '@/libraries/ui/primitives'
 
 const valeursDuFormulaire: DefaultValues<CraCollectifData> = {}
 

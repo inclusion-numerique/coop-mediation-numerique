@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { encodeSerializableState } from '@/libraries/etat-encode/encode-serializable-state'
+import { encodeSerializableState } from '@/libraries/etat-encode'
 import { cheminDeLaCopie, etatDeLUrl } from './chemin-de-la-copie.presenter'
 
 describe('chemin de la copie', () => {

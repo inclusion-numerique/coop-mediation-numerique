@@ -4,8 +4,10 @@ import {
   genresColors,
   tranchesAgeColors,
 } from '@/features/activites/ui/labels/couleurs.labels'
-import ProgressBar from '@/libraries/proportions/ProgressBar'
-import { QuantifiedShareLegend } from '@/libraries/proportions/QuantifiedShareLegend'
+import {
+  ProgressBar,
+  QuantifiedShareLegend,
+} from '@/libraries/proportions/composants'
 import type { ProfilPresente } from '../presenters/profil.presenter'
 
 const toProgress = ({

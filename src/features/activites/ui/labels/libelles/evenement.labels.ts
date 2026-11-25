@@ -1,5 +1,5 @@
 import type { Model } from '@/libraries/model'
-import { SelectOption } from '@/libraries/ui/form/utils/options'
+import { SelectOption } from '@/libraries/ui/form'
 import type {
   EchelonTerritorial,
   Organisateur,

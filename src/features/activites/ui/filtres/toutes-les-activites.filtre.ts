@@ -1,5 +1,4 @@
-import { composerLEtat } from '@/libraries/etat-d-url/definition/composition'
-import { filtreDePeriode } from '@/libraries/etat-d-url/definition/filtre-de-periode'
+import { composerLEtat, filtreDePeriode } from '@/libraries/etat-d-url'
 import {
   filtreDeLaDemarche,
   filtreDeLaSource,

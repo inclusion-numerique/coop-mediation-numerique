@@ -1,4 +1,4 @@
-import type { DefaultValues } from '@/libraries/formulaire/use-app-form'
+import type { DefaultValues } from '@/libraries/formulaire/hooks'
 import type { BeneficiaireTrouveParLeCra } from '../../../action/rechercher-des-beneficiaires.key'
 import { type ActiviteConsultee, MediateurId } from '../../../domain'
 import type { CraData } from '../../forms/cra.validation'

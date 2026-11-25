@@ -10,10 +10,10 @@ import type {
   StatutSocial,
   TrancheAge,
 } from '@/features/activites/ui/labels/libelles/profil.labels'
-import type { DefaultValues } from '@/libraries/formulaire/use-app-form'
-import { withForm } from '@/libraries/formulaire/use-app-form'
-import type { SelectOption } from '@/libraries/ui/form/utils/options'
-import { Options } from '@/libraries/ui/primitives/Options'
+import type { DefaultValues } from '@/libraries/formulaire/hooks'
+import { withForm } from '@/libraries/formulaire/hooks'
+import type { SelectOption } from '@/libraries/ui/form'
+import { Options } from '@/libraries/ui/primitives'
 
 const valeursDuFormulaire: DefaultValues<CraIndividuelData> & {
   mediateurId: string

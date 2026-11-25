@@ -2,8 +2,8 @@ import { z } from 'zod'
 import {
   filtreDeChoix,
   filtreDeChoixUnique,
-} from '@/libraries/etat-d-url/definition/filtre-de-choix'
-import { filtreDeRecherche } from '@/libraries/etat-d-url/definition/filtre-de-recherche'
+  filtreDeRecherche,
+} from '@/libraries/etat-d-url'
 import { CodeDepartement, CodeInsee } from '@/libraries/insee'
 import {
   BeneficiaireId,

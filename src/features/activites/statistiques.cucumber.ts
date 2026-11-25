@@ -1,7 +1,7 @@
 import assert from 'node:assert'
 import { After, type DataTable, Given } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 import { criteresDesStatistiquesDepuisLURL } from '@/features/activites/fixtures/criteres-depuis-l-url'
 import {
   Genre,

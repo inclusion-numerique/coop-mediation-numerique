@@ -1,4 +1,4 @@
-import type { DefaultValues } from '@/libraries/formulaire/use-app-form'
+import type { DefaultValues } from '@/libraries/formulaire/hooks'
 import type {
   AccompagnementIndividuel,
   AffichageDeLActivite,

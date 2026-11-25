@@ -1,8 +1,11 @@
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 import { Prisma } from '@/generated/prisma/client'
-import { type Departement, departementDuCode } from '@/libraries/departement'
-import { departements as REFERENTIEL_DES_DEPARTEMENTS } from '@/libraries/departement/departements'
-import { contientSansAccent } from '@/libraries/texte/sans-accent'
+import {
+  type Departement,
+  departementDuCode,
+  departements as REFERENTIEL_DES_DEPARTEMENTS,
+} from '@/libraries/departement'
+import { contientSansAccent } from '@/libraries/texte'
 import {
   communeComptee,
   LieuActiviteId,

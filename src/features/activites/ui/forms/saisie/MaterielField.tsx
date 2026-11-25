@@ -3,8 +3,8 @@ import type { Materiel } from '@/features/activites/ui/labels/libelles/materiel.
 import {
   type DefaultValues,
   withFieldGroup,
-} from '@/libraries/formulaire/use-app-form'
-import type { SelectOption } from '@/libraries/ui/form/utils/options'
+} from '@/libraries/formulaire/hooks'
+import type { SelectOption } from '@/libraries/ui/form'
 
 const valeursDuGroupe: Pick<DefaultValues<CraData>, 'materiel'> = {}
 

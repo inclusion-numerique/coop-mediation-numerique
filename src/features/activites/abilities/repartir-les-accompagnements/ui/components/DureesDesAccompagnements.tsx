@@ -1,6 +1,6 @@
 import { AccompagnementPieChart } from '@/features/activites/ui/components/AccompagnementPieChart'
 import { dureesAccompagnementColors } from '@/features/activites/ui/labels/couleurs.labels'
-import { QuantifiedShareLegend } from '@/libraries/proportions/QuantifiedShareLegend'
+import { QuantifiedShareLegend } from '@/libraries/proportions/composants'
 import type { RepartitionPresentee } from '../presenters/repartition.presenter'
 
 export const DureesDesAccompagnements = ({

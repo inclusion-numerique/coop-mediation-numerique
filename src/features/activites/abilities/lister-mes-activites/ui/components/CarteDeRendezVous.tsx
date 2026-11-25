@@ -1,7 +1,7 @@
 import Badge from '@codegouvfr/react-dsfr/Badge'
 import Button from '@codegouvfr/react-dsfr/Button'
 import type { ReactNode } from 'react'
-import { RDVServicePublicLogo } from '@/libraries/pictograms/services/RDVServicePublicLogo'
+import { RDVServicePublicLogo } from '@/libraries/pictograms/services'
 import ActiviteCardSpacer from '../../../../ui/components/carte/ActiviteCardSpacer'
 import ListCard from '../../../../ui/components/carte/ListCard'
 import type { CarteDeRendezVous as Carte } from '../presenters/carte-de-rendez-vous.presenter'

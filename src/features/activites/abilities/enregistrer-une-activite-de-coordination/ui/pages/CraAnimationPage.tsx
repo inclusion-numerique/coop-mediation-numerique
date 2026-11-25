@@ -5,13 +5,12 @@ import type {
   Tag,
   VisibiliteDuTagDuCra,
 } from '@/features/activites/ui/presenters/saisie/tag-du-cra.presenter'
-import type { DefaultValues } from '@/libraries/formulaire/use-app-form'
-import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
-import { contentId } from '@/libraries/liens-d-evitement/skip-links'
-import BackButtonWithModal from '@/libraries/ui/components/BackButtonWithModal'
-import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
-import RequiredFieldsDisclamer from '@/libraries/ui/form/RequiredFieldsDisclamer'
-import type { SelectOption } from '@/libraries/ui/form/utils/options'
+import type { DefaultValues } from '@/libraries/formulaire/hooks'
+import { contentId } from '@/libraries/liens-d-evitement'
+import { SkipLinksPortal } from '@/libraries/liens-d-evitement/composants'
+import { BackButtonWithModal, CoopBreadcrumbs } from '@/libraries/ui/components'
+import type { SelectOption } from '@/libraries/ui/form'
+import { RequiredFieldsDisclamer } from '@/libraries/ui/form'
 
 type CraAnimationPageProps = {
   defaultValues: DefaultValues<CraAnimationData>

@@ -1,7 +1,7 @@
 import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 import { criteresDesActivitesDepuisLURL } from '@/features/activites/fixtures/criteres-depuis-l-url'
 import { CoordinateurId, MediateurId } from '../../domain'
 import type { Demandeur, ExportDesAccompagnements } from './domain'

@@ -4,9 +4,9 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import Image from 'next/image'
-import { download } from '@/libraries/navigateur/download'
-import { numberToString } from '@/libraries/nombre/format-number'
-import { createToast } from '@/libraries/ui/toast/create-toast'
+import { download } from '@/libraries/navigateur'
+import { numberToString } from '@/libraries/nombre'
+import { createToast } from '@/libraries/ui/toast'
 
 const ExportActiviteModal = createModal({
   id: 'export-activites',
