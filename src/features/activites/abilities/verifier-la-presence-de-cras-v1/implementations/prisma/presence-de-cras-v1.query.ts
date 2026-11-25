@@ -20,3 +20,8 @@ export const verifierLaPresenceDeCrasV1 = async (
   perimetre.type === 'Mediateur'
     ? presenceChez(perimetre.mediateur)
     : PresenceDeCrasV1('Presents')
+
+export const presenceDeCrasV1 = (perimetre: PerimetreDesStatistiques) =>
+  verifierLaPresenceDeCrasV1(perimetre).then((crasV1) => ({
+    hasCrasV1: crasV1 === 'Presents',
+  }))

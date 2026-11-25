@@ -3,10 +3,10 @@ import {
   Jour,
   type PerimetreDesStatistiques,
 } from '@/features/activites/domain'
-import { fenetreDe } from '@/features/activites/domain/fenetre-des-graphiques'
+import { fenetresDuPerimetre } from '@/features/activites/domain/fenetre-des-graphiques'
 import { dateAsIsoDay } from '@/libraries/date'
-import type { RendezVousAuxStatuts } from './prisma/statistiques/criteres-des-statistiques.sql'
-import type { LancerLesStatistiques } from './statistiques-en-cours.binding'
+import type { RendezVousAuxStatuts } from './criteres-des-statistiques.sql'
+import type { LancerLesStatistiques } from './statistiques-en-cours.query'
 
 export const statistiquesDuPerimetre =
   <EnCours>(
@@ -21,20 +21,16 @@ export const statistiquesDuPerimetre =
     readonly perimetre: PerimetreDesStatistiques
     readonly criteres: CriteresDesStatistiques
     readonly fin: Date
-  }) => {
-    const fenetre = fenetreDe({
-      debut: criteres.periode.du,
-      fin: Jour(dateAsIsoDay(fin)),
-    })
-
-    return lancer(
+  }) =>
+    lancer(
       {
         perimetre,
         criteres,
         rendezVousAuxStatuts,
-        parJour: fenetre,
-        parMois: fenetre,
+        ...fenetresDuPerimetre({
+          du: criteres.periode.du,
+          fin: Jour(dateAsIsoDay(fin)),
+        }),
       },
       { territoires: true, tags: true },
     )
-  }

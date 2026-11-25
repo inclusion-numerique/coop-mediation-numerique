@@ -23,7 +23,9 @@ import { authenticateMediateurOrCoordinateur } from '@/features/authentification
 import { compterLesMembres } from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/lister-les-membres.query'
 import { ResumeDeLEquipe } from '@/features/equipe/abilities/lister-les-membres/ui/slots/ResumeDeLEquipe.slot'
 import { RAFRAICHIR_ACCUEIL_RDV_ACTION_KEY } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/action/rafraichir-accueil-rdv.key'
-import { blocRdvAccueil } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/implementations/consulter-rdvs-accueil.binding'
+import { blocRdvAccueil } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/domain/bloc-rdv-accueil'
+import { compteDuMediateur } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/implementations/prisma/compte-du-mediateur.query'
+import { lireDonneesAccueilRdv } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/implementations/prisma/donnees-accueil-rdv.query'
 import { RdvIntegrationErreurAlerte } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/ui/slots/RdvIntegrationErreurAlerte.slot'
 import RdvsAccueil from '@/features/rdvsp/abilities/consulter-rdvs-accueil/ui/slots/RdvsAccueil.slot'
 import { rendezVousLies } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/rdvs-des-activites.query'
@@ -78,7 +80,10 @@ const Page = async () => {
         ),
       }),
     }),
-    blocRdvAccueil(UtilisateurCoopId(user.id), new Date()),
+    blocRdvAccueil({ compteDuMediateur, lireDonnees: lireDonneesAccueilRdv })(
+      UtilisateurCoopId(user.id),
+      new Date(),
+    ),
   ])
 
   return (

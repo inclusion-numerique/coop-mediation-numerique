@@ -1,4 +1,4 @@
-import type { PageSize, Search } from '@arckit/resultset'
+import { PageSize, Search } from '@arckit/resultset'
 import type { Workbook } from 'exceljs'
 import type { AnneeNaissance } from '@/features/beneficiaire/domain/annee-naissance'
 import type { CommuneResidence } from '@/features/beneficiaire/domain/commune-residence'
@@ -40,10 +40,6 @@ export type ConstruireLeClasseurDesBeneficiaires = (input: {
   worksheetGenerationDate?: Date
 }) => Workbook
 
-/**
- * Cas d'usage complet : récupère les bénéficiaires du médiateur correspondant
- * aux filtres et produit le classeur d'export.
- */
 export type ExporterBeneficiaires = (input: {
   mediateurId: MediateurId
   filters: ExportBeneficiairesFilters
@@ -58,3 +54,28 @@ export type ListerLesBeneficiairesAExporter = (input: {
   items: readonly BeneficiaireExportRow[]
   totalItems: number
 }>
+
+const TOUS_LES_BENEFICIAIRES = PageSize(10_000)
+
+export const exporterBeneficiaires =
+  ({
+    listerBeneficiaires,
+    construireLeClasseur,
+  }: {
+    readonly listerBeneficiaires: ListerLesBeneficiairesAExporter
+    readonly construireLeClasseur: ConstruireLeClasseurDesBeneficiaires
+  }): ExporterBeneficiaires =>
+  async ({ mediateurId, filters, auteur }) => {
+    const { items, totalItems } = await listerBeneficiaires({
+      mediateurId,
+      ...(filters.recherche ? { search: Search(filters.recherche) } : {}),
+      pageSize: TOUS_LES_BENEFICIAIRES,
+    })
+
+    return construireLeClasseur({
+      beneficiaires: items,
+      filters,
+      matchesCount: totalItems,
+      auteur,
+    })
+  }

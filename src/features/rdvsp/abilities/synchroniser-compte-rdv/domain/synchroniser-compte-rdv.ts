@@ -77,7 +77,7 @@ export type ReconcilierOrganisations = (compte: CompteRdvUtilisable) => Promise<
   >
 >
 
-type ReconcilierRdvs = (input: {
+export type ReconcilierRdvs = (input: {
   readonly compte: CompteRdvUtilisable
   readonly organisationIds?: readonly OrganisationId[]
 }) => Promise<
@@ -111,7 +111,7 @@ const compteVuParLaPasse = (
     ? compte
     : { ...compte, organisationIds: organisationIdsRecues }
 
-type ReconcilierWebhooks = (input: {
+export type ReconcilierWebhooks = (input: {
   readonly compte: CompteRdvUtilisable
   readonly organisationIds?: readonly OrganisationId[]
 }) => Promise<{

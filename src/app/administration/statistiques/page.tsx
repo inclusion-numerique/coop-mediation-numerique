@@ -29,7 +29,7 @@ import { BlocDesTypesDActivite } from '@/features/activites/abilities/repartir-l
 import { repartirLesAccompagnementsParTag } from '@/features/activites/abilities/repartir-les-accompagnements-par-tag/implementations/prisma/accompagnements-par-tag.query'
 import { parTagPresentes } from '@/features/activites/abilities/repartir-les-accompagnements-par-tag/ui/presenters/par-tag.presenter'
 import { BlocDesTags } from '@/features/activites/abilities/repartir-les-accompagnements-par-tag/ui/slots/BlocDesTags.slot'
-import { presenceDeCrasV1 } from '@/features/activites/abilities/verifier-la-presence-de-cras-v1/implementations/presence-de-cras-v1.binding'
+import { presenceDeCrasV1 } from '@/features/activites/abilities/verifier-la-presence-de-cras-v1/implementations/prisma/presence-de-cras-v1.query'
 import { RECHERCHER_DES_TAGS_DU_CRA_KEY } from '@/features/activites/action/rechercher-des-tags.key'
 import { RECHERCHER_LES_LIEUX_DES_ACTIVITES_KEY } from '@/features/activites/action/rechercher-les-lieux-des-activites.key'
 import { PERIMETRE_NATIONAL } from '@/features/activites/domain'
@@ -37,8 +37,8 @@ import {
   source,
   sourceOptionnelle,
   statistiquesAvec,
-} from '@/features/activites/implementations/statistiques-en-cours.binding'
-import { statistiquesNationalesEnCours } from '@/features/activites/implementations/statistiques-nationales.binding'
+} from '@/features/activites/implementations/prisma/statistiques/statistiques-en-cours.query'
+import { statistiquesNationalesEnCours } from '@/features/activites/implementations/prisma/statistiques/statistiques-nationales.query'
 import { BarreDesStatistiques } from '@/features/activites/ui/components/filtres/BarreDesStatistiques'
 import { criteresDesStatistiquesDesFiltres } from '@/features/activites/ui/filtres/activites.filtre'
 import { filtresDesStatistiques } from '@/features/activites/ui/filtres/statistiques.filtre'

@@ -22,15 +22,15 @@ import { repartirLesAccompagnements } from '@/features/activites/abilities/repar
 import { repartitionPresentee } from '@/features/activites/abilities/repartir-les-accompagnements/ui/presenters/repartition.presenter'
 import { repartirLesAccompagnementsParTag } from '@/features/activites/abilities/repartir-les-accompagnements-par-tag/implementations/prisma/accompagnements-par-tag.query'
 import { parTagPresentes } from '@/features/activites/abilities/repartir-les-accompagnements-par-tag/ui/presenters/par-tag.presenter'
-import { presenceDeCrasV1 } from '@/features/activites/abilities/verifier-la-presence-de-cras-v1/implementations/presence-de-cras-v1.binding'
+import { presenceDeCrasV1 } from '@/features/activites/abilities/verifier-la-presence-de-cras-v1/implementations/prisma/presence-de-cras-v1.query'
 import type { PerimetreDesStatistiques } from '@/features/activites/domain'
-import { perimetreDeLUtilisateur } from '@/features/activites/implementations/session/perimetre.query'
-import { statistiquesDuPerimetre } from '@/features/activites/implementations/statistiques-du-perimetre.binding'
+import { statistiquesDuPerimetre } from '@/features/activites/implementations/prisma/statistiques/statistiques-du-perimetre.query'
 import {
   source,
   sourceOptionnelle,
   statistiquesAvec,
-} from '@/features/activites/implementations/statistiques-en-cours.binding'
+} from '@/features/activites/implementations/prisma/statistiques/statistiques-en-cours.query'
+import { perimetreDeLUtilisateur } from '@/features/activites/implementations/session/perimetre.query'
 import { criteresDesStatistiquesDesFiltres } from '@/features/activites/ui/filtres/activites.filtre'
 import { filtresDesStatistiques } from '@/features/activites/ui/filtres/statistiques.filtre'
 import { barreDesStatistiquesAvec } from '@/features/activites/ui/presenters/barre-des-statistiques.presenter'

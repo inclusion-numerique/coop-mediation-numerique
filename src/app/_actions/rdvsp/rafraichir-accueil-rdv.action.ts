@@ -4,8 +4,10 @@ import { actionBuilder } from '@/configuration/nextjs'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/creer-ou-fusionner-depuis-usager-externe.binding'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
+import { consulterRdvsAccueil } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/domain/consulter-rdvs-accueil'
 import type { RafraichissementAccueil } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/domain/rafraichissement-accueil'
-import { consulterRdvsAccueilBinding as consulter } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/implementations/consulter-rdvs-accueil.binding'
+import { compteDuMediateur } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/implementations/prisma/compte-du-mediateur.query'
+import { lireDonneesAccueilRdv } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/implementations/prisma/donnees-accueil-rdv.query'
 import { DECLENCHER_SYNCHRONISATION_ERRORS } from '@/features/rdvsp/abilities/declencher-synchronisation/action/declencher-synchronisation.errors'
 import { declencherSynchronisationAvec } from '@/features/rdvsp/abilities/declencher-synchronisation/implementations/declencher-synchronisation.binding'
 import { synchroniserCompteAvec } from '@/features/rdvsp/abilities/synchroniser-compte-rdv/implementations/synchroniser-compte-rdv.binding'
@@ -34,6 +36,11 @@ const declencher = declencherSynchronisationAvec(
  * l'union des trois états comprise : la passe peut faire basculer le compte en
  * alerte, et l'écran doit pouvoir le montrer.
  */
+const consulter = consulterRdvsAccueil({
+  compteDuMediateur,
+  lireDonnees: lireDonneesAccueilRdv,
+})
+
 export const rafraichirAccueilRdvAction = actionBuilder()
   .use(withAuth())
   .use(withMaintenance())

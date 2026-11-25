@@ -6,8 +6,11 @@ import { filtresDeToutesLesActivites } from '@/features/activites/ui/filtres/tou
 import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
 import { utilisateurDuJetonDeSession } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
 import { jetonDeSessionDesCookies } from '@/features/authentification/implementations/session/session-token-from-cookies.query'
-import { beneficiairesInitiauxAvec } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/implementations/beneficiaires-initiaux.binding'
+import { beneficiairesInitiaux } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/domain/beneficiaires-initiaux'
+import { beneficiairesProposes } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/implementations/prisma/rechercher-beneficiaires.query'
 import { optionsDesBeneficiairesInitiaux } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/ui/presenters/options-des-beneficiaires-initiaux.presenter'
+import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
+import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
 import { mediateurCoordonnesEtAnciensIdsFor } from '@/features/equipe/domain/mediateurs-coordonnes'
 import { communesDuMediateur } from '@/features/lieux-activite/abilities/lister-les-options-de-lieux/implementations/prisma/communes-du-mediateur.query'
 import { getLieuxDesActivitesOptions } from '@/features/lieux-activite/abilities/lister-les-options-de-lieux/implementations/prisma/options-de-lieux-des-activites.query'
@@ -46,11 +49,13 @@ export const GET = async (request: NextRequest) => {
       lieuxDesActivites: getLieuxDesActivitesOptions,
       communesEtDepartements: communesDuMediateur,
       tagsVisibles: tagsVisiblesPar(acteurDe(profilDeLaSession(user))),
-      beneficiaires: (ids) =>
-        beneficiairesInitiauxAvec(optionsDesBeneficiairesInitiaux)({
-          mediateurId: user.mediateur?.id,
-          includeBeneficiaireIds: [...ids],
-        }),
+      beneficiaires: async (ids) =>
+        optionsDesBeneficiairesInitiaux(
+          await beneficiairesInitiaux(beneficiairesProposes)({
+            mediateurId: user.mediateur ? MediateurId(user.mediateur.id) : null,
+            includeBeneficiaireIds: ids.map(BeneficiaireId),
+          }),
+        ),
     },
   })
 

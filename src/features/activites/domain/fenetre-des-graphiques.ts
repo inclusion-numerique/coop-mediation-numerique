@@ -48,3 +48,28 @@ export const moisDeLaFenetre = (
   ),
   au: fenetre.fin,
 })
+
+export const fenetresDuPerimetre = ({
+  du,
+  fin,
+}: {
+  readonly du: Jour | null
+  readonly fin: Jour
+}) => {
+  const fenetre = fenetreDe({ debut: du, fin })
+
+  return { parJour: fenetre, parMois: fenetre }
+}
+
+export const fenetresNationales = ({
+  du,
+  au,
+  aujourdhui,
+}: {
+  readonly du: Jour | null
+  readonly au: Jour | null
+  readonly aujourdhui: Jour
+}) => ({
+  parJour: fenetreDe({ debut: du, fin: au ?? aujourdhui }),
+  parMois: fenetreDe({ debut: null, fin: aujourdhui }),
+})

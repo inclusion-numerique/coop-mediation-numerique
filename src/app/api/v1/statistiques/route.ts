@@ -16,13 +16,13 @@ import { repartirLesAccompagnements } from '@/features/activites/abilities/repar
 import { repartitionPresentee } from '@/features/activites/abilities/repartir-les-accompagnements/ui/presenters/repartition.presenter'
 import { repartirLesAccompagnementsParTag } from '@/features/activites/abilities/repartir-les-accompagnements-par-tag/implementations/prisma/accompagnements-par-tag.query'
 import { parTagPresentes } from '@/features/activites/abilities/repartir-les-accompagnements-par-tag/ui/presenters/par-tag.presenter'
-import { presenceDeCrasV1 } from '@/features/activites/abilities/verifier-la-presence-de-cras-v1/implementations/presence-de-cras-v1.binding'
+import { presenceDeCrasV1 } from '@/features/activites/abilities/verifier-la-presence-de-cras-v1/implementations/prisma/presence-de-cras-v1.query'
 import {
   source,
   sourceOptionnelle,
   statistiquesAvec,
-} from '@/features/activites/implementations/statistiques-en-cours.binding'
-import { statistiquesNationalesEnCours } from '@/features/activites/implementations/statistiques-nationales.binding'
+} from '@/features/activites/implementations/prisma/statistiques/statistiques-en-cours.query'
+import { statistiquesNationalesEnCours } from '@/features/activites/implementations/prisma/statistiques/statistiques-nationales.query'
 import { criteresDesStatistiquesDesFiltres } from '@/features/activites/ui/filtres/activites.filtre'
 import { filtresDeToutesLesActivites } from '@/features/activites/ui/filtres/toutes-les-activites.filtre'
 import {

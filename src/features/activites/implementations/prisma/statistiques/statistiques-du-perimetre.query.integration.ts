@@ -18,19 +18,19 @@ import { repartirLesAccompagnements } from '@/features/activites/abilities/repar
 import { repartitionPresentee } from '@/features/activites/abilities/repartir-les-accompagnements/ui/presenters/repartition.presenter'
 import { repartirLesAccompagnementsParTag } from '@/features/activites/abilities/repartir-les-accompagnements-par-tag/implementations/prisma/accompagnements-par-tag.query'
 import { parTagPresentes } from '@/features/activites/abilities/repartir-les-accompagnements-par-tag/ui/presenters/par-tag.presenter'
-import { presenceDeCrasV1 } from '@/features/activites/abilities/verifier-la-presence-de-cras-v1/implementations/presence-de-cras-v1.binding'
+import { presenceDeCrasV1 } from '@/features/activites/abilities/verifier-la-presence-de-cras-v1/implementations/prisma/presence-de-cras-v1.query'
 import { criteresDesStatistiquesDepuisLURL } from '@/features/activites/fixtures/criteres-depuis-l-url'
 import { Prisma } from '@/generated/prisma/client'
 import type { QuantifiedShare } from '@/libraries/proportions'
 import { computeProportion, partsFixees } from '@/libraries/proportions'
-import { MediateurId, perimetreDuDemandeur } from '../domain'
-import { crasDeDemonstration } from '../fixtures/cras-de-demonstration'
-import { enregistrerLesCras } from '../fixtures/enregistrer-les-cras'
-import { tranchesDeDureeDesStatistiques } from '../ui/labels/libelles/duree-accompagnement.labels'
+import { MediateurId, perimetreDuDemandeur } from '../../../domain'
+import { crasDeDemonstration } from '../../../fixtures/cras-de-demonstration'
+import { enregistrerLesCras } from '../../../fixtures/enregistrer-les-cras'
+import { tranchesDeDureeDesStatistiques } from '../../../ui/labels/libelles/duree-accompagnement.labels'
 import {
   materielLabels,
   materielValues,
-} from '../ui/labels/libelles/materiel.labels'
+} from '../../../ui/labels/libelles/materiel.labels'
 import {
   genreLabels,
   genresAffiches,
@@ -38,27 +38,27 @@ import {
   statutsSociauxAffiches,
   trancheAgeLabels,
   tranchesAgeAffichees,
-} from '../ui/labels/libelles/profil.labels'
+} from '../../../ui/labels/libelles/profil.labels'
 import {
   thematiquesAdministrativesLabels,
   thematiquesAdministrativesValues,
   thematiquesNonAdministrativesLabels,
   thematiquesNonAdministrativesValues,
-} from '../ui/labels/libelles/thematique.labels'
+} from '../../../ui/labels/libelles/thematique.labels'
 import {
   typeActiviteLabels,
   typeActiviteValues,
-} from '../ui/labels/libelles/type-activite.labels'
+} from '../../../ui/labels/libelles/type-activite.labels'
 import {
   typeLieuLabels,
   typeLieuValues,
-} from '../ui/labels/libelles/type-lieu.labels'
-import { statistiquesDuPerimetre } from './statistiques-du-perimetre.binding'
+} from '../../../ui/labels/libelles/type-lieu.labels'
+import { statistiquesDuPerimetre } from './statistiques-du-perimetre.query'
 import {
   source,
   sourceOptionnelle,
   statistiquesAvec,
-} from './statistiques-en-cours.binding'
+} from './statistiques-en-cours.query'
 
 const statistiquesDesActivites = statistiquesAvec({
   totalCounts: source(compterLesAccompagnements, totauxPresentes),

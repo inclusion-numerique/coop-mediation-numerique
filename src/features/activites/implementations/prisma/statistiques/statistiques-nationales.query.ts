@@ -3,10 +3,10 @@ import {
   Jour,
   PERIMETRE_NATIONAL,
 } from '@/features/activites/domain'
-import { fenetreDe } from '@/features/activites/domain/fenetre-des-graphiques'
+import { fenetresNationales } from '@/features/activites/domain/fenetre-des-graphiques'
 import { dateAsIsoDay } from '@/libraries/date'
-import type { RendezVousAuxStatuts } from './prisma/statistiques/criteres-des-statistiques.sql'
-import type { LancerLesStatistiques } from './statistiques-en-cours.binding'
+import type { RendezVousAuxStatuts } from './criteres-des-statistiques.sql'
+import type { LancerLesStatistiques } from './statistiques-en-cours.query'
 
 export const statistiquesNationalesEnCours = <E>(
   lancer: LancerLesStatistiques<E>,
@@ -25,11 +25,11 @@ export const statistiquesNationalesEnCours = <E>(
       perimetre: PERIMETRE_NATIONAL,
       criteres,
       rendezVousAuxStatuts,
-      parJour: fenetreDe({
-        debut: criteres.periode.du,
-        fin: criteres.periode.au ?? aujourdhui,
+      ...fenetresNationales({
+        du: criteres.periode.du,
+        au: criteres.periode.au,
+        aujourdhui,
       }),
-      parMois: fenetreDe({ debut: null, fin: aujourdhui }),
     },
     { territoires: false, tags },
   )
