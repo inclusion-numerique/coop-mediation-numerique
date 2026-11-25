@@ -4,7 +4,7 @@ import { useStore } from '@tanstack/react-form'
 import type { ParserMap } from 'nuqs'
 import { useRef } from 'react'
 import { useAppForm, useHydrated } from '@/libraries/formulaire/hooks'
-import type { SelectOption } from '@/libraries/ui/form'
+import type { SelectOption } from '@/libraries/ui'
 import { Options } from '@/libraries/ui/primitives'
 import type { FiltreQuelconque } from '../definition'
 import {
