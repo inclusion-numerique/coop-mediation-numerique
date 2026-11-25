@@ -1,8 +1,8 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import Image from 'next/image'
-import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
-import { contentId } from '@/libraries/liens-d-evitement/skip-links'
-import LogoCoop from '@/libraries/ui/components/LogoCoop'
+import { contentId } from '@/libraries/liens-d-evitement'
+import { SkipLinksPortal } from '@/libraries/liens-d-evitement/composants'
+import { LogoCoop } from '@/libraries/ui/components'
 
 export const MigrationPage = () => (
   <div className="fr-container">

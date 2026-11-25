@@ -1,9 +1,11 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { AidantsConnectLogo } from '@/libraries/pictograms/services/AidantsConnectLogo'
-import { CartographieLogo } from '@/libraries/pictograms/services/CartographieLogo'
-import { LesBasesLogo } from '@/libraries/pictograms/services/LesBasesLogo'
-import { RDVServicePublicLogo } from '@/libraries/pictograms/services/RDVServicePublicLogo'
+import {
+  AidantsConnectLogo,
+  CartographieLogo,
+  LesBasesLogo,
+  RDVServicePublicLogo,
+} from '@/libraries/pictograms/services'
 
 export const Outils = ({
   lienRdvServicePublic,

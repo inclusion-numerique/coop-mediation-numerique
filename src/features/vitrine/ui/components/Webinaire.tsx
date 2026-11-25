@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { contactEmail } from '@/configuration/projet/config'
+import { contactEmail } from '@/configuration/projet'
 
 const Webinaire = () => (
   <div className="fr-background-action-low--blue-france fr-py-6w">
