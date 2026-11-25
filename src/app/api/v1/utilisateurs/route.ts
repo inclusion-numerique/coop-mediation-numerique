@@ -4,19 +4,18 @@ import {
   withApiV1Errors,
   withClientApi,
   withQueryParams,
-} from '@/features/clients-api/abilities/authentifier-un-client-api/implementation/api-v1'
+} from '@/features/clients-api/abilities/authentifier-un-client-api/implementations/api-v1'
+import { authentifierUnClientApi } from '@/features/clients-api/abilities/authentifier-un-client-api/implementations/prisma/authentifier-un-client-api.query'
 import {
   curseurDUtilisateur,
-  reponseDesUtilisateurs,
   UtilisateursQueryParamsValidation,
-} from '@/features/clients-api/abilities/lire-les-utilisateurs'
-import {
-  criteresDExposition,
-  utilisateurExpose,
-  utilisateursExposes,
-} from '@/features/utilisateurs/abilities/exposer-les-utilisateurs'
-import { prismaCursorPagination } from '@/libraries/json-api/CursorPagination'
-import { curseurLu } from '@/libraries/json-api/pageParCurseur'
+} from '@/features/clients-api/abilities/lire-les-utilisateurs/implementations/api-v1/utilisateurs.params'
+import { reponseDesUtilisateurs } from '@/features/clients-api/abilities/lire-les-utilisateurs/implementations/api-v1/utilisateurs.response'
+import { verifySecret } from '@/features/clients-api/implementations/secret/hash-secret.adapter'
+import { criteresDExposition } from '@/features/utilisateurs/abilities/exposer-les-utilisateurs/implementations/api/criteres-d-exposition.transfer'
+import { utilisateurExpose } from '@/features/utilisateurs/abilities/exposer-les-utilisateurs/implementations/api/utilisateur-expose.transfer'
+import { utilisateursExposes } from '@/features/utilisateurs/abilities/exposer-les-utilisateurs/implementations/prisma/utilisateurs-exposes.query'
+import { curseurLu, prismaCursorPagination } from '@/libraries/json-api'
 
 /**
  * @openapi
@@ -301,6 +300,10 @@ import { curseurLu } from '@/libraries/json-api/pageParCurseur'
  *             summary: plusieurs valeurs
  *             value: "123,456,789"
  *     responses:
+ *       401:
+ *         $ref: '#/components/responses/NonAuthentifie'
+ *       403:
+ *         $ref: '#/components/responses/NonAutorise'
  *       200:
  *         description: liste des utilisateurs
  *         content:
@@ -320,7 +323,7 @@ import { curseurLu } from '@/libraries/json-api/pageParCurseur'
  */
 
 export const GET = routeBuilder()
-  .use(withClientApi(['Utilisateurs']))
+  .use(withClientApi(authentifierUnClientApi(verifySecret))(['Utilisateurs']))
   .use(withQueryParams(UtilisateursQueryParamsValidation))
   .handle(
     withApiV1Errors(async ({ queryParams }) => {

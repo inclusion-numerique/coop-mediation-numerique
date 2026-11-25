@@ -1,4 +1,5 @@
 import Button from '@codegouvfr/react-dsfr/Button'
+import type { Route } from 'next'
 import { PropsWithChildren, ReactNode } from 'react'
 import { CloseButton } from '@/features/utilisateurs/abilities/marquer-l-onboarding-comme-vu/ui/components/CloseButton'
 import CompleteOnboardingButton from '@/features/utilisateurs/abilities/marquer-l-onboarding-comme-vu/ui/components/CompleteOnboardingButton'
@@ -19,8 +20,8 @@ const Onboarding = ({
   label?: ReactNode
   stepIndex?: number
   totalSteps?: number
-  previous?: { href: string }
-  next?: { href: string; label?: string; isComplete?: boolean }
+  previous?: { href: Route }
+  next?: { href: Route; label?: string; isComplete?: boolean }
   closeHref: string
 }>) => (
   <div className="fr-layout__main fr-container-fluid">

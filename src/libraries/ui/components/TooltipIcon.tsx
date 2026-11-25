@@ -1,5 +1,4 @@
 import classNames from 'classnames'
-import styles from './TooltipIcon.module.css'
 
 const TooltipIcon = ({
   tooltipId,
@@ -11,7 +10,7 @@ const TooltipIcon = ({
   <>
     <button
       type="button"
-      className={classNames(styles.tooltipButton, className)}
+      className={classNames('bouton-d-infobulle', className)}
       aria-describedby={tooltipId}
     >
       <span className="ri-question-line" aria-hidden />

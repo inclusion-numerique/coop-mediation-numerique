@@ -2,7 +2,7 @@ import {
   ModaliteAccompagnement,
   type Service,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import { modaliteAccompagnementIcons } from '@/features/lieux-activite/ui/options'
+import { modaliteAccompagnementIcons } from '@/features/lieux-activite/ui/labels/options-du-lieu.labels'
 
 export const VueServicesEtAccompagnement = ({
   services = [],

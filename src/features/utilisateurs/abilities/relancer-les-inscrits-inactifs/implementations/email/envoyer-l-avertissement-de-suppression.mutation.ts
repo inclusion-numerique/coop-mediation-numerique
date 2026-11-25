@@ -1,0 +1,53 @@
+import { contactEmail } from '@/configuration/projet'
+import {
+  emailTransport,
+  expediteur,
+  throwOnSendMailFailure,
+} from '@/configuration/smtp'
+import { avertissementDeSuppression } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/implementations/email/avertissement-de-suppression.email'
+import { compileMjml } from '@/libraries/emails/rendu'
+
+export const envoyerLAvertissementDeSuppression = async ({
+  email,
+  firstname,
+  deletionDate,
+  daysRemaining,
+  matomoCampaignId,
+  isMediateur,
+  isCoordinateur,
+}: {
+  email: string
+  firstname: string | null
+  deletionDate: string
+  daysRemaining: number
+  matomoCampaignId: string
+  isMediateur: boolean
+  isCoordinateur: boolean
+}) => {
+  const result = await emailTransport.sendMail({
+    to: email,
+    from: expediteur,
+    replyTo: contactEmail(),
+    subject: `Votre compte va bientôt être supprimé ⚠️`,
+    text: avertissementDeSuppression.text({
+      firstname,
+      deletionDate,
+      daysRemaining,
+      matomoCampaignId,
+      isMediateur,
+      isCoordinateur,
+    }),
+    html: await compileMjml(
+      avertissementDeSuppression.mjml({
+        firstname,
+        deletionDate,
+        daysRemaining,
+        matomoCampaignId,
+        isMediateur,
+        isCoordinateur,
+      }),
+    ),
+  })
+
+  throwOnSendMailFailure(result)
+}

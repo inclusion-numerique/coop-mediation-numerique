@@ -1,10 +1,11 @@
+import type { BeneficiaireLie } from '@/features/rdvsp/abilities/recevoir-webhook-usager/domain/decision-webhook-usager'
+import { decisionPourWebhookUsager } from '@/features/rdvsp/abilities/recevoir-webhook-usager/domain/decision-webhook-usager'
+import type { UsagerId } from '@/features/rdvsp/domain/identifiants/usager-id'
+import type { Usager } from '@/features/rdvsp/domain/usager'
+import type { EvenementWebhook } from '@/features/rdvsp/domain/webhook/evenement-webhook'
 import type { Result } from '@/libraries/result'
-import type { EvenementWebhook } from '../../../domain/evenement-webhook'
-import type { Usager } from '../../../domain/usager'
-import type { UsagerId } from '../../../domain/usager-id'
-import type { BeneficiaireLie } from './decision-webhook-usager'
 
-type ResultatWebhookUsager =
+export type ResultatWebhookUsager =
   | {
       readonly _tag: 'traite'
       readonly action: 'misAJour' | 'anonymiseEtSupprime'
@@ -35,3 +36,49 @@ export type AnonymiserEtSupprimerUsager = (input: {
   readonly usagerId: UsagerId
   readonly beneficiaires: readonly BeneficiaireLie[]
 }) => Promise<void>
+
+export type DependancesRecevoirWebhookUsager = {
+  readonly lireNotification: LireNotificationUsager
+  readonly beneficiairesLies: BeneficiairesLiesAUsager
+  readonly mettreAJour: MettreAJourUsager
+  readonly anonymiserEtSupprimer: AnonymiserEtSupprimerUsager
+}
+
+export const recevoirWebhookUsager =
+  ({
+    lireNotification,
+    beneficiairesLies,
+    mettreAJour,
+    anonymiserEtSupprimer,
+  }: DependancesRecevoirWebhookUsager): RecevoirWebhookUsager =>
+  async ({ evenement, payload }) => {
+    const notification = lireNotification(payload)
+
+    if (!notification.success) {
+      return { _tag: 'ignore', raison: notification.error }
+    }
+
+    const usager = notification.data
+    const beneficiaires = await beneficiairesLies(usager.id)
+
+    const decision = decisionPourWebhookUsager({
+      evenement,
+      beneficiairesLies: beneficiaires,
+    })
+
+    if (decision._tag === 'ignorer') {
+      return { _tag: 'ignore', raison: decision.raison }
+    }
+
+    if (decision._tag === 'mettreAJour') {
+      await mettreAJour(usager)
+      return { _tag: 'traite', action: 'misAJour' }
+    }
+
+    await anonymiserEtSupprimer({
+      usagerId: usager.id,
+      beneficiaires,
+    })
+
+    return { _tag: 'traite', action: 'anonymiseEtSupprime' }
+  }

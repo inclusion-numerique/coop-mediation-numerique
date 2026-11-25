@@ -3,7 +3,7 @@ import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { semerUnCompteDeListe } from '@/features/utilisateurs/utilisateurs.cucumber'
 import type { UtilisateursActifs } from './domain'
-import { mesurerLesUtilisateursActifs } from './implementation'
+import { mesurerLesUtilisateursActifs } from './implementations/prisma/utilisateurs-actifs.query'
 
 const mesure: {
   avant?: UtilisateursActifs

@@ -60,8 +60,8 @@ const courrielReferent = (
   courriels: Record<string, string> | undefined,
 ): CourrielReferent | null =>
   [
-    courriels?.mail_gestionnaire,
-    courriels?.referent_hierarchique,
+    courriels?.['mail_gestionnaire'],
+    courriels?.['referent_hierarchique'],
     ...Object.values(courriels ?? {}),
   ]
     .map((candidat) => CourrielReferent.safe(candidat ?? ''))

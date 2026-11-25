@@ -1,18 +1,19 @@
 import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { ajouterStructureEmployeuseEnLieu } from '@/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/commands/ajouter-structure-employeuse-en-lieu'
+import { prismaClient } from '@/configuration/prisma'
 import type {
   EmployeuseLue,
   Geocodage,
   GeocoderLAdresse,
 } from '@/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/domain'
 import {
-  currentInscriptionUserId,
   seedEmployeuseMain,
+  utilisateurDeLInscriptionEnCours,
 } from '@/features/inscription/inscription.cucumber'
-import type { AdresseBanData } from '@/libraries/adresse/AdresseBanValidation'
+import type { AdresseBanData } from '@/libraries/adresse'
+import { ajouterStructureEmployeuseEnLieu } from './domain/ajouter-structure-employeuse-en-lieu'
+import { lireLAdresseDeLEmployeuse } from './implementations/prisma/adresse-de-l-employeuse.query'
 
 const nomEmployeuse = 'Employeuse lieu d’activité'
 
@@ -60,25 +61,23 @@ const consulterEmployeuseActuelle = async () =>
   etat.employeuse === undefined ? null : { employeuse: etat.employeuse }
 
 const declarer = async (estLieuActivite: boolean) => {
-  const resultat = await ajouterStructureEmployeuseEnLieu(
-    { userId: currentInscriptionUserId(), estLieuActivite },
-    {
-      geocoderLAdresse,
-      consulterEmployeuseActuelle,
-      rattacherAuLieuDecrit: async ({ lieu }) => {
-        etat.rattaches.push(lieu)
-      },
-      detacherDuLieuDecrit: async ({ lieu }) => {
-        etat.detaches.push(lieu)
-      },
+  const resultat = await ajouterStructureEmployeuseEnLieu({
+    lireLAdresseDeLEmployeuse,
+    geocoderLAdresse,
+    consulterEmployeuseActuelle,
+    rattacherAuLieuDecrit: async ({ lieu }) => {
+      etat.rattaches.push(lieu)
     },
-  )
+    detacherDuLieuDecrit: async ({ lieu }) => {
+      etat.detaches.push(lieu)
+    },
+  })({ userId: utilisateurDeLInscriptionEnCours(), estLieuActivite })
   etat.refus = resultat.success ? null : resultat.error._tag
 }
 
 Given('je suis médiateur', async () => {
   await prismaClient.mediateur.create({
-    data: { id: v4(), userId: currentInscriptionUserId() },
+    data: { id: v4(), userId: utilisateurDeLInscriptionEnCours() },
   })
 })
 
@@ -158,7 +157,7 @@ Then('le lieu confié porte l’adresse de la Base Adresse Nationale', () => {
 
 After(() => {
   etat.geocodage = ADRESSE_RECONNUE_PAR_LA_BAN
-  etat.employeuse = undefined
+  delete etat.employeuse
   etat.refus = null
   etat.rattaches = []
   etat.detaches = []

@@ -53,14 +53,6 @@ Cypress.Commands.add('signin', ({ email }: { email: string }) =>
   }),
 )
 
-Cypress.Commands.add('deleteAllData', () => {
-  cy.execute('deleteAllData', {})
-})
-
-Cypress.Commands.add('resetFixtures', () => {
-  cy.execute('resetFixtures', {})
-})
-
 Cypress.Commands.add('logout', () => cy.clearCookie('next-auth.session-token'))
 
 Cypress.Commands.add('createUserAndSignin', (user: CreateUserInput) => {
@@ -132,7 +124,9 @@ Cypress.Commands.add(
     cy.testId(testId).then(($element) => {
       const height = Cypress.$(cy.state('window')).height()
       const width = Cypress.$(cy.state('window')).width()
-      const rect = $element[0].getBoundingClientRect()
+      const [element] = $element.toArray()
+      if (element === undefined) throw new Error(`${testId} introuvable`)
+      const rect = element.getBoundingClientRect()
 
       expect(height).to.be.a('number', 'Window height not available')
       expect(width).to.be.a('number', 'Window width not available')
@@ -205,10 +199,6 @@ declare global {
       createCoordinateurFor(user: { email: string }): Chainable<void>
 
       signin(user: { email: string }): Chainable<string>
-
-      deleteAllData(): Chainable<null>
-
-      resetFixtures(): Chainable<null>
 
       logout(): Chainable<null>
 

@@ -1,6 +1,6 @@
 import type {
   CoordinateurDeLEquipe,
-  Email,
+  Courriel,
   Invitation,
   ReferenceInvitation,
 } from '../../../domain'
@@ -24,7 +24,7 @@ export const vueInvitation = ({
   tailleEquipe,
 }: {
   invitation: Invitation | null
-  session: Email | null
+  session: Courriel | null
   coordinateur: CoordinateurDeLEquipe | null
   tailleEquipe: number
 }): VueInvitation => {

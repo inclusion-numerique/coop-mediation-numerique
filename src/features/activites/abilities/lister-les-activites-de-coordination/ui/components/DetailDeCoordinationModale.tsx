@@ -3,12 +3,13 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { type ReactNode, useState } from 'react'
-import { inject } from '@/libraries/nextjs/injection/client'
-import { createDynamicModal } from '@/libraries/ui/components/Modal/createDynamicModal'
-import { createToast } from '@/libraries/ui/toast/createToast'
-import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
-import type { DetailDeCoordination } from '../liste-des-coordinations.presenter'
-import { SUPPRIMER_LA_COORDINATION_KEY } from '../supprimer-la-coordination.key'
+import { hrefDeLActivite } from '@/features/activites/ui/presenters/liens.presenter'
+import { inject } from '@/libraries/nextjs/injection'
+import { createDynamicModal } from '@/libraries/ui/components'
+import { createToast } from '@/libraries/ui/toast'
+import { buttonLoadingClassname } from '@/libraries/ui/utils'
+import { SUPPRIMER_LA_COORDINATION_KEY } from '../../action/supprimer-la-coordination.key'
+import type { DetailDeCoordination } from '../presenters/liste-des-coordinations.presenter'
 
 export const DetailDeCoordinationDynamicModal = createDynamicModal<
   DetailDeCoordination | undefined
@@ -54,8 +55,8 @@ export const DetailDeCoordinationModale = () => {
 
   if (detail == null) return null
 
-  const retour = `?retour=${cheminCourant}${recherche ? `?${recherche}` : ''}`
-  const lienDuCra = `/coop/mes-activites/cra/${detail.segmentDeType}/${detail.id}`
+  const retour = `?retour=${encodeURIComponent(`${cheminCourant}${recherche ? `?${recherche}` : ''}`)}`
+  const lienDuCra = hrefDeLActivite(detail.segmentDeType, detail.id)
 
   const supprimer = async () => {
     setEnCours(true)
@@ -91,9 +92,9 @@ export const DetailDeCoordinationModale = () => {
         </div>
       }
       className="modale-de-detail"
-      buttons={
-        confirmation
-          ? [
+      {...(confirmation
+        ? {
+            buttons: [
               {
                 title: 'Annuler',
                 priority: 'secondary',
@@ -114,9 +115,9 @@ export const DetailDeCoordinationModale = () => {
                     .className,
                 },
               },
-            ]
-          : undefined
-      }
+            ],
+          }
+        : {})}
     >
       <hr />
       {confirmation ? (

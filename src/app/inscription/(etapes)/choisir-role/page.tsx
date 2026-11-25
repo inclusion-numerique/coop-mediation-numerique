@@ -1,8 +1,8 @@
 import { redirect } from 'next/navigation'
 import { choisirProfilAction } from '@/app/_actions/inscription/choisir-profil.action'
-import { metadataTitle } from '@/configuration/projet/metadataTitle'
-import { hasInscriptionComplete } from '@/features/authentification/domain/getHomepage'
-import { authenticateUser } from '@/features/authentification/implementation/session/authenticateUser'
+import { metadataTitle } from '@/configuration/projet'
+import { aTermineSonInscription } from '@/features/authentification/domain/page-d-accueil'
+import { authenticateUser } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
 import ChoisirRolePage from '@/features/inscription/abilities/choisir-profil/ui/pages/ChoisirRolePage'
 
 export const dynamic = 'force-dynamic'
@@ -16,7 +16,7 @@ const ChoisirRolePageRoute = async () => {
   const user = await authenticateUser()
 
   // If inscription is already complete (validated with a role profile), redirect to coop
-  if (hasInscriptionComplete(user)) {
+  if (aTermineSonInscription(user)) {
     redirect('/coop')
   }
 

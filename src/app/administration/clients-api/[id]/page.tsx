@@ -1,15 +1,15 @@
 import { notFound } from 'next/navigation'
 import { modifierUnClientApiAction } from '@/app/_actions/clients-api/modifier-un-client-api.action'
 import { renouvelerLeSecretAction } from '@/app/_actions/clients-api/renouveler-le-secret.action'
-import { metadataTitle } from '@/configuration/projet/metadataTitle'
-import { authenticateAdmin } from '@/features/authentification/implementation/session/authenticateUser'
-import { consulterUnClientApi } from '@/features/clients-api/abilities/consulter-un-client-api'
-import { ClientApiPage } from '@/features/clients-api/abilities/consulter-un-client-api/ui'
+import { metadataTitle } from '@/configuration/projet'
+import { authenticateAdmin } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
+import { consulterUnClientApi } from '@/features/clients-api/abilities/consulter-un-client-api/implementations/prisma/client-api.query'
+import { ClientApiPage } from '@/features/clients-api/abilities/consulter-un-client-api/ui/pages/ClientApiPage'
 import { MODIFIER_UN_CLIENT_API_ACTION_KEY } from '@/features/clients-api/abilities/modifier-un-client-api/action/modifier-un-client-api.key'
-import { ModifierUnClientApi } from '@/features/clients-api/abilities/modifier-un-client-api/ui'
+import { ModifierUnClientApi } from '@/features/clients-api/abilities/modifier-un-client-api/ui/slots/ModifierUnClientApi.slot'
 import { RENOUVELER_LE_SECRET_ACTION_KEY } from '@/features/clients-api/abilities/renouveler-le-secret/action/renouveler-le-secret.key'
-import { RenouvelerLeSecret } from '@/features/clients-api/abilities/renouveler-le-secret/ui'
-import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
+import { RenouvelerLeSecret } from '@/features/clients-api/abilities/renouveler-le-secret/ui/slots/RenouvelerLeSecret.slot'
+import { ClientBinder } from '@/libraries/nextjs/injection'
 
 export const metadata = {
   title: metadataTitle('Client API - Détails'),

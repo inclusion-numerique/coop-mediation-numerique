@@ -1,16 +1,16 @@
-# Feature: Consulter un outil
+# Fonctionnalité: Consulter un outil
 
 > Chaque outil présenté dans « Mes outils » a sa fiche, adressée par un slug
 > dans l'URL.
 
-## Rule: Seuls les outils présentés ont une fiche
+## Règle: Seuls les outils présentés ont une fiche
 
-### Scenario: Un outil présenté a sa fiche
+### Scénario: Un outil présenté a sa fiche
 
-* When on demande la fiche de l'outil "aidants-connect"
-* Then la fiche existe
+* Quand on demande la fiche de l'outil "aidants-connect"
+* Alors la fiche existe
 
-### Scenario: Un slug inconnu n'a pas de fiche
+### Scénario: Un slug inconnu n'a pas de fiche
 
-* When on demande la fiche de l'outil "outil-inconnu"
-* Then la fiche n'existe pas
+* Quand on demande la fiche de l'outil "outil-inconnu"
+* Alors la fiche n'existe pas

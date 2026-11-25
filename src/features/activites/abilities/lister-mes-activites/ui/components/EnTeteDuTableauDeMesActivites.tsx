@@ -1,25 +1,23 @@
-import {
-  type DataTableUrlState,
-  SortableColumnHeader,
-} from '@/libraries/data-table'
+import { EnTeteTriable } from '@/libraries/etat-d-url/liste'
+import { listeDesActivites } from '../../../../ui/filtres/liste-des-activites.filtre'
 
 export const EnTeteDuTableauDeMesActivites = ({
-  state,
-  baseHref,
+  adresse,
+  parametres,
 }: {
-  state: DataTableUrlState
-  baseHref: string
+  adresse: string
+  parametres: Readonly<Record<string, string>>
 }) => (
   <thead>
     <tr>
       <th scope="col">Activité</th>
-      <SortableColumnHeader
-        label="Date"
-        tri="date"
-        state={state}
-        baseHref={baseHref}
-        isDefault
-        defaultDirection="desc"
+      <EnTeteTriable
+        libelle="Date"
+        lien={listeDesActivites.tri.lien(
+          { chemin: adresse, parametres },
+          listeDesActivites.charger(parametres),
+          'date',
+        )}
       />
       <th scope="col">Durée</th>
       <th scope="col">Lieu d’activité</th>

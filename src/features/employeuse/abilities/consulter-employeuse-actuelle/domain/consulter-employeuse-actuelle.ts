@@ -1,4 +1,4 @@
-import type { EmployeuseActuelle } from '../../../domain/employeuse-actuelle'
+import type { EmployeuseActuelle } from '../../../domain/consultation/employeuse-actuelle'
 
 /**
  * Employeuse courante d'un utilisateur de la coop.

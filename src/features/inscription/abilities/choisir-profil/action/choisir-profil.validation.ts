@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { Role } from '@/features/inscription/domain'
-import { rolesDisponibles } from '../domain/choisir-profil'
+import { rolesDisponibles } from '../domain/decider-le-role'
 
 /**
  * Forme du formulaire : le rôle choisi + l'acceptation obligatoire des CGU.

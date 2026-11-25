@@ -1,0 +1,11 @@
+.graphe-des-imports {
+  overflow-x: auto;
+  background: white;
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+
+.graphe-des-imports svg {
+  max-width: none;
+  height: auto;
+}

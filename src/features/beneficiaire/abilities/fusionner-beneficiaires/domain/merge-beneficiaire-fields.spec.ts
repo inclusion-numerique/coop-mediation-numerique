@@ -1,6 +1,6 @@
 import { describe, expect, it, test } from 'vitest'
 import {
-  isValuePresent,
+  estRenseignee,
   type MergeableBeneficiaire,
   mergeBeneficiaireFields,
 } from './merge-beneficiaire-fields'
@@ -24,7 +24,7 @@ const empty: MergeableBeneficiaire = {
   statutSocial: null,
 }
 
-describe('isValuePresent', () => {
+describe('estRenseignee', () => {
   test.each([
     { value: null, expected: false },
     { value: undefined, expected: false },
@@ -34,7 +34,7 @@ describe('isValuePresent', () => {
     { value: 0, expected: true },
     { value: false, expected: true },
   ])('returns $expected for $value', ({ value, expected }) => {
-    expect(isValuePresent(value)).toBe(expected)
+    expect(estRenseignee(value)).toBe(expected)
   })
 })
 

@@ -1,5 +1,3 @@
-import type { SortDirection } from '@arckit/resultset'
-
 export const colonnesTriables = [
   'creation',
   'derniereConnexion',
@@ -12,8 +10,3 @@ export const colonnesTriables = [
 ] as const
 
 export type ColonneTriable = (typeof colonnesTriables)[number]
-
-export const TRI_PAR_DEFAUT: {
-  readonly colonne: ColonneTriable
-  readonly ordre: SortDirection
-} = { colonne: 'creation', ordre: 'desc' }

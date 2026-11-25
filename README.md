@@ -1,6 +1,6 @@
 # La Coop de la médiation numérique
 
-[![Coverage Status](https://coveralls.io/repos/github/inclusion-numerique/coop-mediation-numerique/badge.svg?branch=main)](https://coveralls.io/github/inclusion-numerique/coop-mediation-numerique?branch=main)
+[![Couverture](https://inclusion-numerique.github.io/coop-mediation-numerique/annexes/couverture/badge.svg)](https://inclusion-numerique.github.io/coop-mediation-numerique/annexes/couverture/index.html)
 
 <h2 id="a-propos">🪧 À propos</h2>
 
@@ -48,9 +48,9 @@ Chaque pull request peut aussi déployer son propre environnement de preview, vo
 
 <h2 id="documentation">📚 Documentation</h2>
 
+- [Documentation technique](https://inclusion-numerique.github.io/coop-mediation-numerique/) : les décisions d'architecture, les spécifications exécutables, les graphes et les tables d'imports, et les rapports, publiés à chaque fusion sur `main`
 - [Guide de contribution](./CONTRIBUTING.md) : installer l'environnement de développement et les pratiques du dépôt
 - [Infrastructure](./infrastructure/README.md) : les ressources Scaleway de chaque environnement, les tâches planifiées et le déploiement
-- [Décisions d'architecture (ADR)](./docs/decisions)
 - [AGENTS.md](./AGENTS.md) : les conventions de code, rédigées pour les agents de code et utiles à tout le monde
 
 <h2 id="contenu">📦 Contenu du dépôt</h2>

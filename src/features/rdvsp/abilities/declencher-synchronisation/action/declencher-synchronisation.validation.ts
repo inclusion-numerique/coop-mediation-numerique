@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { UtilisateurCoopId } from '../../../domain/utilisateur-coop-id'
+import { UtilisateurCoopId } from '../../../domain/identifiants/utilisateur-coop-id'
 
 /**
  * L'identifiant de la cible traverse le réseau parce que l'administration

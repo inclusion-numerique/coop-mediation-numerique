@@ -1,10 +1,8 @@
 import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { withMaintenance } from '@/features/maintenance-mode'
-import { consulterLaMaintenance } from '@/features/maintenance-mode/abilities/consulter-la-maintenance'
-import { reglerLaMaintenance } from '@/features/maintenance-mode/abilities/regler-la-maintenance'
+import { prismaClient } from '@/configuration/prisma'
+import { reglerLaMaintenance } from '@/features/maintenance-mode/abilities/regler-la-maintenance/implementations/prisma/regler-la-maintenance.mutation'
 import {
   type EtatDeMaintenance,
   MESSAGE_DE_MAINTENANCE_PAR_DEFAUT,
@@ -12,6 +10,8 @@ import {
   messageAffiche,
   type RoleDuCompte,
 } from '@/features/maintenance-mode/domain'
+import { consulterLaMaintenance } from '@/features/maintenance-mode/implementations/prisma/etat-de-maintenance.query'
+import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import type { ServerActionResult } from '@/libraries/nextjs'
 
 const tentative: { resultat?: ServerActionResult<unknown> } = {}
@@ -22,7 +22,6 @@ const etat = async (): Promise<EtatDeMaintenance> => consulterLaMaintenance()
 
 const roles: Readonly<Record<string, RoleDuCompte>> = {
   User: 'User',
-  Support: 'Support',
   Admin: 'Admin',
 }
 
@@ -33,7 +32,7 @@ const roleNomme = (nom: string): RoleDuCompte => {
 }
 
 After(async () => {
-  tentative.resultat = undefined
+  delete tentative.resultat
   await prismaClient.maintenance.deleteMany({ where: { createdBy: auteurId } })
 })
 

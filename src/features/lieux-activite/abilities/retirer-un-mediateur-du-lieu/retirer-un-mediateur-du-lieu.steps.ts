@@ -1,16 +1,17 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { retirerUnMediateurDuLieu } from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu'
-import { LieuId } from '@/features/lieux-activite/domain/lieu-id'
-import { MediateurId } from '@/features/lieux-activite/domain/mediateur-id'
-import { UserId } from '@/features/lieux-activite/domain/user-id'
+import { prismaClient } from '@/configuration/prisma'
+import { envoyerLeRetraitDuLieu } from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/implementations/email/envoyer-le-retrait-du-lieu.mutation'
+import { retirerUnMediateurDuLieu } from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/implementations/prisma/retirer-un-mediateur-du-lieu.mutation'
+import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
+import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
+import { UtilisateurId } from '@/features/lieux-activite/domain/identifiants/utilisateur-id'
 import {
   ficheSemee,
   semerUneFicheDeLieu,
 } from '@/features/lieux-activite/lieux-activite.cucumber'
 
-type Issue = Awaited<ReturnType<typeof retirerUnMediateurDuLieu>>
+type Issue = Awaited<ReturnType<ReturnType<typeof retirerUnMediateurDuLieu>>>
 
 const dernier: { retrait?: Issue } = {}
 
@@ -18,7 +19,7 @@ const auteur = (options: {
   mediateurId: string | null
   coordonneLeMediateurRetire?: boolean
 }) => ({
-  userId: UserId(ficheSemee().userIds[0] ?? ''),
+  userId: UtilisateurId(ficheSemee().userIds[0] ?? ''),
   mediateurId:
     options.mediateurId == null ? null : MediateurId(options.mediateurId),
   estAdministrateur: false,
@@ -30,7 +31,7 @@ const retirer = async (options: {
   mediateurId: string | null
   coordonneLeMediateurRetire?: boolean
 }) => {
-  dernier.retrait = await retirerUnMediateurDuLieu({
+  dernier.retrait = await retirerUnMediateurDuLieu({ envoyerLeRetraitDuLieu })({
     mediateurId: MediateurId(ficheSemee().mediateurRattacheId),
     lieuId: LieuId(ficheSemee().lieuId),
     auteur: auteur(options),

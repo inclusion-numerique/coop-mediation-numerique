@@ -1,1 +1,0 @@
-export { usageDesTags } from './implementation'

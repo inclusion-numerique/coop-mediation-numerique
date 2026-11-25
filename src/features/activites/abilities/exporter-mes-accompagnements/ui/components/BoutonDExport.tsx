@@ -5,12 +5,12 @@ import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import Tag from '@codegouvfr/react-dsfr/Tag'
 import { useRouter } from 'next/navigation'
 import type { ReactNode } from 'react'
-import { download } from '@/libraries/navigateur/download'
-import { numberToString } from '@/libraries/nombre/formatNumber'
+import { download } from '@/libraries/navigateur'
+import { numberToString } from '@/libraries/nombre'
 import { pluriel } from '@/libraries/pluriel'
-import { createToast } from '@/libraries/ui/toast/createToast'
-import type { ActivitesFiltersLabels } from '../../../../ui/filtres/libelles-des-filtres'
-import { cheminAvecRequete } from '../export.presenter'
+import { createToast } from '@/libraries/ui/toast'
+import { cheminDImpressionDesStatistiques } from '../presenters/export.presenter'
+import { cheminAvecRequete } from '../search-params/requete-de-l-export.search-params'
 
 const ModaleDExport = createModal({
   id: 'export-des-accompagnements',
@@ -45,7 +45,7 @@ export const BoutonDExport = ({
   requete,
   nombreDAccompagnements,
 }: {
-  libelles: ActivitesFiltersLabels
+  libelles: readonly string[]
   requete: string
   nombreDAccompagnements: number
 }) => {
@@ -75,9 +75,7 @@ export const BoutonDExport = ({
 
   const imprimerLesStatistiques = () => {
     ModaleDExport.close()
-    router.push(
-      `/coop/mes-statistiques?print=true${requete === '' ? '' : `&${requete}`}`,
-    )
+    router.push(cheminDImpressionDesStatistiques(requete))
   }
 
   return (
@@ -98,11 +96,8 @@ export const BoutonDExport = ({
             </p>
             <ul className="fr-tags-group">
               {libelles.map((libelle) => (
-                <li
-                  className="fr-line-height-1"
-                  key={`${libelle.type}-${libelle.key}`}
-                >
-                  <Tag small>{libelle.label}</Tag>
+                <li className="fr-line-height-1" key={libelle}>
+                  <Tag small>{libelle}</Tag>
                 </li>
               ))}
             </ul>

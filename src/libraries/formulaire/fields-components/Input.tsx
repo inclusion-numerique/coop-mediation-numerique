@@ -3,11 +3,11 @@ import { useFieldContext } from '@/libraries/formulaire/form-context'
 import {
   Input as DsfrInput,
   InputProps as DsfrInputProps,
-} from '@/libraries/ui/components/Primitives/Form/Input'
+} from '@/libraries/ui/primitives'
 
 export type InputProps = Omit<DsfrInputProps, 'name'> & {
   isPending: boolean
-  isConnected?: boolean
+  isConnected?: boolean | undefined
 }
 
 export const Input = ({
@@ -96,7 +96,7 @@ export const Input = ({
   return isConnected ? (
     <DsfrInput
       state={hasErrors ? 'error' : undefined}
-      stateRelatedMessage={hasErrors ? errors[0].message : undefined}
+      stateRelatedMessage={hasErrors ? errors[0]?.message : undefined}
       label={label}
       id={name}
       disabled={isPending ?? props.disabled}
@@ -110,7 +110,7 @@ export const Input = ({
   ) : (
     <DsfrInput
       state={hasErrors ? 'error' : undefined}
-      stateRelatedMessage={hasErrors ? errors[0].message : undefined}
+      stateRelatedMessage={hasErrors ? errors[0]?.message : undefined}
       label={label}
       disabled={isPending ?? props.disabled}
       classes={{

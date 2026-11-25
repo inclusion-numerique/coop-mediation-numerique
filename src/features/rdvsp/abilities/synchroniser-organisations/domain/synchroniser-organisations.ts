@@ -1,9 +1,12 @@
+import type { PlanSynchronisation } from '@/features/rdvsp/abilities/synchroniser-organisations/domain/plan-synchronisation'
+import { planifierSynchronisation } from '@/features/rdvsp/abilities/synchroniser-organisations/domain/plan-synchronisation'
+import type { CompteRdvUtilisable } from '@/features/rdvsp/domain/compte/compte-rdv'
+import type { ErreurRdvApi } from '@/features/rdvsp/domain/errors'
+import type { OrganisationId } from '@/features/rdvsp/domain/identifiants/organisation-id'
+import type { Organisation } from '@/features/rdvsp/domain/organisation'
+import type { RdvServicePublicApi } from '@/features/rdvsp/domain/ports'
 import type { Result } from '@/libraries/result'
-import type { CompteRdvUtilisable } from '../../../domain/compte-rdv'
-import type { ErreurRdvApi } from '../../../domain/errors'
-import type { Organisation } from '../../../domain/organisation'
-import type { OrganisationId } from '../../../domain/organisation-id'
-import type { PlanSynchronisation } from './plan-synchronisation'
+import { success } from '@/libraries/result'
 
 /**
  * Bilan d'une synchronisation, dans la forme qu'attend le journal de synchro.
@@ -11,7 +14,7 @@ import type { PlanSynchronisation } from './plan-synchronisation'
  * une organisation quittée continue d'exister chez RDV Service Public comme dans
  * La Coop, seul le lien avec le compte disparaît.
  */
-export type BilanSynchronisation = {
+type BilanSynchronisation = {
   readonly noop: number
   readonly created: number
   readonly updated: number
@@ -48,7 +51,7 @@ export type AppliquerPlanOrganisations = (input: {
  * détachements à la fois dans `updated` et dans `deleted` ; ils ne sont plus
  * comptés qu'une fois.
  */
-export const bilanDuPlan = (
+const bilanDuPlan = (
   plan: PlanSynchronisation,
   recues: number,
 ): BilanSynchronisation => ({
@@ -58,3 +61,46 @@ export const bilanDuPlan = (
   deleted: plan.aDetacher.length,
   count: recues,
 })
+
+export type DependancesSynchroniserOrganisations = {
+  readonly listerOrganisations: RdvServicePublicApi['listerOrganisations']
+  readonly etatOrganisations: EtatOrganisations
+  readonly appliquerPlan: AppliquerPlanOrganisations
+}
+
+/**
+ * Lire, décider, appliquer. Un échec de l'API laisse la base intacte : rien
+ * n'est écrit avant que la réponse soit complète, la liste des organisations
+ * étant paginée et n'ayant de sens qu'entière.
+ */
+export const synchroniserOrganisations =
+  ({
+    listerOrganisations,
+    etatOrganisations,
+    appliquerPlan,
+  }: DependancesSynchroniserOrganisations): SynchroniserOrganisations =>
+  async (compte) => {
+    const recues = await listerOrganisations(compte)
+
+    if (!recues.success) {
+      return recues
+    }
+
+    const { connues, rattachements } = await etatOrganisations({
+      compte,
+      idsRecus: recues.data.map((organisation) => organisation.id),
+    })
+
+    const plan = planifierSynchronisation({
+      recues: recues.data,
+      connues,
+      rattachements,
+    })
+
+    await appliquerPlan({ compte, plan })
+
+    return success({
+      bilan: bilanDuPlan(plan, recues.data.length),
+      organisationIdsRecues: recues.data.map((organisation) => organisation.id),
+    })
+  }

@@ -1,10 +1,13 @@
 import { describe, expect, it } from 'vitest'
-import type { CompteRdv } from '../../../domain/compte-rdv'
-import { MessageErreurCompte } from '../../../domain/compte-rdv'
-import { JetonAcces, type JetonsOAuth } from '../../../domain/jetons-oauth'
-import { OrganisationId } from '../../../domain/organisation-id'
-import { RdvAgentId } from '../../../domain/rdv-agent-id'
-import { UtilisateurCoopId } from '../../../domain/utilisateur-coop-id'
+import type { CompteRdv } from '../../../domain/compte/compte-rdv'
+import { MessageErreurCompte } from '../../../domain/compte/compte-rdv'
+import {
+  JetonAcces,
+  type JetonsOAuth,
+} from '../../../domain/compte/jetons-oauth'
+import { OrganisationId } from '../../../domain/identifiants/organisation-id'
+import { RdvAgentId } from '../../../domain/identifiants/rdv-agent-id'
+import { UtilisateurCoopId } from '../../../domain/identifiants/utilisateur-coop-id'
 import { compteApresDeconnexion } from './deconnecter-compte-rdv'
 
 const maintenant = new Date('2026-08-17T16:00:00.000Z')

@@ -1,4 +1,4 @@
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma'
 
 /**
  * Identifiant d'agent réservé aux tests, dans la même plage que les scénarios
@@ -20,12 +20,15 @@ export const connectRdvAccountFor = async ({ email }: { email: string }) => {
     select: { id: true },
   })
 
-  // Les rendez-vous référencent le compte : les laisser ferait échouer la
-  // suppression en clé étrangère dès qu'un scénario précédent en a semé.
-  await prismaClient.rdv.deleteMany({
-    where: { rdvAccount: { userId: user.id } },
+  const comptes = {
+    OR: [{ userId: user.id }, { id: E2E_RDV_AGENT_ID }],
+  }
+  await prismaClient.rdv.deleteMany({ where: { rdvAccount: comptes } })
+  await prismaClient.rdvSyncLog.deleteMany({ where: { rdvAccount: comptes } })
+  await prismaClient.rdvAccountOrganisation.deleteMany({
+    where: { account: comptes },
   })
-  await prismaClient.rdvAccount.deleteMany({ where: { userId: user.id } })
+  await prismaClient.rdvAccount.deleteMany({ where: comptes })
 
   return prismaClient.rdvAccount.create({
     data: {

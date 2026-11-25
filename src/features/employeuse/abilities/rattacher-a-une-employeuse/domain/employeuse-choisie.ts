@@ -6,7 +6,7 @@ import { z } from 'zod'
 import {
   type TypologieStructure,
   typologiesStructure,
-} from '@/features/employeuse/domain/typologieStructure'
+} from '@/features/employeuse/domain/typologie-de-structure'
 import { Siret } from '@/libraries/insee'
 import { IdentiteEmployeuse } from '../../../domain/identite-employeuse'
 
@@ -20,7 +20,7 @@ import { IdentiteEmployeuse } from '../../../domain/identite-employeuse'
  * navigateur : la référencer dans son module d'origine les ferait pointer un
  * module qui importe Prisma.
  */
-export type StructureSearchResult = {
+export type StructureTrouvee = {
   id?: string | null
   nom: string
   adresse: string
@@ -57,7 +57,7 @@ const EmployeuseChoisieValidation = z.object(
     codePostal: z.string().trim(),
     codeInsee: z.string().trim(),
     // Portés par les résultats de recherche, sans emploi pour le rattachement.
-    id: z.string().nullish(),
+    id: z.string().nullable().exactOptional(),
     typologie: z
       .enum(
         Object.keys(typologiesStructure) as [
@@ -65,7 +65,8 @@ const EmployeuseChoisieValidation = z.object(
           ...TypologieStructure[],
         ],
       )
-      .nullish(),
+      .nullable()
+      .exactOptional(),
     source: z.enum(['database', 'api']),
   },
   {

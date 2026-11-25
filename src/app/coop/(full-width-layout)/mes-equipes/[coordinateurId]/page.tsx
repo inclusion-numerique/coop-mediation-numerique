@@ -1,23 +1,24 @@
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { quitterUneEquipeAction } from '@/app/_actions/equipe/quitter-une-equipe.action'
-import { metadataTitle } from '@/configuration/projet/metadataTitle'
-import { authenticateUser } from '@/features/authentification/implementation/session/authenticateUser'
-import { BoutonExporter } from '@/features/equipe/abilities/exporter-les-membres/ui'
+import { metadataTitle } from '@/configuration/projet'
+import { authenticateUser } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
+import { default as BoutonExporter } from '@/features/equipe/abilities/exporter-les-membres/ui/slots/BoutonExporter.slot'
 import {
   estMembreActif,
   listerLesMembres,
-} from '@/features/equipe/abilities/lister-les-membres'
+} from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/lister-les-membres.query'
 import {
-  EquipeListePage,
   type ParametresDeLaListe,
   requeteDeLaListe,
-} from '@/features/equipe/abilities/lister-les-membres/ui'
+} from '@/features/equipe/abilities/lister-les-membres/ui/filtres/liste-de-l-equipe.filtre'
+import { default as EquipeListePage } from '@/features/equipe/abilities/lister-les-membres/ui/pages/EquipeListePage'
+import { ListeDeLEquipe } from '@/features/equipe/abilities/lister-les-membres/ui/slots/ListeDeLEquipe.slot'
 import { QUITTER_UNE_EQUIPE_ACTION_KEY } from '@/features/equipe/abilities/quitter-une-equipe/action/quitter-une-equipe.key'
-import { BoutonQuitterLEquipe } from '@/features/equipe/abilities/quitter-une-equipe/ui'
+import { default as BoutonQuitterLEquipe } from '@/features/equipe/abilities/quitter-une-equipe/ui/slots/BoutonQuitterLEquipe.slot'
 import { CoordinateurId, MediateurId } from '@/features/equipe/domain'
-import { gestionnaireDe } from '@/features/equipe/implementation/session'
-import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
+import { gestionnaireDe } from '@/features/equipe/implementations/session'
+import { ClientBinder } from '@/libraries/nextjs/injection'
 
 export const metadata: Metadata = {
   title: metadataTitle('Mon équipe'),
@@ -54,20 +55,25 @@ const Page = async (props: {
     >
       <EquipeListePage
         membres={membres.data}
-        searchParams={searchParams}
-        baseHref={`/coop/mes-equipes/${coordinateurId}`}
         enTete={
           membreActifDeLEquipe ? (
             <BoutonQuitterLEquipe coordinateurId={coordinateurId} />
           ) : null
         }
-        exporter={
-          <BoutonExporter
-            coordinateurId={coordinateurId}
-            parametres={searchParams}
+        liste={
+          <ListeDeLEquipe
+            membres={membres.data}
+            searchParams={searchParams}
+            baseHref={`/coop/mes-equipes/${coordinateurId}`}
+            exporter={
+              <BoutonExporter
+                coordinateurId={coordinateurId}
+                parametres={searchParams}
+              />
+            }
+            actions={null}
           />
         }
-        actions={null}
       />
     </ClientBinder>
   )

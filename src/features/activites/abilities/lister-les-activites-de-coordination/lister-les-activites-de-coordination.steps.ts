@@ -1,39 +1,35 @@
 import assert from 'node:assert'
+import { Page, PageSize } from '@arckit/resultset'
 import { Given, Then, When } from '@cucumber/cucumber'
 import {
   type ActivitesDeCoordinationListees,
-  listerLesActivitesDeCoordination,
   type OptionsDeFiltre,
-  optionsDeFiltre,
-} from '@/features/activites/abilities/lister-les-activites-de-coordination'
+} from '@/features/activites/abilities/lister-les-activites-de-coordination/domain/index'
+import { listerLesActivitesDeCoordination } from '@/features/activites/abilities/lister-les-activites-de-coordination/implementations/prisma/activites-de-coordination.query'
+import { optionsDeFiltre } from '@/features/activites/abilities/lister-les-activites-de-coordination/implementations/prisma/options-de-filtre.query'
 import {
   coordinationsSemees,
   semerDesAnimationsDeJanvier,
   semerDesCoordinations,
 } from '@/features/activites/activites.cucumber'
-import {
-  CoordinateurId,
-  criteresDesCoordinations,
-  LignesParPage,
-  NumeroDePage,
-  type ParametresDesCoordinations,
-} from '@/features/activites/domain'
-import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
+import { CoordinateurId } from '@/features/activites/domain'
+import { criteresDesCoordinationsDepuisLURL } from '@/features/activites/fixtures/criteres-depuis-l-url'
+import { dateAsIsoDay } from '@/libraries/date'
 
 let listees: ActivitesDeCoordinationListees | undefined
 let options: OptionsDeFiltre | undefined
 
 const lister = async (
-  parametres: ParametresDesCoordinations,
+  parametres: Parameters<typeof criteresDesCoordinationsDepuisLURL>[0],
   page = 1,
   lignesParPage = 50,
 ) => {
   listees = await listerLesActivitesDeCoordination({
     coordinateurId: CoordinateurId(coordinationsSemees().coordinateurId),
-    criteres: criteresDesCoordinations(parametres),
+    criteres: criteresDesCoordinationsDepuisLURL(parametres),
     pagination: {
-      page: NumeroDePage(page),
-      lignesParPage: LignesParPage(lignesParPage),
+      page: Page(page),
+      pageSize: PageSize(lignesParPage),
     },
   })
 }

@@ -1,0 +1,5 @@
+export { createSlug } from './create-slug'
+export { htmlToText } from './html-to-text'
+export { motsDe } from './mots'
+export { contientSansAccent } from './sans-accent'
+export { toTitleCase } from './to-title-case'

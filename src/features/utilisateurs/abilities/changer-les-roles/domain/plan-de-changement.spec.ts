@@ -104,16 +104,13 @@ describe('plan de changement des rôles', () => {
     })
   })
 
-  it.each(['Admin', 'Support'] as const)(
-    'ne touche pas à un compte %s',
-    (role) => {
-      const plan = planDeChangement(
-        compte(null, null, { role: RoleUtilisateur(role) }),
-        demande(true, false),
-      )
-      expect(plan.success === false && plan.error._tag).toBe('RoleProtege')
-    },
-  )
+  it.each(['Admin'] as const)('ne touche pas à un compte %s', (role) => {
+    const plan = planDeChangement(
+      compte(null, null, { role: RoleUtilisateur(role) }),
+      demande(true, false),
+    )
+    expect(plan.success === false && plan.error._tag).toBe('RoleProtege')
+  })
 
   it('ne touche pas à un compte supprimé', () => {
     const plan = planDeChangement(

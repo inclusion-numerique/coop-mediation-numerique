@@ -1,13 +1,10 @@
-import { metadataTitle } from '@/configuration/projet/metadataTitle'
-import { authenticateAdmin } from '@/features/authentification/implementation/session/authenticateUser'
+import { metadataTitle } from '@/configuration/projet'
+import { authenticateAdmin } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
+import { listerEmployeuses } from '@/features/employeuse/abilities/lister-employeuses/implementations/prisma/lister-employeuses.query'
+import { listeDesEmployeuses } from '@/features/employeuse/abilities/lister-employeuses/ui/filtres/liste-des-employeuses.filtre'
 import EmployeusesListePage from '@/features/employeuse/abilities/lister-employeuses/ui/pages/EmployeusesListePage'
-import {
-  criteresListeEmployeuses,
-  type EmployeusesSearchParams,
-  employeuseAffichee,
-  etatDeTableEmployeuses,
-  listerEmployeuses,
-} from '@/features/employeuse/server'
+import { barreDesEmployeuses } from '@/features/employeuse/abilities/lister-employeuses/ui/presenters/barre-des-employeuses.presenter'
+import { employeuseAffichee } from '@/features/employeuse/abilities/lister-employeuses/ui/presenters/employeuse-affichee.presenter'
 
 export const metadata = {
   title: metadataTitle('Structures employeuses'),
@@ -16,20 +13,19 @@ export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
 const Page = async (props: {
-  searchParams: Promise<EmployeusesSearchParams>
+  searchParams: Promise<Record<string, string | string[] | undefined>>
 }) => {
   await authenticateAdmin()
-  const searchParams = await props.searchParams
-  const criteres = criteresListeEmployeuses(searchParams)
+  const parametres = await props.searchParams
+  const { recherche, tri, pagination } = listeDesEmployeuses.charger(parametres)
 
-  const { employeuses, total } = await listerEmployeuses(criteres)
+  const resultat = await listerEmployeuses({ recherche, tri, ...pagination })
 
   return (
     <EmployeusesListePage
-      employeuses={employeuses.map(employeuseAffichee)}
-      trouvees={total}
-      parPage={criteres.parPage}
-      state={etatDeTableEmployeuses(searchParams)}
+      employeuses={resultat.items.map(employeuseAffichee)}
+      trouvees={resultat.totalItems}
+      barre={barreDesEmployeuses(parametres, resultat)}
     />
   )
 }

@@ -1,9 +1,10 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma'
 import { semerUnCompteDeListe } from '@/features/utilisateurs/utilisateurs.cucumber'
-import { criteresDExposition, utilisateursExposes } from './implementation'
+import { criteresDExposition } from './implementations/api/criteres-d-exposition.transfer'
+import { utilisateursExposes } from './implementations/prisma/utilisateurs-exposes.query'
 
 const exposition: {
   utilisateurId?: string

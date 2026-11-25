@@ -1,8 +1,9 @@
 import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { rechercherDesLieux } from '@/features/lieux-activite/abilities/lister-tous-les-lieux'
+import { prismaClient } from '@/configuration/prisma'
+import { rechercherDesLieux } from '@/features/lieux-activite/abilities/lister-tous-les-lieux/implementations/prisma/rechercher-des-lieux.query'
+import { criteresDeLaListe } from '@/features/lieux-activite/abilities/lister-tous-les-lieux/ui/filtres/liste-des-lieux.filtre'
 
 const semis: {
   ids: string[]
@@ -54,7 +55,7 @@ Given('trois lieux à administrer, dont deux à la même adresse', async () => {
 
 Given('le premier de ces lieux est supprimé', async () => {
   await prismaClient.lieuInclusion.update({
-    where: { id: semis.ids[0] },
+    where: { id: semis.ids[0] ?? '' },
     data: { suppression: new Date() },
   })
 })
@@ -63,14 +64,14 @@ Given(
   "le premier de ces lieux n'a pas d'adresse reconnue par la BAN",
   async () => {
     await prismaClient.lieuInclusion.update({
-      where: { id: semis.ids[0] },
+      where: { id: semis.ids[0] ?? '' },
       data: { banId: null },
     })
   },
 )
 
 const chercher = async (recherche: string) => {
-  semis.trouves = await rechercherDesLieux({ searchParams: { recherche } })
+  semis.trouves = await rechercherDesLieux(criteresDeLaListe({ recherche }))
 }
 
 When('l’administration cherche « Cyberbase du Port »', async () => {
@@ -86,7 +87,7 @@ When('l’administration cherche le SIRET du premier lieu', async () => {
 })
 
 const semesTrouves = (): readonly string[] =>
-  (semis.trouves?.searchResult.structures ?? [])
+  (semis.trouves?.items ?? [])
     .map(({ id }) => id)
     .filter((id) => semis.ids.includes(id))
 
@@ -100,7 +101,7 @@ Then('deux lieux sont trouvés', () => {
 
 Then('seul le premier lieu est signalé avec une adresse à préciser', () => {
   assert.deepStrictEqual(
-    (semis.trouves?.searchResult.structures ?? [])
+    (semis.trouves?.items ?? [])
       .filter(({ id }) => semis.ids.includes(id))
       .filter(({ adresseAPreciser }) => adresseAPreciser)
       .map(({ id }) => id),
@@ -112,7 +113,7 @@ Then('le total annoncé dépasse le nombre de lieux trouvés', () => {
   const trouves = semis.trouves
   assert.ok(trouves != null, 'Aucune recherche effectuée')
   assert.ok(
-    trouves.totalCount > trouves.searchResult.matchesCount,
+    trouves.totalCount > trouves.totalItems,
     'Le total devrait compter tous les lieux de la coop',
   )
 })
@@ -120,7 +121,7 @@ Then('le total annoncé dépasse le nombre de lieux trouvés', () => {
 After(async () => {
   const ids = semis.ids
   semis.ids = []
-  semis.trouves = undefined
+  delete semis.trouves
   if (ids.length === 0) return
 
   await prismaClient.lieuInclusion.deleteMany({ where: { id: { in: ids } } })

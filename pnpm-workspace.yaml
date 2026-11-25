@@ -6,6 +6,18 @@ minimumReleaseAgeExclude:
   - next@16.4.6
   - "@next/*"
   - libphonenumber-js@1.13.16
+  - "@asamarts/alint@0.23.0"
+  - "@asamarts/alint-linux-x64@0.23.0"
+  - "@asamarts/alint-linux-arm64@0.23.0"
+  - "@asamarts/alint-darwin-x64@0.23.0"
+  - "@asamarts/alint-darwin-arm64@0.23.0"
+  - "@asamarts/alint-win32-x64@0.23.0"
+  - "@asamarts/alint-win32-arm64@0.23.0"
+
+packageExtensions:
+  dependency-cruiser:
+    dependencies:
+      typescript: 5.9.3
 
 overrides:
   "undici@<7.29.1": ^7.29.1

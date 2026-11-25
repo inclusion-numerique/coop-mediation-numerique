@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { defineModel, type Model } from '@/libraries/model'
 
-const rolesProteges = ['Support', 'Admin'] as const
+const rolesProteges = ['Admin'] as const
 
 const rolesUtilisateur = ['User', ...rolesProteges] as const
 

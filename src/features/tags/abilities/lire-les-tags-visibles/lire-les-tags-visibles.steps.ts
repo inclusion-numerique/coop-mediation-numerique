@@ -1,6 +1,6 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma'
 import { type Acteur, type Tag, TagId } from '@/features/tags/domain'
 import {
   acteurMediateur,
@@ -11,7 +11,7 @@ import {
   lireLesTagsCollectifs,
   lireLesTagsVisibles,
   lireTousLesTagsVisibles,
-} from './implementation'
+} from './implementations/prisma/lire-les-tags-visibles.query'
 
 const contexte: {
   acteur?: Acteur

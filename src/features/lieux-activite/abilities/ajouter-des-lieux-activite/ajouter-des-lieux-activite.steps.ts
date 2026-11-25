@@ -16,25 +16,37 @@ import {
   Services,
   Typologies,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { ajouterDesLieuxActivite } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite'
+import { v4 } from 'uuid'
+import { prismaClient } from '@/configuration/prisma'
 import type {
   LieuACreer,
   LieuCarto,
   LieuDemande,
   LieuExistant,
 } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/domain'
-import { lireLieuxDejaRattaches } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementation'
-import { BanId } from '@/features/lieux-activite/domain/ban-id'
-import type { Fiche } from '@/features/lieux-activite/domain/fiche'
+import { ajouterDesLieuxActivite } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/ajouter-des-lieux-activite.mutation'
+import { lireLieuxDejaRattaches } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/lieux-deja-rattaches.query'
+import {
+  detacherDuLieuDecrit,
+  type LieuDecrit,
+  rattacherAuLieuDecrit,
+} from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/rattacher-au-lieu-decrit.mutation'
 import {
   IdentifiantCartographie,
   IdsCartographieNationale,
-} from '@/features/lieux-activite/domain/ids-cartographie-nationale'
-import { LieuId } from '@/features/lieux-activite/domain/lieu-id'
-import { MediateurId } from '@/features/lieux-activite/domain/mediateur-id'
-import { UserId } from '@/features/lieux-activite/domain/user-id'
-import { lieuxSemes } from '@/features/lieux-activite/lieux-activite.cucumber'
+} from '@/features/lieux-activite/domain/cartographie-nationale/ids-cartographie-nationale'
+import type { Fiche } from '@/features/lieux-activite/domain/fiche'
+import { BanId } from '@/features/lieux-activite/domain/identifiants/ban-id'
+import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
+import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
+import { UtilisateurId } from '@/features/lieux-activite/domain/identifiants/utilisateur-id'
+import {
+  effacerDuRegistre,
+  lieuxSemes,
+  nomUnique,
+  suivreLeLieu,
+  utilisateurCourant,
+} from '@/features/lieux-activite/lieux-activite.cucumber'
 
 type Issue = Awaited<ReturnType<typeof ajouterDesLieuxActivite>>
 
@@ -56,7 +68,7 @@ const ajouter = async (
 ) => {
   dernier.ajout = await ajouterDesLieuxActivite({
     demandes,
-    userId: UserId(lieuxSemes().userId),
+    userId: UtilisateurId(lieuxSemes().userId),
     mediateurId: mediateurId == null ? null : MediateurId(mediateurId),
     ports: { ...ports, trouverStructuresCarto: async () => structuresCarto },
   })
@@ -178,7 +190,9 @@ Then('ce médiateur exerce dans ce lieu référencé', async () => {
   const rattachement = await prismaClient.mediateurEnActivite.findFirst({
     where: {
       mediateurId: lieuxSemes().mediateurId,
-      structureId: dernier.lieuReference,
+      ...(dernier.lieuReference === undefined
+        ? {}
+        : { structureId: dernier.lieuReference }),
       fin: null,
     },
   })
@@ -232,8 +246,8 @@ After(async () => {
   const ids = [...lieuxDeTest]
   const { adresses, inscriptions } = semisEntrepot
   lieuxDeTest.length = 0
-  dernier.ajout = undefined
-  dernier.lieuReference = undefined
+  delete dernier.ajout
+  delete dernier.lieuReference
   semisEntrepot.adresses = []
   semisEntrepot.inscriptions = []
 
@@ -315,7 +329,9 @@ Given(
     const inscription = await prismaClient.lieuInclusionRegistreMain.create({
       data: {
         nom: 'Médiathèque du Centre',
-        structureCoopId: dernier.lieuReference,
+        ...(dernier.lieuReference === undefined
+          ? {}
+          : { structureCoopId: dernier.lieuReference }),
         structureCartographieNationaleId: IDENTIFIANT_CARTO_DEJA_RELIE,
         source: 'dora',
         editedBy: 'carto',
@@ -428,4 +444,230 @@ Then('le lieu saisi est inscrit au registre', async () => {
   assert.strictEqual(inscription.nom, 'Tiers-lieu du Port')
   assert.strictEqual(inscription.source, 'Coop numérique')
   assert.strictEqual(inscription.editedBy, 'coop')
+})
+
+const etat: {
+  nom: string
+  utilisateurs: string[]
+  lieuConnuId?: string
+  commune?: string
+} = { nom: '', utilisateurs: [] }
+
+const lieuDecrit = (nom: string): LieuDecrit => ({
+  nom,
+  adresse: '1 Rue de la Paix',
+  commune: 'Paris',
+  codePostal: '75001',
+  codeInsee: '75101',
+  banId: '75101_7038_00001',
+  latitude: 48.869_36,
+  longitude: 2.331_08,
+  complementAdresse: null,
+  siret: null,
+  synchronisationSiret: null,
+  rna: null,
+  nomReferent: null,
+  courrielReferent: null,
+  telephoneReferent: null,
+})
+
+const semerUnMediateur = async (): Promise<string> => {
+  const utilisateurId = v4()
+  await prismaClient.user.create({
+    data: {
+      id: utilisateurId,
+      email: `lieu-decrit-${utilisateurId}@example.com`,
+    },
+  })
+  await prismaClient.mediateur.create({ data: { userId: utilisateurId } })
+  etat.utilisateurs.push(utilisateurId)
+  return utilisateurId
+}
+
+const rattacher = async (utilisateurId: string, nom = etat.nom) =>
+  rattacherAuLieuDecrit({
+    userId: utilisateurId,
+    lieu: lieuDecrit(nom),
+    trace: { userId: utilisateurId },
+  })
+
+const rattachementsActifs = (utilisateurId: string) =>
+  prismaClient.mediateurEnActivite.findMany({
+    where: {
+      mediateur: { userId: utilisateurId },
+      lieuInclusion: { nom: etat.nom },
+      suppression: null,
+      fin: null,
+    },
+    select: { structureId: true },
+  })
+
+const lieuxNommes = () =>
+  prismaClient.lieuInclusion.findMany({
+    where: { nom: etat.nom, suppression: null },
+    select: { id: true },
+  })
+
+Given('je me suis déjà rattaché au lieu décrit', async () => {
+  etat.nom = etat.nom || nomUnique('Lieu décrit')
+  await rattacher(utilisateurCourant())
+})
+
+Given('un collègue médiateur', async () => {
+  await semerUnMediateur()
+})
+
+Given(
+  'la coop connaît sous le nom de la commune un lieu décrit comme sa mairie',
+  async () => {
+    etat.commune = v4()
+    const { id } = await prismaClient.lieuInclusion.create({
+      data: {
+        nom: `COMMUNE DE ${etat.commune}`,
+        typologies: ['MUNI'],
+        adresse: '1 rue de la Paix',
+        commune: 'Paris',
+        codePostal: '75001',
+        codeInsee: '75101',
+        banId: '75101_0001_00001',
+      },
+      select: { id: true },
+    })
+    etat.lieuConnuId = id
+    suivreLeLieu(id)
+  },
+)
+
+When('je me rattache au lieu décrit', async () => {
+  etat.nom = etat.nom || nomUnique('Lieu décrit')
+  await rattacher(utilisateurCourant())
+})
+
+When('je me rattache au lieu décrit comme la mairie', async () => {
+  etat.nom = `Mairie de ${etat.commune}`
+  await rattacher(utilisateurCourant())
+})
+
+When('mon collègue se rattache au même lieu décrit', async () => {
+  const collegue = etat.utilisateurs.at(-1)
+  assert.ok(collegue, 'Aucun collègue semé')
+  await rattacher(collegue)
+})
+
+When('je me détache du lieu décrit', async () => {
+  const utilisateurId = utilisateurCourant()
+  await detacherDuLieuDecrit({
+    userId: utilisateurId,
+    lieu: lieuDecrit(etat.nom),
+    trace: { userId: utilisateurId },
+  })
+})
+
+Then('je suis rattaché au lieu décrit', async () => {
+  assert.strictEqual(
+    (await rattachementsActifs(utilisateurCourant())).length,
+    1,
+  )
+})
+
+Then(
+  'le lieu décrit n’existe qu’une fois et je n’y suis rattaché qu’une fois',
+  async () => {
+    assert.strictEqual((await lieuxNommes()).length, 1)
+    assert.strictEqual(
+      (await rattachementsActifs(utilisateurCourant())).length,
+      1,
+    )
+  },
+)
+
+Then('nous sommes rattachés au même lieu', async () => {
+  const collegue = etat.utilisateurs.at(-1) ?? ''
+  const [miens, siens] = await Promise.all([
+    rattachementsActifs(utilisateurCourant()),
+    rattachementsActifs(collegue),
+  ])
+  assert.strictEqual((await lieuxNommes()).length, 1)
+  assert.deepStrictEqual(miens, siens)
+})
+
+Then('je suis rattaché au lieu que la coop connaissait déjà', async () => {
+  const actifs = await prismaClient.mediateurEnActivite.findMany({
+    where: {
+      mediateur: { userId: utilisateurCourant() },
+      suppression: null,
+      fin: null,
+    },
+    select: { structureId: true },
+  })
+  assert.deepStrictEqual(
+    actifs.map(({ structureId }) => structureId),
+    [etat.lieuConnuId],
+  )
+})
+
+Then('ce lieu n’a pas été recréé', async () => {
+  const lieux = await prismaClient.lieuInclusion.count({
+    where: {
+      suppression: null,
+      OR: [
+        { nom: `COMMUNE DE ${etat.commune}` },
+        { nom: `Mairie de ${etat.commune}` },
+      ],
+    },
+  })
+  assert.strictEqual(lieux, 1)
+})
+
+Then('je ne suis plus rattaché au lieu décrit', async () => {
+  assert.strictEqual(
+    (await rattachementsActifs(utilisateurCourant())).length,
+    0,
+  )
+})
+
+Then('le lieu décrit est inscrit au registre', async () => {
+  const [lieu] = await lieuxNommes()
+  assert.ok(lieu, 'Le lieu décrit n’a pas été matérialisé')
+  const inscription =
+    await prismaClient.lieuInclusionRegistreMain.findUniqueOrThrow({
+      where: { structureCoopId: lieu.id },
+      select: { nom: true, source: true, editedBy: true, updatedAtCoop: true },
+    })
+  assert.strictEqual(inscription.nom, etat.nom)
+  assert.strictEqual(inscription.source, 'Coop numérique')
+  assert.strictEqual(inscription.editedBy, 'coop')
+  assert.notStrictEqual(inscription.updatedAtCoop, null)
+})
+
+After(async () => {
+  const utilisateurs = etat.utilisateurs
+  const noms = [etat.nom, `COMMUNE DE ${etat.commune}`].filter(
+    (nom) => nom !== '' && nom !== 'COMMUNE DE undefined',
+  )
+  etat.nom = ''
+  etat.utilisateurs = []
+  delete etat.lieuConnuId
+  delete etat.commune
+  if (noms.length === 0 && utilisateurs.length === 0) return
+
+  const lieux = await prismaClient.lieuInclusion.findMany({
+    where: { nom: { in: noms } },
+    select: { id: true },
+  })
+  const ids = lieux.map(({ id }) => id)
+  await prismaClient.mediateurEnActivite.deleteMany({
+    where: {
+      OR: [
+        { structureId: { in: ids } },
+        { mediateur: { userId: { in: utilisateurs } } },
+      ],
+    },
+  })
+  await prismaClient.mediateur.deleteMany({
+    where: { userId: { in: utilisateurs } },
+  })
+  await prismaClient.user.deleteMany({ where: { id: { in: utilisateurs } } })
+  await effacerDuRegistre(ids)
+  await prismaClient.lieuInclusion.deleteMany({ where: { id: { in: ids } } })
 })

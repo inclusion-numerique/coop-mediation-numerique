@@ -5,9 +5,7 @@ export type {
 } from './acteurs-du-departement'
 export {
   type CriteresActeurs,
-  criteresActeurs,
   estFiltre,
   FiltreRole,
   filtresDeRole,
-  type ParametresDesActeurs,
 } from './criteres-acteurs'

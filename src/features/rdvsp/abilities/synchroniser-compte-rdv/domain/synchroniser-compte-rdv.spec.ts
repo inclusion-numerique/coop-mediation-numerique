@@ -1,9 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import type { CompteRdvUtilisable } from '../../../domain/compte-rdv'
-import { JetonAcces, type JetonsOAuth } from '../../../domain/jetons-oauth'
-import { OrganisationId } from '../../../domain/organisation-id'
-import { RdvAgentId } from '../../../domain/rdv-agent-id'
-import { UtilisateurCoopId } from '../../../domain/utilisateur-coop-id'
+import type { CompteRdvUtilisable } from '../../../domain/compte/compte-rdv'
+import {
+  JetonAcces,
+  type JetonsOAuth,
+} from '../../../domain/compte/jetons-oauth'
+import { OrganisationId } from '../../../domain/identifiants/organisation-id'
+import { RdvAgentId } from '../../../domain/identifiants/rdv-agent-id'
+import { UtilisateurCoopId } from '../../../domain/identifiants/utilisateur-coop-id'
 import { passePour } from './synchroniser-compte-rdv'
 
 const jetons: JetonsOAuth = {

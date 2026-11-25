@@ -29,20 +29,21 @@ export type BeneficiaireListItem = {
   readonly notes: Notes | null
 }
 
-export const beneficiaireSortFields = [
+export const colonnesTriablesDesBeneficiaires = [
   'nom',
   'prenom',
   'anneeNaissance',
   'accompagnementsCount',
 ] as const
 
-export type BeneficiaireSortField = (typeof beneficiaireSortFields)[number]
+export type ColonneTriableDesBeneficiaires =
+  (typeof colonnesTriablesDesBeneficiaires)[number]
 
 export type ListerBeneficiaires = (input: {
   mediateurId: MediateurId
   search?: Search
   page?: Page
   pageSize?: PageSize
-  sort?: Sort<BeneficiaireSortField>
+  sort?: Sort<ColonneTriableDesBeneficiaires>
   excludeIds?: readonly BeneficiaireId[]
 }) => Promise<Paginated<BeneficiaireListItem>>

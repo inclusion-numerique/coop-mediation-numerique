@@ -1,17 +1,16 @@
 import { creerBeneficiaireAction } from '@/app/_actions/beneficiaire/creer-beneficiaire.action'
-import { authenticateMediateur } from '@/features/authentification/implementation/session/authenticateUser'
-import { CreerBeneficiairePage } from '@/features/beneficiaire/abilities/creer-beneficiaire/ui/pages/CreerBeneficiairePage'
-import type { SaisieEnCours } from '@/features/beneficiaire/forms/saisie-en-cours'
+import { authenticateMediateur } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
 import {
-  decodeSerializableState,
-  type EncodedState,
-} from '@/libraries/parametres-d-url/encodeSerializableState'
+  CreerBeneficiairePage,
+  type SaisieDuCraEncodee,
+} from '@/features/beneficiaire/abilities/creer-beneficiaire/ui/pages/CreerBeneficiairePage'
+import { decodeSerializableState } from '@/libraries/etat-encode'
 
 const PageCreerBeneficiaire = async ({
   searchParams,
 }: {
   searchParams: Promise<{
-    cra?: EncodedState<SaisieEnCours>
+    cra?: SaisieDuCraEncodee
     retour?: string
   }>
 }) => {

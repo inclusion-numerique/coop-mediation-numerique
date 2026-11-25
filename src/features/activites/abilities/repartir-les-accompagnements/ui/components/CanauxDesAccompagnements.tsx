@@ -1,7 +1,7 @@
-import { AccompagnementPieChart } from '@/features/activites/ui/graphiques/AccompagnementPieChart'
-import { canauxAccompagnementColors } from '@/features/activites/ui/graphiques/couleurs'
-import { QuantifiedShareLegend } from '@/libraries/proportions/QuantifiedShareLegend'
-import type { RepartitionPresentee } from '../repartition.presenter'
+import { AccompagnementPieChart } from '@/features/activites/ui/components/AccompagnementPieChart'
+import { canauxAccompagnementColors } from '@/features/activites/ui/labels/couleurs.labels'
+import { QuantifiedShareLegend } from '@/libraries/proportions/composants'
+import type { RepartitionPresentee } from '../presenters/repartition.presenter'
 
 export const CanauxDesAccompagnements = ({
   typeLieu,

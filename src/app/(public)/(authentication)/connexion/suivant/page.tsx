@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
-import { getLoginRedirectUrl } from '@/features/authentification/domain/getHomepage'
-import { getSessionUser } from '@/features/authentification/implementation/session/getSessionUser'
+import { adresseDeRetourApresConnexion } from '@/features/authentification/domain/page-d-accueil'
+import { getSessionUser } from '@/features/authentification/middlewares/with-utilisateur-de-la-session'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -12,7 +12,7 @@ export const revalidate = 0
 const Page = async () => {
   const user = await getSessionUser()
 
-  redirect(getLoginRedirectUrl(user))
+  redirect(adresseDeRetourApresConnexion(user))
 
   return null
 }

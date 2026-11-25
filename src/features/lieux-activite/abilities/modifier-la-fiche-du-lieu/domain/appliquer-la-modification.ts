@@ -3,13 +3,13 @@ import {
   Pivot,
   Services,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import { estPublie } from '../../../domain/cartographie-nationale/visibilite-cartographie'
 import type { Fiche } from '../../../domain/fiche'
+import type { UtilisateurId } from '../../../domain/identifiants/utilisateur-id'
 import type { NomUsage } from '../../../domain/identite-sirene'
 import type { Lieu } from '../../../domain/lieu'
-import { servicesALaPublication } from '../../../domain/publication'
-import { ModifieParUtilisateur } from '../../../domain/tracabilite'
-import type { UserId } from '../../../domain/user-id'
-import { estPublie } from '../../../domain/visibilite-cartographie'
+import { servicesALaPublication } from '../../../domain/registre/publication'
+import { ModifieParUtilisateur } from '../../../domain/registre/tracabilite'
 import {
   contactAvecJoignabilite,
   contactAvecSitesWeb,
@@ -158,7 +158,7 @@ const enveloppeApres = (lieu: Lieu, modification: ModificationLieu) => ({
 export const appliquerModification = (
   lieu: Lieu,
   modification: ModificationLieu,
-  par: UserId,
+  par: UtilisateurId,
   maintenant: Date,
 ): Lieu => ({
   ...lieu,

@@ -1,14 +1,3 @@
-import type { DateDActivite } from './date-d-activite'
-
-export type DateTropLointaine = {
-  readonly _tag: 'DateTropLointaine'
-  readonly auPlusTard: DateDActivite
-}
-
-export const DateTropLointaine = (
-  auPlusTard: DateDActivite,
-): DateTropLointaine => ({ _tag: 'DateTropLointaine', auPlusTard })
-
 export type AucuneThematique = { readonly _tag: 'AucuneThematique' }
 
 export const AucuneThematique = (): AucuneThematique => ({

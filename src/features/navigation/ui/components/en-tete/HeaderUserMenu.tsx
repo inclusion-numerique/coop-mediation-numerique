@@ -1,0 +1,318 @@
+'use client'
+
+import classNames from 'classnames'
+import Link from 'next/link'
+import {
+  KeyboardEvent,
+  MouseEvent as ReactMouseEvent,
+  type ReactNode,
+  RefObject,
+  useRef,
+} from 'react'
+import { useOnClickOutside } from 'usehooks-ts'
+import { hrefDeLEquipe } from '@/features/navigation/ui/presenters/liens.presenter'
+import { nomAffiche } from '@/libraries/nom-affiche'
+
+type CoordinationDuMediateur = {
+  readonly coordinateur: {
+    readonly id: string
+    readonly user: { readonly name: string | null }
+    readonly mediateursCoordonnes: readonly { readonly mediateurId: string }[]
+  }
+}
+
+export type UtilisateurDeLaNavigation = {
+  readonly role: 'User' | 'Admin'
+  readonly inscriptionValidee: string | null
+  readonly name: string | null
+  readonly email: string
+  readonly firstName: string | null
+  readonly lastName: string | null
+  readonly usurper: { readonly id: string } | null
+  readonly emplois: readonly {
+    readonly structure: { readonly nom: string | null }
+  }[]
+  readonly coordinateur: { readonly id: string } | null
+  readonly mediateur: {
+    readonly id: string
+    readonly _count: { readonly enActivite: number }
+    readonly coordinations: readonly CoordinationDuMediateur[]
+  } | null
+}
+
+const isLimitedToInscription = (
+  user: Pick<UtilisateurDeLaNavigation, 'role' | 'inscriptionValidee'>,
+) => user.role === 'User' && !user.inscriptionValidee
+
+const toMediateurId = ({ mediateurId }: { mediateurId: string }) => mediateurId
+
+const onlyTeamsWith =
+  (user: UtilisateurDeLaNavigation) =>
+  (coordination: {
+    readonly coordinateur: {
+      readonly mediateursCoordonnes: readonly { readonly mediateurId: string }[]
+    }
+  }) =>
+    user.mediateur?.id != null &&
+    coordination.coordinateur.mediateursCoordonnes
+      .map(toMediateurId)
+      .includes(user.mediateur.id)
+
+export const HeaderUserMenu = ({
+  user,
+  terminerUsurpation,
+}: {
+  user: UtilisateurDeLaNavigation
+  terminerUsurpation: ReactNode
+}) => {
+  // The click outside default behavior from dsfr js do not work in this case 🤷‍
+  // So we have to use client component and hooks to handle the click outside
+  const buttonRef = useRef<HTMLButtonElement>(null)
+  const collapseRef = useRef<HTMLDivElement>(null)
+  const displayName = nomAffiche({
+    prenom: user.firstName,
+    nom: user.lastName,
+    nomComplet: user.name,
+    courriel: user.email,
+  })
+  const onClickOrEnterInsideDropdown = (
+    event: KeyboardEvent<HTMLDivElement> | ReactMouseEvent<HTMLDivElement>,
+  ) => {
+    // Close the dropdown if a link has been clicked
+    if (event.target instanceof HTMLAnchorElement) {
+      buttonRef.current?.click()
+    }
+  }
+  useOnClickOutside(collapseRef as RefObject<HTMLDivElement>, (event) => {
+    // Let the event propagate if clicked on the control button
+    if (event.target === buttonRef?.current) {
+      return
+    }
+
+    // Close the dropdown if open on outside click
+    if (buttonRef.current?.getAttribute('aria-expanded') !== 'true') {
+      return
+    }
+
+    buttonRef.current.click()
+  })
+  const structureEmployeuse = user.emplois.at(0)
+
+  const restricted = isLimitedToInscription(user)
+
+  const mediateurCoordinations = user.mediateur?.coordinations.filter(
+    onlyTeamsWith(user),
+  )
+  const [coordinationUnique, ...autresCoordinations] =
+    mediateurCoordinations ?? []
+
+  const menuContent = (
+    <ul className="fr-menu__list">
+      <li>
+        <span className="fr-nav__link fr-display-block fr-pt-4v fr-pb-2v">
+          {!!user.name && (
+            <span className="fr-text--medium fr-text--sm fr-display-block">
+              {user.name}
+            </span>
+          )}
+          <span className="fr-text--sm fr-text-default--grey">
+            {user.email}
+          </span>
+        </span>
+      </li>
+      {!restricted && (
+        <li>
+          <Link
+            className="fr-nav__link fr-display-block"
+            href="/coop/mon-profil"
+            style={{ boxShadow: 'none' }}
+          >
+            <span
+              className="ri-account-circle-line fr-mr-1w"
+              style={{ color: 'var(--blue-france-sun-113-625)' }}
+              aria-hidden
+            />
+            Voir mon profil
+          </Link>
+        </li>
+      )}
+      {!restricted && user.mediateur && (
+        <li>
+          <Link
+            className="fr-nav__link fr-display-block"
+            href="/coop/lieux-activite"
+            style={{ boxShadow: 'none' }}
+          >
+            <span
+              className="ri-home-office-line fr-mr-1w"
+              style={{ color: 'var(--blue-france-sun-113-625)' }}
+              aria-hidden
+            />
+            Voir mes lieux d’activités ·{' '}
+            <span className="fr-text--bold">
+              {user.mediateur?._count.enActivite}
+            </span>
+          </Link>
+        </li>
+      )}
+      {!restricted && user.coordinateur && (
+        <li>
+          <Link
+            className="fr-nav__link fr-display-block fr-border--bottom-0"
+            href="/coop/mon-equipe"
+            style={{ boxShadow: 'none' }}
+          >
+            <span
+              className="ri-group-2-line fr-mr-1w"
+              style={{ color: 'var(--blue-france-sun-113-625)' }}
+              aria-hidden
+            />
+            Voir mon équipe
+          </Link>
+        </li>
+      )}
+      {!restricted &&
+        !user.coordinateur &&
+        coordinationUnique !== undefined &&
+        autresCoordinations.length === 0 && (
+          <li>
+            <Link
+              className="fr-nav__link fr-display-block fr-border--bottom-0"
+              href={hrefDeLEquipe(coordinationUnique.coordinateur.id)}
+              style={{ boxShadow: 'none' }}
+            >
+              <span
+                className="ri-group-2-line fr-mr-1w"
+                style={{ color: 'var(--blue-france-sun-113-625)' }}
+                aria-hidden
+              />
+              Voir mon équipe
+            </Link>
+          </li>
+        )}
+      {!restricted && (user.mediateur || user.coordinateur) && (
+        <li>
+          <Link
+            className="fr-nav__link fr-display-block"
+            href="/coop/tags"
+            style={{ boxShadow: 'none' }}
+          >
+            <span
+              className="ri-price-tag-3-line fr-mr-2v"
+              style={{ color: 'var(--blue-france-sun-113-625)' }}
+              aria-hidden
+            />
+            Voir mes tags
+          </Link>
+        </li>
+      )}
+      {!restricted &&
+        !user.coordinateur &&
+        (mediateurCoordinations?.length ?? 0) > 1 && (
+          <li className="fr-border--top">
+            <span className="fr-nav__link fr-display-block fr-pb-0 fr-text-mention--grey fr-text--medium fr-text--sm">
+              Mes équipes
+            </span>
+            {mediateurCoordinations?.map((coordination, index) => (
+              <Link
+                key={coordination.coordinateur.id}
+                className="fr-nav__link fr-display-block"
+                href={hrefDeLEquipe(coordination.coordinateur.id)}
+                style={{ boxShadow: 'none' }}
+              >
+                <span className="fr-flex fr-align-items-center fr-width-full">
+                  <span
+                    className="ri-group-2-line fr-mr-1w"
+                    style={{ color: 'var(--blue-france-sun-113-625)' }}
+                    aria-hidden
+                  />
+                  <span className="fr-display-block fr-overflow-hidden">
+                    <span className="fr-display-block">Équipe {index + 1}</span>
+                    <span
+                      title={`Coordonnée par ${coordination.coordinateur.user.name}`}
+                      className="fr-display-block fr-text--xs fr-mb-0 fr-text-mention--grey fr-width-full fr-overflow-hidden fr-text--nowrap fr-text-overflow--ellipsis"
+                    >
+                      Coordonnée par {coordination.coordinateur.user.name}
+                    </span>
+                  </span>
+                </span>
+              </Link>
+            ))}
+          </li>
+        )}
+      {!restricted && structureEmployeuse && (
+        <li className="fr-border--top">
+          <span className="fr-nav__link fr-display-block fr-pb-0 fr-text-mention--grey fr-text--medium fr-text--sm">
+            Ma structure employeuse
+          </span>
+          <Link
+            className="fr-nav__link fr-display-block fr-border--bottom"
+            href="/coop/ma-structure-employeuse"
+            style={{ boxShadow: 'none' }}
+          >
+            <span
+              className="ri-home-smile-2-line fr-mr-1w"
+              style={{ color: 'var(--blue-france-sun-113-625)' }}
+              aria-hidden
+            />
+            {structureEmployeuse.structure.nom}
+          </Link>
+        </li>
+      )}
+      {user.usurper && terminerUsurpation}
+      <li>
+        <Link className="fr-nav__link fr-display-block" href="/deconnexion">
+          <span
+            className="fr-icon-logout-box-r-line fr-icon--sm fr-mr-1w"
+            style={{ color: 'var(--blue-france-sun-113-625)' }}
+            aria-hidden
+          />
+          Se déconnecter
+        </Link>
+      </li>
+    </ul>
+  )
+
+  /**
+   * In mobile, the user menu is displayed in the menu modal.
+   * In desktop, the user menu is a button + a dropdown.
+   */
+  return (
+    <>
+      <button
+        className="fr-nav__btn fr-btn fr-hidden fr-unhidden-lg"
+        style={{ fontWeight: 500 }}
+        type="button"
+        aria-expanded="false"
+        aria-controls="header-user-menu"
+        ref={buttonRef}
+      >
+        {displayName}
+      </button>
+      <div
+        role="navigation"
+        className={classNames(
+          'fr-collapse',
+          'fr-menu',
+          'menu-utilisateur__deroulant',
+        )}
+        id="header-user-menu"
+        ref={collapseRef}
+        onClick={onClickOrEnterInsideDropdown}
+        onKeyDown={onClickOrEnterInsideDropdown}
+      >
+        {menuContent}
+      </div>
+      <div
+        role="navigation"
+        className={classNames(
+          'fr-hidden-lg',
+          'fr-px-1w',
+          'menu-utilisateur__mobile',
+        )}
+      >
+        {menuContent}
+      </div>
+    </>
+  )
+}

@@ -1,23 +1,23 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma'
 import { failure, success } from '@/libraries/result'
-import { compteRdvToDomain } from '../../db/compte-rdv.transfer'
-import { bilanVide } from '../../domain/bilan-synchronisation'
-import { estUtilisable } from '../../domain/compte-rdv'
+import { bilanVide } from '../../domain/compte/bilan-synchronisation'
+import { estUtilisable } from '../../domain/compte/compte-rdv'
 import { ApiIndisponible } from '../../domain/errors'
-import { OrganisationId } from '../../domain/organisation-id'
+import { OrganisationId } from '../../domain/identifiants/organisation-id'
+import { compteRdvToDomain } from '../../implementations/prisma/compte-rdv.transfer'
 import { compteRdvEnBase, ID_TEST, seedCompteRdv } from '../../rdvsp.cucumber'
 import type {
   ResultatSynchronisation,
   SynchroniserCompteRdv,
 } from './domain/synchroniser-compte-rdv'
+import { synchroniserCompteRdv } from './domain/synchroniser-compte-rdv'
 import {
   cloturerJournal,
   echouerJournal,
   ouvrirJournal,
-} from './implementation/prisma/journal-synchronisation.prisma'
-import { synchroniserCompteRdv } from './implementation/synchroniser-compte-rdv'
+} from './implementations/prisma/journal-synchronisation.mutation'
 
 const AGENT_ID = ID_TEST.compte + 8
 

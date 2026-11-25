@@ -1,3 +1,4 @@
+import type { Page, PageSize, Paginated, Search, Sort } from '@arckit/resultset'
 import type { Employeuse } from '../../../domain/employeuse'
 
 /**
@@ -15,12 +16,17 @@ export type EmployeuseListee = {
  * recherche, page, tri — parce que c'est exactement l'usage : parcourir
  * l'ensemble, là où l'autocomplétion sert à choisir.
  */
+export type ColonneDesEmployeuses =
+  | 'nom'
+  | 'emplois'
+  | 'creation'
+  | 'modification'
+
 type CriteresListeEmployeuses = {
-  readonly recherche: string
-  readonly page: number
-  readonly parPage: number
-  readonly triPar: string | null
-  readonly sens: 'asc' | 'desc' | null
+  readonly recherche: Search
+  readonly tri: Sort<ColonneDesEmployeuses>
+  readonly page: Page
+  readonly pageSize: PageSize
 }
 
 /**
@@ -30,8 +36,4 @@ type CriteresListeEmployeuses = {
  */
 export type ListerEmployeuses = (
   criteres: CriteresListeEmployeuses,
-) => Promise<{
-  employeuses: EmployeuseListee[]
-  total: number
-  pages: number
-}>
+) => Promise<Paginated<EmployeuseListee>>

@@ -1,7 +1,34 @@
 import { describe, expect, it } from 'vitest'
-import { testSessionUser } from '../fixtures/testSessionUser'
 import { profilDeLaSession } from './profil-de-la-session'
-import type { SessionUser } from './sessionUser'
+import type { UtilisateurDeLaSession } from './utilisateur-de-la-session'
+
+const utilisateurDeLaSession = {
+  id: 'test',
+  email: 'jean.biche@example.com',
+  phone: '0123456789',
+  firstName: 'Jean',
+  lastName: 'Biche',
+  name: 'Jean Biche',
+  role: 'User',
+  siret: '13002603200016',
+  updated: new Date('2023-05-05').toISOString(),
+  created: new Date('2023-01-01').toISOString(),
+  hasSeenOnboarding: new Date('2023-01-01').toISOString(),
+  emailVerified: null,
+  isFixture: false,
+  usurper: null,
+  isConseillerNumerique: false,
+  coordinateur: null,
+  emplois: [],
+  inscriptionValidee: null,
+  lieuxActiviteRenseignes: null,
+  mediateur: null,
+  profilInscription: null,
+  acceptationCgu: null,
+  structureEmployeuseRenseignee: null,
+  rdvAccount: null,
+  timezone: 'Europe/Paris',
+} satisfies UtilisateurDeLaSession
 
 const coordination = (coordinateurId: string, nom: string | null) => ({
   coordinateur: {
@@ -11,8 +38,8 @@ const coordination = (coordinateurId: string, nom: string | null) => ({
   },
 })
 
-const mediateurCoordonne: SessionUser = {
-  ...testSessionUser,
+const mediateurCoordonne: UtilisateurDeLaSession = {
+  ...utilisateurDeLaSession,
   mediateur: {
     id: 'mediateur-1',
     isVisible: true,
@@ -23,7 +50,7 @@ const mediateurCoordonne: SessionUser = {
 
 describe('profil de la session', () => {
   it('ne porte aucun rôle pour un compte sans profil', () => {
-    expect(profilDeLaSession(testSessionUser)).toEqual({
+    expect(profilDeLaSession(utilisateurDeLaSession)).toEqual({
       mediateurId: null,
       coordinateurId: null,
       equipes: [],
@@ -43,7 +70,7 @@ describe('profil de la session', () => {
   it('compte l’équipe du coordinateur parmi ses équipes', () => {
     expect(
       profilDeLaSession({
-        ...testSessionUser,
+        ...utilisateurDeLaSession,
         name: 'Paul Martin',
         coordinateur: {
           id: 'coordinateur-3',
@@ -57,7 +84,7 @@ describe('profil de la session', () => {
   it('tire le département de la première employeuse', () => {
     expect(
       profilDeLaSession({
-        ...testSessionUser,
+        ...utilisateurDeLaSession,
         emplois: [
           { id: 'emploi-1', structure: { nom: 'Mairie', codeInsee: '69123' } },
         ],

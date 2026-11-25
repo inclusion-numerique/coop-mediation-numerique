@@ -1,15 +1,16 @@
 import Image from 'next/image'
 import type { ReactNode } from 'react'
-import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
-import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
-import { AbcDiagLogo } from '@/libraries/pictograms/services/AbcDiagLogo'
-import { PixOrgaLogo } from '@/libraries/pictograms/services/PixOrgaLogo'
-import { RDVServicePublicLogo } from '@/libraries/pictograms/services/RDVServicePublicLogo'
-import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
-import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
+import { contentId } from '@/libraries/liens-d-evitement'
+import { SkipLinksPortal } from '@/libraries/liens-d-evitement/composants'
+import {
+  AbcDiagLogo,
+  PixOrgaLogo,
+  RDVServicePublicLogo,
+} from '@/libraries/pictograms/services'
+import { CoopBreadcrumbs, CoopPageContainer } from '@/libraries/ui/components'
 import type { ProfilOutils } from '../../domain'
-import { CardOutil } from '../CardOutil'
-import { outilsAccompagnementsVisibles } from '../catalogue'
+import { CardOutil } from '../components/CardOutil'
+import { outilsAccompagnementsVisibles } from '../presenters/catalogue.presenter'
 
 export type RdvServicePublicDansMesOutils = {
   readonly lien: string

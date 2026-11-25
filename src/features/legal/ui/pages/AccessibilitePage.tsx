@@ -1,8 +1,8 @@
 import Link from 'next/link'
-import { contactEmail, projectTitle } from '@/configuration/projet/config'
-import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
-import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
-import Breadcrumbs from '@/libraries/ui/components/Breadcrumbs'
+import { contactEmail, projectTitle } from '@/configuration/projet'
+import { contentId } from '@/libraries/liens-d-evitement'
+import { SkipLinksPortal } from '@/libraries/liens-d-evitement/composants'
+import { Breadcrumbs } from '@/libraries/ui/components'
 
 export const AccessibilitePage = () => (
   <div className="fr-container">
@@ -24,7 +24,7 @@ export const AccessibilitePage = () => (
       </p>
       <p>
         Cette déclaration d’accessibilité s’applique à{' '}
-        <strong>{projectTitle}</strong>.
+        <strong>{projectTitle()}</strong>.
       </p>
 
       <h2>Stratégie et plan d&apos;action</h2>
@@ -52,7 +52,7 @@ export const AccessibilitePage = () => (
       <br />
       <h2>État de conformité</h2>
       <p>
-        <strong>{projectTitle}</strong> est{' '}
+        <strong>{projectTitle()}</strong> est{' '}
         <strong>
           <span data-printfilter="lowercase">non conforme</span>{' '}
         </strong>
@@ -77,14 +77,16 @@ export const AccessibilitePage = () => (
       <h2>Contact</h2>
       <p>
         Si vous n’arrivez pas à accéder à un contenu ou à un service, vous
-        pouvez contacter le responsable de <span>{projectTitle}</span> pour être
-        orienté vers une alternative accessible ou obtenir le contenu sous une
-        autre forme.
+        pouvez contacter le responsable de <span>{projectTitle()}</span> pour
+        être orienté vers une alternative accessible ou obtenir le contenu sous
+        une autre forme.
       </p>
       <ul className="basic-information feedback h-card">
         <li>
           E-mail&nbsp;:{' '}
-          <a href={contactEmail && `mailto:${contactEmail}`}>{contactEmail}</a>
+          <a href={contactEmail() && `mailto:${contactEmail()}`}>
+            {contactEmail()}
+          </a>
         </li>
       </ul>
       <h2>Voie de recours</h2>

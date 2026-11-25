@@ -1,12 +1,12 @@
-# Feature: Lister les utilisateurs
+# Fonctionnalité: Lister les utilisateurs
 
 > La liste d'administration de tous les comptes. Le statut qu'elle affiche et
 > le filtre par statut obéissent à la même règle : un compte n'apparaît sous
 > un filtre que s'il affiche ce statut.
 
-## Background:
+## Contexte:
 
-* Given les comptes suivants dans la liste :
+* Étant donné les comptes suivants dans la liste :
   | prenom | role         | cree | inscrit | supprime | visite | activite | beneficiaire | equipe | coordonne |
   | Ines   | mediateur    | 3    | aucun   | aucun    | aucun  | aucun    | aucun        | aucun  | aucun     |
   | Iris   | mediateur    | 40   | aucun   | aucun    | aucun  | aucun    | aucun        | aucun  | aucun     |
@@ -23,19 +23,19 @@
   | Jade   | mediateur    | 210  | 200     | 10       | aucun  | 5        | aucun        | aucun  | aucun     |
   | Abel   | admin        | 210  | 200     | aucun    | 1      | aucun    | aucun        | aucun  | aucun     |
 
-## Rule: Le filtre par statut retrouve exactement les comptes qui affichent ce statut
+## Règle: Le filtre par statut retrouve exactement les comptes qui affichent ce statut
 
 > Un médiateur est actif s'il a créé une activité ou un bénéficiaire ; un
 > coordinateur, s'il est venu et a une équipe ou a coordonné ; un double rôle,
 > s'il l'est à l'un ou l'autre titre. Les délais se comptent en jours.
 
-### Scenario Outline: Le filtre « <filtre> » retrouve les comptes « <libelle> »
+### Plan du scénario: Le filtre « <filtre> » retrouve les comptes « <libelle> »
 
-* When l'administration filtre la liste sur le statut "<filtre>"
-* Then la liste contient exactement "<prenoms>"
-* And chacun de ces comptes affiche le statut "<libelle>"
+* Quand l'administration filtre la liste sur le statut "<filtre>"
+* Alors la liste contient exactement "<prenoms>"
+* Et chacun de ces comptes affiche le statut "<libelle>"
 
-#### Examples:
+#### Exemples:
 
   | filtre        | prenoms              | libelle                   |
   | inscription0  | Ines                 | Inscription en cours      |
@@ -49,91 +49,91 @@
   | inactif180    | Hugo                 | Inactif J+180             |
   | deleted       | Jade                 | Supprimé                  |
 
-### Scenario: Un administrateur n'apparaît sous aucun statut de cycle de vie
+### Scénario: Un administrateur n'apparaît sous aucun statut de cycle de vie
 
-* When l'administration filtre la liste sur le statut "actif"
-* Then la liste ne contient pas "Abel"
+* Quand l'administration filtre la liste sur le statut "actif"
+* Alors la liste ne contient pas "Abel"
 
-## Rule: La recherche porte sur le prénom, le nom, le courriel et l'identifiant
+## Règle: La recherche porte sur le prénom, le nom, le courriel et l'identifiant
 
-### Scenario: Chercher un compte par son prénom
+### Scénario: Chercher un compte par son prénom
 
-* When l'administration cherche "Gus" dans la liste
-* Then la liste contient exactement "Gus"
+* Quand l'administration cherche "Gus" dans la liste
+* Alors la liste contient exactement "Gus"
 
-### Scenario: Chercher un compte par son identifiant
+### Scénario: Chercher un compte par son identifiant
 
-* When l'administration cherche l'identifiant de "Adam" dans la liste
-* Then la liste contient exactement "Adam"
+* Quand l'administration cherche l'identifiant de "Adam" dans la liste
+* Alors la liste contient exactement "Adam"
 
-## Rule: La liste se filtre par structure employeuse et par lieu d'activité
+## Règle: La liste se filtre par structure employeuse et par lieu d'activité
 
-### Scenario: Filtrer par structure employeuse
+### Scénario: Filtrer par structure employeuse
 
-* Given "Adam" est employé par "Mairie de Reims"
-* And "Bea" est employée par "Centre social"
-* When l'administration filtre la liste sur l'employeuse "Mairie de Reims"
-* Then la liste contient exactement "Adam"
+* Étant donné "Adam" est employé par "Mairie de Reims"
+* Et "Bea" est employée par "Centre social"
+* Quand l'administration filtre la liste sur l'employeuse "Mairie de Reims"
+* Alors la liste contient exactement "Adam"
 
-### Scenario: Filtrer par lieu d'activité
+### Scénario: Filtrer par lieu d'activité
 
-* Given "Fred" exerce à "Médiathèque du centre"
-* When l'administration filtre la liste sur le lieu "Médiathèque du centre"
-* Then la liste contient exactement "Fred"
+* Étant donné "Fred" exerce à "Médiathèque du centre"
+* Quand l'administration filtre la liste sur le lieu "Médiathèque du centre"
+* Alors la liste contient exactement "Fred"
 
-## Rule: La ligne affiche l'employeuse actuelle, et la liste se filtre sur elle
+## Règle: La ligne affiche l'employeuse actuelle, et la liste se filtre sur elle
 
 > L'employeuse actuelle est celle de l'affectation qui fait foi. Son code INSEE
 > n'est retenu que si son adresse est complète.
 
-### Scenario: Le nom de l'antenne prime sur la dénomination SIRENE
+### Scénario: Le nom de l'antenne prime sur la dénomination SIRENE
 
-* Given "Adam" est employé par l'antenne "Antenne de Reims" de "Mairie de Reims"
-* When l'administration cherche "Adam" dans la liste
-* Then la ligne de "Adam" affiche l'employeuse "Antenne de Reims"
+* Étant donné "Adam" est employé par l'antenne "Antenne de Reims" de "Mairie de Reims"
+* Quand l'administration cherche "Adam" dans la liste
+* Alors la ligne de "Adam" affiche l'employeuse "Antenne de Reims"
 
-### Scenario: Le code INSEE de l'employeuse vient de son adresse
+### Scénario: Le code INSEE de l'employeuse vient de son adresse
 
-* Given "Adam" est employé par "Mairie de Reims" au code INSEE "51454" et au code postal "51100"
-* When l'administration cherche "Adam" dans la liste
-* Then la ligne de "Adam" affiche le code INSEE d'employeuse "51454"
+* Étant donné "Adam" est employé par "Mairie de Reims" au code INSEE "51454" et au code postal "51100"
+* Quand l'administration cherche "Adam" dans la liste
+* Alors la ligne de "Adam" affiche le code INSEE d'employeuse "51454"
 
-### Scenario: Une adresse sans code postal ne donne pas de code INSEE
+### Scénario: Une adresse sans code postal ne donne pas de code INSEE
 
-* Given "Adam" est employé par "Mairie de Reims" au code INSEE "51454" et au code postal ""
-* When l'administration cherche "Adam" dans la liste
-* Then la ligne de "Adam" n'affiche aucun code INSEE d'employeuse
+* Étant donné "Adam" est employé par "Mairie de Reims" au code INSEE "51454" et au code postal ""
+* Quand l'administration cherche "Adam" dans la liste
+* Alors la ligne de "Adam" n'affiche aucun code INSEE d'employeuse
 
-### Scenario: Filtrer par département ne retient que les adresses complètes
+### Scénario: Filtrer par département ne retient que les adresses complètes
 
-* Given "Adam" est employé par "Mairie de Reims" au code INSEE "51454" et au code postal "51100"
-* And "Bea" est employée par "Centre social" au code INSEE "51108" et au code postal ""
-* When l'administration filtre la liste sur le département "51"
-* Then la liste contient exactement "Adam"
+* Étant donné "Adam" est employé par "Mairie de Reims" au code INSEE "51454" et au code postal "51100"
+* Et "Bea" est employée par "Centre social" au code INSEE "51108" et au code postal ""
+* Quand l'administration filtre la liste sur le département "51"
+* Alors la liste contient exactement "Adam"
 
-### Scenario: Filtrer par structure employeuse ne retient que l'employeuse actuelle
+### Scénario: Filtrer par structure employeuse ne retient que l'employeuse actuelle
 
-* Given "Adam" est employé par "Mairie de Reims"
-* And "Adam" est aussi rattaché à "Réseau partenaire" par la source "aidants-connect"
-* When l'administration filtre la liste sur l'employeuse "Réseau partenaire"
-* Then la liste ne contient pas "Adam"
+* Étant donné "Adam" est employé par "Mairie de Reims"
+* Et "Adam" est aussi rattaché à "Réseau partenaire" par la source "aidants-connect"
+* Quand l'administration filtre la liste sur l'employeuse "Réseau partenaire"
+* Alors la liste ne contient pas "Adam"
 
-## Rule: La liste se filtre par dispositif
+## Règle: La liste se filtre par dispositif
 
-### Scenario: Filtrer les conseillers numériques
+### Scénario: Filtrer les conseillers numériques
 
-* Given "Hugo" est conseiller numérique
-* When l'administration filtre la liste sur les conseillers numériques
-* Then la liste contient exactement "Hugo"
+* Étant donné "Hugo" est conseiller numérique
+* Quand l'administration filtre la liste sur les conseillers numériques
+* Alors la liste contient exactement "Hugo"
 
-## Rule: Le total ne dépend pas de la recherche
+## Règle: Le total ne dépend pas de la recherche
 
-### Scenario: Le total compte tous les comptes
+### Scénario: Le total compte tous les comptes
 
-* When l'administration cherche "Gus" dans la liste
-* Then le total dépasse le nombre de comptes trouvés
+* Quand l'administration cherche "Gus" dans la liste
+* Alors le total dépasse le nombre de comptes trouvés
 
-## Rule: Les anciens rattachements retrouvent un compte, sur demande
+## Règle: Les anciens rattachements retrouvent un compte, sur demande
 
 > Un compte supprimé n'a plus de nom : on le retrouve par l'environnement où
 > il travaillait. Sans la demande, seuls les rattachements actuels comptent.
@@ -141,53 +141,53 @@
 > activité du compte ; un lieu compte aussi s'il accueille une activité du
 > compte ; une équipe compte aussi si le compte l'a quittée.
 
-### Scenario: Une ancienne employeuse n'est retenue que sur demande
+### Scénario: Une ancienne employeuse n'est retenue que sur demande
 
-* Given "Jade" a été employée par "Mairie de Laon"
-* When l'administration filtre la liste sur l'employeuse "Mairie de Laon"
-* Then la liste ne contient pas "Jade"
+* Étant donné "Jade" a été employée par "Mairie de Laon"
+* Quand l'administration filtre la liste sur l'employeuse "Mairie de Laon"
+* Alors la liste ne contient pas "Jade"
 
-### Scenario: Retrouver un compte par son ancienne employeuse
+### Scénario: Retrouver un compte par son ancienne employeuse
 
-* Given "Jade" a été employée par "Mairie de Laon"
-* When l'administration filtre la liste sur l'employeuse "Mairie de Laon" en incluant les anciens rattachements
-* Then la liste contient exactement "Jade"
+* Étant donné "Jade" a été employée par "Mairie de Laon"
+* Quand l'administration filtre la liste sur l'employeuse "Mairie de Laon" en incluant les anciens rattachements
+* Alors la liste contient exactement "Jade"
 
-### Scenario: Retrouver un compte par l'employeuse de ses activités
+### Scénario: Retrouver un compte par l'employeuse de ses activités
 
-* Given "Jade" a enregistré une activité pour l'employeuse "Mairie de Soissons"
-* When l'administration filtre la liste sur l'employeuse "Mairie de Soissons" en incluant les anciens rattachements
-* Then la liste contient exactement "Jade"
+* Étant donné "Jade" a enregistré une activité pour l'employeuse "Mairie de Soissons"
+* Quand l'administration filtre la liste sur l'employeuse "Mairie de Soissons" en incluant les anciens rattachements
+* Alors la liste contient exactement "Jade"
 
-### Scenario: Le lieu d'une activité n'est retenu que sur demande
+### Scénario: Le lieu d'une activité n'est retenu que sur demande
 
-* Given "Jade" a enregistré une activité à "Médiathèque de Laon"
-* When l'administration filtre la liste sur le lieu "Médiathèque de Laon"
-* Then la liste ne contient pas "Jade"
+* Étant donné "Jade" a enregistré une activité à "Médiathèque de Laon"
+* Quand l'administration filtre la liste sur le lieu "Médiathèque de Laon"
+* Alors la liste ne contient pas "Jade"
 
-### Scenario: Retrouver un compte par le lieu de ses activités
+### Scénario: Retrouver un compte par le lieu de ses activités
 
-* Given "Jade" a enregistré une activité à "Médiathèque de Laon"
-* When l'administration filtre la liste sur le lieu "Médiathèque de Laon" en incluant les anciens rattachements
-* Then la liste contient exactement "Jade"
+* Étant donné "Jade" a enregistré une activité à "Médiathèque de Laon"
+* Quand l'administration filtre la liste sur le lieu "Médiathèque de Laon" en incluant les anciens rattachements
+* Alors la liste contient exactement "Jade"
 
-## Rule: La liste se filtre par coordinateur
+## Règle: La liste se filtre par coordinateur
 
-### Scenario: Filtrer sur l'équipe actuelle d'un coordinateur
+### Scénario: Filtrer sur l'équipe actuelle d'un coordinateur
 
-* Given "Adam" est membre de l'équipe de "Gus"
-* And "Fred" a quitté l'équipe de "Gus"
-* When l'administration filtre la liste sur le coordinateur "Gus"
-* Then la liste contient exactement "Adam"
+* Étant donné "Adam" est membre de l'équipe de "Gus"
+* Et "Fred" a quitté l'équipe de "Gus"
+* Quand l'administration filtre la liste sur le coordinateur "Gus"
+* Alors la liste contient exactement "Adam"
 
-### Scenario: Inclure les anciens membres de l'équipe
+### Scénario: Inclure les anciens membres de l'équipe
 
-* Given "Adam" est membre de l'équipe de "Gus"
-* And "Fred" a quitté l'équipe de "Gus"
-* When l'administration filtre la liste sur le coordinateur "Gus" en incluant les anciens rattachements
-* Then la liste contient exactement "Adam, Fred"
+* Étant donné "Adam" est membre de l'équipe de "Gus"
+* Et "Fred" a quitté l'équipe de "Gus"
+* Quand l'administration filtre la liste sur le coordinateur "Gus" en incluant les anciens rattachements
+* Alors la liste contient exactement "Adam, Fred"
 
-### Scenario: Chercher un coordinateur à choisir
+### Scénario: Chercher un coordinateur à choisir
 
-* When l'administration cherche le coordinateur "Gus"
-* Then les coordinateurs proposés sont exactement "Gus"
+* Quand l'administration cherche le coordinateur "Gus"
+* Alors les coordinateurs proposés sont exactement "Gus"

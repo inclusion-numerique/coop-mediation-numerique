@@ -1,5 +1,4 @@
 import { describe, expect, it } from 'vitest'
-import { AdresseCourriel } from './adresse-courriel'
 import {
   contactASynchroniser,
   type InscritDeLaListe,
@@ -8,14 +7,15 @@ import {
   type SituationDansLeDispositif,
   situationDansLeDispositif,
 } from './contact-brevo'
-import { CoordinateurId } from './coordinateur-id'
 import { Dispositif } from './dispositif'
-import { MediateurId } from './mediateur-id'
+import { CoordinateurId } from './identifiants/coordinateur-id'
+import { MediateurId } from './identifiants/mediateur-id'
+import { UtilisateurId } from './identifiants/utilisateur-id'
+import { AdresseCourriel } from './identite/adresse-courriel'
 import {
   type RattachementsDuCompte,
   rattachements as rattachementsDe,
 } from './rattachements'
-import { UtilisateurId } from './utilisateur-id'
 
 const mediateur = MediateurId('1a2b3c4d-5e6f-4708-8192-a3b4c5d6e7f8')
 const coordinateur = CoordinateurId('0d1a1e7e-1f2b-4c3d-8e4f-5a6b7c8d9e0f')

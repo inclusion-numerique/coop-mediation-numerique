@@ -1,0 +1,42 @@
+@keyframes indicateur-de-chargement-rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  50% {
+    transform: rotate(180deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.indicateur-de-chargement {
+  display: block;
+  font-size: 0;
+  mask-repeat: no-repeat;
+  mask-size: 100% 100%;
+  mask-image: url("/images/spinner.svg");
+  animation: indicateur-de-chargement-rotation 1.2s infinite linear;
+  background: currentcolor;
+}
+
+.indicateur-de-chargement--en-ligne {
+  display: inline-block;
+}
+
+.indicateur-de-chargement--petit {
+  width: 16px;
+  height: 16px;
+}
+
+.indicateur-de-chargement--moyen {
+  width: 24px;
+  height: 24px;
+}
+
+.indicateur-de-chargement--grand {
+  width: 32px;
+  height: 32px;
+}

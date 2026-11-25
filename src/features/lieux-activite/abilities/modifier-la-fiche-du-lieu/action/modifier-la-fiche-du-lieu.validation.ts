@@ -23,9 +23,9 @@ import {
   SiretSaisi,
   SiteWebSaisi,
   texteFacultatif,
-} from '@/features/lieux-activite/domain/regles-de-saisie'
-import { AdresseBanValidation } from '@/libraries/adresse/AdresseBanValidation'
-import { HorairesValidation } from '../../../domain/horaires.validation'
+} from '@/features/lieux-activite/domain/saisie/regles-de-saisie'
+import { AdresseBanValidation } from '@/libraries/adresse'
+import { HorairesValidation } from '../../../action/horaires.validation'
 
 export const InformationsGeneralesSaisie = z
   .object({
@@ -141,3 +141,17 @@ export type ModifierLaFicheDuLieuSaisie = z.infer<
 >
 
 export type SaisieDeSection = ModifierLaFicheDuLieuSaisie['modification']
+
+export type ValeursDeTypesDePublicsAccueillis = z.input<
+  typeof TypesDePublicsAccueillisSaisie
+>
+
+export type ValeursDeDescription = z.input<typeof DescriptionSaisie>
+
+export type ValeursDeModalitesAccesAuService = z.input<
+  typeof ModalitesAccesAuServiceSaisie
+>
+
+export type ValeursDeServicesEtAccompagnement = z.input<
+  typeof ServicesEtAccompagnementSaisie
+>

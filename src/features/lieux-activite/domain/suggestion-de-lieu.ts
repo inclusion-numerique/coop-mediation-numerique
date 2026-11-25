@@ -6,10 +6,10 @@ import {
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { z } from 'zod'
 import { defineModel, type Model } from '@/libraries/model'
-import type { IdentifiantCartographie } from './ids-cartographie-nationale'
-import type { LieuId } from './lieu-id'
+import type { IdentifiantCartographie } from './cartographie-nationale/ids-cartographie-nationale'
+import type { LieuId } from './identifiants/lieu-id'
 import type { NombreDeLieux } from './nombres'
-import type { SourceExterne } from './source-externe'
+import type { SourceExterne } from './registre/source-externe'
 
 export const AdresseLibre = defineModel(
   z

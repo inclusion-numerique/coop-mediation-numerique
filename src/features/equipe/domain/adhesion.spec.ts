@@ -1,11 +1,34 @@
 import { describe, expect, it } from 'vitest'
-import { adherer, archiver } from './adhesion'
 import {
-  adhesionActive,
-  adhesionArchivee,
-  coordinateurId,
+  type AdhesionActive,
+  type AdhesionArchivee,
+  adherer,
+  archiver,
+} from './adhesion'
+import { AdhesionId } from './identifiants/adhesion-id'
+import { CoordinateurId } from './identifiants/coordinateur-id'
+import { MediateurId } from './identifiants/mediateur-id'
+
+const coordinateurId = CoordinateurId('550e8400-e29b-41d4-a716-446655440001')
+
+const mediateurId = MediateurId('550e8400-e29b-41d4-a716-446655440011')
+
+const adhesionActive: AdhesionActive = {
+  id: AdhesionId('550e8400-e29b-41d4-a716-446655440021'),
   mediateurId,
-} from './fixtures'
+  coordinateurId,
+  depuis: new Date('2026-02-01T09:00:00Z'),
+  statut: 'Active',
+}
+
+const adhesionArchivee: AdhesionArchivee = {
+  id: AdhesionId('550e8400-e29b-41d4-a716-446655440022'),
+  mediateurId,
+  coordinateurId,
+  depuis: new Date('2025-02-01T09:00:00Z'),
+  statut: 'Archivee',
+  archiveeLe: new Date('2025-06-01T09:00:00Z'),
+}
 
 const maintenant = new Date('2026-10-14T09:00:00Z')
 

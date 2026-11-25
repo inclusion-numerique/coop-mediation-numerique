@@ -1,10 +1,10 @@
+import type { UsagerId } from './identifiants/usager-id'
 import type {
   EmailExterne,
   NomExterne,
   PrenomExterne,
   TelephoneExterne,
 } from './identite'
-import type { UsagerId } from './usager-id'
 
 /**
  * Coordonnées libres transmises par RDV Service Public, sans garantie de forme.

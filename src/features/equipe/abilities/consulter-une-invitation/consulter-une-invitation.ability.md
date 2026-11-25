@@ -1,32 +1,32 @@
-# Feature: Consulter une invitation
+# Fonctionnalité: Consulter une invitation
 
-## Rule: La personne invitée découvre l'équipe qu'on lui propose de rejoindre
+## Règle: La personne invitée découvre l'équipe qu'on lui propose de rejoindre
 
-### Scenario: Une personne ouvre une invitation en attente
+### Scénario: Une personne ouvre une invitation en attente
 
-* Given une invitation en attente dans une équipe de 2 membres
-* When la personne invitée ouvre son invitation
-* Then elle voit une invitation en attente
-* And l'équipe compte 2 membres
+* Étant donné une invitation en attente dans une équipe de 2 membres
+* Quand la personne invitée ouvre son invitation
+* Alors elle voit une invitation en attente
+* Et l'équipe compte 2 membres
 
-### Scenario: Une adresse saisie en majuscules mène à la même invitation
+### Scénario: Une adresse saisie en majuscules mène à la même invitation
 
-* Given une invitation en attente dans une équipe de 0 membre
-* When la personne invitée ouvre son invitation, connectée avec son email en majuscules
-* Then elle voit une invitation en attente
+* Étant donné une invitation en attente dans une équipe de 0 membre
+* Quand la personne invitée ouvre son invitation, connectée avec son email en majuscules
+* Alors elle voit une invitation en attente
 
-## Rule: Une invitation ne s'ouvre qu'une fois traitée
+## Règle: Une invitation ne s'ouvre qu'une fois traitée
 
-### Scenario: Une invitation refusée n'est plus valide
+### Scénario: Une invitation refusée n'est plus valide
 
-* Given une invitation refusée
-* When la personne invitée ouvre son invitation
-* Then elle apprend que l'invitation n'est plus valide
+* Étant donné une invitation refusée
+* Quand la personne invitée ouvre son invitation
+* Alors elle apprend que l'invitation n'est plus valide
 
-## Rule: Une invitation ne se consulte pas avec le compte de quelqu'un d'autre
+## Règle: Une invitation ne se consulte pas avec le compte de quelqu'un d'autre
 
-### Scenario: Une personne connectée avec une autre adresse est avertie
+### Scénario: Une personne connectée avec une autre adresse est avertie
 
-* Given une invitation en attente dans une équipe de 0 membre
-* When une autre personne connectée ouvre cette invitation
-* Then elle est avertie qu'il ne s'agit pas de son invitation
+* Étant donné une invitation en attente dans une équipe de 0 membre
+* Quand une autre personne connectée ouvre cette invitation
+* Alors elle est avertie qu'il ne s'agit pas de son invitation

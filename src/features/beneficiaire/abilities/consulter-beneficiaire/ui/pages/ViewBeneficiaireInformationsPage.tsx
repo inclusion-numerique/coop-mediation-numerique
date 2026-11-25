@@ -7,7 +7,7 @@ import BeneficiairePageNavigationBar from '@/features/beneficiaire/abilities/con
 import BeneficiaireThematiques, {
   type ThematiqueAbordee,
 } from '@/features/beneficiaire/abilities/consulter-beneficiaire/ui/components/BeneficiaireThematiques'
-import { dateAsDay } from '@/libraries/date/dateAsDay'
+import { dateAsDay } from '@/libraries/date'
 
 export type BeneficiaireInformationsPageData = {
   beneficiaire: BeneficiaireInformations
@@ -38,7 +38,7 @@ const ViewBeneficiaireInformationsPage = ({
             Créé le {dateAsDay(beneficiaire.creation)}
           </p>
         </div>
-        {actions}
+        <div>{actions}</div>
       </div>
       <BeneficiaireThematiques thematiques={thematiquesAbordees} />
       <BeneficiaireCoordonnees beneficiaire={beneficiaire} />

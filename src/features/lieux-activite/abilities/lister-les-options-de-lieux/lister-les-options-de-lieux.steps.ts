@@ -1,11 +1,9 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
-import {
-  getLieuxDesActivitesOptions,
-  getMediateursLieuxActiviteOptions,
-  rechercherDesLieuxAChoisir,
-} from '@/features/lieux-activite/abilities/lister-les-options-de-lieux'
+import { prismaClient } from '@/configuration/prisma'
+import { rechercherDesLieuxAChoisir } from '@/features/lieux-activite/abilities/lister-les-options-de-lieux/implementations/prisma/lieux-a-choisir.query'
+import { getLieuxDesActivitesOptions } from '@/features/lieux-activite/abilities/lister-les-options-de-lieux/implementations/prisma/options-de-lieux-des-activites.query'
+import { getMediateursLieuxActiviteOptions } from '@/features/lieux-activite/abilities/lister-les-options-de-lieux/implementations/prisma/options-de-lieux-du-mediateur.query'
 import { ficheSemee } from '@/features/lieux-activite/lieux-activite.cucumber'
 
 const proposees: { options?: readonly { readonly value: string }[] } = {}

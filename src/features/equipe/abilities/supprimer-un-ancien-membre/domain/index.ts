@@ -1,2 +1,2 @@
-export * from './ancien-membre'
-export * from './errors'
+export { exigerAncienMembre } from './ancien-membre'
+export { PasAncienMembre, ToujoursMembre } from './errors'

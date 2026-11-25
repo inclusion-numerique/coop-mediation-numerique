@@ -1,6 +1,7 @@
 import assert from 'node:assert'
+import { Page, PageSize, Sort } from '@arckit/resultset'
 import { Given, Then, When } from '@cucumber/cucumber'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma'
 import type { Acteur } from '@/features/tags/domain'
 import {
   acteurMediateur,
@@ -11,7 +12,8 @@ import {
   semerUnMediateur,
   semerUnTag,
 } from '@/features/tags/tags.cucumber'
-import { type ListeDesTags, listerLesTags, TriDesTags } from '.'
+import type { ListeDesTags } from './domain/index'
+import { listerLesTags } from './implementations/prisma/lister-les-tags.query'
 
 const contexte: {
   acteur?: Acteur
@@ -27,7 +29,7 @@ const valeur = <T>(valeur: T | undefined): T => {
 }
 
 const nomsListes = (): readonly string[] =>
-  valeur(contexte.liste).tags.map(({ tag }) => tag.nom)
+  valeur(contexte.liste).items.map(({ tag }) => tag.nom)
 
 Given(
   'un médiateur coordonné du {int} qui consulte ses tags',
@@ -111,9 +113,9 @@ Given('ce tag porté par une activité de coordination', async () => {
 When('ce médiateur liste ses tags', async () => {
   contexte.liste = await listerLesTags({
     acteur: valeur(contexte.acteur),
-    tri: TriDesTags('alphabetique'),
-    page: 1,
-    lignesParPage: 100_000,
+    tri: Sort('nom', 'asc'),
+    page: Page(1),
+    pageSize: PageSize(100_000),
   })
 })
 
@@ -138,14 +140,14 @@ Then(
 )
 
 Then('le total annoncé correspond aux tags listés', () => {
-  assert.strictEqual(valeur(contexte.liste).total, nomsListes().length)
+  assert.strictEqual(valeur(contexte.liste).totalItems, nomsListes().length)
 })
 
 Then(
   'le tag {string} compte {int} accompagnements',
   (nom: string, accompagnements: number) => {
     assert.strictEqual(
-      valeur(contexte.liste).tags.find(({ tag }) => tag.nom === nom)
+      valeur(contexte.liste).items.find(({ tag }) => tag.nom === nom)
         ?.accompagnements,
       accompagnements,
     )

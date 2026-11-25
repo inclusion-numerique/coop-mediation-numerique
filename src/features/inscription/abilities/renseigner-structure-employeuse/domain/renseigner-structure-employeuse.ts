@@ -1,46 +1,57 @@
-import {
-  franchirStructureEmployeuse,
-  InscriptionDejaValidee,
-  type InscriptionEnCours,
-  type InscriptionEtat,
-  InscriptionIntrouvable,
-  isNonDemarree,
-  isValidee,
-  ProfilNonChoisi,
-  type UserId,
-} from '@/features/inscription/domain'
+import type { UtilisateurId } from '@/features/inscription/domain'
+import type { LireLEtatDeLInscription } from '@/features/inscription/domain/ports'
 import { failure, type Result, success } from '@/libraries/result'
-import type { EmployeuseIndisponible } from './errors'
+import {
+  deciderLaStructureEmployeuse,
+  type RenseignerStructureEmployeuseError,
+} from './decider-la-structure-employeuse'
+import { EmployeuseIndisponible } from './errors'
+import type { ProjeterEtapeFranchie, RattacherEmployeuse } from './ports'
+import {
+  type StructureEmployeuseInput,
+  saisieEmployeuse,
+} from './structure-employeuse-input'
 
-export type RenseignerStructureEmployeuseError =
-  | InscriptionIntrouvable
-  | ProfilNonChoisi
-  | InscriptionDejaValidee
-  | EmployeuseIndisponible
-
-/**
- * Décide le renseignement de la structure employeuse : garde l'état courant puis
- * porte l'étape « structure employeuse » franchie, et rend l'état résultant sans
- * l'exécuter. Fonction pure — c'est la couche appelante qui lit l'état, rattache
- * l'employeuse (ACL) puis projette l'état.
- *
- * Deux invariants sont portés par l'ordre du shell plutôt que par ce décideur :
- * l'ACL n'est appelée qu'après un `success` ici — une commande refusée ne crée
- * donc jamais d'employeuse pour rien — et l'état n'est projeté qu'après un
- * rattachement abouti, pour qu'une inscription ne se croie jamais plus avancée
- * que la réalité.
- */
-export const renseignerStructureEmployeuse = (
-  etat: InscriptionEtat | null,
-  userId: UserId,
-  maintenant: Date,
-): Result<
-  { readonly etatFranchi: InscriptionEnCours },
-  RenseignerStructureEmployeuseError
-> => {
-  if (etat === null) return failure(InscriptionIntrouvable(userId))
-  if (isNonDemarree(etat)) return failure(ProfilNonChoisi(userId))
-  if (isValidee(etat)) return failure(InscriptionDejaValidee(userId))
-
-  return success({ etatFranchi: franchirStructureEmployeuse(etat, maintenant) })
+export type RenseignerStructureEmployeusePorts = {
+  readonly lireLEtat: LireLEtatDeLInscription
+  readonly rattacherEmployeuse: RattacherEmployeuse
+  readonly projeterEtapeFranchie: ProjeterEtapeFranchie
 }
+
+export const renseignerStructureEmployeuse =
+  ({
+    lireLEtat,
+    rattacherEmployeuse,
+    projeterEtapeFranchie,
+  }: RenseignerStructureEmployeusePorts) =>
+  async ({
+    command: { userId, structureEmployeuse },
+    maintenant,
+  }: {
+    readonly command: {
+      readonly userId: UtilisateurId
+      readonly structureEmployeuse: StructureEmployeuseInput
+    }
+    readonly maintenant: Date
+  }): Promise<Result<void, RenseignerStructureEmployeuseError>> => {
+    const decision = deciderLaStructureEmployeuse(
+      await lireLEtat(userId),
+      userId,
+      maintenant,
+    )
+
+    if (!decision.success) return decision
+
+    const rattachement = await rattacherEmployeuse({
+      userId,
+      saisie: saisieEmployeuse(structureEmployeuse),
+    })
+
+    if (rattachement._tag !== 'rattachee') {
+      return failure(EmployeuseIndisponible(userId))
+    }
+
+    await projeterEtapeFranchie(decision.data.etatFranchi)
+
+    return success(undefined)
+  }

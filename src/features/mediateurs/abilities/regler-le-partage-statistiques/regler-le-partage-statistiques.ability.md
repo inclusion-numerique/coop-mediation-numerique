@@ -1,4 +1,4 @@
-# Feature: Régler le partage de statistiques
+# Fonctionnalité: Régler le partage de statistiques
 
 > Le lien de partage est une URL publique : quiconque le détient consulte les
 > statistiques partagées, avec leurs filtres et leurs exports. Un médiateur
@@ -7,98 +7,98 @@
 > Réactiver un partage donne un nouveau lien : un lien désactivé ne redevient
 > jamais valable.
 
-## Rule: Le compte active le partage de ses statistiques
+## Règle: Le compte active le partage de ses statistiques
 
-### Scenario: Un médiateur active le partage de ses statistiques
+### Scénario: Un médiateur active le partage de ses statistiques
 
-* Given un médiateur qui ne partage pas ses statistiques
-* When ce compte active le partage de ses statistiques
-* Then le partage du médiateur est actif
+* Étant donné un médiateur qui ne partage pas ses statistiques
+* Quand ce compte active le partage de ses statistiques
+* Alors le partage du médiateur est actif
 
-### Scenario: Un coordinateur active le partage de ses statistiques
+### Scénario: Un coordinateur active le partage de ses statistiques
 
-* Given un coordinateur qui ne partage pas ses statistiques
-* When ce compte active le partage de ses statistiques
-* Then le partage du coordinateur est actif
+* Étant donné un coordinateur qui ne partage pas ses statistiques
+* Quand ce compte active le partage de ses statistiques
+* Alors le partage du coordinateur est actif
 
-### Scenario: Activer un partage déjà actif ne change pas le lien
+### Scénario: Activer un partage déjà actif ne change pas le lien
 
-* Given un médiateur qui partage ses statistiques
-* When ce compte active le partage de ses statistiques
-* Then le partage du médiateur est actif
-* And le lien du partage est resté le même
+* Étant donné un médiateur qui partage ses statistiques
+* Quand ce compte active le partage de ses statistiques
+* Alors le partage du médiateur est actif
+* Et le lien du partage est resté le même
 
-## Rule: Le compte désactive le partage de ses statistiques
+## Règle: Le compte désactive le partage de ses statistiques
 
-### Scenario: Un médiateur désactive le partage de ses statistiques
+### Scénario: Un médiateur désactive le partage de ses statistiques
 
-* Given un médiateur qui partage ses statistiques
-* When ce compte désactive le partage de ses statistiques
-* Then le partage du médiateur est inactif
+* Étant donné un médiateur qui partage ses statistiques
+* Quand ce compte désactive le partage de ses statistiques
+* Alors le partage du médiateur est inactif
 
-### Scenario: Désactiver un partage déjà inactif ne fait rien
+### Scénario: Désactiver un partage déjà inactif ne fait rien
 
-* Given un médiateur qui partage ses statistiques
-* And ce partage est désactivé
-* When ce compte désactive le partage de ses statistiques
-* Then le partage du médiateur est inactif
-* And la date de désactivation du partage est restée la même
+* Étant donné un médiateur qui partage ses statistiques
+* Et ce partage est désactivé
+* Quand ce compte désactive le partage de ses statistiques
+* Alors le partage du médiateur est inactif
+* Et la date de désactivation du partage est restée la même
 
-### Scenario: Désactiver sans avoir jamais partagé ne crée rien
+### Scénario: Désactiver sans avoir jamais partagé ne crée rien
 
-* Given un médiateur qui ne partage pas ses statistiques
-* When ce compte désactive le partage de ses statistiques
-* Then ce compte n'a aucun partage
+* Étant donné un médiateur qui ne partage pas ses statistiques
+* Quand ce compte désactive le partage de ses statistiques
+* Alors ce compte n'a aucun partage
 
-## Rule: Réactiver le partage donne un nouveau lien
+## Règle: Réactiver le partage donne un nouveau lien
 
 > Désactiver un partage sert à couper un lien qui a trop circulé : le
 > réactiver ne doit pas lui redonner accès.
 
-### Scenario: Un médiateur réactive le partage de ses statistiques
+### Scénario: Un médiateur réactive le partage de ses statistiques
 
-* Given un médiateur qui partage ses statistiques
-* And ce partage est désactivé
-* When ce compte active le partage de ses statistiques
-* Then le partage du médiateur est actif
-* And le lien du partage a changé
+* Étant donné un médiateur qui partage ses statistiques
+* Et ce partage est désactivé
+* Quand ce compte active le partage de ses statistiques
+* Alors le partage du médiateur est actif
+* Et le lien du partage a changé
 
-## Rule: Un compte médiateur et coordinateur choisit ce qu'il partage
+## Règle: Un compte médiateur et coordinateur choisit ce qu'il partage
 
-### Scenario: Il partage ses statistiques de médiateur
+### Scénario: Il partage ses statistiques de médiateur
 
-* Given un compte médiateur et coordinateur qui ne partage pas ses statistiques
-* When ce compte active le partage de ses statistiques
-* Then le partage du médiateur est actif
-* And le coordinateur n'a aucun partage
+* Étant donné un compte médiateur et coordinateur qui ne partage pas ses statistiques
+* Quand ce compte active le partage de ses statistiques
+* Alors le partage du médiateur est actif
+* Et le coordinateur n'a aucun partage
 
-### Scenario: Il partage les statistiques de son équipe
+### Scénario: Il partage les statistiques de son équipe
 
-* Given un compte médiateur et coordinateur qui ne partage pas ses statistiques
-* When ce compte active le partage des statistiques de son équipe
-* Then le partage du coordinateur est actif
-* And le médiateur n'a aucun partage
+* Étant donné un compte médiateur et coordinateur qui ne partage pas ses statistiques
+* Quand ce compte active le partage des statistiques de son équipe
+* Alors le partage du coordinateur est actif
+* Et le médiateur n'a aucun partage
 
-### Scenario: Il partage les deux
+### Scénario: Il partage les deux
 
-* Given un compte médiateur et coordinateur qui ne partage pas ses statistiques
-* When ce compte active le partage de ses statistiques
-* And ce compte active le partage des statistiques de son équipe
-* Then le partage du médiateur est actif
-* And le partage du coordinateur est actif
+* Étant donné un compte médiateur et coordinateur qui ne partage pas ses statistiques
+* Quand ce compte active le partage de ses statistiques
+* Et ce compte active le partage des statistiques de son équipe
+* Alors le partage du médiateur est actif
+* Et le partage du coordinateur est actif
 
-## Rule: Un compte ne partage que ce à quoi il est rattaché
+## Règle: Un compte ne partage que ce à quoi il est rattaché
 
-### Scenario: Un médiateur ne peut pas partager les statistiques d'une équipe
+### Scénario: Un médiateur ne peut pas partager les statistiques d'une équipe
 
-* Given un médiateur qui ne partage pas ses statistiques
-* When ce compte active le partage des statistiques de son équipe
-* Then le réglage du partage échoue car le compte n'est pas rattaché à ce périmètre
+* Étant donné un médiateur qui ne partage pas ses statistiques
+* Quand ce compte active le partage des statistiques de son équipe
+* Alors le réglage du partage échoue car le compte n'est pas rattaché à ce périmètre
 
-## Rule: Seul un médiateur ou un coordinateur a des statistiques à partager
+## Règle: Seul un médiateur ou un coordinateur a des statistiques à partager
 
-### Scenario: Un compte sans rôle ne peut pas partager
+### Scénario: Un compte sans rôle ne peut pas partager
 
-* Given un compte qui n'est ni médiateur ni coordinateur
-* When ce compte active le partage de ses statistiques
-* Then le réglage du partage échoue car le compte n'a pas de statistiques à partager
+* Étant donné un compte qui n'est ni médiateur ni coordinateur
+* Quand ce compte active le partage de ses statistiques
+* Alors le réglage du partage échoue car le compte n'a pas de statistiques à partager

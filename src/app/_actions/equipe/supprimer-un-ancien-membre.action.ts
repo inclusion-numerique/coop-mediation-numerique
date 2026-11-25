@@ -1,17 +1,17 @@
 'use server'
 
 import { actionBuilder } from '@/configuration/nextjs'
-import { withAuth } from '@/features/authentification'
-import { supprimerUnAncienMembre } from '@/features/equipe/abilities/supprimer-un-ancien-membre'
+import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { SUPPRIMER_UN_ANCIEN_MEMBRE_ERRORS } from '@/features/equipe/abilities/supprimer-un-ancien-membre/action/supprimer-un-ancien-membre.errors'
 import { SupprimerUnAncienMembreValidation } from '@/features/equipe/abilities/supprimer-un-ancien-membre/action/supprimer-un-ancien-membre.validation'
+import { supprimerUnAncienMembre } from '@/features/equipe/abilities/supprimer-un-ancien-membre/implementations/prisma/supprimer-un-ancien-membre.mutation'
 import {
   CoordinateurId,
   MediateurId,
   UtilisateurId,
 } from '@/features/equipe/domain'
-import { gestionnaireDe } from '@/features/equipe/implementation/session'
-import { withMaintenance } from '@/features/maintenance-mode'
+import { gestionnaireDe } from '@/features/equipe/implementations/session'
+import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { fromResult, withInput } from '@/libraries/nextjs'
 
 export const supprimerUnAncienMembreAction = actionBuilder()

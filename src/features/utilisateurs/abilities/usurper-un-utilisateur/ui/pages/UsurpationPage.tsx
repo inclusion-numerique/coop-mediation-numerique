@@ -1,13 +1,15 @@
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import type { ReactNode } from 'react'
-import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
-import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
-import AdministrationBreadcrumbs from '@/libraries/ui/components/administration/AdministrationBreadcrumbs'
-import AdministrationTitle from '@/libraries/ui/components/administration/AdministrationTitle'
-import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
+import { contentId } from '@/libraries/liens-d-evitement'
+import { SkipLinksPortal } from '@/libraries/liens-d-evitement/composants'
+import {
+  AdministrationBreadcrumbs,
+  AdministrationTitle,
+  CoopPageContainer,
+} from '@/libraries/ui/components'
 import type { CompteDeTest } from '../../domain'
-import { BoutonUsurper } from '../BoutonUsurper'
-import { UsurpationLibre } from '../UsurpationLibre'
+import { BoutonDUsurpation } from '../components/BoutonDUsurpation'
+import { UsurpationLibre } from '../components/UsurpationLibre'
 
 export const UsurpationPage = ({
   comptesDeTest,
@@ -51,7 +53,10 @@ export const UsurpationPage = ({
                       <tr key={id}>
                         <th>{nom}</th>
                         <td>
-                          <BoutonUsurper taille="small" utilisateurId={id} />
+                          <BoutonDUsurpation
+                            taille="small"
+                            utilisateurId={id}
+                          />
                         </td>
                         <td>{reinitialiser(id)}</td>
                       </tr>

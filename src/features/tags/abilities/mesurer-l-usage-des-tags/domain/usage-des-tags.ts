@@ -1,14 +1,16 @@
-import type { DescriptionDuTag } from './description-du-tag'
-import type { Effectif } from './effectif'
-import type { NomDuTag } from './nom-du-tag'
-import type { PorteeDuTag } from './portee-du-tag'
+import type {
+  DescriptionDuTag,
+  Effectif,
+  NomDuTag,
+  TagId,
+  TypeDePortee,
+} from '../../../domain'
 import type { Proportion } from './proportion'
-import type { TagId } from './tag-id'
 
 export type TagLePlusUtilise = {
   readonly id: TagId
   readonly nom: NomDuTag
-  readonly portee: PorteeDuTag
+  readonly portee: TypeDePortee
   readonly description: DescriptionDuTag | null
   readonly utilisations: Effectif
   readonly accompagnements: Effectif

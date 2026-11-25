@@ -1,0 +1,86 @@
+import {
+  Itinerance,
+  type Typologie,
+} from '@gouvfr-anct/lieux-de-mediation-numerique'
+import type { AdresseBanData } from '@/libraries/adresse'
+import {
+  banDefaultValueToAdresseBanData,
+  getAdresseBanLabel,
+} from '@/libraries/adresse'
+import type { Fiche } from '../../../../domain/fiche'
+import type { Lieu } from '../../../../domain/lieu'
+import type { EtablissementTrouve } from '../../action/rechercher-un-etablissement.key'
+
+export type InformationsGeneralesAffichees = {
+  readonly nom: string
+  readonly adresse: string | null
+  readonly commune: string | null
+  readonly codePostal: string | null
+  readonly codeInsee: string | null
+  readonly complementAdresse: string | null
+  readonly latitude: number | null
+  readonly longitude: number | null
+  readonly banId: string | null
+  readonly adresseBan: AdresseBanData
+  readonly siretSearch: EtablissementTrouve | null
+  readonly lieuItinerant: boolean | null
+  readonly typologies: readonly Typologie[]
+  readonly siret: string | null
+  readonly nomUsage: string | null
+}
+
+const itinerant = (itinerance: Fiche['itinerance']): boolean | null =>
+  itinerance.length === 0 ? null : itinerance.includes(Itinerance.Itinerant)
+
+const adresseBanDepuis = (fiche: Fiche): AdresseBanData => {
+  const adresse = banDefaultValueToAdresseBanData({
+    ...(fiche.adresse?.code_insee === undefined
+      ? {}
+      : { codeInsee: fiche.adresse.code_insee }),
+    codePostal: fiche.adresse?.code_postal ?? '',
+    commune: fiche.adresse?.commune ?? '',
+    nom: fiche.adresse?.voie ?? '',
+    ...(fiche.localisation?.latitude === undefined
+      ? {}
+      : { latitude: fiche.localisation.latitude }),
+    ...(fiche.localisation?.longitude === undefined
+      ? {}
+      : { longitude: fiche.localisation.longitude }),
+  })
+
+  return { ...adresse, label: getAdresseBanLabel(adresse) }
+}
+
+const rechercheSiret = (fiche: Fiche): EtablissementTrouve | null =>
+  fiche.pivot == null
+    ? null
+    : {
+        siret: fiche.pivot,
+        nom: fiche.nom,
+        adresse: fiche.adresse?.voie ?? '',
+        commune: fiche.adresse?.commune ?? '',
+        codePostal: fiche.adresse?.code_postal ?? '',
+        codeInsee: fiche.adresse?.code_insee ?? '',
+      }
+
+export const informationsGenerales = ({
+  fiche,
+  banId,
+  identiteSirene,
+}: Lieu): InformationsGeneralesAffichees => ({
+  nom: fiche.nom,
+  adresse: fiche.adresse?.voie ?? null,
+  commune: fiche.adresse?.commune ?? null,
+  codePostal: fiche.adresse?.code_postal ?? null,
+  codeInsee: fiche.adresse?.code_insee ?? null,
+  complementAdresse: fiche.adresse?.complement_adresse ?? null,
+  latitude: fiche.localisation?.latitude ?? null,
+  longitude: fiche.localisation?.longitude ?? null,
+  banId,
+  adresseBan: adresseBanDepuis(fiche),
+  siretSearch: rechercheSiret(fiche),
+  lieuItinerant: itinerant(fiche.itinerance),
+  typologies: fiche.typologies,
+  siret: fiche.pivot,
+  nomUsage: identiteSirene.nomUsage,
+})

@@ -1,6 +1,4 @@
 export { derniereActiviteDe } from './activite'
-export { AdresseCourriel } from './adresse-courriel'
-export { AuteurId } from './auteur-id'
 export {
   type CompteASupprimer,
   type EtatCompte,
@@ -15,27 +13,25 @@ export {
   SANS_CONTRAT,
   situationDansLeDispositif,
 } from './contact-brevo'
-export { CoordinateurId } from './coordinateur-id'
+export { Dispositif, dispositifDe, estEnPoste } from './dispositif'
+export { CompteSupprime, UtilisateurIntrouvable } from './errors'
+export { AuteurId } from './identifiants/auteur-id'
+export { CoordinateurId } from './identifiants/coordinateur-id'
+export { MediateurId } from './identifiants/mediateur-id'
+export { UtilisateurId } from './identifiants/utilisateur-id'
+export { AdresseCourriel } from './identite/adresse-courriel'
 export {
   COURRIEL_HASH_LENGTH,
   CourrielHash,
-} from './courriel-hash'
+} from './identite/courriel-hash'
 export {
-  type CycleDeVie,
-  cycleDeVie,
-  inscription,
-} from './cycle-de-vie'
-export {
-  type CompteARelancer,
-  deroulerLesRelances,
-  type EffacementImpossible,
-} from './derouler-les-relances'
-export type {
-  DestinataireDeRelance,
-  RapportDeRelance,
-} from './destinataire-de-relance'
-export { Dispositif, dispositifDe } from './dispositif'
-export { CompteSupprime, UtilisateurIntrouvable } from './errors'
+  estCourrielAnonymise,
+  IdentiteAnonyme,
+  identiteAnonyme,
+} from './identite/identite-anonyme'
+export { Nom } from './identite/nom'
+export { type Identite, NomAffiche, nomAffiche } from './identite/nom-affiche'
+export { Prenom } from './identite/prenom'
 export {
   type CritereStatut,
   critereDuStatut,
@@ -43,34 +39,24 @@ export {
   filtresStatut,
   type Intervalle,
   statutDuFiltre,
-} from './filtre-statut'
+} from './liste/filtre-statut'
 export {
   AUCUN_FILTRE,
+  EmployeuseId as EmployeuseIdDuFiltre,
+  EtendueDesRattachements,
   type FiltresUtilisateurs,
-  filtresUtilisateurs,
-  type ParametresDeFiltres,
-  parametresDesFiltres,
+  LieuActiviteId as LieuActiviteIdDuFiltre,
   RoleFiltre,
   rolesFiltres,
-} from './filtres-utilisateurs'
-export {
-  estCourrielAnonymise,
-  IdentiteAnonyme,
-  identiteAnonyme,
-} from './identite-anonyme'
-export { JAMAIS, type Jalon, jalon } from './jalon'
+} from './liste/filtres-utilisateurs'
 export type {
   CoordinateurDeLaLigne,
   EmployeuseDeLaLigne,
   LigneUtilisateur,
   MediateurDeLaLigne,
-} from './ligne-utilisateur'
-export { MediateurId } from './mediateur-id'
-export { Nom } from './nom'
-export { type Identite, NomAffiche, nomAffiche } from './nom-affiche'
+} from './liste/ligne-utilisateur'
 export { NomEmployeuse } from './nom-employeuse'
 export { OrigineCompte, origineDuCompte } from './origine-compte'
-export { Prenom } from './prenom'
 export {
   aProduit,
   coordinateurEstVierge,
@@ -89,11 +75,26 @@ export {
   rattachements,
 } from './rattachements'
 export {
+  type CycleDeVie,
+  cycleDeVie,
+  inscription,
+} from './relances/cycle-de-vie'
+export {
+  type CompteARelancer,
+  deroulerLesRelances,
+  type EffacementImpossible,
+} from './relances/derouler-les-relances'
+export type {
+  DestinataireDeRelance,
+  RapportDeRelance,
+} from './relances/destinataire-de-relance'
+export { JAMAIS, type Jalon, jalon } from './relances/jalon'
+export {
   type PalierDeRelance,
   type PhaseDeRelance,
   Relance,
   relances,
-} from './relance'
+} from './relances/relance'
 export {
   estRoleProtege,
   RoleUtilisateur,
@@ -102,4 +103,3 @@ export {
   type StatutCompte,
   statutDe,
 } from './statut-compte'
-export { UtilisateurId } from './utilisateur-id'

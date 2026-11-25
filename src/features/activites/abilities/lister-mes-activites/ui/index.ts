@@ -1,5 +1,0 @@
-export { HistoriqueDesAccompagnements } from './components/HistoriqueDesAccompagnements'
-export { cartesDeLaChronologie } from './mes-activites.presenter'
-export { parametresDePagination } from './navigation.presenter'
-export { PageDeMaListeDActivites } from './pages/PageDeMaListeDActivites'
-export { PageDuTableauDeMesActivites } from './pages/PageDuTableauDeMesActivites'

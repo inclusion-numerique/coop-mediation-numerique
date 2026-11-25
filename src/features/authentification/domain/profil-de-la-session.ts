@@ -1,5 +1,5 @@
-import { getUserDepartement } from '@/libraries/departement/getUserDepartement'
-import type { SessionUser } from './sessionUser'
+import { getUserDepartement } from '@/libraries/departement'
+import type { UtilisateurDeLaSession } from './utilisateur-de-la-session'
 
 export type ProfilDeLaSession = {
   readonly mediateurId: string | null
@@ -11,7 +11,9 @@ export type ProfilDeLaSession = {
   readonly departement: string | null
 }
 
-const equipesDe = (user: SessionUser): ProfilDeLaSession['equipes'] => [
+const equipesDe = (
+  user: UtilisateurDeLaSession,
+): ProfilDeLaSession['equipes'] => [
   ...(user.coordinateur === null
     ? []
     : [{ coordinateurId: user.coordinateur.id, nom: user.name }]),
@@ -21,7 +23,9 @@ const equipesDe = (user: SessionUser): ProfilDeLaSession['equipes'] => [
   })) ?? []),
 ]
 
-export const profilDeLaSession = (user: SessionUser): ProfilDeLaSession => ({
+export const profilDeLaSession = (
+  user: UtilisateurDeLaSession,
+): ProfilDeLaSession => ({
   mediateurId: user.mediateur?.id ?? null,
   coordinateurId: user.coordinateur?.id ?? null,
   equipes: equipesDe(user),

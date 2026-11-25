@@ -3,26 +3,22 @@ import { redirect } from 'next/navigation'
 import { rechercherUnLieuActiviteAction } from '@/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
 import { retirerUnMediateurDuLieuAction } from '@/app/_actions/lieux-activite/retirer-un-mediateur-du-lieu.action'
 import { reglerMaVisibiliteCartoAction } from '@/app/_actions/mediateurs/regler-ma-visibilite-carto.action'
-import { metadataTitle } from '@/configuration/projet/metadataTitle'
-import { authenticateUser } from '@/features/authentification/implementation/session/authenticateUser'
-import { listerLesLieuxDuMediateur } from '@/features/lieux-activite/abilities/lister-les-lieux-du-mediateur'
-import { MesLieuxActivitePage } from '@/features/lieux-activite/abilities/lister-les-lieux-du-mediateur/ui'
+import { metadataTitle } from '@/configuration/projet'
+import { authenticateUser } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
+import { listerLesLieuxDuMediateur } from '@/features/lieux-activite/abilities/lister-les-lieux-du-mediateur/implementations/prisma/lister-les-lieux-du-mediateur.query'
+import { MesLieuxActivitePage } from '@/features/lieux-activite/abilities/lister-les-lieux-du-mediateur/ui/pages/MesLieuxActivitePage'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
 import { RETIRER_UN_MEDIATEUR_DU_LIEU_ACTION_KEY } from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/action/retirer-un-mediateur-du-lieu.key'
-import {
-  BoutonDeRetrait,
-  ModaleDeRetrait,
-} from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/ui'
-import { LieuId } from '@/features/lieux-activite/domain/lieu-id'
-import { MediateurId } from '@/features/lieux-activite/domain/mediateur-id'
-import { TriDesLieux } from '@/features/lieux-activite/domain/tri-des-lieux'
-import {
-  hrefDuLieuEnListe,
-  LieuActiviteCard,
-} from '@/features/lieux-activite/ui'
+import { default as BoutonDeRetrait } from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/ui/slots/BoutonDeRetrait.slot'
+import { default as ModaleDeRetrait } from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/ui/slots/ModaleDeRetrait.slot'
+import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
+import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
+import { triDesLieuxLu } from '@/features/lieux-activite/ui/filtres/tri-des-lieux.filtre'
+import { hrefDuLieuEnListe } from '@/features/lieux-activite/ui/presenters/href-du-lieu.presenter'
+import { default as LieuActiviteCard } from '@/features/lieux-activite/ui/slots/LieuActiviteCard.slot'
 import { REGLER_MA_VISIBILITE_CARTO_ACTION_KEY } from '@/features/mediateurs/abilities/regler-la-visibilite-carto/action/regler-la-visibilite-carto.key'
-import { MaVisibiliteCarto } from '@/features/mediateurs/abilities/regler-la-visibilite-carto/ui'
-import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
+import { MaVisibiliteCarto } from '@/features/mediateurs/abilities/regler-la-visibilite-carto/ui/slots/MaVisibiliteCarto.slot'
+import { ClientBinder } from '@/libraries/nextjs/injection'
 
 export const metadata: Metadata = {
   title: metadataTitle('Mes lieux d’activités'),
@@ -31,9 +27,9 @@ export const metadata: Metadata = {
 const LieuActiviteListPage = async ({
   searchParams,
 }: {
-  searchParams: Promise<{ tri?: string }>
+  searchParams: Promise<Record<string, string | string[] | undefined>>
 }) => {
-  const { tri } = await searchParams
+  const { tri } = triDesLieuxLu.charger(await searchParams)
   const user = await authenticateUser()
 
   if (user.mediateur == null) return redirect('/')
@@ -42,7 +38,7 @@ const LieuActiviteListPage = async ({
 
   const lieux = await listerLesLieuxDuMediateur({
     mediateurId: MediateurId(user.mediateur.id),
-    tri: TriDesLieux(tri),
+    tri,
   })
 
   return (

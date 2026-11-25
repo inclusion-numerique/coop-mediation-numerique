@@ -1,7 +1,7 @@
-import { metadataTitle } from '@/configuration/projet/metadataTitle'
-import { authenticateAdmin } from '@/features/authentification/implementation/session/authenticateUser'
-import { usageDesTags } from '@/features/tags/abilities/mesurer-l-usage-des-tags'
-import { UsageDesTagsPage } from '@/features/tags/abilities/mesurer-l-usage-des-tags/ui'
+import { metadataTitle } from '@/configuration/projet'
+import { authenticateAdmin } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
+import { usageDesTags } from '@/features/tags/abilities/mesurer-l-usage-des-tags/implementations/prisma/usage-des-tags.query'
+import { UsageDesTagsPage } from '@/features/tags/abilities/mesurer-l-usage-des-tags/ui/pages/UsageDesTagsPage'
 
 export const metadata = {
   title: metadataTitle('Tags'),

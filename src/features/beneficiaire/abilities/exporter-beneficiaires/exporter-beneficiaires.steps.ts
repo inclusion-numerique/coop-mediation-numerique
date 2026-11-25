@@ -1,12 +1,23 @@
 import assert from 'node:assert'
 import { type DataTable, Given, Then, When } from '@cucumber/cucumber'
 import type { Workbook } from 'exceljs'
-import { exporterBeneficiaires } from '@/features/beneficiaire/abilities/exporter-beneficiaires'
+import type { ListerLesBeneficiairesAExporter } from '@/features/beneficiaire/abilities/exporter-beneficiaires/domain/exporter-beneficiaires'
+import { exporterBeneficiaires } from '@/features/beneficiaire/abilities/exporter-beneficiaires/domain/exporter-beneficiaires'
+import { classeurDesBeneficiaires } from '@/features/beneficiaire/abilities/exporter-beneficiaires/implementations/excel/classeur-des-beneficiaires.classeur'
+import { listerBeneficiaires } from '@/features/beneficiaire/abilities/lister-beneficiaires/implementations/prisma/lister-beneficiaires.query'
 import {
   seedBeneficiaire,
   testMediateurId,
 } from '@/features/beneficiaire/beneficiaire.cucumber'
-import type { AuteurDExport } from '@/libraries/tableur/addExportMetadata'
+import type { AuteurDExport } from '@/libraries/tableur'
+
+const exporterBeneficiairesAvec = (
+  listerBeneficiaires: ListerLesBeneficiairesAExporter,
+) =>
+  exporterBeneficiaires({
+    listerBeneficiaires,
+    construireLeClasseur: classeurDesBeneficiaires,
+  })
 
 const user: AuteurDExport = {
   nom: 'Médiatrice',
@@ -45,9 +56,12 @@ Given(
   'des bénéficiaires à exporter pour ce médiateur',
   async (dataTable: DataTable) => {
     await Promise.all(
-      dataTable
-        .hashes()
-        .map(({ prenom, nom }) => seedBeneficiaire({ prenom, nom })),
+      dataTable.hashes().map(({ prenom, nom }) =>
+        seedBeneficiaire({
+          ...(prenom === undefined ? {} : { prenom }),
+          ...(nom === undefined ? {} : { nom }),
+        }),
+      ),
     )
   },
 )
@@ -55,7 +69,7 @@ Given(
 When(
   'je génère le classeur des bénéficiaires avec la recherche {string}',
   async (recherche: string) => {
-    workbook = await exporterBeneficiaires({
+    workbook = await exporterBeneficiairesAvec(listerBeneficiaires)({
       mediateurId: testMediateurId,
       filters: { recherche },
       auteur: user,

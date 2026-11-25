@@ -1,6 +1,6 @@
+import type { BeneficiaireEnregistre } from '@/features/beneficiaire/domain/beneficiaire-enregistre'
 import type { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
 import type { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
-import type { Beneficiaire } from '@/generated/prisma/client'
 
 /**
  * Projection de lecture de l'état persisté à charger dans le formulaire de
@@ -8,7 +8,7 @@ import type { Beneficiaire } from '@/generated/prisma/client'
  * est l'input validé de la mutation.
  */
 export type BeneficiaireAEditer = Pick<
-  Beneficiaire,
+  BeneficiaireEnregistre,
   | 'id'
   | 'mediateurId'
   | 'prenom'

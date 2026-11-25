@@ -1,17 +1,26 @@
 import type { NextRequest } from 'next/server'
 import { v4 } from 'uuid'
-import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
-import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementation/session/getSessionTokenFromCookies'
-import { getSessionUserFromSessionToken } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
-import { analyseImportBeneficiairesExcel } from '@/features/beneficiaire/abilities/importer-beneficiaires/analyse/analyseImportBeneficiairesExcel'
-import { getBeneficiaireImportSheet } from '@/features/beneficiaire/abilities/importer-beneficiaires/analyse/getBeneficiaireImportSheet'
-import type { AnalyseResponse } from '@/features/beneficiaire/abilities/importer-beneficiaires/ui/import-analysis-storage'
+import { signaler } from '@/configuration/telemetry/serveur'
+import { utilisateurDuJetonDeSession } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
+import { jetonDeSessionDesCookies } from '@/features/authentification/implementations/session/session-token-from-cookies.query'
+import type {
+  AnalyseResponse,
+  Analysis,
+} from '@/features/beneficiaire/abilities/importer-beneficiaires/domain/analyse-de-l-import'
+import { analyserLaFeuille } from '@/features/beneficiaire/abilities/importer-beneficiaires/domain/analyse-de-l-import'
+import type { FeuilleImport } from '@/features/beneficiaire/abilities/importer-beneficiaires/domain/feuille-import'
+import { getBeneficiaireImportSheet } from '@/features/beneficiaire/abilities/importer-beneficiaires/implementations/excel/feuille-d-import.classeur'
+import { clientDesCommunes } from '@/features/beneficiaire/abilities/importer-beneficiaires/implementations/fichier/communes.query'
+
+const analyseImportBeneficiairesExcel = async (
+  feuille: FeuilleImport,
+): Promise<Analysis> => analyserLaFeuille(await clientDesCommunes())(feuille)
 
 const tailleMaximaleDuFichier = 5 * 1024 * 1024
 
 export const POST = async (request: NextRequest) => {
-  const user = await getSessionUserFromSessionToken(
-    getSessionTokenFromNextRequestCookies(request.cookies),
+  const user = await utilisateurDuJetonDeSession(
+    jetonDeSessionDesCookies(request.cookies),
   )
   if (!user) return new Response(null, { status: 401 })
   if (!user.mediateur) return new Response(null, { status: 403 })

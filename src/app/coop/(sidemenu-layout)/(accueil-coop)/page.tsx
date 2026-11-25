@@ -3,35 +3,35 @@ import { notFound } from 'next/navigation'
 import type { ReactNode } from 'react'
 import { supprimerUneActiviteDeMediationAction } from '@/app/_actions/activites/supprimer-une-activite-de-mediation.action'
 import { rafraichirAccueilRdvAction } from '@/app/_actions/rdvsp/rafraichir-accueil-rdv.action'
-import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import { metadataTitle } from '@/configuration/projet'
 import {
   consulterLAccueil,
   selonLeProfil,
-  visiteurDe,
-} from '@/features/accueil/abilities/consulter-l-accueil'
-import { Accueil } from '@/features/accueil/abilities/consulter-l-accueil/ui'
-import { compterLesActivitesDeCoordination } from '@/features/activites/abilities/compter-les-activites-de-coordination'
-import {
-  ActivitesDeCoordination,
-  activitesDeCoordinationPresentees,
-} from '@/features/activites/abilities/compter-les-activites-de-coordination/ui'
-import { listerLesDernieresActivites } from '@/features/activites/abilities/lister-les-dernieres-activites'
-import {
-  DernieresActivites,
-  dernieresActivitesPresentees,
-} from '@/features/activites/abilities/lister-les-dernieres-activites/ui'
-import { SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY } from '@/features/activites/ui/detail/supprimer-une-activite-de-mediation.key'
-import { BoutonEnregistrerUneActivite } from '@/features/activites/ui/saisie/CreateCraModal/BoutonEnregistrerUneActivite'
-import { authenticateMediateurOrCoordinateur } from '@/features/authentification/implementation/session/authenticateUser'
-import { compterLesMembres } from '@/features/equipe'
-import { ResumeDeLEquipe } from '@/features/equipe/abilities/lister-les-membres/ui'
+} from '@/features/accueil/abilities/consulter-l-accueil/domain/index'
+import { visiteurDe } from '@/features/accueil/abilities/consulter-l-accueil/implementations/session/visiteur.query'
+import { AccueilPage } from '@/features/accueil/abilities/consulter-l-accueil/ui/pages/AccueilPage'
+import { compterLesActivitesDeCoordination } from '@/features/activites/abilities/compter-les-activites-de-coordination/implementations/prisma/activites-de-coordination.query'
+import { activitesDeCoordinationPresentees } from '@/features/activites/abilities/compter-les-activites-de-coordination/ui/presenters/activites-de-coordination.presenter'
+import { ActivitesDeCoordination } from '@/features/activites/abilities/compter-les-activites-de-coordination/ui/slots/ActivitesDeCoordination.slot'
+import { listerLesDernieresActivites } from '@/features/activites/abilities/lister-les-dernieres-activites/implementations/prisma/dernieres-activites.query'
+import { dernieresActivitesPresentees } from '@/features/activites/abilities/lister-les-dernieres-activites/ui/presenters/dernieres-activites.presenter'
+import { DernieresActivites } from '@/features/activites/abilities/lister-les-dernieres-activites/ui/slots/DernieresActivites.slot'
+import { liensVersMesRendezVous } from '@/features/activites/abilities/lister-mes-activites/ui/presenters/liens-vers-mes-rendez-vous.presenter'
+import { SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY } from '@/features/activites/action/supprimer-une-activite-de-mediation.key'
+import { BoutonEnregistrerUneActivite } from '@/features/activites/ui/slots/BoutonEnregistrerUneActivite.slot'
+import { authenticateMediateurOrCoordinateur } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
+import { compterLesMembres } from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/lister-les-membres.query'
+import { ResumeDeLEquipe } from '@/features/equipe/abilities/lister-les-membres/ui/slots/ResumeDeLEquipe.slot'
 import { RAFRAICHIR_ACCUEIL_RDV_ACTION_KEY } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/action/rafraichir-accueil-rdv.key'
-import { blocRdvAccueil } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/implementation/consulter-rdvs-accueil.binding'
-import { RdvIntegrationErreurAlerte } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/ui/components/RdvIntegrationErreurAlerte'
-import RdvsAccueil from '@/features/rdvsp/abilities/consulter-rdvs-accueil/ui/components/RdvsAccueil'
-import { rendezVousLies } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
-import { UtilisateurCoopId } from '@/features/rdvsp/domain/utilisateur-coop-id'
-import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
+import { blocRdvAccueil } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/domain/bloc-rdv-accueil'
+import { compteDuMediateur } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/implementations/prisma/compte-du-mediateur.query'
+import { lireDonneesAccueilRdv } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/implementations/prisma/donnees-accueil-rdv.query'
+import { RdvIntegrationErreurAlerte } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/ui/slots/RdvIntegrationErreurAlerte.slot'
+import RdvsAccueil from '@/features/rdvsp/abilities/consulter-rdvs-accueil/ui/slots/RdvsAccueil.slot'
+import { rendezVousLies } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/rdvs-des-activites.query'
+import { UtilisateurCoopId } from '@/features/rdvsp/domain/identifiants/utilisateur-coop-id'
+import { lienDeConnexionARdvServicePublic } from '@/features/rdvsp/implementations/oauth/rdvsp-oauth-callback.client'
+import { ClientBinder } from '@/libraries/nextjs/injection'
 
 export const metadata: Metadata = {
   title: metadataTitle('Accueil'),
@@ -80,7 +80,10 @@ const Page = async () => {
         ),
       }),
     }),
-    blocRdvAccueil(UtilisateurCoopId(user.id), new Date()),
+    blocRdvAccueil({ compteDuMediateur, lireDonnees: lireDonneesAccueilRdv })(
+      UtilisateurCoopId(user.id),
+      new Date(),
+    ),
   ])
 
   return (
@@ -92,7 +95,7 @@ const Page = async () => {
         bind={SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY}
         to={supprimerUneActiviteDeMediationAction}
       >
-        <Accueil
+        <AccueilPage
           accueil={accueil}
           equipe={equipe}
           activites={activites}
@@ -102,7 +105,12 @@ const Page = async () => {
               widget={rdv.widget}
               user={{ timezone: user.timezone }}
               synchroniserAuChargement={rdv.synchroniserAuChargement}
-              alerte={<RdvIntegrationErreurAlerte />}
+              liens={liensVersMesRendezVous()}
+              alerte={
+                <RdvIntegrationErreurAlerte
+                  lienDeConnexion={lienDeConnexionARdvServicePublic()}
+                />
+              }
             />
           }
         />

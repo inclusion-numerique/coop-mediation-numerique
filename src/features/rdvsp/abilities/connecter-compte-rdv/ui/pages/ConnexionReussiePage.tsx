@@ -2,18 +2,20 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import Link from 'next/link'
 import {
+  lienDeMonAgendaRdv,
   rdvIntegrationEnSavoirPlusLink,
-  rdvMyHomepageLink,
   rdvServicePublicGettingStartedLink,
-} from '@/features/rdvsp/urls'
-import { RDVServicePublicLogo } from '@/libraries/pictograms/services/RDVServicePublicLogo'
-import IconInSquare from '@/libraries/ui/components/IconInSquare'
+} from '@/features/rdvsp/ui/presenters/liens.presenter'
+import { RDVServicePublicLogo } from '@/libraries/pictograms/services'
+import { IconInSquare } from '@/libraries/ui/components'
 import RdvServicePublicConnexionCard from '../components/RdvServicePublicConnexionCard'
 
 const ConnexionReussiePage = ({
   rdvAccount,
+  lienDuSiteRdv,
 }: {
   rdvAccount: { readonly organisations: readonly unknown[] } | null
+  lienDuSiteRdv: string
 }) => {
   const hasSetupRdvspAccount = (rdvAccount?.organisations.length ?? 0) > 0
 
@@ -106,7 +108,7 @@ const ConnexionReussiePage = ({
             <div className="fr-btns-group fr-my-0">
               <Button
                 linkProps={{
-                  href: rdvMyHomepageLink,
+                  href: lienDeMonAgendaRdv(lienDuSiteRdv),
                   target: '_blank',
                 }}
                 className="fr-mb-0"

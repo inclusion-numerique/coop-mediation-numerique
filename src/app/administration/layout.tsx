@@ -1,33 +1,30 @@
 import { PropsWithChildren } from 'react'
-import { getHomepage } from '@/features/authentification/domain/getHomepage'
-import { authenticateAdmin } from '@/features/authentification/implementation/session/authenticateUser'
-import Header from '@/features/navigation/ui/en-tete/Header'
-import AdministrationSideMenu from '@/features/navigation/ui/menus/AdministrationSideMenu'
-import MinimalFooter from '@/features/navigation/ui/pied-de-page/MinimalFooter'
-import TerminerUsurpationHeaderUserMenuItem from '@/features/utilisateurs/abilities/terminer-l-usurpation/ui/TerminerUsurpationHeaderUserMenuItem'
+import { pageDAccueil } from '@/features/authentification/domain/page-d-accueil'
+import { authenticateAdmin } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
+import { AdministrationLayout } from '@/features/navigation/ui/layouts/AdministrationLayout'
+import AdministrationSideMenu from '@/features/navigation/ui/slots/AdministrationSideMenu.slot'
+import Header from '@/features/navigation/ui/slots/Header.slot'
+import MinimalFooter from '@/features/navigation/ui/slots/MinimalFooter.slot'
+import TerminerUsurpationHeaderUserMenuItem from '@/features/utilisateurs/abilities/terminer-l-usurpation/ui/slots/TerminerUsurpationHeaderUserMenuItem.slot'
 
-const AdministrationLayout = async ({ children }: PropsWithChildren) => {
+const Layout = async ({ children }: PropsWithChildren) => {
   const user = await authenticateAdmin()
   return (
-    <>
-      <div id="skip-links" />
-      <Header
-        user={user}
-        accueil={getHomepage(user)}
-        terminerUsurpation={<TerminerUsurpationHeaderUserMenuItem />}
-        variant="coop"
-      />
-      <div className="fr-flex fr-direction-column fr-direction-md-row">
-        <div className="sideMenu">
-          <AdministrationSideMenu />
-        </div>
-        <div className="fr-p-8v fr-pb-24v fr-width-full fr-flex-grow-1 fr-overflow-scroll">
-          {children}
-        </div>
-      </div>
-      <MinimalFooter />
-    </>
+    <AdministrationLayout
+      entete={
+        <Header
+          user={user}
+          accueil={pageDAccueil(user)}
+          terminerUsurpation={<TerminerUsurpationHeaderUserMenuItem />}
+          variant="coop"
+        />
+      }
+      menu={<AdministrationSideMenu />}
+      piedDePage={<MinimalFooter />}
+    >
+      {children}
+    </AdministrationLayout>
   )
 }
 
-export default AdministrationLayout
+export default Layout

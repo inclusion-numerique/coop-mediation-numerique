@@ -1,8 +1,10 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import type { ConsulterRdvsAccueil } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/domain/consulter-rdvs-accueil'
-import { consulterRdvsAccueilBinding as consulter } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/implementation/consulter-rdvs-accueil.binding'
-import { StatutPresence } from '@/features/rdvsp/domain/statut-presence'
+import { consulterRdvsAccueil } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/domain/consulter-rdvs-accueil'
+import { compteDuMediateur } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/implementations/prisma/compte-du-mediateur.query'
+import { lireDonneesAccueilRdv } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/implementations/prisma/donnees-accueil-rdv.query'
+import { StatutPresence } from '@/features/rdvsp/domain/rdv/statut-presence'
 import {
   ID_TEST,
   seedCompteRdv,
@@ -40,6 +42,11 @@ const creerRdv = async ({
     debut,
   })
 }
+
+const consulter = consulterRdvsAccueil({
+  compteDuMediateur,
+  lireDonnees: lireDonneesAccueilRdv,
+})
 
 Given('un compte RDV consultable', async () => {
   rdvsCrees = 0

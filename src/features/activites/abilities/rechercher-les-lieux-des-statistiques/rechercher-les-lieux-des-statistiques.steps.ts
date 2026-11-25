@@ -3,13 +3,10 @@ import { Then, When } from '@cucumber/cucumber'
 import { CodeDepartement, CodeInsee } from '@/libraries/insee'
 import { LieuActiviteId } from '../../domain'
 import { lieuSeme, perimetreDe } from '../../statistiques.cucumber'
-import {
-  GenreDeLieu,
-  type LieuDesStatistiques,
-  nommerLesLieuxChoisis,
-  rechercherLesLieuxDesStatistiques,
-} from '.'
-import { optionDeLieu } from './ui'
+import { GenreDeLieu, type LieuDesStatistiques } from './domain/index'
+import { nommerLesLieuxChoisis } from './implementations/prisma/lieux-choisis.query'
+import { rechercherLesLieuxDesStatistiques } from './implementations/prisma/lieux-des-statistiques.query'
+import { optionDeLieu } from './ui/presenters/options-de-lieux.presenter'
 
 let proposes: readonly LieuDesStatistiques[] = []
 

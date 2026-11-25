@@ -1,12 +1,12 @@
 import type { Metadata } from 'next'
-import { DocumentationDeLApi } from '@/features/clients-api/ui/DocumentationDeLApi'
+import { DocumentationDeLApiPage } from '@/features/clients-api/ui/pages/DocumentationDeLApiPage'
 
 export const metadata: Metadata = {
   title: 'La coop - API',
 }
 
 const DocumentationPage = () => (
-  <DocumentationDeLApi specification="/api/v1/openapi" />
+  <DocumentationDeLApiPage specification="/api/v1/openapi" />
 )
 
 export default DocumentationPage

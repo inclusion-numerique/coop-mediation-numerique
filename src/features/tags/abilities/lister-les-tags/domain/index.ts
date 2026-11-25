@@ -1,2 +1,2 @@
 export type { ListeDesTags } from './liste-des-tags'
-export { TriDesTags, triDemande } from './tri-des-tags'
+export type { ColonneDesTags } from './tri-des-tags'

@@ -1,11 +1,38 @@
 import { describe, expect, it } from 'vitest'
-import { Email, MediateurId } from '../../../domain'
+import { Courriel, MediateurId } from '../../../domain'
+import { CoordinateurId } from '../../../domain/identifiants/coordinateur-id'
 import {
-  email,
-  invitationAcceptee,
-  invitationEnAttente,
-} from '../../../domain/fixtures'
+  type InvitationAcceptee,
+  type InvitationEnAttente,
+} from '../../../domain/invitation/invitation'
+import { ReferenceInvitation } from '../../../domain/invitation/reference-invitation'
 import { accepter } from './accepter'
+
+const coordinateurId = CoordinateurId('550e8400-e29b-41d4-a716-446655440001')
+
+const mediateurDeLInvitation = MediateurId(
+  '550e8400-e29b-41d4-a716-446655440011',
+)
+
+const email = Courriel('invite@example.com')
+
+const reference = ReferenceInvitation({ email, coordinateurId })
+
+const invitationEnAttente: InvitationEnAttente = {
+  reference,
+  invite: { type: 'SansCompte' },
+  envoyeeLe: new Date('2026-01-01T09:00:00Z'),
+  renvoyeeLe: null,
+  statut: 'EnAttente',
+}
+
+const invitationAcceptee: InvitationAcceptee = {
+  ...invitationEnAttente,
+  invite: { type: 'MediateurInscrit', mediateurId: mediateurDeLInvitation },
+  renvoyeeLe: new Date('2026-01-05T09:00:00Z'),
+  statut: 'Acceptee',
+  accepteeLe: new Date('2026-01-06T09:00:00Z'),
+}
 
 const mediateurId = MediateurId('550e8400-e29b-41d4-a716-446655440031')
 
@@ -27,7 +54,7 @@ describe('accepter une invitation', () => {
     expect(
       accepter(invitationEnAttente, {
         type: 'InscriptionValidee',
-        email: Email('quelqu-un-d-autre@example.com'),
+        email: Courriel('quelqu-un-d-autre@example.com'),
         mediateurId,
       }),
     ).toEqual({ success: false, error: { _tag: 'MauvaisDestinataire' } })

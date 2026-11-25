@@ -6,18 +6,18 @@ import {
   MediateurProprietaireId,
 } from '@/features/rdvsp/abilities/prendre-rendez-vous/domain/beneficiaire-cible'
 import type { PrendreRendezVous } from '@/features/rdvsp/abilities/prendre-rendez-vous/domain/prendre-rendez-vous'
-import { prendreRendezVous } from '@/features/rdvsp/abilities/prendre-rendez-vous/implementation/prendre-rendez-vous'
-import { beneficiaireADemander } from '@/features/rdvsp/abilities/prendre-rendez-vous/implementation/prisma/beneficiaire-a-demander.query'
-import { compteDuMediateur } from '@/features/rdvsp/abilities/prendre-rendez-vous/implementation/prisma/compte-du-mediateur.query'
-import { lierUsagerAuBeneficiaire } from '@/features/rdvsp/abilities/prendre-rendez-vous/implementation/prisma/lier-usager-au-beneficiaire.mutation'
+import { prendreRendezVous } from '@/features/rdvsp/abilities/prendre-rendez-vous/domain/prendre-rendez-vous'
+import { beneficiaireADemander } from '@/features/rdvsp/abilities/prendre-rendez-vous/implementations/prisma/beneficiaire-a-demander.query'
+import { compteDuMediateur } from '@/features/rdvsp/abilities/prendre-rendez-vous/implementations/prisma/compte-du-mediateur.query'
+import { lierUsagerAuBeneficiaire } from '@/features/rdvsp/abilities/prendre-rendez-vous/implementations/prisma/lier-usager-au-beneficiaire.mutation'
+import { ApiIndisponible } from '@/features/rdvsp/domain/errors'
+import { UsagerId } from '@/features/rdvsp/domain/identifiants/usager-id'
+import type { RdvServicePublicApi } from '@/features/rdvsp/domain/ports'
 import {
   DemandeRdvId,
   UrlPriseRdv,
   type UsagerDeLaDemande,
-} from '@/features/rdvsp/domain/demande-rdv'
-import { ApiIndisponible } from '@/features/rdvsp/domain/errors'
-import type { RdvServicePublicApi } from '@/features/rdvsp/domain/rdv-service-public.port'
-import { UsagerId } from '@/features/rdvsp/domain/usager-id'
+} from '@/features/rdvsp/domain/rdv/demande-rdv'
 import {
   beneficiaireEnBase,
   ID_TEST,

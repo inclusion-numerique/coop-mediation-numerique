@@ -1,8 +1,5 @@
 import classNames from 'classnames'
-import {
-  numberToPercentage,
-  numberToString,
-} from '@/libraries/nombre/formatNumber'
+import { numberToPercentage, numberToString } from '@/libraries/nombre'
 
 export const LegendTile = ({
   value,
@@ -15,8 +12,8 @@ export const LegendTile = ({
   value: number
   percent: number
   label: string
-  description?: string
-  legendColor: string
+  description?: string | undefined
+  legendColor: string | undefined
   className?: string
 }) => (
   <div

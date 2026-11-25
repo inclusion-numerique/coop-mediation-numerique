@@ -1,18 +1,18 @@
 import type { Metadata } from 'next'
-import { metadataTitle } from '@/configuration/projet/metadataTitle'
+import { estMain, metadataTitle } from '@/configuration/projet'
 import {
-  isConseillerNumerique,
-  isCoordinateur,
-} from '@/features/authentification/domain/userTypeGuards'
-import { getAuthenticatedSessionUser } from '@/features/authentification/implementation/session/getSessionUser'
+  estConseillerNumerique,
+  estCoordinateur,
+} from '@/features/authentification/domain/profils-d-utilisateur'
+import { getAuthenticatedSessionUser } from '@/features/authentification/middlewares/with-utilisateur-de-la-session'
 import {
   Coordination,
   Dispositif,
-} from '@/features/outils/abilities/lister-mes-outils'
-import { MesOutilsPage } from '@/features/outils/abilities/lister-mes-outils/ui'
-import { statutDuCompteDeLaSession } from '@/features/rdvsp/domain/sante-compte'
-import RdvServicePublicStatusTag from '@/features/rdvsp/ui/RdvServicePublicStatusTag'
-import { rdvWebsiteLink } from '@/features/rdvsp/urls'
+} from '@/features/outils/abilities/lister-mes-outils/domain/index'
+import { MesOutilsPage } from '@/features/outils/abilities/lister-mes-outils/ui/pages/MesOutilsPage'
+import { statutDuCompteDeLaSession } from '@/features/rdvsp/domain/compte/sante-compte'
+import { lienDuSiteRdv } from '@/features/rdvsp/ui/presenters/liens.presenter'
+import EtiquetteDuCompteRdv from '@/features/rdvsp/ui/slots/EtiquetteDuCompteRdv.slot'
 
 export const metadata: Metadata = {
   title: metadataTitle('Mes outils'),
@@ -26,20 +26,20 @@ const Page = async () => {
     <MesOutilsPage
       profil={{
         coordination: Coordination(
-          isCoordinateur(user) ? 'Coordinateur' : 'SansCoordination',
+          estCoordinateur(user) ? 'Coordinateur' : 'SansCoordination',
         ),
         dispositif: Dispositif(
-          isConseillerNumerique(user)
+          estConseillerNumerique(user)
             ? 'ConseillerNumerique'
             : 'HorsDispositif',
         ),
       }}
       rdvServicePublic={{
-        lien: rdvWebsiteLink,
+        lien: lienDuSiteRdv(estMain()),
         integrationDisponible: statutRdv === 'jamaisConnecte',
         etiquette:
           statutRdv === 'jamaisConnecte' ? null : (
-            <RdvServicePublicStatusTag status={statutRdv} />
+            <EtiquetteDuCompteRdv status={statutRdv} />
           ),
       }}
     />

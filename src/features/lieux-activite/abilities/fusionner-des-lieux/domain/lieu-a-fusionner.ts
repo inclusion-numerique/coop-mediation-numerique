@@ -3,9 +3,9 @@ import type {
   Courriel,
   Nom,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import type { IdentifiantCartographie } from '../../../domain/ids-cartographie-nationale'
-import type { LieuId } from '../../../domain/lieu-id'
-import type { MediateurId } from '../../../domain/mediateur-id'
+import type { IdentifiantCartographie } from '../../../domain/cartographie-nationale/ids-cartographie-nationale'
+import type { LieuId } from '../../../domain/identifiants/lieu-id'
+import type { MediateurId } from '../../../domain/identifiants/mediateur-id'
 
 export type ChampsPartageables = {
   readonly employesIds: readonly string[]

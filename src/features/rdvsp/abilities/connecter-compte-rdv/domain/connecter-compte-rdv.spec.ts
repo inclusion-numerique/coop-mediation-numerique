@@ -1,11 +1,14 @@
 import { describe, expect, it } from 'vitest'
-import type { CompteRdv } from '../../../domain/compte-rdv'
-import { MessageErreurCompte } from '../../../domain/compte-rdv'
+import type { CompteRdv } from '../../../domain/compte/compte-rdv'
+import { MessageErreurCompte } from '../../../domain/compte/compte-rdv'
+import {
+  JetonAcces,
+  type JetonsOAuth,
+} from '../../../domain/compte/jetons-oauth'
+import { OrganisationId } from '../../../domain/identifiants/organisation-id'
+import { RdvAgentId } from '../../../domain/identifiants/rdv-agent-id'
+import { UtilisateurCoopId } from '../../../domain/identifiants/utilisateur-coop-id'
 import { EmailExterne } from '../../../domain/identite'
-import { JetonAcces, type JetonsOAuth } from '../../../domain/jetons-oauth'
-import { OrganisationId } from '../../../domain/organisation-id'
-import { RdvAgentId } from '../../../domain/rdv-agent-id'
-import { UtilisateurCoopId } from '../../../domain/utilisateur-coop-id'
 import {
   compteApresConnexion,
   emailsCorrespondent,

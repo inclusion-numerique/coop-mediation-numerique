@@ -1,18 +1,9 @@
+import type { Paginated } from '@arckit/resultset'
 import type { CodeDepartement } from '@/libraries/insee'
-import type {
-  Acteur,
-  Effectif,
-  LignesParPage,
-  NumeroDePage,
-} from '../../../domain'
+import type { Acteur } from '../../../domain'
 import type { CriteresActeurs } from './criteres-acteurs'
 
-export type PageDActeurs = {
-  readonly acteurs: readonly Acteur[]
-  readonly total: Effectif
-  readonly page: NumeroDePage
-  readonly lignes: LignesParPage
-}
+export type PageDActeurs = Paginated<Acteur>
 
 type OptionDeCommune = {
   readonly value: string

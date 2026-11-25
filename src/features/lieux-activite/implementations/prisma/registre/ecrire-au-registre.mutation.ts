@@ -1,0 +1,120 @@
+import type { Prisma } from '@/generated/prisma/client'
+import type { Lieu } from '../../../domain/lieu'
+import { signatureCoop } from '../../../domain/registre/signature-coop'
+import { lieuCoopToDomain } from '../lieu.transfer'
+import type { LigneDuLieuCoop } from '../ligne-du-lieu.select'
+import { adresseDuRegistre } from './adresse-du-registre.query'
+import type { ColonnesAEcrire } from './colonnes-a-ecrire.select'
+import { identifiantCartoRevendique } from './identifiant-carto-revendique.query'
+import { inscriptionVisee } from './inscription-visee.query'
+import { type ColonnesDuRegistre, lieuVersRegistre } from './lieu.transfer'
+
+const signatureDuLieu = async (
+  transaction: Prisma.TransactionClient,
+  lieu: Lieu,
+  maintenant: Date,
+) => ({
+  adresseId: await adresseDuRegistre(transaction, lieu),
+  ...signatureCoop(maintenant),
+})
+
+type SignatureDuLieu = Awaited<ReturnType<typeof signatureDuLieu>>
+
+type ColonnesSignees = Partial<ColonnesDuRegistre> & SignatureDuLieu
+
+type LigneSignee = ColonnesDuRegistre & SignatureDuLieu
+
+const mettreAJour = async (
+  transaction: Prisma.TransactionClient,
+  id: number,
+  colonnes: ColonnesSignees,
+): Promise<void> => {
+  await transaction.lieuInclusionRegistreMain.update({
+    where: { id },
+    data: colonnes,
+  })
+}
+
+const adopter = async (
+  transaction: Prisma.TransactionClient,
+  id: number,
+  lieu: Lieu,
+  colonnes: ColonnesSignees,
+): Promise<void> => {
+  await transaction.lieuInclusionRegistreMain.update({
+    where: { id },
+    data: {
+      ...colonnes,
+      structureCartographieNationaleId: await identifiantCartoRevendique(
+        transaction,
+        lieu,
+        id,
+      ),
+      structureCoopId: lieu.id,
+    },
+  })
+}
+
+const inscrire = async (
+  transaction: Prisma.TransactionClient,
+  lieu: Lieu,
+  ligne: LigneSignee,
+  maintenant: Date,
+): Promise<void> => {
+  await transaction.lieuInclusionRegistreMain.create({
+    data: {
+      ...ligne,
+      structureCartographieNationaleId: await identifiantCartoRevendique(
+        transaction,
+        lieu,
+        null,
+      ),
+      structureCoopId: lieu.id,
+      createdAt: maintenant,
+    },
+  })
+}
+
+export const ecrireAuRegistre = async (
+  transaction: Prisma.TransactionClient,
+  {
+    lieu,
+    colonnes,
+    maintenant,
+  }: {
+    readonly lieu: Lieu
+    readonly colonnes: ColonnesAEcrire
+    readonly maintenant: Date
+  },
+): Promise<void> => {
+  const toutes = lieuVersRegistre(lieu)
+  const signature = await signatureDuLieu(transaction, lieu, maintenant)
+  const choisies = { ...colonnes(toutes), ...signature }
+  const visee = await inscriptionVisee(transaction, lieu)
+
+  if (visee._tag === 'DejaInscrite')
+    return mettreAJour(transaction, visee.id, choisies)
+
+  if (visee._tag === 'AAdopter')
+    return adopter(transaction, visee.id, lieu, choisies)
+
+  return inscrire(transaction, lieu, { ...toutes, ...signature }, maintenant)
+}
+
+export const ecrireLeLieuAuRegistre = async (
+  transaction: Prisma.TransactionClient,
+  {
+    ligne,
+    colonnes,
+    maintenant,
+  }: {
+    readonly ligne: LigneDuLieuCoop
+    readonly colonnes: ColonnesAEcrire
+    readonly maintenant: Date
+  },
+): Promise<void> =>
+  ecrireAuRegistre(transaction, {
+    lieu: lieuCoopToDomain(ligne),
+    colonnes,
+    maintenant,
+  })

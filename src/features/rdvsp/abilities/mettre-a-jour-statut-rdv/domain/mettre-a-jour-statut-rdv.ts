@@ -1,22 +1,23 @@
-import { failure, type Result, success } from '@/libraries/result'
+import { RdvNonAutorise } from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/domain/errors'
 import {
   type CompteRdv,
   type CompteRdvUtilisable,
   estUtilisable,
-} from '../../../domain/compte-rdv'
+} from '@/features/rdvsp/domain/compte/compte-rdv'
 import {
   CompteNonLie,
   type ErreurRdvApi,
   RdvIntrouvable,
-} from '../../../domain/errors'
-import type { RdvAgentId } from '../../../domain/rdv-agent-id'
-import type { RdvId } from '../../../domain/rdv-id'
+} from '@/features/rdvsp/domain/errors'
+import type { RdvAgentId } from '@/features/rdvsp/domain/identifiants/rdv-agent-id'
+import type { RdvId } from '@/features/rdvsp/domain/identifiants/rdv-id'
+import type { UtilisateurCoopId } from '@/features/rdvsp/domain/identifiants/utilisateur-coop-id'
+import type { RdvServicePublicApi } from '@/features/rdvsp/domain/ports'
 import type {
   StatutPresence,
   StatutPresenceModifiable,
-} from '../../../domain/statut-presence'
-import type { UtilisateurCoopId } from '../../../domain/utilisateur-coop-id'
-import { RdvNonAutorise } from './errors'
+} from '@/features/rdvsp/domain/rdv/statut-presence'
+import { failure, type Result, success } from '@/libraries/result'
 
 export type ErreurMiseAJourStatut = RdvNonAutorise | ErreurRdvApi
 
@@ -100,3 +101,43 @@ export const statutRdvMisAJour = (
   statutPresence: statutConfirme,
   compteRenduRegle: statutConfirme === 'seen',
 })
+
+export type DependancesMettreAJourStatutRdv = {
+  readonly contexte: ContexteMiseAJourStatut
+  readonly changerStatutRdv: RdvServicePublicApi['changerStatutRdv']
+  readonly enregistrer: EnregistrerStatutRdv
+}
+
+/**
+ * RDV Service Public est prévenu avant que La Coop n'écrive quoi que ce soit, et
+ * c'est le statut qu'il renvoie qui est enregistré, jamais celui demandé : lui
+ * seul fait autorité sur ses rendez-vous. Un échec de son côté laisse donc la
+ * base intacte plutôt que d'y inscrire une valeur qu'il ignore.
+ */
+export const mettreAJourStatutRdv =
+  ({
+    contexte,
+    changerStatutRdv,
+    enregistrer,
+  }: DependancesMettreAJourStatutRdv): MettreAJourStatutRdv =>
+  async ({ utilisateurId, rdvId, statut }) => {
+    const { compte, agentIdDuRdv } = await contexte({ utilisateurId, rdvId })
+
+    const acces = verifierAcces({ compte, agentIdDuRdv, rdvId })
+
+    if (!acces.success) {
+      return acces
+    }
+
+    const confirmation = await changerStatutRdv(acces.data, rdvId, statut)
+
+    if (!confirmation.success) {
+      return confirmation
+    }
+
+    const misAJour = statutRdvMisAJour(confirmation.data)
+
+    await enregistrer({ rdvId, statut: misAJour })
+
+    return success(misAJour)
+  }

@@ -1,14 +1,37 @@
 import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { renseignerLieuxActivite } from '@/features/inscription/abilities/renseigner-lieux-activite/commands/renseigner-lieux-activite'
+import { prismaClient } from '@/configuration/prisma'
+import type {
+  LireLieuxActiviteExistants,
+  TrouverStructuresCarto,
+} from '@/features/inscription/abilities/renseigner-lieux-activite/domain/ports'
+import { renseignerLieuxActivite } from '@/features/inscription/abilities/renseigner-lieux-activite/domain/renseigner-lieux-activite'
+import type { RattacherAuLieuDesire } from '@/features/inscription/abilities/renseigner-lieux-activite/implementations/prisma/enregistrer-reconciliation.mutation'
+import { enregistrerReconciliation } from '@/features/inscription/abilities/renseigner-lieux-activite/implementations/prisma/enregistrer-reconciliation.mutation'
 import { ProfilInscription } from '@/features/inscription/domain'
+import { getInscriptionEtat } from '@/features/inscription/implementations/prisma/get-inscription-etat.query'
 import {
-  currentInscriptionUserId,
   seedLieuActivite,
   seedProfilChoisi,
+  utilisateurDeLInscriptionEnCours,
 } from '@/features/inscription/inscription.cucumber'
+
+const renseignerLieuxActiviteAvec = <StructureCarto>({
+  trouverStructuresCarto,
+  lireLieuxActiviteExistants,
+  rattacherAuLieuDesire,
+}: {
+  readonly trouverStructuresCarto: TrouverStructuresCarto<StructureCarto>
+  readonly lireLieuxActiviteExistants: LireLieuxActiviteExistants
+  readonly rattacherAuLieuDesire: RattacherAuLieuDesire<StructureCarto>
+}) =>
+  renseignerLieuxActivite({
+    lireLEtat: getInscriptionEtat,
+    lireLieuxActiviteExistants,
+    trouverStructuresCarto,
+    enregistrerReconciliation: enregistrerReconciliation(rattacherAuLieuDesire),
+  })
 
 const etat: {
   ancienneActivite?: { readonly id: string; readonly lieuId: string }
@@ -39,7 +62,7 @@ const confierAuRattachement = async (
 Given('je suis un médiateur en cours d’inscription', async () => {
   await seedProfilChoisi(ProfilInscription.schema.parse('Mediateur'))
   await prismaClient.mediateur.create({
-    data: { id: v4(), userId: currentInscriptionUserId() },
+    data: { id: v4(), userId: utilisateurDeLInscriptionEnCours() },
   })
 })
 
@@ -48,7 +71,7 @@ Given('j’exerce déjà dans un ancien lieu', async () => {
   const { id } = await prismaClient.mediateurEnActivite.create({
     data: {
       id: v4(),
-      mediateur: { connect: { userId: currentInscriptionUserId() } },
+      mediateur: { connect: { userId: utilisateurDeLInscriptionEnCours() } },
       lieuInclusion: { connect: { id: lieuId } },
       debut: new Date(),
     },
@@ -61,9 +84,13 @@ When(
   'je renseigne un lieu connu de la coop comme lieu d’activité',
   async () => {
     etat.lieuRenseigne = v4()
-    const resultat = await renseignerLieuxActivite({
+    const resultat = await renseignerLieuxActiviteAvec({
+      trouverStructuresCarto: async () => new Map(),
+      lireLieuxActiviteExistants: lireLesActivitesEnCours,
+      rattacherAuLieuDesire: confierAuRattachement,
+    })({
       command: {
-        userId: currentInscriptionUserId(),
+        userId: utilisateurDeLInscriptionEnCours(),
         lieuxActivite: [
           {
             id: etat.lieuRenseigne,
@@ -75,9 +102,6 @@ When(
           },
         ],
       },
-      trouverStructuresCarto: async () => new Map(),
-      lireLieuxActiviteExistants: lireLesActivitesEnCours,
-      rattacherAuLieuDesire: confierAuRattachement,
       maintenant: new Date(),
     })
     assert.ok(resultat.success, 'Le renseignement des lieux aurait dû réussir')
@@ -86,7 +110,7 @@ When(
 
 Then('l’étape lieux d’activité est franchie', async () => {
   const user = await prismaClient.user.findUniqueOrThrow({
-    where: { id: currentInscriptionUserId() },
+    where: { id: utilisateurDeLInscriptionEnCours() },
     select: { lieuxActiviteRenseignes: true },
   })
   assert.ok(
@@ -111,7 +135,7 @@ Then('mon ancien lieu d’activité est retiré', async () => {
 })
 
 After(() => {
-  etat.ancienneActivite = undefined
-  etat.lieuRenseigne = undefined
+  delete etat.ancienneActivite
+  delete etat.lieuRenseigne
   etat.confies = []
 })

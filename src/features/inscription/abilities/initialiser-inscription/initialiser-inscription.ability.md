@@ -1,24 +1,24 @@
-# Feature: Initialiser l’inscription
+# Fonctionnalité: Initialiser l’inscription
 
-## Rule: L’étape suivante est dérivée du dispositif et de l’état de l’utilisateur
+## Règle: L’étape suivante est dérivée du dispositif et de l’état de l’utilisateur
 
-### Scenario: Utilisateur inconnu du dispositif
+### Scénario: Utilisateur inconnu du dispositif
 
-* Given le dispositif ne connaît pas l’utilisateur
-* And l’utilisateur n’a ni profil ni lieu d’activité
-* When j’initialise l’inscription
-* Then l’étape suivante de l’initialisation est "choisir-role"
+* Étant donné le dispositif ne connaît pas l’utilisateur
+* Et l’utilisateur n’a ni profil ni lieu d’activité
+* Quand j’initialise l’inscription
+* Alors l’étape suivante de l’initialisation est "choisir-role"
 
-### Scenario: Conseiller numérique sans lieu d’activité
+### Scénario: Conseiller numérique sans lieu d’activité
 
-* Given le dispositif connaît l’utilisateur comme conseiller numérique
-* And l’utilisateur a le profil "ConseillerNumerique" sans lieu d’activité
-* When j’initialise l’inscription
-* Then l’étape suivante de l’initialisation est "verifier-informations"
+* Étant donné le dispositif connaît l’utilisateur comme conseiller numérique
+* Et l’utilisateur a le profil "ConseillerNumerique" sans lieu d’activité
+* Quand j’initialise l’inscription
+* Alors l’étape suivante de l’initialisation est "verifier-informations"
 
-### Scenario: Conseiller numérique avec lieu d’activité
+### Scénario: Conseiller numérique avec lieu d’activité
 
-* Given le dispositif connaît l’utilisateur comme conseiller numérique
-* And l’utilisateur a le profil "ConseillerNumerique" avec des lieux d’activité
-* When j’initialise l’inscription
-* Then l’étape suivante de l’initialisation est "recapitulatif"
+* Étant donné le dispositif connaît l’utilisateur comme conseiller numérique
+* Et l’utilisateur a le profil "ConseillerNumerique" avec des lieux d’activité
+* Quand j’initialise l’inscription
+* Alors l’étape suivante de l’initialisation est "recapitulatif"

@@ -1,9 +1,9 @@
-# Feature: Importer des bénéficiaires
+# Fonctionnalité: Importer des bénéficiaires
 
-## Rule: Les bénéficiaires importés sont créés pour le médiateur courant
+## Règle: Les bénéficiaires importés sont créés pour le médiateur courant
 
-### Scenario: Importer plusieurs bénéficiaires
+### Scénario: Importer plusieurs bénéficiaires
 
-* When j'importe 2 bénéficiaires
-* Then l'import crée 2 bénéficiaires
-* And le compteur de bénéficiaires du médiateur est incrémenté de 2
+* Quand j'importe 2 bénéficiaires
+* Alors l'import crée 2 bénéficiaires
+* Et le compteur de bénéficiaires du médiateur est incrémenté de 2

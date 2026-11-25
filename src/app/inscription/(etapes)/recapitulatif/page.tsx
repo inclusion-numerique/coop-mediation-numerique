@@ -1,25 +1,22 @@
 import { redirect } from 'next/navigation'
 import { validerAction } from '@/app/_actions/inscription/valider.action'
 import { rechercherUnLieuActiviteAction } from '@/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
-import { metadataTitle } from '@/configuration/projet/metadataTitle'
-import { hasInscriptionComplete } from '@/features/authentification/domain/getHomepage'
-import { authenticateUser } from '@/features/authentification/implementation/session/authenticateUser'
-import {
-  consulterEmployeuseActuelle,
-  employeuseActuelleAffichage,
-} from '@/features/employeuse/server'
-import StructureAdministrativeCard from '@/features/employeuse/ui/StructureAdministrativeCard'
+import { metadataTitle } from '@/configuration/projet'
+import { aTermineSonInscription } from '@/features/authentification/domain/page-d-accueil'
+import { authenticateUser } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
+import { consulterEmployeuseActuelle } from '@/features/employeuse/abilities/consulter-employeuse-actuelle/implementations/prisma/consulter-employeuse-actuelle.query'
+import { employeuseActuelleAffichage } from '@/features/employeuse/abilities/consulter-employeuse-actuelle/ui/presenters/employeuse-actuelle.presenter'
+import StructureAdministrativeCard from '@/features/employeuse/ui/slots/StructureAdministrativeCard.slot'
 import { VALIDER_ACTION_KEY } from '@/features/inscription/abilities/valider/action/valider.key'
-import { getRecapitulatifPageData } from '@/features/inscription/abilities/valider/queries/getRecapitulatifPageData'
+import { lireLeRecapitulatif } from '@/features/inscription/abilities/valider/implementations/prisma/recapitulatif.query'
 import RecapitulatifPage from '@/features/inscription/abilities/valider/ui/pages/RecapitulatifPage'
-import { employeuseAffichee } from '@/features/inscription/ui/employeuse-affichee.presenter'
-import {
-  listerLesLieuxPourLInscription,
-  MediateurId,
-} from '@/features/lieux-activite'
+import { recapitulatifPresente } from '@/features/inscription/abilities/valider/ui/presenters/recapitulatif.presenter'
+import { employeuseAffichee } from '@/features/inscription/ui/presenters/employeuse-affichee.presenter'
+import { listerLesLieuxPourLInscription } from '@/features/lieux-activite/abilities/lister-les-lieux-pour-l-inscription/implementations/prisma/lister-les-lieux-pour-l-inscription.query'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
-import { SaisieDuLieuCard } from '@/features/lieux-activite/ui'
-import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
+import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
+import { CarteDuLieuSaisi } from '@/features/lieux-activite/ui/slots/CarteDuLieuSaisi.slot'
+import { ClientBinder } from '@/libraries/nextjs/injection'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -32,7 +29,7 @@ const RecapitulatifPageRoute = async () => {
   const user = await authenticateUser()
 
   // If inscription is already complete (validated with a role profile), redirect to coop
-  if (hasInscriptionComplete(user)) {
+  if (aTermineSonInscription(user)) {
     redirect('/coop')
   }
 
@@ -40,13 +37,18 @@ const RecapitulatifPageRoute = async () => {
     userId: user.id,
   })
 
-  const data = await getRecapitulatifPageData({
+  const data = recapitulatifPresente({
     user,
     employeuse:
       employeuseActuelle &&
       employeuseAffichee(employeuseActuelleAffichage(employeuseActuelle)),
-    listerLesLieux: ({ mediateurId }) =>
-      listerLesLieuxPourLInscription({ mediateurId: MediateurId(mediateurId) }),
+    lu: await lireLeRecapitulatif({
+      user,
+      listerLesLieux: ({ mediateurId }) =>
+        listerLesLieuxPourLInscription({
+          mediateurId: MediateurId(mediateurId),
+        }),
+    }),
   })
 
   return (
@@ -58,7 +60,7 @@ const RecapitulatifPageRoute = async () => {
         <RecapitulatifPage
           data={data}
           cartesDesLieux={data.lieuxActivite.map((lieu) => (
-            <SaisieDuLieuCard key={lieu.id} lieu={lieu} className="fr-mt-4v" />
+            <CarteDuLieuSaisi key={lieu.id} lieu={lieu} />
           ))}
           carteEmployeuse={
             data.structureEmployeuse && (

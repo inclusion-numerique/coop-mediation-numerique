@@ -1,24 +1,24 @@
 import assert from 'node:assert'
+import { Page, PageSize, Sort } from '@arckit/resultset'
 import { type DataTable, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma'
 import {
   AUCUN_FILTRE,
   type FiltresUtilisateurs,
-  filtresUtilisateurs,
   type LigneUtilisateur,
 } from '@/features/utilisateurs/domain'
-import { libelleDuStatut } from '@/features/utilisateurs/ui'
+import { filtresUtilisateursDepuisLURL } from '@/features/utilisateurs/fixtures/filtres-depuis-l-url'
+import { libelleDuStatut } from '@/features/utilisateurs/ui/presenters/statut-compte.presenter'
 import {
   semerUnCompteDeListe,
   semerUneEmployeuse,
   semerUnLieu,
 } from '@/features/utilisateurs/utilisateurs.cucumber'
+import { motsDe } from '@/libraries/texte'
 import type { CoordinateurAChoisir, UtilisateursTrouves } from './domain'
-import {
-  rechercherDesCoordinateurs,
-  rechercherDesUtilisateurs,
-} from './implementation'
+import { rechercherDesCoordinateurs } from './implementations/prisma/coordinateurs-a-choisir.query'
+import { rechercherDesUtilisateurs } from './implementations/prisma/rechercher-des-utilisateurs.query'
 
 const UN_JOUR = 24 * 60 * 60 * 1000
 
@@ -62,16 +62,18 @@ const rechercher = async (
   filtres: FiltresUtilisateurs = AUCUN_FILTRE,
 ) => {
   scenario.trouves = await rechercherDesUtilisateurs({
-    searchParams: { recherche: `${recherche} ${scenario.marqueur}`.trim() },
+    mots: motsDe(`${recherche} ${scenario.marqueur}`),
     filtres,
-    orderBy: [],
+    tri: Sort('creation', 'desc'),
+    page: Page(1),
+    pageSize: PageSize(100),
     maintenant: maintenant(),
   })
 }
 
 const trouves = (): readonly LigneUtilisateur[] => {
   assert.ok(scenario.trouves, 'Aucune recherche faite')
-  return scenario.trouves.utilisateurs
+  return scenario.trouves.items
 }
 
 const prenomsTrouves = (): readonly string[] =>
@@ -87,29 +89,41 @@ Given('les comptes suivants dans la liste :', async (table: DataTable) => {
     .hashes()
     .reduce<Promise<Record<string, string>>>(async (precedents, ligne) => {
       const deja = await precedents
-      const { med, coord, role } = roleDe(ligne.role)
+      const {
+        prenom = '',
+        role: celluleRole = '',
+        cree = '',
+        inscrit = '',
+        supprime = '',
+        visite = '',
+        activite = '',
+        beneficiaire = '',
+        equipe,
+        coordonne,
+      } = ligne
+      const { med, coord, role } = roleDe(celluleRole)
       const id = await semerUnCompteDeListe({
-        prenom: ligne.prenom,
+        prenom,
         marqueur: scenario.marqueur,
         role,
-        creeLe: ilYA(ligne.cree) ?? maintenant(),
-        inscritLe: ilYA(ligne.inscrit),
-        supprimeLe: ilYA(ligne.supprime),
-        derniereVisite: ilYA(ligne.visite),
+        creeLe: ilYA(cree) ?? maintenant(),
+        inscritLe: ilYA(inscrit),
+        supprimeLe: ilYA(supprime),
+        derniereVisite: ilYA(visite),
         mediateur: med
           ? {
-              derniereActivite: ilYA(ligne.activite),
-              dernierBeneficiaire: ilYA(ligne.beneficiaire),
+              derniereActivite: ilYA(activite),
+              dernierBeneficiaire: ilYA(beneficiaire),
             }
           : null,
         coordinateur: coord
           ? {
-              aUneEquipe: ligne.equipe === 'oui',
-              aCoordonne: ligne.coordonne === 'oui',
+              aUneEquipe: equipe === 'oui',
+              aCoordonne: coordonne === 'oui',
             }
           : null,
       })
-      return { ...deja, [ligne.prenom]: id }
+      return { ...deja, [prenom]: id }
     }, Promise.resolve({}))
 
   scenario.comptes = semes
@@ -298,7 +312,7 @@ Given('{string} exerce à {string}', async (prenom: string, nom: string) => {
 When(
   "l'administration filtre la liste sur le statut {string}",
   async (statut: string) => {
-    await rechercher('', filtresUtilisateurs({ statut }))
+    await rechercher('', filtresUtilisateursDepuisLURL({ statut }))
   },
 )
 
@@ -307,7 +321,7 @@ When(
   async (nom: string) => {
     await rechercher(
       '',
-      filtresUtilisateurs({
+      filtresUtilisateursDepuisLURL({
         employeuses: String(scenario.employeuses[nom] ?? ''),
       }),
     )
@@ -319,7 +333,7 @@ When(
   async (nom: string) => {
     await rechercher(
       '',
-      filtresUtilisateurs({
+      filtresUtilisateursDepuisLURL({
         employeuses: String(scenario.employeuses[nom] ?? ''),
         historique: '1',
       }),
@@ -332,7 +346,10 @@ When(
   async (nom: string) => {
     await rechercher(
       '',
-      filtresUtilisateurs({ lieux: scenario.lieux[nom], historique: '1' }),
+      filtresUtilisateursDepuisLURL({
+        lieux: scenario.lieux[nom],
+        historique: '1',
+      }),
     )
   },
 )
@@ -342,7 +359,9 @@ When(
   async (prenom: string) => {
     await rechercher(
       '',
-      filtresUtilisateurs({ coordinateurs: await coordinateurDe(prenom) }),
+      filtresUtilisateursDepuisLURL({
+        coordinateurs: await coordinateurDe(prenom),
+      }),
     )
   },
 )
@@ -352,7 +371,7 @@ When(
   async (prenom: string) => {
     await rechercher(
       '',
-      filtresUtilisateurs({
+      filtresUtilisateursDepuisLURL({
         coordinateurs: await coordinateurDe(prenom),
         historique: '1',
       }),
@@ -387,21 +406,30 @@ Then(
 When(
   "l'administration filtre la liste sur le département {string}",
   async (departement: string) => {
-    await rechercher('', filtresUtilisateurs({ departements: departement }))
+    await rechercher(
+      '',
+      filtresUtilisateursDepuisLURL({ departements: departement }),
+    )
   },
 )
 
 When(
   "l'administration filtre la liste sur le lieu {string}",
   async (nom: string) => {
-    await rechercher('', filtresUtilisateurs({ lieux: scenario.lieux[nom] }))
+    await rechercher(
+      '',
+      filtresUtilisateursDepuisLURL({ lieux: scenario.lieux[nom] }),
+    )
   },
 )
 
 When(
   "l'administration filtre la liste sur les conseillers numériques",
   async () => {
-    await rechercher('', filtresUtilisateurs({ conseiller_numerique: '1' }))
+    await rechercher(
+      '',
+      filtresUtilisateursDepuisLURL({ conseiller_numerique: '1' }),
+    )
   },
 )
 
@@ -469,5 +497,5 @@ Then('chacun de ces comptes affiche le statut {string}', (libelle: string) => {
 
 Then('le total dépasse le nombre de comptes trouvés', () => {
   assert.ok(scenario.trouves)
-  assert.ok(scenario.trouves.totalCount > scenario.trouves.matchesCount)
+  assert.ok(scenario.trouves.totalCount > scenario.trouves.totalItems)
 })

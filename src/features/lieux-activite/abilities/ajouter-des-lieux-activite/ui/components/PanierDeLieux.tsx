@@ -1,6 +1,6 @@
 import Button from '@codegouvfr/react-dsfr/Button'
-import { SaisieDuLieuCard } from '@/features/lieux-activite/ui/SaisieDuLieuCard'
-import type { LieuAuPanier } from '../panier'
+import { SaisieDuLieuCard } from '@/features/lieux-activite/ui/components/SaisieDuLieuCard'
+import type { LieuAuPanier } from '../forms/panier.form-data'
 
 export const PanierDeLieux = ({
   lieux,

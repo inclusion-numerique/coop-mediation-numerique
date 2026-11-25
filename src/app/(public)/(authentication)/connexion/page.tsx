@@ -1,13 +1,11 @@
 import type { Metadata } from 'next'
 import { Route } from 'next'
 import { redirect } from 'next/navigation'
-import { getServerUrl } from '@/configuration/projet/baseUrl'
-import { metadataTitle } from '@/configuration/projet/metadataTitle'
-import { getSessionUser } from '@/features/authentification/implementation/session/getSessionUser'
-import SigninPanel from '@/features/authentification/ui/connexion/SigninPanel'
-import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
-import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
-import Breadcrumbs from '@/libraries/ui/components/Breadcrumbs'
+import { metadataTitle } from '@/configuration/projet'
+import { getServerUrl } from '@/configuration/projet/serveur'
+import { ConnexionPage } from '@/features/authentification/abilities/se-connecter/ui/pages/ConnexionPage'
+import { moyenDeConnexion } from '@/features/authentification/implementations/next-auth/authentication-provider.client'
+import { getSessionUser } from '@/features/authentification/middlewares/with-utilisateur-de-la-session'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -31,13 +29,11 @@ const SigninPage = async ({
   }
 
   return (
-    <>
-      <SkipLinksPortal />
-      <Breadcrumbs currentPage="Connexion" />
-      <main id={contentId}>
-        <SigninPanel error={error} callbackUrl={callbackUrl} />
-      </main>
-    </>
+    <ConnexionPage
+      error={error}
+      callbackUrl={callbackUrl}
+      connexion={moyenDeConnexion}
+    />
   )
 }
 

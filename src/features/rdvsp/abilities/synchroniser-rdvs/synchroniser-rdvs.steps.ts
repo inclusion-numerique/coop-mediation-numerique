@@ -1,36 +1,36 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import type { SynchroniserRdvs } from '@/features/rdvsp/abilities/synchroniser-rdvs/domain/synchroniser-rdvs'
+import { synchroniserRdvs } from '@/features/rdvsp/abilities/synchroniser-rdvs/domain/synchroniser-rdvs'
 import {
   appliquerPlanLot,
   supprimerMotifsOrphelins,
   supprimerRdvs,
-} from '@/features/rdvsp/abilities/synchroniser-rdvs/implementation/prisma/appliquer-plan-lot.mutation'
+} from '@/features/rdvsp/abilities/synchroniser-rdvs/implementations/prisma/appliquer-plan-lot.mutation'
 import {
   etatConnuDuLot,
   rdvsDejaImportes,
-} from '@/features/rdvsp/abilities/synchroniser-rdvs/implementation/prisma/etat-connu.query'
-import { synchroniserRdvs } from '@/features/rdvsp/abilities/synchroniser-rdvs/implementation/synchroniser-rdvs'
-import { compteRdvToDomain } from '@/features/rdvsp/db'
-import { AdresseRdv } from '@/features/rdvsp/domain/adresse-rdv'
+} from '@/features/rdvsp/abilities/synchroniser-rdvs/implementations/prisma/etat-connu.query'
 import {
   type CompteRdvUtilisable,
   estUtilisable,
-} from '@/features/rdvsp/domain/compte-rdv'
-import { DureeEnMinutes } from '@/features/rdvsp/domain/duree-en-minutes'
+} from '@/features/rdvsp/domain/compte/compte-rdv'
 import { ApiIndisponible } from '@/features/rdvsp/domain/errors'
+import { OrganisationId } from '@/features/rdvsp/domain/identifiants/organisation-id'
+import { ParticipationId } from '@/features/rdvsp/domain/identifiants/participation-id'
+import { RdvAgentId } from '@/features/rdvsp/domain/identifiants/rdv-agent-id'
+import { RdvId } from '@/features/rdvsp/domain/identifiants/rdv-id'
+import { RdvUuid } from '@/features/rdvsp/domain/identifiants/rdv-uuid'
+import { UsagerId } from '@/features/rdvsp/domain/identifiants/usager-id'
 import { NomExterne, PrenomExterne } from '@/features/rdvsp/domain/identite'
-import { OrganisationId } from '@/features/rdvsp/domain/organisation-id'
-import { ParticipationId } from '@/features/rdvsp/domain/participation-id'
-import type { Rdv, RdvSynchronise } from '@/features/rdvsp/domain/rdv'
-import { RdvAgentId } from '@/features/rdvsp/domain/rdv-agent-id'
-import { RdvId } from '@/features/rdvsp/domain/rdv-id'
-import type { RdvServicePublicApi } from '@/features/rdvsp/domain/rdv-service-public.port'
-import { RdvUuid } from '@/features/rdvsp/domain/rdv-uuid'
-import { StatutPresence } from '@/features/rdvsp/domain/statut-presence'
+import type { RdvServicePublicApi } from '@/features/rdvsp/domain/ports'
+import { AdresseRdv } from '@/features/rdvsp/domain/rdv/adresse-rdv'
+import { DureeEnMinutes } from '@/features/rdvsp/domain/rdv/duree-en-minutes'
+import type { Rdv, RdvSynchronise } from '@/features/rdvsp/domain/rdv/rdv'
+import { StatutPresence } from '@/features/rdvsp/domain/rdv/statut-presence'
 import { UrlAgent } from '@/features/rdvsp/domain/url-agent'
 import type { Usager } from '@/features/rdvsp/domain/usager'
-import { UsagerId } from '@/features/rdvsp/domain/usager-id'
+import { compteRdvToDomain } from '@/features/rdvsp/implementations/prisma/compte-rdv.transfer'
 import {
   compteRdvEnBase,
   ID_TEST,

@@ -1,6 +1,6 @@
 ---
 status: "accepted"
-date: 2026-11-17
+date: 2026-11-25
 decision-makers:
   - Marc Gavanier
 ---
@@ -76,6 +76,14 @@ Un appel à un service externe est enveloppé dans la configuration de ce
 service. Un échec y est signalé une fois : les features qui l'appellent n'ont
 pas à le signaler elles-mêmes.
 
+### Les features ne mesurent pas de durée
+
+Les features ne mesurent pas le temps de leurs opérations : une mesure mêlée
+au code d'une feature la couple à la télémétrie et brouille ce qu'elle fait.
+Les mesures de durée qui accompagnaient le câblage des abilities sont
+retirées. Une journalisation des opérations viendra par la composition, sans
+que les features la voient. Cible à atteindre, ticket à ouvrir.
+
 ### Consequences
 
 - Good, because un job lancé hors de Next ne peut plus planter à cause de
@@ -96,6 +104,8 @@ pas à le signaler elles-mêmes.
 - Bad, because quelques modules hors des racines de composition importent encore
   le signaleur directement au lieu de le recevoir par injection. Cible à
   atteindre, ticket à ouvrir.
+- Bad, because tant que la journalisation par la composition n'existe pas, la
+  durée des opérations n'est plus mesurée.
 
 ## Pros and Cons of the Options
 
@@ -126,3 +136,5 @@ Les règles normatives sur l'injection et les tests sans mock sont dans les
 
 - 2026-11-17, Marc Gavanier : rédaction de l'ADR a posteriori, d'après
   l'historique git.
+- 2026-11-25, Marc Gavanier : révision, plus de mesure de durée dans les
+  features.

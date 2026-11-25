@@ -1,2 +1,2 @@
-export * from './errors'
-export * from './proprietaire-choisi'
+export { AucuneStatistiqueAPartager, PerimetreNonRattache } from './errors'
+export { proprietaireChoisi } from './proprietaire-choisi'

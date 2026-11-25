@@ -1,16 +1,12 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import type { ReactNode } from 'react'
-import {
-  libellesDeTri,
-  trisDesLieux,
-} from '@/features/lieux-activite/domain/tri-des-lieux'
-import SortSelect from '@/libraries/data-table/sort/SortSelect'
-import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
-import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
+import { contentId } from '@/libraries/liens-d-evitement'
+import { SkipLinksPortal } from '@/libraries/liens-d-evitement/composants'
 import { pluriel } from '@/libraries/pluriel'
-import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
+import { CoopBreadcrumbs } from '@/libraries/ui/components'
 import type { LieuDuMediateurEnListe } from '../../domain'
 import { AucunLieu } from '../components/AucunLieu'
+import { TriDesLieuxDuMediateur } from '../components/TriDesLieuxDuMediateur'
 
 export const MesLieuxActivitePage = ({
   lieux,
@@ -55,10 +51,7 @@ export const MesLieuxActivitePage = ({
                     {lieux.length} {pluriel(lieux.length, 'lieu', 'lieux')}
                   </span>
                   <span className="fr-mr-4v">
-                    <SortSelect
-                      baseHref="/coop/lieux-activite"
-                      options={tris}
-                    />
+                    <TriDesLieuxDuMediateur />
                   </span>
                 </div>
                 <hr className="fr-separator-1px" />
@@ -72,8 +65,3 @@ export const MesLieuxActivitePage = ({
     </div>
   </>
 )
-
-const tris = trisDesLieux.map((tri) => ({
-  label: libellesDeTri[tri],
-  value: tri,
-}))

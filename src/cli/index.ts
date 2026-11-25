@@ -1,19 +1,18 @@
 import { Command } from '@commander-js/extra-typings'
-import * as Sentry from '@sentry/node'
-import { checkDeploymentStatus } from '@/cli/commands/deployment/checkDeploymentStatus'
-import { deactivateGithubDeployment } from '@/cli/commands/github/deactivateGithubDeployment'
-import { addNextPublicVariablesToDotEnv } from '@/cli/commands/infrastructure/addNextPublicVariablesToDotEnv'
-import { createDotEnvFromInfrastructure } from '@/cli/commands/infrastructure/createDotEnvFromInfrastructure'
-import { createTfVarsFileFromEnvironment } from '@/cli/commands/infrastructure/createTfVarsFileFromEnvironment'
-import { locallyRestoreLatestMainBackup } from '@/cli/commands/infrastructure/locallyRestoreLatestMainBackup'
-import { deleteRegistryImage } from '@/cli/commands/infrastructure/registry/deleteRegistryImage'
-import { pruneRegistry } from '@/cli/commands/infrastructure/registry/pruneRegistry'
-import { createDotEnvFromSecrets } from '@/cli/commands/secrets/createDotEnvFromSecrets'
-import { deleteDatabaseSecret } from '@/cli/commands/secrets/deleteDatabaseSecret'
-import { getDatabasePasswordSecret } from '@/cli/commands/secrets/getDatabasePasswordSecret'
-import { setupDatabaseSecret } from '@/cli/commands/secrets/setupDatabaseSecret'
-import { deleteSentryEnvironmentIssues } from '@/cli/commands/sentry/deleteSentryEnvironmentIssues'
-import { outputError } from '@/libraries/console/output'
+import { checkDeploymentStatus } from '@/cli/commands/deployment/check-deployment-status'
+import { deactivateGithubDeployment } from '@/cli/commands/github/deactivate-github-deployment'
+import { addNextPublicVariablesToDotEnv } from '@/cli/commands/infrastructure/add-next-public-variables-to-dot-env'
+import { createDotEnvFromInfrastructure } from '@/cli/commands/infrastructure/create-dot-env-from-infrastructure'
+import { createTfVarsFileFromEnvironment } from '@/cli/commands/infrastructure/create-tf-vars-file-from-environment'
+import { locallyRestoreLatestMainBackup } from '@/cli/commands/infrastructure/locally-restore-latest-main-backup'
+import { deleteRegistryImage } from '@/cli/commands/infrastructure/registry/delete-registry-image'
+import { pruneRegistry } from '@/cli/commands/infrastructure/registry/prune-registry'
+import { createDotEnvFromSecrets } from '@/cli/commands/secrets/create-dot-env-from-secrets'
+import { deleteDatabaseSecret } from '@/cli/commands/secrets/delete-database-secret'
+import { getDatabasePasswordSecret } from '@/cli/commands/secrets/get-database-password-secret'
+import { setupDatabaseSecret } from '@/cli/commands/secrets/setup-database-secret'
+import { deleteSentryEnvironmentIssues } from '@/cli/commands/sentry/delete-sentry-environment-issues'
+import { outputError } from '@/libraries/console'
 
 const main = async () => {
   const program = new Command()
@@ -34,9 +33,7 @@ const main = async () => {
   await program.parseAsync()
 }
 
-main().catch(async (error) => {
-  Sentry.captureException(error)
+main().catch((error) => {
   outputError(error instanceof Error ? error.message : String(error))
-  await Sentry.flush(2000)
   process.exit(1)
 })

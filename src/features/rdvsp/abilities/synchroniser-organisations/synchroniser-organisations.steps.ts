@@ -1,19 +1,19 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import type { SynchroniserOrganisations } from '@/features/rdvsp/abilities/synchroniser-organisations/domain/synchroniser-organisations'
-import { appliquerPlanOrganisations } from '@/features/rdvsp/abilities/synchroniser-organisations/implementation/prisma/appliquer-plan-organisations.mutation'
-import { etatOrganisations } from '@/features/rdvsp/abilities/synchroniser-organisations/implementation/prisma/etat-organisations.query'
-import { synchroniserOrganisations } from '@/features/rdvsp/abilities/synchroniser-organisations/implementation/synchroniser-organisations'
-import { compteRdvToDomain } from '@/features/rdvsp/db'
+import { synchroniserOrganisations } from '@/features/rdvsp/abilities/synchroniser-organisations/domain/synchroniser-organisations'
+import { appliquerPlanOrganisations } from '@/features/rdvsp/abilities/synchroniser-organisations/implementations/prisma/appliquer-plan-organisations.mutation'
+import { etatOrganisations } from '@/features/rdvsp/abilities/synchroniser-organisations/implementations/prisma/etat-organisations.query'
 import {
   type CompteRdvUtilisable,
   estUtilisable,
-} from '@/features/rdvsp/domain/compte-rdv'
+} from '@/features/rdvsp/domain/compte/compte-rdv'
 import { ApiIndisponible } from '@/features/rdvsp/domain/errors'
+import { OrganisationId } from '@/features/rdvsp/domain/identifiants/organisation-id'
 import { NomOrganisation } from '@/features/rdvsp/domain/libelle'
 import type { Organisation } from '@/features/rdvsp/domain/organisation'
-import { OrganisationId } from '@/features/rdvsp/domain/organisation-id'
-import type { RdvServicePublicApi } from '@/features/rdvsp/domain/rdv-service-public.port'
+import type { RdvServicePublicApi } from '@/features/rdvsp/domain/ports'
+import { compteRdvToDomain } from '@/features/rdvsp/implementations/prisma/compte-rdv.transfer'
 import {
   compteRdvEnBase,
   ID_TEST,

@@ -1,15 +1,15 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma'
 import { semerUnCompteDeListe } from '@/features/utilisateurs/utilisateurs.cucumber'
-import { marquerLOnboardingCommeVu } from './implementation'
+import { marquerLOnboardingCommeVu } from './implementations/prisma/marquer-l-onboarding-comme-vu.mutation'
 
 const onboarding: { utilisateurId?: string } = {}
 
 const date = (jour: string): Date => {
-  const [j, m, a] = jour.split('/').map(Number)
-  return new Date(Date.UTC(a, m - 1, j))
+  const [j, m, a] = jour.split('/')
+  return new Date(Date.UTC(Number(a), Number(m) - 1, Number(j)))
 }
 
 const utilisateurId = (): string => {

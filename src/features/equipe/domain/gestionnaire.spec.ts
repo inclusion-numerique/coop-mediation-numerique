@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { CoordinateurId } from './coordinateur-id'
 import { peutGererLEquipe } from './gestionnaire'
+import { CoordinateurId } from './identifiants/coordinateur-id'
 
 const sonEquipe = CoordinateurId('550e8400-e29b-41d4-a716-446655440001')
 const autreEquipe = CoordinateurId('550e8400-e29b-41d4-a716-446655440002')

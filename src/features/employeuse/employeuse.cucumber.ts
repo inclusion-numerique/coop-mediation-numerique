@@ -1,6 +1,6 @@
 import { After, setDefaultTimeout } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma'
 
 setDefaultTimeout(60_000)
 
@@ -34,7 +34,10 @@ export const seedEmployeuseMain = async (
   siret?: string,
 ): Promise<number> => {
   const { id } = await prismaClient.structureAdministrativeMain.create({
-    data: { denominationAntenne: nom, siret },
+    data: {
+      denominationAntenne: nom,
+      ...(siret === undefined ? {} : { siret }),
+    },
     select: { id: true },
   })
   tracked.employeuses.add(id)

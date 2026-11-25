@@ -1,9 +1,9 @@
 import classNames from 'classnames'
+import type { Route } from 'next'
 import Link from 'next/link'
 import { ReactNode } from 'react'
-import styles from './Card.module.css'
 
-const Card = ({
+const Card = <T extends string>({
   id,
   className,
   'data-testid': dataTestid,
@@ -22,28 +22,32 @@ const Card = ({
   arrowSm = false,
   classes = {},
 }: {
-  id?: string
-  className?: string
-  'data-testid'?: string
-  title?: ReactNode
-  titleAs?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'div'
-  href?: string
-  isExternal?: boolean
-  enlargeLink?: boolean
-  noBorder?: boolean
-  description?: ReactNode
-  children?: ReactNode
-  header?: ReactNode
-  action?: ReactNode
-  contentSeparator?: boolean
-  arrowTop?: boolean
-  arrowSm?: boolean
-  classes?: {
-    content?: string
-    frame?: {
-      content?: string
-    }
-  }
+  id?: string | undefined
+  className?: string | undefined
+  'data-testid'?: string | undefined
+  title?: ReactNode | undefined
+  titleAs?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'div' | undefined
+  href?: Route<T> | undefined
+  isExternal?: boolean | undefined
+  enlargeLink?: boolean | undefined
+  noBorder?: boolean | undefined
+  description?: ReactNode | undefined
+  children?: ReactNode | undefined
+  header?: ReactNode | undefined
+  action?: ReactNode | undefined
+  contentSeparator?: boolean | undefined
+  arrowTop?: boolean | undefined
+  arrowSm?: boolean | undefined
+  classes?:
+    | {
+        content?: string | undefined
+        frame?:
+          | {
+              content?: string | undefined
+            }
+          | undefined
+      }
+    | undefined
 }) => (
   <div
     id={id}
@@ -89,7 +93,7 @@ const Card = ({
             )}
           >
             {contentSeparator && (
-              <hr className={classNames('fr-pb-4w', styles.contentSeparator)} />
+              <hr className={'fr-pb-4w carte__separateur'} />
             )}
             {children}
           </div>

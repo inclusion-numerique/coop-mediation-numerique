@@ -1,12 +1,14 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma'
 import type { RapportDeRelance } from '@/features/utilisateurs/domain'
+import { noterLaRelance } from '@/features/utilisateurs/implementations/prisma/noter-la-relance.mutation'
 import { semerUnCompteDeListe } from '@/features/utilisateurs/utilisateurs.cucumber'
 import { OnboardingStatus } from '@/generated/prisma/client'
-import { relancerLesInscriptionsInachevees } from './commands/relancer-les-inscriptions-inachevees'
-import { effacerLInscription } from './implementation'
+import { relancerLesInscriptionsInachevees } from './domain/relancer-les-inscriptions-inachevees'
+import { effacerLInscription } from './implementations/prisma/effacer-l-inscription.mutation'
+import { inscriptionsInachevees } from './implementations/prisma/inscriptions-inachevees.query'
 
 const UN_JOUR = 24 * 60 * 60 * 1000
 
@@ -56,6 +58,8 @@ When('les inscriptions inachevées sont relancées', async () => {
   relance.rapports = await relancerLesInscriptionsInachevees({
     maintenant: new Date(),
     ports: {
+      lireLesComptesARelancer: inscriptionsInachevees,
+      noterLaRelance: noterLaRelance('Inscription'),
       envoyerLaRelance: async ({ utilisateurId: id }, palier) =>
         consigner(id, `relance J+${palier}`),
       envoyerLAvertissement: async ({ utilisateurId: id }) =>

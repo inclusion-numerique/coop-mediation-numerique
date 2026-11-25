@@ -1,12 +1,15 @@
-import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
-import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
-import AdministrationBreadcrumbs from '@/libraries/ui/components/administration/AdministrationBreadcrumbs'
-import AdministrationTitle from '@/libraries/ui/components/administration/AdministrationTitle'
-import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
+import { hrefDeLUtilisateur } from '@/features/utilisateurs/ui/presenters/liens.presenter'
+import { contentId } from '@/libraries/liens-d-evitement'
+import { SkipLinksPortal } from '@/libraries/liens-d-evitement/composants'
+import {
+  AdministrationBreadcrumbs,
+  AdministrationTitle,
+  CoopPageContainer,
+} from '@/libraries/ui/components'
 import type { ApercuDeFusion } from '../../domain'
-import { ApercuDuCompte } from '../ApercuDuCompte'
-import { BoutonValiderLaFusion } from '../BoutonValiderLaFusion'
-import { ChoixDuCompteAFusionner } from '../ChoixDuCompteAFusionner'
+import { ApercuDuCompte } from '../components/ApercuDuCompte'
+import { BoutonValiderLaFusion } from '../components/BoutonValiderLaFusion'
+import { ChoixDuCompteAFusionner } from '../components/ChoixDuCompteAFusionner'
 
 export const FusionPage = ({
   cible,
@@ -26,7 +29,7 @@ export const FusionPage = ({
         },
         {
           label: cible.nom,
-          linkProps: { href: `/administration/utilisateurs/${cible.id}` },
+          linkProps: { href: hrefDeLUtilisateur(cible.id) },
         },
       ]}
     />

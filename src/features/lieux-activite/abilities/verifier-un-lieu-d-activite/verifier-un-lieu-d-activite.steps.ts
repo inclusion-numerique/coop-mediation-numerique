@@ -1,10 +1,12 @@
 import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { LieuId, MediateurId } from '@/features/lieux-activite'
+import { prismaClient } from '@/configuration/prisma'
+import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
+import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
 import { effacerDuRegistre } from '@/features/lieux-activite/lieux-activite.cucumber'
-import { lieuUtilisablePar, verifierUnLieuDActivite } from './implementation'
+import { lieuUtilisablePar } from './implementations/prisma/lieu-utilisable-par.where'
+import { verifierUnLieuDActivite } from './implementations/prisma/verifier-un-lieu-d-activite.query'
 
 const contexte: {
   semis?: { userId: string; mediateurId: string; lieuId: string }
@@ -110,8 +112,8 @@ Then('le lieu est refusé', () => {
 
 After(async () => {
   const semis = contexte.semis
-  contexte.semis = undefined
-  contexte.accepte = undefined
+  delete contexte.semis
+  delete contexte.accepte
   if (!semis) return
   await prismaClient.mediateurEnActivite.deleteMany({
     where: { mediateurId: semis.mediateurId },

@@ -1,47 +1,37 @@
-# Feature: Valider son inscription
+# Fonctionnalité: Valider son inscription
 
-## Rule: Valider pose la date de validation et accepte les CGU si besoin
+## Règle: Valider pose la date de validation et accepte les CGU si besoin
 
-### Scenario: Un médiateur en cours valide son inscription
+### Scénario: Un médiateur en cours valide son inscription
 
-* Given mon profil d’inscription est "Mediateur"
-* And un compte médiateur existe pour mon inscription
-* When je valide mon inscription
-* Then mon inscription est validée
+* Étant donné mon profil d’inscription est "Mediateur"
+* Et un compte médiateur existe pour mon inscription
+* Quand je valide mon inscription
+* Alors mon inscription est validée
 
-### Scenario: Valider accepte les CGU quand elles ne l’avaient pas encore été (flow Dataspace)
+### Scénario: Valider accepte les CGU quand elles ne l’avaient pas encore été (flow Dataspace)
 
-* Given mon profil d’inscription est "ConseillerNumerique"
-* And un compte médiateur existe pour mon inscription
-* And je n’ai pas encore accepté les CGU
-* When je valide mon inscription
-* Then mon inscription est validée
-* And mes CGU sont acceptées
+* Étant donné mon profil d’inscription est "ConseillerNumerique"
+* Et un compte médiateur existe pour mon inscription
+* Et je n’ai pas encore accepté les CGU
+* Quand je valide mon inscription
+* Alors mon inscription est validée
+* Et mes CGU sont acceptées
 
-## Rule: Valider accepte les invitations reçues avant l’inscription
+## Règle: Une inscription sans compte de rôle ne se valide pas
 
-### Scenario: L’invitation acceptée à la validation est rattachée au compte médiateur
+### Scénario: Un profil posé sans compte de rôle ne peut pas valider
 
-* Given mon profil d’inscription est "Mediateur"
-* And un compte médiateur existe pour mon inscription
-* And une équipe m’a invité avant mon inscription
-* When je valide mon inscription
-* Then l’invitation de l’équipe est acceptée et rattachée à mon compte médiateur
+* Étant donné mon profil d’inscription est "Mediateur"
+* Quand je valide mon inscription
+* Alors la validation est refusée car aucun compte de rôle n’existe
+* Et mon inscription n’est pas validée
 
-## Rule: Une inscription sans compte de rôle ne se valide pas
+## Règle: Une inscription déjà validée ne se re-valide pas
 
-### Scenario: Un profil posé sans compte de rôle ne peut pas valider
+### Scénario: Valider une inscription déjà validée
 
-* Given mon profil d’inscription est "Mediateur"
-* When je valide mon inscription
-* Then la validation est refusée car aucun compte de rôle n’existe
-* And mon inscription n’est pas validée
-
-## Rule: Une inscription déjà validée ne se re-valide pas
-
-### Scenario: Valider une inscription déjà validée
-
-* Given mon profil d’inscription est "Mediateur"
-* And mon inscription est déjà validée
-* When je valide mon inscription
-* Then la validation est refusée car l’inscription est déjà validée
+* Étant donné mon profil d’inscription est "Mediateur"
+* Et mon inscription est déjà validée
+* Quand je valide mon inscription
+* Alors la validation est refusée car l’inscription est déjà validée

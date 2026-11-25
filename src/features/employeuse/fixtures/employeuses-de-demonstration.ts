@@ -1,5 +1,5 @@
 import type { Prisma } from '@/generated/prisma/client'
-import { enSerie } from '@/libraries/fixtures/enSerie'
+import { enSerie } from '@/libraries/fixtures'
 
 type LieuEmployeur = {
   readonly id: string

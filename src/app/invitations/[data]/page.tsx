@@ -2,19 +2,21 @@ import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { accepterUneInvitationAction } from '@/app/_actions/equipe/accepter-une-invitation.action'
 import { refuserUneInvitationAction } from '@/app/_actions/equipe/refuser-une-invitation.action'
-import { metadataTitle } from '@/configuration/projet/metadataTitle'
-import { getSessionUser } from '@/features/authentification/implementation/session/getSessionUser'
-import { ACCEPTER_UNE_INVITATION_ACTION_KEY } from '@/features/equipe/abilities/accepter-une-invitation/action/accepter-une-invitation.key'
-import { consulterUneInvitation } from '@/features/equipe/abilities/consulter-une-invitation'
+import { metadataTitle } from '@/configuration/projet'
+import { getSessionUser } from '@/features/authentification/middlewares/with-utilisateur-de-la-session'
+import { consulterUneInvitation } from '@/features/equipe/abilities/consulter-une-invitation/implementations/prisma/consulter-une-invitation.query'
+import { default as InvitationEnAttentePage } from '@/features/equipe/abilities/consulter-une-invitation/ui/pages/InvitationEnAttentePage'
+import { default as InvitationPlusValide } from '@/features/equipe/abilities/consulter-une-invitation/ui/slots/InvitationPlusValide.slot'
+import { ACCEPTER_UNE_INVITATION_ACTION_KEY } from '@/features/equipe/action/accepter-une-invitation.key'
+import { REFUSER_UNE_INVITATION_ACTION_KEY } from '@/features/equipe/action/refuser-une-invitation.key'
+import { Courriel } from '@/features/equipe/domain'
 import {
-  InvitationEnAttente,
-  InvitationPlusValide,
-} from '@/features/equipe/abilities/consulter-une-invitation/ui'
-import { REFUSER_UNE_INVITATION_ACTION_KEY } from '@/features/equipe/abilities/refuser-une-invitation/action/refuser-une-invitation.key'
-import { Email, lienInvitation } from '@/features/equipe/domain'
-import { ReponseAInvitation } from '@/features/equipe/ui'
-import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
-import type { EncodedState } from '@/libraries/parametres-d-url/encodeSerializableState'
+  lienInvitation,
+  referenceDuCode,
+} from '@/features/equipe/implementations/email/lien-invitation.transfer'
+import { default as ReponseAInvitation } from '@/features/equipe/ui/slots/ReponseAInvitation.slot'
+import type { EncodedState } from '@/libraries/etat-encode'
+import { ClientBinder } from '@/libraries/nextjs/injection'
 
 export const metadata: Metadata = {
   title: metadataTitle('Invitation à rejoindre une équipe'),
@@ -27,8 +29,8 @@ const InvitationPage = async (props: {
   const user = await getSessionUser()
 
   const vue = await consulterUneInvitation({
-    code: data,
-    session: user == null ? null : Email.safe(user.email),
+    reference: referenceDuCode(data),
+    session: user == null ? null : Courriel.safe(user.email),
   })
 
   if (vue.type === 'Illisible') redirect('/')
@@ -44,7 +46,7 @@ const InvitationPage = async (props: {
         bind={REFUSER_UNE_INVITATION_ACTION_KEY}
         to={refuserUneInvitationAction}
       >
-        <InvitationEnAttente
+        <InvitationEnAttentePage
           coordinateur={vue.coordinateur}
           tailleEquipe={vue.tailleEquipe}
           reponse={

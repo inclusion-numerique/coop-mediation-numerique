@@ -1,0 +1,131 @@
+import { describe, expect, it } from 'vitest'
+import {
+  type ActiviteDeCoordination,
+  ActiviteDeCoordinationId,
+  CoordinateurId,
+  type CriteresDesCoordinations,
+  DateDActivite,
+  DureeEnMinutes,
+  Effectif,
+  NomDeLActivite,
+  NomDeStructure,
+  NomDeTag,
+  Precision,
+  TagId,
+  ThematiqueDAnimation,
+  TypeDActiviteDeCoordination,
+  TypeDAnimation,
+  TypeDeStructurePartenaire,
+} from '../../../../domain'
+import { lignesDesCoordinations } from './lignes-des-coordinations.presenter'
+
+const TAG = {
+  id: TagId('6f1c2a4e-8b3d-4c5e-9f7a-1b2c3d4e5f60'),
+  nom: NomDeTag('Été'),
+}
+
+const commun = {
+  id: ActiviteDeCoordinationId('0e7c3a52-4d1b-4f6a-8e9d-2c3b4a5d6e7f'),
+  date: DateDActivite('2026-06-01'),
+  coordinateurId: CoordinateurId('9e7c3a52-4d1b-4f6a-8e9d-2c3b4a5d6e7f'),
+  tags: [TAG],
+  notes: null,
+  creation: new Date('2026-06-01T10:00:00Z'),
+  modification: new Date('2026-06-01T10:00:00Z'),
+}
+
+const partenariat: ActiviteDeCoordination = {
+  ...commun,
+  _tag: 'Partenariat',
+  nom: NomDeLActivite('Convention'),
+  natures: { valeurs: [], autre: Precision('Mutualisation') },
+  structuresPartenaires: [
+    {
+      nom: NomDeStructure('Mairie'),
+      type: { _tag: 'Liste', valeur: TypeDeStructurePartenaire('Commune') },
+    },
+  ],
+  echelon: null,
+}
+
+const animation: ActiviteDeCoordination = {
+  ...commun,
+  _tag: 'Animation',
+  duree: DureeEnMinutes(60),
+  typeDAnimation: { _tag: 'Liste', valeur: TypeDAnimation('Webinaire') },
+  thematiques: { valeurs: [ThematiqueDAnimation('Reseau')], autre: null },
+  initiative: null,
+  intervenants: {
+    mediateurs: Effectif(4),
+    structures: Effectif(0),
+    autresActeurs: Effectif(0),
+  },
+}
+
+const lignesDuTableau = (
+  activites: readonly ActiviteDeCoordination[],
+  criteres: CriteresDesCoordinations = { periode: null, types: [], tags: [] },
+) => {
+  const { lignes, filtres } = lignesDesCoordinations({
+    activites,
+    criteres,
+    tags: [TAG],
+    fuseau: 'Europe/Paris',
+  })
+  return { valeurs: filtres, lignes }
+}
+
+describe('lignes des activités de coordination', () => {
+  it('écrit « / » dans les colonnes sans objet pour le type', () => {
+    const [ligne] = lignesDuTableau([partenariat]).lignes
+
+    expect(ligne?.slice(1, 15)).toEqual([
+      'Partenariat',
+      '/',
+      '/',
+      '/',
+      '/',
+      '/',
+      'Convention',
+      'Autre : Mutualisation',
+      '/',
+      'Mairie',
+      'Une commune',
+      '',
+      '/',
+      '/',
+    ])
+    expect(ligne?.[15]).toBe('Été')
+  })
+
+  it('date l’enregistrement dans le fuseau de l’auteur', () => {
+    const [ligne] = lignesDuTableau([partenariat]).lignes
+
+    expect(ligne?.[17]).toBe('01/06/2026 à 12:00')
+  })
+
+  it('reprend les intervenants d’une animation', () => {
+    const [ligne] = lignesDuTableau([animation]).lignes
+
+    expect(ligne?.slice(2, 8)).toEqual([60, '/', 4, 0, 0, '/'])
+  })
+
+  it('résume les filtres appliqués', () => {
+    const { valeurs } = lignesDuTableau([], {
+      periode: null,
+      types: [
+        TypeDActiviteDeCoordination('Animation'),
+        TypeDActiviteDeCoordination('Evenement'),
+      ],
+      tags: [TAG.id],
+    })
+
+    expect(valeurs).toEqual(
+      expect.arrayContaining([
+        ['Période', '-'],
+        ['Type d’activité', 'Animation, Évènement'],
+        ['Tags', 'Été'],
+      ]),
+    )
+  })
+})

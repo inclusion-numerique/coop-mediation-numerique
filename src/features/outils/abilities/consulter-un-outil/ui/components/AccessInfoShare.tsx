@@ -2,7 +2,10 @@
 
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useState } from 'react'
-import type { AccesALOutil, InformationDAcces } from '../fiche-outil'
+import type {
+  AccesALOutil,
+  InformationDAcces,
+} from '../labels/fiches/fiche-outil.labels'
 
 export const AccessInfoShare = ({
   how,

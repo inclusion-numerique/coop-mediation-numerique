@@ -1,9 +1,9 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
-import { relancerUneInvitation } from '@/features/equipe/abilities/relancer-une-invitation'
+import { relancerUneInvitation } from '@/features/equipe/abilities/relancer-une-invitation/implementations/prisma/relancer-une-invitation.mutation'
 import {
   CoordinateurId,
-  Email,
+  Courriel,
   ReferenceInvitation,
   UtilisateurId,
 } from '@/features/equipe/domain'
@@ -13,11 +13,12 @@ import {
   semerUnCoordinateur,
   semerUneInvitation,
 } from '@/features/equipe/equipe.cucumber'
+import { envoyerUneInvitation } from '@/features/equipe/implementations/email'
 
 const contexte: {
   coordinateur?: CoordinateurSeme
   email?: string
-  issue?: Awaited<ReturnType<typeof relancerUneInvitation>>
+  issue?: Awaited<ReturnType<ReturnType<typeof relancerUneInvitation>>>
 } = {}
 
 const coordinateur = (): CoordinateurSeme => {
@@ -47,9 +48,9 @@ const inviter = async (
 }
 
 const relancerPar = async (auteur: CoordinateurSeme) => {
-  contexte.issue = await relancerUneInvitation({
+  contexte.issue = await relancerUneInvitation({ envoyerUneInvitation })({
     reference: ReferenceInvitation({
-      email: Email(emailInvite()),
+      email: Courriel(emailInvite()),
       coordinateurId: CoordinateurId(coordinateur().coordinateurId),
     }),
     gestionnaire: {

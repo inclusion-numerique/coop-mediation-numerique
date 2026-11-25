@@ -1,9 +1,9 @@
 import { z } from 'zod'
+import { beneficiaireFormShape } from '@/features/beneficiaire/action/champs-du-beneficiaire.validation'
 import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
 import { ContactTelephone } from '@/features/beneficiaire/domain/contact-telephone'
 import { Genre } from '@/features/beneficiaire/domain/genre'
 import { StatutSocial } from '@/features/beneficiaire/domain/statut-social'
-import { beneficiaireFormShape } from '@/features/beneficiaire/forms/beneficiaire-form'
 import type { BeneficiaireAModifier } from '../domain/beneficiaire-a-modifier'
 
 export const ModifierBeneficiaireValidation = beneficiaireFormShape

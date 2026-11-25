@@ -1,12 +1,18 @@
+import type { CodeAutorisation } from '@/features/rdvsp/abilities/connecter-compte-rdv/domain/code-autorisation'
+import type { CodeAutorisationRefuse } from '@/features/rdvsp/abilities/connecter-compte-rdv/domain/errors'
+import { EmailAgentDifferent } from '@/features/rdvsp/abilities/connecter-compte-rdv/domain/errors'
+import type {
+  CompteRdv,
+  CompteRdvLie,
+} from '@/features/rdvsp/domain/compte/compte-rdv'
+import type { JetonsOAuth } from '@/features/rdvsp/domain/compte/jetons-oauth'
+import type { ErreurRdvApi } from '@/features/rdvsp/domain/errors'
+import type { RdvAgentId } from '@/features/rdvsp/domain/identifiants/rdv-agent-id'
+import type { UtilisateurCoopId } from '@/features/rdvsp/domain/identifiants/utilisateur-coop-id'
+import type { EmailExterne } from '@/features/rdvsp/domain/identite'
+import type { RdvServicePublicApi } from '@/features/rdvsp/domain/ports'
 import type { Result } from '@/libraries/result'
-import type { CompteRdv, CompteRdvLie } from '../../../domain/compte-rdv'
-import type { ErreurRdvApi } from '../../../domain/errors'
-import type { EmailExterne } from '../../../domain/identite'
-import type { JetonsOAuth } from '../../../domain/jetons-oauth'
-import type { RdvAgentId } from '../../../domain/rdv-agent-id'
-import type { UtilisateurCoopId } from '../../../domain/utilisateur-coop-id'
-import type { CodeAutorisation } from './code-autorisation'
-import type { CodeAutorisationRefuse, EmailAgentDifferent } from './errors'
+import { failure, success } from '@/libraries/result'
 
 export type ErreurConnexionCompte =
   | CodeAutorisationRefuse
@@ -90,3 +96,67 @@ export const emailsCorrespondent = (
   emailUtilisateur: EmailExterne,
   emailAgent: EmailExterne,
 ): boolean => emailUtilisateur === emailAgent
+
+export type DependancesConnecterCompteRdv = {
+  readonly echangerCode: EchangerCodeAutorisation
+  readonly identifierAgent: RdvServicePublicApi['identifierAgent']
+  readonly compteExistant: CompteRdvExistant
+  readonly enregistrer: EnregistrerCompteConnecte
+  readonly maintenant?: () => Date
+}
+
+/**
+ * Enchaîne les quatre temps de la liaison : échanger le code, identifier
+ * l'agent, vérifier qu'il s'agit bien du même e-mail que le compte La Coop, puis
+ * enregistrer. Chaque étape peut échouer et son échec remonte tel quel : c'est
+ * ce qui permettra à la route de callback de nommer précisément ce qui n'a pas
+ * marché, au lieu du `server_error` générique d'aujourd'hui.
+ *
+ * La synchronisation des rendez-vous n'en fait pas partie : elle est déclenchée
+ * après coup, sans bloquer la redirection de l'utilisateur.
+ */
+export const connecterCompteRdv =
+  ({
+    echangerCode,
+    identifierAgent,
+    compteExistant,
+    enregistrer,
+    maintenant = () => new Date(),
+  }: DependancesConnecterCompteRdv): ConnecterCompteRdv =>
+  async ({ utilisateurId, emailUtilisateur, code }) => {
+    const jetons = await echangerCode(code)
+
+    if (!jetons.success) {
+      return jetons
+    }
+
+    const agent = await identifierAgent(jetons.data)
+
+    if (!agent.success) {
+      return agent
+    }
+
+    if (!emailsCorrespondent(emailUtilisateur, agent.data.email)) {
+      return failure(EmailAgentDifferent(emailUtilisateur, agent.data.email))
+    }
+
+    const existant = await compteExistant({
+      agentId: agent.data.id,
+      utilisateurId,
+    })
+
+    const compte = compteApresConnexion({
+      existant,
+      agentId: agent.data.id,
+      utilisateurId,
+      jetons: jetons.data,
+      maintenant: maintenant(),
+    })
+
+    return success(
+      await enregistrer({
+        compte,
+        agentIdPrecedent: existant?.agentId ?? null,
+      }),
+    )
+  }

@@ -1,24 +1,27 @@
-import { estFranchi } from './franchissement'
+import {
+  EtapeDInscription,
+  type ValeurDEtapeDInscription,
+} from './etape-d-inscription'
 import {
   conseillerNumeriqueDeLInscription,
   type InscriptionEtat,
   type ProgressionEtapes,
   profilDeLInscription,
-} from './inscription-etat'
+} from './etat-de-l-inscription'
+import { estFranchi } from './franchissement'
 import {
-  getNextInscriptionStep,
+  etapeSuivante,
   type InscriptionContexte,
-} from './inscription-flow'
-import type { InscriptionFlowType } from './inscription-flow-type'
-import { InscriptionStep, type InscriptionStepValue } from './inscription-step'
+} from './parcours-d-inscription'
+import type { TypeDeParcours } from './type-de-parcours'
 
 export type ContexteParcours = {
-  readonly flowType: InscriptionFlowType
+  readonly flowType: TypeDeParcours
   readonly hasLieuxActivite: boolean
 }
 
 const porteFranchie: Partial<
-  Record<InscriptionStepValue, (progression: ProgressionEtapes) => boolean>
+  Record<ValeurDEtapeDInscription, (progression: ProgressionEtapes) => boolean>
 > = {
   'choisir-role': () => true,
   'verifier-informations': (p) => estFranchi(p.structureEmployeuse),
@@ -26,30 +29,30 @@ const porteFranchie: Partial<
 }
 
 const etapeFranchie = (
-  step: InscriptionStep,
+  step: EtapeDInscription,
   etat: InscriptionEtat,
 ): boolean => {
   if (etat._tag === 'NonDemarree') return false
-  const value: InscriptionStepValue = step
+  const value: ValeurDEtapeDInscription = step
   return porteFranchie[value]?.(etat.progression) ?? false
 }
 
 const avancer = (
-  step: InscriptionStep,
+  step: EtapeDInscription,
   etat: InscriptionEtat,
   contexte: InscriptionContexte,
-): InscriptionStep => {
+): EtapeDInscription => {
   if (!etapeFranchie(step, etat)) return step
-  const suivante = getNextInscriptionStep(step, contexte)
+  const suivante = etapeSuivante(step, contexte)
   return suivante === null
-    ? InscriptionStep('recapitulatif')
+    ? EtapeDInscription('recapitulatif')
     : avancer(suivante, etat, contexte)
 }
 
 export const prochaineEtape = (
   etat: InscriptionEtat,
   { flowType, hasLieuxActivite }: ContexteParcours,
-): InscriptionStep => {
+): EtapeDInscription => {
   const contexte: InscriptionContexte = {
     flowType,
     profil: profilDeLInscription(etat),
@@ -57,12 +60,9 @@ export const prochaineEtape = (
     isConseillerNumerique: conseillerNumeriqueDeLInscription(etat),
   }
 
-  const premiere = getNextInscriptionStep(
-    InscriptionStep('initialize'),
-    contexte,
-  )
+  const premiere = etapeSuivante(EtapeDInscription('initialize'), contexte)
   return premiere === null
-    ? InscriptionStep('recapitulatif')
+    ? EtapeDInscription('recapitulatif')
     : avancer(premiere, etat, contexte)
 }
 

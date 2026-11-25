@@ -2,7 +2,7 @@ import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { semerUnAccompagnementDansLaCommune } from '@/features/activites/activites.cucumber'
 import { Jour, PopulationDeMediateurs } from './domain'
-import { accompagnementsParDepartement } from './implementation'
+import { accompagnementsParDepartement } from './implementations/prisma/accompagnements-par-departement.query'
 
 const AJACCIO = '2A004'
 const CORSE_DU_SUD = '2A'

@@ -1,22 +1,21 @@
 'use server'
 
 import { actionBuilder } from '@/configuration/nextjs'
-import { withAuth } from '@/features/authentification'
-import {
-  type InvitationsEnvoyees,
-  inviterDesMembres,
-} from '@/features/equipe/abilities/inviter-des-membres'
+import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { INVITER_DES_MEMBRES_ERRORS } from '@/features/equipe/abilities/inviter-des-membres/action/inviter-des-membres.errors'
 import { InviterDesMembresValidation } from '@/features/equipe/abilities/inviter-des-membres/action/inviter-des-membres.validation'
 import type { AucuneInvitationAEnvoyer } from '@/features/equipe/abilities/inviter-des-membres/domain'
+import { type InvitationsEnvoyees } from '@/features/equipe/abilities/inviter-des-membres/domain/index'
+import { inviterDesMembres } from '@/features/equipe/abilities/inviter-des-membres/implementations/prisma/inviter-des-membres.mutation'
 import {
   ActionNonAutorisee,
   CoordinateurId,
   type CoordinateurIntrouvable,
-  Email,
+  Courriel,
   UtilisateurId,
 } from '@/features/equipe/domain'
-import { withMaintenance } from '@/features/maintenance-mode'
+import { envoyerUneInvitation } from '@/features/equipe/implementations/email'
+import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { fromResult, withInput } from '@/libraries/nextjs'
 import { failure, type Result } from '@/libraries/result'
 
@@ -39,9 +38,9 @@ export const inviterDesMembresAction = actionBuilder()
       > =>
         user.coordinateur == null
           ? failure(ActionNonAutorisee())
-          : inviterDesMembres({
+          : inviterDesMembres({ envoyerUneInvitation })({
               coordinateurId: CoordinateurId(user.coordinateur.id),
-              candidats: input.emails.map(Email),
+              candidats: input.emails.map(Courriel),
               auteurId: UtilisateurId(user.id),
             }),
       { onError: INVITER_DES_MEMBRES_ERRORS },

@@ -1,5 +1,5 @@
 import Button from '@codegouvfr/react-dsfr/Button'
-import { CreateCraModalDefinition } from '@/features/activites/ui/saisie/CreateCraModal/CreateCraModalDefinition'
+import { ModaleDeSaisie } from '@/features/activites/ui/components/ModaleDeSaisie'
 
 export const AucuneActivite = () => (
   <div className="fr-border-radius--8 fr-mt-6v fr-p-12v fr-background-alt--blue-france fr-align-items-center">
@@ -14,7 +14,7 @@ export const AucuneActivite = () => (
     <div className="fr-flex fr-justify-content-center fr-width-full">
       <Button
         type="button"
-        {...CreateCraModalDefinition.buttonProps}
+        {...ModaleDeSaisie.buttonProps}
         iconId="fr-icon-add-line"
       >
         Enregistrer une activité

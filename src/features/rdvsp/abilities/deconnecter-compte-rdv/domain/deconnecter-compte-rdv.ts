@@ -1,6 +1,9 @@
 import type { Result } from '@/libraries/result'
-import type { CompteRdv, CompteRdvDeconnecte } from '../../../domain/compte-rdv'
-import type { UtilisateurCoopId } from '../../../domain/utilisateur-coop-id'
+import type {
+  CompteRdv,
+  CompteRdvDeconnecte,
+} from '../../../domain/compte/compte-rdv'
+import type { UtilisateurCoopId } from '../../../domain/identifiants/utilisateur-coop-id'
 import type { CompteRdvIntrouvable } from './errors'
 
 export type DeconnecterCompteRdv = (input: {

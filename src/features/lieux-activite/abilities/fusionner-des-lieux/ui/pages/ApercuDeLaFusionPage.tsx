@@ -1,21 +1,24 @@
-import type { FusionApercue } from '@/features/lieux-activite/abilities/fusionner-des-lieux'
+import type { FusionApercue } from '@/features/lieux-activite/abilities/fusionner-des-lieux/domain'
 import { ApercuDeLaFusion } from '@/features/lieux-activite/abilities/fusionner-des-lieux/ui/components/ApercuDeLaFusion'
 import { ChoisirLeLieuAFusionner } from '@/features/lieux-activite/abilities/fusionner-des-lieux/ui/components/ChoisirLeLieuAFusionner'
 import ValiderLaFusion from '@/features/lieux-activite/abilities/fusionner-des-lieux/ui/components/ValiderLaFusion'
-import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
-import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
-import { toTitleCase } from '@/libraries/texte/toTitleCase'
-import AdministrationBreadcrumbs from '@/libraries/ui/components/administration/AdministrationBreadcrumbs'
-import AdministrationTitle from '@/libraries/ui/components/administration/AdministrationTitle'
-import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
-import { nomAffiche } from '../nom-affiche'
+import { hrefDeModificationDuLieu } from '@/features/lieux-activite/ui/presenters/href-du-lieu.presenter'
+import { contentId } from '@/libraries/liens-d-evitement'
+import { SkipLinksPortal } from '@/libraries/liens-d-evitement/composants'
+import { toTitleCase } from '@/libraries/texte'
+import {
+  AdministrationBreadcrumbs,
+  AdministrationTitle,
+  CoopPageContainer,
+} from '@/libraries/ui/components'
+import { nomAffiche } from '../presenters/nom-affiche.presenter'
 
 export const ApercuDeLaFusionPage = ({
   structureId,
   mergeData,
 }: {
   structureId: string
-  mergeData: NonNullable<FusionApercue>
+  mergeData: FusionApercue
 }) => (
   <CoopPageContainer>
     <SkipLinksPortal />
@@ -29,7 +32,7 @@ export const ApercuDeLaFusionPage = ({
         {
           label: nomAffiche(mergeData.mergeTarget.nom),
           linkProps: {
-            href: `/administration/lieux-activite/${structureId}/modifier`,
+            href: hrefDeModificationDuLieu(structureId),
           },
         },
       ]}

@@ -3,8 +3,8 @@
 import ToggleSwitch from '@codegouvfr/react-dsfr/ToggleSwitch'
 import { useRouter } from 'next/navigation'
 import { type ReactNode, useState } from 'react'
-import { createToast } from '@/libraries/ui/toast/createToast'
-import type { EnregistrerUneSection } from '../enregistrer-une-section'
+import { createToast } from '@/libraries/ui/toast'
+import type { EnregistrerUneSection } from '../hooks/use-enregistrement-de-section'
 
 export const BasculeVisibiliteCartographie = ({
   id,

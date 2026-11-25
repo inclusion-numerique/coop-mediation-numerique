@@ -2,18 +2,24 @@
 
 import { environnementServeur } from '@/configuration/environnement/serveur'
 import { actionBuilder } from '@/configuration/nextjs'
-import { withAdmin, withAuth } from '@/features/authentification'
-import { getLoginRedirectUrl } from '@/features/authentification/domain/getHomepage'
-import { getAuthenticatedSessionToken } from '@/features/authentification/implementation/session/getSessionUser'
-import {
-  PorteeUsurpation,
-  usurperUnUtilisateur,
-} from '@/features/utilisateurs/abilities/usurper-un-utilisateur'
+import { adresseDeRetourApresConnexion } from '@/features/authentification/domain/page-d-accueil'
+import { getAuthenticatedSessionToken } from '@/features/authentification/implementations/session/session-token-from-cookies.query'
+import { withAdmin } from '@/features/authentification/middlewares/with-admin'
+import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { USURPER_UN_UTILISATEUR_ERRORS } from '@/features/utilisateurs/abilities/usurper-un-utilisateur/action/usurper-un-utilisateur.errors'
 import { UsurperUnUtilisateurValidation } from '@/features/utilisateurs/abilities/usurper-un-utilisateur/action/usurper-un-utilisateur.validation'
+import { PorteeUsurpation } from '@/features/utilisateurs/abilities/usurper-un-utilisateur/domain/index'
+import { usurperUnUtilisateur as usurper } from '@/features/utilisateurs/abilities/usurper-un-utilisateur/domain/usurper-un-utilisateur'
+import { cibleUsurpation } from '@/features/utilisateurs/abilities/usurper-un-utilisateur/implementations/prisma/cible-usurpation.query'
+import { ouvrirLUsurpation } from '@/features/utilisateurs/abilities/usurper-un-utilisateur/implementations/prisma/ouvrir-l-usurpation.mutation'
 import { identifiantsDe } from '@/features/utilisateurs/domain'
 import { fromResult, withInput } from '@/libraries/nextjs'
 import { success } from '@/libraries/result'
+
+const usurperUnUtilisateur = usurper({
+  lireLaCible: cibleUsurpation,
+  ouvrirLUsurpation,
+})
 
 export const usurperUnUtilisateurAction = actionBuilder()
   .use(withAuth())
@@ -27,7 +33,7 @@ export const usurperUnUtilisateurAction = actionBuilder()
           usurpateurId: user.id,
           jetonDeSession: await getAuthenticatedSessionToken(),
           portee: PorteeUsurpation(
-            environnementServeur.SUDO_USURPATION
+            environnementServeur().SUDO_USURPATION
               ? 'TousLesComptes'
               : 'FixturesSeulement',
           ),
@@ -41,7 +47,7 @@ export const usurperUnUtilisateurAction = actionBuilder()
         )
         return success({
           nom: cible.nom,
-          redirection: getLoginRedirectUrl({
+          redirection: adresseDeRetourApresConnexion({
             role: cible.role,
             inscriptionValidee:
               cible.inscription._tag === 'Le' ? cible.inscription.date : null,

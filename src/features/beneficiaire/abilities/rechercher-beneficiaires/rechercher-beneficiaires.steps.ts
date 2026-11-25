@@ -1,6 +1,6 @@
 import assert from 'node:assert'
 import { type DataTable, Given, Then, When } from '@cucumber/cucumber'
-import { rechercherBeneficiaires } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/implementation'
+import { rechercherBeneficiaires } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/implementations/prisma/rechercher-beneficiaires.query'
 import {
   seedBeneficiaire,
   testMediateurId,
@@ -16,9 +16,12 @@ Given(
   'les bénéficiaires de recherche suivants',
   async (dataTable: DataTable) => {
     seededIds = await Promise.all(
-      dataTable
-        .hashes()
-        .map(({ prenom, nom }) => seedBeneficiaire({ prenom, nom })),
+      dataTable.hashes().map(({ prenom, nom }) =>
+        seedBeneficiaire({
+          ...(prenom === undefined ? {} : { prenom }),
+          ...(nom === undefined ? {} : { nom }),
+        }),
+      ),
     )
   },
 )
@@ -34,7 +37,7 @@ When('je recherche {string} en excluant le premier', async (query: string) => {
   searchResult = await rechercherBeneficiaires({
     mediateurId: testMediateurId,
     query,
-    excludeIds: [BeneficiaireId(seededIds[0])],
+    excludeIds: [BeneficiaireId(seededIds[0] ?? '')],
   })
 })
 

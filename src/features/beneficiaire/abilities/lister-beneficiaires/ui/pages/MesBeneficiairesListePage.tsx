@@ -2,11 +2,8 @@ import { BeneficiairesEmpty } from '../components/BeneficiairesEmpty'
 import { BeneficiairesListHeader } from '../components/BeneficiairesListHeader'
 import { BeneficiairesNoResults } from '../components/BeneficiairesNoResults'
 import { BeneficiairesResults } from '../components/BeneficiairesResults'
-import type { MesBeneficiairesView } from '../components/lister-beneficiaires.presenter'
-import {
-  type MesBeneficiairesSearchParams,
-  toDataTableUrlState,
-} from '../components/lister-beneficiaires-search-params'
+import type { LiensDeLaListe } from '../filtres/liste-des-beneficiaires.filtre'
+import type { VueDeMesBeneficiaires } from '../presenters/lister-beneficiaires.presenter'
 
 const BASE_HREF = '/coop/mes-beneficiaires'
 
@@ -18,23 +15,21 @@ const BASE_HREF = '/coop/mes-beneficiaires'
  */
 export const MesBeneficiairesListePage = ({
   view,
-  searchParams,
+  liens,
 }: {
-  view: MesBeneficiairesView
-  searchParams: MesBeneficiairesSearchParams
+  view: VueDeMesBeneficiaires
+  liens: LiensDeLaListe
 }) => {
   // Aucun bénéficiaire enregistré : ni recherche ni table.
   if (view.tag === 'empty') return <BeneficiairesEmpty />
 
-  const state = toDataTableUrlState(searchParams)
-
   return (
     <>
-      <BeneficiairesListHeader state={state} baseHref={BASE_HREF} />
+      <BeneficiairesListHeader baseHref={BASE_HREF} />
       {view.tag === 'noResults' ? (
         <BeneficiairesNoResults recherche={view.recherche} />
       ) : (
-        <BeneficiairesResults view={view} state={state} baseHref={BASE_HREF} />
+        <BeneficiairesResults view={view} liens={liens} />
       )}
     </>
   )

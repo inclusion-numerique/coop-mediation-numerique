@@ -1,13 +1,12 @@
 import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { CoordinateurId, criteresDesActivites, MediateurId } from '../../domain'
+import { prismaClient } from '@/configuration/prisma'
+import { criteresDesActivitesDepuisLURL } from '@/features/activites/fixtures/criteres-depuis-l-url'
+import { CoordinateurId, MediateurId } from '../../domain'
 import type { Demandeur, ExportDesAccompagnements } from './domain'
-import {
-  exporterMesAccompagnements,
-  nomsDesFiltresExportes,
-} from './implementation'
+import { exporterMesAccompagnements } from './implementations/prisma/accompagnements-a-exporter.query'
+import { nomsDesFiltresExportes } from './implementations/prisma/noms-des-filtres-exportes.query'
 
 type Seme = { readonly userId: string; readonly mediateurId: string }
 
@@ -53,7 +52,7 @@ const nommer = async (parametres: Record<string, string>) => {
   assert.ok(contexte.demandeur, 'Aucun demandeur semé')
   contexte.noms = await nomsDesFiltresExportes({
     demandeur: contexte.demandeur,
-    criteres: criteresDesActivites(parametres),
+    criteres: criteresDesActivitesDepuisLURL(parametres),
     lieuxDesActivites: recherche('lieux', []),
     communesEtDepartements: recherche('territoire', {
       communesOptions: [],
@@ -143,7 +142,10 @@ Given(
   'une médiatrice {string} ayant accompagné des bénéficiaires les 3, 5 et 9 mars 2026',
   async (nom: string) => {
     const [firstName, lastName] = nom.split(' ')
-    contexte.moi = await semerUnMediateur({ firstName, lastName })
+    contexte.moi = await semerUnMediateur({
+      ...(firstName === undefined ? {} : { firstName }),
+      ...(lastName === undefined ? {} : { lastName }),
+    })
     contexte.demandeur = demandeurMediateur(contexte.moi)
     await semerMesAccompagnementsDeMars(contexte.moi)
   },
@@ -301,7 +303,7 @@ const exporter = async (parametres: Record<string, string>) => {
   assert.ok(contexte.demandeur, 'Aucun demandeur semé')
   contexte.exporte = await exporterMesAccompagnements({
     demandeur: contexte.demandeur,
-    criteres: criteresDesActivites(parametres),
+    criteres: criteresDesActivitesDepuisLURL(parametres),
   })
 }
 
@@ -380,14 +382,14 @@ Then("l'export affiche la source des données", () => {
 After(async () => {
   const { userIds, coordinateurIds, employeuses } = contexte
   contexte.employeuses = {}
-  contexte.noms = undefined
+  delete contexte.noms
   contexte.recherches = []
   contexte.userIds = []
   contexte.coordinateurIds = []
-  contexte.moi = undefined
-  contexte.autre = undefined
-  contexte.demandeur = undefined
-  contexte.exporte = undefined
+  delete contexte.moi
+  delete contexte.autre
+  delete contexte.demandeur
+  delete contexte.exporte
   if (userIds.length === 0) return
   const mediateurIds = (
     await prismaClient.mediateur.findMany({

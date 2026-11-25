@@ -1,7 +1,7 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
-import { consulterEmployeuseActuelle } from '@/features/employeuse/abilities/consulter-employeuse-actuelle/implementation'
-import type { EmployeuseActuelle } from '@/features/employeuse/domain/employeuse-actuelle'
+import { consulterEmployeuseActuelle } from '@/features/employeuse/abilities/consulter-employeuse-actuelle/implementations/prisma/consulter-employeuse-actuelle.query'
+import type { EmployeuseActuelle } from '@/features/employeuse/domain/consultation/employeuse-actuelle'
 import {
   seedAffectation,
   seedContrat,

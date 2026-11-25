@@ -1,5 +1,5 @@
 import axios, { type AxiosInstance } from 'axios'
-import { outputError } from '@/libraries/console/output'
+import { outputError } from '@/libraries/console'
 
 export type SentryConfig = {
   url: string
@@ -67,7 +67,7 @@ export const listIssueIdsForEnvironment = async (
     const linkHeader: string | undefined =
       typeof (response.headers as any).get === 'function'
         ? (response.headers as any).get('link')
-        : (response.headers as Record<string, string | undefined>).link
+        : (response.headers as Record<string, string | undefined>)['link']
     cursor = parseNextCursorFromLinkHeader(linkHeader)
   } while (cursor)
   return collectedIssueIds
@@ -126,7 +126,7 @@ export const listEnvironmentsWithIssues = async (
     const linkHeader: string | undefined =
       typeof (response.headers as any).get === 'function'
         ? (response.headers as any).get('link')
-        : (response.headers as Record<string, string | undefined>).link
+        : (response.headers as Record<string, string | undefined>)['link']
     cursor = parseNextCursorFromLinkHeader(linkHeader)
   } while (cursor)
 
@@ -157,7 +157,7 @@ export const listProjectEnvironments = async (
     const linkHeader: string | undefined =
       typeof (response.headers as any).get === 'function'
         ? (response.headers as any).get('link')
-        : (response.headers as Record<string, string | undefined>).link
+        : (response.headers as Record<string, string | undefined>)['link']
     cursor = parseNextCursorFromLinkHeader(linkHeader)
   } while (cursor)
 

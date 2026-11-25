@@ -59,7 +59,7 @@ describe('autoriser une fusion de comptes', () => {
     )
   })
 
-  it.each(['Admin', 'Support'] as const)('refuse un compte %s', (role) => {
+  it.each(['Admin'] as const)('refuse un compte %s', (role) => {
     expect(
       erreurDe(
         autoriserFusion(source({ role: RoleUtilisateur(role) }), cible()),

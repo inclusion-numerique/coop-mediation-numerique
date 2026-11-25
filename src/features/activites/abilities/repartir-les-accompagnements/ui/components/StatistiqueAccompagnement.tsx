@@ -3,12 +3,8 @@ import { ReactNode } from 'react'
 import {
   typeActivitePictograms,
   typeActivitePluralLabels,
-} from '@/features/activites/ui/libelles/type-activite'
-import { TypeActivite } from '@/generated/prisma/browser'
-import {
-  numberToPercentage,
-  numberToString,
-} from '@/libraries/nombre/formatNumber'
+} from '@/features/activites/ui/labels/libelles/type-activite.labels'
+import { numberToPercentage, numberToString } from '@/libraries/nombre'
 
 export const StatistiqueAccompagnement = ({
   typeActivite,
@@ -17,7 +13,7 @@ export const StatistiqueAccompagnement = ({
   className,
   children,
 }: {
-  typeActivite: TypeActivite
+  typeActivite: keyof typeof typeActivitePictograms
   count: number
   proportion: number
   className?: string

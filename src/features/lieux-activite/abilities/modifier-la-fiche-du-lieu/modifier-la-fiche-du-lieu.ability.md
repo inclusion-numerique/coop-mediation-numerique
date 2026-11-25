@@ -1,51 +1,51 @@
-# Feature: Corriger la fiche d'un lieu d'activité
+# Fonctionnalité: Corriger la fiche d'un lieu d'activité
 
 La fiche d'un lieu se consulte d'un bloc et se corrige section par section :
 informations générales, visibilité sur la cartographie, informations pratiques,
 description, services et accompagnement, modalités d'accès, publics accueillis.
 
-## Rule: Une section enregistrée ne touche qu'à elle-même
+## Règle: Une section enregistrée ne touche qu'à elle-même
 
 > Le routeur tRPC réétalait la ligne entière relue avant l'écriture, ce qui
 > faisait écraser une section par une autre enregistrée peu après.
 
-### Scenario: Enregistrer les informations pratiques laisse le téléphone en place
+### Scénario: Enregistrer les informations pratiques laisse le téléphone en place
 
-* Given une fiche de lieu avec un site web, un téléphone et un courriel
-* When le médiateur rattaché enregistre les informations pratiques avec un nouveau site web
-* Then le site web du lieu est le nouveau
-* And le téléphone et le courriel du lieu sont inchangés
+* Étant donné une fiche de lieu avec un site web, un téléphone et un courriel
+* Quand le médiateur rattaché enregistre les informations pratiques avec un nouveau site web
+* Alors le site web du lieu est le nouveau
+* Et le téléphone et le courriel du lieu sont inchangés
 
-### Scenario: Enregistrer les modalités d'accès laisse le site web en place
+### Scénario: Enregistrer les modalités d'accès laisse le site web en place
 
-* Given une fiche de lieu avec un site web, un téléphone et un courriel
-* When le médiateur rattaché enregistre les modalités d'accès sans téléphone
-* Then le site web du lieu est inchangé
+* Étant donné une fiche de lieu avec un site web, un téléphone et un courriel
+* Quand le médiateur rattaché enregistre les modalités d'accès sans téléphone
+* Alors le site web du lieu est inchangé
 
-## Rule: Un champ peut être vidé
+## Règle: Un champ peut être vidé
 
 > La projection legacy écrivait `undefined` pour une valeur absente, que Prisma
 > ignore : le champ se réaffichait à l'identique après effacement.
 
-### Scenario: Effacer le site web
+### Scénario: Effacer le site web
 
-* Given une fiche de lieu avec un site web, un téléphone et un courriel
-* When le médiateur rattaché enregistre les informations pratiques sans site web
-* Then le lieu n'a plus de site web
+* Étant donné une fiche de lieu avec un site web, un téléphone et un courriel
+* Quand le médiateur rattaché enregistre les informations pratiques sans site web
+* Alors le lieu n'a plus de site web
 
-## Rule: Les modalités d'accès venues de la cartographie survivent à une édition
+## Règle: Les modalités d'accès venues de la cartographie survivent à une édition
 
 > Le formulaire ne sait exprimer que « se présenter », « téléphoner » et
 > « contacter par mail ». Les autres viennent des imports et ne lui appartiennent
 > pas.
 
-### Scenario: La prise de rendez-vous en ligne est conservée
+### Scénario: La prise de rendez-vous en ligne est conservée
 
-* Given une fiche de lieu avec un site web, un téléphone et un courriel
-* When le médiateur rattaché enregistre les modalités d'accès sans téléphone
-* Then le lieu propose toujours la prise de rendez-vous en ligne
+* Étant donné une fiche de lieu avec un site web, un téléphone et un courriel
+* Quand le médiateur rattaché enregistre les modalités d'accès sans téléphone
+* Alors le lieu propose toujours la prise de rendez-vous en ligne
 
-## Rule: N'importe quel utilisateur de la coop peut corriger n'importe quelle fiche
+## Règle: N'importe quel utilisateur de la coop peut corriger n'importe quelle fiche
 
 > Choix délibéré, et non un oubli de contrôle : l'annuaire est tenu en commun.
 > Un médiateur qui travaille régulièrement avec un lieu voisin sans y exercer
@@ -53,13 +53,13 @@ description, services et accompagnement, modalités d'accès, publics accueillis
 > quiconque. Ce scénario existe pour que la règle reste lisible et qu'on ne la
 > « répare » pas un jour en croyant boucher une faille.
 
-### Scenario: Un médiateur qui n'exerce pas dans ce lieu corrige tout de même la fiche
+### Scénario: Un médiateur qui n'exerce pas dans ce lieu corrige tout de même la fiche
 
-* Given une fiche de lieu avec un site web, un téléphone et un courriel
-* When un médiateur étranger au lieu enregistre la description
-* Then la description du lieu est enregistrée
+* Étant donné une fiche de lieu avec un site web, un téléphone et un courriel
+* Quand un médiateur étranger au lieu enregistre la description
+* Alors la description du lieu est enregistrée
 
-## Rule: La fiche dit combien d'autres médiateurs exercent dans le lieu
+## Règle: La fiche dit combien d'autres médiateurs exercent dans le lieu
 
 > Une fiche modifiée vaut pour tous les médiateurs qui y exercent. En 2026, une
 > permanence en mairie a été transformée en maison départementale par une
@@ -70,34 +70,34 @@ description, services et accompagnement, modalités d'accès, publics accueillis
 > d'écran, pas une règle de l'enregistrement, qui reste ouvert à tous comme le
 > dit la règle précédente.
 
-### Scenario: Le médiateur seul dans son lieu ne le voit pas partagé
+### Scénario: Le médiateur seul dans son lieu ne le voit pas partagé
 
-* Given une fiche de lieu avec un site web, un téléphone et un courriel
-* When le médiateur rattaché consulte la fiche du lieu
-* Then la fiche compte 0 autre médiateur et 0 activité
+* Étant donné une fiche de lieu avec un site web, un téléphone et un courriel
+* Quand le médiateur rattaché consulte la fiche du lieu
+* Alors la fiche compte 0 autre médiateur et 0 activité
 
-### Scenario: Un médiateur étranger au lieu voit qu'un autre y exerce
+### Scénario: Un médiateur étranger au lieu voit qu'un autre y exerce
 
-* Given une fiche de lieu avec un site web, un téléphone et un courriel
-* When un médiateur étranger au lieu consulte la fiche du lieu
-* Then la fiche compte 1 autre médiateur et 0 activité
+* Étant donné une fiche de lieu avec un site web, un téléphone et un courriel
+* Quand un médiateur étranger au lieu consulte la fiche du lieu
+* Alors la fiche compte 1 autre médiateur et 0 activité
 
-### Scenario: Un médiateur qui a quitté le lieu n'est plus compté
+### Scénario: Un médiateur qui a quitté le lieu n'est plus compté
 
-* Given une fiche de lieu avec un site web, un téléphone et un courriel
-* And ce médiateur a quitté ce lieu
-* When un médiateur étranger au lieu consulte la fiche du lieu
-* Then la fiche compte 0 autre médiateur et 0 activité
+* Étant donné une fiche de lieu avec un site web, un téléphone et un courriel
+* Et ce médiateur a quitté ce lieu
+* Quand un médiateur étranger au lieu consulte la fiche du lieu
+* Alors la fiche compte 0 autre médiateur et 0 activité
 
-## Rule: Une fiche supprimée ne se consulte plus
+## Règle: Une fiche supprimée ne se consulte plus
 
-### Scenario: Le lieu supprimé est introuvable
+### Scénario: Le lieu supprimé est introuvable
 
-* Given une fiche de lieu avec un site web, un téléphone et un courriel
-* When ce lieu est supprimé
-* Then la fiche du lieu est introuvable
+* Étant donné une fiche de lieu avec un site web, un téléphone et un courriel
+* Quand ce lieu est supprimé
+* Alors la fiche du lieu est introuvable
 
-## Rule: L'immatriculation d'un lieu survit à l'enregistrement de ses informations générales
+## Règle: L'immatriculation d'un lieu survit à l'enregistrement de ses informations générales
 
 > Le formulaire ne rangeait dans sa saisie que les immatriculations en forme de
 > RNA : le SIRET choisi dans l'Annuaire des entreprises n'y figurait pas, et
@@ -109,22 +109,22 @@ description, services et accompagnement, modalités d'accès, publics accueillis
 > librement. Dans les deux cas l'adresse est reconnue par la Base Adresse
 > Nationale.
 
-### Scenario: Le SIRET choisi dans l'Annuaire est enregistré
+### Scénario: Le SIRET choisi dans l'Annuaire est enregistré
 
-* Given une fiche de lieu avec un site web, un téléphone et un courriel
-* When le médiateur rattaché enregistre les informations générales avec un établissement de l'Annuaire
-* Then le lieu porte le SIRET de cet établissement
-* And le lieu porte le nom d'usage saisi
+* Étant donné une fiche de lieu avec un site web, un téléphone et un courriel
+* Quand le médiateur rattaché enregistre les informations générales avec un établissement de l'Annuaire
+* Alors le lieu porte le SIRET de cet établissement
+* Et le lieu porte le nom d'usage saisi
 
-### Scenario: Déclarer qu'il n'y a pas de SIRET
+### Scénario: Déclarer qu'il n'y a pas de SIRET
 
-* Given une fiche de lieu immatriculée
-* When le médiateur rattaché enregistre les informations générales en déclarant l'absence de SIRET
-* Then le lieu n'a plus d'immatriculation
-* And le lieu n'a plus de nom d'usage
-* And le nom du lieu est celui qui a été saisi
+* Étant donné une fiche de lieu immatriculée
+* Quand le médiateur rattaché enregistre les informations générales en déclarant l'absence de SIRET
+* Alors le lieu n'a plus d'immatriculation
+* Et le lieu n'a plus de nom d'usage
+* Et le nom du lieu est celui qui a été saisi
 
-## Rule: On ne retire pas le dernier service d'un lieu visible
+## Règle: On ne retire pas le dernier service d'un lieu visible
 
 > La règle existait à la création, où tout se saisit d'un coup, et manquait à la
 > modification : on pouvait créer un lieu invisible sans service, puis le rendre
@@ -139,36 +139,36 @@ description, services et accompagnement, modalités d'accès, publics accueillis
 > Elle se mesure sur le lieu APRÈS modification, et non sur la saisie : c'est ce
 > qui reste au lieu qui compte, pas ce qui a été soumis.
 
-### Scenario: Rendre visible un lieu qui annonce un service
+### Scénario: Rendre visible un lieu qui annonce un service
 
-* Given une fiche de lieu avec un site web, un téléphone et un courriel
-* When le médiateur rattaché rend le lieu visible sur la cartographie
-* Then le lieu est visible sur la cartographie
+* Étant donné une fiche de lieu avec un site web, un téléphone et un courriel
+* Quand le médiateur rattaché rend le lieu visible sur la cartographie
+* Alors le lieu est visible sur la cartographie
 
-### Scenario: Rendre visible un lieu sans service lui donne un socle
+### Scénario: Rendre visible un lieu sans service lui donne un socle
 
-* Given une fiche de lieu sans service
-* When le médiateur rattaché rend le lieu visible sur la cartographie
-* Then le lieu est visible sur la cartographie
-* And le lieu annonce les services du socle
+* Étant donné une fiche de lieu sans service
+* Quand le médiateur rattaché rend le lieu visible sur la cartographie
+* Alors le lieu est visible sur la cartographie
+* Et le lieu annonce les services du socle
 
-### Scenario: Une autre section s'enregistre sans parler des services
+### Scénario: Une autre section s'enregistre sans parler des services
 
 > Le message des services manquants remontait sur toutes les sections, alors que
 > celle qui les porte vient en avant-dernier.
 
-* Given une fiche de lieu sans service
-* When le médiateur rattaché modifie la description du lieu
-* Then la modification est acceptée
+* Étant donné une fiche de lieu sans service
+* Quand le médiateur rattaché modifie la description du lieu
+* Alors la modification est acceptée
 
-### Scenario: Retirer le dernier service d'un lieu visible est refusé
+### Scénario: Retirer le dernier service d'un lieu visible est refusé
 
-* Given une fiche de lieu visible sur la cartographie
-* When le médiateur rattaché retire tous les services
-* Then la modification est refusée
-* And le lieu annonce toujours son service
+* Étant donné une fiche de lieu visible sur la cartographie
+* Quand le médiateur rattaché retire tous les services
+* Alors la modification est refusée
+* Et le lieu annonce toujours son service
 
-## Rule: Un lieu ne se partage qu'avec une adresse reconnue par la Base Adresse Nationale
+## Règle: Un lieu ne se partage qu'avec une adresse reconnue par la Base Adresse Nationale
 
 > La cartographie envoie des usagers à une adresse : elle doit exister. Une
 > adresse que la Base Adresse Nationale ne reconnaît pas — saisie avant que le
@@ -180,64 +180,64 @@ description, services et accompagnement, modalités d'accès, publics accueillis
 > reste toujours possible. Un lieu situé à la seule commune, lui, se partage :
 > c'est une réponse de la Base Adresse Nationale, si pauvre soit-elle.
 
-### Scenario: Rendre visible un lieu sans adresse reconnue est refusé
+### Scénario: Rendre visible un lieu sans adresse reconnue est refusé
 
-* Given une fiche de lieu sans adresse reconnue par la Base Adresse Nationale
-* When le médiateur rattaché rend le lieu visible sur la cartographie
-* Then la modification est refusée
-* And le lieu n'est pas visible sur la cartographie
+* Étant donné une fiche de lieu sans adresse reconnue par la Base Adresse Nationale
+* Quand le médiateur rattaché rend le lieu visible sur la cartographie
+* Alors la modification est refusée
+* Et le lieu n'est pas visible sur la cartographie
 
-### Scenario: Retirer de la cartographie un lieu sans adresse reconnue reste possible
+### Scénario: Retirer de la cartographie un lieu sans adresse reconnue reste possible
 
-* Given une fiche de lieu visible sans adresse reconnue par la Base Adresse Nationale
-* When le médiateur rattaché retire le lieu de la cartographie
-* Then la modification est acceptée
+* Étant donné une fiche de lieu visible sans adresse reconnue par la Base Adresse Nationale
+* Quand le médiateur rattaché retire le lieu de la cartographie
+* Alors la modification est acceptée
 
-### Scenario: Un lieu situé à la seule commune se partage
+### Scénario: Un lieu situé à la seule commune se partage
 
-* Given une fiche de lieu située à la seule commune
-* When le médiateur rattaché rend le lieu visible sur la cartographie
-* Then le lieu est visible sur la cartographie
+* Étant donné une fiche de lieu située à la seule commune
+* Quand le médiateur rattaché rend le lieu visible sur la cartographie
+* Alors le lieu est visible sur la cartographie
 
-## Rule: Chaque enregistrement se répercute au registre de l'Entrepôt
+## Règle: Chaque enregistrement se répercute au registre de l'Entrepôt
 
 > Les deux écritures tiennent dans une seule transaction. Une section n'y écrit
 > que ses propres colonnes, comme côté coop — à ceci près que le registre range
 > en un seul `jsonb` ce que la coop tient en trois colonnes : enregistrer le site
 > web y réécrit le contact entier, reconstruit depuis la fiche à jour.
 
-### Scenario: Le site web enregistré paraît au registre sans emporter le reste du contact
+### Scénario: Le site web enregistré paraît au registre sans emporter le reste du contact
 
-* Given une fiche de lieu avec un site web, un téléphone et un courriel
-* When le médiateur rattaché enregistre les informations pratiques avec un nouveau site web
-* Then le registre porte le nouveau site web, le téléphone et le courriel du lieu
+* Étant donné une fiche de lieu avec un site web, un téléphone et un courriel
+* Quand le médiateur rattaché enregistre les informations pratiques avec un nouveau site web
+* Alors le registre porte le nouveau site web, le téléphone et le courriel du lieu
 
-### Scenario: Une section muette sur le contact ne le touche pas
+### Scénario: Une section muette sur le contact ne le touche pas
 
-* Given une fiche de lieu avec un site web, un téléphone et un courriel
-* When le médiateur rattaché modifie la description du lieu
-* Then le registre porte la description du lieu
-* And le registre porte toujours le site web d'origine
+* Étant donné une fiche de lieu avec un site web, un téléphone et un courriel
+* Quand le médiateur rattaché modifie la description du lieu
+* Alors le registre porte la description du lieu
+* Et le registre porte toujours le site web d'origine
 
-### Scenario: Une inscription venue d'ailleurs passe à la coop dès qu'elle en porte les valeurs
+### Scénario: Une inscription venue d'ailleurs passe à la coop dès qu'elle en porte les valeurs
 
 > `source` dit d'où viennent les données qu'on lit dans l'inscription. Une fiche
 > qui annoncerait `dora` en portant ce que le médiateur vient d'enregistrer
 > tromperait ses lecteurs. Ce que la fiche était avant reste lisible dans la coop.
 
-* Given une fiche de lieu avec un site web, un téléphone et un courriel
-* And cette fiche est déjà inscrite au registre sous la source « dora »
-* When le médiateur rattaché modifie la description du lieu
-* Then le registre attribue l'inscription à la coop
+* Étant donné une fiche de lieu avec un site web, un téléphone et un courriel
+* Et cette fiche est déjà inscrite au registre sous la source « dora »
+* Quand le médiateur rattaché modifie la description du lieu
+* Alors le registre attribue l'inscription à la coop
 
-### Scenario: Une inscription qu'une autre source avait éteinte revient à la vie
+### Scénario: Une inscription qu'une autre source avait éteinte revient à la vie
 
 > Quelqu'un tient cette fiche à jour dans la coop : le lieu existe. Laisser
 > l'inscription éteinte reviendrait à écrire dans une ligne que plus aucun
 > consommateur ne lit — une modification sans effet, et sans rien pour le dire
 > au médiateur qui vient de la faire.
 
-* Given une fiche de lieu avec un site web, un téléphone et un courriel
-* And cette fiche est inscrite au registre, mais une autre source l'y a supprimée
-* When le médiateur rattaché modifie la description du lieu
-* Then le registre ne dit plus cette inscription supprimée
+* Étant donné une fiche de lieu avec un site web, un téléphone et un courriel
+* Et cette fiche est inscrite au registre, mais une autre source l'y a supprimée
+* Quand le médiateur rattaché modifie la description du lieu
+* Alors le registre ne dit plus cette inscription supprimée

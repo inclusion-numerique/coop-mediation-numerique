@@ -1,10 +1,11 @@
 import type { ReactNode } from 'react'
-import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
-import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
-import type { LieuId } from '../../../../domain/lieu-id'
+import { hrefDeFusionDuLieu } from '@/features/lieux-activite/ui/presenters/href-du-lieu.presenter'
+import { contentId } from '@/libraries/liens-d-evitement'
+import { SkipLinksPortal } from '@/libraries/liens-d-evitement/composants'
+import type { LieuId } from '../../../../domain/identifiants/lieu-id'
 import { EnteteDeLaFicheEnAdministration } from '../components/EnteteDeLaFicheEnAdministration'
-import type { EnregistrerUneSection } from '../enregistrer-une-section'
-import type { FicheAffichee } from '../fiche-du-lieu.presenter'
+import type { EnregistrerUneSection } from '../hooks/use-enregistrement-de-section'
+import type { FicheAffichee } from '../presenters/fiche-du-lieu.presenter'
 import { FicheDuLieuPage } from './FicheDuLieuPage'
 
 export const FicheDuLieuEnAdministrationPage = ({
@@ -22,7 +23,7 @@ export const FicheDuLieuEnAdministrationPage = ({
     <SkipLinksPortal />
     <EnteteDeLaFicheEnAdministration
       nom={fiche.nom}
-      fusionHref={`/administration/lieux-activite/${lieuId}/merge`}
+      fusionHref={hrefDeFusionDuLieu(lieuId)}
     />
     <main
       id={contentId}

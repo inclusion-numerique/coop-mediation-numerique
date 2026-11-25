@@ -1,10 +1,1 @@
-import { instrument } from '@/configuration/telemetry/instrument/server'
-import { searchAdresse } from '@/libraries/ban/apiAdresse'
-
-const operation = {
-  name: 'http.ban.search',
-  service: 'base-adresse-nationale',
-}
-
-export const geocoder = (requete: string) =>
-  instrument(operation, () => searchAdresse(requete))
+export { geocoder } from './ban'

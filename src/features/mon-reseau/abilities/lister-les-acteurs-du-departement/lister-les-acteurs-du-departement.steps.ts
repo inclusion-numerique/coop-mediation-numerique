@@ -1,11 +1,12 @@
 import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
-import { listerLesActeursDuDepartement } from '@/features/mon-reseau/abilities/lister-les-acteurs-du-departement'
+import { listerLesActeursDuDepartement } from '@/features/mon-reseau/abilities/lister-les-acteurs-du-departement/implementations/prisma/acteurs-listes.query'
 import {
   exercerDansLeLieu,
   semerUnActeur,
   semerUnLieu,
 } from '@/features/mon-reseau/mon-reseau.cucumber'
+import { criteresDesActeursDuReseau } from './ui/filtres/acteurs-du-reseau.filtre'
 
 const communesDesLieux = async () => ({ communesOptions: [] })
 
@@ -18,7 +19,7 @@ const nomsProposes = (): readonly string[] => {
   if (consultation === undefined || !consultation.success) {
     throw new Error('Aucun annuaire des acteurs consulté')
   }
-  return consultation.data.acteurs.acteurs.map(({ nomAffiche }) => nomAffiche)
+  return consultation.data.acteurs.items.map(({ nomAffiche }) => nomAffiche)
 }
 
 const SAINT_FLOUR = '15187'
@@ -45,17 +46,14 @@ const semerDansLeCantal = async ({
   if (mediateurId === null) throw new Error('Médiateur non semé')
   await exercerDansLeLieu({
     mediateurId,
-    lieuId: await semerUnLieu({ codeInsee }),
+    lieuId: await semerUnLieu(codeInsee === undefined ? {} : { codeInsee }),
   })
 }
 
 const consulter = async (parametres: Record<string, string>) => {
   etat.consultation = await listerLesActeursDuDepartement(
     '15',
-    {
-      lignes: '100',
-      ...parametres,
-    },
+    criteresDesActeursDuReseau({ lignes: '100', ...parametres }),
     { communesDesLieux },
   )
 }
@@ -119,7 +117,7 @@ When(
 When(
   'on cherche « {word} » de Z à A dans l’annuaire des acteurs du Cantal',
   async (recherche: string) => {
-    await consulter({ recherche, tri: 'nomza' })
+    await consulter({ recherche, ordre: 'desc' })
   },
 )
 
@@ -128,7 +126,7 @@ When(
   async (code: string) => {
     etat.consultation = await listerLesActeursDuDepartement(
       code,
-      {},
+      criteresDesActeursDuReseau({}),
       { communesDesLieux },
     )
   },
@@ -173,5 +171,5 @@ Then('l’annuaire des acteurs est introuvable', () => {
 })
 
 After(() => {
-  etat.consultation = undefined
+  delete etat.consultation
 })

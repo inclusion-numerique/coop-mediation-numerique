@@ -1,11 +1,20 @@
 'use server'
 
-import { z } from 'zod'
 import { actionBuilder } from '@/configuration/nextjs'
-import { withAuth } from '@/features/authentification'
-import { rechercherDesLieuxAAjouter } from '@/features/lieux-activite/abilities/rechercher-des-lieux-a-ajouter'
+import { withAuth } from '@/features/authentification/middlewares/with-auth'
+import { RechercherDesLieuxAAjouterValidation } from '@/features/lieux-activite/abilities/rechercher-des-lieux-a-ajouter/action/rechercher-des-lieux-a-ajouter.validation'
 import { RechercheDeLieu } from '@/features/lieux-activite/abilities/rechercher-des-lieux-a-ajouter/domain/recherche-de-lieu'
+import { rechercherDesLieuxAAjouter as rechercher } from '@/features/lieux-activite/abilities/rechercher-des-lieux-a-ajouter/domain/rechercher'
+import { chercherDansLAnnuaireDesEntreprises } from '@/features/lieux-activite/abilities/rechercher-des-lieux-a-ajouter/implementations/api-entreprise/annuaire-des-entreprises.query'
+import { chercherDansLaCartographie } from '@/features/lieux-activite/abilities/rechercher-des-lieux-a-ajouter/implementations/entrepot/lieux-de-la-cartographie.query'
+import { chercherDansLaCoop } from '@/features/lieux-activite/abilities/rechercher-des-lieux-a-ajouter/implementations/prisma/lieux-de-la-coop.query'
 import { withInput } from '@/libraries/nextjs'
+
+const rechercherDesLieuxAAjouter = rechercher({
+  chercherDansLaCoop,
+  chercherDansLaCartographie,
+  chercherDansLAnnuaireDesEntreprises,
+})
 
 /**
  * Les suggestions du champ d'ajout : la coop, la cartographie nationale et,
@@ -18,7 +27,7 @@ import { withInput } from '@/libraries/nextjs'
  */
 export const rechercherDesLieuxAAjouterAction = actionBuilder()
   .use(withAuth())
-  .use(withInput(z.object({ recherche: z.string() })))
+  .use(withInput(RechercherDesLieuxAAjouterValidation))
   .execute(async ({ input }) =>
     rechercherDesLieuxAAjouter(RechercheDeLieu(input.recherche)),
   )

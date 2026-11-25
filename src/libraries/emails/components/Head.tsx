@@ -10,7 +10,7 @@ import {
   MjmlTitle,
 } from '@faire/mjml-react'
 import { ReactNode } from 'react'
-import { emailAssetUrl } from '@/libraries/emails/emailAssetUrl'
+import { emailAssetUrl } from '@/libraries/emails/email-asset-url'
 import { brandColor } from '@/libraries/emails/styles'
 
 const Head = ({

@@ -1,1 +1,0 @@
-export { effacerNotes } from './implementation'

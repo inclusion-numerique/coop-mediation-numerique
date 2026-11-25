@@ -1,5 +1,6 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'
+import { hrefDesStatistiquesDuMediateur } from '@/features/mon-reseau/ui/presenters/liens.presenter'
 import type { MediateurId } from '../../../../domain'
 import type { StatistiquesSur30Jours } from '../../domain'
 
@@ -51,7 +52,7 @@ export const StatistiquesDeLActeur = ({
         iconId="fr-icon-arrow-right-line"
         iconPosition="right"
         title="Ouvre la page des statistiques"
-        linkProps={{ href: `/coop/mes-statistiques?mediateurs=${mediateurId}` }}
+        linkProps={{ href: hrefDesStatistiquesDuMediateur(mediateurId) }}
       >
         Voir ses statistiques
       </Button>

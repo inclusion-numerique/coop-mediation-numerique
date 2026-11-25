@@ -1,6 +1,6 @@
 import classNames from 'classnames'
 import type { ReactNode } from 'react'
-import { contactEmail } from '@/configuration/projet/config'
+import { contactEmail } from '@/configuration/projet'
 
 const ContactSupportLink = ({
   className,
@@ -12,7 +12,7 @@ const ContactSupportLink = ({
   size?: 'sm' | 'md' | 'lg' | 'xl'
 }) => (
   <a
-    href={`mailto:${contactEmail}`}
+    href={`mailto:${contactEmail()}`}
     className={classNames(`fr-link fr-link--${size} fr-mb-0`, className)}
   >
     {children}

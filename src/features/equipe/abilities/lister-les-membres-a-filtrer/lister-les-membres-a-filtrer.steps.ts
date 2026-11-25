@@ -1,10 +1,11 @@
 import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { CoordinateurId } from '../../domain/coordinateur-id'
-import { MediateurId } from '../../domain/mediateur-id'
-import { listerLesMembresAFiltrer, type MembreAFiltrer } from '.'
+import { prismaClient } from '@/configuration/prisma'
+import { CoordinateurId } from '../../domain/identifiants/coordinateur-id'
+import { MediateurId } from '../../domain/identifiants/mediateur-id'
+import { type MembreAFiltrer } from './domain/index'
+import { listerLesMembresAFiltrer } from './implementations/prisma/membres-a-filtrer.query'
 
 type Seme = { userId: string; mediateurId: string; coordinateurId?: string }
 
@@ -22,8 +23,8 @@ const semerUnMediateur = async (
     data: {
       id: userId,
       email: `membres-a-filtrer-${userId}@example.com`,
-      firstName,
-      lastName,
+      ...(firstName === undefined ? {} : { firstName }),
+      ...(lastName === undefined ? {} : { lastName }),
     },
   })
   const { id: mediateurId } = await prismaClient.mediateur.create({
@@ -38,7 +39,11 @@ const semerUnMediateur = async (
         })
       ).id
     : undefined
-  const seme = { userId, mediateurId, coordinateurId }
+  const seme: Seme = {
+    userId,
+    mediateurId,
+    ...(coordinateurId === undefined ? {} : { coordinateurId }),
+  }
   semes = { ...semes, [nom]: seme }
   return seme
 }

@@ -1,13 +1,14 @@
 'use server'
 
 import { actionBuilder } from '@/configuration/nextjs'
-import { withActeurDeLaCoop, withAuth } from '@/features/authentification'
-import { appliquerLesDifferences } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu'
+import { withActeurDeLaCoop } from '@/features/authentification/middlewares/with-acteur-de-la-coop'
+import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { AppliquerLesDifferencesValidation } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/action/appliquer-les-differences.validation'
 import { MODIFIER_LA_FICHE_DU_LIEU_ERRORS } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/action/modifier-la-fiche-du-lieu.errors'
-import { LieuId } from '@/features/lieux-activite/domain/lieu-id'
-import { UserId } from '@/features/lieux-activite/domain/user-id'
-import { withMaintenance } from '@/features/maintenance-mode'
+import { appliquerLesDifferences } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/implementations/prisma/appliquer-les-differences.mutation'
+import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
+import { UtilisateurId } from '@/features/lieux-activite/domain/identifiants/utilisateur-id'
+import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { fromResult, withInput } from '@/libraries/nextjs'
 
 export const appliquerLesDifferencesAction = actionBuilder()
@@ -21,7 +22,7 @@ export const appliquerLesDifferencesAction = actionBuilder()
         appliquerLesDifferences({
           id: LieuId(input.id),
           choix: input.choix,
-          par: UserId(user.id),
+          par: UtilisateurId(user.id),
         }),
       { onError: MODIFIER_LA_FICHE_DU_LIEU_ERRORS },
     ),

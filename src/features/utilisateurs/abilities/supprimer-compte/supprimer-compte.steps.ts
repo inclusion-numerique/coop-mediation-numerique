@@ -1,19 +1,22 @@
 import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma'
 import { AuteurId, UtilisateurId } from '@/features/utilisateurs/domain'
 import {
   type CompteSeme,
   semerCompte,
 } from '@/features/utilisateurs/utilisateurs.cucumber'
-import { supprimerCompte } from './commands/supprimer-compte'
 import {
   type AuteurSuppression,
   RetentionPolicy,
   type SupprimerComptePorts,
 } from './domain'
-import { hash } from './implementation'
+import { supprimerCompte } from './domain/supprimer-compte'
+import { hash } from './implementations/crypto/hash.adapter'
+import { compteASupprimer } from './implementations/prisma/compte-a-supprimer.query'
+import { couperAcces } from './implementations/prisma/couper-acces.mutation'
+import { logEffacementReport } from './implementations/prisma/log-effacement-report.mutation'
 
 const demandes: {
   portefeuille: string[]
@@ -53,7 +56,7 @@ const ports: SupprimerComptePorts = {
   hash,
 }
 
-type Effacement = Awaited<ReturnType<typeof supprimerCompte>>
+type Effacement = Awaited<ReturnType<ReturnType<typeof supprimerCompte>>>
 
 const scenario: {
   compte?: CompteSeme
@@ -73,10 +76,11 @@ const administrateur = (): AuteurSuppression => ({
 
 const supprimer = async (cible: string, auteur: AuteurSuppression) => {
   scenario.effacement = await supprimerCompte({
-    command: { cible: UtilisateurId(cible), auteur, maintenant: new Date() },
-    ports,
-    synchroniserLaPersonne: async () => undefined,
-  })
+    ...ports,
+    lireLeCompteASupprimer: compteASupprimer,
+    couperLAcces: couperAcces(async () => undefined),
+    journaliserLEffacement: logEffacementReport,
+  })({ cible: UtilisateurId(cible), auteur, maintenant: new Date() })
 }
 
 Given('un compte médiateur avec des données rattachées', async () => {

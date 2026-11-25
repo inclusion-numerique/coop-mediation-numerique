@@ -1,0 +1,29 @@
+.infobulle-de-graphique {
+  --tooltip-background: hsl(246deg 53% 22% / 80%);
+
+  color: #f6f6f6;
+  background: var(--tooltip-background);
+  border-radius: 8px;
+  padding: 20px 24px 12px;
+
+  .infobulle-de-graphique__titre {
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 18px;
+    margin-bottom: 8px;
+  }
+
+  .infobulle-de-graphique__serie {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 16px;
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 8px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}

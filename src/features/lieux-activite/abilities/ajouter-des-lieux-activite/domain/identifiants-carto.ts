@@ -1,5 +1,5 @@
-import { onlyDefinedAndNotNull } from '@/libraries/collections/onlyDefinedAndNotNull'
-import type { IdentifiantCartographie } from '../../../domain/ids-cartographie-nationale'
+import { onlyDefinedAndNotNull } from '@/libraries/collections'
+import type { IdentifiantCartographie } from '../../../domain/cartographie-nationale/ids-cartographie-nationale'
 
 export const identifiantsCarto = (
   lieux: readonly {

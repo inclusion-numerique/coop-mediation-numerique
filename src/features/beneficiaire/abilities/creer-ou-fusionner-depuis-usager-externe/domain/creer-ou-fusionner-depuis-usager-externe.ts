@@ -5,7 +5,7 @@
 
 // Entrée : données brutes non fiables d'un usager externe, identifié par son id
 // dans le système source (ici `rdvUserId`, la clé de liaison en base Coop).
-export type ExternalUserToMerge = {
+export type UsagerExterneAFusionner = {
   readonly rdvUserId: number
   readonly nom: string | null
   readonly prenom: string | null
@@ -30,9 +30,15 @@ export type MergedBeneficiaire = {
 }
 
 export type CreerOuFusionnerBeneficiairesDepuisUsagersExternes = (input: {
-  usagers: ExternalUserToMerge[]
+  usagers: UsagerExterneAFusionner[]
   mediateurId: string
 }) => Promise<{
   merges: MergedBeneficiaire[]
   skipped: { readonly rdvUserId: number; readonly reason: unknown }[]
 }>
+
+export type CommuneFields = {
+  readonly commune: string
+  readonly communeCodePostal: string
+  readonly communeCodeInsee: string
+}

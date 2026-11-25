@@ -1,5 +1,5 @@
 import Button from '@codegouvfr/react-dsfr/Button'
-import type { RepartitionPresentee } from '../repartition.presenter'
+import type { RepartitionPresentee } from '../presenters/repartition.presenter'
 import { StatistiqueMateriel } from './StatistiqueMateriel'
 
 export const MaterielsUtilises = ({

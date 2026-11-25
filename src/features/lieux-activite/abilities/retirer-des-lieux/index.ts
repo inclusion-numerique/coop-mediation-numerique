@@ -1,1 +1,0 @@
-export { retirerDesLieux } from './implementation'

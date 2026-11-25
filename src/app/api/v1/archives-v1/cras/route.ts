@@ -1,20 +1,20 @@
 import { routeBuilder } from '@arckit/nextjs/route'
 import { NextResponse } from 'next/server'
-import {
-  crasV1Exposes,
-  craV1Expose,
-  curseurDeCraV1,
-} from '@/features/activites/abilities/exposer-les-cras-v1'
+import { craV1Expose } from '@/features/activites/abilities/exposer-les-cras-v1/implementations/api/cra-v1-expose.transfer'
+import { curseurDeCraV1 } from '@/features/activites/abilities/exposer-les-cras-v1/implementations/api/curseur-de-cra-v1.params'
+import { crasV1Exposes } from '@/features/activites/abilities/exposer-les-cras-v1/implementations/prisma/cras-v1-exposes.query'
 import {
   withApiV1Errors,
   withClientApi,
   withQueryParams,
-} from '@/features/clients-api/abilities/authentifier-un-client-api/implementation/api-v1'
-import { reponseDesCrasV1 } from '@/features/clients-api/abilities/lire-les-cras-v1'
+} from '@/features/clients-api/abilities/authentifier-un-client-api/implementations/api-v1'
+import { authentifierUnClientApi } from '@/features/clients-api/abilities/authentifier-un-client-api/implementations/prisma/authentifier-un-client-api.query'
+import { reponseDesCrasV1 } from '@/features/clients-api/abilities/lire-les-cras-v1/implementations/api-v1/cras-v1.response'
+import { verifySecret } from '@/features/clients-api/implementations/secret/hash-secret.adapter'
 import {
   JsonApiCursorPaginationQueryParamsValidation,
   prismaCursorPagination,
-} from '@/libraries/json-api/CursorPagination'
+} from '@/libraries/json-api'
 
 /**
  * @openapi
@@ -266,6 +266,10 @@ import {
  *         required: false
  *         description: curseur de pagination pour obtenir les éléments précédents
  *     responses:
+ *       401:
+ *         $ref: '#/components/responses/NonAuthentifie'
+ *       403:
+ *         $ref: '#/components/responses/NonAutorise'
  *       200:
  *         description: liste de cras v1
  *         content:
@@ -292,7 +296,7 @@ import {
  */
 
 export const GET = routeBuilder()
-  .use(withClientApi(['Activites']))
+  .use(withClientApi(authentifierUnClientApi(verifySecret))(['Activites']))
   .use(withQueryParams(JsonApiCursorPaginationQueryParamsValidation))
   .handle(
     withApiV1Errors(async ({ queryParams }) => {

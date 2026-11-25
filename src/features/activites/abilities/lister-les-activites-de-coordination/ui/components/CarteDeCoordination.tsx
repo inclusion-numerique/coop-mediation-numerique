@@ -1,10 +1,9 @@
 'use client'
 
-import ListCard from '@/features/activites/ui/carte/ListCard'
-import { CalendarIcon } from '@/libraries/pictograms/digital/CalendarIcon'
-import { EcosystemIcon } from '@/libraries/pictograms/digital/EcosystemIcon'
-import { HumanCooperationIcon } from '@/libraries/pictograms/environment/HumanCooperationIcon'
-import type { CarteDeCoordination as Carte } from '../liste-des-coordinations.presenter'
+import ListCard from '@/features/activites/ui/components/carte/ListCard'
+import { CalendarIcon, EcosystemIcon } from '@/libraries/pictograms/digital'
+import { HumanCooperationIcon } from '@/libraries/pictograms/environment'
+import type { CarteDeCoordination as Carte } from '../presenters/liste-des-coordinations.presenter'
 import { DetailDeCoordinationDynamicModal } from './DetailDeCoordinationModale'
 
 const PICTOGRAMMES = {

@@ -1,51 +1,49 @@
 import {
-  InscriptionDejaValidee,
-  type InscriptionEtat,
-  InscriptionIntrouvable,
-  isValidee,
-  poserRole,
+  type EtapeDInscription,
+  prochaineEtape,
   type Role,
-  type UserId,
+  TypeDeParcours,
 } from '@/features/inscription/domain'
-import { failure, type Result, success } from '@/libraries/result'
-import type { EnregistrerProfilChoisiInput } from './ports'
-import { rolesACreerPourRole } from './roles-a-creer'
+import type { LireLEtatDeLInscription } from '@/features/inscription/domain/ports'
+import { type Result, success } from '@/libraries/result'
+import {
+  type ChoisirProfilError,
+  deciderLeRole,
+  type RoleChoisi,
+} from './decider-le-role'
+import type { EnregistrerProfilChoisi } from './ports'
 
-/**
- * Rôles choisissables à la première étape : le statut conseiller numérique ne se
- * choisit pas, il provient du Dataspace.
- */
-export const rolesDisponibles = ['Mediateur', 'Coordinateur'] as const
-
-export type RoleChoisi = {
-  readonly userId: UserId
-  readonly role: Role
+export type ChoisirProfilPorts = {
+  readonly lireLEtat: LireLEtatDeLInscription
+  readonly enregistrerProfilChoisi: EnregistrerProfilChoisi
 }
 
-export type ChoisirProfilError = InscriptionIntrouvable | InscriptionDejaValidee
+export const choisirProfil =
+  ({ lireLEtat, enregistrerProfilChoisi }: ChoisirProfilPorts) =>
+  async (
+    { userId, role }: RoleChoisi,
+    maintenant: Date,
+  ): Promise<
+    Result<
+      { readonly role: Role; readonly etapeSuivante: EtapeDInscription },
+      ChoisirProfilError
+    >
+  > => {
+    const decision = deciderLeRole(
+      await lireLEtat(userId),
+      { userId, role },
+      maintenant,
+    )
 
-/**
- * Décide — ou re-décide — le rôle d'inscription : garde l'état courant puis
- * applique la transition, et rend la charge à écrire (état résultant + comptes
- * de rôle) sans l'exécuter. Fonction pure : c'est la couche appelante qui lit
- * l'état et projette `aEnregistrer` en une seule écriture.
- */
-export const choisirProfil = (
-  etat: InscriptionEtat | null,
-  { userId, role }: RoleChoisi,
-  maintenant: Date,
-): Result<
-  { readonly role: Role; readonly aEnregistrer: EnregistrerProfilChoisiInput },
-  ChoisirProfilError
-> => {
-  if (etat === null) return failure(InscriptionIntrouvable(userId))
-  if (isValidee(etat)) return failure(InscriptionDejaValidee(userId))
+    if (!decision.success) return decision
 
-  return success({
-    role,
-    aEnregistrer: {
-      etat: poserRole(etat, role, maintenant),
-      roles: rolesACreerPourRole(role),
-    },
-  })
-}
+    await enregistrerProfilChoisi(decision.data.aEnregistrer)
+
+    return success({
+      role: decision.data.role,
+      etapeSuivante: prochaineEtape(decision.data.aEnregistrer.etat, {
+        flowType: TypeDeParcours('withoutDataspace'),
+        hasLieuxActivite: false,
+      }),
+    })
+  }

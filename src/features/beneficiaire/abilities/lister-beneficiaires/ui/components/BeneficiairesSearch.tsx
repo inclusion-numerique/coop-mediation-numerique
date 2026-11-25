@@ -1,16 +1,8 @@
-import { DataSearchBar, type DataTableUrlState } from '@/libraries/data-table'
+import { ChampDeRecherche } from '@/libraries/etat-d-url/liste'
 
-export const BeneficiairesSearch = ({
-  state,
-  baseHref,
-}: {
-  state: DataTableUrlState
-  baseHref: string
-}) => (
-  <DataSearchBar
+export const BeneficiairesSearch = () => (
+  <ChampDeRecherche
     className="fr-flex-grow-1"
-    baseHref={baseHref}
-    state={state}
     placeholder="Rechercher parmi vos bénéficiaires enregistrés"
   />
 )

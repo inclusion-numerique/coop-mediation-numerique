@@ -32,7 +32,7 @@ le pourquoi : ADR-004 (features et abilities) et ADR-005 (domaine) dans `docs/de
    `src` et `e2e`). → **attendre (A)**.
 3. **Modéliser le domaine partagé.** Lancer **`domain-modeler`** une fois pour la feature → présenter,
    trancher les questions ouvertes → **attendre (B)**. Puis créer `domain/` (value objects, entité,
-   erreurs, index) et le transfer `db/` avec son test aller-retour (DM-10, TS-4).
+   erreurs, index) et le transfer `implementations/prisma/` avec son test aller-retour (DM-10, TS-4).
 4. **Enchaîner `/build-ability`** sur chaque ability, dans l'ordre. Chacune : scénario BDD →
    implémentation → auto-revue → gate → PR. En cas de remplacement : coexistence ancien/nouveau
    (PR-7), rien supprimé sans remplaçant câblé (PR-3).

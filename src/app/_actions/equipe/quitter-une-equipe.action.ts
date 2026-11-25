@@ -1,16 +1,17 @@
 'use server'
 
 import { actionBuilder } from '@/configuration/nextjs'
-import { withAuth, withMediateur } from '@/features/authentification'
-import { quitterUneEquipe } from '@/features/equipe/abilities/quitter-une-equipe'
+import { withAuth } from '@/features/authentification/middlewares/with-auth'
+import { withMediateur } from '@/features/authentification/middlewares/with-mediateur'
 import { QUITTER_UNE_EQUIPE_ERRORS } from '@/features/equipe/abilities/quitter-une-equipe/action/quitter-une-equipe.errors'
 import { QuitterUneEquipeValidation } from '@/features/equipe/abilities/quitter-une-equipe/action/quitter-une-equipe.validation'
+import { quitterUneEquipe } from '@/features/equipe/abilities/quitter-une-equipe/implementations/prisma/quitter-une-equipe.mutation'
 import {
   CoordinateurId,
   MediateurId,
   UtilisateurId,
 } from '@/features/equipe/domain'
-import { withMaintenance } from '@/features/maintenance-mode'
+import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { fromResult, withInput } from '@/libraries/nextjs'
 
 export const quitterUneEquipeAction = actionBuilder()

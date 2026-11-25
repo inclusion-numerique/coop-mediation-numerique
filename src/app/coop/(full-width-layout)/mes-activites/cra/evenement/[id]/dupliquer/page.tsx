@@ -1,9 +1,10 @@
 import { notFound, redirect } from 'next/navigation'
+import { lireUneActiviteDeCoordination } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/implementations/prisma/lire-une-activite-de-coordination.query'
 import {
   cheminDeDuplicationDeCoordination,
   saisieDEvenement,
-} from '@/features/activites/abilities/enregistrer-une-activite-de-coordination'
-import { authenticateCoordinateur } from '@/features/authentification/implementation/session/authenticateUser'
+} from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/presenters/page-de-saisie.presenter'
+import { authenticateCoordinateur } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
 
 const DupliquerCraEvenementPage = async ({
   searchParams,
@@ -22,6 +23,7 @@ const DupliquerCraEvenementPage = async ({
   const chemin = await cheminDeDuplicationDeCoordination(saisieDEvenement)({
     id,
     coordinateurId,
+    activiteLue: lireUneActiviteDeCoordination,
     retour,
   })
 

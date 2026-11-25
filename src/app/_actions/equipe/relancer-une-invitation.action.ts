@@ -1,18 +1,19 @@
 'use server'
 
 import { actionBuilder } from '@/configuration/nextjs'
-import { withAuth } from '@/features/authentification'
-import { relancerUneInvitation } from '@/features/equipe/abilities/relancer-une-invitation'
+import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { RELANCER_UNE_INVITATION_ERRORS } from '@/features/equipe/abilities/relancer-une-invitation/action/relancer-une-invitation.errors'
 import { RelancerUneInvitationValidation } from '@/features/equipe/abilities/relancer-une-invitation/action/relancer-une-invitation.validation'
+import { relancerUneInvitation } from '@/features/equipe/abilities/relancer-une-invitation/implementations/prisma/relancer-une-invitation.mutation'
 import {
   CoordinateurId,
-  Email,
+  Courriel,
   ReferenceInvitation,
   UtilisateurId,
 } from '@/features/equipe/domain'
-import { gestionnaireDe } from '@/features/equipe/implementation/session'
-import { withMaintenance } from '@/features/maintenance-mode'
+import { envoyerUneInvitation } from '@/features/equipe/implementations/email'
+import { gestionnaireDe } from '@/features/equipe/implementations/session'
+import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { fromResult, withInput } from '@/libraries/nextjs'
 
 export const relancerUneInvitationAction = actionBuilder()
@@ -22,9 +23,9 @@ export const relancerUneInvitationAction = actionBuilder()
   .execute(
     fromResult(
       async ({ user, input }) =>
-        relancerUneInvitation({
+        relancerUneInvitation({ envoyerUneInvitation })({
           reference: ReferenceInvitation({
-            email: Email(input.email),
+            email: Courriel(input.email),
             coordinateurId: CoordinateurId(input.coordinateurId),
           }),
           gestionnaire: gestionnaireDe(user),

@@ -1,9 +1,9 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
-import { refuserUneInvitation } from '@/features/equipe/abilities/refuser-une-invitation'
+import { refuserUneInvitation } from '@/features/equipe/abilities/refuser-une-invitation/implementations/prisma/refuser-une-invitation.mutation'
 import {
   CoordinateurId,
-  Email,
+  Courriel,
   ReferenceInvitation,
 } from '@/features/equipe/domain'
 import {
@@ -12,11 +12,12 @@ import {
   semerUnCoordinateur,
   semerUneInvitation,
 } from '@/features/equipe/equipe.cucumber'
+import { prevenirLeCoordinateur } from '@/features/equipe/implementations/email'
 
 const contexte: {
   coordinateur?: CoordinateurSeme
   email?: string
-  issue?: Awaited<ReturnType<typeof refuserUneInvitation>>
+  issue?: Awaited<ReturnType<ReturnType<typeof refuserUneInvitation>>>
 } = {}
 
 const coordinateur = (): CoordinateurSeme => {
@@ -54,9 +55,9 @@ Given('une personne qui a déjà accepté de rejoindre une équipe', async () =>
 })
 
 When("cette personne refuse l'invitation", async () => {
-  contexte.issue = await refuserUneInvitation({
+  contexte.issue = await refuserUneInvitation({ prevenirLeCoordinateur })({
     reference: ReferenceInvitation({
-      email: Email(emailInvite()),
+      email: Courriel(emailInvite()),
       coordinateurId: CoordinateurId(coordinateur().coordinateurId),
     }),
     auteurId: null,

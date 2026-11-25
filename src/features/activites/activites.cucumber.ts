@@ -1,6 +1,6 @@
 import { After, setDefaultTimeout } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma'
 
 setDefaultTimeout(60_000)
 
@@ -183,7 +183,7 @@ After(async () => {
 })
 
 type CoordinationsSemees = {
-  readonly userIds: readonly string[]
+  readonly userIds: readonly [string, string]
   readonly coordinateurId: string
   readonly autreCoordinateurId: string
   readonly tags: { readonly reseau: string; readonly elus: string }
@@ -225,17 +225,18 @@ export const semerDesAnimationsDeJanvier = async (
 }
 
 export const semerDesCoordinations = async (): Promise<CoordinationsSemees> => {
-  const userIds = [v4(), v4()]
+  const userIds: readonly [string, string] = [v4(), v4()]
   const coordinateurId = await semerUnCoordinateur(userIds[0])
   const autreCoordinateurId = await semerUnCoordinateur(userIds[1])
-  const [reseau, elus] = await Promise.all(
-    ['Réseau', 'Élus'].map((nom) =>
-      prismaClient.tag.create({
-        data: { nom: `${nom} ${v4()}`, coordinateurId },
-        select: { id: true },
-      }),
-    ),
-  )
+  const semerUnTag = (nom: string) =>
+    prismaClient.tag.create({
+      data: { nom: `${nom} ${v4()}`, coordinateurId },
+      select: { id: true },
+    })
+  const [reseau, elus] = await Promise.all([
+    semerUnTag('Réseau'),
+    semerUnTag('Élus'),
+  ])
 
   await prismaClient.activiteCoordination.create({
     data: {

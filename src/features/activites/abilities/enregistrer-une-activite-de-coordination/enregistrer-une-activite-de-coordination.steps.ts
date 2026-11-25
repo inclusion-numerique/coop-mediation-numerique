@@ -1,13 +1,15 @@
 import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma'
 import {
   type ActiviteEnregistree,
+  type SaisieDeCoordination,
+} from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/domain/index'
+import {
   type EchecDEnregistrement,
   enregistrerUneActiviteDeCoordination,
-  type SaisieDeCoordination,
-} from '@/features/activites/abilities/enregistrer-une-activite-de-coordination'
+} from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/implementations/prisma/enregistrer-une-activite-de-coordination.mutation'
 import {
   ActiviteDeCoordinationId,
   CoordinateurId,

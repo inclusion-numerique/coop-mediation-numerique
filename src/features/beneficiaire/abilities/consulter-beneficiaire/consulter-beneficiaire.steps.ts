@@ -2,7 +2,7 @@ import assert from 'node:assert'
 import { assertMatchesDataTable } from '@arckit/cucumber'
 import { type DataTable, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { consulterBeneficiaire } from '@/features/beneficiaire/abilities/consulter-beneficiaire/implementation'
+import { consulterBeneficiaire } from '@/features/beneficiaire/abilities/consulter-beneficiaire/implementations/prisma/consulter-beneficiaire.query'
 import {
   seedBeneficiaire,
   testMediateurId,

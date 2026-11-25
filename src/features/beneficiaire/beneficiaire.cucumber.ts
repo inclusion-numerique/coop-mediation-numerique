@@ -1,6 +1,6 @@
 import { After, Before, BeforeAll, setDefaultTimeout } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma'
 import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
 import type { Prisma } from '@/generated/prisma/client'
 
@@ -37,11 +37,11 @@ const semerLeMediateurDeTest = async (
 
 const trackedBeneficiaireIds = new Set<string>()
 
-export const trackBeneficiaire = (id: string): void => {
+export const suivreLeBeneficiaire = (id: string): void => {
   trackedBeneficiaireIds.add(id)
 }
 
-export const mediateurBeneficiairesCount = async (): Promise<number> =>
+export const nombreDeBeneficiairesDuMediateur = async (): Promise<number> =>
   (
     await prismaClient.mediateur.findUniqueOrThrow({
       where: { id: testMediateurId },
@@ -51,7 +51,7 @@ export const mediateurBeneficiairesCount = async (): Promise<number> =>
 
 let beneficiairesCountBefore = 0
 
-export const beneficiairesCountAtScenarioStart = (): number =>
+export const nombreDeBeneficiairesAuDebutDuScenario = (): number =>
   beneficiairesCountBefore
 
 /** Crée un bénéficiaire de test (suivi pour nettoyage). */
@@ -62,7 +62,7 @@ export const seedBeneficiaire = async (
   await prismaClient.beneficiaire.create({
     data: { anonyme: false, ...data, id, mediateurId: testMediateurId },
   })
-  trackBeneficiaire(id)
+  suivreLeBeneficiaire(id)
   return id
 }
 
@@ -76,7 +76,7 @@ BeforeAll({ timeout: 120_000 }, async () => {
 
 Before(async () => {
   trackedBeneficiaireIds.clear()
-  beneficiairesCountBefore = await mediateurBeneficiairesCount()
+  beneficiairesCountBefore = await nombreDeBeneficiairesDuMediateur()
 })
 
 After(async () => {

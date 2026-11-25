@@ -1,20 +1,22 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
-import {
-  anonymiserLesComptesInactifs,
-  type CompteExamine,
-} from '@/features/utilisateurs/abilities/anonymiser-les-comptes-inactifs'
+import { prismaClient } from '@/configuration/prisma'
 import {
   type CompteInactifSeme,
   semerUnCompteInactif,
 } from '@/features/utilisateurs/utilisateurs.cucumber'
+import {
+  anonymiserLesComptesInactifs,
+  type CompteExamine,
+} from './domain/anonymiser-les-comptes-inactifs'
+import { lireLesComptesAExaminer } from './implementations/prisma/comptes-a-examiner.query'
+import { noterLAvertissement } from './implementations/prisma/noter-l-avertissement.mutation'
 
 const maintenant = new Date('2026-10-20T01:00:00.000Z')
 
 const date = (jour: string): Date => {
-  const [j, m, a] = jour.split('/').map(Number)
-  return new Date(Date.UTC(a, m - 1, j))
+  const [j, m, a] = jour.split('/')
+  return new Date(Date.UTC(Number(a), Number(m) - 1, Number(j)))
 }
 
 const etat: {
@@ -33,20 +35,18 @@ const examiner = async (simuler: boolean) => {
   etat.avertissements = []
   etat.suppressions = []
   etat.examines = await anonymiserLesComptesInactifs({
-    maintenant,
-    simuler,
-    ports: {
-      avertirDeLaSuppression: async ({ courriel, dateDeSuppression }) => {
-        etat.avertissements = [
-          ...etat.avertissements,
-          { courriel, dateDeSuppression },
-        ]
-      },
-      supprimerLeCompte: async (utilisateurId) => {
-        etat.suppressions = [...etat.suppressions, utilisateurId]
-      },
+    lireLesComptesAExaminer,
+    noterLAvertissement,
+    avertirDeLaSuppression: async ({ courriel, dateDeSuppression }) => {
+      etat.avertissements = [
+        ...etat.avertissements,
+        { courriel, dateDeSuppression },
+      ]
     },
-  })
+    supprimerLeCompte: async (utilisateurId) => {
+      etat.suppressions = [...etat.suppressions, utilisateurId]
+    },
+  })({ maintenant, simuler })
 }
 
 Given(

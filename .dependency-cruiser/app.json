@@ -1,0 +1,86 @@
+{
+  "routes": {
+    "@codegouvfr/react-dsfr": ["app/layout.tsx"],
+    "configuration/ban/index.ts": [
+      "app/api/auth/[...nextauth]/route.ts",
+      "app/inscription/(etapes)/initialiser/page.tsx"
+    ],
+    "configuration/dsfr/index.ts": ["app/layout.tsx", "app/template.tsx"],
+    "configuration/dsfr/serveur.ts": ["app/layout.tsx"],
+    "configuration/telemetry/index.ts": [
+      "app/administration/error.tsx",
+      "app/administration/outils/page.tsx",
+      "app/coop/error.tsx",
+      "app/error.tsx",
+      "app/global-error.tsx",
+      "app/layout.tsx"
+    ],
+    "features/beneficiaire/abilities/exporter-beneficiaires/action/filtres-de-l-export.validation.ts": [
+      "app/coop/(sidemenu-layout)/mes-beneficiaires/(liste)/export/route.ts"
+    ],
+    "features/rdvsp/abilities/connecter-compte-rdv/action/connecter-compte-rdv.errors.ts": [
+      "app/api/rdv-service-public/auth/callback/route.ts"
+    ],
+    "libraries/chemin-interne": [
+      "app/(public)/(authentication)/deconnexion/start/route.ts"
+    ],
+    "libraries/departement": [
+      "app/coop/(full-width-layout)/mon-reseau/[departement]/acteurs/[userId]/page.tsx",
+      "app/coop/(full-width-layout)/mon-reseau/[departement]/lieux/[id]/page.tsx",
+      "app/coop/(sidemenu-layout)/mon-reseau/[departement]/page.tsx",
+      "app/coop/(sidemenu-layout)/mon-reseau/page.tsx"
+    ],
+    "libraries/insee": [
+      "app/coop/(sidemenu-layout)/mes-outils/[slug]/page.tsx"
+    ],
+    "libraries/texte": [
+      "app/administration/utilisateurs/export/route.ts",
+      "app/administration/utilisateurs/page.tsx"
+    ],
+    "libraries/ui": ["app/layout.tsx"],
+    "next-auth": ["app/api/auth/[...nextauth]/route.ts"],
+    "nuqs": ["app/layout.tsx"],
+    "styles/app.css": ["app/layout.tsx"],
+    "uuid": [
+      "app/(public)/(authentication)/deconnexion/start/route.ts",
+      "app/coop/(full-width-layout)/mes-beneficiaires/importer/analyse/route.ts"
+    ]
+  },
+  "server-actions": {
+    "configuration/ban/index.ts": [
+      "app/_actions/employeuse/renseigner-structure-employeuse.action.ts",
+      "app/_actions/inscription/renseigner-structure-employeuse.action.ts"
+    ],
+    "configuration/environnement/serveur.ts": [
+      "app/_actions/utilisateurs/usurper-un-utilisateur.action.ts"
+    ],
+    "configuration/projet/serveur.ts": [
+      "app/_actions/rdvsp/creer-activite-depuis-rdv.action.ts",
+      "app/_actions/rdvsp/prendre-rendez-vous.action.ts"
+    ],
+    "features/activites/fixtures/semer-les-cras-de-demonstration.ts": [
+      "app/_actions/utilisateurs/reinitialiser-une-fixture.action.ts"
+    ],
+    "features/beneficiaire/fixtures/beneficiaires-de-demonstration.ts": [
+      "app/_actions/utilisateurs/reinitialiser-une-fixture.action.ts"
+    ],
+    "features/beneficiaire/fixtures/semer-les-beneficiaires-de-demonstration.ts": [
+      "app/_actions/utilisateurs/reinitialiser-une-fixture.action.ts"
+    ],
+    "features/equipe/fixtures/semer-les-coordinations-de-demonstration.ts": [
+      "app/_actions/utilisateurs/reinitialiser-une-fixture.action.ts"
+    ],
+    "features/lieux-activite/fixtures/activites-dans-les-lieux-de-demonstration.ts": [
+      "app/_actions/utilisateurs/reinitialiser-une-fixture.action.ts"
+    ],
+    "features/lieux-activite/fixtures/lieux-de-demonstration.ts": [
+      "app/_actions/utilisateurs/reinitialiser-une-fixture.action.ts"
+    ],
+    "features/utilisateurs/fixtures/personas.ts": [
+      "app/_actions/utilisateurs/reinitialiser-une-fixture.action.ts"
+    ],
+    "libraries/etat-d-url": [
+      "app/_actions/mon-reseau/rechercher-des-communes-du-reseau.action.ts"
+    ]
+  }
+}

@@ -15,7 +15,7 @@ import {
   semerUnMediateur,
   tagEnBase,
 } from '@/features/tags/tags.cucumber'
-import { creerUnTag } from './implementation'
+import { creerUnTag } from './implementations/prisma/creer-un-tag.mutation'
 
 const contexte: {
   acteur?: Acteur

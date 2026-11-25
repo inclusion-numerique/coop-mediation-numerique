@@ -1,12 +1,10 @@
 import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
-import {
-  listerLesMediateursDuLieu,
-  type MediateurDuLieu,
-} from '@/features/lieux-activite/abilities/lister-les-mediateurs-du-lieu'
-import { LieuId } from '@/features/lieux-activite/domain/lieu-id'
+import { prismaClient } from '@/configuration/prisma'
+import { type MediateurDuLieu } from '@/features/lieux-activite/abilities/lister-les-mediateurs-du-lieu/domain/index'
+import { listerLesMediateursDuLieu } from '@/features/lieux-activite/abilities/lister-les-mediateurs-du-lieu/implementations/prisma/mediateurs-du-lieu.query'
+import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
 
 const etat: {
   lieuId?: string
@@ -68,7 +66,7 @@ Given('un lieu où exerce un médiateur', async () => {
 
 Given('l’activité du médiateur dans le lieu a pris fin', async () => {
   await prismaClient.mediateurEnActivite.update({
-    where: { id: etat.rattachementId },
+    where: { id: etat.rattachementId ?? '' },
     data: { fin: new Date('2026-03-01') },
   })
 })
@@ -93,7 +91,7 @@ Given(
     await prismaClient.activite.create({
       data: {
         mediateurId: etat.mediateurId ?? '',
-        structureId: etat.lieuId,
+        ...(etat.lieuId === undefined ? {} : { structureId: etat.lieuId }),
         type: 'Individuel',
         typeLieu: 'LieuActivite',
         date: new Date(date),
@@ -206,8 +204,8 @@ After(async () => {
     })
     await prismaClient.lieuInclusion.deleteMany({ where: { id: etat.lieuId } })
   }
-  etat.lieuId = undefined
-  etat.mediateurId = undefined
-  etat.rattachementId = undefined
-  etat.trouves = undefined
+  delete etat.lieuId
+  delete etat.mediateurId
+  delete etat.rattachementId
+  delete etat.trouves
 })

@@ -39,7 +39,7 @@ export type BeneficiaireIdentifie = BeneficiaireBase & {
 
 export type Beneficiaire = BeneficiaireAnonyme | BeneficiaireIdentifie
 
-export const isBeneficiaireAnonymous = (
+export const estAnonyme = (
   beneficiaire: Beneficiaire,
 ): beneficiaire is BeneficiaireAnonyme => beneficiaire.anonyme
 
@@ -49,7 +49,7 @@ export const isBeneficiaireAnonymous = (
  * pour servir les frontières UI qui ne portent pas encore le `Beneficiaire`
  * brandé, et reste l'unique source de vérité dont dérive `beneficiaireDisplayName`.
  */
-export const displayNameFromIdentity = ({
+export const nomAfficheDepuisLIdentite = ({
   prenom,
   nom,
 }: {
@@ -57,10 +57,10 @@ export const displayNameFromIdentity = ({
   nom?: string | null
 }): string => [prenom, nom].filter(Boolean).join(' ') || 'Bénéficiaire anonyme'
 
-export const beneficiaireDisplayName = (beneficiaire: Beneficiaire) =>
+export const nomAfficheDuBeneficiaire = (beneficiaire: Beneficiaire) =>
   beneficiaire.anonyme
     ? 'Bénéficiaire anonyme'
-    : displayNameFromIdentity(beneficiaire)
+    : nomAfficheDepuisLIdentite(beneficiaire)
 
 const toAdressString = ({ adresse, codePostal, commune }: CommuneResidence) =>
   [adresse, [codePostal, commune].filter(Boolean).join(' ')]

@@ -1,25 +1,37 @@
 {
   "$schema": "https://unpkg.com/knip@6/schema.json",
   "entry": [
-    "src/jobs/run-job.ts!",
     "src/jobs/verifier-le-bundle.ts!",
     "src/configuration/telemetry/error-reporter/*/index.*.ts!",
     "src/libraries/server-only-cli/index.ts",
     "src/**/*.{steps,cucumber}.ts",
     "e2e/proconnect-simule/serveur.ts",
-    "e2e/tasks/taskExecutor.ts"
+    "e2e/tasks/task-executor.ts",
+    "prisma/entrepot/schema.prisma",
+    "prisma/main.reference.prisma"
   ],
-  "project": ["src/**/*.{ts,tsx,mts}!", "e2e/**/*.ts", "scripts/**/*.mjs"],
+  "project": [
+    "src/**/*.{ts,tsx,scss,sass,mdx}!",
+    "e2e/**/*.ts",
+    "scripts/**/*.mjs",
+    "docs/*.{mjs,astro}",
+    "prisma/**/*.prisma"
+  ],
   "cypress": {
     "config": [],
     "entry": [
       "cypress.config.ts",
       "e2e/support/{e2e,component}.ts",
-      "src/**/e2e/*.e2e.ts",
-      "src/app/**/*.e2e.ts",
+      "e2e/*.e2e.ts",
+      "src/app/**/page.test.ts",
+      "src/app/**/route.test.ts",
       "src/**/*.cy.tsx"
     ]
   },
-  "ignoreBinaries": ["scw", "tofu"],
-  "ignoreDependencies": ["markdownlint-cli2"]
+  "ignoreBinaries": ["scw", "tofu", "dot"],
+  "ignoreDependencies": ["markdownlint-cli2"],
+  "astro": {
+    "config": ["docs/astro.config.mjs"],
+    "entry": ["docs/content.config.mjs"]
+  }
 }

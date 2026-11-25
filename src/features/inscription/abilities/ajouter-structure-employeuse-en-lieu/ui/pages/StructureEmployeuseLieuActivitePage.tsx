@@ -3,11 +3,11 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useRouter } from 'next/navigation'
 import { type ReactNode, useState } from 'react'
-import InscriptionCard from '@/features/inscription/components/InscriptionCard'
-import { useHydrated } from '@/libraries/formulaire/use-hydrated'
-import { inject } from '@/libraries/nextjs/injection/client'
-import { createToast } from '@/libraries/ui/toast/createToast'
-import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
+import InscriptionCard from '@/features/inscription/ui/components/InscriptionCard'
+import { useHydrated } from '@/libraries/formulaire/hooks'
+import { inject } from '@/libraries/nextjs/injection'
+import { createToast } from '@/libraries/ui/toast'
+import { buttonLoadingClassname } from '@/libraries/ui/utils'
 import { AJOUTER_STRUCTURE_EMPLOYEUSE_EN_LIEU_ACTION_KEY } from '../../action/ajouter-structure-employeuse-en-lieu.key'
 
 const erreurEnregistrement = () =>

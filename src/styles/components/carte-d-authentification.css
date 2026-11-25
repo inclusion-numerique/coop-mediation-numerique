@@ -1,0 +1,13 @@
+.carte-d-authentification {
+  margin: 56px auto 120px;
+  background: var(--background-default-grey);
+  padding: 48px 16px;
+
+  @media (min-width: 36em) {
+    padding: 48px 32px;
+  }
+
+  @media (min-width: 48em) {
+    padding: 48px;
+  }
+}

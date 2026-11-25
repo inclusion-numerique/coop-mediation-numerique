@@ -1,9 +1,8 @@
 import { PropsWithChildren } from 'react'
+import { ConnexionLayout } from '@/features/authentification/ui/layouts/ConnexionLayout'
 
-const ConnexionLayout = ({ children }: PropsWithChildren) => (
-  <div className="fr-flex fr-flex-1 fr-direction-column fr-justify-content-center fr-align-items-center fr-background-alt--blue-ecume">
-    <div className="fr-container fr-container--narrow">{children}</div>
-  </div>
+const Layout = ({ children }: PropsWithChildren) => (
+  <ConnexionLayout>{children}</ConnexionLayout>
 )
 
-export default ConnexionLayout
+export default Layout

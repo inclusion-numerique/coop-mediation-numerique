@@ -1,13 +1,13 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma'
 import {
   comptesRendusSemes,
   semerComptesRendus,
 } from '@/features/activites/activites.cucumber'
 import { ActiviteId } from '../../domain'
 import { Horodatage } from './domain'
-import { activitesExposees } from './implementation'
+import { activitesExposees } from './implementations/prisma/activites-exposees.query'
 
 const exposition: {
   saisieLe?: Date

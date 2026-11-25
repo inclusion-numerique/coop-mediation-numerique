@@ -1,22 +1,69 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { environnementServeur } from '@/configuration/environnement/serveur'
-import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
-import { creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe'
-import { traiterNotificationRdvAvec } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/implementation/recevoir-webhook-rdv.binding'
-import { traiterNotificationUsager } from '@/features/rdvsp/abilities/recevoir-webhook-usager/implementation/recevoir-webhook-usager.binding'
-import { aiguillerNotificationWebhook } from '@/features/rdvsp/domain/aiguiller-notification-webhook'
-import { journaliserWebhook } from '@/features/rdvsp/implementation/webhook/journal'
-import { lireNotificationWebhook } from '@/features/rdvsp/implementation/webhook/lire-notification-webhook'
+import { signaler } from '@/configuration/telemetry/serveur'
+import { communeDeLAdresse } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/ban/commune-de-l-adresse.query'
+import { creerOuFusionnerBeneficiairesDepuisUsagersExternes } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/creer-ou-fusionner-depuis-usager-externe.mutation'
+import { messageDuWebhookRdv } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/domain/message-du-webhook-rdv'
+import { recevoirWebhookRdv } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/domain/recevoir-webhook-rdv'
+import { lireNotificationRdv } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/implementations/api/notification-rdv.params'
+import { rapprocherBeneficiairesDuRdv } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/implementations/prisma/rapprocher-beneficiaires-du-rdv.adapter'
+import {
+  comptePourWebhook,
+  enregistrerRdvDeLaNotification,
+  organisationConnue,
+  rdvConnuParId,
+  supprimerRdvDeLaNotification,
+} from '@/features/rdvsp/abilities/recevoir-webhook-rdv/implementations/prisma/webhook-rdv.mutation'
+import { messageDuWebhookUsager } from '@/features/rdvsp/abilities/recevoir-webhook-usager/domain/message-du-webhook-usager'
+import { recevoirWebhookUsager } from '@/features/rdvsp/abilities/recevoir-webhook-usager/domain/recevoir-webhook-usager'
+import { lireNotificationUsager } from '@/features/rdvsp/abilities/recevoir-webhook-usager/implementations/api/notification-usager.params'
+import {
+  anonymiserEtSupprimerUsager,
+  beneficiairesLiesAUsager,
+  mettreAJourUsager,
+} from '@/features/rdvsp/abilities/recevoir-webhook-usager/implementations/prisma/webhook-usager.mutation'
+import { aiguillerNotificationWebhook } from '@/features/rdvsp/domain/webhook/aiguiller-notification-webhook'
+import { journaliserWebhook } from '@/features/rdvsp/implementations/webhook/journal-du-webhook.mutation'
+import { lireNotificationWebhook } from '@/features/rdvsp/implementations/webhook/notification-webhook.params'
 import {
   ENTETE_SIGNATURE_WEBHOOK,
   signatureValide,
-} from '@/features/rdvsp/implementation/webhook/verifier-signature'
+} from '@/features/rdvsp/implementations/webhook/signature-du-webhook.middleware'
+
+const creerOuFusionnerLesBeneficiaires =
+  creerOuFusionnerBeneficiairesDepuisUsagersExternes({ communeDeLAdresse })
+
+const recevoirLeRdv = recevoirWebhookRdv({
+  lireNotification: lireNotificationRdv,
+  comptePourWebhook,
+  rdvConnuParId,
+  organisationConnue,
+  enregistrer: enregistrerRdvDeLaNotification,
+  supprimer: supprimerRdvDeLaNotification,
+  rapprocherBeneficiaires: rapprocherBeneficiairesDuRdv(
+    creerOuFusionnerLesBeneficiaires,
+    journaliserWebhook,
+  ),
+})
+
+const recevoirLUsager = recevoirWebhookUsager({
+  lireNotification: lireNotificationUsager,
+  beneficiairesLies: beneficiairesLiesAUsager,
+  mettreAJour: mettreAJourUsager,
+  anonymiserEtSupprimer: anonymiserEtSupprimerUsager,
+})
 
 const traiter = aiguillerNotificationWebhook({
-  traiterRdv: traiterNotificationRdvAvec(
-    creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding,
-  ),
-  traiterUsager: traiterNotificationUsager,
+  traiterRdv: async ({ evenement, donnees }) =>
+    journaliserWebhook(
+      messageDuWebhookRdv(await recevoirLeRdv({ evenement, payload: donnees })),
+    ),
+  traiterUsager: async ({ evenement, donnees }) =>
+    journaliserWebhook(
+      messageDuWebhookUsager(
+        await recevoirLUsager({ evenement, payload: donnees }),
+      ),
+    ),
   journaliser: journaliserWebhook,
 })
 
@@ -28,7 +75,7 @@ export const POST = async (request: NextRequest) => {
       !signatureValide({
         corpsBrut,
         signature: request.headers.get(ENTETE_SIGNATURE_WEBHOOK),
-        secret: environnementServeur.RDV_SERVICE_PUBLIC_WEBHOOK_SECRET,
+        secret: environnementServeur().RDV_SERVICE_PUBLIC_WEBHOOK_SECRET,
       })
     ) {
       journaliserWebhook('signature refusée')

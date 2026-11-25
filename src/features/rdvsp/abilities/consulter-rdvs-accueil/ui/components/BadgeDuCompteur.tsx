@@ -28,7 +28,11 @@ export const BadgeDuCompteur = ({
   nombre: number
   className?: string
 }) => (
-  <Badge small severity={APPARENCE[statut].severite} className={className}>
+  <Badge
+    small
+    severity={APPARENCE[statut].severite}
+    {...(className === undefined ? {} : { className })}
+  >
     {`Rdv ${APPARENCE[statut].libelle(nombre)}`}
   </Badge>
 )

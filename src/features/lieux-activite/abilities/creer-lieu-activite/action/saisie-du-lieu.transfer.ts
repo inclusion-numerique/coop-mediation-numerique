@@ -1,0 +1,161 @@
+import {
+  Contact,
+  DispositifProgrammesNationaux,
+  FormationsLabels,
+  FraisACharge,
+  Itinerances,
+  ModalitesAcces,
+  ModalitesAccompagnement,
+  Nom,
+  PrisesEnChargeSpecifiques,
+  PublicsSpecifiquementAdresses,
+  Services,
+  Typologies,
+} from '@gouvfr-anct/lieux-de-mediation-numerique'
+import type { CreerLieuActiviteData } from '@/features/lieux-activite/action/creer-lieu-activite.validation'
+import { VisibiliteCartographie } from '../../../domain/cartographie-nationale/visibilite-cartographie'
+import type { Fiche } from '../../../domain/fiche'
+import { BanId } from '../../../domain/identifiants/ban-id'
+import { LieuId } from '../../../domain/identifiants/lieu-id'
+import type { UtilisateurId } from '../../../domain/identifiants/utilisateur-id'
+import type { Lieu } from '../../../domain/lieu'
+import {
+  adresseSaisie,
+  courrielsSaisis,
+  ficheAccesLibreSaisie,
+  horairesSaisis,
+  itineranceSaisie,
+  localisationSaisie,
+  modalitesAccesSaisies,
+  presentationSaisie,
+  sitesWebSaisis,
+  telephoneSaisi,
+  urlSaisie,
+} from '../../../domain/saisie/saisie'
+
+const cochees = <Valeur>(
+  valeurs: readonly Valeur[] | null | undefined,
+): Valeur[] => [...(valeurs ?? [])]
+
+const modalitesCochees = (
+  modalites: CreerLieuActiviteData['modalitesAcces'],
+) => ({
+  surPlace: modalites?.surPlace === true,
+  parTelephone: modalites?.parTelephone === true,
+  parMail: modalites?.parMail === true,
+  numeroTelephone: modalites?.numeroTelephone,
+  adresseMail: modalites?.adresseMail,
+})
+
+const identiteDuLieu = (
+  saisie: CreerLieuActiviteData,
+): Pick<
+  Fiche,
+  'nom' | 'pivot' | 'adresse' | 'localisation' | 'typologies' | 'itinerance'
+> => ({
+  nom: Nom(saisie.nom),
+  pivot: null,
+  adresse: adresseSaisie(saisie.adresseBan, saisie.complementAdresse),
+  localisation: localisationSaisie(saisie.adresseBan),
+  typologies: Typologies(cochees(saisie.typologies)),
+  itinerance: Itinerances(itineranceSaisie(saisie.lieuItinerant)),
+})
+
+const description = (
+  saisie: CreerLieuActiviteData,
+): Pick<Fiche, 'presentation' | 'formationsLabels'> => ({
+  presentation: presentationSaisie(
+    saisie.presentationResume,
+    saisie.presentationDetail,
+  ),
+  formationsLabels: FormationsLabels(cochees(saisie.formationsLabels)),
+})
+
+const informationsPratiques = (
+  saisie: CreerLieuActiviteData,
+): Pick<Fiche, 'horaires' | 'ficheAccesLibre' | 'priseRdv'> => ({
+  horaires: horairesSaisis(saisie.openingHours, saisie.horairesComment),
+  ficheAccesLibre: ficheAccesLibreSaisie(saisie.ficheAccesLibre),
+  priseRdv: urlSaisie(saisie.priseRdv),
+})
+
+const servicesEtAccompagnement = (
+  saisie: CreerLieuActiviteData,
+): Pick<Fiche, 'services' | 'modalitesAccompagnement'> => ({
+  services: Services(cochees(saisie.services)),
+  modalitesAccompagnement: ModalitesAccompagnement(
+    cochees(saisie.modalitesAccompagnement),
+  ),
+})
+
+const modalitesAccesAuService = (
+  saisie: CreerLieuActiviteData,
+): Pick<Fiche, 'modalitesAcces' | 'fraisACharge'> => ({
+  modalitesAcces: ModalitesAcces(
+    modalitesAccesSaisies(modalitesCochees(saisie.modalitesAcces)),
+  ),
+  fraisACharge: FraisACharge(cochees(saisie.fraisACharge)),
+})
+
+const typesDePublicsAccueillis = (
+  saisie: CreerLieuActiviteData,
+): Pick<
+  Fiche,
+  'publicsSpecifiquementAdresses' | 'priseEnChargeSpecifique'
+> => ({
+  publicsSpecifiquementAdresses: PublicsSpecifiquementAdresses(
+    saisie.toutPublic ? [] : cochees(saisie.publicsSpecifiquementAdresses),
+  ),
+  priseEnChargeSpecifique: PrisesEnChargeSpecifiques(
+    cochees(saisie.priseEnChargeSpecifique),
+  ),
+})
+
+const contactSaisi = (saisie: CreerLieuActiviteData): Contact => {
+  const modalites = modalitesCochees(saisie.modalitesAcces)
+  const telephone = telephoneSaisi(
+    modalites.parTelephone,
+    modalites.numeroTelephone,
+  )
+  const courriels = courrielsSaisis(modalites.parMail, modalites.adresseMail)
+  const sitesWeb = sitesWebSaisis(saisie.siteWeb)
+
+  return Contact({
+    ...(telephone == null ? {} : { telephone }),
+    ...(courriels.length === 0 ? {} : { courriels: [...courriels] }),
+    ...(sitesWeb.length === 0 ? {} : { site_web: [...sitesWeb] }),
+  })
+}
+
+const ficheSaisie = (saisie: CreerLieuActiviteData): Fiche => ({
+  ...identiteDuLieu(saisie),
+  ...description(saisie),
+  ...informationsPratiques(saisie),
+  ...servicesEtAccompagnement(saisie),
+  ...modalitesAccesAuService(saisie),
+  ...typesDePublicsAccueillis(saisie),
+  contact: contactSaisi(saisie),
+  dispositifProgrammesNationaux: DispositifProgrammesNationaux([]),
+  autresFormationsLabels: [],
+})
+
+export const nouveauLieu = (
+  saisie: CreerLieuActiviteData,
+  par: UtilisateurId,
+  maintenant: Date,
+  id: LieuId,
+): Lieu => ({
+  id,
+  fiche: ficheSaisie(saisie),
+  visibilite: VisibiliteCartographie(
+    saisie.visiblePourCartographieNationale ? 'Publie' : 'NonPublie',
+  ),
+  idsCartographieNationale: null,
+  banId: BanId.safe(saisie.adresseBan.id),
+  identiteSirene: { nomUsage: null, synchronisation: null },
+  tracabilite: {
+    creation: { date: maintenant, par },
+    derniereModification: { _tag: 'ParUtilisateur', date: maintenant, par },
+    suppression: { _tag: 'Actif' },
+  },
+})

@@ -1,6 +1,6 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma'
 import {
   semerUnCoordinateur,
   semerUneActiviteTaguee,
@@ -9,7 +9,10 @@ import {
   tagEnBase,
   tagsDeLActivite,
 } from '@/features/tags/tags.cucumber'
-import { retirerLesTagsDUnCompte, type TagsRetires } from './implementation'
+import {
+  retirerLesTagsDUnCompte,
+  type TagsRetires,
+} from './implementations/prisma/retirer-les-tags-d-un-compte.mutation'
 
 const contexte: {
   mediateurId?: string

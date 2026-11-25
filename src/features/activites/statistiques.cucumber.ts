@@ -1,7 +1,8 @@
 import assert from 'node:assert'
 import { After, type DataTable, Given } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma'
+import { criteresDesStatistiquesDepuisLURL } from '@/features/activites/fixtures/criteres-depuis-l-url'
 import {
   Genre,
   Materiel,
@@ -11,13 +12,12 @@ import {
   TrancheAge,
   TypeLieu,
 } from '@/generated/prisma/client'
-import type { DemandeDeStatistiques } from './db/statistiques.sql'
 import {
   CoordinateurId,
-  criteresDesStatistiques,
   MediateurId,
   type PerimetreDesStatistiques,
 } from './domain'
+import type { DemandeDeStatistiques } from './implementations/prisma/statistiques/statistiques.sql'
 
 type Personne = {
   readonly userId: string
@@ -136,8 +136,8 @@ const semerUnePersonne = async (
     data: {
       id: userId,
       email: `statistiques-${userId}@example.com`,
-      firstName,
-      lastName,
+      ...(firstName === undefined ? {} : { firstName }),
+      ...(lastName === undefined ? {} : { lastName }),
     },
   })
   const mediateurId = mediateur
@@ -206,24 +206,55 @@ const communeDuLieu = (cellule: string | undefined) => {
   const [lieuCommune, lieuCodePostal, lieuCodeInsee] = (cellule ?? '').split(
     ' ',
   )
-  return lieuCommune ? { lieuCommune, lieuCodePostal, lieuCodeInsee } : {}
+  return lieuCommune
+    ? {
+        lieuCommune,
+        ...(lieuCodePostal === undefined ? {} : { lieuCodePostal }),
+        ...(lieuCodeInsee === undefined ? {} : { lieuCodeInsee }),
+      }
+    : {}
 }
 
 const semerUneActivite = async (
   { userId, mediateurId }: { userId: string; mediateurId: string },
   ligne: Readonly<Record<string, string>>,
 ) => {
-  const anonymes = nombre(ligne.anonymes, ligne.suivis ? 0 : 1)
-  const suivis = nombre(ligne.suivis, 0)
+  const {
+    anonymes,
+    suivis,
+    lieu,
+    typeLieu,
+    tags,
+    type,
+    date,
+    duree,
+    thematiques,
+    materiel,
+    supprimee,
+    v1,
+    employeuse,
+    communeDuLieu: communeEtCodes,
+    rendezVous,
+    nouveaux,
+    genre,
+    anneeNaissance,
+    trancheAge,
+    statutSocial,
+    residence,
+    codePostal,
+    codeInsee,
+  } = ligne
+  const nombreDAnonymes = nombre(anonymes, suivis ? 0 : 1)
+  const nombreDeSuivis = nombre(suivis, 0)
   const participants = [
-    ...Array.from({ length: anonymes }, () => true),
-    ...Array.from({ length: suivis }, () => false),
+    ...Array.from({ length: nombreDAnonymes }, () => true),
+    ...Array.from({ length: nombreDeSuivis }, () => false),
   ]
-  const typeLieu = ligne.lieu
+  const typeDeLieu = lieu
     ? TypeLieu.LieuActivite
-    : (valeurDe(TypeLieu)(ligne.typeLieu) ?? TypeLieu.ADistance)
+    : (valeurDe(TypeLieu)(typeLieu) ?? TypeLieu.ADistance)
   const tagIds = await Promise.all(
-    (ligne.tags ?? '')
+    (tags ?? '')
       .split(',')
       .map((nom) => nom.trim())
       .filter((nom) => nom !== '')
@@ -233,40 +264,36 @@ const semerUneActivite = async (
     data: {
       mediateurId,
       tags: { create: tagIds.map((tagId) => ({ tagId })) },
-      type: TYPE_EN_BASE[ligne.type ?? 'individuel'] ?? 'Individuel',
-      typeLieu,
-      structureId: ligne.lieu ? await lieuNomme(ligne.lieu) : null,
-      date: new Date(`${ligne.date}T00:00:00.000Z`),
-      duree: nombre(ligne.duree, 60),
-      thematiques: listeDe(Thematique)(ligne.thematiques ?? 'Email'),
-      materiel: listeDe(Materiel)(ligne.materiel),
-      suppression: ligne.supprimee === 'oui' ? new Date() : null,
-      v1CraId: ligne.v1 === 'oui' ? v4() : null,
-      structureEmployeuseMainId: ligne.employeuse
-        ? await employeuseNommee(ligne.employeuse)
+      type: TYPE_EN_BASE[type ?? 'individuel'] ?? 'Individuel',
+      typeLieu: typeDeLieu,
+      structureId: lieu ? await lieuNomme(lieu) : null,
+      date: new Date(`${date}T00:00:00.000Z`),
+      duree: nombre(duree, 60),
+      thematiques: listeDe(Thematique)(thematiques ?? 'Email'),
+      materiel: listeDe(Materiel)(materiel),
+      suppression: supprimee === 'oui' ? new Date() : null,
+      v1CraId: v1 === 'oui' ? v4() : null,
+      structureEmployeuseMainId: employeuse
+        ? await employeuseNommee(employeuse)
         : null,
-      ...communeDuLieu(ligne.communeDuLieu),
-      rdvId: ligne.rendezVous
-        ? await semerUnRendezVous(userId, ligne.rendezVous)
-        : null,
+      ...communeDuLieu(communeEtCodes),
+      rdvId: rendezVous ? await semerUnRendezVous(userId, rendezVous) : null,
       accompagnements: {
         create: participants.map((anonyme) => ({
-          premierAccompagnement: ligne.nouveaux !== 'non',
+          premierAccompagnement: nouveaux !== 'non',
           beneficiaire: {
             create: {
               mediateurId,
               anonyme,
               prenom: anonyme ? null : 'Suivi',
               nom: anonyme ? null : 'Statistiques',
-              genre: valeurDe(Genre)(ligne.genre),
-              anneeNaissance: ligne.anneeNaissance
-                ? Number(ligne.anneeNaissance)
-                : null,
-              trancheAge: valeurDe(TrancheAge)(ligne.trancheAge),
-              statutSocial: valeurDe(StatutSocial)(ligne.statutSocial),
-              commune: ligne.residence || null,
-              communeCodePostal: ligne.residence ? ligne.codePostal : null,
-              communeCodeInsee: ligne.residence ? ligne.codeInsee : null,
+              genre: valeurDe(Genre)(genre),
+              anneeNaissance: anneeNaissance ? Number(anneeNaissance) : null,
+              trancheAge: valeurDe(TrancheAge)(trancheAge),
+              statutSocial: valeurDe(StatutSocial)(statutSocial),
+              commune: residence || null,
+              communeCodePostal: residence ? (codePostal ?? null) : null,
+              communeCodeInsee: residence ? (codeInsee ?? null) : null,
             },
           },
         })),
@@ -366,7 +393,7 @@ export const demandeDeStatistiques = (
   parametres: Readonly<Record<string, string>> = {},
 ): DemandeDeStatistiques => ({
   perimetre: perimetreDe(nom),
-  criteres: criteresDesStatistiques(parametres),
+  criteres: criteresDesStatistiquesDepuisLURL(parametres),
   rendezVousAuxStatuts: rendezVousSemesAuxStatuts,
 })
 

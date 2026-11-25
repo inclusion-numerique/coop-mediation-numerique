@@ -1,7 +1,13 @@
 import { defineConfig } from 'cypress'
 import cypressSplit from 'cypress-split'
-import { taskManager } from './e2e/support/taskManager'
-import { cypressProjectId } from './src/configuration/projet/config'
+import { taskManager } from './e2e/support/task-manager'
+import { cypressProjectId } from './src/configuration/projet'
+
+const cheminLitteral = (chemin: string): string =>
+  chemin.replace(/[()[\]]/g, '\\$&')
+
+const cheminsLitteraux = (specPattern: string | string[]): string | string[] =>
+  Array.isArray(specPattern) ? specPattern.map(cheminLitteral) : specPattern
 
 export default defineConfig({
   projectId: cypressProjectId,
@@ -22,12 +28,16 @@ export default defineConfig({
     indexHtmlFile: 'e2e/support/component-index.html',
     setupNodeEvents(on, config) {
       cypressSplit(on, config)
-      return config
+      return { ...config, specPattern: cheminsLitteraux(config.specPattern) }
     },
   },
 
   e2e: {
-    specPattern: ['src/**/e2e/*.e2e.ts', 'src/app/**/*.e2e.ts'],
+    specPattern: [
+      'e2e/*.e2e.ts',
+      'src/app/**/page.test.ts',
+      'src/app/**/route.test.ts',
+    ],
     supportFile: 'e2e/support/e2e.ts',
     setupNodeEvents(on, config) {
       on('task', taskManager)
@@ -38,16 +48,16 @@ export default defineConfig({
         if (browser.family === 'chromium') {
           launchOptions.args.push('--force-prefers-reduced-motion')
         }
-        launchOptions.env.ELECTRON_EXTRA_LAUNCH_ARGS =
+        launchOptions.env['ELECTRON_EXTRA_LAUNCH_ARGS'] =
           '--force-prefers-reduced-motion'
 
         return launchOptions
       })
       cypressSplit(on, config)
-      return config
+      return { ...config, specPattern: cheminsLitteraux(config.specPattern) }
     },
     baseUrl:
-      process.env.CYPRESS_BASE_URL ??
+      process.env['CYPRESS_BASE_URL'] ??
       `http://localhost:${process.env.PORT ?? 3000}`,
     chromeWebSecurity: false,
   },

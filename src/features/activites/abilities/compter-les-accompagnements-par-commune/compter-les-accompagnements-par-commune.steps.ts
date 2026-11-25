@@ -2,10 +2,8 @@ import assert from 'node:assert'
 import { Then, When } from '@cucumber/cucumber'
 import type { CommuneComptee } from '../../domain'
 import { demandeDeStatistiques } from '../../statistiques.cucumber'
-import {
-  type AccompagnementsParCommune,
-  compterLesAccompagnementsParCommune,
-} from '.'
+import { type AccompagnementsParCommune } from './domain/index'
+import { compterLesAccompagnementsParCommune } from './implementations/prisma/accompagnements-par-commune.query'
 
 let parCommune: AccompagnementsParCommune | undefined
 

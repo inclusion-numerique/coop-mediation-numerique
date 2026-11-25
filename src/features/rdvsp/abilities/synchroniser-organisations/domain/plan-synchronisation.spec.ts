@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
+import { OrganisationId } from '../../../domain/identifiants/organisation-id'
 import { EmailExterne, TelephoneExterne } from '../../../domain/identite'
 import { NomOrganisation } from '../../../domain/libelle'
 import type { Organisation } from '../../../domain/organisation'
-import { OrganisationId } from '../../../domain/organisation-id'
 import { planifierSynchronisation } from './plan-synchronisation'
 
 const organisation = (id: number, nom = 'Médiathèque'): Organisation => ({

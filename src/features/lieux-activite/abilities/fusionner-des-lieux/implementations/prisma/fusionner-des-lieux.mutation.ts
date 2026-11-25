@@ -1,0 +1,174 @@
+import { prismaClient } from '@/configuration/prisma'
+import type { LieuInclusion, Prisma } from '@/generated/prisma/client'
+import { unionArrays } from '@/libraries/collections'
+import { failure, type Result, success } from '@/libraries/result'
+import type { LieuId } from '../../../../domain/identifiants/lieu-id'
+import { toutesLesColonnes } from '../../../../implementations/prisma/registre/colonnes-a-ecrire.select'
+import { ecrireLeLieuAuRegistre } from '../../../../implementations/prisma/registre/ecrire-au-registre.mutation'
+import { inscriptionPourLIdentifiantCarto } from '../../../../implementations/prisma/registre/identifiants-carto.query'
+import { retirerDuRegistre } from '../../../../implementations/prisma/registre/retirer-du-registre.mutation'
+import { type EchecDeFusion, LieuIntrouvable } from '../../domain'
+
+type PrismaTransaction = Prisma.TransactionClient
+
+const mergeMediateursEnActivite =
+  (prisma: PrismaTransaction) =>
+  async (sourceStructureId: string, targetStructureId: string) => {
+    const targetActivites = await prisma.mediateurEnActivite.findMany({
+      where: {
+        structureId: targetStructureId,
+        suppression: null,
+        fin: null,
+      },
+      select: { mediateurId: true },
+    })
+    const targetMediateurIds = targetActivites.map((a) => a.mediateurId)
+
+    await prisma.mediateurEnActivite.updateMany({
+      where: {
+        structureId: sourceStructureId,
+        suppression: null,
+        mediateurId: { notIn: targetMediateurIds },
+      },
+      data: { structureId: targetStructureId },
+    })
+
+    await prisma.mediateurEnActivite.deleteMany({
+      where: { structureId: sourceStructureId },
+    })
+  }
+
+const mergeActivitesLieu =
+  (prisma: PrismaTransaction) =>
+  async (sourceStructureId: string, targetStructureId: string) => {
+    await prisma.activite.updateMany({
+      where: { structureId: sourceStructureId },
+      data: { structureId: targetStructureId },
+    })
+  }
+
+const legs = <Champ extends keyof LieuInclusion>(
+  source: LieuInclusion,
+  target: LieuInclusion,
+  champ: Champ,
+): LieuInclusion[Champ] => target[champ] ?? source[champ]
+
+const fusionnerLesChamps =
+  (prisma: PrismaTransaction) =>
+  async (sourceStructureId: string, targetStructureId: string) => {
+    const [source, target] = await Promise.all([
+      prisma.lieuInclusion.findUnique({ where: { id: sourceStructureId } }),
+      prisma.lieuInclusion.findUnique({ where: { id: targetStructureId } }),
+    ])
+
+    if (!source || !target) return
+
+    await prisma.lieuInclusion.update({
+      where: { id: targetStructureId },
+      data: {
+        typologies: unionArrays(target.typologies, source.typologies),
+        services: unionArrays(target.services, source.services),
+        publicsSpecifiquementAdresses: unionArrays(
+          target.publicsSpecifiquementAdresses,
+          source.publicsSpecifiquementAdresses,
+        ),
+        priseEnChargeSpecifique: unionArrays(
+          target.priseEnChargeSpecifique,
+          source.priseEnChargeSpecifique,
+        ),
+        fraisACharge: unionArrays(target.fraisACharge, source.fraisACharge),
+        dispositifProgrammesNationaux: unionArrays(
+          target.dispositifProgrammesNationaux,
+          source.dispositifProgrammesNationaux,
+        ),
+        formationsLabels: unionArrays(
+          target.formationsLabels,
+          source.formationsLabels,
+        ),
+        autresFormationsLabels: unionArrays(
+          target.autresFormationsLabels,
+          source.autresFormationsLabels,
+        ),
+        itinerance: unionArrays(target.itinerance, source.itinerance),
+        modalitesAcces: unionArrays(
+          target.modalitesAcces,
+          source.modalitesAcces,
+        ),
+        modalitesAccompagnement: unionArrays(
+          target.modalitesAccompagnement,
+          source.modalitesAccompagnement,
+        ),
+        courriels: unionArrays(target.courriels, source.courriels),
+        visiblePourCartographieNationale:
+          target.visiblePourCartographieNationale &&
+          source.visiblePourCartographieNationale,
+        nomReferent: legs(source, target, 'nomReferent'),
+        courrielReferent: legs(source, target, 'courrielReferent'),
+        telephoneReferent: legs(source, target, 'telephoneReferent'),
+        v1Imported: legs(source, target, 'v1Imported'),
+        v1StructureId: legs(source, target, 'v1StructureId'),
+        v1StructureIdPg: legs(source, target, 'v1StructureIdPg'),
+        v1PermanenceId: legs(source, target, 'v1PermanenceId'),
+        modification: new Date(),
+      },
+    })
+  }
+
+const deleteStructure =
+  (prisma: PrismaTransaction) => async (structureId: string) => {
+    await prisma.lieuInclusion.delete({
+      where: { id: structureId },
+    })
+  }
+
+const fusionnerAuRegistre =
+  (prisma: PrismaTransaction) =>
+  async (sourceStructureId: string, targetStructureId: string) => {
+    const maintenant = new Date()
+
+    await retirerDuRegistre(prisma, { lieuId: sourceStructureId, maintenant })
+
+    const fusionne = await prisma.lieuInclusion.findUnique({
+      where: { id: targetStructureId },
+      include: { inscriptionRegistre: inscriptionPourLIdentifiantCarto },
+    })
+
+    if (!fusionne) return
+
+    await ecrireLeLieuAuRegistre(prisma, {
+      ligne: fusionne,
+      colonnes: toutesLesColonnes,
+      maintenant,
+    })
+  }
+
+export const fusionnerDesLieux = async (
+  { source, cible }: { readonly source: LieuId; readonly cible: LieuId },
+  options?: { timeout?: number },
+): Promise<Result<void, EchecDeFusion>> =>
+  prismaClient.$transaction(
+    async (prisma): Promise<Result<void, EchecDeFusion>> => {
+      const [lieuSource, lieuCible] = await Promise.all([
+        prisma.lieuInclusion.findUnique({
+          where: { id: source },
+          select: { id: true },
+        }),
+        prisma.lieuInclusion.findUnique({
+          where: { id: cible },
+          select: { id: true },
+        }),
+      ])
+
+      if (lieuSource == null) return failure(LieuIntrouvable(source))
+      if (lieuCible == null) return failure(LieuIntrouvable(cible))
+
+      await mergeMediateursEnActivite(prisma)(source, cible)
+      await mergeActivitesLieu(prisma)(source, cible)
+      await fusionnerLesChamps(prisma)(source, cible)
+      await fusionnerAuRegistre(prisma)(source, cible)
+      await deleteStructure(prisma)(source)
+
+      return success(undefined)
+    },
+    options?.timeout === undefined ? {} : { timeout: options.timeout },
+  )

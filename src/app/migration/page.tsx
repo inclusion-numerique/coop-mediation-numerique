@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
-import { metadataTitle } from '@/configuration/projet/metadataTitle'
-import { MigrationPage } from '@/features/vitrine/abilities/presenter-la-coop/ui/pages/MigrationPage'
+import { metadataTitle } from '@/configuration/projet'
+import { MigrationPage } from '@/features/vitrine/ui/pages/MigrationPage'
 
 export const metadata: Metadata = {
   title: metadataTitle('Migration vers la nouvelle version de la plateforme !'),

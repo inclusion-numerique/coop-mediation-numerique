@@ -2,9 +2,9 @@ import { z } from 'zod'
 import type { CodeDepartement } from '@/libraries/insee'
 import { defineModel, type Model } from '@/libraries/model'
 import type { NomAffiche } from '@/libraries/nom-affiche'
-import type { MediateurId } from '../../../domain/mediateur-id'
-import type { RattachementId } from '../../../domain/rattachement-id'
-import type { UserId } from '../../../domain/user-id'
+import type { MediateurId } from '../../../domain/identifiants/mediateur-id'
+import type { RattachementId } from '../../../domain/identifiants/rattachement-id'
+import type { UtilisateurId } from '../../../domain/identifiants/utilisateur-id'
 import type { ProfilDuMediateur } from './profil-du-mediateur'
 
 export const Courriel = defineModel(
@@ -24,7 +24,7 @@ export type DerniereActiviteIci =
   | { readonly _tag: 'Le'; readonly date: Date }
 
 export type CoordinateurDuMediateur = {
-  readonly acteurId: UserId
+  readonly acteurId: UtilisateurId
   readonly nomAffiche: NomAffiche
   readonly departement: CodeDepartement
 }
@@ -32,7 +32,7 @@ export type CoordinateurDuMediateur = {
 export type MediateurDuLieu = {
   readonly rattachementId: RattachementId
   readonly mediateurId: MediateurId
-  readonly acteurId: UserId
+  readonly acteurId: UtilisateurId
   readonly nomAffiche: NomAffiche
   readonly courriel: Courriel
   readonly profil: ProfilDuMediateur

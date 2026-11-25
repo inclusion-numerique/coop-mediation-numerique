@@ -1,10 +1,10 @@
 import { type ReactNode, Suspense } from 'react'
-import { Spinner } from '@/libraries/ui/components/Spinner'
-import { CarteDActivite } from '../../../../ui/carte/CarteDActivite'
-import { CarteDeRendezVous } from '../../../../ui/carte/CarteDeRendezVous'
-import { PaginationDesActivites } from '../../../../ui/pagination/PaginationDesActivites'
-import type { JourDeLaListe } from '../mes-activites.presenter'
+import { Spinner } from '@/libraries/ui/components'
+import { CarteDActivite } from '../../../../ui/components/carte/CarteDActivite'
+import { PaginationDesActivites } from '../../../../ui/components/PaginationDesActivites'
+import type { JourDeLaListe } from '../presenters/mes-activites.presenter'
 import { AucuneActivite } from './AucuneActivite'
+import { CarteDeRendezVous, type RenseignerLeStatut } from './CarteDeRendezVous'
 
 export type ContenuDeLaListe = {
   readonly decompte: string
@@ -18,10 +18,12 @@ const Contenu = async ({
   contenu,
   basculeDesRendezVous,
   parametres,
+  renseignerLeStatut,
 }: {
   contenu: Promise<ContenuDeLaListe>
   basculeDesRendezVous: ReactNode
   parametres: Record<string, string>
+  renseignerLeStatut: RenseignerLeStatut
 }) => {
   const { decompte, jours, total, lignesParPage, aucuneActivite } =
     await contenu
@@ -45,7 +47,11 @@ const Contenu = async ({
               </h3>
               {cartes.map((carte) =>
                 carte._tag === 'RendezVous' ? (
-                  <CarteDeRendezVous key={carte.carte.id} carte={carte.carte} />
+                  <CarteDeRendezVous
+                    key={carte.carte.id}
+                    carte={carte.carte}
+                    renseignerLeStatut={renseignerLeStatut}
+                  />
                 ) : (
                   <CarteDActivite key={carte.carte.id} carte={carte.carte} />
                 ),
@@ -69,6 +75,7 @@ export const ListeDeMesActivites = (props: {
   contenu: Promise<ContenuDeLaListe>
   basculeDesRendezVous: ReactNode
   parametres: Record<string, string>
+  renseignerLeStatut: RenseignerLeStatut
 }) => (
   <Suspense fallback={<Spinner className="fr-mt-6v" />}>
     <Contenu {...props} />

@@ -1,19 +1,15 @@
-import {
-  type DataTableUrlState,
-  SelectAllHeaderCell,
-  SortableColumnHeader,
-} from '@/libraries/data-table'
-import { beneficiairesColumns } from './beneficiaires-columns'
+import { SelectAllHeaderCell } from '@/libraries/data-table/selection'
+import { EnTeteTriable } from '@/libraries/etat-d-url/liste'
+import { beneficiairesColumns } from '../columns/beneficiaires.columns'
+import type { LiensDeLaListe } from '../filtres/liste-des-beneficiaires.filtre'
 
 export const BeneficiairesTableHead = ({
-  state,
-  baseHref,
+  colonnes,
   allSelected,
   someSelected,
   onToggleAll,
 }: {
-  state: DataTableUrlState
-  baseHref: string
+  colonnes: LiensDeLaListe['colonnes']
   allSelected: boolean
   someSelected: boolean
   onToggleAll: () => void
@@ -26,13 +22,10 @@ export const BeneficiairesTableHead = ({
         onToggle={onToggleAll}
       />
       {beneficiairesColumns.map((column) => (
-        <SortableColumnHeader
+        <EnTeteTriable
           key={column.tri}
-          label={column.label}
-          tri={column.tri}
-          state={state}
-          baseHref={baseHref}
-          isDefault={column.isDefault}
+          libelle={column.label}
+          lien={colonnes[column.tri]}
           className={column.alignRight ? 'fr-text--right' : undefined}
         />
       ))}

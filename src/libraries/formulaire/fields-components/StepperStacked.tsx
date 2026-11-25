@@ -1,8 +1,10 @@
+'use client'
+
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useFieldContext } from '@/libraries/formulaire/form-context'
 import { Input, type InputProps } from './Input'
 
-export type StepperProps = InputProps & {
+export type StepperStackedProps = InputProps & {
   min?: number
   max: number
   step?: number
@@ -21,7 +23,7 @@ export const StepperStacked = ({
   classes,
   nativeInputProps,
   ...props
-}: StepperProps) => {
+}: StepperStackedProps) => {
   const field = useFieldContext<number>()
 
   return (

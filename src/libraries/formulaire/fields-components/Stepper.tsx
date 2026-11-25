@@ -1,12 +1,14 @@
+'use client'
+
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useFieldContext } from '@/libraries/formulaire/form-context'
 import { Input, type InputProps } from './Input'
 
 export type StepperProps = InputProps & {
-  min?: number
-  max?: number
-  step?: number
-  size?: 'small' | 'medium' | 'large'
+  min?: number | undefined
+  max?: number | undefined
+  step?: number | undefined
+  size?: 'small' | 'medium' | 'large' | undefined
   addTitle: string
   removeTitle: string
 }
@@ -55,7 +57,7 @@ export const Stepper = ({
       }
       addonEnd={
         <Button
-          disabled={max != null ? field.state.value === max : undefined}
+          {...(max == null ? {} : { disabled: field.state.value === max })}
           size={size}
           priority="tertiary"
           iconId="fr-icon-add-line"

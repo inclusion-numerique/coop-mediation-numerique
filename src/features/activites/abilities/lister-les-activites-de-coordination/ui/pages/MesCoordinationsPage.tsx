@@ -1,35 +1,24 @@
 import type { ReactNode } from 'react'
-import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
-import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
-import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
-import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
-import type { FiltreActif } from '../../../../ui/filtres-actifs-des-coordinations'
+import { contentId } from '@/libraries/liens-d-evitement'
+import { SkipLinksPortal } from '@/libraries/liens-d-evitement/composants'
+import { CoopBreadcrumbs, CoopPageContainer } from '@/libraries/ui/components'
 import { ActivitesDeCoordinationListe } from '../components/ActivitesDeCoordinationListe'
-import { FiltreDePeriode } from '../components/FiltreDePeriode'
-import { FiltreDeTags } from '../components/FiltreDeTags'
-import { FiltreDeType } from '../components/FiltreDeType'
-import { FiltresActifs } from '../components/FiltresActifs'
-import type { ListeDesCoordinations } from '../liste-des-coordinations.presenter'
-import type { OptionsDeFiltrePresentees } from '../options-de-filtre.presenter'
+import type { ListeDesCoordinations } from '../presenters/liste-des-coordinations.presenter'
 
 export const MesCoordinationsPage = ({
   sousTitre,
-  options,
-  filtresActifs,
+  barreDeFiltres,
   liste,
   filtre,
   pagination,
   lignesParPage,
-  exporter,
 }: {
-  sousTitre?: string
-  options: OptionsDeFiltrePresentees
-  filtresActifs: readonly FiltreActif[]
+  sousTitre?: string | undefined
+  barreDeFiltres: ReactNode
   liste: ListeDesCoordinations
   filtre: boolean
   pagination: Readonly<Record<string, string>>
   lignesParPage: number
-  exporter: ReactNode
 }) => (
   <CoopPageContainer size={56}>
     <SkipLinksPortal />
@@ -45,18 +34,7 @@ export const MesCoordinationsPage = ({
           )}
         </div>
       </div>
-      <div className="fr-flex fr-justify-content-space-between fr-align-items-center fr-flex-gap-2v fr-mb-6v">
-        <div className="fr-flex fr-align-items-center fr-flex-gap-2v">
-          <FiltreDePeriode minDate={options.debut} maxDate={options.fin} />
-          <FiltreDeType />
-          <FiltreDeTags tagOptions={[...options.tags]} />
-        </div>
-        {exporter}
-      </div>
-      <FiltresActifs
-        ignoreParams={['page', 'lignes']}
-        filters={filtresActifs}
-      />
+      {barreDeFiltres}
       <ActivitesDeCoordinationListe
         liste={liste}
         filtre={filtre}

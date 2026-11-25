@@ -1,11 +1,22 @@
 import assert from 'node:assert'
 import type { CreerActiviteDepuisRdv } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/domain/creer-activite-depuis-rdv'
 import { MediateurRedacteurId } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/domain/rdv-pour-activite'
-import { creerActiviteDepuisRdvAvec } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/implementation/creer-activite-depuis-rdv.binding'
 
 const confies: { usagers: number[] } = { usagers: [] }
 
-const creerActiviteDepuisRdvBinding = creerActiviteDepuisRdvAvec(
+const creerActiviteDepuisRdvAvec = (
+  preparerUrlCreationCra: PreparerUrlCreationCra,
+  creerOuFusionner: CreerOuFusionnerDepuisUsagersExternes<BeneficiaireFusionne>,
+) =>
+  creerActiviteDepuisRdv({
+    lireRdv: lireRdvPourActivite,
+    compteDuRedacteur,
+    creerOuFusionnerBeneficiaires:
+      creerOuFusionnerBeneficiaires(creerOuFusionner),
+    preparerUrlCreationCra,
+  })
+
+const creerActiviteDepuisUnRdv = creerActiviteDepuisRdvAvec(
   ({ rendezVous }) =>
     Promise.resolve(
       `/coop/mes-activites/cra/${rendezVous.collectif ? 'collectif' : 'individuel'}?rdv=${rendezVous.id}`,
@@ -34,8 +45,15 @@ const creerActiviteDepuisRdvBinding = creerActiviteDepuisRdvAvec(
 
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { RdvId } from '@/features/rdvsp/domain/rdv-id'
-import { StatutPresence } from '@/features/rdvsp/domain/statut-presence'
+import type { PreparerUrlCreationCra } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/domain/creer-activite-depuis-rdv'
+import { creerActiviteDepuisRdv } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/domain/creer-activite-depuis-rdv'
+import { creerOuFusionnerBeneficiaires } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/domain/creer-ou-fusionner-beneficiaires'
+import type { BeneficiaireFusionne } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/domain/rdv-pour-activite'
+import { compteDuRedacteur } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/implementations/prisma/compte-du-redacteur.query'
+import { lireRdvPourActivite } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/implementations/prisma/lire-rdv-pour-activite.query'
+import { RdvId } from '@/features/rdvsp/domain/identifiants/rdv-id'
+import type { CreerOuFusionnerDepuisUsagersExternes } from '@/features/rdvsp/domain/ports'
+import { StatutPresence } from '@/features/rdvsp/domain/rdv/statut-presence'
 import {
   ID_TEST,
   seedCompteRdv,
@@ -124,7 +142,7 @@ Given('aucun compte RDV pour convertir', () => {
 })
 
 When('je prépare un CRA depuis ce rendez-vous', async () => {
-  resultat = await creerActiviteDepuisRdvBinding({
+  resultat = await creerActiviteDepuisUnRdv({
     utilisateurId: testUtilisateurId,
     mediateurId: MediateurRedacteurId(testMediateurId),
     rdvId: RdvId(RDV_ID),
@@ -132,7 +150,7 @@ When('je prépare un CRA depuis ce rendez-vous', async () => {
 })
 
 When('je prépare un CRA depuis un rendez-vous inexistant', async () => {
-  resultat = await creerActiviteDepuisRdvBinding({
+  resultat = await creerActiviteDepuisUnRdv({
     utilisateurId: testUtilisateurId,
     mediateurId: MediateurRedacteurId(testMediateurId),
     rdvId: RdvId(RDV_ID_INEXISTANT),

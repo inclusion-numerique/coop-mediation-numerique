@@ -1,4 +1,4 @@
-import type { RdvId } from '../../../domain/rdv-id'
+import type { RdvId } from '../../../domain/identifiants/rdv-id'
 
 /**
  * Le rendez-vous existe mais relève d'un autre compte RDV Service Public. Même

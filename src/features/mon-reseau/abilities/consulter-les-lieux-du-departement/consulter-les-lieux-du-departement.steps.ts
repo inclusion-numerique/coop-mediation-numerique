@@ -1,9 +1,8 @@
 import assert from 'node:assert'
 import { After, Then, When } from '@cucumber/cucumber'
-import {
-  consulterLesLieuxDuDepartement,
-  type ParametresDesLieux,
-} from '@/features/mon-reseau/abilities/consulter-les-lieux-du-departement'
+import { consulterLesLieuxDuDepartement } from '@/features/mon-reseau/abilities/consulter-les-lieux-du-departement/domain/consulter-les-lieux-du-departement'
+import type { ParametresDuReseau } from '@/features/mon-reseau/ui/filtres/reseau.filtre'
+import { criteresDesLieuxDuReseau } from './ui/filtres/lieux-du-reseau.filtre'
 
 const AURILLAC = '15014'
 
@@ -13,18 +12,18 @@ const etat: {
 } = {}
 
 const annuaireVide = async ({
-  searchParams,
+  criteres,
 }: {
-  searchParams: { readonly communes: readonly string[] }
+  criteres: { readonly communes: readonly string[] }
 }) => {
-  etat.communesDemandees = searchParams.communes
-  return { lieux: [], totalCount: 0, page: 1, pageSize: 100 }
+  etat.communesDemandees = criteres.communes
+  return { items: [], totalItems: 0 }
 }
 
 const aucuneCommune = async () => ({ communesOptions: [] })
 
-const consulterLesLieux = (code: string, parametres: ParametresDesLieux) =>
-  consulterLesLieuxDuDepartement(code, parametres, {
+const consulterLesLieux = (code: string, parametres: ParametresDuReseau) =>
+  consulterLesLieuxDuDepartement(code, criteresDesLieuxDuReseau(parametres), {
     lieuxDuDepartement: annuaireVide,
     communesDesLieux: aucuneCommune,
   })
@@ -67,6 +66,6 @@ Then('l’annuaire des lieux est introuvable', () => {
 })
 
 After(() => {
-  etat.communesDemandees = undefined
-  etat.consultation = undefined
+  delete etat.communesDemandees
+  delete etat.consultation
 })

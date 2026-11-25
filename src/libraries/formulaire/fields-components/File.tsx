@@ -7,7 +7,7 @@ import { useFieldContext } from '@/libraries/formulaire/form-context'
 
 type FileProps = Omit<DsfrUploadProps, 'state' | 'stateRelatedMessage'> & {
   isPending: boolean
-  accept?: string
+  accept?: string | undefined
 }
 
 export const File = ({
@@ -22,12 +22,13 @@ export const File = ({
   >()
   const errors: Error[] = state.meta.errors
   const hasErrors = errors.length > 0
+  const message = hasErrors ? errors[0]?.message : undefined
 
   return (
     <DsfrUpload
       state={hasErrors ? 'error' : 'default'}
-      stateRelatedMessage={hasErrors ? errors[0].message : undefined}
-      disabled={isPending || disabled}
+      {...(message === undefined ? {} : { stateRelatedMessage: message })}
+      disabled={isPending || (disabled ?? false)}
       {...props}
       nativeInputProps={{
         name,

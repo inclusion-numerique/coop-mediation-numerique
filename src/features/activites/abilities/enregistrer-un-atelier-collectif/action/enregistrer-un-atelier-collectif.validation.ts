@@ -2,7 +2,7 @@ import { z } from 'zod'
 import {
   communDeLaSaisie,
   saisieDeMediation,
-} from '../../../action/saisie-de-mediation'
+} from '../../../action/saisie-de-mediation.validation'
 import {
   BeneficiaireId,
   Effectif,
@@ -90,3 +90,7 @@ export const EnregistrerUnAtelierCollectifValidation = z
       anonymes: anonymes.data,
     }
   })
+
+export type SaisieDUnAtelierCollectif = z.input<
+  typeof EnregistrerUnAtelierCollectifValidation
+>

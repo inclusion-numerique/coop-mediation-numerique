@@ -14,7 +14,8 @@ import {
   tagsDeLActiviteDeCoordination,
 } from '@/features/tags/tags.cucumber'
 import type { DestinationDeFusion } from './domain'
-import { destinationsDeFusion, fusionnerUnTag } from './implementation'
+import { destinationsDeFusion } from './implementations/prisma/destinations-de-fusion.query'
+import { fusionnerUnTag } from './implementations/prisma/fusionner-un-tag.mutation'
 
 const contexte: {
   acteur?: Acteur

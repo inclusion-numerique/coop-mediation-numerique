@@ -3,7 +3,7 @@
  * détient. La forme est la même pour les rendez-vous, les motifs, les lieux et
  * les usagers : seule la comparaison change.
  */
-import type { BilanModele } from '../../../domain/bilan-synchronisation'
+import type { BilanModele } from '../../../domain/compte/bilan-synchronisation'
 
 export type PlanModele<T> = {
   readonly aCreer: readonly T[]
@@ -55,11 +55,11 @@ export const planifierModele = <T, Id>({
   }
 }
 
-export type { BilanModele } from '../../../domain/bilan-synchronisation'
+export type { BilanModele } from '../../../domain/compte/bilan-synchronisation'
 export {
   bilanVide,
   cumulerBilans,
-} from '../../../domain/bilan-synchronisation'
+} from '../../../domain/compte/bilan-synchronisation'
 
 export const bilanDuPlan = <T>(
   plan: PlanModele<T>,

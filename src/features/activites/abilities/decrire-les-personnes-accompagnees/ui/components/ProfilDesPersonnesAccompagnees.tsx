@@ -1,12 +1,14 @@
-import { AccompagnementPieChart } from '@/features/activites/ui/graphiques/AccompagnementPieChart'
+import { AccompagnementPieChart } from '@/features/activites/ui/components/AccompagnementPieChart'
 import {
+  couleursDesStatuts,
   genresColors,
-  statusColors,
   tranchesAgeColors,
-} from '@/features/activites/ui/graphiques/couleurs'
-import ProgressBar from '@/libraries/proportions/ProgressBar'
-import { QuantifiedShareLegend } from '@/libraries/proportions/QuantifiedShareLegend'
-import type { ProfilPresente } from '../profil.presenter'
+} from '@/features/activites/ui/labels/couleurs.labels'
+import {
+  ProgressBar,
+  QuantifiedShareLegend,
+} from '@/libraries/proportions/composants'
+import type { ProfilPresente } from '../presenters/profil.presenter'
 
 const toProgress = ({
   label,
@@ -18,7 +20,7 @@ const toProgress = ({
   proportion: number
 }) => ({
   label,
-  count,
+  ...(count === undefined ? {} : { count }),
   percentage: proportion,
 })
 
@@ -70,13 +72,13 @@ export const ProfilDesPersonnesAccompagnees = ({
           <ProgressBar
             size="large"
             progress={beneficiaires.statutsSocial.map(toProgress)}
-            colors={statusColors}
+            colors={couleursDesStatuts}
             tooltipKey="status-beneficiaires"
           />
         </div>
         <QuantifiedShareLegend
           quantifiedShares={beneficiaires.statutsSocial}
-          colors={statusColors}
+          colors={couleursDesStatuts}
         />
       </div>
     </div>

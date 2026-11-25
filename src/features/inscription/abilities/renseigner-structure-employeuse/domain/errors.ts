@@ -1,4 +1,4 @@
-import type { UserId } from '@/features/inscription/domain'
+import type { UtilisateurId } from '@/features/inscription/domain'
 
 /**
  * L'employeuse choisie n'a pas pu être rattachée : identité non exploitable
@@ -10,11 +10,11 @@ import type { UserId } from '@/features/inscription/domain'
  */
 export type EmployeuseIndisponible = {
   readonly _tag: 'EmployeuseIndisponible'
-  readonly userId: UserId
+  readonly userId: UtilisateurId
 }
 
 export const EmployeuseIndisponible = (
-  userId: UserId,
+  userId: UtilisateurId,
 ): EmployeuseIndisponible => ({
   _tag: 'EmployeuseIndisponible',
   userId,

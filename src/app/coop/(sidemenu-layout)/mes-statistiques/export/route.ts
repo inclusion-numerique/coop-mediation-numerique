@@ -1,51 +1,115 @@
 import { NextRequest } from 'next/server'
-import { decrireLesActivitesDuPerimetre } from '@/features/activites/abilities/decrire-les-activites-du-perimetre'
+import { compterLesAccompagnements } from '@/features/activites/abilities/compter-les-accompagnements/implementations/prisma/totaux-des-accompagnements.query'
+import { totauxPresentes } from '@/features/activites/abilities/compter-les-accompagnements/ui/presenters/totaux.presenter'
+import { compterLesAccompagnementsParCommune } from '@/features/activites/abilities/compter-les-accompagnements-par-commune/implementations/prisma/accompagnements-par-commune.query'
+import { parCommunePresentes } from '@/features/activites/abilities/compter-les-accompagnements-par-commune/ui/presenters/par-commune.presenter'
+import { compterLesAccompagnementsParLieu } from '@/features/activites/abilities/compter-les-accompagnements-par-lieu/implementations/prisma/accompagnements-par-lieu.query'
+import { parLieuPresentes } from '@/features/activites/abilities/compter-les-accompagnements-par-lieu/ui/presenters/par-lieu.presenter'
+import { compterLesAccompagnementsParPeriode } from '@/features/activites/abilities/compter-les-accompagnements-par-periode/implementations/prisma/accompagnements-par-periode.query'
+import { parPeriodePresentes } from '@/features/activites/abilities/compter-les-accompagnements-par-periode/ui/presenters/par-periode.presenter'
+import { compterLesPersonnesAccompagneesParCommune } from '@/features/activites/abilities/compter-les-personnes-accompagnees-par-commune/implementations/prisma/personnes-par-commune.query'
+import { personnesParCommunePresentees } from '@/features/activites/abilities/compter-les-personnes-accompagnees-par-commune/ui/presenters/personnes-par-commune.presenter'
+import { decrireLesActivitesDuPerimetre } from '@/features/activites/abilities/decrire-les-activites-du-perimetre/implementations/prisma/activites-du-perimetre.query'
+import { decrireLesPersonnesAccompagnees } from '@/features/activites/abilities/decrire-les-personnes-accompagnees/implementations/prisma/profil-des-personnes-accompagnees.query'
+import { profilPresente } from '@/features/activites/abilities/decrire-les-personnes-accompagnees/ui/presenters/profil.presenter'
+import { tagsChoisis } from '@/features/activites/abilities/lister-les-options-de-filtre-des-activites/implementations/prisma/tags-choisis.query'
+import { tagsLesPlusUtilisesDuPerimetre } from '@/features/activites/abilities/lister-les-options-de-filtre-des-activites/implementations/prisma/tags-du-perimetre.query'
+import { employeusesEnOptions } from '@/features/activites/abilities/rechercher-les-employeuses-des-activites/ui/presenters/options-d-employeuses.presenter'
+import { lieuxDuFiltre } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/implementations/prisma/lieux-du-filtre.query'
+import { lieuxDuFiltrePresentes } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/ui/presenters/lieux-du-filtre.presenter'
+import { repartirLesAccompagnements } from '@/features/activites/abilities/repartir-les-accompagnements/implementations/prisma/repartition-des-accompagnements.query'
+import { repartitionPresentee } from '@/features/activites/abilities/repartir-les-accompagnements/ui/presenters/repartition.presenter'
+import { repartirLesAccompagnementsParTag } from '@/features/activites/abilities/repartir-les-accompagnements-par-tag/implementations/prisma/accompagnements-par-tag.query'
+import { parTagPresentes } from '@/features/activites/abilities/repartir-les-accompagnements-par-tag/ui/presenters/par-tag.presenter'
+import { presenceDeCrasV1 } from '@/features/activites/abilities/verifier-la-presence-de-cras-v1/implementations/prisma/presence-de-cras-v1.query'
+import type { PerimetreDesStatistiques } from '@/features/activites/domain'
+import { statistiquesDuPerimetre } from '@/features/activites/implementations/prisma/statistiques/statistiques-du-perimetre.query'
 import {
-  lieuxChoisisDe,
-  perimetreDeLUtilisateur,
-  rassembler,
-  statistiquesDuPerimetre,
-} from '@/features/activites/implementation/statistiques'
-import { vocabulaireDesActivites } from '@/features/activites/ui/libelles/vocabulaire-des-statistiques'
-import { profilDeLaSession } from '@/features/authentification'
-import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementation/session/getSessionTokenFromCookies'
-import { getSessionUserFromSessionToken } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
-import { getInitialBeneficiairesOptionsForSearch } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/ui/get-initial-beneficiaires-options-for-search'
-import { membresAFiltrerDuDemandeur } from '@/features/equipe/abilities/lister-les-membres-a-filtrer'
-import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
-import { rdvStatusOptions } from '@/features/rdvsp/ui/rdv-status'
-import { donneesDeMesStatistiques } from '@/features/statistiques/implementation/mes-statistiques'
-import {
-  exportInterdit,
-  filtresDeLExport,
-} from '@/features/statistiques/ui/export/demande-d-export'
-import { buildStatistiquesWorksheet } from '@/features/statistiques/ui/tableur/classeur-des-statistiques'
-import { entreeDuClasseur } from '@/features/statistiques/ui/tableur/entree-du-classeur'
-import { tagsVisiblesDuProfil } from '@/features/tags/abilities/lire-les-tags-visibles'
-import { auteurDeLExport } from '@/features/utilisateurs'
-import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
+  source,
+  sourceOptionnelle,
+  statistiquesAvec,
+} from '@/features/activites/implementations/prisma/statistiques/statistiques-en-cours.query'
+import { perimetreDeLUtilisateur } from '@/features/activites/implementations/session/perimetre.query'
+import { criteresDesStatistiquesDesFiltres } from '@/features/activites/ui/filtres/activites.filtre'
+import { filtresDesStatistiques } from '@/features/activites/ui/filtres/statistiques.filtre'
+import { barreDesStatistiquesAvec } from '@/features/activites/ui/presenters/barre-des-statistiques.presenter'
+import { utilisateurDuJetonDeSession } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
+import { jetonDeSessionDesCookies } from '@/features/authentification/implementations/session/session-token-from-cookies.query'
+import { membresAFiltrerDuDemandeur } from '@/features/equipe/abilities/lister-les-membres-a-filtrer/implementations/prisma/membres-a-filtrer-du-demandeur.query'
+import { optionDeMembre } from '@/features/equipe/abilities/lister-les-membres-a-filtrer/ui/presenters/options-de-membres.presenter'
+import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/rdvs-des-activites.query'
+import { exportInterdit } from '@/features/statistiques/domain/export-interdit'
+import { classeurDesStatistiques } from '@/features/statistiques/implementations/excel/classeur-des-statistiques.classeur'
+import { entreeDuClasseur } from '@/features/statistiques/ui/presenters/entree-du-classeur.presenter'
+import { nomDuFichierDesStatistiques } from '@/features/statistiques/ui/presenters/nom-du-fichier.presenter'
+import { auteurDeLExport } from '@/features/utilisateurs/ui/presenters/auteur-de-l-export.presenter'
 
-const sourcesDeMesStatistiques = {
-  perimetreDe: perimetreDeLUtilisateur,
-  lancer: statistiquesDuPerimetre(rendezVousAuxStatutsSql),
-  rassembler,
-  lieuxChoisis: lieuxChoisisDe,
-  tagsVisibles: tagsVisiblesDuProfil,
-  beneficiaires: getInitialBeneficiairesOptionsForSearch,
-  membres: membresAFiltrerDuDemandeur,
-  activitesDuPerimetre: decrireLesActivitesDuPerimetre,
-  vocabulaire: {
-    ...vocabulaireDesActivites,
-    statutsDeRendezVous: rdvStatusOptions,
-  },
+const statistiquesDesActivites = statistiquesAvec({
+  totalCounts: source(compterLesAccompagnements, totauxPresentes),
+  periode: source(compterLesAccompagnementsParPeriode, parPeriodePresentes),
+  repartition: source(repartirLesAccompagnements, repartitionPresentee),
+  tags: sourceOptionnelle(repartirLesAccompagnementsParTag, parTagPresentes),
+  structures: sourceOptionnelle(
+    compterLesAccompagnementsParLieu,
+    parLieuPresentes,
+  ),
+  communes: sourceOptionnelle(
+    compterLesAccompagnementsParCommune,
+    parCommunePresentes,
+  ),
+  profil: source(decrireLesPersonnesAccompagnees, profilPresente),
+  residences: sourceOptionnelle(
+    compterLesPersonnesAccompagneesParCommune,
+    personnesParCommunePresentees,
+  ),
+  hasCrasV1: presenceDeCrasV1,
+})
+
+const lecturesDeLaBarre = (
+  perimetre: PerimetreDesStatistiques,
+  membres: () => Promise<readonly { value: string; label: string }[]>,
+) => ({
+  lieux: (choisis: Parameters<typeof lieuxDuFiltre>[1]) =>
+    lieuxDuFiltre(perimetre, choisis).then(lieuxDuFiltrePresentes),
+  tagsSuggeres: () => tagsLesPlusUtilisesDuPerimetre(perimetre),
+  tagsChoisis,
+  employeuses: async () =>
+    employeusesEnOptions(
+      (await decrireLesActivitesDuPerimetre(perimetre)).employeuses,
+    ),
+  mediateurs: membres,
+})
+
+const classeurDuPerimetre = async (
+  perimetre: PerimetreDesStatistiques,
+  valeurs: ReturnType<typeof filtresDesStatistiques.charger>,
+  membres: () => Promise<readonly { value: string; label: string }[]>,
+) => {
+  const [statistiques, barre] = await Promise.all([
+    statistiquesDesActivites.rassembler(
+      statistiquesDuPerimetre(
+        statistiquesDesActivites.lancer,
+        rendezVousAuxStatutsSql,
+      )({
+        perimetre,
+        criteres: criteresDesStatistiquesDesFiltres(valeurs),
+        fin: valeurs.au ?? new Date(),
+      }),
+    ),
+    barreDesStatistiquesAvec(lecturesDeLaBarre(perimetre, membres))(
+      { chemin: '', parametres: {} },
+      valeurs,
+    ),
+  ])
+  return { statistiques, etiquettes: barre.etiquettes }
 }
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
 export const GET = async (request: NextRequest) => {
-  const sessionToken = getSessionTokenFromNextRequestCookies(request.cookies)
-  const user = await getSessionUserFromSessionToken(sessionToken)
+  const sessionToken = jetonDeSessionDesCookies(request.cookies)
+  const user = await utilisateurDuJetonDeSession(sessionToken)
 
   if (!user) {
     return new Response('Unauthorized', { status: 401 })
@@ -55,34 +119,24 @@ export const GET = async (request: NextRequest) => {
     return new Response('Forbidden', { status: 403 })
   }
 
-  const filters = filtresDeLExport(
-    Object.fromEntries(request.nextUrl.searchParams.entries()),
-  )
-
-  if (filters === null) {
-    return new Response('Invalid query params', { status: 400 })
-  }
-
-  if (exportInterdit(user, filters.mediateurs)) {
+  const valeurs = filtresDesStatistiques.charger(request.nextUrl.searchParams)
+  if (exportInterdit(user, valeurs.mediateurs)) {
     return new Response('Cannot export for another mediateur', { status: 403 })
   }
+  const perimetre = perimetreDeLUtilisateur(user)
+  if (perimetre === null) return new Response('Forbidden', { status: 403 })
 
   const statistiquesWorksheetInput = entreeDuClasseur({
-    statistiques: await donneesDeMesStatistiques(
-      { user, profil: profilDeLaSession(user), activitesFilters: filters },
-      sourcesDeMesStatistiques,
-    ),
-    filters,
+    ...(await classeurDuPerimetre(perimetre, valeurs, async () =>
+      (await membresAFiltrerDuDemandeur(user)).map(optionDeMembre),
+    )),
     auteur: auteurDeLExport(user),
     fuseau: user.timezone,
   })
-
-  const workbook = buildStatistiquesWorksheet(statistiquesWorksheetInput)
+  const workbook = classeurDesStatistiques(statistiquesWorksheetInput)
 
   const data = await workbook.xlsx.writeBuffer()
-  const filename = `coop-numerique_statistiques_${dateAsIsoDay(
-    new Date(),
-  )}.xlsx`
+  const filename = nomDuFichierDesStatistiques(new Date())
 
   return new Response(data, {
     status: 200,

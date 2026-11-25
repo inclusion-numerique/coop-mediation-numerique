@@ -1,10 +1,10 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { metadataTitle } from '@/configuration/projet/metadataTitle'
-import { authenticateMediateurOrCoordinateur } from '@/features/authentification/implementation/session/authenticateUser'
-import { nombreDeLieuxDuDepartement } from '@/features/lieux-activite'
-import { consulterLeReseauDuDepartement } from '@/features/mon-reseau/abilities/consulter-le-reseau-du-departement'
-import { ReseauDuDepartementPage } from '@/features/mon-reseau/abilities/consulter-le-reseau-du-departement/ui'
+import { metadataTitle } from '@/configuration/projet'
+import { authenticateMediateurOrCoordinateur } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
+import { nombreDeLieuxDuDepartement } from '@/features/lieux-activite/abilities/lister-les-lieux-du-departement/implementations/prisma/nombre-de-lieux-du-departement.query'
+import { consulterLeReseauDuDepartement } from '@/features/mon-reseau/abilities/consulter-le-reseau-du-departement/implementations/prisma/reseau-du-departement.query'
+import { default as ReseauDuDepartementPage } from '@/features/mon-reseau/abilities/consulter-le-reseau-du-departement/ui/pages/ReseauDuDepartementPage'
 import { departementDuCode } from '@/libraries/departement'
 
 type Parametres = { params: Promise<{ departement: string }> }

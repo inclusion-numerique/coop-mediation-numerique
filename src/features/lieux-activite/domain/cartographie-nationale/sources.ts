@@ -29,7 +29,7 @@ export type CartographieNationaleKnownSource =
 export const coopCartographieNationaleSource =
   'Coop numérique' as const satisfies CartographieNationaleKnownSource
 
-export const getCartographieNationaleSourceLabel = (
+export const libelleDeLaSource = (
   source: CartographieNationaleKnownSource | string,
 ) =>
   cartographieNationaleSourcesLabels[

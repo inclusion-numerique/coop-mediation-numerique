@@ -1,7 +1,7 @@
-import { toTitleCase } from '@/libraries/texte/toTitleCase'
-import { MergeDiff } from '@/libraries/ui/components/administration/MergeDiff'
+import { toTitleCase } from '@/libraries/texte'
+import { MergeDiff } from '@/libraries/ui/components'
 import type { ChampsPartageables, LieuAFusionner } from '../../domain'
-import { nomAffiche } from '../nom-affiche'
+import { nomAffiche } from '../presenters/nom-affiche.presenter'
 
 const mergeFields: { label: string; key: keyof ChampsPartageables }[] = [
   { label: 'Employés', key: 'employesIds' },

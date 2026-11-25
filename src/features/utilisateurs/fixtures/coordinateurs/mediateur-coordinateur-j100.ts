@@ -1,0 +1,47 @@
+import { utilisateur } from '@/features/utilisateurs/fixtures/utilisateur'
+
+const day = 24 * 60 * 60 * 1000
+const date = new Date(Date.now() - 100 * day)
+
+const mediateurCoordinateurJ100MediateurId =
+  '7e8f9a0b-1c2d-3e4f-5a6b-7c8d9e0f1a2b'
+
+const mediateurCoordinateurJ100CoordinateurId =
+  '8f9a0b1c-2d3e-4f5a-6b7c-8d9e0f1a2b3c'
+
+export const mediateurCoordinateurJ100 = utilisateur({
+  id: '9a0b1c2d-3e4f-5a6b-7c8d-9e0f1a2b3c4d',
+  firstName: 'Médiateur-Coordinateur',
+  lastName: 'J+100',
+  lastLogin: date,
+  lastSeen: date,
+  isFixture: true,
+  role: 'User',
+  onboardingStatus: 'warning_j90_sent',
+  mediateur: {
+    connectOrCreate: {
+      where: {
+        id: mediateurCoordinateurJ100MediateurId,
+      },
+      create: {
+        id: mediateurCoordinateurJ100MediateurId,
+      },
+    },
+  },
+  coordinateur: {
+    connectOrCreate: {
+      where: {
+        id: mediateurCoordinateurJ100CoordinateurId,
+      },
+      create: {
+        id: mediateurCoordinateurJ100CoordinateurId,
+      },
+    },
+  },
+  employeDeLaStructureEmployeuse: true,
+  profilInscription: 'Coordinateur',
+  acceptationCgu: date,
+  inscriptionValidee: date,
+  structureEmployeuseRenseignee: date,
+  lieuxActiviteRenseignes: date,
+})

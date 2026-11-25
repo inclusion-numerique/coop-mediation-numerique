@@ -7,15 +7,9 @@ export {
   communs,
 } from './apercu-de-fusion'
 export {
-  autoriserFusion,
   CibleFusionId,
   type CompteAFusionner,
   type FusionAutorisee,
   SourceFusionId,
 } from './compte-a-fusionner'
 export type { CompteTrouve } from './compte-trouve'
-export {
-  CibleIntrouvable,
-  type FusionnerError,
-  SourceIntrouvable,
-} from './errors'

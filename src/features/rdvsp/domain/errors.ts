@@ -1,6 +1,6 @@
-import type { OrganisationId } from './organisation-id'
-import type { RdvAgentId } from './rdv-agent-id'
-import type { RdvId } from './rdv-id'
+import type { OrganisationId } from './identifiants/organisation-id'
+import type { RdvAgentId } from './identifiants/rdv-agent-id'
+import type { RdvId } from './identifiants/rdv-id'
 
 /**
  * Le client actuel réduit tout échec à `{ status: 'error', error: string }`, ce

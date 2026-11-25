@@ -1,1 +1,0 @@
-export { PartageStatistiques } from './PartageStatistiques'

@@ -1,6 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
+import { hrefDuLieuAFusionner } from '@/features/lieux-activite/ui/presenters/href-du-lieu.presenter'
 import RechercheDUnLieu from './RechercheDUnLieu'
 
 export const ChoisirLeLieuAFusionner = ({
@@ -19,7 +20,7 @@ export const ChoisirLeLieuAFusionner = ({
   const router = useRouter()
 
   const allerVersLApercu = ({ id }: { id: string }) => {
-    router.push(`/administration/lieux-activite/${structureId}/merge/${id}`)
+    router.push(hrefDuLieuAFusionner(structureId, id))
   }
 
   return (

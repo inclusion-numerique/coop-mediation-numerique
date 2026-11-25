@@ -1,11 +1,13 @@
-import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
-import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
-import AdministrationBreadcrumbs from '@/libraries/ui/components/administration/AdministrationBreadcrumbs'
-import AdministrationInfoCard from '@/libraries/ui/components/administration/AdministrationInfoCard'
-import AdministrationTitle from '@/libraries/ui/components/administration/AdministrationTitle'
-import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
-import { HREF_DES_CLIENTS_API } from '../../../../ui/liens'
-import { CreerUnClientApi } from '../CreerUnClientApi'
+import { contentId } from '@/libraries/liens-d-evitement'
+import { SkipLinksPortal } from '@/libraries/liens-d-evitement/composants'
+import {
+  AdministrationBreadcrumbs,
+  AdministrationInfoCard,
+  AdministrationTitle,
+  CoopPageContainer,
+} from '@/libraries/ui/components'
+import { HREF_DES_CLIENTS_API } from '../../../../ui/presenters/liens.presenter'
+import { CreerUnClientApi } from '../components/CreerUnClientApi'
 
 export const CreerUnClientApiPage = ({
   aujourdHui,

@@ -9,7 +9,7 @@
 // `main` behind ENTREPOT_DATABASE_URL), Prisma has no read-only client flag.
 //
 // The generated client lives at its own `output` and is consumed via
-// `@/generated/entrepot` from src/configuration/prisma/entrepotPrismaClient.ts.
+// `@/generated/entrepot` from src/configuration/prisma/entrepot-prisma-client.ts.
 
 generator client {
   provider     = "prisma-client"

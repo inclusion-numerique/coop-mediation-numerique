@@ -1,11 +1,14 @@
 import { describe, expect, it } from 'vitest'
-import type { CompteRdv } from '../../../domain/compte-rdv'
-import { MessageErreurCompte } from '../../../domain/compte-rdv'
-import { JetonAcces, type JetonsOAuth } from '../../../domain/jetons-oauth'
-import { RdvAgentId } from '../../../domain/rdv-agent-id'
-import { RdvId } from '../../../domain/rdv-id'
-import { StatutPresence } from '../../../domain/statut-presence'
-import { UtilisateurCoopId } from '../../../domain/utilisateur-coop-id'
+import type { CompteRdv } from '../../../domain/compte/compte-rdv'
+import { MessageErreurCompte } from '../../../domain/compte/compte-rdv'
+import {
+  JetonAcces,
+  type JetonsOAuth,
+} from '../../../domain/compte/jetons-oauth'
+import { RdvAgentId } from '../../../domain/identifiants/rdv-agent-id'
+import { RdvId } from '../../../domain/identifiants/rdv-id'
+import { UtilisateurCoopId } from '../../../domain/identifiants/utilisateur-coop-id'
+import { StatutPresence } from '../../../domain/rdv/statut-presence'
 import { statutRdvMisAJour, verifierAcces } from './mettre-a-jour-statut-rdv'
 
 const agentId = RdvAgentId(4242)

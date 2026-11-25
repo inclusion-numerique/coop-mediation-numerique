@@ -1,5 +1,5 @@
 import Button from '@codegouvfr/react-dsfr/Button'
-import type { FicheOutil } from '../fiche-outil'
+import type { FicheOutil } from '../labels/fiches/fiche-outil.labels'
 import { AccessInfoLink } from './AccessInfoLink'
 import { AccessInfoShare } from './AccessInfoShare'
 
@@ -37,11 +37,9 @@ export const Access = ({
     {callToActionComponent ||
       (callToAction ? (
         <Button
-          iconId={
-            callToAction.label === 'Se connecter'
-              ? 'fr-icon-account-circle-line'
-              : undefined
-          }
+          {...(callToAction.label === 'Se connecter'
+            ? { iconId: 'fr-icon-account-circle-line' as const }
+            : {})}
           className="fr-btn--responsive"
           size="large"
           title={`${callToAction.label} - nouvel onglet`}

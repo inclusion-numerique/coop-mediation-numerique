@@ -1,9 +1,53 @@
+export { GENRES, Genre, genres } from './beneficiaires/genre'
+export { NomDeFamille } from './beneficiaires/nom-de-famille'
+export { Prenom } from './beneficiaires/prenom'
+export {
+  STATUTS_SOCIAUX,
+  StatutSocial,
+  statutsSociaux,
+} from './beneficiaires/statut-social'
+export {
+  TRANCHES_D_AGE,
+  TrancheDAge,
+  tranchesDAge,
+} from './beneficiaires/tranche-d-age'
+export { type Choix, type ChoixMultiples, choixMultiplesDe } from './choix'
+export { Commune } from './commune'
 export type {
   ActiviteConsultee,
   AffichageDeLActivite,
   BeneficiaireSuiviAffiche,
   RendezVousAffiche,
-} from './activite-consultee'
+} from './consultation/activite-consultee'
+export {
+  type ChronologieDesActivites,
+  type ContenuDeLaChronologie,
+  contenuDeLaChronologie,
+  type ElementDeChronologie,
+  type RendezVousDeLaChronologie,
+  type RendezVousDuCompte,
+} from './consultation/chronologie'
+export {
+  type CriteresDesActivites,
+  estFiltre as estFiltreDesActivites,
+} from './consultation/criteres-des-activites'
+export {
+  type CriteresDesCoordinations,
+  estFiltre,
+  type Periode,
+} from './consultation/criteres-des-coordinations'
+export { CRITERES_VIDES } from './consultation/criteres-vides'
+export { FiltreDOrigine } from './consultation/filtre-d-origine'
+export { FiltreDeDemarche } from './consultation/filtre-de-demarche'
+export { FiltreDeDispositif } from './consultation/filtre-de-dispositif'
+export type { OrdreChronologique } from './consultation/ordre-chronologique'
+export type { Pagination } from './consultation/pagination'
+export {
+  estAdministrative,
+  THEMATIQUES_RECHERCHEES,
+  ThematiqueRecherchee,
+  thematiquesRecherchees,
+} from './consultation/thematique-recherchee'
 export {
   type ActiviteDeCoordination,
   type Animation,
@@ -16,8 +60,56 @@ export {
   type StructuresPartenaires,
   structuresPartenairesDe,
   type TagDeLActivite,
-} from './activite-de-coordination'
-export { ActiviteDeCoordinationId } from './activite-de-coordination-id'
+} from './coordination/activite-de-coordination'
+export { EchelonTerritorial } from './coordination/echelon-territorial'
+export { Initiative } from './coordination/initiative'
+export { NatureDePartenariat } from './coordination/nature-de-partenariat'
+export { NomDeLActivite } from './coordination/nom-de-l-activite'
+export { Organisateur } from './coordination/organisateur'
+export { ThematiqueDAnimation } from './coordination/thematique-d-animation'
+export {
+  TypeDActiviteDeCoordination,
+  typesDActiviteDeCoordination,
+} from './coordination/type-d-activite-de-coordination'
+export { TypeDAnimation } from './coordination/type-d-animation'
+export { TypeDEvenement } from './coordination/type-d-evenement'
+export { TypeDeStructurePartenaire } from './coordination/type-de-structure-partenaire'
+export {
+  DateDActivite,
+  DateTropLointaine,
+  dateDActiviteBornee,
+  dateDActiviteDuJour,
+  derniereDateDActivite,
+  PREMIERE_DATE_D_ACTIVITE,
+} from './date-d-activite'
+export { DureeEnMinutes } from './duree-en-minutes'
+export { Effectif } from './effectif'
+
+export {
+  ActiviteIntrouvable,
+  AtelierSansParticipant,
+  BeneficiaireEnDouble,
+  BeneficiaireIntrouvable,
+  LieuInutilisable,
+  RendezVousIndisponible,
+  TagInutilisable,
+  TypeDActiviteIncompatible,
+} from './errors'
+export { ActiviteDeCoordinationId } from './identifiants/activite-de-coordination-id'
+export { ActiviteId } from './identifiants/activite-id'
+export { BeneficiaireId } from './identifiants/beneficiaire-id'
+export { CoordinateurId } from './identifiants/coordinateur-id'
+export {
+  EmployeuseId,
+  EmployeuseIdTextuel,
+} from './identifiants/employeuse-id'
+export { IdentifiantCraV1 } from './identifiants/identifiant-cra-v1'
+export { LieuActiviteId } from './identifiants/lieu-activite-id'
+export { MediateurId } from './identifiants/mediateur-id'
+export { RdvId } from './identifiants/rdv-id'
+export { TagId } from './identifiants/tag-id'
+export { UtilisateurId } from './identifiants/utilisateur-id'
+export { Jour } from './jour'
 export {
   type AccompagnementIndividuel,
   type ActiviteDeMediation,
@@ -37,104 +129,12 @@ export {
   participantsDeLAtelier,
   type Thematiques,
   thematiquesDe,
-} from './activite-de-mediation'
-export { ActiviteId } from './activite-id'
-export { AdresseDuLieu } from './adresse-du-lieu'
-export { AUTONOMIES, Autonomie } from './autonomie'
-export { BeneficiaireId } from './beneficiaire-id'
-export { type Choix, type ChoixMultiples, choixMultiplesDe } from './choix'
-export {
-  type ChronologieDesActivites,
-  type ContenuDeLaChronologie,
-  contenuDeLaChronologie,
-  type ElementDeChronologie,
-  type RendezVousDeLaChronologie,
-  type RendezVousDuCompte,
-} from './chronologie'
-export { Commune } from './commune'
-export { type CommuneComptee, communeComptee } from './commune-comptee'
-export { CoordinateurId } from './coordinateur-id'
-export {
-  type CriteresDesActivites,
-  criteresDesActivites,
-  estFiltre as estFiltreDesActivites,
-  parametresDe as parametresDesActivitesDe,
-} from './criteres-des-activites'
-export {
-  type CriteresDesCoordinations,
-  criteresDesCoordinations,
-  estFiltre,
-  type ParametresDesCoordinations,
-  type Periode,
-} from './criteres-des-coordinations'
-export {
-  type CriteresDesStatistiques,
-  criteresDesStatistiques,
-  type PeriodeDesStatistiques,
-} from './criteres-des-statistiques'
-export {
-  DateDActivite,
-  dateDActiviteBornee,
-  dateDActiviteDuJour,
-  derniereDateDActivite,
-  PREMIERE_DATE_D_ACTIVITE,
-} from './date-d-activite'
-export { DureeEnMinutes } from './duree-en-minutes'
-export { EchelonTerritorial } from './echelon-territorial'
-export { Effectif } from './effectif'
-export type {
-  EmployeuseDesActivites,
-  PerimetreDesActivites,
-} from './employeuse-des-activites'
-export { EmployeuseId } from './employeuse-id'
-export * from './errors'
-
-export { GENRES, Genre, genres } from './genre'
-export { IdentifiantCraV1 } from './identifiant-cra-v1'
-export { Initiative } from './initiative'
-export { Jour } from './jour'
-export { LienAgent } from './lien-agent'
-export { LieuActiviteId } from './lieu-activite-id'
-export { MATERIELS, Materiel } from './materiel'
-export { MediateurId } from './mediateur-id'
-export { NatureDePartenariat } from './nature-de-partenariat'
-export {
-  NIVEAUX_D_ATELIER,
-  NiveauDAtelier,
-} from './niveau-d-atelier'
-export { NomDeCommune } from './nom-de-commune'
-export { NomDeFamille } from './nom-de-famille'
-export { NomDeLActivite } from './nom-de-l-activite'
-export { NomDeStructure } from './nom-de-structure'
-export { NomDeTag } from './nom-de-tag'
-export { NomDuMotif } from './nom-du-motif'
-export { Notes, NotesSaisies, notesDe } from './notes'
-export {
-  OrdreChronologique,
-  ordreChronologiqueLu,
-} from './ordre-chronologique'
-export { Organisateur } from './organisateur'
-export {
-  LIGNES_PAR_PAGE,
-  LignesParPage,
-  NumeroDePage,
-  type Pagination,
-  paginationLue,
-} from './pagination'
-export {
-  PERIMETRE_NATIONAL,
-  type PerimetreDesStatistiques,
-  perimetreDuDemandeur,
-} from './perimetre-des-statistiques'
-export { PorteeDeTag } from './portee-de-tag'
-export { Precision } from './precision'
-export { PrecisionDeDemarche } from './precision-de-demarche'
-export { Prenom } from './prenom'
-export { RdvId } from './rdv-id'
-export {
-  type Repartition,
-  repartitionComplete,
-} from './repartition'
+} from './mediation/activite-de-mediation'
+export { AdresseDuLieu } from './mediation/adresse-du-lieu'
+export { AUTONOMIES, Autonomie } from './mediation/autonomie'
+export { MATERIELS, Materiel } from './mediation/materiel'
+export { NIVEAUX_D_ATELIER, NiveauDAtelier } from './mediation/niveau-d-atelier'
+export { PrecisionDeDemarche } from './mediation/precision-de-demarche'
 export {
   type EmployeuseALaDate,
   type EmployeuseDeLaDate,
@@ -143,50 +143,68 @@ export {
   lieuDeLaSaisie,
   type MarquerLeRendezVousHonore,
   origineDeLaSaisie,
-} from './saisie-de-mediation'
-export { SourceDeLActivite } from './source-de-l-activite'
-export {
-  STATUTS_DE_RENDEZ_VOUS,
-  StatutDeRendezVous,
-} from './statut-de-rendez-vous'
-export { STATUTS_SOCIAUX, StatutSocial, statutsSociaux } from './statut-social'
+} from './mediation/saisie-de-mediation'
 export {
   STRUCTURES_DE_REDIRECTION,
   StructureDeRedirection,
-} from './structure-de-redirection'
-export { TagId } from './tag-id'
-export { type TagsUtilisables, tagsDeLaSaisie } from './tags-utilisables'
+} from './mediation/structure-de-redirection'
 export {
   THEMATIQUES_ADMINISTRATIVES,
   ThematiqueAdministrative,
   thematiquesAdministratives,
-} from './thematique-administrative'
-export { ThematiqueDAnimation } from './thematique-d-animation'
+} from './mediation/thematique-administrative'
 export {
   THEMATIQUES_DE_MEDIATION,
   ThematiqueDeMediation,
   thematiquesDeMediation,
-} from './thematique-de-mediation'
-export {
-  estAdministrative,
-  THEMATIQUES_RECHERCHEES,
-  ThematiqueRecherchee,
-  thematiquesRecherchees,
-} from './thematique-recherchee'
-export { TitreDAtelier } from './titre-d-atelier'
-export { TitreDuRendezVous } from './titre-du-rendez-vous'
-export { TRANCHES_D_AGE, TrancheDAge, tranchesDAge } from './tranche-d-age'
+} from './mediation/thematique-de-mediation'
+export { TitreDAtelier } from './mediation/titre-d-atelier'
 export {
   TYPES_D_ACTIVITE,
   TypeDActivite,
   typesDActivite,
-} from './type-d-activite'
+} from './mediation/type-d-activite'
 export {
-  TypeDActiviteDeCoordination,
-  typesDActiviteDeCoordination,
-} from './type-d-activite-de-coordination'
-export { TypeDAnimation } from './type-d-animation'
-export { TypeDEvenement } from './type-d-evenement'
-export { TYPES_DE_LIEU, TypeDeLieu, typesDeLieu } from './type-de-lieu'
-export { TypeDeStructurePartenaire } from './type-de-structure-partenaire'
-export { UtilisateurId } from './utilisateur-id'
+  TYPES_DE_LIEU,
+  TypeDeLieu,
+  typesDeLieu,
+} from './mediation/type-de-lieu'
+export { NomDeCommune } from './nom-de-commune'
+export { NomDeStructure } from './nom-de-structure'
+export { Notes, NotesSaisies, notesDe } from './notes'
+export { Precision } from './precision'
+export { LienAgent } from './rendez-vous/lien-agent'
+export { NomDuMotif } from './rendez-vous/nom-du-motif'
+export {
+  SOURCES_DE_L_ACTIVITE,
+  SourceDeLActivite,
+} from './rendez-vous/source-de-l-activite'
+export {
+  STATUTS_DE_RENDEZ_VOUS,
+  StatutDeRendezVous,
+} from './rendez-vous/statut-de-rendez-vous'
+export { TitreDuRendezVous } from './rendez-vous/titre-du-rendez-vous'
+export {
+  type CommuneComptee,
+  communeComptee,
+} from './statistiques/commune-comptee'
+export {
+  type CriteresDesStatistiques,
+  type PeriodeDesStatistiques,
+} from './statistiques/criteres-des-statistiques'
+export { criteresSurLaPeriode } from './statistiques/criteres-sur-la-periode'
+export type {
+  EmployeuseDesActivites,
+  PerimetreDesActivites,
+} from './statistiques/employeuse-des-activites'
+export {
+  PERIMETRE_NATIONAL,
+  type PerimetreDesStatistiques,
+  perimetreDuDemandeur,
+} from './statistiques/perimetre-des-statistiques'
+export {
+  type Repartition,
+  repartitionComplete,
+} from './statistiques/repartition'
+export { NomDeTag } from './tags/nom-de-tag'
+export { type TagsUtilisables, tagsDeLaSaisie } from './tags/tags-utilisables'

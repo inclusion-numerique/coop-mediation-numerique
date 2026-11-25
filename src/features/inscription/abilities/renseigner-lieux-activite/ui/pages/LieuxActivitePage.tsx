@@ -1,7 +1,7 @@
 'use client'
 
 import type { ReactNode } from 'react'
-import InscriptionCard from '@/features/inscription/components/InscriptionCard'
+import InscriptionCard from '@/features/inscription/ui/components/InscriptionCard'
 
 const LieuxActivitePage = ({ formulaire }: { formulaire: ReactNode }) => (
   <InscriptionCard

@@ -1,10 +1,10 @@
 import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { MediateurId } from '../../domain/mediateur-id'
+import { prismaClient } from '@/configuration/prisma'
+import { MediateurId } from '../../domain/identifiants/mediateur-id'
 import type { VisibiliteSurLaCartographie } from './domain'
-import { visibiliteSurLaCartographie } from './implementation'
+import { visibiliteSurLaCartographie } from './implementations/prisma/visibilite-sur-la-cartographie.query'
 
 const ROCHEFORT = '17299'
 const CHARENTE_MARITIME = '17'

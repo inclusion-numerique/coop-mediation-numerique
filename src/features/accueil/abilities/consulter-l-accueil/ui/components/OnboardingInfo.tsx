@@ -4,7 +4,8 @@ import Notice from '@codegouvfr/react-dsfr/Notice'
 import Cookies from 'js-cookie'
 import Image from 'next/image'
 import Link from 'next/link'
-import { hasClosedOnboardingCookie } from '@/features/accueil/abilities/consulter-l-accueil/ui/components/onboardingCookie'
+
+const hasClosedOnboardingCookie = 'closed_onboarding'
 
 const setOnboardingCookie = () => {
   Cookies.set(hasClosedOnboardingCookie, new Date().toISOString(), {

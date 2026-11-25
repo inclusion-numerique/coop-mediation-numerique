@@ -1,11 +1,9 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
-import {
-  choisirLaVisibiliteApresRupture,
-  lireLaRuptureEnAttente,
-} from '@/features/mediateurs/abilities/choisir-la-visibilite-apres-rupture'
+import { prismaClient } from '@/configuration/prisma'
 import { ReponseApresRupture } from '@/features/mediateurs/abilities/choisir-la-visibilite-apres-rupture/domain'
+import { choisirLaVisibiliteApresRupture } from '@/features/mediateurs/abilities/choisir-la-visibilite-apres-rupture/implementations/prisma/choisir-la-visibilite-apres-rupture.mutation'
+import { lireLaRuptureEnAttente } from '@/features/mediateurs/abilities/choisir-la-visibilite-apres-rupture/implementations/prisma/rupture-en-attente.query'
 import { AuteurId, MediateurId } from '@/features/mediateurs/domain'
 import {
   exConseillerSeme,
@@ -22,8 +20,8 @@ const derniere: { reponse?: Issue } = {}
 const momentDeLaReponse = new Date('2026-10-20T09:00:00.000Z')
 
 const date = (jour: string): Date => {
-  const [j, m, a] = jour.split('/').map(Number)
-  return new Date(Date.UTC(a, m - 1, j))
+  const [j, m, a] = jour.split('/')
+  return new Date(Date.UTC(Number(a), Number(m) - 1, Number(j)))
 }
 
 const repondre = async (reponse: ReponseApresRupture) => {

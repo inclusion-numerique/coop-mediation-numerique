@@ -1,10 +1,10 @@
 import type { ReactNode } from 'react'
 import type { Departement } from '@/libraries/departement'
-import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
-import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
-import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
-import { filDArianeDuReseau } from '../../../../ui/fil-d-ariane'
-import { hrefDesActeurs } from '../../../../ui/liens'
+import { contentId } from '@/libraries/liens-d-evitement'
+import { SkipLinksPortal } from '@/libraries/liens-d-evitement/composants'
+import { CoopBreadcrumbs } from '@/libraries/ui/components'
+import { filDArianeDuReseau } from '../../../../ui/presenters/fil-d-ariane.presenter'
+import { hrefDesActeurs } from '../../../../ui/presenters/liens.presenter'
 import type { FicheActeur } from '../../domain'
 import { IdentiteDeLActeur } from '../components/IdentiteDeLActeur'
 import { StatistiquesDeLActeur } from '../components/StatistiquesDeLActeur'
@@ -12,7 +12,7 @@ import {
   actionsDEquipe,
   membreDeLEquipe,
   statutAffiche,
-} from '../fiche-acteur.presenter'
+} from '../presenters/fiche-acteur.presenter'
 
 export const FicheActeurPage = ({
   fiche: { acteur, profilCreeLe, statut, regard },

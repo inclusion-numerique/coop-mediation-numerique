@@ -1,16 +1,16 @@
 import { z } from 'zod'
 import { defineModel, type Model } from '@/libraries/model'
 import type { Telephone } from '@/libraries/telephone'
-import type { AdresseCourriel } from './adresse-courriel'
 import type { Dispositif } from './dispositif'
-import type { Nom } from './nom'
-import type { Prenom } from './prenom'
+import type { UtilisateurId } from './identifiants/utilisateur-id'
+import type { AdresseCourriel } from './identite/adresse-courriel'
+import type { Nom } from './identite/nom'
+import type { Prenom } from './identite/prenom'
 import {
   coordinateurDe,
   mediateurDe,
   type RattachementsDuCompte,
 } from './rattachements'
-import type { UtilisateurId } from './utilisateur-id'
 
 export const RoleBrevo = defineModel(
   z

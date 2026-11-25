@@ -1,1 +1,0 @@
-export { reglerLaVisibiliteCarto } from './implementation'

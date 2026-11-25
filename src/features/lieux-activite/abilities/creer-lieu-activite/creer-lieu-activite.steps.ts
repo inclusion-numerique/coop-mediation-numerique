@@ -5,13 +5,14 @@ import {
   Service,
   Typologie,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { creerLieuActivite } from '@/features/lieux-activite/abilities/creer-lieu-activite'
-import { nouveauLieu } from '@/features/lieux-activite/abilities/creer-lieu-activite/action/depuis-la-saisie'
-import type { CreerLieuActiviteData } from '@/features/lieux-activite/domain/creation/creer-lieu-activite.validation'
-import { emptyOpeningHours } from '@/features/lieux-activite/domain/horaires-d-ouverture'
-import { MediateurId } from '@/features/lieux-activite/domain/mediateur-id'
-import { UserId } from '@/features/lieux-activite/domain/user-id'
+import { prismaClient } from '@/configuration/prisma'
+import { nouveauLieu } from '@/features/lieux-activite/abilities/creer-lieu-activite/action/saisie-du-lieu.transfer'
+import { creerLieuActivite } from '@/features/lieux-activite/abilities/creer-lieu-activite/implementations/prisma/creer-lieu-activite.mutation'
+import type { CreerLieuActiviteData } from '@/features/lieux-activite/action/creer-lieu-activite.validation'
+import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
+import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
+import { UtilisateurId } from '@/features/lieux-activite/domain/identifiants/utilisateur-id'
+import { horairesVides } from '@/features/lieux-activite/domain/saisie/horaires-d-ouverture'
 import { ficheSemee } from '@/features/lieux-activite/lieux-activite.cucumber'
 
 type Issue = Awaited<ReturnType<typeof creerLieuActivite>>
@@ -44,7 +45,7 @@ const saisie: CreerLieuActiviteData = {
   ficheAccesLibre: null,
   priseRdv: null,
   horairesComment: null,
-  openingHours: emptyOpeningHours,
+  openingHours: horairesVides,
   modalitesAcces: null,
   fraisACharge: [],
   services: [],
@@ -59,7 +60,12 @@ const creer = async (
   quoi: CreerLieuActiviteData = saisie,
 ) => {
   dernier.creation = await creerLieuActivite({
-    lieu: nouveauLieu(quoi, UserId(ficheSemee().userIds[0] ?? ''), new Date()),
+    lieu: nouveauLieu(
+      quoi,
+      UtilisateurId(ficheSemee().userIds[0] ?? ''),
+      new Date(),
+      LieuId(crypto.randomUUID()),
+    ),
     mediateurId: mediateurId == null ? null : MediateurId(mediateurId),
   })
 
@@ -67,8 +73,7 @@ const creer = async (
     dernier.lieuxCreesIds = [...dernier.lieuxCreesIds, dernier.creation.data.id]
 }
 
-const lieuCree = (rang: number): string | undefined =>
-  dernier.lieuxCreesIds[rang - 1]
+const lieuCree = (rang: number): string => dernier.lieuxCreesIds[rang - 1] ?? ''
 
 When('ce médiateur crée un lieu « Tiers-lieu du Port »', async () => {
   await creer(ficheSemee().mediateurRattacheId)
@@ -80,7 +85,7 @@ When('ce médiateur ressaisit le même lieu', async () => {
 
 When('le lieu créé perd son adresse reconnue par la BAN', async () => {
   await prismaClient.lieuInclusion.update({
-    where: { id: lieuCree(1) ?? '' },
+    where: { id: lieuCree(1) },
     data: { banId: null },
   })
 })
@@ -254,7 +259,11 @@ When('ce médiateur crée un lieu déjà connu du registre', async () => {
 Then("le registre ne porte qu'une inscription pour cet endroit", async () => {
   assert.strictEqual(
     await prismaClient.lieuInclusionRegistreMain.count({
-      where: { adresseId: inscriptionDora.adresseId },
+      where: {
+        ...(inscriptionDora.adresseId === undefined
+          ? {}
+          : { adresseId: inscriptionDora.adresseId }),
+      },
     }),
     1,
   )
@@ -403,12 +412,12 @@ After(async () => {
   const ids = dernier.lieuxCreesIds
   const { adresses, inscriptions } = semisEntrepot
   dernier.lieuxCreesIds = []
-  dernier.creation = undefined
+  delete dernier.creation
   semisEntrepot.adresses = []
   semisEntrepot.inscriptions = []
-  adresseARepetitionVide.id = undefined
-  inscriptionDora.id = undefined
-  inscriptionDora.adresseId = undefined
+  delete adresseARepetitionVide.id
+  delete inscriptionDora.id
+  delete inscriptionDora.adresseId
 
   if (ids.length > 0) {
     await prismaClient.mediateurEnActivite.deleteMany({
@@ -435,7 +444,7 @@ When(
       ...saisie,
       horairesComment: COMMENTAIRE,
       openingHours: {
-        ...emptyOpeningHours,
+        ...horairesVides,
         Mo: {
           am: { startTime: '09:00', endTime: '12:00', isOpen: true },
           pm: { startTime: null, endTime: null, isOpen: false },

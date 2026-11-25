@@ -1,30 +1,30 @@
-# Feature: Publier les lieux sur la cartographie nationale
+# Fonctionnalité: Publier les lieux sur la cartographie nationale
 
 > Ce que la coop verse au bien commun. Trois conditions se cumulent, et
 > l'absence d'une seule retire le lieu de la moisson.
 
-## Rule: Un lieu ne se publie que s'il est déclaré visible
+## Règle: Un lieu ne se publie que s'il est déclaré visible
 
-### Scenario: Le lieu non partagé reste hors de la cartographie
+### Scénario: Le lieu non partagé reste hors de la cartographie
 
-* Given un lieu où exerce un médiateur visible
-* And ce lieu n'est pas partagé sur la cartographie
-* When la cartographie nationale moissonne les lieux
-* Then ce lieu n'est pas publié
+* Étant donné un lieu où exerce un médiateur visible
+* Et ce lieu n'est pas partagé sur la cartographie
+* Quand la cartographie nationale moissonne les lieux
+* Alors ce lieu n'est pas publié
 
-## Rule: Un lieu sans adresse reconnue par la BAN n'est pas publié
+## Règle: Un lieu sans adresse reconnue par la BAN n'est pas publié
 
 > La carte situe les lieux : un lieu que la Base Adresse Nationale ne reconnaît
 > pas enverrait l'usager nulle part.
 
-### Scenario: Le lieu partagé sans adresse reconnue reste hors de la cartographie
+### Scénario: Le lieu partagé sans adresse reconnue reste hors de la cartographie
 
-* Given un lieu partagé où exerce un médiateur visible
-* And l'adresse de ce lieu n'est pas reconnue par la BAN
-* When la cartographie nationale moissonne les lieux
-* Then ce lieu n'est pas publié
+* Étant donné un lieu partagé où exerce un médiateur visible
+* Et l'adresse de ce lieu n'est pas reconnue par la BAN
+* Quand la cartographie nationale moissonne les lieux
+* Alors ce lieu n'est pas publié
 
-## Rule: Un lieu qui n'annonce aucun service n'est pas publié
+## Règle: Un lieu qui n'annonce aucun service n'est pas publié
 
 > La cartographie sert à orienter : un lieu dont on ignore ce qu'il propose
 > n'oriente personne, et ferait se déplacer un usager pour rien.
@@ -35,67 +35,67 @@
 > visible. Le médiateur déclare donc son intention quand il veut, la carte
 > attend qu'elle soit exploitable.
 
-### Scenario: Le lieu partagé sans service reste hors de la cartographie
+### Scénario: Le lieu partagé sans service reste hors de la cartographie
 
-* Given un lieu partagé où exerce un médiateur visible
-* And ce lieu n'annonce aucun service
-* When la cartographie nationale moissonne les lieux
-* Then ce lieu n'est pas publié
+* Étant donné un lieu partagé où exerce un médiateur visible
+* Et ce lieu n'annonce aucun service
+* Quand la cartographie nationale moissonne les lieux
+* Alors ce lieu n'est pas publié
 
-## Rule: Un lieu sans médiateur reste publié
+## Règle: Un lieu sans médiateur reste publié
 
 > La règle commune aux sources de la cartographie : tout lieu est affiché, sauf
 > si quelqu'un a décidé de le masquer. Qu'aucun médiateur de la coop n'y exerce
 > ne dit pas que le lieu a fermé ; seule sa visibilité en décide.
 
-### Scenario: Le lieu dont le médiateur s'est retiré reste publié
+### Scénario: Le lieu dont le médiateur s'est retiré reste publié
 
-* Given un lieu partagé où exerce un médiateur visible
-* And ce médiateur s'est retiré du lieu
-* When la cartographie nationale moissonne les lieux
-* Then ce lieu est publié
-* And il n'annonce aucun aidant
+* Étant donné un lieu partagé où exerce un médiateur visible
+* Et ce médiateur s'est retiré du lieu
+* Quand la cartographie nationale moissonne les lieux
+* Alors ce lieu est publié
+* Et il n'annonce aucun aidant
 
-### Scenario: Le lieu où aucun médiateur n'a jamais exercé est publié
+### Scénario: Le lieu où aucun médiateur n'a jamais exercé est publié
 
-* Given un lieu partagé où aucun médiateur n'a jamais exercé
-* When la cartographie nationale moissonne les lieux
-* Then ce lieu est publié
-* And il n'annonce aucun aidant
+* Étant donné un lieu partagé où aucun médiateur n'a jamais exercé
+* Quand la cartographie nationale moissonne les lieux
+* Alors ce lieu est publié
+* Et il n'annonce aucun aidant
 
-### Scenario: Le lieu dont le seul médiateur a supprimé son compte reste publié
+### Scénario: Le lieu dont le seul médiateur a supprimé son compte reste publié
 
-* Given un lieu partagé où exerce un médiateur visible
-* And ce médiateur a supprimé son compte
-* When la cartographie nationale moissonne les lieux
-* Then ce lieu est publié
-* And il n'annonce aucun aidant
+* Étant donné un lieu partagé où exerce un médiateur visible
+* Et ce médiateur a supprimé son compte
+* Quand la cartographie nationale moissonne les lieux
+* Alors ce lieu est publié
+* Et il n'annonce aucun aidant
 
-## Rule: Se rendre invisible retire son nom, pas le lieu
+## Règle: Se rendre invisible retire son nom, pas le lieu
 
 > Le réglage porte sur le PROFIL — nom, courriel, téléphone —, pas sur le lieu
 > d'exercice. Une personne qui ne veut pas être nommée sur la carte n'en retire
 > pas pour autant l'adresse où le public est reçu ; c'est la visibilité du lieu,
 > et elle seule, qui décide de sa présence.
 
-### Scenario: Le médiateur caché disparaît de la fiche, pas de la carte
+### Scénario: Le médiateur caché disparaît de la fiche, pas de la carte
 
-* Given un lieu partagé où exerce un médiateur visible
-* And ce médiateur a choisi de ne pas être visible
-* When la cartographie nationale moissonne les lieux
-* Then ce lieu est publié
-* And il n'annonce aucun aidant
+* Étant donné un lieu partagé où exerce un médiateur visible
+* Et ce médiateur a choisi de ne pas être visible
+* Quand la cartographie nationale moissonne les lieux
+* Alors ce lieu est publié
+* Et il n'annonce aucun aidant
 
-## Rule: Le lieu publié annonce qui y accueille
+## Règle: Le lieu publié annonce qui y accueille
 
-### Scenario: Le médiateur visible accompagne le lieu publié
+### Scénario: Le médiateur visible accompagne le lieu publié
 
-* Given un lieu partagé où exerce un médiateur visible
-* When la cartographie nationale moissonne les lieux
-* Then ce lieu est publié
-* And il annonce un aidant
+* Étant donné un lieu partagé où exerce un médiateur visible
+* Quand la cartographie nationale moissonne les lieux
+* Alors ce lieu est publié
+* Et il annonce un aidant
 
-## Rule: Ce qui sort est mesuré au schéma national
+## Règle: Ce qui sort est mesuré au schéma national
 
 > Un champ facultatif que le standard refuse se perd, et le lieu reste : il y est
 > utile sans ses horaires, il n'existe plus du tout s'il est écarté.
@@ -105,26 +105,26 @@
 > refuse, et le contact tombant d'un bloc, le téléphone et les courriels
 > disparaîtraient avec elle.
 
-### Scenario: Le lieu à plusieurs sites web garde son contact
+### Scénario: Le lieu à plusieurs sites web garde son contact
 
-* Given un lieu partagé où exerce un médiateur visible
-* And ce lieu déclare deux sites web
-* When la cartographie nationale moissonne les lieux
-* Then ce lieu est publié
-* And il annonce ses deux sites web
+* Étant donné un lieu partagé où exerce un médiateur visible
+* Et ce lieu déclare deux sites web
+* Quand la cartographie nationale moissonne les lieux
+* Alors ce lieu est publié
+* Et il annonce ses deux sites web
 
-## Rule: La moisson se restreint à un dispositif
+## Règle: La moisson se restreint à un dispositif
 
-### Scenario: Le lieu du dispositif demandé est publié
+### Scénario: Le lieu du dispositif demandé est publié
 
-* Given un lieu partagé où exerce un médiateur visible
-* And ce lieu relève de France Services
-* When la cartographie nationale moissonne les lieux du dispositif "France Services"
-* Then ce lieu est publié
+* Étant donné un lieu partagé où exerce un médiateur visible
+* Et ce lieu relève de France Services
+* Quand la cartographie nationale moissonne les lieux du dispositif "France Services"
+* Alors ce lieu est publié
 
-### Scenario: Le lieu d'un autre dispositif n'est pas publié
+### Scénario: Le lieu d'un autre dispositif n'est pas publié
 
-* Given un lieu partagé où exerce un médiateur visible
-* And ce lieu relève de France Services
-* When la cartographie nationale moissonne les lieux du dispositif "Aidants Connect"
-* Then ce lieu n'est pas publié
+* Étant donné un lieu partagé où exerce un médiateur visible
+* Et ce lieu relève de France Services
+* Quand la cartographie nationale moissonne les lieux du dispositif "Aidants Connect"
+* Alors ce lieu n'est pas publié

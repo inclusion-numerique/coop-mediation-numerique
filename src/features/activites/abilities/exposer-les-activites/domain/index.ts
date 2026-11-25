@@ -1,3 +1,4 @@
+export type { ActiviteExposee, BeneficiaireCompte } from './activite-exposee'
 export type {
   CriteresDExposition,
   CurseurDActivite,

@@ -1,28 +1,27 @@
 import { PropsWithChildren } from 'react'
-import { getHomepage } from '@/features/authentification/domain/getHomepage'
-import { getSessionUser } from '@/features/authentification/implementation/session/getSessionUser'
-import Header from '@/features/navigation/ui/en-tete/Header'
-import PublicFooter from '@/features/navigation/ui/pied-de-page/PublicFooter'
-import TerminerUsurpationHeaderUserMenuItem from '@/features/utilisateurs/abilities/terminer-l-usurpation/ui/TerminerUsurpationHeaderUserMenuItem'
+import { pageDAccueil } from '@/features/authentification/domain/page-d-accueil'
+import { getSessionUser } from '@/features/authentification/middlewares/with-utilisateur-de-la-session'
+import { PubliqueLayout } from '@/features/navigation/ui/layouts/PubliqueLayout'
+import Header from '@/features/navigation/ui/slots/Header.slot'
+import PublicFooter from '@/features/navigation/ui/slots/PublicFooter.slot'
+import TerminerUsurpationHeaderUserMenuItem from '@/features/utilisateurs/abilities/terminer-l-usurpation/ui/slots/TerminerUsurpationHeaderUserMenuItem.slot'
 
 const PublicLayout = async ({ children }: PropsWithChildren) => {
   const user = await getSessionUser()
   return (
-    <div
-      style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}
+    <PubliqueLayout
+      entete={
+        <Header
+          user={user}
+          accueil={pageDAccueil(user)}
+          terminerUsurpation={<TerminerUsurpationHeaderUserMenuItem />}
+          variant="public"
+        />
+      }
+      piedDePage={<PublicFooter />}
     >
-      <div id="skip-links" />
-      <Header
-        user={user}
-        accueil={getHomepage(user)}
-        terminerUsurpation={<TerminerUsurpationHeaderUserMenuItem />}
-        variant="public"
-      />
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-        {children}
-      </div>
-      <PublicFooter />
-    </div>
+      {children}
+    </PubliqueLayout>
   )
 }
 

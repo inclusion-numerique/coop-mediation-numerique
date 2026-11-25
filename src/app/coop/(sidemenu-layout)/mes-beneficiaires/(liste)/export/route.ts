@@ -1,24 +1,33 @@
 import type { NextRequest } from 'next/server'
-import { isMediateur } from '@/features/authentification/domain/userTypeGuards'
-import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementation/session/getSessionTokenFromCookies'
-import { getSessionUserFromSessionToken } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
-import {
-  ExportBeneficiairesFilterValidations,
-  exporterBeneficiaires,
-} from '@/features/beneficiaire/abilities/exporter-beneficiaires'
+import { estMediateur } from '@/features/authentification/domain/profils-d-utilisateur'
+import { utilisateurDuJetonDeSession } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
+import { jetonDeSessionDesCookies } from '@/features/authentification/implementations/session/session-token-from-cookies.query'
+import { ExportBeneficiairesFilterValidations } from '@/features/beneficiaire/abilities/exporter-beneficiaires/action/filtres-de-l-export.validation'
+import type { ListerLesBeneficiairesAExporter } from '@/features/beneficiaire/abilities/exporter-beneficiaires/domain/exporter-beneficiaires'
+import { exporterBeneficiaires } from '@/features/beneficiaire/abilities/exporter-beneficiaires/domain/exporter-beneficiaires'
+import { classeurDesBeneficiaires } from '@/features/beneficiaire/abilities/exporter-beneficiaires/implementations/excel/classeur-des-beneficiaires.classeur'
+import { nomDuFichierDesBeneficiaires } from '@/features/beneficiaire/abilities/exporter-beneficiaires/ui/presenters/nom-du-fichier.presenter'
+import { listerBeneficiaires } from '@/features/beneficiaire/abilities/lister-beneficiaires/implementations/prisma/lister-beneficiaires.query'
 import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
-import { auteurDeLExport } from '@/features/utilisateurs'
-import { dateAsIsoDay } from '@/libraries/date/dateAsIsoDay'
+import { auteurDeLExport } from '@/features/utilisateurs/ui/presenters/auteur-de-l-export.presenter'
+
+const exporterBeneficiairesAvec = (
+  listerBeneficiaires: ListerLesBeneficiairesAExporter,
+) =>
+  exporterBeneficiaires({
+    listerBeneficiaires,
+    construireLeClasseur: classeurDesBeneficiaires,
+  })
 
 export const GET = async (request: NextRequest) => {
-  const sessionToken = getSessionTokenFromNextRequestCookies(request.cookies)
-  const user = await getSessionUserFromSessionToken(sessionToken)
+  const sessionToken = jetonDeSessionDesCookies(request.cookies)
+  const user = await utilisateurDuJetonDeSession(sessionToken)
 
   if (!user) {
     return new Response('Unauthorized', { status: 401 })
   }
 
-  if (!isMediateur(user)) {
+  if (!estMediateur(user)) {
     return new Response('Forbidden', { status: 403 })
   }
 
@@ -30,14 +39,17 @@ export const GET = async (request: NextRequest) => {
     return new Response('Invalid query params', { status: 400 })
   }
 
-  const workbook = await exporterBeneficiaires({
+  const workbook = await exporterBeneficiairesAvec(listerBeneficiaires)({
     mediateurId: MediateurId(user.mediateur.id),
-    filters: parsedQueryParams.data,
+    filters:
+      parsedQueryParams.data.recherche === undefined
+        ? {}
+        : { recherche: parsedQueryParams.data.recherche },
     auteur: auteurDeLExport(user),
   })
 
   const data = await workbook.xlsx.writeBuffer()
-  const filename = `coop-numerique_export-beneficiaires_${dateAsIsoDay(new Date())}.xlsx`
+  const filename = nomDuFichierDesBeneficiaires(new Date())
 
   return new Response(data, {
     status: 200,

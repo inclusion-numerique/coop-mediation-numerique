@@ -1,11 +1,13 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma'
+import { noterLaRelance } from '@/features/utilisateurs/implementations/prisma/noter-la-relance.mutation'
 import { semerUnCompteDeListe } from '@/features/utilisateurs/utilisateurs.cucumber'
 import { OnboardingStatus } from '@/generated/prisma/client'
 import { success } from '@/libraries/result'
-import { relancerLesInscritsInactifs } from './commands/relancer-les-inscrits-inactifs'
+import { relancerLesInscritsInactifs } from './domain/relancer-les-inscrits-inactifs'
+import { inscritsSansProduction } from './implementations/prisma/inscrits-sans-production.query'
 
 const UN_JOUR = 24 * 60 * 60 * 1000
 
@@ -52,6 +54,8 @@ When('les inscrits inactifs sont relancés', async () => {
   await relancerLesInscritsInactifs({
     maintenant: new Date(),
     ports: {
+      lireLesComptesARelancer: inscritsSansProduction,
+      noterLaRelance: noterLaRelance('Nouveau'),
       envoyerLaRelance: async ({ utilisateurId: id }, palier) =>
         consigner(id, `relance J+${palier}`),
       envoyerLAvertissement: async ({ utilisateurId: id }) =>

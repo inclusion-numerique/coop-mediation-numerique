@@ -1,34 +1,28 @@
 'use server'
 
-import { z } from 'zod'
 import { actionBuilder } from '@/configuration/nextjs'
 import {
-  GenreDeLieu,
-  rechercherLesLieuxDesStatistiques,
-} from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques'
-import { RechercherLesLieuxDesStatistiquesValidation } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/action/rechercher-les-lieux-des-statistiques.validation'
-import { optionDeLieu } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/ui'
-import { perimetreDeLUtilisateur } from '@/features/activites/implementation/statistiques'
-import { getSessionUserFromId } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
-import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage'
-import { utilisateurDuPartage } from '@/features/statistiques/implementation/utilisateur-du-partage'
+  type RechercheDeLieuxDesStatistiques,
+  RechercherLesLieuxDuPartageValidation,
+} from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/action/rechercher-les-lieux-des-statistiques.validation'
+import { GenreDeLieu } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/domain/index'
+import { rechercherLesLieuxDesStatistiques } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/implementations/prisma/lieux-des-statistiques.query'
+import { optionDeLieu } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/ui/presenters/options-de-lieux.presenter'
+import { perimetreDeLUtilisateur } from '@/features/activites/implementations/session/perimetre.query'
+import { utilisateurDeLaSessionParId } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
+import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage/implementations/prisma/resoudre-un-lien-de-partage.query'
+import { utilisateurDuPartage } from '@/features/statistiques/domain/utilisateur-du-partage'
 import { withInput } from '@/libraries/nextjs'
 
 const rechercherDansLePartage = actionBuilder()
-  .use(
-    withInput(
-      RechercherLesLieuxDesStatistiquesValidation.extend({
-        partage: z.string(),
-      }),
-    ),
-  )
+  .use(withInput(RechercherLesLieuxDuPartageValidation))
   .execute(async ({ input: { partage, genre, recherche } }) => {
     const lien = await resoudreUnLienDePartage(partage)
     if (!lien.success) return []
     const perimetre = perimetreDeLUtilisateur(
       utilisateurDuPartage(
         lien.data.proprietaire,
-        await getSessionUserFromId(lien.data.utilisateurId),
+        await utilisateurDeLaSessionParId(lien.data.utilisateurId),
       ),
     )
     return perimetre === null
@@ -44,5 +38,5 @@ const rechercherDansLePartage = actionBuilder()
 
 export const rechercherLesLieuxDuPartageAction = async (
   partage: string,
-  input: z.input<typeof RechercherLesLieuxDesStatistiquesValidation>,
+  input: RechercheDeLieuxDesStatistiques,
 ) => rechercherDansLePartage({ ...input, partage })

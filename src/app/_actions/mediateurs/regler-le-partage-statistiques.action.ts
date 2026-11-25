@@ -1,12 +1,12 @@
 'use server'
 
 import { actionBuilder } from '@/configuration/nextjs'
-import { withAuth } from '@/features/authentification'
-import type { SessionUser } from '@/features/authentification/domain/sessionUser'
-import { withMaintenance } from '@/features/maintenance-mode'
-import { reglerLePartageStatistiques } from '@/features/mediateurs/abilities/regler-le-partage-statistiques'
+import type { UtilisateurDeLaSession } from '@/features/authentification/domain/utilisateur-de-la-session'
+import { withAuth } from '@/features/authentification/middlewares/with-auth'
+import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { REGLER_LE_PARTAGE_STATISTIQUES_ERRORS } from '@/features/mediateurs/abilities/regler-le-partage-statistiques/action/regler-le-partage-statistiques.errors'
 import { ReglerLePartageStatistiquesValidation } from '@/features/mediateurs/abilities/regler-le-partage-statistiques/action/regler-le-partage-statistiques.validation'
+import { reglerLePartageStatistiques } from '@/features/mediateurs/abilities/regler-le-partage-statistiques/implementations/prisma/regler-le-partage-statistiques.mutation'
 import {
   AuteurId,
   CoordinateurId,
@@ -15,7 +15,7 @@ import {
 } from '@/features/mediateurs/domain'
 import { fromResult, withInput } from '@/libraries/nextjs'
 
-const rattachementsDe = (user: SessionUser): Rattachements => ({
+const rattachementsDe = (user: UtilisateurDeLaSession): Rattachements => ({
   mediateurId: user.mediateur?.id ? MediateurId(user.mediateur.id) : null,
   coordinateurId: user.coordinateur?.id
     ? CoordinateurId(user.coordinateur.id)

@@ -1,11 +1,11 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { supprimerBeneficiaires } from '@/features/beneficiaire/abilities/supprimer-beneficiaires/implementation'
+import { prismaClient } from '@/configuration/prisma'
+import { supprimerBeneficiaires } from '@/features/beneficiaire/abilities/supprimer-beneficiaires/implementations/prisma/supprimer-beneficiaires.mutation'
 import {
-  beneficiairesCountAtScenarioStart,
-  mediateurBeneficiairesCount,
+  nombreDeBeneficiairesAuDebutDuScenario,
+  nombreDeBeneficiairesDuMediateur,
   seedBeneficiaire,
   testMediateurId,
 } from '@/features/beneficiaire/beneficiaire.cucumber'
@@ -66,8 +66,8 @@ Then(
   'le compteur de bénéficiaires du médiateur revient à son niveau initial',
   async () => {
     assert.strictEqual(
-      await mediateurBeneficiairesCount(),
-      beneficiairesCountAtScenarioStart(),
+      await nombreDeBeneficiairesDuMediateur(),
+      nombreDeBeneficiairesAuDebutDuScenario(),
     )
   },
 )

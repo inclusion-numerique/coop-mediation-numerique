@@ -1,4 +1,4 @@
-export * from './errors'
+export { UtilisateurIntrouvable, UtilisateurNonMediateur } from './errors'
 export type {
   EquipeAComplementer,
   MediateurAAjouter,

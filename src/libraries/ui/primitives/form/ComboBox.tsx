@@ -1,0 +1,146 @@
+'use client'
+
+import {
+  type Overwrite,
+  type UseComboboxGetItemPropsOptions,
+  type UseComboboxGetItemPropsReturnValue,
+  type UseComboboxReturnValue,
+  type UseComboboxStateChangeTypes,
+  useCombobox,
+} from 'downshift'
+import {
+  type Dispatch,
+  type ReactNode,
+  type SetStateAction,
+  useState,
+} from 'react'
+import {
+  type EtatDesSuggestions,
+  reponseRecue,
+  saisieEnCours,
+} from '../../suggestions'
+
+const CHANGEMENTS_PAR_SELECTION: ReadonlySet<UseComboboxStateChangeTypes> =
+  new Set([
+    useCombobox.stateChangeTypes.ItemClick,
+    useCombobox.stateChangeTypes.InputKeyDownEnter,
+    useCombobox.stateChangeTypes.ControlledPropUpdatedSelectedItem,
+  ])
+
+export type ComboBoxData<TItem, TPayload = {}> = {
+  itemToString: (item: TItem | null) => string
+  beforeLoadSuggestions?: (inputValue: string) => Partial<TPayload>
+  loadSuggestions: (
+    inputValue: string,
+  ) => Promise<{ items: TItem[] } & TPayload>
+}
+
+export type ComboBoxProps<TItem, TPayload extends object> = {
+  defaultItems?: TItem[]
+  defaultValue?: Partial<TItem>
+  clearOnSelect?: boolean
+  children: (props: {
+    getLabelProps: UseComboboxReturnValue<TItem>['getLabelProps']
+    getMenuProps: UseComboboxReturnValue<TItem>['getMenuProps']
+    getToggleButtonProps: UseComboboxReturnValue<TItem>['getToggleButtonProps']
+    getInputProps: UseComboboxReturnValue<TItem>['getInputProps']
+    // downshift 9.4 type `getItemProps` comme une signature générique dont le type de retour
+    // dépend des options reçues. Un consommateur qui l'enveloppe — pour greffer son propre
+    // `onClick` — ré-instancie ce générique et ne peut alors plus satisfaire la signature
+    // d'origine. On expose donc ici le contrat réellement utilisé : des options de combobox
+    // en entrée, les props à étaler sur l'élément de liste en sortie.
+    getItemProps: (
+      options?: UseComboboxGetItemPropsOptions<TItem>,
+    ) => Omit<
+      Overwrite<
+        UseComboboxGetItemPropsReturnValue,
+        UseComboboxGetItemPropsOptions<TItem>
+      >,
+      'index' | 'item'
+    >
+    inputValue: UseComboboxReturnValue<TItem>['inputValue']
+    setInputValue: UseComboboxReturnValue<TItem>['setInputValue']
+    isOpen: boolean
+    selectedItem: TItem | null
+    highlightedItem: TItem | null
+    items: TItem[]
+    setItems: Dispatch<SetStateAction<TItem[]>>
+    payload: Omit<TPayload, 'items'>
+  }) => ReactNode
+} & ComboBoxData<TItem, TPayload>
+
+export const ComboBox = <TItem, TPayload extends object>({
+  defaultItems = [],
+  defaultValue,
+  beforeLoadSuggestions,
+  loadSuggestions,
+  itemToString,
+  clearOnSelect = false,
+  children,
+}: ComboBoxProps<TItem, TPayload>) => {
+  const [{ items, payload }, setEtat] = useState<
+    EtatDesSuggestions<TItem, TPayload>
+  >({ saisie: '', items: defaultItems, payload: {} as TPayload })
+
+  const setItems: Dispatch<SetStateAction<TItem[]>> = (action) =>
+    setEtat((etat) => ({
+      ...etat,
+      items: action instanceof Function ? action(etat.items) : action,
+    }))
+
+  const {
+    getLabelProps,
+    getInputProps,
+    getMenuProps,
+    getToggleButtonProps,
+    getItemProps,
+    setInputValue,
+    inputValue,
+    isOpen,
+    selectedItem,
+    highlightedIndex,
+  } = useCombobox({
+    onInputValueChange: async ({
+      inputValue,
+      type,
+    }: {
+      inputValue: string
+      type: UseComboboxStateChangeTypes
+    }): Promise<void> => {
+      if (CHANGEMENTS_PAR_SELECTION.has(type)) return
+      setEtat(saisieEnCours(inputValue, beforeLoadSuggestions?.(inputValue)))
+      const { items: newItems, ...newPayload } =
+        await loadSuggestions(inputValue)
+      setEtat(
+        reponseRecue(inputValue, {
+          items: newItems,
+          payload: newPayload as TPayload,
+        }),
+      )
+    },
+    items,
+    itemToString,
+    onSelectedItemChange: () => {
+      if (!clearOnSelect) return
+      setInputValue('')
+      setItems([])
+    },
+    defaultInputValue: itemToString((defaultValue as TItem) ?? null),
+  })
+
+  return children({
+    getLabelProps,
+    getInputProps,
+    getMenuProps,
+    getToggleButtonProps,
+    getItemProps,
+    setInputValue,
+    inputValue,
+    isOpen,
+    selectedItem,
+    highlightedItem: items[highlightedIndex] ?? null,
+    items,
+    setItems,
+    payload,
+  })
+}

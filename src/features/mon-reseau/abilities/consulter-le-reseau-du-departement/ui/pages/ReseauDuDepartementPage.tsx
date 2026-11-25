@@ -1,17 +1,22 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { CommunicationConum } from '@/features/mon-reseau/abilities/consulter-le-reseau-du-departement/ui/components/CommunicationConum'
-import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
-import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
-import Card from '@/libraries/ui/components/Card'
-import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
-import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
-import { libelleDuReseau } from '../../../../ui/fil-d-ariane'
-import { hrefDesActeurs, hrefDesLieux } from '../../../../ui/liens'
+import { contentId } from '@/libraries/liens-d-evitement'
+import { SkipLinksPortal } from '@/libraries/liens-d-evitement/composants'
+import {
+  Card,
+  CoopBreadcrumbs,
+  CoopPageContainer,
+} from '@/libraries/ui/components'
+import { libelleDuReseau } from '../../../../ui/presenters/fil-d-ariane.presenter'
+import {
+  hrefDesActeurs,
+  hrefDesLieux,
+} from '../../../../ui/presenters/liens.presenter'
 import type { ReseauDuDepartement } from '../../domain'
 import CompteurDuReseau from '../components/CompteurDuReseau'
-import DepartementComboBox from '../components/DepartementComboBox'
-import { urlDesDonneesTerritoriales } from '../donnees-territoriales'
+import DepartementComboBox from '../forms/DepartementComboBox'
+import { urlDesDonneesTerritoriales } from '../presenters/donnees-territoriales.presenter'
 
 const mattermostHref = 'https://discussion.coop-numerique.anct.gouv.fr'
 

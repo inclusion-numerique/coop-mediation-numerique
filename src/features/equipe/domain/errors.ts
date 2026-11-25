@@ -1,5 +1,5 @@
-import type { MediateurId } from './mediateur-id'
-import type { ReferenceInvitation } from './reference-invitation'
+import type { MediateurId } from './identifiants/mediateur-id'
+import type { ReferenceInvitation } from './invitation/reference-invitation'
 
 export type InvitationIntrouvable = { readonly _tag: 'InvitationIntrouvable' }
 

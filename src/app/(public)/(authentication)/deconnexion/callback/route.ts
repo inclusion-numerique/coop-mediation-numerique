@@ -1,17 +1,17 @@
 import type { NextRequest } from 'next/server'
-import { getServerBaseUrl, getServerUrl } from '@/configuration/projet/baseUrl'
-import { supprimerSession } from '@/features/authentification/abilities/se-deconnecter'
-import type { ProconnectSignoutState } from '@/features/authentification/implementation/proconnect/proconnectSignout'
+import { getServerBaseUrl, getServerUrl } from '@/configuration/projet/serveur'
+import { supprimerSession } from '@/features/authentification/abilities/se-deconnecter/implementations/prisma/index'
+import { utilisateurDuJetonDeSession } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
+import type { ProconnectSignoutState } from '@/features/authentification/implementations/proconnect/proconnect-signout.transfer'
 import {
-  getSessionTokenFromNextRequestCookies,
+  jetonDeSessionDesCookies,
   secureSessionCookie,
   sessionCookie,
-} from '@/features/authentification/implementation/session/getSessionTokenFromCookies'
-import { getSessionUserFromSessionToken } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
+} from '@/features/authentification/implementations/session/session-token-from-cookies.query'
 import {
   decodeSerializableState,
   type EncodedState,
-} from '@/libraries/parametres-d-url/encodeSerializableState'
+} from '@/libraries/etat-encode'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -39,8 +39,8 @@ export const GET = async (request: NextRequest) => {
     nonce: '',
   })
 
-  const sessionToken = getSessionTokenFromNextRequestCookies(request.cookies)
-  const user = await getSessionUserFromSessionToken(sessionToken)
+  const sessionToken = jetonDeSessionDesCookies(request.cookies)
+  const user = await utilisateurDuJetonDeSession(sessionToken)
 
   if (!sessionToken || !user) {
     return new Response('Unauthorized', { status: 401 })

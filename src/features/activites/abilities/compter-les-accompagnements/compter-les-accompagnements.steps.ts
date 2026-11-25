@@ -4,11 +4,8 @@ import {
   demandeDeStatistiques,
   parametresDuTableau,
 } from '../../statistiques.cucumber'
-import {
-  anonymes,
-  compterLesAccompagnements,
-  type TotauxDesAccompagnements,
-} from '.'
+import { anonymes, type TotauxDesAccompagnements } from './domain/index'
+import { compterLesAccompagnements } from './implementations/prisma/totaux-des-accompagnements.query'
 
 let totaux: TotauxDesAccompagnements | undefined
 

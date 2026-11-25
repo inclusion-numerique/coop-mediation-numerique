@@ -4,17 +4,16 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
 import { useMemo, useState } from 'react'
-import type {
-  BeneficiaireDoublon,
-  DetecterDoublons,
-} from '@/features/beneficiaire/abilities/detecter-doublons'
-import { inject } from '@/libraries/nextjs/injection/client'
-import { numberToString } from '@/libraries/nombre/formatNumber'
+import { type DetecterDoublons } from '@/features/beneficiaire/abilities/detecter-doublons/domain/detecter-doublons'
+import { type BeneficiaireDoublon } from '@/features/beneficiaire/abilities/detecter-doublons/domain/types'
+import { hrefDuBeneficiaire } from '@/features/beneficiaire/ui/presenters/liens.presenter'
+import { inject } from '@/libraries/nextjs/injection'
+import { numberToString } from '@/libraries/nombre'
 import { pluriel } from '@/libraries/pluriel'
 import { telephoneDisplayString } from '@/libraries/telephone'
-import { createToast } from '@/libraries/ui/toast/createToast'
-import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
-import { FUSIONNER_DES_BENEFICIAIRES_KEY } from '../fusionner-des-beneficiaires.key'
+import { createToast } from '@/libraries/ui/toast'
+import { buttonLoadingClassname } from '@/libraries/ui/utils'
+import { FUSIONNER_DES_BENEFICIAIRES_KEY } from '../../action/fusionner-des-beneficiaires.key'
 
 type BeneficiairesDoublonsPageData = Awaited<ReturnType<DetecterDoublons>>
 
@@ -330,7 +329,7 @@ const BeneficiaireRadioColumn = ({
     <Button
       priority="tertiary no outline"
       size="small"
-      linkProps={{ href: `/coop/mes-beneficiaires/${id}`, target: '_blank' }}
+      linkProps={{ href: hrefDuBeneficiaire(id), target: '_blank' }}
     >
       Voir
     </Button>

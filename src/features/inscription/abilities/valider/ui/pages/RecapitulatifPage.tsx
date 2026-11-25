@@ -2,18 +2,17 @@
 
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import type { ReactNode } from 'react'
-import ValiderInscriptionForm from '@/features/inscription/abilities/valider/ui/components/ValiderInscriptionForm'
-import InscriptionCard from '@/features/inscription/components/InscriptionCard'
-import InscriptionInvalidInformationContactSupportLink from '@/features/inscription/components/InscriptionInvalidInformationContactSupportLink'
+import InscriptionInvalidInformationContactSupportLink from '@/features/inscription/abilities/valider/ui/components/InscriptionInvalidInformationContactSupportLink'
+import ValiderInscriptionForm from '@/features/inscription/abilities/valider/ui/forms/ValiderInscriptionForm'
 import {
-  computeUserProfile,
   libelleDuProfil,
+  profilDInscription,
 } from '@/features/inscription/domain'
+import InscriptionCard from '@/features/inscription/ui/components/InscriptionCard'
 import { pluriel } from '@/libraries/pluriel'
-import IconInSquare from '@/libraries/ui/components/IconInSquare'
-import InfoLabelValue from '@/libraries/ui/components/InfoLabelValue'
-import type { RecapitulatifPageData } from '../../queries/getRecapitulatifPageData'
+import { IconInSquare, InfoLabelValue } from '@/libraries/ui/components'
 import ConseillerNumeriqueRoleNotice from '../components/ConseillerNumeriqueRoleNotice'
+import type { RecapitulatifPageData } from '../presenters/recapitulatif.presenter'
 
 const RecapitulatifPage = ({
   data: {
@@ -55,7 +54,7 @@ const RecapitulatifPage = ({
       <InfoLabelValue
         label="Profession"
         value={libelleDuProfil(
-          computeUserProfile({
+          profilDInscription({
             isConseillerNumerique: user.isConseillerNumerique,
             isCoordinateur: user.coordinateur != null,
           }),

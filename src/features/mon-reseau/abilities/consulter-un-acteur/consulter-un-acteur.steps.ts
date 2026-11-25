@@ -1,17 +1,17 @@
 import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
-import { subDays } from 'date-fns'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma'
 import {
   consulterUnActeur,
   type QuiConsulte,
-} from '@/features/mon-reseau/abilities/consulter-un-acteur'
+} from '@/features/mon-reseau/abilities/consulter-un-acteur/implementations/prisma/acteur-consulte.query'
 import { Effectif } from '@/features/mon-reseau/domain'
 import {
   type ActeurASemer,
   type ActeurSeme,
   semerUnActeur,
 } from '@/features/mon-reseau/mon-reseau.cucumber'
+import { subDays } from '@/libraries/date'
 
 type Consultation = Awaited<ReturnType<typeof consulterUnActeur>>
 
@@ -235,8 +235,8 @@ Then('l’acteur ne peut pas rejoindre son équipe', () => {
 })
 
 After(() => {
-  etat.derniereActivite = undefined
-  etat.acteur = undefined
-  etat.lecteur = undefined
-  etat.consultation = undefined
+  delete etat.derniereActivite
+  delete etat.acteur
+  delete etat.lecteur
+  delete etat.consultation
 })

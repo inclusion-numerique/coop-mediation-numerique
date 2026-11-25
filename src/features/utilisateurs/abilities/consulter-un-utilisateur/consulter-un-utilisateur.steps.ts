@@ -1,14 +1,14 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { libelleDuStatut } from '@/features/utilisateurs/ui'
+import { prismaClient } from '@/configuration/prisma'
+import { libelleDuStatut } from '@/features/utilisateurs/ui/presenters/statut-compte.presenter'
 import {
   type CompteSeme,
   semerCompte,
 } from '@/features/utilisateurs/utilisateurs.cucumber'
 import type { FicheUtilisateur } from './domain'
-import { ficheUtilisateur } from './implementation'
+import { ficheUtilisateur } from './implementations/prisma/fiche-utilisateur.query'
 
 const consultation: {
   compte?: CompteSeme

@@ -3,7 +3,7 @@ import classNames from 'classnames'
 import Link from 'next/link'
 import type { ReactNode } from 'react'
 import type { LigneEquipe } from '../../../../domain'
-import type { LigneAffichee } from '../lister-les-membres.presenter'
+import type { LigneAffichee } from '../presenters/lister-les-membres.presenter'
 import { BadgeActivite } from './BadgeActivite'
 
 const largeurMaximale = { maxWidth: 300 }
@@ -62,7 +62,11 @@ const Statut = ({
   severite,
 }: Pick<LigneAffichee, 'activite' | 'libelleStatut' | 'severite'>) =>
   activite === null ? (
-    <Badge small noIcon severity={severite === 'neutre' ? undefined : severite}>
+    <Badge
+      small
+      noIcon
+      {...(severite === 'neutre' ? {} : { severity: severite })}
+    >
       {libelleStatut}
     </Badge>
   ) : (

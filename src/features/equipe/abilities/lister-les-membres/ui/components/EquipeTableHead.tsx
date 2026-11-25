@@ -1,38 +1,23 @@
-import { SortableColumnHeader } from '@/libraries/data-table'
-import type { EtatDeLaListe } from '../etat-de-la-liste'
+import { EnTeteTriable } from '@/libraries/etat-d-url/liste'
+import type { LiensDeLaListe } from '../filtres/liste-de-l-equipe.filtre'
 
 export const EquipeTableHead = ({
-  state,
-  baseHref,
+  colonnes,
   avecActions,
 }: {
-  state: EtatDeLaListe
-  baseHref: string
+  colonnes: LiensDeLaListe['colonnes']
   avecActions: boolean
 }) => (
   <thead>
     <tr>
       <th scope="col" />
-      <SortableColumnHeader
-        label="Membre"
-        tri="membre"
-        state={state}
-        baseHref={baseHref}
-      />
+      <EnTeteTriable libelle="Membre" lien={colonnes.membre} />
       <th scope="col">Adresse email</th>
-      <SortableColumnHeader
-        label="Structure employeuse"
-        tri="structureEmployeuse"
-        state={state}
-        baseHref={baseHref}
+      <EnTeteTriable
+        libelle="Structure employeuse"
+        lien={colonnes.structureEmployeuse}
       />
-      <SortableColumnHeader
-        label="Statut"
-        tri="statut"
-        state={state}
-        baseHref={baseHref}
-        isDefault
-      />
+      <EnTeteTriable libelle="Statut" lien={colonnes.statut} />
       {avecActions && <th scope="col" />}
       <th scope="col" className="fr-sr-only">
         Profil du membre

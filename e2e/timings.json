@@ -1,67 +1,71 @@
 {
   "durations": [
     {
-      "spec": "src/features/clients-api/e2e/apiDocumentation.e2e.ts",
+      "spec": "src/app/api/v1/openapi/route.test.ts",
       "duration": 1000
     },
     {
-      "spec": "src/features/authentification/e2e/existingUserCanSigninAndSignout.e2e.ts",
+      "spec": "src/app/api/v1/documentation/page.test.ts",
+      "duration": 1000
+    },
+    {
+      "spec": "e2e/existing-user-can-signin-and-signout.e2e.ts",
       "duration": 19000
     },
     {
-      "spec": "src/features/beneficiaire/e2e/importBeneficiaires.e2e.ts",
+      "spec": "e2e/import-beneficiaires.e2e.ts",
       "duration": 6000
     },
     {
-      "spec": "src/features/activites/e2e/craCollectif.e2e.ts",
+      "spec": "e2e/cra-collectif.e2e.ts",
       "duration": 6000
     },
     {
-      "spec": "src/features/activites/e2e/craIndividuel.e2e.ts",
+      "spec": "e2e/cra-individuel.e2e.ts",
       "duration": 5000
     },
     {
-      "spec": "src/features/authentification/e2e/home.e2e.ts",
+      "spec": "src/app/(public)/(landing)/page.test.ts",
       "duration": 6000
     },
     {
-      "spec": "src/features/inscription/e2e/inscriptionConseillerNumerique.e2e.ts",
+      "spec": "e2e/inscription-conseiller-numerique.e2e.ts",
       "duration": 11000
     },
     {
-      "spec": "src/features/inscription/e2e/inscriptionCoordinateur.e2e.ts",
+      "spec": "e2e/inscription-coordinateur.e2e.ts",
       "duration": 5000
     },
     {
-      "spec": "src/features/inscription/e2e/inscriptionCoordinateurConseillerNumerique.e2e.ts",
+      "spec": "e2e/inscription-coordinateur-conseiller-numerique.e2e.ts",
       "duration": 5000
     },
     {
-      "spec": "src/features/inscription/e2e/inscriptionMediateur.e2e.ts",
+      "spec": "e2e/inscription-mediateur.e2e.ts",
       "duration": 8000
     },
     {
-      "spec": "src/features/inscription/e2e/inscriptionMediateurSansEmployeuse.e2e.ts",
+      "spec": "e2e/inscription-mediateur-sans-employeuse.e2e.ts",
       "duration": 9000
     },
     {
-      "spec": "src/features/equipe/e2e/inviterMembre.e2e.ts",
+      "spec": "e2e/inviter-membre.e2e.ts",
       "duration": 10000
     },
     {
-      "spec": "src/features/equipe/e2e/traiterInvitation.e2e.ts",
+      "spec": "e2e/traiter-invitation.e2e.ts",
       "duration": 20000
     },
     {
-      "spec": "src/features/rdvsp/e2e/afficherRdvsDansActivites.e2e.ts",
+      "spec": "src/app/coop/(sidemenu-layout)/mes-activites/(liste)/page.test.ts",
       "duration": 15000
     },
     {
-      "spec": "src/features/rdvsp/e2e/consulterRdvsAccueil.e2e.ts",
+      "spec": "src/app/coop/(sidemenu-layout)/(accueil-coop)/page.test.ts",
       "duration": 24000
     },
     {
-      "spec": "src/features/rdvsp/e2e/deconnecterCompteRdv.e2e.ts",
+      "spec": "src/app/coop/(sidemenu-layout)/mes-outils/[slug]/page.test.ts",
       "duration": 6000
     }
   ]

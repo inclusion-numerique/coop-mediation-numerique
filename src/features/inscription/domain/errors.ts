@@ -1,12 +1,12 @@
-import type { UserId } from './user-id'
+import type { UtilisateurId } from './utilisateur-id'
 
 export type InscriptionIntrouvable = {
   readonly _tag: 'InscriptionIntrouvable'
-  readonly userId: UserId
+  readonly userId: UtilisateurId
 }
 
 export const InscriptionIntrouvable = (
-  userId: UserId,
+  userId: UtilisateurId,
 ): InscriptionIntrouvable => ({
   _tag: 'InscriptionIntrouvable',
   userId,
@@ -14,11 +14,11 @@ export const InscriptionIntrouvable = (
 
 export type InscriptionDejaValidee = {
   readonly _tag: 'InscriptionDejaValidee'
-  readonly userId: UserId
+  readonly userId: UtilisateurId
 }
 
 export const InscriptionDejaValidee = (
-  userId: UserId,
+  userId: UtilisateurId,
 ): InscriptionDejaValidee => ({
   _tag: 'InscriptionDejaValidee',
   userId,
@@ -26,10 +26,10 @@ export const InscriptionDejaValidee = (
 
 export type ProfilNonChoisi = {
   readonly _tag: 'ProfilNonChoisi'
-  readonly userId: UserId
+  readonly userId: UtilisateurId
 }
 
-export const ProfilNonChoisi = (userId: UserId): ProfilNonChoisi => ({
+export const ProfilNonChoisi = (userId: UtilisateurId): ProfilNonChoisi => ({
   _tag: 'ProfilNonChoisi',
   userId,
 })

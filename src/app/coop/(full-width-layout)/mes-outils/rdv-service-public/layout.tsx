@@ -1,13 +1,8 @@
 import { PropsWithChildren } from 'react'
+import { RdvServicePublicLayout } from '@/features/rdvsp/ui/layouts/RdvServicePublicLayout'
 
-const RdvServicePublicLayout = ({ children }: PropsWithChildren) => {
-  return (
-    <div className="fr-flex fr-direction-column fr-background-alt--blue-ecume fr-height-full">
-      <div className="fr-container fr-container--narrow fr-mb-20v">
-        {children}
-      </div>
-    </div>
-  )
-}
+const Layout = ({ children }: PropsWithChildren) => (
+  <RdvServicePublicLayout>{children}</RdvServicePublicLayout>
+)
 
-export default RdvServicePublicLayout
+export default Layout

@@ -1,10 +1,16 @@
 import Notice from '@codegouvfr/react-dsfr/Notice'
-import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
-import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
-import IconInSquare from '@/libraries/ui/components/IconInSquare'
-import RattacherEmployeuseForm from '../RattacherEmployeuseForm'
+import type { ReactNode } from 'react'
+import { contentId } from '@/libraries/liens-d-evitement'
+import { SkipLinksPortal } from '@/libraries/liens-d-evitement/composants'
+import { IconInSquare } from '@/libraries/ui/components'
 
-const RattacherEmployeusePage = ({ motif }: { motif: string }) => (
+const RattacherEmployeusePage = ({
+  motif,
+  formulaire,
+}: {
+  motif: string
+  formulaire: ReactNode
+}) => (
   <div className="fr-container fr-container--800">
     <SkipLinksPortal />
     <main id={contentId} className="fr-mb-16w">
@@ -24,7 +30,7 @@ const RattacherEmployeusePage = ({ motif }: { motif: string }) => (
         que médiateur numérique. Recherchez-la par son nom, son SIRET ou son
         adresse.
       </p>
-      <RattacherEmployeuseForm nextStepPath={null} />
+      {formulaire}
     </main>
   </div>
 )

@@ -1,23 +1,22 @@
 import Breadcrumb from '@codegouvfr/react-dsfr/Breadcrumb'
-import { Route } from 'next'
-import { LinkProps } from 'next/link'
+import type { Route } from 'next'
 
-type BreadcrumbParent = {
+type BreadcrumbParent<T extends string> = {
   label: string
-  linkProps: Omit<LinkProps & { href: Route }, 'children'>
+  linkProps: { href: Route<T> }
 }
-export type BreadcrumbParents = BreadcrumbParent[]
+export type BreadcrumbParents<T extends string = string> = BreadcrumbParent<T>[]
 
-const Breadcrumbs = ({
+const Breadcrumbs = <T extends string, Accueil extends string = '/'>({
   currentPage,
   parents = [],
   homeLinkHref,
   className,
 }: {
   currentPage: string
-  parents?: BreadcrumbParents
-  homeLinkHref?: string
-  className?: string
+  parents?: BreadcrumbParents<T> | undefined
+  homeLinkHref?: Route<Accueil> | undefined
+  className?: string | undefined
 }) => (
   <Breadcrumb
     currentPageLabel={currentPage}
@@ -25,7 +24,7 @@ const Breadcrumbs = ({
       href: homeLinkHref ?? '/',
     }}
     segments={parents}
-    className={className}
+    {...(className === undefined ? {} : { className })}
   />
 )
 

@@ -2,45 +2,52 @@ import { redirect } from 'next/navigation'
 import { PropsWithChildren } from 'react'
 import { choisirLaVisibiliteApresRuptureAction } from '@/app/_actions/mediateurs/choisir-la-visibilite-apres-rupture.action'
 import {
-  getHomepage,
-  hasInscriptionComplete,
-} from '@/features/authentification/domain/getHomepage'
-import { authenticateUser } from '@/features/authentification/implementation/session/authenticateUser'
-import InscriptionStepsLayout from '@/features/inscription/components/InscriptionStepsLayout'
-import { consulterLaMaintenance } from '@/features/maintenance-mode/abilities/consulter-la-maintenance'
-import { BanniereDeMaintenance } from '@/features/maintenance-mode/abilities/consulter-la-maintenance/ui'
+  aTermineSonInscription,
+  pageDAccueil,
+} from '@/features/authentification/domain/page-d-accueil'
+import { authenticateUser } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
+import InscriptionStepsLayout from '@/features/inscription/ui/layouts/InscriptionStepsLayout'
+import { BanniereDeMaintenance } from '@/features/maintenance-mode/abilities/consulter-la-maintenance/ui/slots/BanniereDeMaintenance.slot'
 import { messageAffiche } from '@/features/maintenance-mode/domain'
-import { lireLaRuptureEnAttente } from '@/features/mediateurs/abilities/choisir-la-visibilite-apres-rupture'
+import { consulterLaMaintenance } from '@/features/maintenance-mode/implementations/prisma/etat-de-maintenance.query'
 import { CHOISIR_LA_VISIBILITE_APRES_RUPTURE_ACTION_KEY } from '@/features/mediateurs/abilities/choisir-la-visibilite-apres-rupture/action/choisir-la-visibilite-apres-rupture.key'
-import { ChoixDeVisibiliteApresRupture } from '@/features/mediateurs/abilities/choisir-la-visibilite-apres-rupture/ui'
+import { lireLaRuptureEnAttente } from '@/features/mediateurs/abilities/choisir-la-visibilite-apres-rupture/implementations/prisma/rupture-en-attente.query'
+import { ChoixDeVisibiliteApresRupture } from '@/features/mediateurs/abilities/choisir-la-visibilite-apres-rupture/ui/slots/ChoixDeVisibiliteApresRupture.slot'
 import { MediateurId } from '@/features/mediateurs/domain'
 import { accesALaCoop } from '@/features/navigation/domain'
-import {
-  AccesReserveAuxUtilisateurs,
-  CoopShell,
-} from '@/features/navigation/ui/coquille'
-import TerminerUsurpationHeaderUserMenuItem from '@/features/utilisateurs/abilities/terminer-l-usurpation/ui/TerminerUsurpationHeaderUserMenuItem'
-import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
+import { CoopShellLayout } from '@/features/navigation/ui/layouts/CoopShellLayout'
+import { AccesReserveAuxUtilisateurs } from '@/features/navigation/ui/slots/AccesReserveAuxUtilisateurs.slot'
+import Header from '@/features/navigation/ui/slots/Header.slot'
+import PublicFooter from '@/features/navigation/ui/slots/PublicFooter.slot'
+import TerminerUsurpationHeaderUserMenuItem from '@/features/utilisateurs/abilities/terminer-l-usurpation/ui/slots/TerminerUsurpationHeaderUserMenuItem.slot'
+import { ClientBinder } from '@/libraries/nextjs/injection'
 
 const Layout = async ({ children }: PropsWithChildren) => {
   const user = await authenticateUser()
   const acces = accesALaCoop({
     role: user.role,
-    inscriptionAchevee: hasInscriptionComplete(user),
+    inscriptionAchevee: aTermineSonInscription(user),
   })
 
   if (acces._tag === 'ReserveAuxUtilisateurs') {
     return (
-      <CoopShell
+      <CoopShellLayout
         cadre="etape"
-        user={user}
-        accueil={getHomepage(user)}
-        terminerUsurpation={<TerminerUsurpationHeaderUserMenuItem />}
+        entete={
+          <Header
+            user={user}
+            accueil={pageDAccueil(user)}
+            terminerUsurpation={<TerminerUsurpationHeaderUserMenuItem />}
+            fullWidth
+            variant="coop"
+          />
+        }
+        pied={<PublicFooter />}
       >
         <InscriptionStepsLayout>
           <AccesReserveAuxUtilisateurs role={acces.role} />
         </InscriptionStepsLayout>
-      </CoopShell>
+      </CoopShellLayout>
     )
   }
 
@@ -57,11 +64,18 @@ const Layout = async ({ children }: PropsWithChildren) => {
 
   if (ruptureEnAttente != null) {
     return (
-      <CoopShell
+      <CoopShellLayout
         cadre="etape"
-        user={user}
-        accueil={getHomepage(user)}
-        terminerUsurpation={<TerminerUsurpationHeaderUserMenuItem />}
+        entete={
+          <Header
+            user={user}
+            accueil={pageDAccueil(user)}
+            terminerUsurpation={<TerminerUsurpationHeaderUserMenuItem />}
+            fullWidth
+            variant="coop"
+          />
+        }
+        pied={<PublicFooter />}
       >
         <InscriptionStepsLayout>
           <ClientBinder
@@ -71,14 +85,14 @@ const Layout = async ({ children }: PropsWithChildren) => {
             <ChoixDeVisibiliteApresRupture />
           </ClientBinder>
         </InscriptionStepsLayout>
-      </CoopShell>
+      </CoopShellLayout>
     )
   }
 
   const maintenance = await consulterLaMaintenance()
 
   return (
-    <CoopShell
+    <CoopShellLayout
       cadre="application"
       banniere={
         maintenance._tag === 'Active' ? (
@@ -87,7 +101,7 @@ const Layout = async ({ children }: PropsWithChildren) => {
       }
     >
       {children}
-    </CoopShell>
+    </CoopShellLayout>
   )
 }
 

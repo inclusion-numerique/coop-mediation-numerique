@@ -17,6 +17,7 @@ node_modules
 
 **/coverage
 **/coverage-cucumber
+**/coverage-total
 **/junit
 /e2e/screenshots
 /e2e/downloads
@@ -44,3 +45,4 @@ node_modules
 !/.claude/agents
 !/.claude/skills
 !/.claude/workflows
+/docs/site/

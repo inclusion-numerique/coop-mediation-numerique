@@ -1,35 +1,27 @@
-import {
-  DataSearchBar,
-  generatePageSizeSelectOptions,
-  PaginationNavWithPageSizeSelect,
-} from '@/libraries/data-table'
-import SortSelect from '@/libraries/data-table/sort/SortSelect'
 import type { Departement } from '@/libraries/departement'
-import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
-import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
-import BackButton from '@/libraries/ui/components/BackButton'
-import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
-import type { SelectOption } from '@/libraries/ui/components/Form/utils/options'
+import type { LiensDePagination } from '@/libraries/etat-d-url'
+import { BarreDeFiltres } from '@/libraries/etat-d-url/filtres'
+import { ChampDeRecherche, PiedDeListe } from '@/libraries/etat-d-url/liste'
+import { contentId } from '@/libraries/liens-d-evitement'
+import { SkipLinksPortal } from '@/libraries/liens-d-evitement/composants'
+import { BackButton, CoopBreadcrumbs } from '@/libraries/ui/components'
 import type { Acteur } from '../../../../domain'
-import { LIGNES_PAR_DEFAUT } from '../../../../domain'
-import { CarteDActeur } from '../../../../ui/CarteDActeur'
-import { EtiquettesDeFiltres } from '../../../../ui/EtiquettesDeFiltres'
-import { filDArianeDuReseau } from '../../../../ui/fil-d-ariane'
-import { hrefDesActeurs } from '../../../../ui/liens'
+import { FiltreDesCommunesDuReseau } from '../../../../ui/components/FiltreDesCommunesDuReseau'
+import { paginationDuReseau } from '../../../../ui/filtres/reseau.filtre'
+import type { BarreDuReseau } from '../../../../ui/presenters/barre-du-reseau.presenter'
+import { filDArianeDuReseau } from '../../../../ui/presenters/fil-d-ariane.presenter'
 import {
   type CriteresActeurs,
   estFiltre,
   type PageDActeurs,
 } from '../../domain'
+import { CarteDActeur } from '../components/CarteDActeur'
+import { FiltreDuRoleDeLActeur } from '../components/FiltreDuRoleDeLActeur'
+import { TriDesActeursDuReseau } from '../components/TriDesActeursDuReseau'
 import {
-  etiquettesDesFiltres,
   groupesDActeurs,
   libelleDesResultats,
-  parametresDeLURL,
-} from '../acteurs.presenter'
-import Filtres from '../components/Filtres'
-
-const pageSizeOptions = generatePageSizeSelectOptions([20, 50, 100])
+} from '../presenters/acteurs.presenter'
 
 const GroupeDActeurs = ({
   titre,
@@ -57,16 +49,16 @@ const ActeursDuDepartementPage = ({
   departement,
   criteres,
   acteurs,
-  communes,
+  barre,
+  pages,
 }: {
   departement: Departement
   criteres: CriteresActeurs
   acteurs: PageDActeurs
-  communes: SelectOption[]
+  barre: BarreDuReseau
+  pages: LiensDePagination
 }) => {
-  const baseHref = hrefDesActeurs(departement.code)
-  const parametres = parametresDeLURL(criteres)
-  const groupes = groupesDActeurs(acteurs.acteurs)
+  const groupes = groupesDActeurs(acteurs.items)
   const sansCoordinateur =
     groupes.coordinateursDuDispositif.length === 0 &&
     groupes.coordinateursHorsDispositif.length === 0
@@ -97,43 +89,33 @@ const ActeursDuDepartementPage = ({
           </div>
 
           <div className="fr-flex fr-align-items-center fr-flex-gap-4v fr-mb-6v fr-mt-12v">
-            <DataSearchBar
-              baseHref={baseHref}
-              state={parametres}
+            <ChampDeRecherche
               placeholder="Nom, prénom ou adresse mail..."
               className="fr-flex-grow-1"
             />
-            <Filtres
-              key={`${departement.code}-${criteres.communes.join()}-${criteres.role}`}
-              communes={criteres.communes}
-              role={criteres.role}
-              options={communes}
-            />
           </div>
 
-          <EtiquettesDeFiltres
-            etiquettes={etiquettesDesFiltres(criteres, communes)}
-          />
+          <BarreDeFiltres
+            etiquettes={barre.etiquettes}
+            sansFiltres={barre.sansFiltres}
+          >
+            <FiltreDesCommunesDuReseau {...barre.communes} />
+            <FiltreDuRoleDeLActeur />
+          </BarreDeFiltres>
 
           <hr className="fr-separator-1px" />
 
           <div className="fr-flex fr-align-items-center fr-justify-content-space-between fr-my-6v">
             <h2 className="fr-text--bold fr-text--xs fr-text--uppercase fr-mb-0">
-              {libelleDesResultats(acteurs.total, estFiltre(criteres))}
+              {libelleDesResultats(acteurs.totalItems, estFiltre(criteres))}
             </h2>
-            <SortSelect
-              options={[
-                { label: 'Nom (A à Z)', value: 'nomaz' },
-                { label: 'Nom (Z à A)', value: 'nomza' },
-              ]}
-              baseHref={baseHref}
-            />
+            <TriDesActeursDuReseau />
           </div>
 
           <hr className="fr-separator-1px" />
 
           {sansCoordinateur ? (
-            acteurs.acteurs.map((acteur) => (
+            acteurs.items.map((acteur) => (
               <CarteDActeur
                 key={acteur.acteurId}
                 acteur={acteur}
@@ -160,14 +142,10 @@ const ActeursDuDepartementPage = ({
             </>
           )}
 
-          <PaginationNavWithPageSizeSelect
+          <PiedDeListe
             className="fr-mt-12v"
-            itemsCount={acteurs.total}
-            pageSize={acteurs.lignes}
-            baseHref={baseHref}
-            state={parametres}
-            defaultPageSize={LIGNES_PAR_DEFAUT}
-            pageSizeOptions={pageSizeOptions}
+            liens={pages}
+            pagination={paginationDuReseau}
           />
         </main>
       </div>

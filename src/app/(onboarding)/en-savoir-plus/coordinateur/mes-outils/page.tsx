@@ -1,8 +1,8 @@
 import { Metadata } from 'next'
 import { redirect } from 'next/navigation'
-import { metadataTitle } from '@/configuration/projet/metadataTitle'
-import { authenticateUser } from '@/features/authentification/implementation/session/authenticateUser'
-import { OnboardingMesOutilsCoordinateur } from '@/features/utilisateurs/abilities/marquer-l-onboarding-comme-vu/ui/pages/OnboardingMesOutilsCoordinateur'
+import { metadataTitle } from '@/configuration/projet'
+import { authenticateUser } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
+import { OnboardingMesOutilsCoordinateurPage } from '@/features/utilisateurs/abilities/marquer-l-onboarding-comme-vu/ui/pages/OnboardingMesOutilsCoordinateurPage'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -18,7 +18,7 @@ const Page = async () => {
     redirect('/coop')
   }
 
-  return <OnboardingMesOutilsCoordinateur />
+  return <OnboardingMesOutilsCoordinateurPage />
 }
 
 export default Page

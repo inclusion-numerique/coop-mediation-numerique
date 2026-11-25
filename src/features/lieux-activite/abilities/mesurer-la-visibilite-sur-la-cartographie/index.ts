@@ -1,1 +1,0 @@
-export { visibiliteSurLaCartographie } from './implementation'

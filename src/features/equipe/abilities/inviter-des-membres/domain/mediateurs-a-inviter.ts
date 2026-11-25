@@ -1,5 +1,5 @@
 import type {
-  Email,
+  Courriel,
   MediateurId,
   NomAffiche,
   RoleMembre,
@@ -8,7 +8,7 @@ import type {
 export type MediateurAInviter = {
   readonly mediateurId: MediateurId
   readonly nom: NomAffiche
-  readonly email: Email
+  readonly email: Courriel
   readonly role: RoleMembre
 }
 

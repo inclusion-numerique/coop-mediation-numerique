@@ -8,18 +8,15 @@ import {
   PropsWithChildren,
   useEffect,
   useLayoutEffect,
-  useMemo,
   useRef,
   useState,
 } from 'react'
-import {
-  type AnalyseResponse,
-  getBeneficiaireImportAnalysis,
-} from '@/features/beneficiaire/abilities/importer-beneficiaires/ui/import-analysis-storage'
+import type { AnalyseResponse } from '@/features/beneficiaire/abilities/importer-beneficiaires/domain/analyse-de-l-import'
+import { useAnalyseDeLImport } from '@/features/beneficiaire/abilities/importer-beneficiaires/ui/hooks/use-analyse-de-l-import'
 import type { ServerActionResult } from '@/libraries/nextjs'
 import { pluriel } from '@/libraries/pluriel'
-import { createToast } from '@/libraries/ui/toast/createToast'
-import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
+import { createToast } from '@/libraries/ui/toast'
+import { buttonLoadingClassname } from '@/libraries/ui/utils'
 
 // L'action d'import est injectée par la route (concern croisé), l'UI reste
 // découplée de l'ability.
@@ -44,7 +41,7 @@ const AnalysisTableCell = ({
   error,
   children,
   id,
-}: PropsWithChildren<{ error?: string | null; id: string }>) => (
+}: PropsWithChildren<{ error?: string | null | undefined; id: string }>) => (
   <td
     className={classNames(!!error && 'fr-beneficiaire-import-cell-error')}
     aria-describedby={error ? `tooltip-cell-error-${id}` : undefined}
@@ -70,10 +67,7 @@ const ImportBeneficiairesAnalyseContent = ({
   analysisId: string
   importer: ImporterBeneficiaires
 }) => {
-  const analysisResponse = useMemo(
-    () => getBeneficiaireImportAnalysis(analysisId),
-    [analysisId],
-  )
+  const analysisResponse = useAnalyseDeLImport(analysisId)
 
   const router = useRouter()
 

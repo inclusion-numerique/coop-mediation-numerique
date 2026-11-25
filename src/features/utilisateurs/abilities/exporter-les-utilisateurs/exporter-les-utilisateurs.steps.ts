@@ -2,14 +2,16 @@ import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import type Excel from 'exceljs'
 import { v4 } from 'uuid'
-import { filtresUtilisateurs } from '@/features/utilisateurs/domain'
-import { libellesDesFiltres } from '@/features/utilisateurs/ui'
-import { auteurDeLExport } from '@/features/utilisateurs/ui/tableur/auteur-de-l-export'
-import { semerUnCompteDeListe } from '@/features/utilisateurs/utilisateurs.cucumber'
 import {
-  classeurDesUtilisateurs,
-  utilisateursAExporter,
-} from './implementation'
+  filtresDesUtilisateurs,
+  filtresUtilisateursDesFiltres,
+} from '@/features/utilisateurs/ui/filtres/utilisateurs.filtre'
+import { auteurDeLExport } from '@/features/utilisateurs/ui/presenters/auteur-de-l-export.presenter'
+import { barreDesUtilisateurs } from '@/features/utilisateurs/ui/presenters/barre-des-utilisateurs.presenter'
+import { semerUnCompteDeListe } from '@/features/utilisateurs/utilisateurs.cucumber'
+import { classeurDesUtilisateurs } from './implementations/excel/classeur-des-utilisateurs.classeur'
+import { utilisateursAExporter } from './implementations/prisma/utilisateurs-a-exporter.query'
+import { colonnesDeLExport } from './ui/presenters/colonnes-de-l-export.presenter'
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
 
@@ -62,7 +64,8 @@ Given(
 When(
   "l'administration exporte les comptes actifs de cette recherche",
   async () => {
-    const filtres = filtresUtilisateurs({ statut: 'actif' })
+    const valeurs = filtresDesUtilisateurs.charger({ statut: 'actif' })
+    const filtres = filtresUtilisateursDesFiltres(valeurs)
     const maintenant = AUJOURD_HUI()
 
     export_.classeur = classeurDesUtilisateurs({
@@ -72,14 +75,22 @@ When(
         maintenant,
       }),
       auteur: auteurDeLExport(auteur),
-      filtres: libellesDesFiltres(filtres, {
-        employeuses: [],
-        coordinateurs: [],
-        lieux: [],
-        communes: [],
-        departements: [],
-      }),
+      filtres: barreDesUtilisateurs({
+        adresse: { chemin: '', parametres: {} },
+        valeurs,
+        options: {
+          employeuses: [],
+          coordinateurs: [],
+          lieux: [],
+          communes: [],
+          departements: [],
+        },
+      }).etiquettes.map(({ titre, libelle }) => ({
+        type: titre,
+        valeur: libelle,
+      })),
       genereLe: maintenant,
+      colonnes: colonnesDeLExport,
     })
   },
 )

@@ -1,24 +1,20 @@
 import { failure, type Result, success } from '@/libraries/result'
 import {
   type CoordinateurId,
-  type Email,
+  type Courriel,
   type Invitation,
   type InvitationEnAttente,
   type MediateurId,
   ReferenceInvitation,
 } from '../../../domain'
+import { type Ecart } from './ecart'
 import { AucuneInvitationAEnvoyer } from './errors'
 import { RaisonDEcart } from './raison-d-ecart'
 
-export type Ecart = {
-  readonly email: Email
-  readonly raison: RaisonDEcart
-}
-
 export type Existant = {
   readonly invitations: readonly Invitation[]
-  readonly membresActifs: ReadonlySet<Email>
-  readonly mediateursConnus: ReadonlyMap<Email, MediateurId>
+  readonly membresActifs: ReadonlySet<Courriel>
+  readonly mediateursConnus: ReadonlyMap<Courriel, MediateurId>
 }
 
 export type Planification = {
@@ -28,7 +24,7 @@ export type Planification = {
 
 const raisonDEcart =
   ({ invitations, membresActifs }: Existant) =>
-  (email: Email): RaisonDEcart | null => {
+  (email: Courriel): RaisonDEcart | null => {
     if (membresActifs.has(email)) return RaisonDEcart('DejaMembre')
     return invitations.some(
       (invitation) =>
@@ -45,7 +41,7 @@ const nouvelleInvitation =
     { mediateursConnus }: Existant,
     maintenant: Date,
   ) =>
-  (email: Email): InvitationEnAttente => {
+  (email: Courriel): InvitationEnAttente => {
     const mediateurId = mediateursConnus.get(email)
     return {
       reference: ReferenceInvitation({ email, coordinateurId }),
@@ -66,7 +62,7 @@ export const planifier = ({
   maintenant,
 }: {
   coordinateurId: CoordinateurId
-  candidats: readonly Email[]
+  candidats: readonly Courriel[]
   existant: Existant
   maintenant: Date
 }): Result<Planification, AucuneInvitationAEnvoyer> => {

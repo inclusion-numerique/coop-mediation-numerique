@@ -4,7 +4,7 @@ import {
   communDeLaSaisie,
   communeSaisie,
   saisieDeMediation,
-} from '../../../action/saisie-de-mediation'
+} from '../../../action/saisie-de-mediation.validation'
 import {
   Autonomie,
   BeneficiaireId,
@@ -69,3 +69,7 @@ export const EnregistrerUnAccompagnementIndividuelValidation = z
       ),
     }
   })
+
+export type SaisieDUnAccompagnementIndividuel = z.input<
+  typeof EnregistrerUnAccompagnementIndividuelValidation
+>

@@ -1,0 +1,40 @@
+import { PrismaPg } from '@prisma/adapter-pg'
+import { environnementServeur } from '@/configuration/environnement/serveur'
+import { createEnumArrayTypeParser } from '@/configuration/prisma/enum-array-type-parser'
+import { PrismaClient } from '@/generated/entrepot/client'
+
+// Second Prisma client pointing at the entrepôt (Dataspace) database. It is generated
+// from its own schema (prisma/entrepot/schema.prisma) and exposes a READ-ONLY, typed
+// view of the schemas hosted there (`main` for now: lieu_inclusion, adresse). It is
+// never managed by `prisma migrate` — those tables belong to the Dataspace team.
+// The coop schema keeps using `prismaClient`.
+//
+// Locally ENTREPOT_DATABASE_URL is left as a placeholder and falls back to DATABASE_URL
+// — the dev container already hosts every schema, and the typed queries are schema
+// qualified (main.*) so the coop search_path is irrelevant. Deployed environments inject
+// the entrepôt connection string (ideally a Postgres role with GRANT SELECT only).
+const configuredEntrepotUrl = environnementServeur().ENTREPOT_DATABASE_URL
+const entrepotDatabaseUrl = configuredEntrepotUrl?.startsWith('postgres')
+  ? configuredEntrepotUrl
+  : environnementServeur().DATABASE_URL
+
+const createEntrepotPrismaClient = () =>
+  new PrismaClient({
+    adapter: new PrismaPg(
+      { connectionString: entrepotDatabaseUrl },
+      { userDefinedTypeParser: createEnumArrayTypeParser() },
+    ),
+  })
+
+const globalForEntrepot = global as unknown as {
+  entrepotPrismaClient:
+    | ReturnType<typeof createEntrepotPrismaClient>
+    | undefined
+}
+
+export const entrepotPrismaClient =
+  globalForEntrepot.entrepotPrismaClient ?? createEntrepotPrismaClient()
+
+if (environnementServeur().NODE_ENV !== 'production') {
+  globalForEntrepot.entrepotPrismaClient = entrepotPrismaClient
+}

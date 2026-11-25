@@ -1,14 +1,9 @@
 import Button from '@codegouvfr/react-dsfr/Button'
-import {
-  rdvOauthLinkAccountErrorCallbackPath,
-  rdvOauthLinkAccountFlowUrl,
-  rdvOauthLinkAccountSuccessCallbackPath,
-} from '@/features/rdvsp/oauth'
-import { RDVServicePublicLogo } from '@/libraries/pictograms/services/RDVServicePublicLogo'
-import BackButton from '@/libraries/ui/components/BackButton'
+import { RDVServicePublicLogo } from '@/libraries/pictograms/services'
+import { BackButton } from '@/libraries/ui/components'
 import RdvServicePublicConnexionCard from '../components/RdvServicePublicConnexionCard'
 
-const SeConnecterPage = () => {
+const SeConnecterPage = ({ lienDeConnexion }: { lienDeConnexion: string }) => {
   return (
     <div className="fr-mb-32v">
       <div className="fr-mb-6v fr-mt-10v">
@@ -32,20 +27,14 @@ const SeConnecterPage = () => {
         <div className="fr-btns-group">
           <Button
             linkProps={{
-              href: rdvOauthLinkAccountFlowUrl({
-                redirectToSuccess: rdvOauthLinkAccountSuccessCallbackPath,
-                redirectToError: rdvOauthLinkAccountErrorCallbackPath,
-              }),
+              href: lienDeConnexion,
             }}
           >
             J’ai déjà un compte
           </Button>
           <Button
             linkProps={{
-              href: rdvOauthLinkAccountFlowUrl({
-                redirectToSuccess: rdvOauthLinkAccountSuccessCallbackPath,
-                redirectToError: rdvOauthLinkAccountErrorCallbackPath,
-              }),
+              href: lienDeConnexion,
             }}
             priority="secondary"
             className="fr-mb-0"

@@ -5,27 +5,27 @@ import { useRouter } from 'next/navigation'
 import {
   type ChoisirProfilFormData,
   choisirProfilFormShape,
-} from '@/features/inscription/abilities/choisir-profil'
+} from '@/features/inscription/abilities/choisir-profil/action/choisir-profil.validation'
 import {
-  type InscriptionStep,
+  type EtapeDInscription,
   profilInscriptionLabels,
   type Role,
 } from '@/features/inscription/domain'
-import { stepPath } from '@/features/inscription/ui/step-path'
-import { handleSubmit } from '@/libraries/formulaire/handle-submit'
+import { cheminDeLEtape } from '@/features/inscription/ui/presenters/chemin-de-l-etape.presenter'
+import type { DefaultValues } from '@/libraries/formulaire'
 import {
-  type DefaultValues,
+  handleSubmit,
   useAppForm,
-} from '@/libraries/formulaire/use-app-form'
-import { useHydrated } from '@/libraries/formulaire/use-hydrated'
+  useHydrated,
+} from '@/libraries/formulaire/hooks'
 import type { ServerActionResult } from '@/libraries/nextjs'
-import LogoCoop from '@/libraries/ui/components/LogoCoop'
-import { createToast } from '@/libraries/ui/toast/createToast'
+import { LogoCoop } from '@/libraries/ui/components'
+import { createToast } from '@/libraries/ui/toast'
 
 type EnregistrerProfil = (data: ChoisirProfilFormData) => Promise<
   ServerActionResult<{
     role: Role
-    etapeSuivante: InscriptionStep
+    etapeSuivante: EtapeDInscription
   }>
 >
 
@@ -80,7 +80,7 @@ const ChoisirRolePage = ({ save }: { save: EnregistrerProfil }) => {
           return
         }
 
-        router.push(stepPath(result.data.etapeSuivante))
+        router.push(cheminDeLEtape(result.data.etapeSuivante))
       } catch {
         erreurEnregistrement()
       }

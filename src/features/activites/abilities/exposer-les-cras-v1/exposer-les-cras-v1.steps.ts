@@ -2,7 +2,7 @@ import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { semerUnCraV1 } from '@/features/activites/activites.cucumber'
 import { Horodatage } from './domain'
-import { crasV1Exposes } from './implementation'
+import { crasV1Exposes } from './implementations/prisma/cras-v1-exposes.query'
 
 const exposition: {
   semes: readonly { readonly id: string; readonly createdAt: Date }[]

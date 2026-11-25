@@ -1,13 +1,13 @@
 import type { ButtonProps } from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'
-import { numberToString } from '@/libraries/nombre/formatNumber'
-import IconInSquare from '@/libraries/ui/components/IconInSquare'
+import { numberToString } from '@/libraries/nombre'
+import { IconInSquare } from '@/libraries/ui/components'
 import {
   datesDonneesRecolteesEtMisesAJour,
   totalDepuis,
-} from '../statistiquesPubliquesWording'
+} from '../labels/statistiques-publiques.labels'
 import { LegendTile } from './LegendTile'
-import { ChartData, ChartSerie, MonthChart } from './MonthChart'
+import { ChartSerie, DonneesDuGraphique, MonthChart } from './MonthChart'
 
 const chartColors = [
   { fill: 'var(--blue-france-sun-113-625)' },
@@ -26,8 +26,8 @@ type ChartCardUIProps = {
 
 export type ChartCardDataProps = {
   series: ChartSerie[]
-  perMonth: ChartData[]
-  runningTotalPerMonth?: ChartData[]
+  perMonth: DonneesDuGraphique[]
+  runningTotalPerMonth?: DonneesDuGraphique[]
   total: number
   showCumulativeToggle?: boolean
 }
@@ -95,7 +95,7 @@ export const ChartCard = ({
           percent={percentage}
           label={label}
           description={description}
-          legendColor={chartColors[index].fill}
+          legendColor={chartColors[index]?.fill}
         />
       ))}
     </div>

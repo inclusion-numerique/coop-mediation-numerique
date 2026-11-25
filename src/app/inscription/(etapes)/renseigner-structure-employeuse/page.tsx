@@ -1,15 +1,15 @@
 import { redirect } from 'next/navigation'
 import { rechercherStructureEmployeuseAction } from '@/app/_actions/employeuse/rechercher-structure-employeuse.action'
 import { renseignerStructureEmployeuseAction } from '@/app/_actions/inscription/renseigner-structure-employeuse.action'
-import { metadataTitle } from '@/configuration/projet/metadataTitle'
-import { hasInscriptionComplete } from '@/features/authentification/domain/getHomepage'
-import { sessionUserHasStructureEmployeuse } from '@/features/authentification/domain/sessionUser'
-import { authenticateUser } from '@/features/authentification/implementation/session/authenticateUser'
+import { metadataTitle } from '@/configuration/projet'
+import { aTermineSonInscription } from '@/features/authentification/domain/page-d-accueil'
+import { aUneStructureEmployeuse } from '@/features/authentification/domain/utilisateur-de-la-session'
+import { authenticateUser } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
 import { RECHERCHER_STRUCTURE_EMPLOYEUSE_ACTION_KEY } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/action/rechercher-structure-employeuse.key'
 import { RENSEIGNER_STRUCTURE_EMPLOYEUSE_ACTION_KEY } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/action/renseigner-structure-employeuse.key'
-import RattacherEmployeuseForm from '@/features/employeuse/abilities/rattacher-a-une-employeuse/ui/RattacherEmployeuseForm'
+import RattacherEmployeuseForm from '@/features/employeuse/abilities/rattacher-a-une-employeuse/ui/slots/RattacherEmployeuseForm.slot'
 import RenseignerStructureEmployeusePage from '@/features/inscription/abilities/renseigner-structure-employeuse/ui/pages/RenseignerStructureEmployeusePage'
-import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
+import { ClientBinder } from '@/libraries/nextjs/injection'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -21,11 +21,11 @@ export const metadata = {
 const RenseignerStructureEmployeusePageRoute = async () => {
   const user = await authenticateUser()
 
-  if (hasInscriptionComplete(user)) {
+  if (aTermineSonInscription(user)) {
     redirect('/coop')
   }
 
-  if (sessionUserHasStructureEmployeuse(user)) {
+  if (aUneStructureEmployeuse(user)) {
     redirect('/inscription/lieux-activite/structure-employeuse')
   }
 

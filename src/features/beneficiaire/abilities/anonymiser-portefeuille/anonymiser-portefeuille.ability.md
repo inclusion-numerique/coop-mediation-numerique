@@ -1,35 +1,35 @@
-# Feature: Anonymiser le portefeuille d'un médiateur
+# Fonctionnalité: Anonymiser le portefeuille d'un médiateur
 
-## Rule: L'identité part, la valeur statistique reste
+## Règle: L'identité part, la valeur statistique reste
 
-### Scenario: Le portefeuille entier est anonymisé
+### Scénario: Le portefeuille entier est anonymisé
 
-* Given un portefeuille de deux bénéficiaires identifiés
-* When j'anonymise le portefeuille de ce médiateur
-* Then l'anonymisation porte sur 2 bénéficiaires
-* And les bénéficiaires du portefeuille n'ont plus d'identité
-* And les bénéficiaires du portefeuille gardent leur valeur statistique
-* And le compteur de bénéficiaires du portefeuille est remis à zéro
+* Étant donné un portefeuille de deux bénéficiaires identifiés
+* Quand j'anonymise le portefeuille de ce médiateur
+* Alors l'anonymisation porte sur 2 bénéficiaires
+* Et les bénéficiaires du portefeuille n'ont plus d'identité
+* Et les bénéficiaires du portefeuille gardent leur valeur statistique
+* Et le compteur de bénéficiaires du portefeuille est remis à zéro
 
-### Scenario: Une commune à plusieurs codes postaux n'en garde qu'un
+### Scénario: Une commune à plusieurs codes postaux n'en garde qu'un
 
-* Given un portefeuille de deux bénéficiaires de Nice
-* When j'anonymise le portefeuille de ce médiateur
-* Then les bénéficiaires du portefeuille ne gardent que le code postal "06100"
+* Étant donné un portefeuille de deux bénéficiaires de Nice
+* Quand j'anonymise le portefeuille de ce médiateur
+* Alors les bénéficiaires du portefeuille ne gardent que le code postal "06100"
 
-## Rule: Le lien vers l'usager RDV est rompu, ce qui le rend orphelinable
+## Règle: Le lien vers l'usager RDV est rompu, ce qui le rend orphelinable
 
-### Scenario: Le rattachement à l'usager RDV est détaché
+### Scénario: Le rattachement à l'usager RDV est détaché
 
-* Given un portefeuille de deux bénéficiaires identifiés
-* When j'anonymise le portefeuille de ce médiateur
-* Then les bénéficiaires du portefeuille ne référencent plus d'usager RDV
+* Étant donné un portefeuille de deux bénéficiaires identifiés
+* Quand j'anonymise le portefeuille de ce médiateur
+* Alors les bénéficiaires du portefeuille ne référencent plus d'usager RDV
 
-## Rule: Rejouer l'anonymisation ne fait rien de plus
+## Règle: Rejouer l'anonymisation ne fait rien de plus
 
-### Scenario: Une seconde anonymisation ne trouve plus rien
+### Scénario: Une seconde anonymisation ne trouve plus rien
 
-* Given un portefeuille de deux bénéficiaires identifiés
-* When j'anonymise le portefeuille de ce médiateur
-* And j'anonymise à nouveau le portefeuille de ce médiateur
-* Then l'anonymisation porte sur 0 bénéficiaire
+* Étant donné un portefeuille de deux bénéficiaires identifiés
+* Quand j'anonymise le portefeuille de ce médiateur
+* Et j'anonymise à nouveau le portefeuille de ce médiateur
+* Alors l'anonymisation porte sur 0 bénéficiaire

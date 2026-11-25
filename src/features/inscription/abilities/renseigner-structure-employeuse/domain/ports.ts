@@ -1,4 +1,7 @@
-import type { InscriptionEnCours, UserId } from '@/features/inscription/domain'
+import type {
+  InscriptionEnCours,
+  UtilisateurId,
+} from '@/features/inscription/domain'
 import type { SaisieEmployeuse } from './structure-employeuse-input'
 
 /**
@@ -11,7 +14,7 @@ import type { SaisieEmployeuse } from './structure-employeuse-input'
  * quand rattacher, et ce qu'il faut conclure d'un échec.
  */
 export type RattacherEmployeuse = (input: {
-  readonly userId: UserId
+  readonly userId: UtilisateurId
   readonly saisie: SaisieEmployeuse
 }) => Promise<{ readonly _tag: string }>
 

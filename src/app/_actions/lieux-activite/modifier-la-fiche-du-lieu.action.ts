@@ -1,14 +1,15 @@
 'use server'
 
 import { actionBuilder } from '@/configuration/nextjs'
-import { withActeurDeLaCoop, withAuth } from '@/features/authentification'
-import { modifierLaFicheDuLieu } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu'
-import { depuisLaSaisie } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/action/depuis-la-saisie'
+import { withActeurDeLaCoop } from '@/features/authentification/middlewares/with-acteur-de-la-coop'
+import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { MODIFIER_LA_FICHE_DU_LIEU_ERRORS } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/action/modifier-la-fiche-du-lieu.errors'
 import { ModifierLaFicheDuLieuValidation } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/action/modifier-la-fiche-du-lieu.validation'
-import { LieuId } from '@/features/lieux-activite/domain/lieu-id'
-import { UserId } from '@/features/lieux-activite/domain/user-id'
-import { withMaintenance } from '@/features/maintenance-mode'
+import { depuisLaSaisie } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/action/saisie-de-la-fiche.transfer'
+import { modifierLaFicheDuLieu } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/implementations/prisma/modifier-la-fiche-du-lieu.mutation'
+import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
+import { UtilisateurId } from '@/features/lieux-activite/domain/identifiants/utilisateur-id'
+import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { fromResult, withInput } from '@/libraries/nextjs'
 
 export const modifierLaFicheDuLieuAction = actionBuilder()
@@ -22,7 +23,7 @@ export const modifierLaFicheDuLieuAction = actionBuilder()
         modifierLaFicheDuLieu({
           id: LieuId(input.id),
           modification: depuisLaSaisie(input.modification),
-          par: UserId(user.id),
+          par: UtilisateurId(user.id),
         }),
       { onError: MODIFIER_LA_FICHE_DU_LIEU_ERRORS },
     ),

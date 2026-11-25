@@ -1,11 +1,9 @@
 import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
-import {
-  type EchecDeSuppression,
-  supprimerUneActiviteDeCoordination,
-} from '@/features/activites/abilities/supprimer-une-activite-de-coordination'
+import { prismaClient } from '@/configuration/prisma'
+import { type EchecDeSuppression } from '@/features/activites/abilities/supprimer-une-activite-de-coordination/domain/index'
+import { supprimerUneActiviteDeCoordination } from '@/features/activites/abilities/supprimer-une-activite-de-coordination/implementations/prisma/supprimer-une-activite-de-coordination.mutation'
 import {
   ActiviteDeCoordinationId,
   CoordinateurId,
@@ -14,8 +12,8 @@ import {
 import type { Result } from '@/libraries/result'
 
 type Semis = {
-  readonly userIds: readonly string[]
-  readonly coordinateurIds: readonly string[]
+  readonly userIds: readonly [string, string]
+  readonly coordinateurIds: readonly [string, string]
   readonly tagId: string
   readonly activiteId: string
 }

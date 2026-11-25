@@ -1,13 +1,13 @@
 import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma'
 import {
   type EmployeuseDesActivites,
   EmployeuseId,
   MediateurId,
-  rechercherLesEmployeusesDesActivites,
-} from '.'
+} from '../../domain/index'
+import { rechercherLesEmployeusesDesActivites } from './implementations/prisma/rechercher-les-employeuses-des-activites.query'
 
 type Semis = {
   readonly userIds: readonly string[]

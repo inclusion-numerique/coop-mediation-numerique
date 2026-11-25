@@ -1,4 +1,4 @@
-import type { Ecart } from './planifier'
+import type { Ecart } from './ecart'
 
 export type AucuneInvitationAEnvoyer = {
   readonly _tag: 'AucuneInvitationAEnvoyer'

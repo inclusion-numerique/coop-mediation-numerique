@@ -1,13 +1,10 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
-import {
-  consulterUneInvitation,
-  type VueInvitation,
-} from '@/features/equipe/abilities/consulter-une-invitation'
+import { type VueInvitation } from '@/features/equipe/abilities/consulter-une-invitation/domain/index'
+import { consulterUneInvitation } from '@/features/equipe/abilities/consulter-une-invitation/implementations/prisma/consulter-une-invitation.query'
 import {
   CoordinateurId,
-  codeInvitation,
-  Email,
+  Courriel,
   ReferenceInvitation,
 } from '@/features/equipe/domain'
 import {
@@ -17,6 +14,10 @@ import {
   semerUneInvitation,
   semerUnMediateurDEquipe,
 } from '@/features/equipe/equipe.cucumber'
+import {
+  codeInvitation,
+  referenceDuCode,
+} from '@/features/equipe/implementations/email/lien-invitation.transfer'
 
 const contexte: {
   coordinateur?: CoordinateurSeme
@@ -61,13 +62,15 @@ const semer = async ({
 
 const ouvrir = async (session: string | null) => {
   contexte.vue = await consulterUneInvitation({
-    code: codeInvitation(
-      ReferenceInvitation({
-        email: Email(emailInvite()),
-        coordinateurId: CoordinateurId(coordinateur().coordinateurId),
-      }),
+    reference: referenceDuCode(
+      codeInvitation(
+        ReferenceInvitation({
+          email: Courriel(emailInvite()),
+          coordinateurId: CoordinateurId(coordinateur().coordinateurId),
+        }),
+      ),
     ),
-    session: session === null ? null : Email(session),
+    session: session === null ? null : Courriel(session),
   })
 }
 

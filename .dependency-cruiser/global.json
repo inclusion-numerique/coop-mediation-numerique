@@ -1,0 +1,30 @@
+{
+  "fichiers-de-test-admis": {
+    "^src/app/_actions/utilisateurs/reinitialiser-une-fixture[.]action[.]ts$": [
+      "^src/features/utilisateurs/fixtures/personas[.]ts$",
+      "^src/features/lieux-activite/fixtures/lieux-de-demonstration[.]ts$",
+      "^src/features/lieux-activite/fixtures/activites-dans-les-lieux-de-demonstration[.]ts$",
+      "^src/features/beneficiaire/fixtures/beneficiaires-de-demonstration[.]ts$",
+      "^src/features/beneficiaire/fixtures/semer-les-beneficiaires-de-demonstration[.]ts$",
+      "^src/features/equipe/fixtures/semer-les-coordinations-de-demonstration[.]ts$",
+      "^src/features/activites/fixtures/semer-les-cras-de-demonstration[.]ts$"
+    ],
+    "^src/features/utilisateurs/abilities/reinitialiser-une-fixture/implementations/prisma/reinitialiser[.]mutation[.]ts$": [
+      "^src/features/utilisateurs/fixtures/personas[.]ts$",
+      "^src/features/utilisateurs/fixtures/reinitialiser-un-utilisateur[.]ts$"
+    ]
+  },
+  "hors-de-src-admis": {
+    "^src/app/.+/(?:page|route)[.]test[.]ts$": ["^e2e/support/helpers[.]ts$"],
+    "^src/.+[.]cy[.]tsx$": ["^e2e/support/monter-avec-l-url[.]tsx$"]
+  },
+  "racine-du-depot-admise": {
+    "^cypress[.]config[.]ts$": ["^e2e/support/task-manager[.]ts$"],
+    "^vitest[.]config[.]ts$": ["^scripts/couverture/perimetre[.]mjs$"]
+  },
+  "app-admise-dans-une-feature": {
+    "^src/features/clients-api/abilities/[^/]+/[^/]+[.]steps[.]ts$": [
+      "^src/app/api/v1/"
+    ]
+  }
+}

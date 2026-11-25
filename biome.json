@@ -22,6 +22,9 @@
     "enabled": true,
     "rules": {
       "preset": "none",
+      "performance": {
+        "noReExportAll": "error"
+      },
       "complexity": {
         "noExtraBooleanCast": "error",
         "noForEach": "error",
@@ -38,7 +41,7 @@
         "noVoid": "error",
         "useDateNow": "error",
         "useFlatMap": "error",
-        "useLiteralKeys": "error",
+        "useLiteralKeys": "off",
         "useRegexLiterals": "error",
         "noAdjacentSpacesInRegex": "error",
         "noArguments": "error",
@@ -82,6 +85,7 @@
         "noGlobalEval": "error"
       },
       "style": {
+        "noEnum": "error",
         "noDefaultExport": "off",
         "noNegationElse": "off",
         "noParameterAssign": "error",
@@ -217,7 +221,7 @@
   },
   "overrides": [
     {
-      "includes": ["**/*.ability.md", "docs/decisions/*.md"],
+      "includes": ["**/*.ability.md", "**/*.feature.md", "docs/decisions/*.md"],
       "formatter": {
         "enabled": false
       }
@@ -251,10 +255,7 @@
       }
     },
     {
-      "includes": [
-        "src/features/**/*.integration.ts",
-        "src/features/**/*.e2e.ts"
-      ],
+      "includes": ["src/features/**/*.integration.ts"],
       "linter": {
         "rules": {
           "style": {
@@ -270,6 +271,39 @@
                       "!@/features/lieux-activite/fixtures/*"
                     ],
                     "message": "Une feature passe par l'API publique d'une autre : `@/features/lieux-activite` pour le serveur, `@/features/lieux-activite/ui` pour les composants. Un chemin profond rend public ce qui ne l'est pas, et peut faire entrer Prisma dans le bundle sans que le typage ni les tests s'en apercoivent."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": ["src/features/clients-api/abilities/*/*.steps.ts"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "patterns": [
+                  {
+                    "group": [
+                      "@/features/lieux-activite/*",
+                      "@/features/lieux-activite/*/**",
+                      "!@/features/lieux-activite/ui"
+                    ],
+                    "message": "Une feature passe par l'API publique d'une autre : `@/features/lieux-activite` pour le serveur, `@/features/lieux-activite/ui` pour les composants. Un chemin profond rend public ce qui ne l'est pas, et peut faire entrer Prisma dans le bundle sans que le typage ni les tests s'en apercoivent."
+                  },
+                  {
+                    "group": [
+                      "@/app/*",
+                      "@/app/**",
+                      "!@/app/api",
+                      "!@/app/api/v1/**"
+                    ],
+                    "message": "Les étapes d'un lecteur de l'API v1 appellent le gestionnaire de sa route pour en spécifier le contrat HTTP ; aucun autre point d'entrée."
                   }
                 ]
               }
@@ -325,8 +359,8 @@
     {
       "includes": [
         "src/configuration/environnement/**",
-        "src/configuration/telemetry/instrument/cli.mts",
-        "src/cli/commands/infrastructure/createTfVarsFileFromEnvironment.ts",
+        "src/configuration/telemetry/instrument/cli.ts",
+        "src/cli/commands/infrastructure/create-tf-vars-file-from-environment.ts",
         "prisma.config.ts",
         "prisma/**/prisma.config.ts",
         "vitest.config.ts",
@@ -342,7 +376,11 @@
       }
     },
     {
-      "includes": ["src/**/e2e/*.ts", "src/app/**/*.e2e.ts", "src/**/*.cy.tsx"],
+      "includes": [
+        "src/app/**/page.test.ts",
+        "src/app/**/route.test.ts",
+        "src/**/*.cy.tsx"
+      ],
       "javascript": {
         "globals": [
           "cy",

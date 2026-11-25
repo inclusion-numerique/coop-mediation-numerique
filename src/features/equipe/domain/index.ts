@@ -5,33 +5,51 @@ export {
   adhesionActive,
   archiver,
 } from './adhesion'
-export { AdhesionId } from './adhesion-id'
 export { Commune } from './commune'
 export type { CoordinateurDeLEquipe } from './coordinateur-de-l-equipe'
-export { CoordinateurId } from './coordinateur-id'
 export {
+  type ColonneDeLEquipe,
   type CriteresEquipe,
-  criteresEquipe,
   FiltreRole,
   FiltreStatut,
-  type ParametresDeRecherche,
 } from './criteres-equipe'
-export { Email } from './email'
-export * from './errors'
+export {
+  ActionNonAutorisee,
+  ConsultationNonAutorisee,
+  CoordinateurIntrouvable,
+  DejaMembre,
+  EnvoiEchoue,
+  InvitationDejaTraitee,
+  InvitationIntrouvable,
+  PasMembre,
+  RelanceTropRecente,
+} from './errors'
 export { type Gestionnaire, peutGererLEquipe } from './gestionnaire'
+export { AdhesionId } from './identifiants/adhesion-id'
+export { CoordinateurId } from './identifiants/coordinateur-id'
+export { MediateurId } from './identifiants/mediateur-id'
+export { UtilisateurId } from './identifiants/utilisateur-id'
+export { Courriel } from './identite/courriel'
+export { Nom } from './identite/nom'
+export { NomAffiche, nomAffiche } from './identite/nom-affiche'
+export { Prenom } from './identite/prenom'
+export type {
+  EnvoyerUneInvitation,
+  PrevenirLeCoordinateur,
+} from './invitation/envois'
 export {
   exigerEnAttente,
   exigerUneRelancePossible,
   type Invitation,
   type InvitationEnAttente,
   type Invite,
-} from './invitation'
-export { type Lecteur, peutConsulterLEquipe } from './lecteur'
+} from './invitation/invitation'
 export {
-  codeInvitation,
-  lienInvitation,
-  referenceDuCode,
-} from './lien-invitation'
+  LienInvitation,
+  PREFIXE_DU_LIEN_D_INVITATION,
+} from './invitation/lien-invitation'
+export { ReferenceInvitation } from './invitation/reference-invitation'
+export { type Lecteur, peutConsulterLEquipe } from './lecteur'
 export {
   type AdresseStructure,
   type LigneEquipe,
@@ -39,17 +57,11 @@ export {
   profilDe,
   type StructureEmployeuseMembre,
 } from './ligne-equipe'
-export { MediateurId } from './mediateur-id'
-export { Nom } from './nom'
-export { NomAffiche, nomAffiche } from './nom-affiche'
 export { NomStructure } from './nom-structure'
-export { Prenom } from './prenom'
-export { ReferenceInvitation } from './reference-invitation'
 export { RoleMembre, roleMembre } from './role-membre'
 export {
   SEUIL_INACTIVITE_EN_JOURS,
   type StatutMembre,
   type TypeDeStatut,
 } from './statut-membre'
-export { UtilisateurId } from './utilisateur-id'
 export { Voie } from './voie'

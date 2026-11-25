@@ -1,6 +1,6 @@
 import type { z } from 'zod'
-import type { ServerActionResult } from '@/libraries/nextjs/action/result'
-import { keyFor } from '@/libraries/nextjs/injection/client'
+import type { ServerActionResult } from '@/libraries/nextjs'
+import { keyFor } from '@/libraries/nextjs/injection'
 import type { ReinitialiserUneFixtureValidation } from './reinitialiser-une-fixture.validation'
 
 export const REINITIALISER_UNE_FIXTURE_ACTION_KEY = keyFor<

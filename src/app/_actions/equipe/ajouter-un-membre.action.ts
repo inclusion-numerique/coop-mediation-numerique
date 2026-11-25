@@ -1,10 +1,11 @@
 'use server'
 
 import { actionBuilder } from '@/configuration/nextjs'
-import { withAdmin, withAuth } from '@/features/authentification'
-import { ajouterUnMembre } from '@/features/equipe/abilities/ajouter-un-membre'
+import { withAdmin } from '@/features/authentification/middlewares/with-admin'
+import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { AJOUTER_UN_MEMBRE_ERRORS } from '@/features/equipe/abilities/ajouter-un-membre/action/ajouter-un-membre.errors'
 import { AjouterUnMembreValidation } from '@/features/equipe/abilities/ajouter-un-membre/action/ajouter-un-membre.validation'
+import { ajouterUnMembre } from '@/features/equipe/abilities/ajouter-un-membre/implementations/prisma/ajouter-un-membre.mutation'
 import { CoordinateurId, UtilisateurId } from '@/features/equipe/domain'
 import { fromResult, withInput } from '@/libraries/nextjs'
 

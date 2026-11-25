@@ -1,16 +1,21 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import type { FicheOutil } from '../fiche-outil'
+import { routeConstruite } from '@/libraries/nextjs'
+import type {
+  FicheOutil,
+  InformationDAcces,
+} from '../labels/fiches/fiche-outil.labels'
 
 export const AccessInfoLink = ({
   illustration,
   icon,
   how,
   info,
-}: Pick<
-  NonNullable<FicheOutil['access']>,
-  'illustration' | 'icon' | 'info' | 'how'
->) => (
+}: Pick<NonNullable<FicheOutil['access']>, 'how'> & {
+  illustration?: string | undefined
+  icon?: string | undefined
+  info?: InformationDAcces | undefined
+}) => (
   <div className="fr-text--center fr-background-alt--blue-france fr-border-radius--8 fr-p-3w fr-mb-3w">
     {illustration && <Image width={84} height={56} src={illustration} alt="" />}
     {icon && (
@@ -22,7 +27,7 @@ export const AccessInfoLink = ({
     <p className="fr-text fr-mb-4v">{how}</p>
 
     {info?.link.startsWith('http') ? (
-      <Link
+      <a
         className="fr-link"
         target="_blank"
         rel="noreferrer"
@@ -30,9 +35,9 @@ export const AccessInfoLink = ({
         href={info.link}
       >
         {info.label}
-      </Link>
+      </a>
     ) : info ? (
-      <Link className="fr-link" href={info.link}>
+      <Link className="fr-link" href={routeConstruite(info.link)}>
         {info.label} <span className="ri-arrow-right-line" aria-hidden />
       </Link>
     ) : null}

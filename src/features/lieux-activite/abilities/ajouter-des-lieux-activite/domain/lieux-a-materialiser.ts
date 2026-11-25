@@ -1,4 +1,4 @@
-import { onlyDefinedAndNotNull } from '@/libraries/collections/onlyDefinedAndNotNull'
+import { onlyDefinedAndNotNull } from '@/libraries/collections'
 import { identifiantsCarto } from './identifiants-carto'
 import type { LieuDejaRattache, LieuDemande } from './lieu-demande'
 

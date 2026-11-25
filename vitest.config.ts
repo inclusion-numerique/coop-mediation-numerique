@@ -1,5 +1,9 @@
 import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vitest/config'
+import {
+  FICHIERS_COUVERTS,
+  FICHIERS_EXCLUS,
+} from './scripts/couverture/perimetre.mjs'
 
 const depuisIci = (chemin: string) =>
   fileURLToPath(new URL(chemin, import.meta.url))
@@ -12,7 +16,7 @@ export default defineConfig({
     alias: [
       {
         find: /^server-only$/,
-        replacement: depuisIci('./src/libraries/server-only-cli/index.ts'),
+        replacement: depuisIci('./src/libraries/server-only-cli'),
       },
     ],
   },
@@ -43,15 +47,8 @@ export default defineConfig({
     ],
     coverage: {
       provider: 'v8',
-      include: ['src/**/*.{ts,tsx}'],
-      exclude: [
-        'src/**/*.spec.{ts,tsx}',
-        'src/**/*.integration.{ts,tsx}',
-        'src/**/*.stories.{ts,tsx}',
-        'src/**/*.steps.ts',
-        'src/**/*.cucumber.ts',
-        'src/generated/**',
-      ],
+      include: FICHIERS_COUVERTS,
+      exclude: FICHIERS_EXCLUS,
       reporter: ['json', 'lcov', 'text-summary'],
       reportsDirectory: depuisIci('./coverage'),
     },

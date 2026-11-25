@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
-import InscriptionCard from '@/features/inscription/components/InscriptionCard'
-import IconInSquare from '@/libraries/ui/components/IconInSquare'
+import InscriptionCard from '@/features/inscription/ui/components/InscriptionCard'
+import { IconInSquare } from '@/libraries/ui/components'
 
 const RenseignerStructureEmployeusePage = ({
   formulaire,

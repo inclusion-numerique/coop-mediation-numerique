@@ -1,11 +1,14 @@
-import type { InscriptionStep, UserId } from '@/features/inscription/domain'
+import type {
+  EtapeDInscription,
+  UtilisateurId,
+} from '@/features/inscription/domain'
 import { etapeApresInitialisation } from './etape-apres-initialisation'
 import type { InitialiserInscriptionPorts } from './ports'
 
 export type InitialiserInscription = (
-  input: { readonly userId: UserId },
+  input: { readonly userId: UtilisateurId },
   ports: InitialiserInscriptionPorts,
-) => Promise<{ readonly nextStep: InscriptionStep | null }>
+) => Promise<{ readonly nextStep: EtapeDInscription | null }>
 
 /**
  * Orchestration pure de l'initialisation : applique ce que dit le dispositif,

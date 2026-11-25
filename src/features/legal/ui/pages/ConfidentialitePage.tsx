@@ -1,7 +1,7 @@
-import { contactEmail, projectTitle } from '@/configuration/projet/config'
-import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
-import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
-import Breadcrumbs from '@/libraries/ui/components/Breadcrumbs'
+import { contactEmail, projectTitle } from '@/configuration/projet'
+import { contentId } from '@/libraries/liens-d-evitement'
+import { SkipLinksPortal } from '@/libraries/liens-d-evitement/composants'
+import { Breadcrumbs } from '@/libraries/ui/components'
 
 export const ConfidentialitePage = () => (
   <div className="fr-container">
@@ -11,7 +11,7 @@ export const ConfidentialitePage = () => (
       id={contentId}
       className="fr-container landing-main-container fr-my-8w"
     >
-      <h1>Politique de confidentialité - {projectTitle}</h1>
+      <h1>Politique de confidentialité - {projectTitle()}</h1>
 
       <h2>Qui sommes-nous ?</h2>
 
@@ -160,7 +160,9 @@ export const ConfidentialitePage = () => (
 
       <p>
         Pour exercer vos droits, vous pouvez nous contacter à :
-        <a href={contactEmail && `mailto:${contactEmail}`}>{contactEmail}</a>
+        <a href={contactEmail() && `mailto:${contactEmail()}`}>
+          {contactEmail()}
+        </a>
       </p>
       <p>
         Puisque ce sont des droits personnels, nous ne traiterons votre demande

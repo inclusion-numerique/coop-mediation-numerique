@@ -1,14 +1,15 @@
 'use server'
 
 import { actionBuilder } from '@/configuration/nextjs'
-import { withAuth } from '@/features/authentification'
-import { creerLieuActivite } from '@/features/lieux-activite/abilities/creer-lieu-activite'
+import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { CREER_LIEU_ACTIVITE_ERRORS } from '@/features/lieux-activite/abilities/creer-lieu-activite/action/creer-lieu-activite.errors'
-import { nouveauLieu } from '@/features/lieux-activite/abilities/creer-lieu-activite/action/depuis-la-saisie'
-import { CreerLieuActiviteValidation } from '@/features/lieux-activite/domain/creation/creer-lieu-activite.validation'
-import { MediateurId } from '@/features/lieux-activite/domain/mediateur-id'
-import { UserId } from '@/features/lieux-activite/domain/user-id'
-import { withMaintenance } from '@/features/maintenance-mode'
+import { nouveauLieu } from '@/features/lieux-activite/abilities/creer-lieu-activite/action/saisie-du-lieu.transfer'
+import { creerLieuActivite } from '@/features/lieux-activite/abilities/creer-lieu-activite/implementations/prisma/creer-lieu-activite.mutation'
+import { CreerLieuActiviteValidation } from '@/features/lieux-activite/action/creer-lieu-activite.validation'
+import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
+import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
+import { UtilisateurId } from '@/features/lieux-activite/domain/identifiants/utilisateur-id'
+import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { fromResult, withInput } from '@/libraries/nextjs'
 
 export const creerUnLieuActiviteAction = actionBuilder()
@@ -19,7 +20,12 @@ export const creerUnLieuActiviteAction = actionBuilder()
     fromResult(
       async ({ user, input }) =>
         creerLieuActivite({
-          lieu: nouveauLieu(input, UserId(user.id), new Date()),
+          lieu: nouveauLieu(
+            input,
+            UtilisateurId(user.id),
+            new Date(),
+            LieuId(crypto.randomUUID()),
+          ),
           mediateurId:
             user.mediateur == null ? null : MediateurId(user.mediateur.id),
         }),

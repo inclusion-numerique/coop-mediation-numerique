@@ -4,26 +4,28 @@ import { rechercherBeneficiairesAction } from '@/app/_actions/beneficiaire/reche
 import { rechercherUnLieuActiviteAction } from '@/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
 import { creerUnTagAction } from '@/app/_actions/tags/creer-un-tag.action'
 import { rechercherDesTagsAction } from '@/app/_actions/tags/rechercher-des-tags.action'
-import { saisieIndividuelleAModifier } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel'
 import { ENREGISTRER_UN_ACCOMPAGNEMENT_INDIVIDUEL_ACTION_KEY } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/action/enregistrer-un-accompagnement-individuel.key'
-import CraIndividuelPage from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/CraIndividuelPage'
-import { RECHERCHER_DES_BENEFICIAIRES_DU_CRA_KEY } from '@/features/activites/ui/saisie/beneficiaire/rechercher-des-beneficiaires.key'
-import { RECHERCHER_DES_COMMUNES_DU_CRA_KEY } from '@/features/activites/ui/saisie/commune/rechercher-des-communes.key'
-import { RECHERCHER_DES_LIEUX_DU_CRA_KEY } from '@/features/activites/ui/saisie/lieu/rechercher-des-lieux.key'
-import { CREER_UN_TAG_DU_CRA_KEY } from '@/features/activites/ui/saisie/tags/creer-un-tag.key'
-import { RECHERCHER_DES_TAGS_DU_CRA_KEY } from '@/features/activites/ui/saisie/tags/rechercher-des-tags.key'
-import { profilDeLaSession } from '@/features/authentification'
-import { authenticateMediateur } from '@/features/authentification/implementation/session/authenticateUser'
-import { beneficiairesLesPlusSuivis } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/implementation'
+import CraIndividuelPage from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/pages/CraIndividuelPage'
+import { saisieIndividuelleAModifier } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/presenters/page-de-saisie.presenter'
+import { CREER_UN_TAG_DU_CRA_KEY } from '@/features/activites/action/creer-un-tag.key'
+import { RECHERCHER_DES_BENEFICIAIRES_DU_CRA_KEY } from '@/features/activites/action/rechercher-des-beneficiaires.key'
+import { RECHERCHER_DES_LIEUX_DU_CRA_KEY } from '@/features/activites/action/rechercher-des-lieux.key'
+import { RECHERCHER_DES_TAGS_DU_CRA_KEY } from '@/features/activites/action/rechercher-des-tags.key'
+import { activiteDeMediationLue } from '@/features/activites/implementations/prisma/activite-de-mediation-lue.query'
+import { dureesFrequentesDuMediateur } from '@/features/activites/implementations/prisma/durees-frequentes.query'
+import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
+import { authenticateMediateur } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
+import { beneficiairesLesPlusSuivis } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/implementations/prisma/beneficiaires-les-plus-suivis.query'
+import { consulterEmployeuseAUneDate } from '@/features/employeuse/abilities/consulter-employeuse-a-une-date/implementations/prisma/consulter-employeuse-a-une-date.query'
 import RattacherEmployeusePage from '@/features/employeuse/abilities/rattacher-a-une-employeuse/ui/pages/RattacherEmployeusePage'
-import { consulterEmployeuseAUneDate } from '@/features/employeuse/server'
-import { lieuxDuMediateur } from '@/features/lieux-activite'
-import { rendezVousLies } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
-import { visibilitesProposeesA } from '@/features/tags/abilities/creer-un-tag'
-import { tagsInitiauxPar } from '@/features/tags/abilities/rechercher-des-tags'
+import RattacherEmployeuseForm from '@/features/employeuse/abilities/rattacher-a-une-employeuse/ui/slots/RattacherEmployeuseForm.slot'
+import { lieuxDuMediateur } from '@/features/lieux-activite/abilities/lister-les-options-de-lieux/implementations/prisma/options-de-lieux-du-mediateur.query'
+import { rendezVousLies } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/rdvs-des-activites.query'
+import { visibilitesProposees } from '@/features/tags/abilities/creer-un-tag/ui/presenters/visibilites.presenter'
+import { tagsInitiauxAvec } from '@/features/tags/abilities/rechercher-des-tags/implementations/prisma/tags-initiaux-par.query'
 import { acteurDe } from '@/features/tags/domain'
-import { rechercherDesCommunes } from '@/libraries/ban/rechercher-des-communes'
-import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
+import { tagAffiche } from '@/features/tags/ui/presenters/tag-affiche.presenter'
+import { ClientBinder } from '@/libraries/nextjs/injection'
 
 const UpdateCraIndividuelPage = async ({
   params,
@@ -42,7 +44,12 @@ const UpdateCraIndividuelPage = async ({
   })
 
   if (!employeuse) {
-    return <RattacherEmployeusePage motif="Enregistrer une activité" />
+    return (
+      <RattacherEmployeusePage
+        motif="Enregistrer une activité"
+        formulaire={<RattacherEmployeuseForm nextStepPath={null} />}
+      />
+    )
   }
 
   const acteur = acteurDe(profilDeLaSession(user))
@@ -50,12 +57,13 @@ const UpdateCraIndividuelPage = async ({
   const saisie = await saisieIndividuelleAModifier({
     id,
     mediateurId: user.mediateur.id,
-    rendezVousLies,
+    activiteLue: activiteDeMediationLue(rendezVousLies),
     fournisseurs: {
       lieuxDuMediateur,
       beneficiairesLesPlusSuivis,
-      tagsInitiaux: tagsInitiauxPar(acteur),
-      visibilitesProposees: visibilitesProposeesA(acteur),
+      dureesFrequentes: dureesFrequentesDuMediateur,
+      tagsInitiaux: tagsInitiauxAvec(tagAffiche)(acteur),
+      visibilitesProposees: visibilitesProposees(acteur),
     },
   })
 
@@ -76,15 +84,10 @@ const UpdateCraIndividuelPage = async ({
             to={rechercherUnLieuActiviteAction}
           >
             <ClientBinder
-              bind={RECHERCHER_DES_COMMUNES_DU_CRA_KEY}
-              to={rechercherDesCommunes}
+              bind={RECHERCHER_DES_BENEFICIAIRES_DU_CRA_KEY}
+              to={rechercherBeneficiairesAction}
             >
-              <ClientBinder
-                bind={RECHERCHER_DES_BENEFICIAIRES_DU_CRA_KEY}
-                to={rechercherBeneficiairesAction}
-              >
-                <CraIndividuelPage {...saisie} retour={retour} />
-              </ClientBinder>
+              <CraIndividuelPage {...saisie} retour={retour} />
             </ClientBinder>
           </ClientBinder>
         </ClientBinder>

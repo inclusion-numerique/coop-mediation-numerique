@@ -6,8 +6,8 @@ import type { AnyFormApi } from '@tanstack/react-form'
 import { useRouter } from 'next/navigation'
 import type { ReactNode } from 'react'
 import { useState } from 'react'
-import { handleSubmit } from '@/libraries/formulaire/handle-submit'
-import Card from '../../ui/components/Card'
+import { Card } from '../../ui/components'
+import { handleSubmit } from '../hooks/handle-submit'
 
 const EditCardTanStack = ({
   id,
@@ -26,21 +26,21 @@ const EditCardTanStack = ({
   isPending,
   noRefresh,
 }: {
-  id?: string
-  className?: string
-  noBorder?: boolean
-  contentSeparator?: boolean
+  id?: string | undefined
+  className?: string | undefined
+  noBorder?: boolean | undefined
+  contentSeparator?: boolean | undefined
   title: ReactNode
-  titleAs?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
-  description?: string
+  titleAs?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | undefined
+  description?: string | undefined
   edition: ReactNode
   view: ReactNode
-  canEdit?: boolean
-  isEmpty?: boolean
-  emptyState?: ReactNode
+  canEdit?: boolean | undefined
+  isEmpty?: boolean | undefined
+  emptyState?: ReactNode | undefined
   form: AnyFormApi
   isPending: boolean
-  noRefresh?: boolean
+  noRefresh?: boolean | undefined
 }) => {
   const router = useRouter()
   const [editMode, setEditMode] = useState(false)

@@ -24,4 +24,6 @@ const schemaOutillage = z.object({
   WEB_CONTAINER_IMAGE: z.string().optional(),
 })
 
-export const environnementOutillage = schemaOutillage.parse(process.env)
+export type VariablesDeLOutillage = keyof z.input<typeof schemaOutillage>
+
+export const environnementOutillage = () => schemaOutillage.parse(process.env)

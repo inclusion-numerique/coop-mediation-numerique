@@ -1,11 +1,14 @@
 import { describe, expect, it } from 'vitest'
-import type { CompteRdv } from '../../../domain/compte-rdv'
-import { JetonAcces, type JetonsOAuth } from '../../../domain/jetons-oauth'
-import { RdvAgentId } from '../../../domain/rdv-agent-id'
-import { RdvId } from '../../../domain/rdv-id'
-import { StatutPresence } from '../../../domain/statut-presence'
-import { UsagerId } from '../../../domain/usager-id'
-import { UtilisateurCoopId } from '../../../domain/utilisateur-coop-id'
+import type { CompteRdv } from '../../../domain/compte/compte-rdv'
+import {
+  JetonAcces,
+  type JetonsOAuth,
+} from '../../../domain/compte/jetons-oauth'
+import { RdvAgentId } from '../../../domain/identifiants/rdv-agent-id'
+import { RdvId } from '../../../domain/identifiants/rdv-id'
+import { UsagerId } from '../../../domain/identifiants/usager-id'
+import { UtilisateurCoopId } from '../../../domain/identifiants/utilisateur-coop-id'
+import { StatutPresence } from '../../../domain/rdv/statut-presence'
 import { usagersPourActivite, verifierRdv } from './creer-activite-depuis-rdv'
 import type { ParticipationDuRdv, RdvPourActivite } from './rdv-pour-activite'
 

@@ -3,9 +3,11 @@ import { Given, Then, When } from '@cucumber/cucumber'
 import {
   type Accueil,
   consulterLAccueil,
+} from '@/features/accueil/abilities/consulter-l-accueil/domain/index'
+import {
   type UtilisateurConnecte,
   visiteurDe,
-} from '@/features/accueil/abilities/consulter-l-accueil'
+} from '@/features/accueil/abilities/consulter-l-accueil/implementations/session/visiteur.query'
 
 type Utilisateur = UtilisateurConnecte
 

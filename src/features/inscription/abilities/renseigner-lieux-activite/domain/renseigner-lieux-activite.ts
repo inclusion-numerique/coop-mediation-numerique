@@ -1,38 +1,71 @@
+import type { UtilisateurId } from '@/features/inscription/domain'
+import type { LireLEtatDeLInscription } from '@/features/inscription/domain/ports'
+import { onlyDefinedAndNotNull } from '@/libraries/collections'
+import { type Result, success } from '@/libraries/result'
 import {
-  franchirLieuxActivite,
-  InscriptionDejaValidee,
-  type InscriptionEnCours,
-  type InscriptionEtat,
-  InscriptionIntrouvable,
-  isNonDemarree,
-  isValidee,
-  ProfilNonChoisi,
-  type UserId,
-} from '@/features/inscription/domain'
-import { failure, type Result, success } from '@/libraries/result'
+  deciderLesLieux,
+  type RenseignerLieuxActiviteError,
+} from './decider-les-lieux'
+import type {
+  EnregistrerReconciliation,
+  LireLieuxActiviteExistants,
+  TrouverStructuresCarto,
+} from './ports'
+import { type LieuActiviteInput, reconcilierLieuxActivite } from './reconcilier'
 
-export type RenseignerLieuxActiviteError =
-  | InscriptionIntrouvable
-  | ProfilNonChoisi
-  | InscriptionDejaValidee
-
-/**
- * Décide le renseignement des lieux d'activité côté état : garde l'état courant
- * puis porte l'étape « lieux d'activité » franchie, et rend l'état résultant sans
- * l'exécuter. Fonction pure — la réconciliation des lieux (`reconcilierLieuxActivite`)
- * et la persistance vivent dans la couche appelante.
- */
-export const renseignerLieuxActivite = (
-  etat: InscriptionEtat | null,
-  userId: UserId,
-  maintenant: Date,
-): Result<
-  { readonly etatFranchi: InscriptionEnCours },
-  RenseignerLieuxActiviteError
-> => {
-  if (etat === null) return failure(InscriptionIntrouvable(userId))
-  if (isNonDemarree(etat)) return failure(ProfilNonChoisi(userId))
-  if (isValidee(etat)) return failure(InscriptionDejaValidee(userId))
-
-  return success({ etatFranchi: franchirLieuxActivite(etat, maintenant) })
+export type RenseignerLieuxActivitePorts<StructureCarto> = {
+  readonly lireLEtat: LireLEtatDeLInscription
+  readonly lireLieuxActiviteExistants: LireLieuxActiviteExistants
+  readonly trouverStructuresCarto: TrouverStructuresCarto<StructureCarto>
+  readonly enregistrerReconciliation: EnregistrerReconciliation<StructureCarto>
 }
+
+export const renseignerLieuxActivite =
+  <StructureCarto>({
+    lireLEtat,
+    lireLieuxActiviteExistants,
+    trouverStructuresCarto,
+    enregistrerReconciliation,
+  }: RenseignerLieuxActivitePorts<StructureCarto>) =>
+  async ({
+    command: { userId, lieuxActivite },
+    maintenant,
+  }: {
+    readonly command: {
+      readonly userId: UtilisateurId
+      readonly lieuxActivite: readonly LieuActiviteInput[]
+    }
+    readonly maintenant: Date
+  }): Promise<Result<void, RenseignerLieuxActiviteError>> => {
+    const decision = deciderLesLieux(
+      await lireLEtat(userId),
+      userId,
+      maintenant,
+    )
+
+    if (!decision.success) return decision
+
+    const { aCloturer, aCreer } = reconcilierLieuxActivite(
+      await lireLieuxActiviteExistants(userId),
+      lieuxActivite,
+    )
+
+    const structuresCarto = await trouverStructuresCarto(
+      aCreer
+        .map(
+          ({ structureCartographieNationaleId }) =>
+            structureCartographieNationaleId,
+        )
+        .filter(onlyDefinedAndNotNull),
+    )
+
+    await enregistrerReconciliation({
+      etatFranchi: decision.data.etatFranchi,
+      userId,
+      aCloturer,
+      aCreer,
+      structuresCarto,
+    })
+
+    return success<void>(undefined)
+  }

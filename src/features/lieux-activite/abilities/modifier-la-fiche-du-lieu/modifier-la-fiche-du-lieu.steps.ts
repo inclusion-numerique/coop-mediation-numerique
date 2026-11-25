@@ -10,25 +10,23 @@ import {
   Typologie,
   Url,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
-import {
-  consulterLaFicheDuLieu,
-  modifierLaFicheDuLieu,
-} from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/implementation'
-import { LieuId } from '@/features/lieux-activite/domain/lieu-id'
-import { MediateurId } from '@/features/lieux-activite/domain/mediateur-id'
-import { SERVICES_PAR_DEFAUT } from '@/features/lieux-activite/domain/publication'
-import { UserId } from '@/features/lieux-activite/domain/user-id'
+import { prismaClient } from '@/configuration/prisma'
+import { consulterLaFicheDuLieu } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/implementations/prisma/consulter-la-fiche-du-lieu.query'
+import { modifierLaFicheDuLieu } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/implementations/prisma/modifier-la-fiche-du-lieu.mutation'
+import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
+import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
+import { UtilisateurId } from '@/features/lieux-activite/domain/identifiants/utilisateur-id'
+import { SERVICES_PAR_DEFAUT } from '@/features/lieux-activite/domain/registre/publication'
 import {
   ficheSemee,
   semerUneFicheDeLieu,
 } from '@/features/lieux-activite/lieux-activite.cucumber'
-import { depuisLaSaisie } from './action/depuis-la-saisie'
 import { InformationsGeneralesSaisie } from './action/modifier-la-fiche-du-lieu.validation'
+import { depuisLaSaisie } from './action/saisie-de-la-fiche.transfer'
 import type { FicheDuLieu } from './domain'
-import { informationsGeneralesSoumises } from './ui/informations-generales-soumises'
+import { informationsGeneralesSoumises } from './ui/forms/informations-generales-soumises.form-data'
 
-const auteur = () => UserId(ficheSemee().userIds[0] ?? '')
+const auteur = () => UtilisateurId(ficheSemee().userIds[0] ?? '')
 
 const relire = async () => {
   const fiche = await consulterLaFicheDuLieu(LieuId(ficheSemee().lieuId))
@@ -97,7 +95,7 @@ When(
 When('un médiateur étranger au lieu enregistre la description', async () => {
   await modifierLaFicheDuLieu({
     id: LieuId(ficheSemee().lieuId),
-    par: UserId(ficheSemee().userIds[1] ?? ''),
+    par: UtilisateurId(ficheSemee().userIds[1] ?? ''),
     modification: {
       section: 'Description',
       presentation: Presentation({ resume: 'Une présentation du lieu' }),

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { Effectif } from './effectif'
+import { Effectif } from '../../../domain'
 import { proportion } from './proportion'
 
 describe('proportion', () => {

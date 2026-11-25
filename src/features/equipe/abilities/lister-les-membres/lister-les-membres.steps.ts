@@ -1,16 +1,9 @@
 import assert from 'node:assert'
+import { Page, PageSize } from '@arckit/resultset'
 import { Given, Then, When } from '@cucumber/cucumber'
-import { subDays } from 'date-fns'
-import {
-  listerLesMembres,
-  type MembresDeLEquipe,
-} from '@/features/equipe/abilities/lister-les-membres'
-import {
-  CoordinateurId,
-  criteresEquipe,
-  type Lecteur,
-  type ParametresDeRecherche,
-} from '@/features/equipe/domain'
+import { type MembresDeLEquipe } from '@/features/equipe/abilities/lister-les-membres/domain/index'
+import { listerLesMembres } from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/lister-les-membres.query'
+import { CoordinateurId, type Lecteur } from '@/features/equipe/domain'
 import {
   type CoordinateurSeme,
   type MediateurSeme,
@@ -19,6 +12,8 @@ import {
   semerUneInvitation,
   semerUnMediateurDEquipe,
 } from '@/features/equipe/equipe.cucumber'
+import { criteresDeLEquipe } from '@/features/equipe/ui/filtres/equipe.filtre'
+import { subDays } from '@/libraries/date'
 
 const contexte: {
   coordinateur?: CoordinateurSeme
@@ -53,14 +48,14 @@ const rattacher = async (
 
 const consulter = async (
   lecteur: Lecteur,
-  parametres: ParametresDeRecherche = {},
+  parametres: Parameters<typeof criteresDeLEquipe>[0] = {},
 ) => {
   contexte.issue = await listerLesMembres({
     coordinateurId: CoordinateurId(coordinateur().coordinateurId),
     lecteur,
-    criteres: criteresEquipe(parametres),
-    page: 1,
-    lignesParPage: 50,
+    criteres: criteresDeLEquipe(parametres),
+    page: Page(1),
+    pageSize: PageSize(50),
   })
 }
 
@@ -144,12 +139,12 @@ When("le coordinateur d'une autre équipe consulte cette équipe", async () => {
 })
 
 Then('la liste compte {int} ligne(s)', (nombre: number) => {
-  assert.strictEqual(membres().lignes.length, nombre)
-  assert.strictEqual(membres().nombreDeResultats, nombre)
+  assert.strictEqual(membres().items.length, nombre)
+  assert.strictEqual(membres().totalItems, nombre)
 })
 
 Then("le médiateur revenu n'apparaît qu'une fois, comme membre actif", () => {
-  const lignes = membres().lignes.filter(
+  const lignes = membres().items.filter(
     ({ personne }) =>
       personne.type === 'Inscrite' &&
       personne.mediateurId === contexte.revenu?.mediateurId,
@@ -177,7 +172,7 @@ Then('{int} personnes sont aux archives', (nombre: number) => {
 })
 
 Then('cette ligne est un ancien membre', () => {
-  assert.strictEqual(membres().lignes[0]?.statut.type, 'AncienMembre')
+  assert.strictEqual(membres().items[0]?.statut.type, 'AncienMembre')
 })
 
 Then('la consultation réussit', () => {

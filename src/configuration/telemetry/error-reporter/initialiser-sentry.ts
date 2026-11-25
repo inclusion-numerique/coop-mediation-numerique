@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/nextjs'
-import { environnementClient } from '@/configuration/environnement/client'
+import { environnementClient } from '@/configuration/environnement'
 
 // Routes à ignorer pour le tracing (haut volume, peu d'intérêt)
 const ignoredTraceRoutes = [
@@ -11,15 +11,15 @@ const ignoredTraceRoutes = [
 
 export const initialiserSentry = (): void => {
   if (
-    !environnementClient.NEXT_PUBLIC_SENTRY_DSN ||
-    environnementClient.NODE_ENV !== 'production'
+    !environnementClient().NEXT_PUBLIC_SENTRY_DSN ||
+    environnementClient().NODE_ENV !== 'production'
   ) {
     return
   }
 
   Sentry.init({
-    dsn: environnementClient.NEXT_PUBLIC_SENTRY_DSN,
-    environment: environnementClient.NEXT_PUBLIC_SENTRY_ENVIRONMENT,
+    dsn: environnementClient().NEXT_PUBLIC_SENTRY_DSN,
+    environment: environnementClient().NEXT_PUBLIC_SENTRY_ENVIRONMENT,
     tracesSampler: ({ name, parentSampled }) => {
       // Toujours hériter du parent si défini
       if (parentSampled !== undefined) {

@@ -27,11 +27,12 @@ const MultiSelect = <T extends Option<string>[]>({
   const { name, state, handleBlur, handleChange } = useFieldContext<string[]>()
   const errors: Error[] = state.meta.errors
   const hasErrors = errors.length > 0 && state.meta.isTouched
+  const message = hasErrors ? errors[0]?.message : undefined
 
   return (
     <DsfrSelect
-      state={hasErrors ? 'error' : undefined}
-      stateRelatedMessage={hasErrors ? errors[0].message : undefined}
+      {...(hasErrors ? { state: 'error' as const } : {})}
+      {...(message === undefined ? {} : { stateRelatedMessage: message })}
       label={<Label hasErrors={hasErrors}>{label}</Label>}
       options={
         options.map((option) => ({

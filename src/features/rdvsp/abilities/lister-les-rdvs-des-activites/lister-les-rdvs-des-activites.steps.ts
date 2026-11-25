@@ -1,20 +1,20 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma'
 import {
   ID_TEST,
   seedCompteRdv,
   seedParticipation,
   seedRdv,
 } from '@/features/rdvsp/rdvsp.cucumber'
-import { StatutRdv } from '../../domain/statut-rdv'
+import { StatutRdv } from '../../domain/rdv/statut-rdv'
 import {
   rendezVousAListerSql,
   rendezVousAuxStatutsSql,
   rendezVousDesUsagersAListerSql,
   rendezVousLies,
   rendezVousParIds,
-} from './implementation'
+} from './implementations/prisma/rdvs-des-activites.query'
 
 const COMPTE = ID_TEST.compte + 21
 const PREMIER = ID_TEST.rdv + 210

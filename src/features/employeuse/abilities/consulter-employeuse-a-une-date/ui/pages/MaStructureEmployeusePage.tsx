@@ -1,16 +1,13 @@
 import type { ReactNode } from 'react'
-import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
-import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
-import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
-import type { Employeuse } from '../../../../domain/employeuse'
-import ActeurStructureEmployeuse from '../../../../ui/ActeurStructureEmployeuse'
-import { emploiEmployeuseAffichage } from '../employeuse-emploi.presenter'
+import { contentId } from '@/libraries/liens-d-evitement'
+import { SkipLinksPortal } from '@/libraries/liens-d-evitement/composants'
+import { CoopBreadcrumbs } from '@/libraries/ui/components'
 
 export const MaStructureEmployeusePage = ({
-  employeuse,
+  structure,
   rattachement,
 }: {
-  employeuse: Employeuse | null
+  structure: ReactNode | null
   rattachement: ReactNode
 }) => (
   <>
@@ -26,14 +23,7 @@ export const MaStructureEmployeusePage = ({
           <h1 className="fr-page-title fr-m-0">Ma structure employeuse</h1>
         </div>
 
-        {employeuse ? (
-          <ActeurStructureEmployeuse
-            emploi={{ structure: emploiEmployeuseAffichage(employeuse) }}
-            showIsLieuActiviteNotice={false}
-            showReferentStructure={true}
-            showReferentStructureConseillerNumeriqueSupportNotice={false}
-          />
-        ) : (
+        {structure ?? (
           <div className="fr-background-alt--blue-france fr-border-radius--8 fr-p-6w">
             <h2 className="fr-h6 fr-mb-1v">
               Vous n’avez pas de structure employeuse

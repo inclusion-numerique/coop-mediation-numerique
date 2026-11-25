@@ -1,26 +1,26 @@
-# Feature: Annuler une invitation
+# Fonctionnalité: Annuler une invitation
 
-## Rule: Seule une invitation encore en attente s'annule
+## Règle: Seule une invitation encore en attente s'annule
 
-### Scenario: Le coordinateur annule une invitation en attente
+### Scénario: Le coordinateur annule une invitation en attente
 
-* Given un coordinateur qui a invité une personne
-* When le coordinateur annule cette invitation
-* Then l'annulation réussit
-* And cette invitation n'existe plus
+* Étant donné un coordinateur qui a invité une personne
+* Quand le coordinateur annule cette invitation
+* Alors l'annulation réussit
+* Et cette invitation n'existe plus
 
-### Scenario: Une invitation acceptée ne s'annule pas
+### Scénario: Une invitation acceptée ne s'annule pas
 
-* Given un coordinateur dont l'invitation a été acceptée
-* When le coordinateur annule cette invitation
-* Then l'annulation est refusée
-* And cette invitation existe toujours
+* Étant donné un coordinateur dont l'invitation a été acceptée
+* Quand le coordinateur annule cette invitation
+* Alors l'annulation est refusée
+* Et cette invitation existe toujours
 
-## Rule: Seul le coordinateur de l'équipe ou un administrateur annule ses invitations
+## Règle: Seul le coordinateur de l'équipe ou un administrateur annule ses invitations
 
-### Scenario: Le coordinateur d'une autre équipe ne peut pas l'annuler
+### Scénario: Le coordinateur d'une autre équipe ne peut pas l'annuler
 
-* Given un coordinateur qui a invité une personne
-* When le coordinateur d'une autre équipe annule cette invitation
-* Then l'annulation est refusée
-* And cette invitation existe toujours
+* Étant donné un coordinateur qui a invité une personne
+* Quand le coordinateur d'une autre équipe annule cette invitation
+* Alors l'annulation est refusée
+* Et cette invitation existe toujours

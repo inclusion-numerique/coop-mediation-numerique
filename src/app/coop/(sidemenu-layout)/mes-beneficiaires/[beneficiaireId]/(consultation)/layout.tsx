@@ -3,22 +3,21 @@ import type { PropsWithChildren } from 'react'
 import { supprimerBeneficiairesAction } from '@/app/_actions/beneficiaire/supprimer-beneficiaires.action'
 import { prendreRendezVousAction } from '@/app/_actions/rdvsp/prendre-rendez-vous.action'
 import { rattraperRdvsSansWebhookAction } from '@/app/_actions/rdvsp/rattraper-rdvs-sans-webhook.action'
-import BeneficiaireEnregistrerUneActivite from '@/features/activites/ui/saisie/BeneficiaireEnregistrerUneActivite'
-import type { BeneficiaireCraData } from '@/features/activites/ui/saisie/validation/BeneficiaireCraValidation'
-import { authenticateMediateur } from '@/features/authentification/implementation/session/authenticateUser'
-import { consulterBeneficiaire } from '@/features/beneficiaire/abilities/consulter-beneficiaire/implementation'
-import BeneficiaireConsultationLayout from '@/features/beneficiaire/abilities/consulter-beneficiaire/ui/components/BeneficiaireConsultationLayout'
-import { findDuplicatesForBeneficiaireById } from '@/features/beneficiaire/abilities/detecter-doublons/implementation'
+import BeneficiaireEnregistrerUneActivite from '@/features/activites/ui/slots/BeneficiaireEnregistrerUneActivite.slot'
+import { authenticateMediateur } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
+import { consulterBeneficiaire } from '@/features/beneficiaire/abilities/consulter-beneficiaire/implementations/prisma/consulter-beneficiaire.query'
+import BeneficiaireConsultationLayout from '@/features/beneficiaire/abilities/consulter-beneficiaire/ui/layouts/BeneficiaireConsultationLayout'
+import { findDuplicatesForBeneficiaireById } from '@/features/beneficiaire/abilities/detecter-doublons/implementations/prisma/index'
 import { SUPPRIMER_BENEFICIAIRES_ACTION_KEY } from '@/features/beneficiaire/abilities/supprimer-beneficiaires/action/supprimer-beneficiaires.key'
-import DeleteBeneficiaireModalContent from '@/features/beneficiaire/abilities/supprimer-beneficiaires/ui/components/DeleteBeneficiaireModalContent'
-import { displayNameFromIdentity } from '@/features/beneficiaire/domain/beneficiaire'
+import DeleteBeneficiaireModalContent from '@/features/beneficiaire/abilities/supprimer-beneficiaires/ui/slots/DeleteBeneficiaireModalContent.slot'
+import { nomAfficheDepuisLIdentite } from '@/features/beneficiaire/domain/beneficiaire'
 import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
 import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
 import { PRENDRE_RENDEZ_VOUS_ACTION_KEY } from '@/features/rdvsp/abilities/prendre-rendez-vous/action/prendre-rendez-vous.key'
-import PrendreRendezVousAvecBeneficiaireButton from '@/features/rdvsp/abilities/prendre-rendez-vous/ui/components/PrendreRendezVousAvecBeneficiaireButton'
-import RefreshRdvDataOnLoad from '@/features/rdvsp/ui/RefreshRdvDataOnLoad'
-import { RATTRAPER_RDVS_SANS_WEBHOOK_ACTION_KEY } from '@/features/rdvsp/ui/rattraper-rdvs-sans-webhook.key'
-import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
+import PrendreRendezVousAvecBeneficiaireButton from '@/features/rdvsp/abilities/prendre-rendez-vous/ui/slots/PrendreRendezVousAvecBeneficiaireButton.slot'
+import { RATTRAPER_RDVS_SANS_WEBHOOK_ACTION_KEY } from '@/features/rdvsp/action/rattraper-rdvs-sans-webhook.key'
+import RefreshRdvDataOnLoad from '@/features/rdvsp/ui/slots/RefreshRdvDataOnLoad.slot'
+import { ClientBinder } from '@/libraries/nextjs/injection'
 
 // Route hub : lit le bénéficiaire (ability consulter-beneficiaire) et ses doublons
 // (ability detecter-doublons), puis compose les concerns croisés (activité, RDV,
@@ -48,12 +47,12 @@ const BeneficiaireLayout = async (
     mediateurId,
   })
 
-  const displayName = displayNameFromIdentity(beneficiaire)
+  const displayName = nomAfficheDepuisLIdentite(beneficiaire)
   const beneficiaireCraData = {
     id: beneficiaire.id,
     prenom: beneficiaire.prenom ?? '',
     nom: beneficiaire.nom ?? '',
-  } satisfies BeneficiaireCraData
+  }
 
   const hasRdvIntegration = !!user.rdvAccount?.hasOauthTokens
 

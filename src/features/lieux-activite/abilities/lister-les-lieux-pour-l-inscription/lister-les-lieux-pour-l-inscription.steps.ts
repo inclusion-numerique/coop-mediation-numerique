@@ -3,8 +3,8 @@ import { Then, When } from '@cucumber/cucumber'
 import {
   type LieuPourLInscription,
   listerLesLieuxPourLInscription,
-} from '@/features/lieux-activite/abilities/lister-les-lieux-pour-l-inscription'
-import { MediateurId } from '@/features/lieux-activite/domain/mediateur-id'
+} from '@/features/lieux-activite/abilities/lister-les-lieux-pour-l-inscription/implementations/prisma/lister-les-lieux-pour-l-inscription.query'
+import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
 import { ficheSemee } from '@/features/lieux-activite/lieux-activite.cucumber'
 
 const listes = new Map<'inscription', readonly LieuPourLInscription[]>()

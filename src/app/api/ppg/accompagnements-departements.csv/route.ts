@@ -3,24 +3,21 @@ import {
   routeBuilder,
   withSearchParams,
 } from '@arckit/nextjs/route'
-import { z } from 'zod'
 import {
-  accompagnementsParDepartement,
-  exportDesAccompagnementsCsv,
-  Jour,
   lignesDExport,
-  nomDuFichierDExport,
+  ParametresDeLExport,
   PopulationDeMediateurs,
-} from '@/features/activites/abilities/exporter-les-accompagnements-par-departement'
-import { withAdminRoute } from '@/features/authentification'
-
-const ExportQueryParamsValidation = z.object({
-  date: Jour.schema.optional(),
-})
+} from '@/features/activites/abilities/exporter-les-accompagnements-par-departement/domain/index'
+import {
+  exportDesAccompagnementsCsv,
+  nomDuFichierDExport,
+} from '@/features/activites/abilities/exporter-les-accompagnements-par-departement/implementations/csv/export-des-accompagnements.classeur'
+import { accompagnementsParDepartement } from '@/features/activites/abilities/exporter-les-accompagnements-par-departement/implementations/prisma/accompagnements-par-departement.query'
+import { withAdminRoute } from '@/features/authentification/middlewares/with-admin-route'
 
 export const GET = routeBuilder()
   .use(withAdminRoute)
-  .use(withSearchParams((raw) => ExportQueryParamsValidation.parse(raw)))
+  .use(withSearchParams((raw) => ParametresDeLExport.parse(raw)))
   .handle(async ({ searchParams }) => {
     const jusquAu = searchParams.date ?? null
 

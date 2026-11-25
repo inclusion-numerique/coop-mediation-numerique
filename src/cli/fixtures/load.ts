@@ -1,18 +1,20 @@
 import { Command } from '@commander-js/extra-typings'
-import { assertDatabaseIsNotProduction } from '@/cli/fixtures/assertDatabaseTarget'
+import { assertDatabaseIsNotProduction } from '@/cli/fixtures/assert-database-target'
 import { deleteAll, seed } from '@/cli/fixtures/seeds'
-import { environnementOutillage } from '@/configuration/environnement/outillage'
-import { environnementServeur } from '@/configuration/environnement/serveur'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { output } from '@/libraries/fixtures/output'
+import {
+  environnementOutillage,
+  environnementServeur,
+} from '@/configuration/environnement/serveur'
+import { prismaClient } from '@/configuration/prisma'
+import { output } from '@/libraries/fixtures'
 
 const main = async (eraseAllData: boolean, confirmProduction?: string) => {
   // Garde-fou : `fixtures:load` injecte des données de test (et TRUNCATE tout avec `-e`).
   // Il ne doit JAMAIS s'exécuter contre la production par erreur (cf. incident 2026-07-08).
   assertDatabaseIsNotProduction({
-    databaseUrl: environnementServeur.DATABASE_URL,
+    databaseUrl: environnementServeur().DATABASE_URL,
     productionDatabaseName:
-      environnementOutillage.DATASPACE_BACKUP_DATABASE_NAME,
+      environnementOutillage().DATASPACE_BACKUP_DATABASE_NAME,
     confirmProduction,
     action: 'Chargement de fixtures',
   })

@@ -1,18 +1,27 @@
 import assert from 'node:assert'
 import { Before, Given, Then, When } from '@cucumber/cucumber'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
-import type {
-  RattacherEmployeuse,
-  RenseignerStructureEmployeuseError,
-  StructureEmployeuseInput,
-} from '@/features/inscription/abilities/renseigner-structure-employeuse'
-import { renseignerStructureEmployeuse } from '@/features/inscription/abilities/renseigner-structure-employeuse/commands/renseigner-structure-employeuse'
+import { prismaClient } from '@/configuration/prisma'
+import { type RenseignerStructureEmployeuseError } from '@/features/inscription/abilities/renseigner-structure-employeuse/domain/decider-la-structure-employeuse'
+import { type RattacherEmployeuse } from '@/features/inscription/abilities/renseigner-structure-employeuse/domain/ports'
+import { renseignerStructureEmployeuse } from '@/features/inscription/abilities/renseigner-structure-employeuse/domain/renseigner-structure-employeuse'
+import { type StructureEmployeuseInput } from '@/features/inscription/abilities/renseigner-structure-employeuse/domain/structure-employeuse-input'
+import { projeterEtapeFranchie } from '@/features/inscription/abilities/renseigner-structure-employeuse/implementations/prisma/projeter-etape-franchie.mutation'
 import { ProfilInscription } from '@/features/inscription/domain'
+import { getInscriptionEtat } from '@/features/inscription/implementations/prisma/get-inscription-etat.query'
 import {
-  currentInscriptionUserId,
   seedProfilChoisi,
+  utilisateurDeLInscriptionEnCours,
 } from '@/features/inscription/inscription.cucumber'
 import type { Result } from '@/libraries/result'
+
+const renseignerStructureEmployeuseAvec = (
+  rattacherEmployeuse: RattacherEmployeuse,
+) =>
+  renseignerStructureEmployeuse({
+    lireLEtat: getInscriptionEtat,
+    rattacherEmployeuse,
+    projeterEtapeFranchie,
+  })
 
 let rattachable = true
 let rattachementsDemandes = 0
@@ -50,19 +59,18 @@ Given('l’employeuse choisie n’est pas rattachable', () => {
 })
 
 When('je renseigne ma structure employeuse', async () => {
-  resultat = await renseignerStructureEmployeuse({
+  resultat = await renseignerStructureEmployeuseAvec(rattacherEmployeuse)({
     command: {
-      userId: currentInscriptionUserId(),
+      userId: utilisateurDeLInscriptionEnCours(),
       structureEmployeuse: structureEmployeuseInput,
     },
-    rattacherEmployeuse,
     maintenant: new Date(),
   })
 })
 
 Then('ma structure employeuse est renseignée', async () => {
   const user = await prismaClient.user.findUniqueOrThrow({
-    where: { id: currentInscriptionUserId() },
+    where: { id: utilisateurDeLInscriptionEnCours() },
     select: { structureEmployeuseRenseignee: true },
   })
   assert.ok(
@@ -91,7 +99,7 @@ Then('le renseignement est refusé faute d’employeuse rattachable', () => {
 
 Then('ma structure employeuse n’est pas renseignée', async () => {
   const user = await prismaClient.user.findUniqueOrThrow({
-    where: { id: currentInscriptionUserId() },
+    where: { id: utilisateurDeLInscriptionEnCours() },
     select: { structureEmployeuseRenseignee: true },
   })
   assert.strictEqual(user.structureEmployeuseRenseignee, null)

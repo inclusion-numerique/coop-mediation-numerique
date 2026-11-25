@@ -1,20 +1,17 @@
 import classNames from 'classnames'
-import type { ReactNode } from 'react'
-import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
-import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
-import BackButton from '@/libraries/ui/components/BackButton'
-import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
-import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
+import { contentId } from '@/libraries/liens-d-evitement'
+import { SkipLinksPortal } from '@/libraries/liens-d-evitement/composants'
+import {
+  BackButton,
+  CoopBreadcrumbs,
+  CoopPageContainer,
+} from '@/libraries/ui/components'
 import { Access } from '../components/Access'
 import { ComingSoon } from '../components/ComingSoon'
 import { Features } from '../components/Features'
 import { Hero } from '../components/Hero'
-import type { FicheOutil } from '../fiche-outil'
-
-export type EmplacementsDeLaFiche = {
-  readonly avis?: ReactNode
-  readonly acces?: ReactNode
-}
+import type { FicheOutil } from '../labels/fiches/fiche-outil.labels'
+import type { EmplacementsDeLaFiche } from '../presenters/emplacements-de-l-outil.presenter'
 
 export const OutilPage = ({
   emplacements = {},

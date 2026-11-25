@@ -1,1 +1,0 @@
-export { detacherDesEquipes } from './implementation'

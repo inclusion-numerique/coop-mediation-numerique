@@ -1,16 +1,14 @@
 import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
-import {
-  rechercherDesCommunesDesEmployeuses,
-  rechercherEmployeuse,
-} from '@/features/employeuse/abilities/rechercher-employeuse/implementation'
+import { prismaClient } from '@/configuration/prisma'
+import { rechercherDesCommunesDesEmployeuses } from '@/features/employeuse/abilities/rechercher-employeuse/implementations/prisma/communes-des-employeuses.query'
 import type { Employeuse } from '@/features/employeuse/domain/employeuse'
 import {
   seedEmployeuseMain,
   supprimerEmployeuseMain,
 } from '@/features/employeuse/employeuse.cucumber'
+import { rechercherEmployeuse } from '@/features/employeuse/implementations/prisma/rechercher-employeuse.query'
 
 let trouvees: Employeuse[] = []
 
@@ -70,7 +68,7 @@ Given(
 When('je cherche la commune {string}', async (recherche: string) => {
   communes.proposees = (
     await rechercherDesCommunesDesEmployeuses({ recherche, limite: 20 })
-  ).map(({ value }) => value)
+  ).map(({ codeInsee }) => codeInsee)
 })
 
 Then('la commune de code INSEE {string} est proposée', (codeInsee: string) => {

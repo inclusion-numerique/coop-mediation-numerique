@@ -1,29 +1,29 @@
-# Feature: Activer la médiation numérique
+# Fonctionnalité: Activer la médiation numérique
 
 > Un coordinateur peut réaliser lui-même des accompagnements : il active
 > alors les fonctionnalités de médiation numérique, qui ajoutent le rôle
 > médiateur à son compte. Ce rôle ne se désactive pas ensuite.
 
-## Rule: Un coordinateur active la médiation pour lui-même
+## Règle: Un coordinateur active la médiation pour lui-même
 
-### Scenario: Un coordinateur devient aussi médiateur
+### Scénario: Un coordinateur devient aussi médiateur
 
-* Given un coordinateur sans médiation numérique
-* When il active la médiation numérique
-* Then l'activation de la médiation aboutit
-* And son compte porte le rôle médiateur
+* Étant donné un coordinateur sans médiation numérique
+* Quand il active la médiation numérique
+* Alors l'activation de la médiation aboutit
+* Et son compte porte le rôle médiateur
 
-### Scenario: Activer deux fois ne change rien
+### Scénario: Activer deux fois ne change rien
 
-* Given un coordinateur qui a déjà activé la médiation numérique
-* When il active la médiation numérique
-* Then l'activation de la médiation aboutit
-* And son compte porte un seul rôle médiateur
+* Étant donné un coordinateur qui a déjà activé la médiation numérique
+* Quand il active la médiation numérique
+* Alors l'activation de la médiation aboutit
+* Et son compte porte un seul rôle médiateur
 
-## Rule: Seul un coordinateur l'active
+## Règle: Seul un coordinateur l'active
 
-### Scenario: Un médiateur seul ne l'active pas
+### Scénario: Un médiateur seul ne l'active pas
 
-* Given un médiateur sans rôle coordinateur
-* When il active la médiation numérique
-* Then l'activation de la médiation échoue avec l'erreur "NonCoordinateur"
+* Étant donné un médiateur sans rôle coordinateur
+* Quand il active la médiation numérique
+* Alors l'activation de la médiation échoue avec l'erreur "NonCoordinateur"

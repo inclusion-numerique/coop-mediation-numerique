@@ -1,90 +1,90 @@
-# Feature: Consulter l'employeuse courante d'un utilisateur
+# Fonctionnalité: Consulter l'employeuse courante d'un utilisateur
 
 L'employeuse ne vit plus dans la coop : elle se lit dans `main`, en suivant
 l'utilisateur jusqu'à sa personne, puis ses affectations emploi actives.
 
-## Rule: L'employeuse courante est celle de l'affectation active prioritaire
+## Règle: L'employeuse courante est celle de l'affectation active prioritaire
 
-### Scenario: Une seule affectation active
+### Scénario: Une seule affectation active
 
-* Given un utilisateur affecté à "Association des tests" par la source "coop"
-* When je consulte l'employeuse courante de cet utilisateur
-* Then l'employeuse courante est "Association des tests"
+* Étant donné un utilisateur affecté à "Association des tests" par la source "coop"
+* Quand je consulte l'employeuse courante de cet utilisateur
+* Alors l'employeuse courante est "Association des tests"
 
-### Scenario: Le dispositif conseiller numérique fait autorité sur le déclaratif
+### Scénario: Le dispositif conseiller numérique fait autorité sur le déclaratif
 
-* Given un utilisateur affecté à "Structure déclarée" par la source "coop"
-* And ce même utilisateur affecté à "Structure du dispositif" par la source "idposte"
-* When je consulte l'employeuse courante de cet utilisateur
-* Then l'employeuse courante est "Structure du dispositif"
+* Étant donné un utilisateur affecté à "Structure déclarée" par la source "coop"
+* Et ce même utilisateur affecté à "Structure du dispositif" par la source "idposte"
+* Quand je consulte l'employeuse courante de cet utilisateur
+* Alors l'employeuse courante est "Structure du dispositif"
 
-### Scenario: Hors du dispositif, le déclaratif fait autorité sur les autres sources
+### Scénario: Hors du dispositif, le déclaratif fait autorité sur les autres sources
 
-* Given un utilisateur affecté à "Structure déclarée" par la source "coop"
-* And ce même utilisateur affecté à "Structure d'un autre service" par la source "aidants-connect"
-* When je consulte l'employeuse courante de cet utilisateur
-* Then l'employeuse courante est "Structure déclarée"
+* Étant donné un utilisateur affecté à "Structure déclarée" par la source "coop"
+* Et ce même utilisateur affecté à "Structure d'un autre service" par la source "aidants-connect"
+* Quand je consulte l'employeuse courante de cet utilisateur
+* Alors l'employeuse courante est "Structure déclarée"
 
-### Scenario: À source égale, l'affectation la plus récente l'emporte
+### Scénario: À source égale, l'affectation la plus récente l'emporte
 
-* Given un utilisateur sans affectation
-* And ce même utilisateur affecté à "Ancienne structure" par la source "coop" le "2025-01-01"
-* And ce même utilisateur affecté à "Nouvelle structure" par la source "coop" le "2026-06-01"
-* When je consulte l'employeuse courante de cet utilisateur
-* Then l'employeuse courante est "Nouvelle structure"
+* Étant donné un utilisateur sans affectation
+* Et ce même utilisateur affecté à "Ancienne structure" par la source "coop" le "2025-01-01"
+* Et ce même utilisateur affecté à "Nouvelle structure" par la source "coop" le "2026-06-01"
+* Quand je consulte l'employeuse courante de cet utilisateur
+* Alors l'employeuse courante est "Nouvelle structure"
 
-### Scenario: À date égale, la dernière affectation enregistrée l'emporte
+### Scénario: À date égale, la dernière affectation enregistrée l'emporte
 
-* Given un utilisateur sans affectation
-* And ce même utilisateur affecté à "Première structure" par la source "coop" le "2026-06-01"
-* And ce même utilisateur affecté à "Seconde structure" par la source "coop" le "2026-06-01"
-* When je consulte l'employeuse courante de cet utilisateur
-* Then l'employeuse courante est "Seconde structure"
+* Étant donné un utilisateur sans affectation
+* Et ce même utilisateur affecté à "Première structure" par la source "coop" le "2026-06-01"
+* Et ce même utilisateur affecté à "Seconde structure" par la source "coop" le "2026-06-01"
+* Quand je consulte l'employeuse courante de cet utilisateur
+* Alors l'employeuse courante est "Seconde structure"
 
-### Scenario: Une affectation qui n'est plus active ne désigne pas l'employeuse
+### Scénario: Une affectation qui n'est plus active ne désigne pas l'employeuse
 
-* Given un utilisateur affecté à "Structure actuelle" par la source "coop"
-* And ce même utilisateur anciennement affecté à "Structure du dispositif" par la source "idposte"
-* When je consulte l'employeuse courante de cet utilisateur
-* Then l'employeuse courante est "Structure actuelle"
+* Étant donné un utilisateur affecté à "Structure actuelle" par la source "coop"
+* Et ce même utilisateur anciennement affecté à "Structure du dispositif" par la source "idposte"
+* Quand je consulte l'employeuse courante de cet utilisateur
+* Alors l'employeuse courante est "Structure actuelle"
 
-### Scenario: Un utilisateur sans affectation active n'a pas d'employeuse
+### Scénario: Un utilisateur sans affectation active n'a pas d'employeuse
 
-* Given un utilisateur sans affectation
-* When je consulte l'employeuse courante de cet utilisateur
-* Then cet utilisateur n'a pas d'employeuse courante
+* Étant donné un utilisateur sans affectation
+* Quand je consulte l'employeuse courante de cet utilisateur
+* Alors cet utilisateur n'a pas d'employeuse courante
 
-## Rule: Les dates d'emploi viennent du contrat, quand il en existe un
+## Règle: Les dates d'emploi viennent du contrat, quand il en existe un
 
-### Scenario: Un contrat ouvert donne une période en cours
+### Scénario: Un contrat ouvert donne une période en cours
 
-* Given un utilisateur affecté à "Association des tests" par la source "coop"
-* And un contrat chez "Association des tests" débuté le "2026-03-01"
-* When je consulte l'employeuse courante de cet utilisateur
-* Then la période d'emploi est en cours depuis le "2026-03-01"
+* Étant donné un utilisateur affecté à "Association des tests" par la source "coop"
+* Et un contrat chez "Association des tests" débuté le "2026-03-01"
+* Quand je consulte l'employeuse courante de cet utilisateur
+* Alors la période d'emploi est en cours depuis le "2026-03-01"
 
-### Scenario: Sans contrat, la période d'emploi reste inconnue
+### Scénario: Sans contrat, la période d'emploi reste inconnue
 
-* Given un utilisateur affecté à "Association des tests" par la source "coop"
-* When je consulte l'employeuse courante de cet utilisateur
-* Then la période d'emploi est inconnue
+* Étant donné un utilisateur affecté à "Association des tests" par la source "coop"
+* Quand je consulte l'employeuse courante de cet utilisateur
+* Alors la période d'emploi est inconnue
 
-## Rule: Un terme encore à venir ne termine pas l'emploi
+## Règle: Un terme encore à venir ne termine pas l'emploi
 
 Un contrat à durée déterminée porte sa date de fin dès sa signature. La constater
 ne suffit donc pas : il faut la comparer à aujourd'hui, sans quoi tout CDD est
 annoncé terminé alors que la personne est en poste pour des mois encore.
 
-### Scenario: Un contrat dont le terme est encore devant reste en cours
+### Scénario: Un contrat dont le terme est encore devant reste en cours
 
-* Given un utilisateur affecté à "Association des tests" par la source "coop"
-* And un contrat chez "Association des tests" courant du "2026-03-01" au "2099-12-31"
-* When je consulte l'employeuse courante de cet utilisateur
-* Then la période d'emploi est en cours depuis le "2026-03-01" jusqu'au "2099-12-31"
+* Étant donné un utilisateur affecté à "Association des tests" par la source "coop"
+* Et un contrat chez "Association des tests" courant du "2026-03-01" au "2099-12-31"
+* Quand je consulte l'employeuse courante de cet utilisateur
+* Alors la période d'emploi est en cours depuis le "2026-03-01" jusqu'au "2099-12-31"
 
-### Scenario: Un contrat dont le terme est passé est bien terminé
+### Scénario: Un contrat dont le terme est passé est bien terminé
 
-* Given un utilisateur affecté à "Association des tests" par la source "coop"
-* And un contrat chez "Association des tests" courant du "2020-01-01" au "2020-12-31"
-* When je consulte l'employeuse courante de cet utilisateur
-* Then la période d'emploi est terminée le "2020-12-31"
+* Étant donné un utilisateur affecté à "Association des tests" par la source "coop"
+* Et un contrat chez "Association des tests" courant du "2020-01-01" au "2020-12-31"
+* Quand je consulte l'employeuse courante de cet utilisateur
+* Alors la période d'emploi est terminée le "2020-12-31"

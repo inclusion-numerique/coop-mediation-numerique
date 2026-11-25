@@ -1,22 +1,23 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma'
 import {
   AdresseCourriel,
   type ContactAImporter,
 } from '@/features/utilisateurs/domain'
-import { versContactBrevo } from '@/features/utilisateurs/implementation/brevo/liste-de-diffusion'
+import { versContactBrevo } from '@/features/utilisateurs/implementations/brevo/liste-de-diffusion.mutation'
 import {
   type CompteDeListe,
   semerUnCompteDeListe,
 } from '@/features/utilisateurs/utilisateurs.cucumber'
-import { synchroniserLesRolesBrevo } from './commands/synchroniser-les-roles-brevo'
 import {
   type BilanDeSynchronisation,
   IdentifiantDImport,
   TailleDeLot,
 } from './domain'
+import { synchroniserLesRolesBrevo } from './domain/synchroniser-les-roles-brevo'
+import { inscritsDeLaListe } from './implementations/prisma/inscrits-de-la-liste.query'
 
 const vierge = { derniereActivite: null, dernierBeneficiaire: null }
 const sansEquipe = { aUneEquipe: false, aCoordonne: false }
@@ -205,6 +206,7 @@ When('les rôles Brevo sont synchronisés', async () => {
   const [premier] = synchro.semes
 
   synchro.bilan = await synchroniserLesRolesBrevo({
+    lireLesInscrits: inscritsDeLaListe,
     importer: {
       tailleMax: TailleDeLot(synchro.tailleMax),
       envoyer: async (lot) => {
@@ -225,7 +227,7 @@ When('les rôles Brevo sont synchronisés', async () => {
         synchro.retraits = [...synchro.retraits, ...lot]
       },
     },
-  })
+  })()
 
   synchro.tailleMax = 1000
   synchro.refuserLePremier = false

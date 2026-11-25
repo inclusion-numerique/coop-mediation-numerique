@@ -1,9 +1,5 @@
-import {
-  flush,
-  register,
-} from '@/configuration/telemetry/error-reporter/server'
-import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
-import { executeJob } from './jobExecutors'
+import { flush, register, signaler } from '@/configuration/telemetry/serveur'
+import { executeJob } from './job-executors'
 import { JobValidation } from './jobs'
 import { output } from './output'
 

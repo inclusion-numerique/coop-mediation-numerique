@@ -1,12 +1,11 @@
 import type { ButtonProps } from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'
-import styles from './IconInSquare.module.css'
 
 const sizeToClass = {
-  small: styles.small,
-  '48': styles['size-48'],
-  medium: styles.medium,
-  large: styles.large,
+  small: 'icone-dans-un-carre--petite',
+  '48': 'icone-dans-un-carre--48',
+  medium: 'icone-dans-un-carre--moyenne',
+  large: 'icone-dans-un-carre--grande',
 }
 
 type IconInSquareSize = keyof typeof sizeToClass
@@ -22,21 +21,29 @@ const IconInSquare = ({
   className?: string
   iconId: ButtonProps.IconOnly['iconId']
   size?: IconInSquareSize
-  classes?: {
-    icon?: string
-  }
+  classes?:
+    | {
+        icon?: string | undefined
+      }
+    | undefined
 }) => (
   <div
     className={classNames(
       background,
       'fr-border-radius--8 fr-text-title--blue-france',
-      styles.container,
+      'icone-dans-un-carre',
       sizeToClass[size],
       className,
     )}
     aria-hidden
   >
-    <span className={classNames(styles.icon, iconId, classes?.icon)} />
+    <span
+      className={classNames(
+        'icone-dans-un-carre__icone',
+        iconId,
+        classes?.icon,
+      )}
+    />
   </div>
 )
 

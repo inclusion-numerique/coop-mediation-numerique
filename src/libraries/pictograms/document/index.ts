@@ -1,0 +1,5 @@
+export { DocumentContentIcon } from './DocumentContentIcon'
+export { DocumentSearchIcon } from './DocumentSearchIcon'
+export { DocumentSignature } from './DocumentSignature'
+export { NationalIdentityCardIcon } from './NationalIdentityCardIcon'
+export { PapersIcon } from './PapersIcon'

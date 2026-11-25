@@ -1,6 +1,6 @@
-import { thematiquesAccompagnementColors } from '@/features/activites/ui/graphiques/couleurs'
-import { ProgressItemList } from '@/libraries/proportions/ProgressItemList'
-import type { RepartitionPresentee } from '../repartition.presenter'
+import { thematiquesAccompagnementColors } from '@/features/activites/ui/labels/couleurs.labels'
+import { ProgressItemList } from '@/libraries/proportions/composants'
+import type { RepartitionPresentee } from '../presenters/repartition.presenter'
 
 const desc = (
   { count: countA }: { count: number },
@@ -17,7 +17,7 @@ export const ThematiquesDesAccompagnements = ({
   pourImpression = false,
 }: {
   thematiques: RepartitionPresentee['thematiques']
-  pourImpression?: boolean
+  pourImpression?: boolean | undefined
 }) => (
   <ProgressItemList
     items={[...thematiques].sort(desc)}

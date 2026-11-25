@@ -9,11 +9,14 @@
   },
   "include": [
     "../next-env.d.ts",
+    "../src/configuration/environnement/process-env.d.ts",
+    "../src/configuration/dsfr/react-dsfr.d.ts",
     "../cypress.config.ts",
     "./**/*.ts",
     "./**/*.json",
-    "../src/**/e2e/*.ts",
-    "../src/app/**/*.e2e.ts",
+    "../src/app/**/page.test.ts",
+    "../src/app/**/route.test.ts",
     "../src/**/*.cy.tsx"
-  ]
+  ],
+  "exclude": ["../node_modules"]
 }

@@ -1,6 +1,6 @@
 import { After, Given, setDefaultTimeout } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma'
 import {
   CoordinateurId,
   MediateurId,
@@ -153,7 +153,7 @@ Given('le compte de ce partage est supprimé', async () => {
 
 After(async () => {
   const seme = compte.seme
-  compte.seme = undefined
+  delete compte.seme
   if (!seme) return
 
   await prismaClient.mutation.deleteMany({ where: { userId: seme.userId } })
@@ -231,7 +231,7 @@ export const semerUnMediateurVisible = async (): Promise<VisibiliteSemee> => {
 
 After(async () => {
   const semee = visibilite.semee
-  visibilite.semee = undefined
+  delete visibilite.semee
   if (!semee) return
 
   const userIds = [semee.mediateurUserId, semee.administrateurUserId]
@@ -304,7 +304,7 @@ export const semerUnContratDeLExConseiller = async ({
 
 After(async () => {
   const seme = exConseiller.seme
-  exConseiller.seme = undefined
+  delete exConseiller.seme
   if (!seme) return
 
   await prismaClient.contratMain.deleteMany({

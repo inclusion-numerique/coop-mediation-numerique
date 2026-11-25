@@ -1,9 +1,10 @@
 'use server'
 
 import { actionBuilder } from '@/configuration/nextjs'
-import { withAuth, withMediateur } from '@/features/authentification'
+import { withAuth } from '@/features/authentification/middlewares/with-auth'
+import { withMediateur } from '@/features/authentification/middlewares/with-mediateur'
 import { RechercherBeneficiairesValidation } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/action/rechercher-beneficiaires.validation'
-import { rechercherBeneficiaires } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/implementation/prisma/rechercher-beneficiaires.query'
+import { rechercherBeneficiaires } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/implementations/prisma/rechercher-beneficiaires.query'
 import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
 import { withInput } from '@/libraries/nextjs'
 

@@ -1,0 +1,133 @@
+import { prismaClient } from '@/configuration/prisma'
+import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
+import { Email } from '@/features/beneficiaire/domain/email'
+import { Nom } from '@/features/beneficiaire/domain/nom'
+import { Prenom } from '@/features/beneficiaire/domain/prenom'
+import { Prisma } from '@/generated/prisma/client'
+import { Telephone } from '@/libraries/telephone'
+import type { DetecterDoublons } from '../../domain/detecter-doublons'
+
+export const detecterDoublons: DetecterDoublons = async ({
+  mediateurId,
+  fuzzyMatching = true,
+}) => {
+  const nomMatchClause = fuzzyMatching
+    ? Prisma.sql`(CASE WHEN a.nom_search IS NOT NULL AND b.nom_search IS NOT NULL AND similarity(a.nom_search, b.nom_search) > 0.4 THEN 1 ELSE 0 END)`
+    : Prisma.sql`(CASE WHEN a.nom_search IS NOT NULL AND b.nom_search IS NOT NULL AND a.nom_search = b.nom_search THEN 1 ELSE 0 END)`
+
+  const prenomMatchClause = fuzzyMatching
+    ? Prisma.sql`(CASE WHEN a.prenom_search IS NOT NULL AND b.prenom_search IS NOT NULL AND similarity(a.prenom_search, b.prenom_search) > 0.4 THEN 1 ELSE 0 END)`
+    : Prisma.sql`(CASE WHEN a.prenom_search IS NOT NULL AND b.prenom_search IS NOT NULL AND a.prenom_search = b.prenom_search THEN 1 ELSE 0 END)`
+
+  const rawDuplicates = await prismaClient.$queryRaw<
+    {
+      a_id: string
+      a_nom: string
+      a_prenom: string
+      a_telephone: string | null
+      a_email: string | null
+      a_creation: string
+      b_id: string
+      b_nom: string
+      b_prenom: string
+      b_telephone: string | null
+      b_email: string | null
+      b_creation: string
+    }[]
+  >`
+  WITH "all" AS (
+    SELECT
+      id,
+      nom,
+      prenom,
+      telephone,
+      email,
+      creation,
+      NULLIF(regexp_replace(lower(unaccent(nom)), '[\\s-]', '', 'g'), '') as nom_search,
+      NULLIF(regexp_replace(lower(unaccent(prenom)), '[\\s-]', '', 'g'), '') as prenom_search,
+      NULLIF(lower(regexp_replace(unaccent(telephone), '\\s', '', 'g')), '') as telephone_search,
+      NULLIF(TRIM(lower(unaccent(email))), '') as email_search
+    FROM "beneficiaires"
+    WHERE mediateur_id = ${mediateurId}::uuid
+      AND anonyme = false
+      AND suppression IS NULL
+    ORDER BY nom ASC, creation DESC
+  )
+  SELECT
+    a.id as a_id,
+    a.nom as a_nom,
+    a.prenom as a_prenom,
+    a.telephone as a_telephone,
+    a.email as a_email,
+    a.creation as a_creation,
+    b.id as b_id,
+    b.nom as b_nom,
+    b.prenom as b_prenom,
+    b.telephone as b_telephone,
+    b.email as b_email,
+    b.creation as b_creation
+  FROM "all" a
+  JOIN "all" b ON a.id < b.id
+  WHERE
+    (
+      ${nomMatchClause} +
+      ${prenomMatchClause} +
+      (CASE WHEN a.telephone_search IS NOT NULL AND b.telephone_search IS NOT NULL AND a.telephone_search = b.telephone_search THEN 1 ELSE 0 END) +
+      (CASE WHEN a.email_search IS NOT NULL AND b.email_search IS NOT NULL AND a.email_search = b.email_search THEN 1 ELSE 0 END)
+    ) >= 2
+  ORDER BY a_nom ASC, b_nom ASC
+  `
+
+  const toDoublonEntry = (entry: {
+    id: string
+    nom: string
+    prenom: string
+    telephone: string | null
+    email: string | null
+    creation: string
+  }) => ({
+    id: BeneficiaireId(entry.id),
+    nom: Nom(entry.nom),
+    prenom: Prenom(entry.prenom),
+    telephone: entry.telephone ? Telephone(entry.telephone) : null,
+    email: entry.email ? Email(entry.email) : null,
+    creation: new Date(entry.creation),
+  })
+
+  const duplicates = rawDuplicates.map(
+    ({
+      a_id,
+      a_nom,
+      a_prenom,
+      a_telephone,
+      a_email,
+      a_creation,
+      b_id,
+      b_nom,
+      b_prenom,
+      b_telephone,
+      b_email,
+      b_creation,
+    }) => ({
+      id: `${a_id}-${b_id}`,
+      a: toDoublonEntry({
+        id: a_id,
+        nom: a_nom,
+        prenom: a_prenom,
+        telephone: a_telephone,
+        email: a_email,
+        creation: a_creation,
+      }),
+      b: toDoublonEntry({
+        id: b_id,
+        nom: b_nom,
+        prenom: b_prenom,
+        telephone: b_telephone,
+        email: b_email,
+        creation: b_creation,
+      }),
+    }),
+  )
+
+  return { count: duplicates.length, duplicates }
+}

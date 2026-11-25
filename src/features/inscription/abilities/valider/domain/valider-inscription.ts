@@ -1,7 +1,7 @@
 import {
   InscriptionDejaValidee,
   ProfilNonChoisi,
-  type UserId,
+  type UtilisateurId,
 } from '@/features/inscription/domain'
 import { failure, type Result, success } from '@/libraries/result'
 
@@ -12,10 +12,12 @@ import { failure, type Result, success } from '@/libraries/result'
  */
 type CompteDeRoleIntrouvable = {
   readonly _tag: 'CompteDeRoleIntrouvable'
-  readonly userId: UserId
+  readonly userId: UtilisateurId
 }
 
-const CompteDeRoleIntrouvable = (userId: UserId): CompteDeRoleIntrouvable => ({
+const CompteDeRoleIntrouvable = (
+  userId: UtilisateurId,
+): CompteDeRoleIntrouvable => ({
   _tag: 'CompteDeRoleIntrouvable',
   userId,
 })
@@ -27,7 +29,7 @@ const CompteDeRoleIntrouvable = (userId: UserId): CompteDeRoleIntrouvable => ({
  * l'état `EnCours` — qui suppose les CGU déjà acceptées — ne modélise pas.
  */
 export type FaitsInscription = {
-  readonly userId: UserId
+  readonly userId: UtilisateurId
   readonly profilChoisi: boolean
   readonly compteDeRoleExiste: boolean
   readonly dejaValidee: boolean

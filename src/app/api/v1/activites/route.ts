@@ -1,22 +1,21 @@
 import { routeBuilder } from '@arckit/nextjs/route'
 import { NextResponse } from 'next/server'
+import { activiteExposee } from '@/features/activites/abilities/exposer-les-activites/implementations/api/activite-exposee.transfer'
 import {
-  activiteExposee,
-  activitesExposees,
   criteresDExposition,
   curseurDActivite,
-} from '@/features/activites/abilities/exposer-les-activites'
+} from '@/features/activites/abilities/exposer-les-activites/implementations/api/criteres-d-exposition.transfer'
+import { activitesExposees } from '@/features/activites/abilities/exposer-les-activites/implementations/prisma/activites-exposees.query'
 import {
   withApiV1Errors,
   withClientApi,
   withQueryParams,
-} from '@/features/clients-api/abilities/authentifier-un-client-api/implementation/api-v1'
-import {
-  ActivitesQueryParamsValidation,
-  reponseDesActivites,
-} from '@/features/clients-api/abilities/lire-les-activites'
-import { prismaCursorPagination } from '@/libraries/json-api/CursorPagination'
-import { curseurLu } from '@/libraries/json-api/pageParCurseur'
+} from '@/features/clients-api/abilities/authentifier-un-client-api/implementations/api-v1'
+import { authentifierUnClientApi } from '@/features/clients-api/abilities/authentifier-un-client-api/implementations/prisma/authentifier-un-client-api.query'
+import { ActivitesQueryParamsValidation } from '@/features/clients-api/abilities/lire-les-activites/implementations/api-v1/activites.params'
+import { reponseDesActivites } from '@/features/clients-api/abilities/lire-les-activites/implementations/api-v1/activites.response'
+import { verifySecret } from '@/features/clients-api/implementations/secret/hash-secret.adapter'
+import { curseurLu, prismaCursorPagination } from '@/libraries/json-api'
 
 /**
  * @openapi
@@ -300,6 +299,10 @@ import { curseurLu } from '@/libraries/json-api/pageParCurseur'
  *         required: false
  *         description: "retourne les activités avec une date de dernière modification supérieure ou égale à cette date-heure"
  *     responses:
+ *       401:
+ *         $ref: '#/components/responses/NonAuthentifie'
+ *       403:
+ *         $ref: '#/components/responses/NonAutorise'
  *       200:
  *         description: liste des activités
  *         content:
@@ -319,7 +322,7 @@ import { curseurLu } from '@/libraries/json-api/pageParCurseur'
  */
 
 export const GET = routeBuilder()
-  .use(withClientApi(['Activites']))
+  .use(withClientApi(authentifierUnClientApi(verifySecret))(['Activites']))
   .use(withQueryParams(ActivitesQueryParamsValidation))
   .handle(
     withApiV1Errors(async ({ queryParams }) => {

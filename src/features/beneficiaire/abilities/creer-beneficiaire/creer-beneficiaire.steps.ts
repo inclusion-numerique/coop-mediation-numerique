@@ -1,13 +1,13 @@
 import assert from 'node:assert'
 import { assertMatchesDataTable } from '@arckit/cucumber'
 import { type DataTable, Then, When } from '@cucumber/cucumber'
-import { CreerBeneficiaireValidation } from '@/features/beneficiaire/abilities/creer-beneficiaire'
-import { creerBeneficiaire } from '@/features/beneficiaire/abilities/creer-beneficiaire/implementation'
+import { CreerBeneficiaireValidation } from '@/features/beneficiaire/abilities/creer-beneficiaire/action/creer-beneficiaire.validation'
+import { creerBeneficiaire } from '@/features/beneficiaire/abilities/creer-beneficiaire/implementations/prisma/creer-beneficiaire.mutation'
 import {
-  beneficiairesCountAtScenarioStart,
-  mediateurBeneficiairesCount,
+  nombreDeBeneficiairesAuDebutDuScenario,
+  nombreDeBeneficiairesDuMediateur,
+  suivreLeBeneficiaire,
   testMediateurId,
-  trackBeneficiaire,
 } from '@/features/beneficiaire/beneficiaire.cucumber'
 import type { BeneficiaireIdentifie } from '@/features/beneficiaire/domain/beneficiaire'
 
@@ -19,7 +19,7 @@ const creer = async (form: Record<string, unknown>): Promise<void> => {
     beneficiaire,
     mediateurId: testMediateurId,
   })
-  trackBeneficiaire(lastCreated.id)
+  suivreLeBeneficiaire(lastCreated.id)
 }
 
 When(
@@ -50,8 +50,8 @@ Then(
   'le compteur de bénéficiaires du médiateur est incrémenté de {int}',
   async (delta: number) => {
     assert.strictEqual(
-      await mediateurBeneficiairesCount(),
-      beneficiairesCountAtScenarioStart() + delta,
+      await nombreDeBeneficiairesDuMediateur(),
+      nombreDeBeneficiairesAuDebutDuScenario() + delta,
     )
   },
 )

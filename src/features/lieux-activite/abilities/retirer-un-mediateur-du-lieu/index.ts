@@ -1,1 +1,0 @@
-export { retirerUnMediateurDuLieu } from './implementation'

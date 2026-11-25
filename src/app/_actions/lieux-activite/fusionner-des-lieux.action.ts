@@ -1,11 +1,12 @@
 'use server'
 
 import { actionBuilder } from '@/configuration/nextjs'
-import { withAdmin, withAuth } from '@/features/authentification'
-import { fusionnerDesLieux } from '@/features/lieux-activite/abilities/fusionner-des-lieux'
+import { withAdmin } from '@/features/authentification/middlewares/with-admin'
+import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { FUSIONNER_DES_LIEUX_ERRORS } from '@/features/lieux-activite/abilities/fusionner-des-lieux/action/fusionner-des-lieux.errors'
 import { FusionnerDesLieuxValidation } from '@/features/lieux-activite/abilities/fusionner-des-lieux/action/fusionner-des-lieux.validation'
-import { LieuId } from '@/features/lieux-activite/domain/lieu-id'
+import { fusionnerDesLieux } from '@/features/lieux-activite/abilities/fusionner-des-lieux/implementations/prisma/fusionner-des-lieux.mutation'
+import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
 import { fromResult, withInput } from '@/libraries/nextjs'
 
 /**

@@ -1,9 +1,7 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
-import {
-  ajouterUnMembre,
-  mediateursAAjouter,
-} from '@/features/equipe/abilities/ajouter-un-membre'
+import { ajouterUnMembre } from '@/features/equipe/abilities/ajouter-un-membre/implementations/prisma/ajouter-un-membre.mutation'
+import { mediateursAAjouter } from '@/features/equipe/abilities/ajouter-un-membre/implementations/prisma/mediateurs-a-ajouter.query'
 import { CoordinateurId, UtilisateurId } from '@/features/equipe/domain'
 import {
   adhesionsDe,

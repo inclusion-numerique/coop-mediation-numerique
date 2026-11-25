@@ -1,13 +1,14 @@
 'use server'
 
 import { actionBuilder } from '@/configuration/nextjs'
-import { withAuth, withMediateur } from '@/features/authentification'
-import { withMaintenance } from '@/features/maintenance-mode'
-import { reglerLaVisibiliteCarto } from '@/features/mediateurs/abilities/regler-la-visibilite-carto'
+import { withAuth } from '@/features/authentification/middlewares/with-auth'
+import { withMediateur } from '@/features/authentification/middlewares/with-mediateur'
+import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { REGLER_LA_VISIBILITE_CARTO_ERRORS } from '@/features/mediateurs/abilities/regler-la-visibilite-carto/action/regler-la-visibilite-carto.errors'
 import { ReglerMaVisibiliteCartoValidation } from '@/features/mediateurs/abilities/regler-la-visibilite-carto/action/regler-la-visibilite-carto.validation'
+import { reglerLaVisibiliteCarto } from '@/features/mediateurs/abilities/regler-la-visibilite-carto/implementations/prisma/regler-la-visibilite-carto.mutation'
 import { AuteurId, MediateurId } from '@/features/mediateurs/domain'
-import { synchroniserPersonne } from '@/features/registre-des-personnes'
+import { synchroniserPersonne } from '@/features/registre-des-personnes/implementations/prisma/registre-personne.mutation'
 import { fromResult, withInput } from '@/libraries/nextjs'
 
 export const reglerMaVisibiliteCartoAction = actionBuilder()

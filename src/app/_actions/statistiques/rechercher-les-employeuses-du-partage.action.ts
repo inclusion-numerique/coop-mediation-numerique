@@ -1,27 +1,21 @@
 'use server'
 
-import { z } from 'zod'
 import { actionBuilder } from '@/configuration/nextjs'
 import {
-  EmployeuseId,
-  rechercherLesEmployeusesDesActivites,
-} from '@/features/activites/abilities/rechercher-les-employeuses-des-activites'
-import { RechercherLesEmployeusesDesActivitesValidation } from '@/features/activites/abilities/rechercher-les-employeuses-des-activites/action/rechercher-les-employeuses-des-activites.validation'
-import { optionsDEmployeuses } from '@/features/activites/abilities/rechercher-les-employeuses-des-activites/ui'
-import { perimetreDesEmployeusesDe } from '@/features/activites/implementation/statistiques'
-import { getSessionUserFromId } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
-import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage'
-import { utilisateurDuPartage } from '@/features/statistiques/implementation/utilisateur-du-partage'
+  type RechercheDEmployeusesDesActivites,
+  RechercherLesEmployeusesDuPartageValidation,
+} from '@/features/activites/abilities/rechercher-les-employeuses-des-activites/action/rechercher-les-employeuses-des-activites.validation'
+import { rechercherLesEmployeusesDesActivites } from '@/features/activites/abilities/rechercher-les-employeuses-des-activites/implementations/prisma/rechercher-les-employeuses-des-activites.query'
+import { optionsDEmployeuses } from '@/features/activites/abilities/rechercher-les-employeuses-des-activites/ui/presenters/options-d-employeuses.presenter'
+import { EmployeuseId } from '@/features/activites/domain/index'
+import { perimetreDesEmployeusesDe } from '@/features/activites/implementations/session/perimetre.query'
+import { utilisateurDeLaSessionParId } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
+import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage/implementations/prisma/resoudre-un-lien-de-partage.query'
+import { utilisateurDuPartage } from '@/features/statistiques/domain/utilisateur-du-partage'
 import { withInput } from '@/libraries/nextjs'
 
 const rechercherDansLePartage = actionBuilder()
-  .use(
-    withInput(
-      RechercherLesEmployeusesDesActivitesValidation.extend({
-        partage: z.string(),
-      }),
-    ),
-  )
+  .use(withInput(RechercherLesEmployeusesDuPartageValidation))
   .execute(async ({ input: { partage, recherche, exclues } }) => {
     const lien = await resoudreUnLienDePartage(partage)
     if (!lien.success) return []
@@ -30,7 +24,7 @@ const rechercherDansLePartage = actionBuilder()
         perimetre: perimetreDesEmployeusesDe(
           utilisateurDuPartage(
             lien.data.proprietaire,
-            await getSessionUserFromId(lien.data.utilisateurId),
+            await utilisateurDeLaSessionParId(lien.data.utilisateurId),
           ),
         ),
         recherche,
@@ -44,5 +38,5 @@ const rechercherDansLePartage = actionBuilder()
 
 export const rechercherLesEmployeusesDuPartageAction = async (
   partage: string,
-  input: z.input<typeof RechercherLesEmployeusesDesActivitesValidation>,
+  input: RechercheDEmployeusesDesActivites,
 ) => rechercherDansLePartage({ ...input, partage })

@@ -1,22 +1,23 @@
 'use client'
 
 import Alert from '@codegouvfr/react-dsfr/Alert'
+import type { Route } from 'next'
 import Link from 'next/link'
 import type { ReactNode } from 'react'
-import { DisplayOnCartography } from '@/features/lieux-activite/ui/DisplayOnCartography'
-import { LieuAccueillantPublicTitle } from '@/features/lieux-activite/ui/titles/LieuAccueillantPublicTitle'
-import { ServiceInclusionNumeriqueTitle } from '@/features/lieux-activite/ui/titles/ServiceInclusionNumeriqueTitle'
-import { formatDate } from '@/libraries/date/formatDate'
+import { DisplayOnCartography } from '@/features/lieux-activite/ui/components/DisplayOnCartography'
+import { LieuAccueillantPublicTitle } from '@/features/lieux-activite/ui/components/LieuAccueillantPublicTitle'
+import { ServiceInclusionNumeriqueTitle } from '@/features/lieux-activite/ui/components/ServiceInclusionNumeriqueTitle'
+import { formatDate } from '@/libraries/date'
 import { BandeauRepriseExterne } from '../components/BandeauRepriseExterne'
 import { BasculeVisibiliteCartographie } from '../components/BasculeVisibiliteCartographie'
-import { SectionDescription } from '../components/SectionDescription'
-import { SectionInformationsGenerales } from '../components/SectionInformationsGenerales'
-import { SectionInformationsPratiques } from '../components/SectionInformationsPratiques'
-import { SectionModalitesAccesAuService } from '../components/SectionModalitesAccesAuService'
-import { SectionServicesEtAccompagnement } from '../components/SectionServicesEtAccompagnement'
-import { SectionTypesDePublicsAccueillis } from '../components/SectionTypesDePublicsAccueillis'
-import type { EnregistrerUneSection } from '../enregistrer-une-section'
-import type { FicheAffichee } from '../fiche-du-lieu.presenter'
+import { SectionDescription } from '../components/sections/SectionDescription'
+import { SectionInformationsGenerales } from '../components/sections/SectionInformationsGenerales'
+import { SectionInformationsPratiques } from '../components/sections/SectionInformationsPratiques'
+import { SectionModalitesAccesAuService } from '../components/sections/SectionModalitesAccesAuService'
+import { SectionServicesEtAccompagnement } from '../components/sections/SectionServicesEtAccompagnement'
+import { SectionTypesDePublicsAccueillis } from '../components/sections/SectionTypesDePublicsAccueillis'
+import type { EnregistrerUneSection } from '../hooks/use-enregistrement-de-section'
+import type { FicheAffichee } from '../presenters/fiche-du-lieu.presenter'
 
 export const FicheDuLieuPage = ({
   fiche,
@@ -29,7 +30,7 @@ export const FicheDuLieuPage = ({
   enregistrer: EnregistrerUneSection
   entete?: ReactNode
   mediateurs?: ReactNode
-  creerUnLieuHref?: string
+  creerUnLieuHref?: Route | undefined
 }) => (
   <div
     className="fr-pr-0 fr-ml-0 fr-mb-30v fr-width-full"

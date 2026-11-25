@@ -1,10 +1,17 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma'
+import { usurperUnUtilisateur as usurperAvec } from '@/features/utilisateurs/abilities/usurper-un-utilisateur/domain/usurper-un-utilisateur'
+import { cibleUsurpation } from '@/features/utilisateurs/abilities/usurper-un-utilisateur/implementations/prisma/cible-usurpation.query'
+import { ouvrirLUsurpation } from '@/features/utilisateurs/abilities/usurper-un-utilisateur/implementations/prisma/ouvrir-l-usurpation.mutation'
 import { semerUnCompteDeListe } from '@/features/utilisateurs/utilisateurs.cucumber'
-import { usurperUnUtilisateur } from './commands/usurper-un-utilisateur'
 import { PorteeUsurpation } from './domain'
+
+const usurperUnUtilisateur = usurperAvec({
+  lireLaCible: cibleUsurpation,
+  ouvrirLUsurpation,
+})
 
 const usurpation: {
   administrateurId?: string

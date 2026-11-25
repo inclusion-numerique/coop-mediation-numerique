@@ -1,13 +1,15 @@
-import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
-import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
-import { numberToString } from '@/libraries/nombre/formatNumber'
-import AdministrationBreadcrumbs from '@/libraries/ui/components/administration/AdministrationBreadcrumbs'
-import AdministrationTitle from '@/libraries/ui/components/administration/AdministrationTitle'
-import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
-import { LigneDuTag } from '../../../../ui'
+import { contentId } from '@/libraries/liens-d-evitement'
+import { SkipLinksPortal } from '@/libraries/liens-d-evitement/composants'
+import { numberToString } from '@/libraries/nombre'
+import {
+  AdministrationBreadcrumbs,
+  AdministrationTitle,
+  CoopPageContainer,
+} from '@/libraries/ui/components'
+import { LigneDuTag } from '../../../../ui/components/LigneDuTag'
 import type { UsageDesTags } from '../../domain'
-import { CounterCard } from '../CounterCard'
-import { tagsDeLaListe } from '../usage-des-tags.presenter'
+import { CounterCard } from '../components/CounterCard'
+import { tagsDeLaListe } from '../presenters/usage-des-tags.presenter'
 
 export const UsageDesTagsPage = ({
   createursDeTagsUtilises,
@@ -16,15 +18,7 @@ export const UsageDesTagsPage = ({
 }: UsageDesTags) => (
   <CoopPageContainer>
     <SkipLinksPortal />
-    <AdministrationBreadcrumbs
-      parents={[
-        {
-          label: 'Fonctionnalités',
-          linkProps: { href: `/administration/fonctionnalites` },
-        },
-      ]}
-      currentPage="Tags"
-    />
+    <AdministrationBreadcrumbs currentPage="Tags" />
     <main id={contentId}>
       <AdministrationTitle icon="ri-price-tag-3-line">Tags</AdministrationTitle>
       <div className="fr-my-16v">

@@ -1,0 +1,9 @@
+{
+  "configuration/brevo": [
+    "remove-orphan-brevo-contacts",
+    "synchroniser-les-roles-brevo"
+  ],
+  "libraries/chronometre": ["job-executors.ts"],
+  "libraries/emails": ["verifier-le-bundle.ts"],
+  "uuid": ["job-executors.ts"]
+}

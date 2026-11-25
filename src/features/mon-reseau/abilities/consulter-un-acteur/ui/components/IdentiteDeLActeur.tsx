@@ -6,18 +6,21 @@ import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import { useRouter } from 'next/navigation'
 import { type ReactNode, useState } from 'react'
-import { dateAsDay } from '@/libraries/date/dateAsDay'
-import { inject } from '@/libraries/nextjs/injection/client'
-import BackButton from '@/libraries/ui/components/BackButton'
-import { createToast } from '@/libraries/ui/toast/createToast'
-import { buttonLoadingClassname } from '@/libraries/ui/utils/buttonLoadingClassname'
+import { dateAsDay } from '@/libraries/date'
+import { inject } from '@/libraries/nextjs/injection'
+import { BackButton } from '@/libraries/ui/components'
+import { createToast } from '@/libraries/ui/toast'
+import { buttonLoadingClassname } from '@/libraries/ui/utils'
 import type { Acteur } from '../../../../domain'
-import { ProfilEtContact } from '../../../../ui/ProfilEtContact'
+import { ProfilEtContact } from '../../../../ui/components/ProfilEtContact'
 import {
   INVITER_L_ACTEUR_DANS_L_EQUIPE_KEY,
   RETIRER_L_ACTEUR_DE_L_EQUIPE_KEY,
-} from '../actions-sur-l-acteur.key'
-import type { ActionsDEquipe, StatutAffiche } from '../fiche-acteur.presenter'
+} from '../../action/actions-sur-l-acteur.key'
+import type {
+  ActionsDEquipe,
+  StatutAffiche,
+} from '../presenters/fiche-acteur.presenter'
 import { BadgeDeStatut } from './BadgeDeStatut'
 
 const modaleDeRetrait = createModal({

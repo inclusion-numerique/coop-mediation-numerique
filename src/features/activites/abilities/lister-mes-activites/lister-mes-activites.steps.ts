@@ -1,16 +1,15 @@
 import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma'
+import { criteresDesActivitesDepuisLURL } from '@/features/activites/fixtures/criteres-depuis-l-url'
+import { lectureDeLaPagination } from '@/features/activites/ui/filtres/liste-des-activites.filtre'
 import {
   type ChronologieDesActivites,
   contenuDeLaChronologie,
-  criteresDesActivites,
   MediateurId,
-  ordreChronologiqueLu,
-  paginationLue,
 } from '../../domain'
-import { listerMesActivites } from './implementation'
+import { listerMesActivites } from './implementations/prisma/chronologie.query'
 
 type Semis = { readonly userIds: string[]; readonly mediateurId: string }
 
@@ -154,12 +153,11 @@ Given(
 )
 
 const lister = async (parametres: Record<string, string>) => {
-  const criteres = criteresDesActivites(parametres)
+  const criteres = criteresDesActivitesDepuisLURL(parametres)
   chronologie = await listerMesActivites({
     mediateurId: MediateurId(semisCourant().mediateurId),
     criteres,
-    pagination: paginationLue(parametres),
-    ordre: ordreChronologiqueLu(parametres.ordre),
+    ...lectureDeLaPagination(parametres),
     contenu: contenuDeLaChronologie(criteres, { _tag: 'NonConnecte' }),
     rendezVous: null,
     rendezVousLies: () => Promise.resolve([]),

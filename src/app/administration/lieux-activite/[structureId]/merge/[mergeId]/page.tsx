@@ -1,11 +1,11 @@
 import { notFound } from 'next/navigation'
 import { fusionnerDesLieuxAction } from '@/app/_actions/lieux-activite/fusionner-des-lieux.action'
-import { metadataTitle } from '@/configuration/projet/metadataTitle'
-import { authenticateAdmin } from '@/features/authentification/implementation/session/authenticateUser'
-import { apercuDeLaFusion } from '@/features/lieux-activite/abilities/fusionner-des-lieux'
+import { metadataTitle } from '@/configuration/projet'
+import { authenticateAdmin } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
 import { FUSIONNER_DES_LIEUX_ACTION_KEY } from '@/features/lieux-activite/abilities/fusionner-des-lieux/action/fusionner-des-lieux.key'
-import { ApercuDeLaFusionPage } from '@/features/lieux-activite/abilities/fusionner-des-lieux/ui'
-import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
+import { apercuDeLaFusion } from '@/features/lieux-activite/abilities/fusionner-des-lieux/implementations/prisma/apercu-de-la-fusion.query'
+import { ApercuDeLaFusionPage } from '@/features/lieux-activite/abilities/fusionner-des-lieux/ui/pages/ApercuDeLaFusionPage'
+import { ClientBinder } from '@/libraries/nextjs/injection'
 
 export const metadata = {
   title: metadataTitle('Structures - Fusion'),

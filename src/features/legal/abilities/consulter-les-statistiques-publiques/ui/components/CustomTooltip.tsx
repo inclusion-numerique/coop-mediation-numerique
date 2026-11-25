@@ -7,9 +7,8 @@ import {
   NameType,
   ValueType,
 } from 'recharts/types/component/DefaultTooltipContent'
-import { onlyDefinedAndNotNull } from '@/libraries/collections/onlyDefinedAndNotNull'
-import { numberToString } from '@/libraries/nombre/formatNumber'
-import styles from './CustomTooltip.module.css'
+import { onlyDefinedAndNotNull } from '@/libraries/collections'
+import { numberToString } from '@/libraries/nombre'
 
 const CustomTooltip = <TValue extends ValueType, TName extends NameType>({
   active,
@@ -25,8 +24,8 @@ const CustomTooltip = <TValue extends ValueType, TName extends NameType>({
       : (label as ReactNode)
 
     return (
-      <div className={styles.tooltip}>
-        <p className={styles.title}>{title}</p>
+      <div className="infobulle-de-graphique">
+        <p className="infobulle-de-graphique__titre">{title}</p>
         {payload.map((item, index) => {
           const formatedName = formatter
             ? formatter(
@@ -39,7 +38,7 @@ const CustomTooltip = <TValue extends ValueType, TName extends NameType>({
             : item.name
 
           return (
-            <p key={item.name} className={styles.series}>
+            <p key={item.name} className="infobulle-de-graphique__serie">
               {onlyDefinedAndNotNull(formatedName) ? (
                 <span>
                   {formatter

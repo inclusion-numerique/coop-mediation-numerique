@@ -1,14 +1,16 @@
 import Badge from '@codegouvfr/react-dsfr/Badge'
-import { dateAsDayAndTimeInTimeZone } from '@/libraries/date/dateAsDayAndTime'
-import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
-import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
-import { numberToString } from '@/libraries/nombre/formatNumber'
-import AdministrationBreadcrumbs from '@/libraries/ui/components/administration/AdministrationBreadcrumbs'
-import AdministrationInfoCard from '@/libraries/ui/components/administration/AdministrationInfoCard'
-import AdministrationInlineLabelsValues from '@/libraries/ui/components/administration/AdministrationInlineLabelsValues'
-import AdministrationTitle from '@/libraries/ui/components/administration/AdministrationTitle'
-import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
-import type { AdministrationRdvspUserData } from '../../implementation/prisma/compte-rdv-detaille.query'
+import { dateAsDayAndTimeInTimeZone } from '@/libraries/date'
+import { contentId } from '@/libraries/liens-d-evitement'
+import { SkipLinksPortal } from '@/libraries/liens-d-evitement/composants'
+import { numberToString } from '@/libraries/nombre'
+import {
+  AdministrationBreadcrumbs,
+  AdministrationInfoCard,
+  AdministrationInlineLabelsValues,
+  AdministrationTitle,
+  CoopPageContainer,
+} from '@/libraries/ui/components'
+import type { CompteAdministre } from '../../domain/comptes-administres'
 import AdministrationSyncUserDataButton from '../components/AdministrationSyncUserDataButton'
 
 const renderDriftCell = ({ value }: { value: number }) =>
@@ -54,7 +56,7 @@ export const AdministrationRdvspUserPage = async ({
   },
   timezone = 'Europe/Paris',
 }: {
-  data: AdministrationRdvspUserData
+  data: CompteAdministre
   timezone?: string
 }) => {
   const { syncLogs } = rdvAccount
@@ -65,10 +67,6 @@ export const AdministrationRdvspUserPage = async ({
       <SkipLinksPortal />
       <AdministrationBreadcrumbs
         parents={[
-          {
-            label: 'Fonctionnalités',
-            linkProps: { href: `/administration/fonctionnalites` },
-          },
           {
             label: 'RDVSP',
             linkProps: { href: `/administration/fonctionnalites/rdvsp` },

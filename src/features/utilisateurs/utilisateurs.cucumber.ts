@@ -1,6 +1,6 @@
 import { After, setDefaultTimeout } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma'
 import type { OnboardingStatus } from '@/generated/prisma/client'
 
 setDefaultTimeout(60_000)
@@ -26,7 +26,7 @@ export const semerCompte = async ({
 }: {
   avecCoordinateur?: boolean
   conseillerNumerique?: boolean
-  role?: 'User' | 'Admin' | 'Support'
+  role?: 'User' | 'Admin'
 } = {}): Promise<CompteSeme> => {
   const userId = v4()
   const courriel = `suppression-${userId}@example.com`
@@ -306,7 +306,7 @@ After(async () => {
 export type CompteDeListe = {
   readonly prenom: string
   readonly marqueur: string
-  readonly role?: 'User' | 'Admin' | 'Support'
+  readonly role?: 'User' | 'Admin'
   readonly creeLe: Date
   readonly inscritLe: Date | null
   readonly supprimeLe?: Date | null
@@ -478,7 +478,12 @@ export const semerUnCompteDeListe = async (
   const personne =
     avecEmploi || compte.coordinateurDeclare || avecContrats
       ? await prismaClient.personneMain.create({
-          data: { coopId: userId, isCoordinateur: compte.coordinateurDeclare },
+          data: {
+            coopId: userId,
+            ...(compte.coordinateurDeclare === undefined
+              ? {}
+              : { isCoordinateur: compte.coordinateurDeclare }),
+          },
           select: { id: true },
         })
       : null

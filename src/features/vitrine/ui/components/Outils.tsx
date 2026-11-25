@@ -1,0 +1,213 @@
+import Image from 'next/image'
+import Link from 'next/link'
+import {
+  AidantsConnectLogo,
+  CartographieLogo,
+  LesBasesLogo,
+  RDVServicePublicLogo,
+} from '@/libraries/pictograms/services'
+
+export const Outils = ({
+  lienRdvServicePublic,
+}: {
+  lienRdvServicePublic: string
+}) => (
+  <div className="fr-container">
+    <div className="fr-text--center fr-container--medium fr-px-md-8w fr-mx-auto">
+      <Image
+        width={69}
+        height={64}
+        src="/images/illustrations/landing-page/outils/outiller.svg"
+        alt=""
+      />
+      <div className="fr-text-mention--grey fr-text--bold fr-text--xl fr-text--uppercase fr-mt-3w fr-mb-0">
+        Une suite d’outils à votre disposition
+      </div>
+      <h2 id="outils" className="fr-h1 fr-text-title--blue-france">
+        Découvrez les outils intégrés
+      </h2>
+      <p className="fr-mb-15v">
+        La Coop de la médiation numérique intègre un panel d’outils à
+        destination des médiateurs et médiatrices numériques. Elle a vocation à
+        faciliter l’interconnexion entre les outils développés par le programme
+        Société Numérique de l’Agence Nationale de la Cohésion des Territoires
+        et les acteurs de la médiation numérique.
+      </p>
+    </div>
+    <div className="fr-grid-row fr-grid-row--gutters">
+      <div className="fr-col-lg-4 fr-col-md-6 fr-col-12">
+        <div className="fr-background-default--grey fr-border-radius--16 fr-px-md-9v fr-py-md-10v fr-px-6v fr-py-8v fr-height-full fr-flex fr-direction-column">
+          <CartographieLogo
+            width={88}
+            height={88}
+            className="fr-background-alt--blue-france fr-border-radius--16 fr-p-2w"
+            aria-hidden
+          />
+          <div className="fr-my-3w">
+            <h3 className="fr-h6 fr-mb-2w">
+              La Cartographie Nationale des lieux d’inclusion numérique
+            </h3>
+            <p className="fr-mb-0 fr-text-mention--grey">
+              Rendre visible vos lieux et services d’inclusion numérique pour
+              faciliter l’orientation des bénéficiaires.
+            </p>
+          </div>
+          <span className="fr-mt-auto">
+            <Link
+              className="fr-link"
+              href="https://cartographie.societenumerique.gouv.fr"
+              target="_blank"
+              rel="noreferrer"
+              title="Accéder à la cartographie Nationale des lieux d’inclusion numérique - nouvel onglet"
+            >
+              Découvrir
+            </Link>
+          </span>
+        </div>
+      </div>
+      <div className="fr-col-lg-4 fr-col-md-6 fr-col-12">
+        <div className="fr-background-default--grey fr-border-radius--16 fr-px-md-9v fr-py-md-10v fr-px-6v fr-py-8v fr-height-full fr-flex fr-direction-column">
+          <LesBasesLogo
+            width={88}
+            height={88}
+            className="fr-background-alt--blue-france fr-border-radius--16 fr-p-2w"
+            aria-hidden
+          />
+          <div className="fr-my-3w">
+            <h3 className="fr-h6 fr-mb-2w">
+              Les Bases du numérique d’intérêt général
+            </h3>
+            <p className="fr-mb-0 fr-text-mention--grey">
+              La plateforme collaborative de partage de ressources & communs
+              numériques à l’échelle nationale.
+            </p>
+          </div>
+          <span className="fr-mt-auto">
+            <Link
+              className="fr-link"
+              href="https://lesbases.anct.gouv.fr/"
+              target="_blank"
+              rel="noreferrer"
+              title="Accéder aux bases du numérique d’intérêt général - nouvel onglet"
+            >
+              Découvrir
+            </Link>
+          </span>
+        </div>
+      </div>
+      <div className="fr-col-lg-4 fr-col-md-6 fr-col-12">
+        <div className="fr-background-default--grey fr-border-radius--16 fr-px-md-9v fr-py-md-10v fr-px-6v fr-py-8v fr-height-full fr-flex fr-direction-column">
+          <RDVServicePublicLogo
+            width={88}
+            height={88}
+            className="fr-background-alt--blue-france fr-border-radius--16 fr-p-2w"
+            aria-hidden
+          />
+          <div className="fr-my-3w">
+            <h3 className="fr-h6 fr-mb-2w">RDV Service Public</h3>
+            <p className="fr-mb-0 fr-text-mention--grey">
+              Faciliter la gestion des rendez-vous avec vos bénéficiaires.
+            </p>
+          </div>
+          <span className="fr-mt-auto">
+            <a
+              className="fr-link"
+              href={lienRdvServicePublic}
+              target="_blank"
+              rel="noreferrer"
+              title="Accéder à RDV Service Public - nouvel onglet"
+            >
+              Découvrir
+            </a>
+          </span>
+        </div>
+      </div>
+      <div className="fr-col-lg-4 fr-col-md-6 fr-col-12">
+        <div className="fr-background-default--grey fr-border-radius--16 fr-px-md-9v fr-py-md-10v fr-px-6v fr-py-8v fr-height-full fr-flex fr-direction-column">
+          <AidantsConnectLogo
+            width={88}
+            height={88}
+            className="fr-background-alt--blue-france fr-border-radius--16 fr-p-2w"
+            aria-hidden
+          />
+          <div className="fr-my-3w">
+            <h3 className="fr-h6 fr-mb-2w">Aidants Connect</h3>
+            <p className="fr-mb-0 fr-text-mention--grey">
+              Sécuriser l’aidant et la personne accompagnée dans la réalisation
+              de démarches administratives en ligne.
+            </p>
+          </div>
+          <span className="fr-mt-auto">
+            <Link
+              className="fr-link"
+              href="https://aidantsconnect.beta.gouv.fr"
+              target="_blank"
+              rel="noreferrer"
+              title="Accéder à Aidants Connect - nouvel onglet"
+            >
+              Découvrir
+            </Link>
+          </span>
+        </div>
+      </div>
+      <div className="fr-col-lg-4 fr-col-md-6 fr-col-12">
+        <div className="fr-background-default--grey fr-border-radius--16 fr-px-md-9v fr-py-md-10v fr-px-6v fr-py-8v fr-height-full fr-flex fr-direction-column">
+          <Image
+            className="fr-background-alt--blue-france fr-border-radius--16 fr-p-2w"
+            width={88}
+            height={88}
+            src="/images/services/pix-orga.svg"
+            alt=""
+          />
+          <div className="fr-my-3w">
+            <h3 className="fr-h6 fr-mb-2w">Pix Orga</h3>
+            <p className="fr-mb-0 fr-text-mention--grey">
+              Proposez des parcours Pix adaptés aux besoins de vos apprenants et
+              suivez leur progression.
+            </p>
+          </div>
+          <span className="fr-mt-auto">
+            <Link
+              className="fr-link"
+              href="https://orga.pix.fr/"
+              target="_blank"
+              rel="noreferrer"
+              title="Accéder à Pix orga - nouvel onglet"
+            >
+              Découvrir
+            </Link>
+          </span>
+        </div>
+      </div>
+      <div className="fr-col-lg-4 fr-col-md-6 fr-col-12">
+        <div className="fr-background-default--grey fr-border-radius--16 fr-px-md-9v fr-py-md-10v fr-px-6v fr-py-8v fr-height-full fr-flex fr-direction-column">
+          <Image
+            className="fr-background-alt--blue-france fr-border-radius--16 fr-p-2w"
+            width={88}
+            height={88}
+            src="/images/services/pix.svg"
+            alt=""
+          />
+          <div className="fr-my-3w">
+            <h3 className="fr-h6 fr-mb-2w">ABC Diag</h3>
+            <p className="fr-mb-0 fr-text-mention--grey">
+              Diagnostiquez en 10 questions la maîtrise de compétences
+              numériques de base.
+            </p>
+          </div>
+          <span className="fr-mt-auto">
+            <Link
+              className="fr-link"
+              href="https://pix.fr/abc-diag/"
+              target="_blank"
+              rel="noreferrer"
+              title="Accéder à ABC Diag - nouvel onglet"
+            >
+              Découvrir
+            </Link>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+)

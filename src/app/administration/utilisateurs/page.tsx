@@ -2,33 +2,32 @@ import { rechercherDesCommunesAction } from '@/app/_actions/utilisateurs/recherc
 import { rechercherDesCoordinateursAction } from '@/app/_actions/utilisateurs/rechercher-des-coordinateurs.action'
 import { rechercherDesEmployeusesAction } from '@/app/_actions/utilisateurs/rechercher-des-employeuses.action'
 import { rechercherDesLieuxAction } from '@/app/_actions/utilisateurs/rechercher-des-lieux.action'
-import { metadataTitle } from '@/configuration/projet/metadataTitle'
-import { authenticateAdmin } from '@/features/authentification/implementation/session/authenticateUser'
-import {
-  communesDesEmployeuses,
-  nomDeLEmployeuse,
-} from '@/features/employeuse/server'
-import { lieuxChoisis } from '@/features/lieux-activite/abilities/lister-les-options-de-lieux'
-import { BoutonExporterLesUtilisateurs } from '@/features/utilisateurs/abilities/exporter-les-utilisateurs/ui'
-import {
-  optionsDesFiltres,
-  ordreDesUtilisateurs,
-  rechercherDesUtilisateurs,
-} from '@/features/utilisateurs/abilities/lister-les-utilisateurs'
+import { metadataTitle } from '@/configuration/projet'
+import { authenticateAdmin } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
+import { nomDeLEmployeuse } from '@/features/employeuse/abilities/consulter-employeuse/implementations/prisma/nom-de-l-employeuse.query'
+import { communesDesEmployeuses } from '@/features/employeuse/abilities/rechercher-employeuse/implementations/prisma/communes-des-employeuses.query'
+import { optionsDesCommunes } from '@/features/employeuse/abilities/rechercher-employeuse/ui/presenters/option-de-la-commune.presenter'
+import { lieuxChoisis } from '@/features/lieux-activite/abilities/lister-les-options-de-lieux/implementations/prisma/lieux-a-choisir.query'
+import { BoutonExporterLesUtilisateurs } from '@/features/utilisateurs/abilities/exporter-les-utilisateurs/ui/slots/BoutonExporterLesUtilisateurs.slot'
 import { RECHERCHER_DES_COMMUNES_ACTION_KEY } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/action/rechercher-des-communes.key'
 import { RECHERCHER_DES_COORDINATEURS_ACTION_KEY } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/action/rechercher-des-coordinateurs.key'
 import { RECHERCHER_DES_EMPLOYEUSES_ACTION_KEY } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/action/rechercher-des-employeuses.key'
 import { RECHERCHER_DES_LIEUX_ACTION_KEY } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/action/rechercher-des-lieux.key'
+import { coordinateursChoisis } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/implementations/prisma'
+import { rechercherDesUtilisateurs } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/implementations/prisma/rechercher-des-utilisateurs.query'
+import { listeDesUtilisateurs } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui/filtres/liste-des-utilisateurs.filtre'
+import { UtilisateursPage } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui/pages/UtilisateursPage'
+import { optionDuCoordinateur } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui/presenters/coordinateur-a-choisir.presenter'
+import { liensDeLaListe } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui/presenters/liste-des-utilisateurs.presenter'
+import { optionsDesFiltres } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui/presenters/options-des-filtres.presenter'
+import { BarreDesUtilisateurs } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui/slots/BarreDesUtilisateurs.slot'
 import {
-  type ParametresDeLaListe,
-  UtilisateursPage,
-} from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui'
-import {
-  filtresUtilisateurs,
-  parametresDesFiltres,
-} from '@/features/utilisateurs/domain'
-import { libellesDesFiltres } from '@/features/utilisateurs/ui'
-import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
+  filtresDesUtilisateurs,
+  filtresUtilisateursDesFiltres,
+} from '@/features/utilisateurs/ui/filtres/utilisateurs.filtre'
+import { barreDesUtilisateurs } from '@/features/utilisateurs/ui/presenters/barre-des-utilisateurs.presenter'
+import { ClientBinder } from '@/libraries/nextjs/injection'
+import { motsDe } from '@/libraries/texte'
 
 export const metadata = {
   title: metadataTitle('Utilisateurs'),
@@ -36,24 +35,41 @@ export const metadata = {
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
-const Page = async (props: { searchParams: Promise<ParametresDeLaListe> }) => {
+const Page = async (props: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>
+}) => {
   await authenticateAdmin()
   const searchParams = await props.searchParams
-  const filtres = filtresUtilisateurs(searchParams)
+  const valeurs = filtresDesUtilisateurs.charger(searchParams)
+  const filtres = filtresUtilisateursDesFiltres(valeurs)
+  const { tri, pagination } = listeDesUtilisateurs.charger(searchParams)
 
   const [trouves, options] = await Promise.all([
     rechercherDesUtilisateurs({
-      searchParams,
+      mots: motsDe(valeurs.recherche),
       filtres,
-      orderBy: ordreDesUtilisateurs(searchParams),
+      tri,
+      ...pagination,
       maintenant: new Date(),
     }),
     optionsDesFiltres(filtres, {
-      communes: communesDesEmployeuses,
+      optionDuCoordinateur,
+      coordinateurs: coordinateursChoisis,
+      communes: async (codesInsee) =>
+        optionsDesCommunes(await communesDesEmployeuses(codesInsee)),
       lieux: lieuxChoisis,
       nomDeLEmployeuse,
     }),
   ])
+
+  const barre = barreDesUtilisateurs({
+    adresse: {
+      chemin: '/administration/utilisateurs',
+      parametres: searchParams,
+    },
+    valeurs,
+    options,
+  })
 
   return (
     <ClientBinder
@@ -74,15 +90,16 @@ const Page = async (props: { searchParams: Promise<ParametresDeLaListe> }) => {
           >
             <UtilisateursPage
               trouves={trouves}
-              filtres={filtres}
-              options={options}
-              searchParams={searchParams}
+              barreDeFiltres={(actions) => (
+                <BarreDesUtilisateurs barre={barre} actions={actions} />
+              )}
+              liens={liensDeLaListe(searchParams, trouves)}
               actions={
                 <BoutonExporterLesUtilisateurs
-                  parametres={parametresDesFiltres(filtres)}
-                  libelles={libellesDesFiltres(filtres, options)}
-                  nombre={trouves.matchesCount}
-                  recherche={searchParams.recherche ?? null}
+                  requete={barre.export.requete}
+                  libelles={barre.export.libelles}
+                  nombre={trouves.totalItems}
+                  recherche={barre.export.recherche}
                 />
               }
             />

@@ -1,26 +1,25 @@
 'use server'
 
 import { actionBuilder } from '@/configuration/nextjs'
-import { withAuth } from '@/features/authentification'
-import type { SessionUser } from '@/features/authentification/domain/sessionUser'
-import {
-  type Accepteur,
-  accepterUneInvitation,
-} from '@/features/equipe/abilities/accepter-une-invitation'
+import type { UtilisateurDeLaSession } from '@/features/authentification/domain/utilisateur-de-la-session'
+import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { ACCEPTER_UNE_INVITATION_ERRORS } from '@/features/equipe/abilities/accepter-une-invitation/action/accepter-une-invitation.errors'
 import { AccepterUneInvitationValidation } from '@/features/equipe/abilities/accepter-une-invitation/action/accepter-une-invitation.validation'
+import { type Accepteur } from '@/features/equipe/abilities/accepter-une-invitation/domain/index'
+import { accepterUneInvitation } from '@/features/equipe/abilities/accepter-une-invitation/implementations/prisma/accepter-une-invitation.mutation'
 import {
   CoordinateurId,
-  Email,
+  Courriel,
   MediateurId,
   ReferenceInvitation,
   UtilisateurId,
 } from '@/features/equipe/domain'
-import { withMaintenance } from '@/features/maintenance-mode'
+import { prevenirLeCoordinateur } from '@/features/equipe/implementations/email'
+import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { fromResult, withInput } from '@/libraries/nextjs'
 
-const accepteurDe = (user: SessionUser): Accepteur => {
-  const email = Email(user.email)
+const accepteurDe = (user: UtilisateurDeLaSession): Accepteur => {
+  const email = Courriel(user.email)
   return user.inscriptionValidee != null && user.mediateur?.id != null
     ? {
         type: 'InscriptionValidee',
@@ -37,9 +36,9 @@ export const accepterUneInvitationAction = actionBuilder()
   .execute(
     fromResult(
       async ({ user, input }) =>
-        accepterUneInvitation({
+        accepterUneInvitation({ prevenirLeCoordinateur })({
           reference: ReferenceInvitation({
-            email: Email(input.email),
+            email: Courriel(input.email),
             coordinateurId: CoordinateurId(input.coordinateurId),
           }),
           accepteur: accepteurDe(user),

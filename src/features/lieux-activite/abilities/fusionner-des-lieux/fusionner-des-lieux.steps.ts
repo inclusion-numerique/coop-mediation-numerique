@@ -1,9 +1,9 @@
 import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { fusionnerDesLieux } from '@/features/lieux-activite/abilities/fusionner-des-lieux'
-import { LieuId } from '@/features/lieux-activite/domain/lieu-id'
+import { prismaClient } from '@/configuration/prisma'
+import { fusionnerDesLieux } from '@/features/lieux-activite/abilities/fusionner-des-lieux/implementations/prisma/fusionner-des-lieux.mutation'
+import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
 
 const semis: {
   absorbeId?: string
@@ -91,14 +91,16 @@ Given('seul le lieu conservé est publié sur la carte nationale', async () => {
   await publier([semis.conserveId])
 })
 
-const poserUnReferent = (id: string | undefined, nom: string) =>
-  prismaClient.lieuInclusion.updateMany({
+const poserUnReferent = (id: string | undefined, nom: string) => {
+  if (id === undefined) throw new Error('Aucun lieu semé pour le référent')
+  return prismaClient.lieuInclusion.updateMany({
     where: { id },
     data: {
       nomReferent: nom,
       courrielReferent: `${nom.toLowerCase()}@example.com`,
     },
   })
+}
 
 Given('seule la fiche à absorber porte un référent', async () => {
   await poserUnReferent(semis.absorbeId, 'Absorbe')
@@ -137,7 +139,9 @@ When("l'administration fusionne le premier dans le second", async () => {
 })
 
 const compterLieu = (id?: string) =>
-  prismaClient.lieuInclusion.count({ where: { id } })
+  prismaClient.lieuInclusion.count({
+    where: { ...(id === undefined ? {} : { id }) },
+  })
 
 Then("le lieu absorbé n'existe plus", async () => {
   assert.strictEqual(await compterLieu(semis.absorbeId), 0)
@@ -150,8 +154,12 @@ Then('le lieu conservé existe toujours', async () => {
 const activitesDuMediateurDansLeLieuConserve = () =>
   prismaClient.mediateurEnActivite.count({
     where: {
-      mediateurId: semis.mediateurId,
-      structureId: semis.conserveId,
+      ...(semis.mediateurId === undefined
+        ? {}
+        : { mediateurId: semis.mediateurId }),
+      ...(semis.conserveId === undefined
+        ? {}
+        : { structureId: semis.conserveId }),
       suppression: null,
       fin: null,
     },
@@ -167,7 +175,7 @@ Then("ce médiateur n'exerce qu'une fois dans le lieu conservé", async () => {
 
 const lieuConserve = () =>
   prismaClient.lieuInclusion.findUniqueOrThrow({
-    where: { id: semis.conserveId },
+    where: { id: semis.conserveId ?? '' },
     select: { visiblePourCartographieNationale: true, nomReferent: true },
   })
 
@@ -197,7 +205,7 @@ Then('le lieu conservé garde son propre référent', async () => {
 
 Then('le lieu conservé annonce les services des deux', async () => {
   const conserve = await prismaClient.lieuInclusion.findUnique({
-    where: { id: semis.conserveId },
+    where: { id: semis.conserveId ?? '' },
     select: { services: true },
   })
 
@@ -209,7 +217,9 @@ Then('le lieu conservé annonce les services des deux', async () => {
 
 const inscriptionDe = (structureCoopId?: string) =>
   prismaClient.lieuInclusionRegistreMain.findFirstOrThrow({
-    where: { structureCoopId },
+    where: {
+      ...(structureCoopId === undefined ? {} : { structureCoopId }),
+    },
     select: {
       deletedAt: true,
       editedBy: true,
@@ -262,11 +272,11 @@ Then('le lieu conservé est inscrit au registre', async () => {
 
 After(async () => {
   const { absorbeId, conserveId, mediateurId, userId } = semis
-  semis.absorbeId = undefined
-  semis.conserveId = undefined
-  semis.mediateurId = undefined
-  semis.userId = undefined
-  fusion.issue = undefined
+  delete semis.absorbeId
+  delete semis.conserveId
+  delete semis.mediateurId
+  delete semis.userId
+  delete fusion.issue
 
   const ids = [absorbeId, conserveId].filter((id): id is string => id != null)
   if (ids.length === 0) return

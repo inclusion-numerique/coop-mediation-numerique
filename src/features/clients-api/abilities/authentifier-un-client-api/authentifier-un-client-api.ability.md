@@ -1,39 +1,40 @@
-# Feature: Authentifier un client API
+# Fonctionnalité: Authentifier un client API
 
 > Un partenaire appelle l'API v1 avec l'identifiant de son client et son
-> secret. L'appel passe si le secret est le bon, si le client est dans sa
-> période de validité et s'il détient les permissions de la route appelée.
+> secret. Il est authentifié si le secret est le bon et si le client est dans
+> sa période de validité ; il est autorisé s'il détient en plus les
+> permissions de la route appelée.
 
-## Rule: Le bon secret, dans la période, avec les permissions, authentifie
+## Règle: Le bon secret, dans la période, authentifie ; les permissions autorisent
 
-### Scenario: Un client valide qui détient la permission est authentifié
+### Scénario: Un client valide qui détient la permission est authentifié
 
-* Given un client API "Tableau de bord" avec les permissions "Activites, Statistiques"
-* When le client API "Tableau de bord" appelle une route "Activites" le 26/10/2026 avec son secret
-* Then l'appel est authentifié
+* Étant donné un client API "Tableau de bord" avec les permissions "Activites, Statistiques"
+* Quand le client API "Tableau de bord" appelle une route "Activites" le 26/10/2026 avec son secret
+* Alors l'appel est authentifié
 
-### Scenario: Un mauvais secret n'authentifie pas
+### Scénario: Un mauvais secret n'authentifie pas
 
-* Given un client API "Tableau de bord" avec les permissions "Activites"
-* When le client API "Tableau de bord" appelle une route "Activites" le 26/10/2026 avec un autre secret
-* Then l'appel est refusé
+* Étant donné un client API "Tableau de bord" avec les permissions "Activites"
+* Quand le client API "Tableau de bord" appelle une route "Activites" le 26/10/2026 avec un autre secret
+* Alors l'appel n'est pas authentifié
 
-### Scenario: Une permission manquante refuse l'appel
+### Scénario: Une permission manquante laisse le client authentifié mais non autorisé
 
-* Given un client API "Tableau de bord" avec les permissions "Activites"
-* When le client API "Tableau de bord" appelle une route "Statistiques" le 26/10/2026 avec son secret
-* Then l'appel est refusé
+* Étant donné un client API "Tableau de bord" avec les permissions "Activites"
+* Quand le client API "Tableau de bord" appelle une route "Statistiques" le 26/10/2026 avec son secret
+* Alors l'appel est authentifié sans la permission
 
-## Rule: Hors de sa période de validité, un client n'est pas authentifié
+## Règle: Hors de sa période de validité, un client n'est pas authentifié
 
-### Scenario: Un client pas encore valable est refusé
+### Scénario: Un client pas encore valable est refusé
 
-* Given un client API "Tableau de bord" valable du 01/11/2026 sans fin
-* When le client API "Tableau de bord" appelle une route "Activites" le 26/10/2026 avec son secret
-* Then l'appel est refusé
+* Étant donné un client API "Tableau de bord" valable du 01/11/2026 sans fin
+* Quand le client API "Tableau de bord" appelle une route "Activites" le 26/10/2026 avec son secret
+* Alors l'appel n'est pas authentifié
 
-### Scenario: Un client dont la validité a pris fin est refusé
+### Scénario: Un client dont la validité a pris fin est refusé
 
-* Given un client API "Tableau de bord" valable du 01/01/2026 au 30/06/2026
-* When le client API "Tableau de bord" appelle une route "Activites" le 26/10/2026 avec son secret
-* Then l'appel est refusé
+* Étant donné un client API "Tableau de bord" valable du 01/01/2026 au 30/06/2026
+* Quand le client API "Tableau de bord" appelle une route "Activites" le 26/10/2026 avec son secret
+* Alors l'appel n'est pas authentifié

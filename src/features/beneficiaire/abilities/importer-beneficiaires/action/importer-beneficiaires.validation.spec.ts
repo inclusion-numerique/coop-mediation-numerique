@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import type { ParsedBeneficiaireRow } from '@/features/beneficiaire/abilities/importer-beneficiaires/analyse/analyseImportBeneficiairesExcel'
+import type { ParsedBeneficiaireRow } from '@/features/beneficiaire/abilities/importer-beneficiaires/domain/analyse-de-l-import'
 import { ImporterBeneficiairesValidation } from './importer-beneficiaires.validation'
 
 const row = (
@@ -52,11 +52,11 @@ describe('ImporterBeneficiairesValidation', () => {
       }),
     ])
 
-    expect(beneficiaire.contactTelephone).toEqual({
+    expect(beneficiaire?.contactTelephone).toEqual({
       _tag: 'disponible',
       numero: '+33102030405',
     })
-    expect(beneficiaire.email).toBe('jean@example.com')
+    expect(beneficiaire?.email).toBe('jean@example.com')
   })
 
   it('tolère un e-mail invalide en l’ignorant', () => {
@@ -64,7 +64,7 @@ describe('ImporterBeneficiairesValidation', () => {
       row({ prenom: 'Jean', nom: 'Dupont', email: 'pas-un-email' }),
     ])
 
-    expect(beneficiaire.email).toBeNull()
+    expect(beneficiaire?.email).toBeNull()
   })
 
   it('reprend la commune et le genre déjà analysés', () => {
@@ -78,11 +78,11 @@ describe('ImporterBeneficiairesValidation', () => {
       ),
     ])
 
-    expect(beneficiaire.communeResidence).toEqual({
+    expect(beneficiaire?.communeResidence).toEqual({
       commune: 'Lyon',
       codePostal: '69001',
       codeInsee: '69381',
     })
-    expect(beneficiaire.genre).toBe('Masculin')
+    expect(beneficiaire?.genre).toBe('Masculin')
   })
 })

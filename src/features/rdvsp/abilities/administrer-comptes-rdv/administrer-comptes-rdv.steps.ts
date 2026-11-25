@@ -7,19 +7,20 @@ import {
   seedRdv,
   testUtilisateurId,
 } from '@/features/rdvsp/rdvsp.cucumber'
-import { getAdministrationRdvspUserData } from './implementation/prisma/compte-rdv-detaille.query'
-import {
-  type AdministrationRdvspData,
-  getAdministrationRdvspData,
-} from './implementation/prisma/comptes-rdv.query'
+import type {
+  CompteAdministre,
+  ComptesAdministres,
+} from './domain/comptes-administres'
+import { compteRdvDetaille } from './implementations/prisma/compte-rdv-detaille.query'
+import { comptesRdv } from './implementations/prisma/comptes-rdv.query'
 
 const AGENT_ID = ID_TEST.compte + 20
 const RDV_ID = ID_TEST.rdv + 500
 const ORGANISATION_ID = ID_TEST.organisation + 500
 
 const administration: {
-  liste?: AdministrationRdvspData
-  detail?: Awaited<ReturnType<typeof getAdministrationRdvspUserData>>
+  liste?: ComptesAdministres
+  detail?: CompteAdministre | null
 } = {}
 
 Given(
@@ -41,11 +42,11 @@ Given(
 )
 
 When("l'administration liste les comptes RDV", async () => {
-  administration.liste = await getAdministrationRdvspData()
+  administration.liste = await comptesRdv()
 })
 
 When("l'administration consulte le détail de ce compte", async () => {
-  administration.detail = await getAdministrationRdvspUserData({
+  administration.detail = await compteRdvDetaille({
     userId: testUtilisateurId,
   })
 })
@@ -53,7 +54,7 @@ When("l'administration consulte le détail de ce compte", async () => {
 When(
   "l'administration consulte le détail d'un utilisateur sans compte RDV",
   async () => {
-    administration.detail = await getAdministrationRdvspUserData({
+    administration.detail = await compteRdvDetaille({
       userId: v4(),
     })
   },

@@ -19,9 +19,9 @@ import {
   type Typologies,
   type Url,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import type { BanId } from '../../../domain/ban-id'
+import type { VisibiliteCartographie } from '../../../domain/cartographie-nationale/visibilite-cartographie'
+import type { BanId } from '../../../domain/identifiants/ban-id'
 import type { NomUsage } from '../../../domain/identite-sirene'
-import type { VisibiliteCartographie } from '../../../domain/visibilite-cartographie'
 
 export type ModificationLieu =
   | {

@@ -1,16 +1,29 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma'
+import { fusionnerDesComptes } from '@/features/utilisateurs/abilities/fusionner-des-comptes/domain/fusionner-des-comptes'
+import { retirerLaSourceDesListes } from '@/features/utilisateurs/abilities/fusionner-des-comptes/implementations/brevo/retirer-la-source-des-listes.mutation'
+import { comptesAFusionner } from '@/features/utilisateurs/abilities/fusionner-des-comptes/implementations/prisma/comptes-a-fusionner.query'
+import { fusionner } from '@/features/utilisateurs/abilities/fusionner-des-comptes/implementations/prisma/fusionner.mutation'
+import type { SynchroniserLaPersonne } from '@/features/utilisateurs/implementations/prisma/registre-des-personnes.mutation'
 import {
   type CompteSeme,
   semerCompte,
 } from '@/features/utilisateurs/utilisateurs.cucumber'
-import { fusionnerDesComptes } from './commands/fusionner-des-comptes'
+
+const fusionnerDesComptesAvec = (
+  synchroniserLaPersonne: SynchroniserLaPersonne,
+) =>
+  fusionnerDesComptes({
+    lireLesComptesAFusionner: comptesAFusionner,
+    fusionner: fusionner(synchroniserLaPersonne),
+    retirerLaSourceDesListes,
+  })
 
 const fusion: {
   source?: CompteSeme
   cible?: CompteSeme
-  resultat?: Awaited<ReturnType<typeof fusionnerDesComptes>>
+  resultat?: Awaited<ReturnType<ReturnType<typeof fusionnerDesComptesAvec>>>
   contratId?: number
   equipeId?: string
 } = {}
@@ -118,23 +131,17 @@ Given('la cible est supprimée', async () => {
 })
 
 When("l'administration fusionne la source dans la cible", async () => {
-  fusion.resultat = await fusionnerDesComptes(
-    {
-      sourceId: source().userId,
-      cibleId: cible().userId,
-    },
-    async () => undefined,
-  )
+  fusion.resultat = await fusionnerDesComptesAvec(async () => undefined)({
+    sourceId: source().userId,
+    cibleId: cible().userId,
+  })
 })
 
 When("l'administration fusionne la source avec elle-même", async () => {
-  fusion.resultat = await fusionnerDesComptes(
-    {
-      sourceId: source().userId,
-      cibleId: source().userId,
-    },
-    async () => undefined,
-  )
+  fusion.resultat = await fusionnerDesComptesAvec(async () => undefined)({
+    sourceId: source().userId,
+    cibleId: source().userId,
+  })
 })
 
 Then('la fusion des comptes aboutit', () => {

@@ -1,7 +1,7 @@
-import { metadataTitle } from '@/configuration/projet/metadataTitle'
-import { authenticateAdmin } from '@/features/authentification/implementation/session/authenticateUser'
-import { listerLesClientsApi } from '@/features/clients-api/abilities/lister-les-clients-api'
-import { ClientsApiPage } from '@/features/clients-api/abilities/lister-les-clients-api/ui'
+import { metadataTitle } from '@/configuration/projet'
+import { authenticateAdmin } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
+import { listerLesClientsApi } from '@/features/clients-api/abilities/lister-les-clients-api/implementations/prisma/clients-api.query'
+import { ClientsApiPage } from '@/features/clients-api/abilities/lister-les-clients-api/ui/pages/ClientsApiPage'
 
 export const metadata = {
   title: metadataTitle('Clients API'),

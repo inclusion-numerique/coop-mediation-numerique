@@ -1,16 +1,17 @@
 import type { NextRequest } from 'next/server'
 import { v4 } from 'uuid'
-import { getServerUrl } from '@/configuration/projet/baseUrl'
-import { idTokenPourDeconnexion } from '@/features/authentification/abilities/se-deconnecter'
-import type { ProconnectSignoutState } from '@/features/authentification/implementation/proconnect/proconnectSignout'
-import { generateProconnectSignoutUrl } from '@/features/authentification/implementation/proconnect/proconnectSignout'
-import { getSessionTokenFromNextRequestCookies } from '@/features/authentification/implementation/session/getSessionTokenFromCookies'
-import { getSessionUserFromSessionToken } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
+import { getServerUrl } from '@/configuration/projet/serveur'
+import { jetonsProconnect } from '@/features/authentification/abilities/se-deconnecter/implementations/prisma'
+import { idTokenPourDeconnexion } from '@/features/authentification/abilities/se-deconnecter/implementations/proconnect/se-deconnecter.query'
+import { utilisateurDuJetonDeSession } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
+import type { ProconnectSignoutState } from '@/features/authentification/implementations/proconnect/proconnect-signout.transfer'
+import { generateProconnectSignoutUrl } from '@/features/authentification/implementations/proconnect/proconnect-signout.transfer'
+import { jetonDeSessionDesCookies } from '@/features/authentification/implementations/session/session-token-from-cookies.query'
 import { cheminInterne } from '@/libraries/chemin-interne'
 import {
   type EncodedState,
   encodeSerializableState,
-} from '@/libraries/parametres-d-url/encodeSerializableState'
+} from '@/libraries/etat-encode'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -24,14 +25,16 @@ export const GET = async (request: NextRequest) => {
     { absolutePath: true },
   )
 
-  const sessionToken = getSessionTokenFromNextRequestCookies(request.cookies)
+  const sessionToken = jetonDeSessionDesCookies(request.cookies)
   const user = sessionToken
-    ? await getSessionUserFromSessionToken(sessionToken)
+    ? await utilisateurDuJetonDeSession(sessionToken)
     : null
 
   if (!user) return redirectionVers(callbackUrl)
 
-  const idTokenHint = await idTokenPourDeconnexion(user.id)
+  const idTokenHint = await idTokenPourDeconnexion(
+    await jetonsProconnect(user.id),
+  )
 
   if (idTokenHint) {
     return redirectionVers(

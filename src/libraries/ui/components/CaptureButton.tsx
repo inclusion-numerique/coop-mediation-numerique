@@ -1,3 +1,5 @@
+'use client'
+
 import Button, { ButtonProps } from '@codegouvfr/react-dsfr/Button'
 import { snapdom } from '@zumer/snapdom'
 import { RefObject } from 'react'

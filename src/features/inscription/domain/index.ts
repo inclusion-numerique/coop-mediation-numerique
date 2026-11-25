@@ -10,30 +10,32 @@ export {
   ProfilNonChoisi,
 } from './errors'
 export {
-  estFranchi,
-  Franchissement,
-} from './franchissement'
+  EtapeDInscription,
+  type ValeurDEtapeDInscription,
+} from './etape-d-inscription'
 
 export type {
   InscriptionEnCours,
   InscriptionEtat,
-} from './inscription-etat'
+} from './etat-de-l-inscription'
 export {
-  isNonDemarree,
-  isValidee,
-} from './inscription-etat'
-export type { InscriptionContexte } from './inscription-flow'
-export { getInscriptionFlow, getNextInscriptionStep } from './inscription-flow'
-export { InscriptionFlowType } from './inscription-flow-type'
+  estNonDemarree,
+  estValidee,
+} from './etat-de-l-inscription'
 export {
-  InscriptionStep,
-  type InscriptionStepValue,
-} from './inscription-step'
+  estFranchi,
+  Franchissement,
+} from './franchissement'
+export type { InscriptionContexte } from './parcours-d-inscription'
+export {
+  etapeSuivante,
+  parcoursDInscription,
+} from './parcours-d-inscription'
 export { prochaineEtape } from './prochaine-etape'
 export {
-  computeUserProfile,
   libelleDuProfil,
   ProfilInscription,
+  profilDInscription,
   profilInscriptionLabels,
 } from './profil-inscription'
 export { Role } from './role'
@@ -42,4 +44,5 @@ export {
   franchirStructureEmployeuse,
   poserRole,
 } from './transitions'
-export { UserId } from './user-id'
+export { TypeDeParcours } from './type-de-parcours'
+export { UtilisateurId } from './utilisateur-id'

@@ -1,12 +1,14 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma'
+import { type MediateursAInviter } from '@/features/equipe/abilities/inviter-des-membres/domain/index'
+import { inviterDesMembres } from '@/features/equipe/abilities/inviter-des-membres/implementations/prisma/inviter-des-membres.mutation'
+import { rechercherDesMediateursAInviter } from '@/features/equipe/abilities/inviter-des-membres/implementations/prisma/rechercher-des-mediateurs-a-inviter.query'
 import {
-  inviterDesMembres,
-  type MediateursAInviter,
-  rechercherDesMediateursAInviter,
-} from '@/features/equipe/abilities/inviter-des-membres'
-import { CoordinateurId, Email, UtilisateurId } from '@/features/equipe/domain'
+  CoordinateurId,
+  Courriel,
+  UtilisateurId,
+} from '@/features/equipe/domain'
 import {
   type CoordinateurSeme,
   invitationDe,
@@ -16,11 +18,12 @@ import {
   semerUneInvitation,
   semerUnMediateurDEquipe,
 } from '@/features/equipe/equipe.cucumber'
+import { envoyerUneInvitation } from '@/features/equipe/implementations/email'
 
 const contexte: {
   coordinateur?: CoordinateurSeme
   mediateur?: MediateurSeme
-  issue?: Awaited<ReturnType<typeof inviterDesMembres>>
+  issue?: Awaited<ReturnType<ReturnType<typeof inviterDesMembres>>>
   proposes?: MediateursAInviter
 } = {}
 
@@ -38,9 +41,9 @@ const unique = (email: string): string =>
   email.replace('@', `+${coordinateur().coordinateurId.slice(0, 8)}@`)
 
 const inviter = async (emails: readonly string[]) => {
-  contexte.issue = await inviterDesMembres({
+  contexte.issue = await inviterDesMembres({ envoyerUneInvitation })({
     coordinateurId: CoordinateurId(coordinateur().coordinateurId),
-    candidats: emails.map(Email),
+    candidats: emails.map(Courriel),
     auteurId: UtilisateurId(coordinateur().userId),
   })
 }

@@ -1,6 +1,6 @@
-import { tagsColor } from '@/features/activites/ui/graphiques/couleurs'
-import { ProgressItemList } from '@/libraries/proportions/ProgressItemList'
-import type { parTagPresentes } from '../par-tag.presenter'
+import { tagsColor } from '@/features/activites/ui/labels/couleurs.labels'
+import { ProgressItemList } from '@/libraries/proportions/composants'
+import type { parTagPresentes } from '../presenters/par-tag.presenter'
 
 const desc = (
   { count: countA }: { count: number },
@@ -17,7 +17,7 @@ export const TagsDesAccompagnements = ({
   pourImpression = false,
 }: {
   tags: ReturnType<typeof parTagPresentes>
-  pourImpression?: boolean
+  pourImpression?: boolean | undefined
 }) => (
   <ProgressItemList
     items={[...tags].sort(desc)}

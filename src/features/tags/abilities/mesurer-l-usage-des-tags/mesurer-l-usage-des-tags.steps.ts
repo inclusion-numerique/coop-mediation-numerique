@@ -2,7 +2,7 @@ import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { semerUnTagUtiliseDansUneActivite } from '@/features/tags/tags.cucumber'
 import type { UsageDesTags } from './domain'
-import { usageDesTags } from './implementation'
+import { usageDesTags } from './implementations/prisma/usage-des-tags.query'
 
 const mesures: { avant?: UsageDesTags; apres?: UsageDesTags } = {}
 

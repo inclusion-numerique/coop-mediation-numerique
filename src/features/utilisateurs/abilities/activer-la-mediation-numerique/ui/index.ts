@@ -1,1 +1,0 @@
-export { CarteMediationNumerique } from './CarteMediationNumerique'

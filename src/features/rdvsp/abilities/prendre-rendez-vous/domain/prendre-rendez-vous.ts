@@ -1,21 +1,25 @@
-import { failure, type Result, success } from '@/libraries/result'
-import type { CompteRdv, CompteRdvUtilisable } from '../../../domain/compte-rdv'
-import { estUtilisable } from '../../../domain/compte-rdv'
-import type {
-  DemandeRdv,
-  DemandeRdvCreee,
-  UrlRetour,
-  UsagerDeLaDemande,
-} from '../../../domain/demande-rdv'
-import { CompteNonLie, type ErreurRdvApi } from '../../../domain/errors'
-import type { UsagerId } from '../../../domain/usager-id'
-import type { UtilisateurCoopId } from '../../../domain/utilisateur-coop-id'
 import type {
   BeneficiaireCible,
   BeneficiaireCibleId,
   MediateurProprietaireId,
-} from './beneficiaire-cible'
-import { BeneficiaireIntrouvable } from './errors'
+} from '@/features/rdvsp/abilities/prendre-rendez-vous/domain/beneficiaire-cible'
+import { BeneficiaireIntrouvable } from '@/features/rdvsp/abilities/prendre-rendez-vous/domain/errors'
+import type {
+  CompteRdv,
+  CompteRdvUtilisable,
+} from '@/features/rdvsp/domain/compte/compte-rdv'
+import { estUtilisable } from '@/features/rdvsp/domain/compte/compte-rdv'
+import { CompteNonLie, type ErreurRdvApi } from '@/features/rdvsp/domain/errors'
+import type { UsagerId } from '@/features/rdvsp/domain/identifiants/usager-id'
+import type { UtilisateurCoopId } from '@/features/rdvsp/domain/identifiants/utilisateur-coop-id'
+import type { RdvServicePublicApi } from '@/features/rdvsp/domain/ports'
+import type {
+  DemandeRdv,
+  DemandeRdvCreee,
+  UsagerDeLaDemande,
+} from '@/features/rdvsp/domain/rdv/demande-rdv'
+import { UrlRetour } from '@/features/rdvsp/domain/rdv/demande-rdv'
+import { failure, type Result, success } from '@/libraries/result'
 
 export type ErreurPriseRendezVous = BeneficiaireIntrouvable | ErreurRdvApi
 
@@ -102,3 +106,62 @@ export const demandePourBeneficiaire = (
   urlRetour: urlDossierBeneficiaire,
   urlDossier: urlDossierBeneficiaire,
 })
+
+export type DependancesPrendreRendezVous = {
+  readonly beneficiaireADemander: BeneficiaireADemander
+  readonly compteDuMediateur: CompteDuMediateur
+  readonly creerDemandeRdv: RdvServicePublicApi['creerDemandeRdv']
+  readonly lierUsager: LierUsagerAuBeneficiaire
+  /** Construit l'URL du dossier d'accompagnement, qui dépend de l'hôte. */
+  readonly urlDossierBeneficiaire: (id: BeneficiaireCibleId) => string
+}
+
+/**
+ * Le rattachement de l'usager suit immédiatement la création de la demande : le
+ * bénéficiaire porte dès lors l'identifiant RDV Service Public, et la demande
+ * suivante désignera cet usager au lieu d'en réclamer un nouveau.
+ */
+export const prendreRendezVous =
+  ({
+    beneficiaireADemander,
+    compteDuMediateur,
+    creerDemandeRdv,
+    lierUsager,
+    urlDossierBeneficiaire,
+  }: DependancesPrendreRendezVous): PrendreRendezVous =>
+  async ({ utilisateurId, mediateurId, beneficiaireId }) => {
+    const verifie = verifierBeneficiaire({
+      beneficiaire: await beneficiaireADemander(beneficiaireId),
+      mediateurId,
+      beneficiaireId,
+    })
+
+    if (!verifie.success) {
+      return verifie
+    }
+
+    const compte = verifierCompte(await compteDuMediateur(utilisateurId))
+
+    if (!compte.success) {
+      return compte
+    }
+
+    const demande = await creerDemandeRdv(
+      compte.data,
+      demandePourBeneficiaire(
+        verifie.data,
+        UrlRetour(urlDossierBeneficiaire(beneficiaireId)),
+      ),
+    )
+
+    if (!demande.success) {
+      return demande
+    }
+
+    await lierUsager({
+      beneficiaire: verifie.data,
+      usagerId: demande.data.usagerId,
+    })
+
+    return success(demande.data)
+  }

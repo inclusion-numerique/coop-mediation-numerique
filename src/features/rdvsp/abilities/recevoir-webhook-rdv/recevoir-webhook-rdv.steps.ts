@@ -1,16 +1,16 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import type { RecevoirWebhookRdv } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/domain/recevoir-webhook-rdv'
-import { lireNotificationRdv } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/implementation/api/lire-notification-rdv'
+import { recevoirWebhookRdv } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/domain/recevoir-webhook-rdv'
+import { lireNotificationRdv } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/implementations/api/notification-rdv.params'
 import {
   comptePourWebhook,
   enregistrerRdvDeLaNotification,
   organisationConnue,
   rdvConnuParId,
   supprimerRdvDeLaNotification,
-} from '@/features/rdvsp/abilities/recevoir-webhook-rdv/implementation/prisma/webhook-rdv.prisma'
-import { recevoirWebhookRdv } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/implementation/recevoir-webhook-rdv'
-import { EvenementWebhook } from '@/features/rdvsp/domain/evenement-webhook'
+} from '@/features/rdvsp/abilities/recevoir-webhook-rdv/implementations/prisma/webhook-rdv.mutation'
+import { EvenementWebhook } from '@/features/rdvsp/domain/webhook/evenement-webhook'
 import {
   ID_TEST,
   rdvEnBase,

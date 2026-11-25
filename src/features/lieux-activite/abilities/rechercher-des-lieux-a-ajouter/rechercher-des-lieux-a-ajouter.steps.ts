@@ -1,14 +1,14 @@
 import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { Nom } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
+import { prismaClient } from '@/configuration/prisma'
 import {
   RechercheDeLieu,
   rechercherDesLieuxAAjouter,
 } from '@/features/lieux-activite/abilities/rechercher-des-lieux-a-ajouter/domain'
-import { chercherDansLaCoop } from '@/features/lieux-activite/abilities/rechercher-des-lieux-a-ajouter/implementation'
-import { IdentifiantCartographie } from '@/features/lieux-activite/domain/ids-cartographie-nationale'
-import { LieuId } from '@/features/lieux-activite/domain/lieu-id'
+import { chercherDansLaCoop } from '@/features/lieux-activite/abilities/rechercher-des-lieux-a-ajouter/implementations/prisma/lieux-de-la-coop.query'
+import { IdentifiantCartographie } from '@/features/lieux-activite/domain/cartographie-nationale/ids-cartographie-nationale'
+import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
 import { NombreDeLieux } from '@/features/lieux-activite/domain/nombres'
 import {
   AdresseLibre,
@@ -129,7 +129,7 @@ Then('la recherche propose ce lieu à trouver une seule fois', () => {
 
 After(async () => {
   const id = scenario.lieuATrouver
-  scenario.lieuATrouver = undefined
+  delete scenario.lieuATrouver
   scenario.cartographie = []
   scenario.suggestions = []
   if (id == null) return

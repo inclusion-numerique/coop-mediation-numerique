@@ -4,9 +4,8 @@ import type { SideMenuProps } from '@codegouvfr/react-dsfr/SideMenu'
 import classNames from 'classnames'
 import Link from 'next/link'
 import { Fragment, memo } from 'react'
-import { addActiveStateToItems } from '@/libraries/ui/components/navigationSideMenuUtils'
-import { useNavigationSideMenu } from '@/libraries/ui/hooks/useNavigationSideMenu'
-import styles from './CompactNavigationSideMenu.module.css'
+import { addActiveStateToItems } from '@/libraries/ui/components/navigation-side-menu-utils'
+import { useNavigationSideMenu } from '@/libraries/ui/hooks'
 
 /**
  * This component is a replacement for DSFR side menu, with sections always open and with a compact design.
@@ -15,10 +14,11 @@ import styles from './CompactNavigationSideMenu.module.css'
  */
 
 type CompactNavigationSideMenuProps = {
-  className?: string
+  className?: string | undefined
   contentId: string
-  id?: string
-} & Omit<SideMenuProps, 'id'>
+  id?: string | undefined
+  style?: SideMenuProps['style'] | undefined
+} & Omit<SideMenuProps, 'id' | 'style' | 'className'>
 
 const CompactNavigationSideMenu = memo(
   ({
@@ -68,7 +68,7 @@ const CompactNavigationSideMenu = memo(
           },
           classes.root,
           className,
-          styles.nav,
+          'menu-lateral-compact',
         )}
       >
         <div className={classNames('fr-sidemenu__inner', classes.inner)}>

@@ -1,26 +1,27 @@
-import type { DataTableUrlState } from '@/libraries/data-table'
-import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
-import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
+import { contentId } from '@/libraries/liens-d-evitement'
+import { SkipLinksPortal } from '@/libraries/liens-d-evitement/composants'
 import { pluriel } from '@/libraries/pluriel'
-import AdministrationBreadcrumbs from '@/libraries/ui/components/administration/AdministrationBreadcrumbs'
-import AdministrationTitle from '@/libraries/ui/components/administration/AdministrationTitle'
-import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
-import EmployeusesTable from '../EmployeusesTable'
-import type { EmployeuseAffichee } from '../employeuse-affichee.presenter'
-import RechercheEmployeuses from '../RechercheEmployeuses'
-
-const baseHref = '/administration/structures-employeuses'
+import {
+  AdministrationBreadcrumbs,
+  AdministrationTitle,
+  CoopPageContainer,
+} from '@/libraries/ui/components'
+import EmployeusesTable from '../components/EmployeusesTable'
+import RechercheEmployeuses from '../components/RechercheEmployeuses'
+import {
+  type BarreDesEmployeuses,
+  CHEMIN_DES_EMPLOYEUSES,
+} from '../presenters/barre-des-employeuses.presenter'
+import type { EmployeuseAffichee } from '../presenters/employeuse-affichee.presenter'
 
 const EmployeusesListePage = ({
   employeuses,
   trouvees,
-  parPage,
-  state,
+  barre,
 }: {
   employeuses: EmployeuseAffichee[]
   trouvees: number
-  parPage: number
-  state: DataTableUrlState
+  barre: BarreDesEmployeuses
 }) => (
   <CoopPageContainer size="full">
     <SkipLinksPortal />
@@ -33,7 +34,7 @@ const EmployeusesListePage = ({
         <p className="fr-text--medium fr-mb-2v">
           Rechercher dans la liste des structures employeuses
         </p>
-        <RechercheEmployeuses state={state} />
+        <RechercheEmployeuses />
       </div>
       <div className="fr-flex fr-justify-content-space-between fr-align-items-center fr-mb-6v">
         <span className="fr-text--semi-bold">
@@ -47,10 +48,8 @@ const EmployeusesListePage = ({
       </div>
       <EmployeusesTable
         employeuses={employeuses}
-        trouvees={trouvees}
-        parPage={parPage}
-        state={state}
-        baseHref={baseHref}
+        barre={barre}
+        baseHref={CHEMIN_DES_EMPLOYEUSES}
       />
     </main>
   </CoopPageContainer>

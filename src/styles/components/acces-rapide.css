@@ -1,0 +1,50 @@
+.acces-rapide {
+  background-color: var(--background-default-grey);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow:
+    0 6px 18px rgb(0 0 18 / 16%),
+    0 2px 4px rgb(0 0 18 / 8%);
+  z-index: 10000;
+}
+
+.acces-rapide__grille {
+  gap: 1.5rem;
+}
+
+.acces-rapide__outil {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: var(--text-default-grey);
+  gap: 0.5rem;
+  background-image: none;
+}
+
+.acces-rapide__outil::after {
+  content: none !important;
+  display: none !important;
+}
+
+.acces-rapide__outil:hover .acces-rapide__icone {
+  background-color: var(--background-alt-grey);
+}
+
+.acces-rapide__icone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  border-radius: 12px;
+  background-color: var(--background-alt-blue-france);
+  transition: background-color 0.2s;
+}
+
+.acces-rapide__libelle {
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-align: center;
+  white-space: nowrap;
+}

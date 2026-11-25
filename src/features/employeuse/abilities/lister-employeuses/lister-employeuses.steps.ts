@@ -1,7 +1,8 @@
 import assert from 'node:assert'
+import { Page, PageSize, Search, Sort } from '@arckit/resultset'
 import { Given, Then, When } from '@cucumber/cucumber'
 import type { EmployeuseListee } from '@/features/employeuse/abilities/lister-employeuses/domain/lister-employeuses'
-import { listerEmployeuses } from '@/features/employeuse/abilities/lister-employeuses/implementation'
+import { listerEmployeuses } from '@/features/employeuse/abilities/lister-employeuses/implementations/prisma/lister-employeuses.query'
 import {
   seedAffectation,
   seedEmployeuseMain,
@@ -52,15 +53,14 @@ Given(
 
 const lister = async (recherche: string, parPage: number) => {
   const resultat = await listerEmployeuses({
-    recherche,
-    page: 1,
-    parPage,
-    triPar: null,
-    sens: null,
+    recherche: Search(recherche),
+    tri: Sort('nom', 'asc'),
+    page: Page(1),
+    pageSize: PageSize(parPage),
   })
-  listees = resultat.employeuses
-  total = resultat.total
-  pages = resultat.pages
+  listees = resultat.items
+  total = resultat.totalItems
+  pages = Math.max(Math.ceil(resultat.totalItems / resultat.pageSize), 1)
 }
 
 When(

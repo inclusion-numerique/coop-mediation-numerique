@@ -11,8 +11,9 @@ import {
   useRef,
 } from 'react'
 import { useOnClickOutside } from 'usehooks-ts'
-import { download } from '@/libraries/navigateur/download'
-import { createToast } from '@/libraries/ui/toast/createToast'
+import { hrefDeLExportDesBeneficiaires } from '@/features/beneficiaire/ui/presenters/liens.presenter'
+import { download } from '@/libraries/navigateur'
+import { createToast } from '@/libraries/ui/toast'
 
 export const BeneficiairesMoreOptionsButton = () => {
   // Le click-outside par défaut du JS DSFR ne fonctionne pas ici, on le gère
@@ -85,7 +86,7 @@ export const BeneficiairesMoreOptionsButton = () => {
               className="fr-nav__link fr-display-block"
               onClick={() =>
                 exportXlsx(
-                  `/coop/mes-beneficiaires/export?${params}`,
+                  hrefDeLExportDesBeneficiaires(params.toString()),
                   'Le téléchargement de vos bénéficiaires est en cours.',
                 )
               }

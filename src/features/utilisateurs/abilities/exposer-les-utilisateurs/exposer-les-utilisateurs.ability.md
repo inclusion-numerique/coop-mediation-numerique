@@ -1,32 +1,32 @@
-# Feature: Exposer les utilisateurs
+# Fonctionnalité: Exposer les utilisateurs
 
 > L'API v1 expose les comptes inscrits, ainsi que ceux qui, sans avoir fini
 > leur inscription, ont déjà saisi au moins une activité.
 
-## Rule: L'API expose les inscrits et ceux qui ont déjà produit
+## Règle: L'API expose les inscrits et ceux qui ont déjà produit
 
-### Scenario: Un inscrit est exposé
+### Scénario: Un inscrit est exposé
 
-* Given un compte inscrit à exposer
-* When l'API liste les utilisateurs
-* Then ce compte est exposé
+* Étant donné un compte inscrit à exposer
+* Quand l'API liste les utilisateurs
+* Alors ce compte est exposé
 
-### Scenario: Une inscription en cours sans activité n'est pas exposée
+### Scénario: Une inscription en cours sans activité n'est pas exposée
 
-* Given une inscription en cours sans activité à exposer
-* When l'API liste les utilisateurs
-* Then ce compte n'est pas exposé
+* Étant donné une inscription en cours sans activité à exposer
+* Quand l'API liste les utilisateurs
+* Alors ce compte n'est pas exposé
 
-### Scenario: Une inscription en cours qui a saisi une activité est exposée
+### Scénario: Une inscription en cours qui a saisi une activité est exposée
 
-* Given une inscription en cours avec une activité à exposer
-* When l'API liste les utilisateurs
-* Then ce compte est exposé
+* Étant donné une inscription en cours avec une activité à exposer
+* Quand l'API liste les utilisateurs
+* Alors ce compte est exposé
 
-## Rule: L'API peut écarter les comptes supprimés
+## Règle: L'API peut écarter les comptes supprimés
 
-### Scenario: Un compte supprimé est écarté sur demande
+### Scénario: Un compte supprimé est écarté sur demande
 
-* Given un compte inscrit puis supprimé à exposer
-* When l'API liste les utilisateurs non supprimés
-* Then ce compte n'est pas exposé
+* Étant donné un compte inscrit puis supprimé à exposer
+* Quand l'API liste les utilisateurs non supprimés
+* Alors ce compte n'est pas exposé

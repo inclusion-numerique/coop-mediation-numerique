@@ -1,0 +1,43 @@
+import { utilisateur } from '@/features/utilisateurs/fixtures/utilisateur'
+
+export const coordinateurInscritAvecToutCoordinateurId =
+  '02f9e2f6-61ba-4179-b96d-934b58d6b15e'
+
+export const coordinateurInscritAvecToutMediateurId =
+  '379a0d7e-54ac-4db6-95c4-3752cdd05d32'
+
+export const coordinateurInscritAvecTout = utilisateur({
+  id: '8c8824f0-a10d-4e30-baf0-8d4fab5c7a74',
+  firstName: 'Coordinateur',
+  lastName: 'Inscrit avec tout',
+  lastLogin: new Date(),
+  lastSeen: new Date(),
+  isFixture: true,
+  role: 'User',
+  isConseillerNumerique: true,
+  coordinateur: {
+    connectOrCreate: {
+      where: {
+        id: coordinateurInscritAvecToutCoordinateurId,
+      },
+      create: {
+        id: coordinateurInscritAvecToutCoordinateurId,
+      },
+    },
+  },
+  mediateur: {
+    connectOrCreate: {
+      where: {
+        id: coordinateurInscritAvecToutMediateurId,
+      },
+      create: {
+        id: coordinateurInscritAvecToutMediateurId,
+      },
+    },
+  },
+  employeDeLaStructureEmployeuse: true,
+  profilInscription: 'Coordinateur',
+  acceptationCgu: new Date(),
+  inscriptionValidee: new Date(),
+  structureEmployeuseRenseignee: new Date(),
+})

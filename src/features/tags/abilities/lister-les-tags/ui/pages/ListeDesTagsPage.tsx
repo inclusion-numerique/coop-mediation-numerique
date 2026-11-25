@@ -1,41 +1,27 @@
 import type { ReactNode } from 'react'
-import {
-  DEFAULT_PAGE_SIZE,
-  generatePageSizeSelectOptions,
-  PaginationNavWithPageSizeSelect,
-} from '@/libraries/data-table'
-import SortSelect from '@/libraries/data-table/sort/SortSelect'
-import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
-import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
-import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
-import { LigneDuTag } from '../../../../ui'
-import type { LigneDeLaListe } from '../liste-des-tags.presenter'
-
-const pageSizeOptions = generatePageSizeSelectOptions([10, 20, 50, 100])
-
-export type ParametresDeLaListe = {
-  lignes?: string
-  page?: string
-  tri?: string
-}
+import type { LiensDePagination } from '@/libraries/etat-d-url'
+import { PiedDeListe } from '@/libraries/etat-d-url/liste'
+import { contentId } from '@/libraries/liens-d-evitement'
+import { SkipLinksPortal } from '@/libraries/liens-d-evitement/composants'
+import { CoopBreadcrumbs } from '@/libraries/ui/components'
+import { LigneDuTag } from '../../../../ui/components/LigneDuTag'
+import { TriDesTags } from '../components/TriDesTags'
+import { paginationDesTags } from '../filtres/liste-des-tags.filtre'
+import type { LigneDeLaListe } from '../presenters/liste-des-tags.presenter'
 
 export const ListeDesTagsPage = ({
   lignes,
   total,
-  lignesParPage,
+  pages,
   estCoordinateur,
-  baseHref,
-  searchParams,
   creer,
   modales,
   actions,
 }: {
   lignes: readonly LigneDeLaListe[]
   total: number
-  lignesParPage: number
+  pages: LiensDePagination
   estCoordinateur: boolean
-  baseHref: string
-  searchParams: ParametresDeLaListe
   creer: ReactNode
   modales: ReactNode
   actions: (ligne: LigneDeLaListe) => ReactNode
@@ -80,13 +66,7 @@ export const ListeDesTagsPage = ({
         </p>
         <div className="fr-flex fr-direction-row fr-align-items-center fr-flex-gap-4v fr-justify-content-space-between fr-mb-8v">
           <h2 className="fr-h6 fr-mb-0">{total} Tags</h2>
-          <SortSelect
-            options={[
-              { label: 'Ordre alphabétique', value: 'alphabetique' },
-              { label: 'Visibilité', value: 'visibilite' },
-            ]}
-            baseHref={baseHref}
-          />
+          <TriDesTags />
         </div>
         <hr className="fr-separator-1px" />
         <ul className="fr-raw-list">
@@ -100,14 +80,10 @@ export const ListeDesTagsPage = ({
             </li>
           ))}
         </ul>
-        <PaginationNavWithPageSizeSelect
+        <PiedDeListe
           className="fr-mt-12v"
-          defaultPageSize={DEFAULT_PAGE_SIZE}
-          pageSizeOptions={pageSizeOptions}
-          itemsCount={total}
-          pageSize={lignesParPage}
-          baseHref={baseHref}
-          state={searchParams}
+          liens={pages}
+          pagination={paginationDesTags}
         />
       </main>
     </div>

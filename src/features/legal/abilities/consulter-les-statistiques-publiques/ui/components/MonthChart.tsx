@@ -13,9 +13,14 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import { numberToString } from '@/libraries/nombre/formatNumber'
+import { numberToString } from '@/libraries/nombre'
 import CustomTooltip from './CustomTooltip'
-import { StatisticsLegend } from './StatisticsLegend'
+
+export type LegendeDesStatistiques<T extends object = object> = {
+  label: string
+  value?: string
+  key: keyof T
+}
 
 export type ChartSerie = {
   label: string
@@ -25,7 +30,7 @@ export type ChartSerie = {
   key: string
 }
 
-export type ChartData =
+export type DonneesDuGraphique =
   | {
       mois: string
     }
@@ -36,7 +41,7 @@ const StatisticsTooltip = <T extends object>({
   legends = [],
 }: {
   tooltipLabelDataKey?: keyof T
-  legends?: StatisticsLegend<T>[]
+  legends?: LegendeDesStatistiques<T>[]
 }) => (
   <Tooltip
     wrapperClassName="fr-text--sm fr-text-default--grey "
@@ -82,8 +87,8 @@ export const MonthChart = ({
   nextForTitleAs: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'div'
   chartColors: { fill: string }[]
   series: ChartSerie[]
-  counts: ChartData[]
-  runningTotal?: ChartData[]
+  counts: DonneesDuGraphique[]
+  runningTotal?: DonneesDuGraphique[] | undefined
   showCumulativeToggle?: boolean
 }) => {
   const [isCumulative, setIsCumulative] = useState(false)
@@ -135,7 +140,9 @@ export const MonthChart = ({
       <div style={{ height: 240, marginLeft: -32 }}>
         <ResponsiveContainer width="100%" height="100%">
           {isCumulative ? (
-            <AreaChart data={runningTotal}>
+            <AreaChart
+              {...(runningTotal === undefined ? {} : { data: runningTotal })}
+            >
               <CartesianGrid strokeDasharray="3 3" vertical={false} />
               {StatisticsTooltip({ tooltipLabelDataKey, legends })}
               <XAxis
@@ -154,7 +161,7 @@ export const MonthChart = ({
                   key={dataKey.toString()}
                   stackId="stack-0"
                   dataKey={dataKey.toString()}
-                  fill={chartColors[index].fill}
+                  fill={chartColors[index]?.fill}
                 />
               ))}
             </AreaChart>
@@ -179,7 +186,7 @@ export const MonthChart = ({
                   stackId="stack-0"
                   barSize={35}
                   dataKey={dataKey.toString()}
-                  fill={chartColors[index].fill}
+                  fill={chartColors[index]?.fill}
                 />
               ))}
             </BarChart>

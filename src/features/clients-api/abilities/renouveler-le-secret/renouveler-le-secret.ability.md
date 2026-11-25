@@ -1,21 +1,21 @@
-# Feature: Renouveler le secret d'un client API
+# Fonctionnalité: Renouveler le secret d'un client API
 
 > L'administration génère un nouveau secret pour un client API, par exemple
 > quand le précédent a fuité. Le nouveau secret n'est montré qu'une fois et
 > remplace l'ancien.
 
-## Rule: Le nouveau secret remplace l'ancien
+## Règle: Le nouveau secret remplace l'ancien
 
-### Scenario: Après renouvellement, seul le nouveau secret authentifie
+### Scénario: Après renouvellement, seul le nouveau secret authentifie
 
-* Given un client API "Tableau de bord" avec les permissions "Activites"
-* When l'administration renouvelle le secret du client API "Tableau de bord"
-* Then l'ancien secret du client API "Tableau de bord" n'authentifie plus
-* And le nouveau secret du client API "Tableau de bord" authentifie
+* Étant donné un client API "Tableau de bord" avec les permissions "Activites"
+* Quand l'administration renouvelle le secret du client API "Tableau de bord"
+* Alors l'ancien secret du client API "Tableau de bord" n'authentifie plus
+* Et le nouveau secret du client API "Tableau de bord" authentifie
 
-## Rule: Un client API inconnu n'a pas de secret à renouveler
+## Règle: Un client API inconnu n'a pas de secret à renouveler
 
-### Scenario: Renouveler le secret d'un client inexistant échoue
+### Scénario: Renouveler le secret d'un client inexistant échoue
 
-* When l'administration renouvelle le secret d'un client API qui n'existe pas
-* Then le renouvellement échoue car le client API est introuvable
+* Quand l'administration renouvelle le secret d'un client API qui n'existe pas
+* Alors le renouvellement échoue car le client API est introuvable

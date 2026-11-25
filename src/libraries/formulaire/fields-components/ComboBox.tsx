@@ -4,7 +4,7 @@ import {
   ComboBox as ComboBoxBase,
   type ComboBoxData as ComboBoxBaseData,
   type ComboBoxProps as ComboBoxBaseProps,
-} from '@/libraries/ui/components/Primitives/Form/ComboBox'
+} from '@/libraries/ui/primitives'
 import { useFieldContext } from '../form-context'
 
 export type ComboBoxData<TItem, TPayload = {}> = ComboBoxBaseData<
@@ -21,7 +21,7 @@ export type ComboBoxProps<TItem, TPayload extends object> = ComboBoxBaseProps<
   isPending: boolean
   itemToKey: (item: TItem) => string
   resetValue?: Partial<TItem> | TItem[] | null
-  onSelect?: (item: TItem) => void
+  onSelect?: ((item: TItem) => void) | undefined
 }
 
 const getMultipleSelection = <TItem,>(state: {

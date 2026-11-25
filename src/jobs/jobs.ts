@@ -1,17 +1,17 @@
 import { z } from 'zod'
-import { AnonymiserLesComptesInactifsJobValidation } from './anonymiser-les-comptes-inactifs/anonymiserLesComptesInactifsJob'
-import { InactiveUsersRemindersJobValidation } from './inactive-users-reminders/inactiveUsersJob'
-import { RemoveOrphanBrevoContactsJobValidation } from './remove-orphan-brevo-contacts/removeOrphanBrevoContactsJob'
-import { RetirerLesRolesVacantsJobValidation } from './retirer-les-roles-vacants/retirerLesRolesVacantsJob'
-import { SyncRdvspDataJobValidation } from './sync-rdvsp-data/syncRdvspDataJob'
-import { SynchroniserLesRolesBrevoJobValidation } from './synchroniser-les-roles-brevo/synchroniserLesRolesBrevoJob'
+import { AnonymiserLesComptesInactifsJobValidation } from './anonymiser-les-comptes-inactifs/anonymiser-les-comptes-inactifs.job'
+import { InactiveUsersRemindersJobValidation } from './inactive-users-reminders/inactive-users-reminders.job'
+import { RemoveOrphanBrevoContactsJobValidation } from './remove-orphan-brevo-contacts/remove-orphan-brevo-contacts.job'
+import { RetirerLesRolesVacantsJobValidation } from './retirer-les-roles-vacants/retirer-les-roles-vacants.job'
+import { SyncRdvspDataJobValidation } from './sync-rdvsp-data/sync-rdvsp-data.job'
+import { SynchroniserLesRolesBrevoJobValidation } from './synchroniser-les-roles-brevo/synchroniser-les-roles-brevo.job'
 
 /**
  * A job represents a task that can be executed asynchronously.
  * It is run by a Scaleway Serverless Job (see `jobs` in infrastructure/locals.tf)
  * or by the cli.
  *
- * Each job must have an executor defined in jobExecutors.ts
+ * Each job must have an executor defined in job-executors.ts
  *
  * A job result should be serializable to JSON and never include sensitive data as it can be logged or stored for audit purposes.
  *
@@ -39,7 +39,8 @@ export type Job = z.infer<typeof JobValidation>
 
 export type JobName = Job['name']
 
-export type JobPayload<Name extends JobName> = Extract<
-  Job,
-  { name: Name }
->['payload']
+type JobPayload<Name extends JobName> = Extract<Job, { name: Name }>['payload']
+
+export type JobExecutor<Name extends JobName, Result = unknown> = (
+  job: Job & { name: Name; payload: JobPayload<Name> },
+) => Promise<Result>

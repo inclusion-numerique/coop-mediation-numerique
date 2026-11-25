@@ -4,9 +4,11 @@ import {
   withApiV1Errors,
   withClientApi,
   withQueryParams,
-} from '@/features/clients-api/abilities/authentifier-un-client-api/implementation/api-v1'
-import { apiDisponible } from '@/features/clients-api/abilities/verifier-l-etat-de-l-api'
-import { NoQueryParamsValidation } from '@/libraries/json-api/ApiV1QueryParams'
+} from '@/features/clients-api/abilities/authentifier-un-client-api/implementations/api-v1'
+import { authentifierUnClientApi } from '@/features/clients-api/abilities/authentifier-un-client-api/implementations/prisma/authentifier-un-client-api.query'
+import { apiDisponible } from '@/features/clients-api/abilities/verifier-l-etat-de-l-api/implementations/api-v1/etat-de-l-api.response'
+import { verifySecret } from '@/features/clients-api/implementations/secret/hash-secret.adapter'
+import { NoQueryParamsValidation } from '@/libraries/json-api'
 
 /**
  * @openapi
@@ -17,6 +19,8 @@ import { NoQueryParamsValidation } from '@/libraries/json-api/ApiV1QueryParams'
  *     tags:
  *       - Utilitaires
  *     responses:
+ *       401:
+ *         $ref: '#/components/responses/NonAuthentifie'
  *       200:
  *         description: API status message.
  *         content:
@@ -29,6 +33,6 @@ import { NoQueryParamsValidation } from '@/libraries/json-api/ApiV1QueryParams'
  *                   example: ok
  */
 export const GET = routeBuilder()
-  .use(withClientApi([]))
+  .use(withClientApi(authentifierUnClientApi(verifySecret))([]))
   .use(withQueryParams(NoQueryParamsValidation))
   .handle(withApiV1Errors(async () => NextResponse.json(apiDisponible())))

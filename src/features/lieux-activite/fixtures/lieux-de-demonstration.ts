@@ -1,8 +1,8 @@
 import { type Prisma, Typologie } from '@/generated/prisma/browser'
-import { enSerie } from '@/libraries/fixtures/enSerie'
-import { givenLieuInclusion } from './givenLieuInclusion'
+import { enSerie } from '@/libraries/fixtures'
+import { lieuInclusion } from './lieu-inclusion'
 
-export const structureEmployeuse = givenLieuInclusion({
+export const structureEmployeuse = lieuInclusion({
   id: 'f4dbca97-6fe8-4be1-97be-bdf5e66b9ea8',
   nom: 'Exemple de structure employeuse',
   adresse: '1 rue du vide',
@@ -12,7 +12,7 @@ export const structureEmployeuse = givenLieuInclusion({
   banId: '75101_0001_00001',
 }) satisfies Prisma.LieuInclusionCreateInput
 
-export const mediateque = givenLieuInclusion({
+export const mediateque = lieuInclusion({
   id: '36929ed7-3b6f-4ed3-9924-b5e1a6c27096',
   nom: 'Exemple de Mediateque',
   adresse: '2 rue des livres',
@@ -23,7 +23,7 @@ export const mediateque = givenLieuInclusion({
   typologies: [Typologie.BIB, Typologie.MUNI, Typologie.CIDFF],
 })
 
-export const centreSocial = givenLieuInclusion({
+export const centreSocial = lieuInclusion({
   id: '36f20d7e-90ed-4932-911a-55320617ad56',
   nom: 'Exemple de Centre Social',
   adresse: '3 rue des amis',

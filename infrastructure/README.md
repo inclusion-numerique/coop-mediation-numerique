@@ -27,7 +27,7 @@ La base de la production n'est pas sur cette instance : c'est le schéma `coop` 
 | `dns.tf`       | Enregistrement DNS et domaine du conteneur                                                             |
 | `jobs.tf`      | Tâches planifiées et leurs secrets                                                                     |
 | `locals.tf`    | Domaines, noms, URL de base de données et planning des tâches de chaque environnement                  |
-| `variables.tf` | Variables d'entrée, lues par `src/cli/commands/infrastructure/infrastructureVariables.ts`              |
+| `variables.tf` | Variables d'entrée, lues par `src/cli/commands/infrastructure/infrastructure-variables.ts`             |
 | `outputs.tf`   | Sorties lues par le CLI                                                                                |
 | `versions.tf`  | Versions d'OpenTofu et du fournisseur, et stockage de l'état                                           |
 
@@ -40,7 +40,7 @@ Le conteneur est dimensionné selon l'environnement :
 | CPU       | 1120 mVCPU          | 560 mVCPU         |
 | Mémoire   | 2048 Mo             | 1024 Mo           |
 
-Le namespace d'un environnement vaut `main`, `dev`, ou, pour une preview, le début du nom de sa branche suivi de six lettres dérivées du nom complet (`src/cli/branchNamespace.ts`). Ce suffixe rend très improbable que deux branches partagent des ressources. Le namespace fait au plus 14 caractères, la place laissée au sous-domaine de la preview sous `coop-mediation-numerique.incubateur.anct.gouv.fr`, pour que le suffixe y survive. Il nomme aussi l'image du conteneur et le secret du mot de passe de la base.
+Le namespace d'un environnement vaut `main`, `dev`, ou, pour une preview, le début du nom de sa branche suivi de six lettres dérivées du nom complet (`src/cli/branch-namespace.ts`). Ce suffixe rend très improbable que deux branches partagent des ressources. Le namespace fait au plus 14 caractères, la place laissée au sous-domaine de la preview sous `coop-mediation-numerique.incubateur.anct.gouv.fr`, pour que le suffixe y survive. Il nomme aussi l'image du conteneur et le secret du mot de passe de la base.
 
 <h2 id="taches-planifiees">⏱️ Tâches planifiées</h2>
 

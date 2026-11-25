@@ -1,5 +1,4 @@
-import Link from 'next/link'
-import type { FicheOutil } from '../fiche-outil'
+import type { FicheOutil } from '../labels/fiches/fiche-outil.labels'
 
 export const Features = ({
   features,
@@ -26,14 +25,14 @@ export const Features = ({
                 {feature.link && (
                   <>
                     {' '}
-                    <Link
+                    <a
                       className="fr-link fr-text--sm"
                       target="_blank"
                       rel="noreferrer"
                       href={feature.link}
                     >
                       En savoir plus
-                    </Link>
+                    </a>
                   </>
                 )}
               </p>

@@ -1,11 +1,11 @@
 import type { Adresse, Nom } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import type { NomAffiche } from '@/libraries/nom-affiche'
+import type { IdentifiantCartographie } from './cartographie-nationale/ids-cartographie-nationale'
+import type { VisibiliteCartographie } from './cartographie-nationale/visibilite-cartographie'
+import type { LieuId } from './identifiants/lieu-id'
 import type { NomUsage } from './identite-sirene'
-import type { IdentifiantCartographie } from './ids-cartographie-nationale'
-import type { LieuId } from './lieu-id'
 import type { NombreDeMediateurs } from './nombres'
-import type { SourceCartographie } from './tracabilite'
-import type { VisibiliteCartographie } from './visibilite-cartographie'
+import type { SourceCartographie } from './registre/tracabilite'
 
 export type ModificationEnListe =
   | {

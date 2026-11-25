@@ -10,75 +10,74 @@ import { deconnecterUnUtilisateurAction } from '@/app/_actions/utilisateurs/deco
 import { supprimerCompteAction } from '@/app/_actions/utilisateurs/supprimer-compte.action'
 import { usurperUnUtilisateurAction } from '@/app/_actions/utilisateurs/usurper-un-utilisateur.action'
 import { environnementServeur } from '@/configuration/environnement/serveur'
-import { metadataTitle } from '@/configuration/projet/metadataTitle'
-import { compterLesAccompagnements } from '@/features/activites/abilities/compter-les-accompagnements'
-import { totauxPresentes } from '@/features/activites/abilities/compter-les-accompagnements/ui'
-import { compterLesAccompagnementsParLieu } from '@/features/activites/abilities/compter-les-accompagnements-par-lieu'
-import { parLieuPresentes } from '@/features/activites/abilities/compter-les-accompagnements-par-lieu/ui'
-import {
-  CoordinateurId as CoordinateurDesActivitesDeCoordination,
-  compterLesActivitesDeCoordination,
-} from '@/features/activites/abilities/compter-les-activites-de-coordination'
-import { activitesDeCoordinationPresentees } from '@/features/activites/abilities/compter-les-activites-de-coordination/ui'
-import { decrireLesActivitesDuPerimetre } from '@/features/activites/abilities/decrire-les-activites-du-perimetre'
-import { decrireLesPersonnesAccompagnees } from '@/features/activites/abilities/decrire-les-personnes-accompagnees'
-import { profilPresente } from '@/features/activites/abilities/decrire-les-personnes-accompagnees/ui'
-import { repartirLesAccompagnements } from '@/features/activites/abilities/repartir-les-accompagnements'
-import { repartitionPresentee } from '@/features/activites/abilities/repartir-les-accompagnements/ui'
-import { criteresDesStatistiques } from '@/features/activites/domain'
-import { perimetreDeLUtilisateur } from '@/features/activites/implementation/statistiques'
+import { metadataTitle } from '@/configuration/projet'
+import { compterLesAccompagnements } from '@/features/activites/abilities/compter-les-accompagnements/implementations/prisma/totaux-des-accompagnements.query'
+import { totauxPresentes } from '@/features/activites/abilities/compter-les-accompagnements/ui/presenters/totaux.presenter'
+import { compterLesAccompagnementsParLieu } from '@/features/activites/abilities/compter-les-accompagnements-par-lieu/implementations/prisma/accompagnements-par-lieu.query'
+import { parLieuPresentes } from '@/features/activites/abilities/compter-les-accompagnements-par-lieu/ui/presenters/par-lieu.presenter'
+import { CoordinateurId as CoordinateurDesActivitesDeCoordination } from '@/features/activites/abilities/compter-les-activites-de-coordination/domain/index'
+import { compterLesActivitesDeCoordination } from '@/features/activites/abilities/compter-les-activites-de-coordination/implementations/prisma/activites-de-coordination.query'
+import { activitesDeCoordinationPresentees } from '@/features/activites/abilities/compter-les-activites-de-coordination/ui/presenters/activites-de-coordination.presenter'
+import { decrireLesActivitesDuPerimetre } from '@/features/activites/abilities/decrire-les-activites-du-perimetre/implementations/prisma/activites-du-perimetre.query'
+import { decrireLesPersonnesAccompagnees } from '@/features/activites/abilities/decrire-les-personnes-accompagnees/implementations/prisma/profil-des-personnes-accompagnees.query'
+import { profilPresente } from '@/features/activites/abilities/decrire-les-personnes-accompagnees/ui/presenters/profil.presenter'
+import { repartirLesAccompagnements } from '@/features/activites/abilities/repartir-les-accompagnements/implementations/prisma/repartition-des-accompagnements.query'
+import { repartitionPresentee } from '@/features/activites/abilities/repartir-les-accompagnements/ui/presenters/repartition.presenter'
+import { criteresSurLaPeriode, Jour } from '@/features/activites/domain'
+import { perimetreDeLUtilisateur } from '@/features/activites/implementations/session/perimetre.query'
+import { utilisateurDeLaSessionParId } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
 import {
   authenticateAdmin,
   authenticateUser,
-} from '@/features/authentification/implementation/session/authenticateUser'
-import { getSessionUserFromId } from '@/features/authentification/implementation/session/getSessionUserFromSessionToken'
-import { historiqueEmployeusesAffichage } from '@/features/employeuse'
-import { HistoriqueDesEmployeuses } from '@/features/employeuse/abilities/consulter-historique-employeuses/ui/HistoriqueDesEmployeuses'
-import { consulterHistoriqueEmployeuses } from '@/features/employeuse/server'
-import { ANNULER_UNE_INVITATION_ACTION_KEY } from '@/features/equipe/abilities/annuler-une-invitation/action/annuler-une-invitation.key'
-import { listerLesMembres } from '@/features/equipe/abilities/lister-les-membres'
+} from '@/features/authentification/middlewares/with-utilisateur-authentifie'
+import { consulterHistoriqueEmployeuses } from '@/features/employeuse/abilities/consulter-historique-employeuses/implementations/prisma/consulter-historique-employeuses.query'
+import { historiqueEmployeusesAffichage } from '@/features/employeuse/abilities/consulter-historique-employeuses/ui/presenters/historique-employeuses.presenter'
+import { HistoriqueDesEmployeuses } from '@/features/employeuse/abilities/consulter-historique-employeuses/ui/slots/HistoriqueDesEmployeuses.slot'
+import { listerLesMembres } from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/lister-les-membres.query'
 import {
-  ListeDeLEquipe,
   type ParametresDeLaListe,
   requeteDeLaListe,
-} from '@/features/equipe/abilities/lister-les-membres/ui'
-import { RELANCER_UNE_INVITATION_ACTION_KEY } from '@/features/equipe/abilities/relancer-une-invitation/action/relancer-une-invitation.key'
+} from '@/features/equipe/abilities/lister-les-membres/ui/filtres/liste-de-l-equipe.filtre'
+import { ListeDeLEquipe } from '@/features/equipe/abilities/lister-les-membres/ui/slots/ListeDeLEquipe.slot'
 import { RETIRER_UN_MEMBRE_ACTION_KEY } from '@/features/equipe/abilities/retirer-un-membre/action/retirer-un-membre.key'
+import { default as BoutonRetirerUnMembre } from '@/features/equipe/abilities/retirer-un-membre/ui/slots/BoutonRetirerUnMembre.slot'
 import { SUPPRIMER_UN_ANCIEN_MEMBRE_ACTION_KEY } from '@/features/equipe/abilities/supprimer-un-ancien-membre/action/supprimer-un-ancien-membre.key'
+import { default as BoutonSupprimerUnAncienMembre } from '@/features/equipe/abilities/supprimer-un-ancien-membre/ui/slots/BoutonSupprimerUnAncienMembre.slot'
+import { ANNULER_UNE_INVITATION_ACTION_KEY } from '@/features/equipe/action/annuler-une-invitation.key'
+import { RELANCER_UNE_INVITATION_ACTION_KEY } from '@/features/equipe/action/relancer-une-invitation.key'
 import { CoordinateurId } from '@/features/equipe/domain'
-import { gestionnaireDe } from '@/features/equipe/implementation/session'
-import { ActionsDuMembre } from '@/features/equipe/ui'
-import { AvertissementsEtatInscription } from '@/features/inscription/components/AvertissementsEtatInscription'
-import { MediateurId, TriDesLieux } from '@/features/lieux-activite'
-import { listerLesLieuxDuMediateur } from '@/features/lieux-activite/abilities/lister-les-lieux-du-mediateur'
-import { LieuxDActiviteEnAdministration } from '@/features/lieux-activite/abilities/lister-les-lieux-du-mediateur/ui'
+import { gestionnaireDe } from '@/features/equipe/implementations/session'
+import { default as ActionsDuMembre } from '@/features/equipe/ui/slots/ActionsDuMembre.slot'
+import { AvertissementsEtatInscription } from '@/features/inscription/ui/slots/AvertissementsEtatInscription.slot'
+import { listerLesLieuxDuMediateur } from '@/features/lieux-activite/abilities/lister-les-lieux-du-mediateur/implementations/prisma/lister-les-lieux-du-mediateur.query'
+import { triDesLieuxDuMediateur } from '@/features/lieux-activite/abilities/lister-les-lieux-du-mediateur/ui/filtres/lieux-du-mediateur.filtre'
+import { LieuxDActiviteEnAdministration } from '@/features/lieux-activite/abilities/lister-les-lieux-du-mediateur/ui/slots/LieuxDActiviteEnAdministration.slot'
+import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
 import { REGLER_LA_VISIBILITE_CARTO_ACTION_KEY } from '@/features/mediateurs/abilities/regler-la-visibilite-carto/action/regler-la-visibilite-carto.key'
-import { VisibiliteCartoDuMediateur } from '@/features/mediateurs/abilities/regler-la-visibilite-carto/ui'
-import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites'
+import { VisibiliteCartoDuMediateur } from '@/features/mediateurs/abilities/regler-la-visibilite-carto/ui/slots/VisibiliteCartoDuMediateur.slot'
+import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/rdvs-des-activites.query'
 import {
   type PeriodeChoisie,
   periodeChoisieDans,
-  StatistiquesEnAdministration,
-} from '@/features/statistiques/ui/administration'
+} from '@/features/statistiques/ui/presenters/statistiques-en-administration.presenter'
+import { StatistiquesEnAdministration } from '@/features/statistiques/ui/slots/StatistiquesEnAdministration.slot'
 import { CHANGER_LES_ROLES_ACTION_KEY } from '@/features/utilisateurs/abilities/changer-les-roles/action/changer-les-roles.key'
-import { BoutonChangerLesRoles } from '@/features/utilisateurs/abilities/changer-les-roles/ui'
-import {
-  type FicheUtilisateur,
-  ficheUtilisateur,
-} from '@/features/utilisateurs/abilities/consulter-un-utilisateur'
+import { BoutonChangerLesRoles } from '@/features/utilisateurs/abilities/changer-les-roles/ui/slots/BoutonChangerLesRoles.slot'
+import { type FicheUtilisateur } from '@/features/utilisateurs/abilities/consulter-un-utilisateur/domain/index'
+import { ficheUtilisateur } from '@/features/utilisateurs/abilities/consulter-un-utilisateur/implementations/prisma/fiche-utilisateur.query'
+import { FicheUtilisateurPage } from '@/features/utilisateurs/abilities/consulter-un-utilisateur/ui/pages/FicheUtilisateurPage'
 import {
   etatDeLInscription,
-  FicheUtilisateurPage,
   rolesModifiables,
-} from '@/features/utilisateurs/abilities/consulter-un-utilisateur/ui'
+} from '@/features/utilisateurs/abilities/consulter-un-utilisateur/ui/presenters/fiche-utilisateur.presenter'
 import { DECONNECTER_UN_UTILISATEUR_ACTION_KEY } from '@/features/utilisateurs/abilities/deconnecter-un-utilisateur/action/deconnecter-un-utilisateur.key'
-import { BoutonDeconnecter } from '@/features/utilisateurs/abilities/deconnecter-un-utilisateur/ui'
+import { BoutonDeconnecter } from '@/features/utilisateurs/abilities/deconnecter-un-utilisateur/ui/slots/BoutonDeconnecter.slot'
 import { SUPPRIMER_LE_COMPTE_ACTION_KEY } from '@/features/utilisateurs/abilities/supprimer-compte/action/supprimer-compte.key'
-import { BoutonSupprimerLeCompte } from '@/features/utilisateurs/abilities/supprimer-compte/ui'
+import { BoutonSupprimerLeCompte } from '@/features/utilisateurs/abilities/supprimer-compte/ui/slots/BoutonSupprimerLeCompte.slot'
 import { USURPER_UN_UTILISATEUR_ACTION_KEY } from '@/features/utilisateurs/abilities/usurper-un-utilisateur/action/usurper-un-utilisateur.key'
-import { BoutonUsurper } from '@/features/utilisateurs/abilities/usurper-un-utilisateur/ui'
+import { BoutonUsurper } from '@/features/utilisateurs/abilities/usurper-un-utilisateur/ui/slots/BoutonUsurper.slot'
 import { coordinateurDe, mediateurDe } from '@/features/utilisateurs/domain'
-import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
+import { ClientBinder } from '@/libraries/nextjs/injection'
 
 export const metadata = {
   title: metadataTitle('Utilisateurs - Détails'),
@@ -112,7 +111,14 @@ const sectionEquipe = async (
       baseHref={`/administration/utilisateurs/${fiche.id}`}
       exporter={null}
       actions={(ligne) => (
-        <ActionsDuMembre ligne={ligne} coordinateurId={coordinateur.id} />
+        <ActionsDuMembre
+          ligne={ligne}
+          coordinateurId={coordinateur.id}
+          retirer={(membre) => <BoutonRetirerUnMembre {...membre} />}
+          supprimer={(ancienMembre) => (
+            <BoutonSupprimerUnAncienMembre {...ancienMembre} />
+          )}
+        />
       )}
     />
   )
@@ -127,7 +133,7 @@ const sectionLieux = async (fiche: FicheUtilisateur): Promise<ReactNode> => {
       lieux={
         await listerLesLieuxDuMediateur({
           mediateurId: MediateurId(mediateur.id),
-          tri: TriDesLieux(null),
+          tri: triDesLieuxDuMediateur,
         })
       }
     />
@@ -156,14 +162,17 @@ const sectionStatistiques = async (
   periode: PeriodeChoisie,
 ): Promise<ReactNode> => {
   const perimetre = perimetreDeLUtilisateur(
-    await getSessionUserFromId(fiche.id),
+    await utilisateurDeLaSessionParId(fiche.id),
   )
   if (perimetre === null) return null
 
   const coordinateur = coordinateurDe(fiche.rattachements)
   const demande = {
     perimetre,
-    criteres: criteresDesStatistiques(periode),
+    criteres: criteresSurLaPeriode({
+      du: periode.du === undefined ? null : Jour.safe(periode.du),
+      au: periode.au === undefined ? null : Jour.safe(periode.au),
+    }),
     rendezVousAuxStatuts: rendezVousAuxStatutsSql,
   }
 
@@ -277,7 +286,7 @@ const Page = async (props: {
                               user={etatDeLInscription(fiche)}
                             />
                           ),
-                          usurpation: environnementServeur.SUDO_USURPATION ? (
+                          usurpation: environnementServeur().SUDO_USURPATION ? (
                             <BoutonUsurper
                               utilisateurId={fiche.id}
                               taille="small"

@@ -1,0 +1,269 @@
+import { appUrl } from '@e2e/support/helpers'
+import { CreateUserInput } from '@e2e/tasks/handlers/user.tasks'
+import { profilInscriptionLabels } from '@/features/inscription/domain'
+import { cheminDeLEtape } from '@/features/inscription/ui/presenters/chemin-de-l-etape.presenter'
+
+export type InscriptionFlowE2eExpectedStep =
+  | {
+      step: 'choisir-role'
+      role: 'Mediateur' | 'Coordinateur'
+      acceptCgu: boolean
+      check?: () => void
+    }
+  | {
+      step: 'verifier-informations'
+      check?: () => void
+      accept: boolean
+    }
+  | {
+      step: 'renseigner-structure-employeuse'
+      check?: () => void
+      // Terme recherché puis nom exact de la structure à choisir dans la liste.
+      recherche: string
+      choix: string
+    }
+  | {
+      step: 'lieux-activite'
+      check?: () => void
+      structureEmployeuseIsLieuActivite: boolean
+    }
+  | {
+      step: 'lieux-activite'
+      check?: () => void
+      // TODO add lieu etc...
+    }
+  | {
+      step: 'recapitulatif'
+      acceptCgu?: boolean // if undefined, it should not be existing on page, else check
+      check?: () => void
+      conseillerNumeriqueRoleNotice:
+        | 'none'
+        | 'conseiller-numerique'
+        | 'coordinateur-conseiller-numerique'
+    }
+
+const mutationAndNavigationTimeout = 15_000
+const cguLabelMatch = /J’ai lu et j’accepte/
+
+const handleStep = (step: InscriptionFlowE2eExpectedStep) => {
+  if (step.step === 'choisir-role') {
+    cy.appUrlShouldBe(cheminDeLEtape('choisir-role'), {
+      timeout: mutationAndNavigationTimeout,
+    })
+
+    // Le formulaire se desactive tant que la page n'est pas hydratee : cliquer
+    // avant serait perdu sans aucun signe visible. On attend donc qu'il soit
+    // actif, ce qui est aussi ce que voit un utilisateur.
+    cy.get('input[type=radio][name=role]')
+      .first()
+      .should('be.enabled', { timeout: mutationAndNavigationTimeout })
+
+    cy.contains(profilInscriptionLabels[step.role]).click()
+
+    if (step.acceptCgu) {
+      cy.findByRole('checkbox', { name: cguLabelMatch }).check({ force: true })
+    }
+
+    step.check?.()
+
+    cy.get('button').contains('Continuer').click()
+
+    // Cette étape passe par une server action, pas par tRPC : il n'y a aucune
+    // requête nommée à intercepter. On synchronise sur la sortie de l'étape,
+    // poussée par la page une fois l'action revenue — sinon les assertions de
+    // l'étape suivante démarreraient encore sur celle-ci (le récapitulatif
+    // vérifie l'absence de la checkbox CGU, qui est présente ici).
+    cy.url({ timeout: mutationAndNavigationTimeout }).should(
+      'not.contain',
+      cheminDeLEtape('choisir-role'),
+    )
+
+    return
+  }
+
+  if (step.step === 'verifier-informations') {
+    cy.appUrlShouldBe(cheminDeLEtape('verifier-informations'), {
+      timeout: mutationAndNavigationTimeout,
+    })
+    step.check?.()
+    if (step.accept) {
+      cy.contains('Continuer').click()
+    } else {
+      cy.contains('Annuler').click()
+    }
+    return
+  }
+
+  if (step.step === 'renseigner-structure-employeuse') {
+    cy.appUrlShouldBe(cheminDeLEtape('renseigner-structure-employeuse'), {
+      timeout: mutationAndNavigationTimeout,
+    })
+
+    step.check?.()
+
+    // La recherche interroge le serveur (structures enregistrées + annuaire des
+    // entreprises) : on attend qu'une option apparaisse avant de choisir.
+    cy.findByRole('combobox').type(step.recherche)
+    cy.contains(step.choix, { timeout: mutationAndNavigationTimeout }).click()
+
+    // Parcours réel : on clique le bouton. Soumettre le formulaire directement
+    // court-circuiterait la pose de la valeur dans le store TanStack.
+    cy.get('button').contains('Continuer').click()
+
+    return
+  }
+
+  if (
+    step.step === 'lieux-activite' &&
+    'structureEmployeuseIsLieuActivite' in step
+  ) {
+    cy.appUrlShouldBe(
+      `${cheminDeLEtape('lieux-activite')}/structure-employeuse`,
+      {
+        timeout: mutationAndNavigationTimeout,
+      },
+    )
+
+    // Cette étape passe désormais par une server action, pas par tRPC : aucune
+    // requête nommée à intercepter. On synchronise sur la sortie de l'étape
+    // (navigation vers /inscription/lieux-activite après le choix Oui/Non).
+    step.check?.()
+    cy.contains(
+      'button',
+      step.structureEmployeuseIsLieuActivite ? 'Oui' : 'Non',
+    )
+      .should('be.enabled', { timeout: mutationAndNavigationTimeout })
+      .click()
+
+    cy.appUrlShouldBe(cheminDeLEtape('lieux-activite'), {
+      timeout: mutationAndNavigationTimeout,
+    })
+
+    return
+  }
+  if (
+    step.step === 'lieux-activite' &&
+    !('structureEmployeuseIsLieuActivite' in step)
+  ) {
+    cy.appUrlShouldBe(cheminDeLEtape('lieux-activite'), {
+      timeout: mutationAndNavigationTimeout,
+    })
+
+    // Cette étape passe désormais par une server action, pas par tRPC : aucune
+    // requête nommée à intercepter. On synchronise sur la sortie de l'étape
+    // (navigation vers le récapitulatif après « Suivant »).
+    step.check?.()
+
+    cy.contains('Suivant').click()
+
+    cy.appUrlShouldBe(cheminDeLEtape('recapitulatif'), {
+      timeout: mutationAndNavigationTimeout,
+    })
+
+    return
+  }
+
+  if (step.step === 'recapitulatif') {
+    if (step.acceptCgu === undefined) {
+      cy.findByRole('checkbox', { name: cguLabelMatch }).should('not.exist')
+    } else if (step.acceptCgu) {
+      // Le formulaire se désactive tant que la page n'est pas hydratée : cocher
+      // avant serait effacé par le premier rendu client, sans aucun signe visible
+      // — et la validation des CGU bloquerait ensuite la soumission. On attend
+      // donc qu'il soit actif, comme à l'étape choisir-role. Cas atteint quand on
+      // arrive au récapitulatif par un chargement complet (raccourci Dataspace).
+      cy.findByRole('checkbox', { name: cguLabelMatch })
+        .should('be.enabled', { timeout: mutationAndNavigationTimeout })
+        .check({ force: true })
+    } else {
+      cy.findByRole('checkbox', { name: cguLabelMatch }).should('be.visible')
+    }
+
+    cy.appUrlShouldBe(cheminDeLEtape('recapitulatif'), {
+      timeout: mutationAndNavigationTimeout,
+    })
+
+    if (step.conseillerNumeriqueRoleNotice === 'conseiller-numerique') {
+      cy.contains(
+        `Vous avez été identifié en tant que ${profilInscriptionLabels.ConseillerNumerique.toLowerCase()}`,
+      ).should('be.visible')
+    } else if (
+      step.conseillerNumeriqueRoleNotice === 'coordinateur-conseiller-numerique'
+    ) {
+      cy.contains(
+        `Vous avez été identifié en tant que ${profilInscriptionLabels.CoordinateurConseillerNumerique.toLowerCase()}`,
+      ).should('be.visible')
+    } else {
+      cy.contains('Vous avez été identifié en tant que').should('not.exist')
+    }
+
+    step.check?.()
+    cy.contains('Valider mon inscription').click()
+
+    // Valider passe par une server action, pas par tRPC : il n'y a aucune requête
+    // nommée à intercepter. On synchronise sur la navigation hors du récapitulatif
+    // (poussée par le succès de l'action), sinon le toast de succès vérifié après
+    // la boucle serait cherché avant même que l'action, plus lente sur certaines
+    // fixtures, ait abouti — sa fenêtre de retry par défaut (4s) perdrait la course.
+    cy.url({ timeout: mutationAndNavigationTimeout }).should(
+      'not.contain',
+      cheminDeLEtape('recapitulatif'),
+    )
+
+    return
+  }
+
+  throw new Error('Expected inscription step not recognized')
+}
+
+export const executeInscriptionFlow = ({
+  signin,
+  user,
+  expectedSteps,
+  expectSuccessToast,
+  expectOnboarding,
+  skipOnboarding = false,
+}: {
+  signin: boolean
+  user: CreateUserInput
+  expectedSteps: [
+    InscriptionFlowE2eExpectedStep,
+    ...InscriptionFlowE2eExpectedStep[],
+  ]
+  expectSuccessToast: boolean
+  expectOnboarding?: 'none' | 'mediateur' | 'coordinateur'
+  skipOnboarding?: boolean
+}) => {
+  if (signin) {
+    cy.signin(user)
+  }
+
+  cy.visit(appUrl(cheminDeLEtape('initialize')))
+
+  for (const step of expectedSteps) {
+    handleStep(step)
+  }
+  if (expectSuccessToast) {
+    cy.getToast(/Votre inscription a bien été validée/i).should('exist')
+  }
+
+  if (expectOnboarding) {
+    if (
+      expectOnboarding === 'mediateur' ||
+      expectOnboarding === 'coordinateur'
+    ) {
+      // Same onboarding landing for mediateur and coordinateur
+      cy.appUrlShouldBe('/en-savoir-plus', {
+        timeout: mutationAndNavigationTimeout,
+      })
+    } else {
+      cy.appUrlShouldBe('/coop', { timeout: mutationAndNavigationTimeout })
+    }
+  }
+
+  if (skipOnboarding) {
+    // find link with text "Voir plus tard"
+    cy.findByRole('link', { name: 'Voir plus tard' }).click()
+    cy.appUrlShouldBe('/coop', { timeout: mutationAndNavigationTimeout })
+  }
+}

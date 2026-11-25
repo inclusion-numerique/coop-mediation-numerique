@@ -47,7 +47,7 @@ jobs:
         uses: ./.github/actions/setup
       - name: Compute environment name
         id: environnement
-        run: echo "nom=$(pnpm exec tsx -e "import { computeBranchNamespace } from './src/cli/branchNamespace.ts'; console.log(computeBranchNamespace(process.env.BRANCHE ?? ''))")" >> "$GITHUB_OUTPUT"
+        run: echo "nom=$(pnpm exec tsx -e "import { computeBranchNamespace } from './src/cli/branch-namespace.ts'; console.log(computeBranchNamespace(process.env.BRANCHE ?? ''))")" >> "$GITHUB_OUTPUT"
       - name: Refuse to delete a protected environment
         env:
           ENVIRONNEMENT: ${{ steps.environnement.outputs.nom }}

@@ -1,0 +1,208 @@
+'use client'
+
+import Button from '@codegouvfr/react-dsfr/Button'
+import ToggleSwitch from '@codegouvfr/react-dsfr/ToggleSwitch'
+import { useSelector } from '@tanstack/react-form'
+import { useEffect } from 'react'
+import { DisplayOnCartography } from '@/features/lieux-activite/ui/components/DisplayOnCartography'
+import { LieuAccueillantPublicTitle } from '@/features/lieux-activite/ui/components/LieuAccueillantPublicTitle'
+import { ServiceInclusionNumeriqueTitle } from '@/features/lieux-activite/ui/components/ServiceInclusionNumeriqueTitle'
+import {
+  handleSubmit,
+  useAppForm,
+  useHydrated,
+} from '@/libraries/formulaire/hooks'
+import { CompleteFields } from '@/libraries/ui/form'
+import {
+  type CreerLieuActiviteFormData,
+  CreerLieuActiviteFormValidation,
+  creerLieuActiviteDefaultValues,
+} from '../creer-lieu-activite.form-data'
+import { DescriptionFields } from './DescriptionFields'
+import { InformationsGeneralesFields } from './InformationsGeneralesFields'
+import { InformationsPratiquesFields } from './InformationsPratiquesFields'
+import { ModalitesAccesAuServiceFields } from './ModalitesAccesAuServiceFields'
+import { ServicesEtAccompagnementFields } from './ServicesEtAccompagnementFields'
+import { TypesDePublicsAccueillisFields } from './TypesDePublicsAccueillisFields'
+
+const CreerLieuActiviteForm = ({
+  nom,
+  annulerHref,
+  onAnnuler,
+  onCreer,
+  onVisiblePourCartographieNationaleChange,
+  lienDePriseDeRendezVous,
+}: {
+  nom?: string | undefined
+  annulerHref?: string
+  onAnnuler?: () => void
+  onCreer: (data: CreerLieuActiviteFormData) => Promise<void>
+  onVisiblePourCartographieNationaleChange?: (visible: boolean) => void
+  lienDePriseDeRendezVous: string
+}) => {
+  const form = useAppForm({
+    defaultValues: creerLieuActiviteDefaultValues(nom),
+    validators: { onSubmit: CreerLieuActiviteFormValidation },
+    onSubmit: ({ value }) => onCreer(value),
+  })
+
+  const isSubmitting = useSelector(form.store, (state) => state.isSubmitting)
+  const isHydrated = useHydrated()
+  const isPending = isSubmitting || !isHydrated
+
+  const visiblePourCartographieNationale = useSelector(
+    form.store,
+    (state) => state.values.visiblePourCartographieNationale,
+  )
+
+  useEffect(() => {
+    onVisiblePourCartographieNationaleChange?.(visiblePourCartographieNationale)
+  }, [
+    onVisiblePourCartographieNationaleChange,
+    visiblePourCartographieNationale,
+  ])
+
+  return (
+    <form.AppForm>
+      <form onSubmit={handleSubmit(form)}>
+        <div className="fr-border fr-border-radius--8">
+          <h2
+            id="informations-generales"
+            className="fr-text-title--blue-france fr-h4 fr-p-4w fr-mb-0"
+          >
+            Informations générales
+          </h2>
+          <hr className="fr-separator fr-separator-1px" />
+          <InformationsGeneralesFields
+            form={form}
+            isPending={isPending}
+            className="fr-p-4w"
+          />
+        </div>
+
+        <div className="fr-border fr-border-radius--8 fr-mt-6v fr-mb-6v">
+          <DisplayOnCartography />
+          <hr className="fr-separator fr-separator-1px" />
+          <div className="fr-px-4w fr-py-4w">
+            <ToggleSwitch
+              inputTitle="Visibilité du lieu sur la cartographie"
+              className="fr-m-0"
+              disabled={isPending}
+              showCheckedHint={false}
+              checked={visiblePourCartographieNationale}
+              label={
+                <span className="fr-text--medium">
+                  Rendre mon lieu d’activité visible sur la cartographie
+                </span>
+              }
+              labelPosition="left"
+              onChange={(checked) =>
+                form.setFieldValue('visiblePourCartographieNationale', checked)
+              }
+            />
+          </div>
+
+          {visiblePourCartographieNationale && (
+            <>
+              <hr className="fr-separator-1px" />
+              <LieuAccueillantPublicTitle />
+              <hr className="fr-separator-1px" />
+              <div className="fr-px-4w">
+                <CompleteFields
+                  id="description"
+                  title="Description du lieu"
+                  description="Décrivez ici le lieu et les activités qu’il propose."
+                >
+                  <DescriptionFields form={form} isPending={isPending} />
+                </CompleteFields>
+                <hr className="fr-separator-1px" />
+                <CompleteFields
+                  id="informations-pratiques"
+                  title="Informations pratiques"
+                  description="Horaires, accès et site internet du lieu."
+                >
+                  <InformationsPratiquesFields
+                    form={form}
+                    isPending={isPending}
+                    lienDePriseDeRendezVous={lienDePriseDeRendezVous}
+                  />
+                </CompleteFields>
+              </div>
+              <hr className="fr-separator-1px" />
+              <ServiceInclusionNumeriqueTitle />
+              <hr className="fr-separator-1px" />
+              <div className="fr-px-4w">
+                <CompleteFields
+                  id="services-et-accompagnement"
+                  defaultCanComplete
+                  title="Services & types d’accompagnement"
+                  description="Renseignez ici les services et les types d’accompagnements proposés dans ce lieu."
+                >
+                  <ServicesEtAccompagnementFields
+                    form={form}
+                    isPending={isPending}
+                  />
+                </CompleteFields>
+                <hr className="fr-separator-1px" />
+                <CompleteFields
+                  id="modalites-acces-au-service"
+                  title="Modalités d’accès au service"
+                  description="Indiquez comment bénéficier des services d’inclusion numérique."
+                >
+                  <ModalitesAccesAuServiceFields
+                    form={form}
+                    isPending={isPending}
+                  />
+                </CompleteFields>
+                <hr className="fr-separator-1px" />
+                <CompleteFields
+                  id="types-publics-accueillis"
+                  title="Types de publics accueillis"
+                  description="Indiquez si ce lieu accueille des publics spécifiques."
+                >
+                  <TypesDePublicsAccueillisFields
+                    form={form}
+                    isPending={isPending}
+                  />
+                </CompleteFields>
+              </div>
+            </>
+          )}
+        </div>
+
+        <div className="fr-btns-group">
+          <form.Submit
+            isPending={isPending}
+            className="fr-display-block fr-width-full fr-mt-12v fr-mb-4v"
+          >
+            Créer le lieu d’activité
+          </form.Submit>
+          {onAnnuler ? (
+            <Button
+              type="button"
+              className="fr-display-block fr-width-full fr-text--center fr-mb-20v"
+              priority="secondary"
+              disabled={isPending}
+              onClick={onAnnuler}
+            >
+              Annuler
+            </Button>
+          ) : (
+            <Button
+              className="fr-display-block fr-width-full fr-text--center fr-mb-20v"
+              priority="secondary"
+              linkProps={{
+                href: annulerHref ?? '/coop/lieux-activite',
+                'aria-disabled': isPending,
+              }}
+            >
+              Annuler
+            </Button>
+          )}
+        </div>
+      </form>
+    </form.AppForm>
+  )
+}
+
+export default CreerLieuActiviteForm

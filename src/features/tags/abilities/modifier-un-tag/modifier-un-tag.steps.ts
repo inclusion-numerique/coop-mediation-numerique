@@ -7,7 +7,7 @@ import {
   semerUnTag,
   tagEnBase,
 } from '@/features/tags/tags.cucumber'
-import { modifierUnTag } from './implementation'
+import { modifierUnTag } from './implementations/prisma/modifier-un-tag.mutation'
 
 const contexte: {
   mediateurId?: string

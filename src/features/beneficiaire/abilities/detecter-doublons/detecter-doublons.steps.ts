@@ -1,6 +1,6 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
-import { detecterDoublons } from '@/features/beneficiaire/abilities/detecter-doublons/implementation'
+import { detecterDoublons } from '@/features/beneficiaire/abilities/detecter-doublons/implementations/prisma/index'
 import {
   seedBeneficiaire,
   testMediateurId,

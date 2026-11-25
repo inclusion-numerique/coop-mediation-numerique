@@ -1,9 +1,8 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import type { ReactNode } from 'react'
-import InscriptionCard from '@/features/inscription/components/InscriptionCard'
-import IconInSquare from '@/libraries/ui/components/IconInSquare'
-import InfoLabelValue from '@/libraries/ui/components/InfoLabelValue'
-import type { VerifierInformationsPageData } from '../../queries/getVerifierInformationsPageData'
+import InscriptionCard from '@/features/inscription/ui/components/InscriptionCard'
+import { IconInSquare, InfoLabelValue } from '@/libraries/ui/components'
+import type { VerifierInformationsPageData } from '../presenters/verifier-informations.presenter'
 
 /**
  * Écran de vérification des informations : purement présentationnel. La route

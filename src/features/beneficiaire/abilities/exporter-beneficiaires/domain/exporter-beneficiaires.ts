@@ -1,4 +1,4 @@
-import type { Workbook } from 'exceljs'
+import { PageSize, Search } from '@arckit/resultset'
 import type { AnneeNaissance } from '@/features/beneficiaire/domain/annee-naissance'
 import type { CommuneResidence } from '@/features/beneficiaire/domain/commune-residence'
 import type { Email } from '@/features/beneficiaire/domain/email'
@@ -9,7 +9,6 @@ import type { Notes } from '@/features/beneficiaire/domain/notes'
 import type { Prenom } from '@/features/beneficiaire/domain/prenom'
 import type { StatutSocial } from '@/features/beneficiaire/domain/statut-social'
 import type { TrancheAge } from '@/features/beneficiaire/domain/tranche-age'
-import type { AuteurDExport } from '@/libraries/tableur/addExportMetadata'
 import type { Telephone } from '@/libraries/telephone'
 
 export type BeneficiaireExportRow = {
@@ -31,20 +30,53 @@ type ExportBeneficiairesFilters = {
   readonly recherche?: string
 }
 
-export type BuildBeneficiairesWorksheet = (input: {
+export type ConstruireLeClasseurDesBeneficiaires<Auteur, Classeur> = (input: {
   beneficiaires: readonly BeneficiaireExportRow[]
   filters: ExportBeneficiairesFilters
   matchesCount: number
-  auteur: AuteurDExport
+  auteur: Auteur
   worksheetGenerationDate?: Date
-}) => Workbook
+}) => Classeur
 
-/**
- * Cas d'usage complet : récupère les bénéficiaires du médiateur correspondant
- * aux filtres et produit le classeur d'export.
- */
-export type ExporterBeneficiaires = (input: {
+export type ExporterBeneficiaires<Auteur, Classeur> = (input: {
   mediateurId: MediateurId
   filters: ExportBeneficiairesFilters
-  auteur: AuteurDExport
-}) => Promise<Workbook>
+  auteur: Auteur
+}) => Promise<Classeur>
+
+export type ListerLesBeneficiairesAExporter = (input: {
+  mediateurId: MediateurId
+  search?: Search
+  pageSize: PageSize
+}) => Promise<{
+  items: readonly BeneficiaireExportRow[]
+  totalItems: number
+}>
+
+const TOUS_LES_BENEFICIAIRES = PageSize(10_000)
+
+export const exporterBeneficiaires =
+  <Auteur, Classeur>({
+    listerBeneficiaires,
+    construireLeClasseur,
+  }: {
+    readonly listerBeneficiaires: ListerLesBeneficiairesAExporter
+    readonly construireLeClasseur: ConstruireLeClasseurDesBeneficiaires<
+      Auteur,
+      Classeur
+    >
+  }): ExporterBeneficiaires<Auteur, Classeur> =>
+  async ({ mediateurId, filters, auteur }) => {
+    const { items, totalItems } = await listerBeneficiaires({
+      mediateurId,
+      ...(filters.recherche ? { search: Search(filters.recherche) } : {}),
+      pageSize: TOUS_LES_BENEFICIAIRES,
+    })
+
+    return construireLeClasseur({
+      beneficiaires: items,
+      filters,
+      matchesCount: totalItems,
+      auteur,
+    })
+  }

@@ -2,19 +2,24 @@ import Notice from '@codegouvfr/react-dsfr/Notice'
 import Link from 'next/link'
 import BeneficiaireForm, {
   type EnregistrerBeneficiaire,
-} from '@/features/beneficiaire/forms/BeneficiaireForm'
-import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
-import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
-import BackButton from '@/libraries/ui/components/BackButton'
-import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
-import IconInSquare from '@/libraries/ui/components/IconInSquare'
-import type { SaisieEnCours } from '../../../../forms/saisie-en-cours'
+} from '@/features/beneficiaire/ui/forms/BeneficiaireForm'
+import type { EncodedState } from '@/libraries/etat-encode'
+import { contentId } from '@/libraries/liens-d-evitement'
+import { SkipLinksPortal } from '@/libraries/liens-d-evitement/composants'
+import {
+  BackButton,
+  CoopBreadcrumbs,
+  IconInSquare,
+} from '@/libraries/ui/components'
+import type { SaisieEnCours } from '../../../../ui/forms/BeneficiaireForm'
 
 /**
  * Composant de page pur : rend le formulaire de création et son chrome.
  * L'orchestration (auth, décodage du CRA en cours, liaison de l'action) vit
  * dans la route Next. L'action `save` est injectée — l'ability reste découplée.
  */
+export type SaisieDuCraEncodee = EncodedState<SaisieEnCours>
+
 export const CreerBeneficiairePage = ({
   mediateurId,
   save,
@@ -23,8 +28,8 @@ export const CreerBeneficiairePage = ({
 }: {
   mediateurId: string
   save: EnregistrerBeneficiaire
-  retour?: string
-  cra?: SaisieEnCours
+  retour?: string | undefined
+  cra?: SaisieEnCours | undefined
 }) => (
   <div className="fr-container fr-container--medium">
     <SkipLinksPortal />

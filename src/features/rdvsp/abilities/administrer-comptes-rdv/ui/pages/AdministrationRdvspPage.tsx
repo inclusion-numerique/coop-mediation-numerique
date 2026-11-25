@@ -1,34 +1,29 @@
 import { Button } from '@codegouvfr/react-dsfr/Button'
-import { statutIntegration } from '@/features/rdvsp/domain/sante-compte'
-import RdvServicePublicStatusTag from '@/features/rdvsp/ui/RdvServicePublicStatusTag'
-import { dateAsDayAndTimeInTimeZone } from '@/libraries/date/dateAsDayAndTime'
-import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
-import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
-import { numberToString } from '@/libraries/nombre/formatNumber'
+import { statutIntegration } from '@/features/rdvsp/domain/compte/sante-compte'
+import RdvServicePublicStatusTag from '@/features/rdvsp/ui/components/RdvServicePublicStatusTag'
+import { hrefDuCompteRdvEnAdministration } from '@/features/rdvsp/ui/presenters/liens.presenter'
+import { dateAsDayAndTimeInTimeZone } from '@/libraries/date'
+import { contentId } from '@/libraries/liens-d-evitement'
+import { SkipLinksPortal } from '@/libraries/liens-d-evitement/composants'
+import { numberToString } from '@/libraries/nombre'
 import { pluriel } from '@/libraries/pluriel'
-import AdministrationBreadcrumbs from '@/libraries/ui/components/administration/AdministrationBreadcrumbs'
-import AdministrationTitle from '@/libraries/ui/components/administration/AdministrationTitle'
-import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
-import type { AdministrationRdvspData } from '../../implementation/prisma/comptes-rdv.query'
+import {
+  AdministrationBreadcrumbs,
+  AdministrationTitle,
+  CoopPageContainer,
+} from '@/libraries/ui/components'
+import type { ComptesAdministres } from '../../domain/comptes-administres'
 
 const AdministrationRdvspPage = async ({
   data: { users, rdvs },
   timezone = 'Europe/Paris',
 }: {
-  data: AdministrationRdvspData
+  data: ComptesAdministres
   timezone?: string
 }) => (
   <CoopPageContainer>
     <SkipLinksPortal />
-    <AdministrationBreadcrumbs
-      parents={[
-        {
-          label: 'Fonctionnalités',
-          linkProps: { href: `/administration/fonctionnalites` },
-        },
-      ]}
-      currentPage="RDVSP"
-    />
+    <AdministrationBreadcrumbs currentPage="RDVSP" />
     <main id={contentId}>
       <AdministrationTitle icon="ri-calendar-check-line">
         Rendez-Vous Service Public
@@ -129,7 +124,7 @@ const AdministrationRdvspPage = async ({
                         <td>
                           <Button
                             linkProps={{
-                              href: `/administration/fonctionnalites/rdvsp/${id}`,
+                              href: hrefDuCompteRdvEnAdministration(id),
                             }}
                             size="small"
                             title="Détails sur l’integration RDVSP"

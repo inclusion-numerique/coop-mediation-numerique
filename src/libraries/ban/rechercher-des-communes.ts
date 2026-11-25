@@ -1,7 +1,7 @@
 'use client'
 
-import { premierCodePostal } from '@/libraries/adresse/premier-code-postal'
-import { searchAdresses, siIndisponible } from '@/libraries/ban/apiAdresse'
+import { premierCodePostal } from '@/libraries/adresse'
+import { searchAdresses, siIndisponible } from '@/libraries/ban/api-adresse'
 
 export type Commune = {
   readonly id: string

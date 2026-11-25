@@ -3,11 +3,11 @@
 import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { inject } from '@/libraries/nextjs/injection/client'
+import { inject } from '@/libraries/nextjs/injection'
 import { pluriel } from '@/libraries/pluriel'
-import { createToast } from '@/libraries/ui/toast/createToast'
+import { createToast } from '@/libraries/ui/toast'
+import { SUPPRIMER_DES_BENEFICIAIRES_KEY } from '../../action/supprimer-des-beneficiaires.key'
 import { DeleteBulkBeneficiairesModal } from './DeleteBulkBeneficiairesModal'
-import { SUPPRIMER_DES_BENEFICIAIRES_KEY } from './supprimer-des-beneficiaires.key'
 
 const DeleteBulkBeneficiairesModalContent = ({
   selectedIds,

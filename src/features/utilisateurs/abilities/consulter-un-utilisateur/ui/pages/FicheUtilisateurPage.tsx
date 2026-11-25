@@ -9,28 +9,35 @@ import {
   type Jalon,
   mediateurDe,
 } from '@/features/utilisateurs/domain'
-import { BadgeStatutCompte } from '@/features/utilisateurs/ui'
-import { dateAsDay } from '@/libraries/date/dateAsDay'
+import { BadgeStatutCompte } from '@/features/utilisateurs/ui/components/BadgeStatutCompte'
 import {
+  hrefDAjoutALEquipe,
+  hrefDeLaFusion,
+  hrefDeLUtilisateur,
+} from '@/features/utilisateurs/ui/presenters/liens.presenter'
+import {
+  dateAsDay,
   dateAsDayAndTime,
   dateAsDayAndTimeInTimeZone,
-} from '@/libraries/date/dateAsDayAndTime'
-import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
-import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
-import { numberToString } from '@/libraries/nombre/formatNumber'
-import AdministrationBreadcrumbs from '@/libraries/ui/components/administration/AdministrationBreadcrumbs'
-import AdministrationInfoCard from '@/libraries/ui/components/administration/AdministrationInfoCard'
-import AdministrationInlineLabelsValues from '@/libraries/ui/components/administration/AdministrationInlineLabelsValues'
-import AdministrationMailtoLink from '@/libraries/ui/components/administration/AdministrationMailtoLink'
-import AdministrationTitle from '@/libraries/ui/components/administration/AdministrationTitle'
-import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
+} from '@/libraries/date'
+import { contentId } from '@/libraries/liens-d-evitement'
+import { SkipLinksPortal } from '@/libraries/liens-d-evitement/composants'
+import { numberToString } from '@/libraries/nombre'
+import {
+  AdministrationBreadcrumbs,
+  AdministrationInfoCard,
+  AdministrationInlineLabelsValues,
+  AdministrationMailtoLink,
+  AdministrationTitle,
+  CoopPageContainer,
+} from '@/libraries/ui/components'
 import type { Evenement, FicheUtilisateur } from '../../domain'
 import {
   compteSupprime,
   etiquettesDuCompte,
   renseigne,
   telephoneAffiche,
-} from '../fiche-utilisateur.presenter'
+} from '../presenters/fiche-utilisateur.presenter'
 
 export type SectionsDeLaFiche = {
   readonly roles: ReactNode
@@ -132,7 +139,7 @@ export const FicheUtilisateurPage = ({
                   priority="tertiary"
                   size="small"
                   linkProps={{
-                    href: `/administration/utilisateurs/${fiche.id}/merge`,
+                    href: hrefDeLaFusion(fiche.id),
                   }}
                 >
                   Fusionner avec un autre utilisateur
@@ -219,7 +226,7 @@ export const FicheUtilisateurPage = ({
                         ({ coordinateurUtilisateurId, nom }) => (
                           <Link
                             key={coordinateurUtilisateurId}
-                            href={`/administration/utilisateurs/${coordinateurUtilisateurId}`}
+                            href={hrefDeLUtilisateur(coordinateurUtilisateurId)}
                             target="_blank"
                             rel="noreferrer"
                           >
@@ -260,7 +267,7 @@ export const FicheUtilisateurPage = ({
                     priority="secondary"
                     size="small"
                     linkProps={{
-                      href: `/administration/utilisateurs/${fiche.id}/equipe-coordonnee/ajouter`,
+                      href: hrefDAjoutALEquipe(fiche.id),
                     }}
                   >
                     Ajouter un membre

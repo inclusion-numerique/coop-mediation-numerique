@@ -1,9 +1,9 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
-import { annulerUneInvitation } from '@/features/equipe/abilities/annuler-une-invitation'
+import { annulerUneInvitation } from '@/features/equipe/abilities/annuler-une-invitation/implementations/prisma/annuler-une-invitation.mutation'
 import {
   CoordinateurId,
-  Email,
+  Courriel,
   ReferenceInvitation,
   UtilisateurId,
 } from '@/features/equipe/domain'
@@ -43,7 +43,7 @@ const inviter = async (statut: 'EnAttente' | 'Acceptee') => {
 const annulerPar = async (auteur: CoordinateurSeme) => {
   contexte.issue = await annulerUneInvitation({
     reference: ReferenceInvitation({
-      email: Email(emailInvite()),
+      email: Courriel(emailInvite()),
       coordinateurId: CoordinateurId(coordinateur().coordinateurId),
     }),
     gestionnaire: {

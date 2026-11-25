@@ -1,7 +1,7 @@
+import { beneficiaireFormShape } from '@/features/beneficiaire/action/champs-du-beneficiaire.validation'
 import { ContactTelephone } from '@/features/beneficiaire/domain/contact-telephone'
 import { Genre } from '@/features/beneficiaire/domain/genre'
 import { StatutSocial } from '@/features/beneficiaire/domain/statut-social'
-import { beneficiaireFormShape } from '@/features/beneficiaire/forms/beneficiaire-form'
 import type { BeneficiaireACreer } from '../domain/creer-beneficiaire'
 
 export const CreerBeneficiaireValidation = beneficiaireFormShape.transform(

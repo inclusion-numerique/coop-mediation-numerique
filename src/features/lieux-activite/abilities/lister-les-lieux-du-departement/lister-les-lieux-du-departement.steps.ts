@@ -1,11 +1,10 @@
 import assert from 'node:assert'
+import { Page, PageSize, Sort } from '@arckit/resultset'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
-import {
-  lieuxDuDepartement,
-  nombreDeLieuxDuDepartement,
-} from '@/features/lieux-activite/abilities/lister-les-lieux-du-departement'
+import { prismaClient } from '@/configuration/prisma'
+import { lieuxDuDepartement } from '@/features/lieux-activite/abilities/lister-les-lieux-du-departement/implementations/prisma/lieux-du-departement.query'
+import { nombreDeLieuxDuDepartement } from '@/features/lieux-activite/abilities/lister-les-lieux-du-departement/implementations/prisma/nombre-de-lieux-du-departement.query'
 
 const semis: {
   ids: string[]
@@ -95,22 +94,30 @@ Given(
 
 Given("le lieu fréquenté n'a pas d'adresse reconnue par la BAN", async () => {
   await prismaClient.lieuInclusion.update({
-    where: { id: semis.frequente },
+    where: { id: semis.frequente ?? '' },
     data: { banId: null },
   })
 })
 
 Given('le lieu publié est supprimé', async () => {
   await prismaClient.lieuInclusion.update({
-    where: { id: semis.publie },
+    where: { id: semis.publie ?? '' },
     data: { suppression: new Date() },
   })
 })
 
+const TOUS_LES_LIEUX = {
+  recherche: '',
+  communes: [],
+  tri: Sort('nom', 'asc'),
+  page: Page(1),
+  pageSize: PageSize(1000),
+} as const
+
 const lister = async (communes?: readonly string[]) => {
-  const { lieux } = await lieuxDuDepartement({
+  const { items: lieux } = await lieuxDuDepartement({
     departementCode: '17',
-    searchParams: { lignes: '1000', communes },
+    criteres: { ...TOUS_LES_LIEUX, communes: communes ?? [] },
   })
 
   const semes = lieux.filter(({ id }) => semis.ids.includes(id))
@@ -137,11 +144,11 @@ When('on compte les lieux de ce département', async () => {
 })
 
 Then('le nombre de lieux est celui de l’annuaire du département', async () => {
-  const { totalCount } = await lieuxDuDepartement({
+  const { totalItems } = await lieuxDuDepartement({
     departementCode: '17',
-    searchParams: {},
+    criteres: TOUS_LES_LIEUX,
   })
-  assert.strictEqual(semis.nombre, totalCount)
+  assert.strictEqual(semis.nombre, totalItems)
 })
 
 const proposes = () => semis.trouves ?? []
@@ -192,6 +199,6 @@ After(async () => {
     })
   }
   semis.ids = []
-  semis.trouves = undefined
-  semis.nombre = undefined
+  delete semis.trouves
+  delete semis.nombre
 })

@@ -1,22 +1,25 @@
 import Link from 'next/link'
-import type { ModifierBeneficiaireView } from '@/features/beneficiaire/abilities/modifier-beneficiaire/ui/components/modifier-beneficiaire.presenter'
+import type { VueDeModificationDuBeneficiaire } from '@/features/beneficiaire/abilities/modifier-beneficiaire/ui/presenters/modifier-beneficiaire.presenter'
 import BeneficiaireForm, {
   type EnregistrerBeneficiaire,
-} from '@/features/beneficiaire/forms/BeneficiaireForm'
-import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
-import { contentId } from '@/libraries/liens-d-evitement/skipLinks'
-import BackButton from '@/libraries/ui/components/BackButton'
-import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
-import IconInSquare from '@/libraries/ui/components/IconInSquare'
+} from '@/features/beneficiaire/ui/forms/BeneficiaireForm'
+import { hrefDuBeneficiaire } from '@/features/beneficiaire/ui/presenters/liens.presenter'
+import { contentId } from '@/libraries/liens-d-evitement'
+import { SkipLinksPortal } from '@/libraries/liens-d-evitement/composants'
+import {
+  BackButton,
+  CoopBreadcrumbs,
+  IconInSquare,
+} from '@/libraries/ui/components'
 
 export const ModifierBeneficiairePage = ({
   view: { beneficiaireId, displayName, defaultValues },
   save,
   retour,
 }: {
-  view: ModifierBeneficiaireView
+  view: VueDeModificationDuBeneficiaire
   save: EnregistrerBeneficiaire
-  retour?: string
+  retour?: string | undefined
 }) => (
   <div className="fr-container fr-container--medium">
     <SkipLinksPortal />
@@ -31,7 +34,7 @@ export const ModifierBeneficiairePage = ({
         },
         {
           label: displayName,
-          linkProps: { href: `/coop/mes-beneficiaires/${beneficiaireId}` },
+          linkProps: { href: hrefDuBeneficiaire(beneficiaireId) },
         },
       ]}
     />

@@ -28,16 +28,16 @@ import {
   Url,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { describe, expect, it } from 'vitest'
+import { VisibiliteCartographie } from '../../../domain/cartographie-nationale/visibilite-cartographie'
+import { LieuId } from '../../../domain/identifiants/lieu-id'
+import { UtilisateurId } from '../../../domain/identifiants/utilisateur-id'
 import { NomUsage } from '../../../domain/identite-sirene'
 import type { Lieu } from '../../../domain/lieu'
-import { LieuId } from '../../../domain/lieu-id'
-import { ModificationInconnue } from '../../../domain/tracabilite'
-import { UserId } from '../../../domain/user-id'
-import { VisibiliteCartographie } from '../../../domain/visibilite-cartographie'
+import { ModificationInconnue } from '../../../domain/registre/tracabilite'
 import { appliquerModification } from './appliquer-la-modification'
 
 const maintenant = new Date('2026-09-02T11:00:00Z')
-const auteur = UserId('550e8400-e29b-41d4-a716-446655440001')
+const auteur = UtilisateurId('550e8400-e29b-41d4-a716-446655440001')
 
 const lieu: Lieu = {
   id: LieuId('550e8400-e29b-41d4-a716-446655440000'),

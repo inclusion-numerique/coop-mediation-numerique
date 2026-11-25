@@ -1,81 +1,81 @@
-# Feature: Connecter un compte RDV Service Public
+# Fonctionnalité: Connecter un compte RDV Service Public
 
-## Rule: La liaison exige que l'agent porte la même adresse e-mail que le compte La Coop
+## Règle: La liaison exige que l'agent porte la même adresse e-mail que le compte La Coop
 
-### Scenario: Lier un compte dont l'e-mail correspond
+### Scénario: Lier un compte dont l'e-mail correspond
 
-* Given un agent RDV Service Public portant l’e-mail du médiateur
-* When je connecte mon compte RDV Service Public
-* Then le compte est lié
-* And le compte est enregistré avec les jetons reçus
+* Étant donné un agent RDV Service Public portant l’e-mail du médiateur
+* Quand je connecte mon compte RDV Service Public
+* Alors le compte est lié
+* Et le compte est enregistré avec les jetons reçus
 
-### Scenario: Refuser un compte dont l'e-mail diffère
+### Scénario: Refuser un compte dont l'e-mail diffère
 
-* Given un agent RDV Service Public portant l’e-mail "autre.agent@example.com"
-* When je connecte mon compte RDV Service Public
-* Then la connexion échoue avec l’erreur "EmailAgentDifferent"
-* And aucun compte RDV n’est enregistré
+* Étant donné un agent RDV Service Public portant l’e-mail "autre.agent@example.com"
+* Quand je connecte mon compte RDV Service Public
+* Alors la connexion échoue avec l’erreur "EmailAgentDifferent"
+* Et aucun compte RDV n’est enregistré
 
-## Rule: La fenêtre de synchronisation n'est ouverte qu'à la première connexion
+## Règle: La fenêtre de synchronisation n'est ouverte qu'à la première connexion
 
-### Scenario: Première connexion
+### Scénario: Première connexion
 
-* Given un agent RDV Service Public portant l’e-mail du médiateur
-* When je connecte mon compte RDV Service Public
-* Then la synchronisation démarre au début du jour courant
+* Étant donné un agent RDV Service Public portant l’e-mail du médiateur
+* Quand je connecte mon compte RDV Service Public
+* Alors la synchronisation démarre au début du jour courant
 
-### Scenario: Reconnexion d'un compte existant
+### Scénario: Reconnexion d'un compte existant
 
-* Given un compte RDV déjà lié synchronisé depuis le "2026-01-15"
-* And un agent RDV Service Public portant l’e-mail du médiateur
-* When je connecte mon compte RDV Service Public
-* Then la synchronisation démarre toujours au "2026-01-15"
+* Étant donné un compte RDV déjà lié synchronisé depuis le "2026-01-15"
+* Et un agent RDV Service Public portant l’e-mail du médiateur
+* Quand je connecte mon compte RDV Service Public
+* Alors la synchronisation démarre toujours au "2026-01-15"
 
-## Rule: Une reconnexion répare le compte sans rien détruire
+## Règle: Une reconnexion répare le compte sans rien détruire
 
-### Scenario: Reconnecter un compte en erreur
+### Scénario: Reconnecter un compte en erreur
 
-* Given un compte RDV en erreur "invalid_grant"
-* And un agent RDV Service Public portant l’e-mail du médiateur
-* When je connecte mon compte RDV Service Public
-* Then le compte est lié
-* And le compte ne porte plus d’erreur
+* Étant donné un compte RDV en erreur "invalid_grant"
+* Et un agent RDV Service Public portant l’e-mail du médiateur
+* Quand je connecte mon compte RDV Service Public
+* Alors le compte est lié
+* Et le compte ne porte plus d’erreur
 
-### Scenario: Reconnecter un compte déconnecté
+### Scénario: Reconnecter un compte déconnecté
 
-* Given un compte RDV déconnecté
-* And un agent RDV Service Public portant l’e-mail du médiateur
-* When je connecte mon compte RDV Service Public
-* Then le compte est lié
-* And le compte n’est plus marqué déconnecté
+* Étant donné un compte RDV déconnecté
+* Et un agent RDV Service Public portant l’e-mail du médiateur
+* Quand je connecte mon compte RDV Service Public
+* Alors le compte est lié
+* Et le compte n’est plus marqué déconnecté
 
-### Scenario: Reconnexion préservant les réglages du médiateur
+### Scénario: Reconnexion préservant les réglages du médiateur
 
-* Given un compte RDV déjà lié affichant les rendez-vous dans les activités
-* And un agent RDV Service Public portant l’e-mail du médiateur
-* When je connecte mon compte RDV Service Public
-* Then le compte affiche toujours les rendez-vous dans les activités
+* Étant donné un compte RDV déjà lié affichant les rendez-vous dans les activités
+* Et un agent RDV Service Public portant l’e-mail du médiateur
+* Quand je connecte mon compte RDV Service Public
+* Alors le compte affiche toujours les rendez-vous dans les activités
 
-### Scenario: Reconnexion préservant l'affichage des rendez-vous désactivé
+### Scénario: Reconnexion préservant l'affichage des rendez-vous désactivé
 
-* Given un compte RDV déjà lié masquant les rendez-vous dans les activités
-* And un agent RDV Service Public portant l’e-mail du médiateur
-* When je connecte mon compte RDV Service Public
-* Then le compte masque toujours les rendez-vous dans les activités
+* Étant donné un compte RDV déjà lié masquant les rendez-vous dans les activités
+* Et un agent RDV Service Public portant l’e-mail du médiateur
+* Quand je connecte mon compte RDV Service Public
+* Alors le compte masque toujours les rendez-vous dans les activités
 
-## Rule: Une première connexion affiche les rendez-vous dans les activités
+## Règle: Une première connexion affiche les rendez-vous dans les activités
 
-### Scenario: Première connexion affichant les rendez-vous
+### Scénario: Première connexion affichant les rendez-vous
 
-* Given un agent RDV Service Public portant l’e-mail du médiateur
-* When je connecte mon compte RDV Service Public
-* Then le compte connecté affiche les rendez-vous dans les activités
+* Étant donné un agent RDV Service Public portant l’e-mail du médiateur
+* Quand je connecte mon compte RDV Service Public
+* Alors le compte connecté affiche les rendez-vous dans les activités
 
-## Rule: Un code d'autorisation refusé interrompt la liaison
+## Règle: Un code d'autorisation refusé interrompt la liaison
 
-### Scenario: Code refusé par RDV Service Public
+### Scénario: Code refusé par RDV Service Public
 
-* Given un code d’autorisation refusé
-* When je connecte mon compte RDV Service Public
-* Then la connexion échoue avec l’erreur "CodeAutorisationRefuse"
-* And aucun compte RDV n’est enregistré
+* Étant donné un code d’autorisation refusé
+* Quand je connecte mon compte RDV Service Public
+* Alors la connexion échoue avec l’erreur "CodeAutorisationRefuse"
+* Et aucun compte RDV n’est enregistré

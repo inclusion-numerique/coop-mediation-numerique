@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react'
-import { DataTable } from '@/libraries/data-table'
+import { DataTable } from '@/libraries/data-table/table'
 import type { LigneEquipe } from '../../../../domain'
-import type { EtatDeLaListe } from '../etat-de-la-liste'
-import type { LigneAffichee } from '../lister-les-membres.presenter'
+import type { LiensDeLaListe } from '../filtres/liste-de-l-equipe.filtre'
+import type { LigneAffichee } from '../presenters/lister-les-membres.presenter'
 import { EquipeTableHead } from './EquipeTableHead'
 import { EquipeTableRow } from './EquipeTableRow'
 
@@ -14,21 +14,15 @@ const AucunResultat = ({ colonnes }: { colonnes: number }) => (
 
 export const EquipeTable = ({
   lignes,
-  state,
-  baseHref,
+  colonnes,
   actions,
 }: {
   lignes: readonly LigneAffichee[]
-  state: EtatDeLaListe
-  baseHref: string
+  colonnes: LiensDeLaListe['colonnes']
   actions: ((ligne: LigneEquipe) => ReactNode) | null
 }) => (
   <DataTable className="fr-table--nowrap fr-width-full">
-    <EquipeTableHead
-      state={state}
-      baseHref={baseHref}
-      avecActions={actions !== null}
-    />
+    <EquipeTableHead colonnes={colonnes} avecActions={actions !== null} />
     <tbody>
       {lignes.map((ligne) => (
         <EquipeTableRow key={ligne.cle} ligne={ligne} actions={actions} />

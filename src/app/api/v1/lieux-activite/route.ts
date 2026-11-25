@@ -4,15 +4,15 @@ import {
   withApiV1Errors,
   withClientApi,
   withQueryParams,
-} from '@/features/clients-api/abilities/authentifier-un-client-api/implementation/api-v1'
+} from '@/features/clients-api/abilities/authentifier-un-client-api/implementations/api-v1'
+import { authentifierUnClientApi } from '@/features/clients-api/abilities/authentifier-un-client-api/implementations/prisma/authentifier-un-client-api.query'
 import {
   criteresDesLieuxActivite,
   LieuxActiviteQueryParamsValidation,
-} from '@/features/clients-api/abilities/lire-les-lieux-activite'
-import {
-  lieuPublieExpose,
-  lieuxPublies,
-} from '@/features/lieux-activite/abilities/publier-les-lieux'
+} from '@/features/clients-api/abilities/lire-les-lieux-activite/implementations/api-v1/lieux-activite.params'
+import { verifySecret } from '@/features/clients-api/implementations/secret/hash-secret.adapter'
+import { lieuPublieExpose } from '@/features/lieux-activite/abilities/publier-les-lieux/implementations/api/lieu-publie.transfer'
+import { lieuxPublies } from '@/features/lieux-activite/abilities/publier-les-lieux/implementations/prisma/lieux-publies.query'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -196,6 +196,10 @@ export const revalidate = 0
  *             Liste d'identifiants de structures (uuid) séparés par des virgules. Exemple : ids=uuid1,uuid2. Maximum 100 ids.
  *         required: false
  *     responses:
+ *       401:
+ *         $ref: '#/components/responses/NonAuthentifie'
+ *       403:
+ *         $ref: '#/components/responses/NonAutorise'
  *       200:
  *         description: La liste des lieux d'inclusion numérique.
  *         content:
@@ -207,7 +211,7 @@ export const revalidate = 0
  */
 
 export const GET = routeBuilder()
-  .use(withClientApi(['LieuxActivite']))
+  .use(withClientApi(authentifierUnClientApi(verifySecret))(['LieuxActivite']))
   .use(withQueryParams(LieuxActiviteQueryParamsValidation))
   .handle(
     withApiV1Errors(async ({ queryParams }) => {

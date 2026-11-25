@@ -11,27 +11,31 @@ import {
   ReactNode,
 } from 'react'
 import { useFieldContext } from '@/libraries/formulaire/form-context'
-import { Pictogram } from '@/libraries/pictograms/pictogram'
-import { casesCochees } from './cases-cochees'
+import { Pictogram } from '@/libraries/pictograms'
+import { casesCochees } from '../cases-cochees'
 
 type CheckboxProps<T> = Omit<DsfrCheckboxProps, 'name' | 'options'> & {
   isPending: boolean
-  isTiled?: boolean
-  exclusives?: readonly T[]
+  isTiled?: boolean | undefined
+  exclusives?: readonly T[] | undefined
   options: {
     label: ReactNode
     value: T
-    hint?: string
-    extra?: {
-      illustration?: string | Pictogram
-      disabled?: boolean
-      hintText?: string
-      tooltips?: readonly string[]
-    }
-    nativeInputProps?: DetailedHTMLProps<
-      LabelHTMLAttributes<HTMLInputElement>,
-      HTMLInputElement
-    >
+    hint?: string | undefined
+    extra?:
+      | {
+          illustration?: string | Pictogram | undefined
+          disabled?: boolean | undefined
+          hintText?: string | undefined
+          tooltips?: readonly string[] | undefined
+        }
+      | undefined
+    nativeInputProps?:
+      | DetailedHTMLProps<
+          LabelHTMLAttributes<HTMLInputElement>,
+          HTMLInputElement
+        >
+      | undefined
   }[]
 }
 
@@ -69,9 +73,11 @@ const isChecked =
 const Illustration = ({
   extra,
 }: {
-  extra?: {
-    illustration?: string | Pictogram
-  }
+  extra?:
+    | {
+        illustration?: string | Pictogram | undefined
+      }
+    | undefined
 }) => {
   if (extra?.illustration == null) return null
   return typeof extra.illustration === 'string' ? (
@@ -97,11 +103,12 @@ export const Checkbox = <T,>({
   const errors: Error[] = state.meta.errors
   const hasErrors = errors.length > 0 && state.meta.isTouched
   const isSingleCheckbox = options.length === 1
+  const message = hasErrors ? errors[0]?.message : undefined
 
   return (
     <DsfrCheckbox
-      state={hasErrors ? 'error' : undefined}
-      stateRelatedMessage={hasErrors ? errors[0].message : undefined}
+      {...(hasErrors ? { state: 'error' as const } : {})}
+      {...(message === undefined ? {} : { stateRelatedMessage: message })}
       className={classNames(isTiled ? 'fr-checkbox-buttons' : '', className)}
       legend={
         legend && <span className="fr-label fr-text--medium">{legend}</span>
@@ -142,7 +149,9 @@ export const Checkbox = <T,>({
             )}
           </span>
         ),
-        hintText: option.extra?.hintText,
+        ...(option.extra?.hintText === undefined
+          ? {}
+          : { hintText: option.extra.hintText }),
         nativeInputProps: {
           name,
           value: option.value as string,

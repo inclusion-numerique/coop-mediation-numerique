@@ -6,8 +6,8 @@ import {
   Service,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prismaClient'
-import { inventaireDesLieux } from '@/features/lieux-activite/abilities/inventorier-les-lieux'
+import { prismaClient } from '@/configuration/prisma'
+import { inventaireDesLieux } from '@/features/lieux-activite/abilities/inventorier-les-lieux/implementations/prisma/inventaire-des-lieux.query'
 import {
   FraisACharge as FraisAChargeStockee,
   ModaliteAcces as ModaliteAccesStockee,
@@ -44,21 +44,21 @@ Given('un lieu à inventorier', async () => {
 
 Given('ce lieu a été retiré', async () => {
   await prismaClient.lieuInclusion.update({
-    where: { id: semis.lieuId },
+    where: { id: semis.lieuId ?? '' },
     data: { suppression: new Date() },
   })
 })
 
 Given("ce lieu n'est pas partagé sur la cartographie nationale", async () => {
   await prismaClient.lieuInclusion.update({
-    where: { id: semis.lieuId },
+    where: { id: semis.lieuId ?? '' },
     data: { visiblePourCartographieNationale: false },
   })
 })
 
 Given("la coop n'a pas touché à ce lieu depuis l'an dernier", async () => {
   await prismaClient.lieuInclusion.update({
-    where: { id: semis.lieuId },
+    where: { id: semis.lieuId ?? '' },
     data: { modification: L_AN_DERNIER() },
   })
 })
@@ -67,7 +67,7 @@ Given("une autre source l'a repris hier", async () => {
   const inscription = await prismaClient.lieuInclusionRegistreMain.create({
     data: {
       nom: 'Espace inventaire repris par dora',
-      structureCoopId: semis.lieuId,
+      ...(semis.lieuId === undefined ? {} : { structureCoopId: semis.lieuId }),
       source: 'dora',
       editedBy: 'carto',
       updatedAtCarto: HIER(),
@@ -82,7 +82,7 @@ Given(
   "ce lieu déclare un service, des frais et une modalité d'accès",
   async () => {
     await prismaClient.lieuInclusion.update({
-      where: { id: semis.lieuId },
+      where: { id: semis.lieuId ?? '' },
       data: {
         services: [ServiceStocke.AideAuxDemarchesAdministratives],
         fraisACharge: [FraisAChargeStockee.GratuitSousCondition],
@@ -157,9 +157,9 @@ Then('sa suppression est datée', () => {
 After(async () => {
   const id = semis.lieuId
   const inscriptionId = semis.inscriptionId
-  semis.lieuId = undefined
-  semis.inscriptionId = undefined
-  semis.inventaire = undefined
+  delete semis.lieuId
+  delete semis.inscriptionId
+  delete semis.inventaire
 
   if (inscriptionId != null)
     await prismaClient.lieuInclusionRegistreMain.deleteMany({

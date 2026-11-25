@@ -3,47 +3,40 @@ import { fusionnerUnTagAction } from '@/app/_actions/tags/fusionner-un-tag.actio
 import { modifierUnTagAction } from '@/app/_actions/tags/modifier-un-tag.action'
 import { rechercherDesDestinationsAction } from '@/app/_actions/tags/rechercher-des-destinations.action'
 import { supprimerUnTagAction } from '@/app/_actions/tags/supprimer-un-tag.action'
-import { profilDeLaSession } from '@/features/authentification'
-import { authenticateUser } from '@/features/authentification/implementation/session/authenticateUser'
+import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
+import { authenticateUser } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
 import { CREER_UN_TAG_ACTION_KEY } from '@/features/tags/abilities/creer-un-tag/action/creer-un-tag.key'
-import {
-  BoutonCreerUnTag,
-  ModaleDeCreation,
-  visibilitesProposees,
-} from '@/features/tags/abilities/creer-un-tag/ui'
+import { visibilitesProposees } from '@/features/tags/abilities/creer-un-tag/ui/presenters/visibilites.presenter'
+import { BoutonCreerUnTag } from '@/features/tags/abilities/creer-un-tag/ui/slots/BoutonCreerUnTag.slot'
+import { ModaleDeCreation } from '@/features/tags/abilities/creer-un-tag/ui/slots/ModaleDeCreation.slot'
 import { FUSIONNER_UN_TAG_ACTION_KEY } from '@/features/tags/abilities/fusionner-un-tag/action/fusionner-un-tag.key'
 import { RECHERCHER_DES_DESTINATIONS_ACTION_KEY } from '@/features/tags/abilities/fusionner-un-tag/action/rechercher-des-destinations.key'
-import {
-  BoutonFusionner,
-  ModaleDeFusion,
-} from '@/features/tags/abilities/fusionner-un-tag/ui'
-import { listerLesTags } from '@/features/tags/abilities/lister-les-tags'
-import {
-  ListeDesTagsPage,
-  lignesDeLaListe,
-  type ParametresDeLaListe,
-  requeteDeLaListe,
-} from '@/features/tags/abilities/lister-les-tags/ui'
+import { BoutonFusionner } from '@/features/tags/abilities/fusionner-un-tag/ui/slots/BoutonFusionner.slot'
+import { ModaleDeFusion } from '@/features/tags/abilities/fusionner-un-tag/ui/slots/ModaleDeFusion.slot'
+import { listerLesTags } from '@/features/tags/abilities/lister-les-tags/implementations/prisma/lister-les-tags.query'
+import { listeDesTags } from '@/features/tags/abilities/lister-les-tags/ui/filtres/liste-des-tags.filtre'
+import { ListeDesTagsPage } from '@/features/tags/abilities/lister-les-tags/ui/pages/ListeDesTagsPage'
+import { lignesDeLaListe } from '@/features/tags/abilities/lister-les-tags/ui/presenters/liste-des-tags.presenter'
 import { MODIFIER_UN_TAG_ACTION_KEY } from '@/features/tags/abilities/modifier-un-tag/action/modifier-un-tag.key'
-import {
-  BoutonModifier,
-  ModaleDeModification,
-} from '@/features/tags/abilities/modifier-un-tag/ui'
+import { BoutonModifier } from '@/features/tags/abilities/modifier-un-tag/ui/slots/BoutonModifier.slot'
+import { ModaleDeModification } from '@/features/tags/abilities/modifier-un-tag/ui/slots/ModaleDeModification.slot'
 import { SUPPRIMER_UN_TAG_ACTION_KEY } from '@/features/tags/abilities/supprimer-un-tag/action/supprimer-un-tag.key'
-import {
-  BoutonSupprimer,
-  ModaleDeSuppression,
-} from '@/features/tags/abilities/supprimer-un-tag/ui'
+import { BoutonSupprimer } from '@/features/tags/abilities/supprimer-un-tag/ui/slots/BoutonSupprimer.slot'
+import { ModaleDeSuppression } from '@/features/tags/abilities/supprimer-un-tag/ui/slots/ModaleDeSuppression.slot'
 import { acteurDe } from '@/features/tags/domain'
-import { MenuDActionsDuTag } from '@/features/tags/ui'
-import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
+import { MenuDActionsDuTag } from '@/features/tags/ui/slots/MenuDActionsDuTag.slot'
+import { ClientBinder } from '@/libraries/nextjs/injection'
 
-const Page = async (props: { searchParams: Promise<ParametresDeLaListe> }) => {
-  const searchParams = await props.searchParams
+const CHEMIN_DES_TAGS = '/coop/tags'
+
+const Page = async (props: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>
+}) => {
+  const parametres = await props.searchParams
   const user = await authenticateUser()
   const acteur = acteurDe(profilDeLaSession(user))
-  const requete = requeteDeLaListe(searchParams)
-  const liste = await listerLesTags({ acteur, ...requete })
+  const { tri, pagination } = listeDesTags.charger(parametres)
+  const liste = await listerLesTags({ acteur, tri, ...pagination })
 
   return (
     <ClientBinder bind={CREER_UN_TAG_ACTION_KEY} to={creerUnTagAction}>
@@ -62,11 +55,12 @@ const Page = async (props: { searchParams: Promise<ParametresDeLaListe> }) => {
             >
               <ListeDesTagsPage
                 lignes={lignesDeLaListe(acteur, liste)}
-                total={liste.total}
-                lignesParPage={requete.lignesParPage}
+                total={liste.totalItems}
+                pages={listeDesTags.pagination.liens(
+                  { chemin: CHEMIN_DES_TAGS, parametres },
+                  liste,
+                )}
                 estCoordinateur={user.coordinateur != null}
-                baseHref="/coop/tags"
-                searchParams={searchParams}
                 creer={<BoutonCreerUnTag />}
                 modales={
                   <>

@@ -1,6 +1,6 @@
 import { z } from 'zod'
-import { RdvId } from '../../../domain/rdv-id'
-import { StatutPresenceModifiable } from '../../../domain/statut-presence'
+import { RdvId } from '../../../domain/identifiants/rdv-id'
+import { StatutPresenceModifiable } from '../../../domain/rdv/statut-presence'
 
 /**
  * Le contrat traversant le réseau. Les deux champs sont validés par les value

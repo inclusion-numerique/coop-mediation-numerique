@@ -1,25 +1,25 @@
-import { AdresseRdv } from '../../../domain/adresse-rdv'
-import { DureeEnMinutes } from '../../../domain/duree-en-minutes'
+import { MotifId } from '../../../domain/identifiants/motif-id'
+import { OrganisationId } from '../../../domain/identifiants/organisation-id'
+import { ParticipationId } from '../../../domain/identifiants/participation-id'
+import { RdvAgentId } from '../../../domain/identifiants/rdv-agent-id'
+import { RdvId } from '../../../domain/identifiants/rdv-id'
+import { RdvUuid } from '../../../domain/identifiants/rdv-uuid'
+import { UsagerId } from '../../../domain/identifiants/usager-id'
 import {
   EmailExterne,
   NomExterne,
   PrenomExterne,
 } from '../../../domain/identite'
 import { NomMotif } from '../../../domain/libelle'
-import { type Lieu, LieuId, NomLieu } from '../../../domain/lieu'
-import type { Motif } from '../../../domain/motif'
-import { MotifId } from '../../../domain/motif-id'
-import { OrganisationId } from '../../../domain/organisation-id'
-import type { Participation } from '../../../domain/participation'
-import { ParticipationId } from '../../../domain/participation-id'
-import type { Rdv } from '../../../domain/rdv'
-import { RdvAgentId } from '../../../domain/rdv-agent-id'
-import { RdvId } from '../../../domain/rdv-id'
-import { RdvUuid } from '../../../domain/rdv-uuid'
-import { StatutPresence } from '../../../domain/statut-presence'
+import { AdresseRdv } from '../../../domain/rdv/adresse-rdv'
+import { DureeEnMinutes } from '../../../domain/rdv/duree-en-minutes'
+import { type Lieu, LieuId, NomLieu } from '../../../domain/rdv/lieu'
+import type { Motif } from '../../../domain/rdv/motif'
+import type { Participation } from '../../../domain/rdv/participation'
+import type { Rdv } from '../../../domain/rdv/rdv'
+import { StatutPresence } from '../../../domain/rdv/statut-presence'
 import { UrlAgent } from '../../../domain/url-agent'
 import type { Usager } from '../../../domain/usager'
-import { UsagerId } from '../../../domain/usager-id'
 
 /**
  * Fixtures partagées entre les tests de cette ability. Elles passent par les

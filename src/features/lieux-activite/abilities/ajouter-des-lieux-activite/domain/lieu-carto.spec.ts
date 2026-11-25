@@ -14,12 +14,14 @@ import {
   Typologies,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { describe, expect, it } from 'vitest'
+import { IdsCartographieNationale } from '../../../domain/cartographie-nationale/ids-cartographie-nationale'
 import type { Fiche } from '../../../domain/fiche'
-import { IdsCartographieNationale } from '../../../domain/ids-cartographie-nationale'
-import { SourceCartographie } from '../../../domain/tracabilite'
+import { LieuId } from '../../../domain/identifiants/lieu-id'
+import { SourceCartographie } from '../../../domain/registre/tracabilite'
 import { lieuDepuisCarto } from './lieu-carto'
 
 const maintenant = new Date('2026-09-07T10:00:00Z')
+const LIEU_ID = LieuId('550e8400-e29b-41d4-a716-446655440099')
 
 const fiche: Fiche = {
   nom: Nom('Tiers-lieu du Port'),
@@ -52,14 +54,14 @@ const lieuCarto = {
 
 describe('le lieu matérialisé depuis la cartographie', () => {
   it('est publié, et porte les identifiants sous lesquels la carto le connaît', () => {
-    const lieu = lieuDepuisCarto(lieuCarto, maintenant)
+    const lieu = lieuDepuisCarto(lieuCarto, maintenant, LIEU_ID)
 
     expect(lieu.visibilite).toBe('Publie')
     expect(lieu.idsCartographieNationale).toEqual(['dora', 'abc'])
   })
 
   it('n’a ni identifiant BAN ni identité SIRENE', () => {
-    const lieu = lieuDepuisCarto(lieuCarto, maintenant)
+    const lieu = lieuDepuisCarto(lieuCarto, maintenant, LIEU_ID)
 
     expect(lieu.banId).toBeNull()
     expect(lieu.identiteSirene).toEqual({
@@ -69,18 +71,19 @@ describe('le lieu matérialisé depuis la cartographie', () => {
   })
 
   it('est créé sans auteur', () => {
-    expect(lieuDepuisCarto(lieuCarto, maintenant).tracabilite.creation).toEqual(
-      {
-        date: maintenant,
-        par: null,
-      },
-    )
+    expect(
+      lieuDepuisCarto(lieuCarto, maintenant, LIEU_ID).tracabilite.creation,
+    ).toEqual({
+      date: maintenant,
+      par: null,
+    })
   })
 
   it('porte la signature du producteur qui l’a écrit en dernier', () => {
     const lieu = lieuDepuisCarto(
       { ...lieuCarto, source: SourceCartographie('dora') },
       maintenant,
+      LIEU_ID,
     )
 
     expect(lieu.tracabilite.derniereModification).toEqual({
@@ -92,7 +95,8 @@ describe('le lieu matérialisé depuis la cartographie', () => {
 
   it('reste sans auteur quand aucun producteur n’est nommé', () => {
     expect(
-      lieuDepuisCarto(lieuCarto, maintenant).tracabilite.derniereModification,
+      lieuDepuisCarto(lieuCarto, maintenant, LIEU_ID).tracabilite
+        .derniereModification,
     ).toEqual({ _tag: 'Inconnue', date: maintenant })
   })
 })

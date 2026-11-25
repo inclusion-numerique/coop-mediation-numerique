@@ -4,18 +4,17 @@ import {
   withApiV1Errors,
   withClientApi,
   withQueryParams,
-} from '@/features/clients-api/abilities/authentifier-un-client-api/implementation/api-v1'
+} from '@/features/clients-api/abilities/authentifier-un-client-api/implementations/api-v1'
+import { authentifierUnClientApi } from '@/features/clients-api/abilities/authentifier-un-client-api/implementations/prisma/authentifier-un-client-api.query'
 import {
   criteresDesStructures,
-  reponseDesStructures,
   StructuresQueryParamsValidation,
-} from '@/features/clients-api/abilities/lire-les-structures'
-import {
-  inventaireDesLieux,
-  lieuInventorie,
-} from '@/features/lieux-activite/abilities/inventorier-les-lieux'
-import { prismaCursorPagination } from '@/libraries/json-api/CursorPagination'
-import { curseurLu } from '@/libraries/json-api/pageParCurseur'
+} from '@/features/clients-api/abilities/lire-les-structures/implementations/api-v1/structures.params'
+import { reponseDesStructures } from '@/features/clients-api/abilities/lire-les-structures/implementations/api-v1/structures.response'
+import { verifySecret } from '@/features/clients-api/implementations/secret/hash-secret.adapter'
+import { lieuInventorie } from '@/features/lieux-activite/abilities/inventorier-les-lieux/implementations/api/lieu-inventorie.transfer'
+import { inventaireDesLieux } from '@/features/lieux-activite/abilities/inventorier-les-lieux/implementations/prisma/inventaire-des-lieux.query'
+import { curseurLu, prismaCursorPagination } from '@/libraries/json-api'
 
 /**
  * @openapi
@@ -300,6 +299,10 @@ import { curseurLu } from '@/libraries/json-api/pageParCurseur'
  *         required: false
  *         description: "retourne les structures dont la dernière écriture, quelle qu'en soit la source, est supérieure ou égale à cette date-heure"
  *     responses:
+ *       401:
+ *         $ref: '#/components/responses/NonAuthentifie'
+ *       403:
+ *         $ref: '#/components/responses/NonAutorise'
  *       200:
  *         description: liste des structures
  *         content:
@@ -319,7 +322,7 @@ import { curseurLu } from '@/libraries/json-api/pageParCurseur'
  */
 
 export const GET = routeBuilder()
-  .use(withClientApi(['Structures']))
+  .use(withClientApi(authentifierUnClientApi(verifySecret))(['Structures']))
   .use(withQueryParams(StructuresQueryParamsValidation))
   .handle(
     withApiV1Errors(async ({ queryParams }) => {

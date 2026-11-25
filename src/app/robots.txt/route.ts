@@ -1,10 +1,10 @@
-import { estMain } from '@/configuration/projet/deploiement'
+import { estMain } from '@/configuration/projet'
 
 export const dynamic = 'force-static'
 
 // Disallow indexing of preview environments
 export const GET = () =>
-  estMain
+  estMain()
     ? new Response(`User-agent: *
 Allow: /
 `)

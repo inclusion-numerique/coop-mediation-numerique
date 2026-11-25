@@ -1,6 +1,0 @@
-export { profilDeLaSession } from './domain/profil-de-la-session'
-export { withActeurDeLaCoop } from './with-acteur-de-la-coop'
-export { withAdmin } from './with-admin'
-export { withAdminRoute } from './with-admin-route'
-export { withAuth } from './with-auth'
-export { withMediateur } from './with-mediateur'

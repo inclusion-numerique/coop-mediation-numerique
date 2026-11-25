@@ -1,45 +1,45 @@
-# Feature: Régler la visibilité du médiateur sur la cartographie
+# Fonctionnalité: Régler la visibilité du médiateur sur la cartographie
 
 > Le réglage porte sur le profil — nom, courriel, téléphone —, pas sur les lieux
 > d'exercice : un médiateur caché disparaît de la fiche des lieux où il exerce,
 > les lieux restent publiés.
 
-## Rule: Le médiateur choisit lui-même d'être visible ou non
+## Règle: Le médiateur choisit lui-même d'être visible ou non
 
-### Scenario: Le médiateur se retire de la cartographie
+### Scénario: Le médiateur se retire de la cartographie
 
-* Given un médiateur visible sur la cartographie
-* When ce médiateur se rend invisible sur la cartographie
-* Then le profil de ce médiateur n'est plus visible sur la cartographie
-* And la date de modification de ce médiateur est celle du réglage
-* And le choix de visibilité de ce médiateur est daté du réglage
+* Étant donné un médiateur visible sur la cartographie
+* Quand ce médiateur se rend invisible sur la cartographie
+* Alors le profil de ce médiateur n'est plus visible sur la cartographie
+* Et la date de modification de ce médiateur est celle du réglage
+* Et le choix de visibilité de ce médiateur est daté du réglage
 
-### Scenario: Le médiateur masqué par un administrateur se rend de nouveau visible
+### Scénario: Le médiateur masqué par un administrateur se rend de nouveau visible
 
-* Given un médiateur visible sur la cartographie
-* And un administrateur a rendu ce médiateur invisible sur la cartographie
-* When ce médiateur se rend visible sur la cartographie
-* Then le profil de ce médiateur est visible sur la cartographie
+* Étant donné un médiateur visible sur la cartographie
+* Et un administrateur a rendu ce médiateur invisible sur la cartographie
+* Quand ce médiateur se rend visible sur la cartographie
+* Alors le profil de ce médiateur est visible sur la cartographie
 
-## Rule: Un administrateur retire le profil d'un médiateur qui ne peut plus le faire
+## Règle: Un administrateur retire le profil d'un médiateur qui ne peut plus le faire
 
 > Personne n'ayant plus accès à son compte, rupture ou fin de contrat non
 > déclarée : le profil resterait affiché sans que personne ne réponde.
 
-### Scenario: L'administrateur retire le profil d'un médiateur de la cartographie
+### Scénario: L'administrateur retire le profil d'un médiateur de la cartographie
 
-* Given un médiateur visible sur la cartographie
-* When un administrateur rend ce médiateur invisible sur la cartographie
-* Then le profil de ce médiateur n'est plus visible sur la cartographie
-* And la date de modification de ce médiateur est celle du réglage
-* And le choix de visibilité de ce médiateur est daté du réglage
+* Étant donné un médiateur visible sur la cartographie
+* Quand un administrateur rend ce médiateur invisible sur la cartographie
+* Alors le profil de ce médiateur n'est plus visible sur la cartographie
+* Et la date de modification de ce médiateur est celle du réglage
+* Et le choix de visibilité de ce médiateur est daté du réglage
 
-## Rule: Le réglage ne porte que sur un médiateur dont le compte existe
+## Règle: Le réglage ne porte que sur un médiateur dont le compte existe
 
-### Scenario: Le médiateur d'un compte supprimé est introuvable
+### Scénario: Le médiateur d'un compte supprimé est introuvable
 
-* Given un médiateur visible sur la cartographie
-* And le compte de ce médiateur est supprimé
-* When un administrateur rend ce médiateur invisible sur la cartographie
-* Then le réglage de la visibilité échoue car le médiateur est introuvable
-* And le profil de ce médiateur est visible sur la cartographie
+* Étant donné un médiateur visible sur la cartographie
+* Et le compte de ce médiateur est supprimé
+* Quand un administrateur rend ce médiateur invisible sur la cartographie
+* Alors le réglage de la visibilité échoue car le médiateur est introuvable
+* Et le profil de ce médiateur est visible sur la cartographie

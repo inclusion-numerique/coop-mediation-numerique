@@ -1,17 +1,16 @@
 'use client'
 
 import Button from '@codegouvfr/react-dsfr/Button'
-import { useAppForm } from '@/libraries/formulaire/use-app-form'
-import { useHydrated } from '@/libraries/formulaire/use-hydrated'
+import { useAppForm, useHydrated } from '@/libraries/formulaire/hooks'
 import { pluriel } from '@/libraries/pluriel'
-import { Options } from '@/libraries/ui/components/Primitives/Options'
+import { Options } from '@/libraries/ui/primitives'
 import {
   LieuAFusionnerOptions,
   type LieuChoisi,
   lieuAFusionnerComboBox,
   type RechercheDeFusion,
   rechercheMinimum,
-} from './lieu-a-fusionner-combo-box'
+} from '../forms/LieuAFusionnerComboBox'
 
 const RechercheDUnLieu = ({
   excludeStructureIds = [],
@@ -19,7 +18,7 @@ const RechercheDUnLieu = ({
   onSelect,
 }: {
   excludeStructureIds?: string[]
-  defaultStructure?: LieuChoisi
+  defaultStructure?: LieuChoisi | undefined
   onSelect: (lieu: LieuChoisi) => void
 }) => {
   const valeursInitiales: { lieu: LieuChoisi | null } = {

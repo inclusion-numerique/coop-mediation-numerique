@@ -1,12 +1,10 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
-import {
-  type Accepteur,
-  accepterUneInvitation,
-} from '@/features/equipe/abilities/accepter-une-invitation'
+import { type Accepteur } from '@/features/equipe/abilities/accepter-une-invitation/domain/index'
+import { accepterUneInvitation } from '@/features/equipe/abilities/accepter-une-invitation/implementations/prisma/accepter-une-invitation.mutation'
 import {
   CoordinateurId,
-  Email,
+  Courriel,
   MediateurId,
   ReferenceInvitation,
   UtilisateurId,
@@ -21,13 +19,14 @@ import {
   semerUneInvitation,
   semerUnMediateurDEquipe,
 } from '@/features/equipe/equipe.cucumber'
+import { prevenirLeCoordinateur } from '@/features/equipe/implementations/email'
 
 const contexte: {
   coordinateur?: CoordinateurSeme
   invite?: MediateurSeme
   note?: MediateurSeme
   inscriptionValidee?: boolean
-  issue?: Awaited<ReturnType<typeof accepterUneInvitation>>
+  issue?: Awaited<ReturnType<ReturnType<typeof accepterUneInvitation>>>
 } = {}
 
 const coordinateur = (): CoordinateurSeme => {
@@ -75,18 +74,18 @@ const accepteurDe = (
   inscriptionValidee
     ? {
         type: 'InscriptionValidee',
-        email: Email(mediateur.email),
+        email: Courriel(mediateur.email),
         mediateurId: MediateurId(mediateur.mediateurId),
       }
-    : { type: 'InscriptionEnCours', email: Email(mediateur.email) }
+    : { type: 'InscriptionEnCours', email: Courriel(mediateur.email) }
 
 const accepterPar = async (
   mediateur: MediateurSeme,
   inscriptionValidee = true,
 ) => {
-  contexte.issue = await accepterUneInvitation({
+  contexte.issue = await accepterUneInvitation({ prevenirLeCoordinateur })({
     reference: ReferenceInvitation({
-      email: Email(invite().email),
+      email: Courriel(invite().email),
       coordinateurId: CoordinateurId(coordinateur().coordinateurId),
     }),
     accepteur: accepteurDe(mediateur, inscriptionValidee),

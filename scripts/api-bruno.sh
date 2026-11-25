@@ -5,7 +5,7 @@ sortie=.bruno
 
 rm -rf "$sortie"
 pnpm dlx --allow-build=protobufjs @usebruno/cli@4.3.0 import openapi \
-  --source src/features/clients-api/implementation/openapi/v1.openapi.json \
+  --source src/features/clients-api/implementations/openapi/v1.openapi.json \
   --output "$sortie" \
   --collection-format bru \
   --collection-name "La coop - API"

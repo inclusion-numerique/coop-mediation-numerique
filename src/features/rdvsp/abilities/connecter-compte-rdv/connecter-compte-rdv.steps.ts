@@ -5,23 +5,23 @@ import type {
   ConnecterCompteRdv,
   EchangerCodeAutorisation,
 } from '@/features/rdvsp/abilities/connecter-compte-rdv/domain/connecter-compte-rdv'
+import { connecterCompteRdv } from '@/features/rdvsp/abilities/connecter-compte-rdv/domain/connecter-compte-rdv'
 import { CodeAutorisationRefuse } from '@/features/rdvsp/abilities/connecter-compte-rdv/domain/errors'
-import { connecterCompteRdv } from '@/features/rdvsp/abilities/connecter-compte-rdv/implementation/connecter-compte-rdv'
-import { compteRdvExistant } from '@/features/rdvsp/abilities/connecter-compte-rdv/implementation/prisma/compte-rdv-existant.query'
-import { enregistrerCompteConnecte } from '@/features/rdvsp/abilities/connecter-compte-rdv/implementation/prisma/enregistrer-compte-connecte.mutation'
+import { compteRdvExistant } from '@/features/rdvsp/abilities/connecter-compte-rdv/implementations/prisma/compte-rdv-existant.query'
+import { enregistrerCompteConnecte } from '@/features/rdvsp/abilities/connecter-compte-rdv/implementations/prisma/enregistrer-compte-connecte.mutation'
 import type { Agent } from '@/features/rdvsp/domain/agent'
+import {
+  JetonAcces,
+  JetonRafraichissement,
+  type JetonsOAuth,
+} from '@/features/rdvsp/domain/compte/jetons-oauth'
+import { RdvAgentId } from '@/features/rdvsp/domain/identifiants/rdv-agent-id'
 import {
   EmailExterne,
   NomExterne,
   PrenomExterne,
 } from '@/features/rdvsp/domain/identite'
-import {
-  JetonAcces,
-  JetonRafraichissement,
-  type JetonsOAuth,
-} from '@/features/rdvsp/domain/jetons-oauth'
-import { RdvAgentId } from '@/features/rdvsp/domain/rdv-agent-id'
-import type { RdvServicePublicApi } from '@/features/rdvsp/domain/rdv-service-public.port'
+import type { RdvServicePublicApi } from '@/features/rdvsp/domain/ports'
 import {
   compteRdvEnBase,
   emailUtilisateurDeTest,

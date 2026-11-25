@@ -1,13 +1,12 @@
-import { createApiClient } from '@e2e/tasks/handlers/clientApi.tasks'
-import { createInvitation } from '@e2e/tasks/handlers/createInvitation'
-import { deleteAllData } from '@e2e/tasks/handlers/deleteAllData'
+import { createApiClient } from '@e2e/tasks/handlers/client-api.tasks'
+import { createInvitation } from '@e2e/tasks/handlers/create-invitation'
+import { preparerLesPersonas } from '@e2e/tasks/handlers/personas.tasks'
 import {
   connectRdvAccountFor,
   getRdvAccountFor,
   reglageRdvsDansActivitesFor,
   seedRdvsFor,
 } from '@e2e/tasks/handlers/rdv.tasks'
-import { resetFixtures } from '@e2e/tasks/handlers/resetFixtures'
 import {
   createCoordinateurFor,
   createSession,
@@ -24,8 +23,7 @@ export const tasks = {
   deleteUser,
   createSession,
   deleteSession,
-  deleteAllData,
-  resetFixtures,
+  preparerLesPersonas,
   createInvitation,
   createApiClient,
   createCoordinateurFor,

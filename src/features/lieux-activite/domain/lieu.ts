@@ -1,10 +1,10 @@
-import type { BanId } from './ban-id'
+import type { IdsCartographieNationale } from './cartographie-nationale/ids-cartographie-nationale'
+import type { VisibiliteCartographie } from './cartographie-nationale/visibilite-cartographie'
 import type { Fiche } from './fiche'
+import type { BanId } from './identifiants/ban-id'
+import type { LieuId } from './identifiants/lieu-id'
 import type { IdentiteSirene } from './identite-sirene'
-import type { IdsCartographieNationale } from './ids-cartographie-nationale'
-import type { LieuId } from './lieu-id'
-import type { Tracabilite } from './tracabilite'
-import type { VisibiliteCartographie } from './visibilite-cartographie'
+import type { Tracabilite } from './registre/tracabilite'
 
 export type Lieu = {
   readonly id: LieuId

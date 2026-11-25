@@ -1,23 +1,54 @@
 import { describe, expect, it } from 'vitest'
-import { Email, MediateurId } from '../../../domain'
+import { Courriel, MediateurId } from '../../../domain'
+import { CoordinateurId } from '../../../domain/identifiants/coordinateur-id'
 import {
-  coordinateurId,
-  invitationAcceptee,
-  invitationEnAttente,
-  invitationRefusee,
-} from '../../../domain/fixtures'
+  type InvitationAcceptee,
+  type InvitationEnAttente,
+  type InvitationRefusee,
+} from '../../../domain/invitation/invitation'
+import { ReferenceInvitation } from '../../../domain/invitation/reference-invitation'
 import { planifier } from './planifier'
 
+const coordinateurId = CoordinateurId('550e8400-e29b-41d4-a716-446655440001')
+
+const mediateurId = MediateurId('550e8400-e29b-41d4-a716-446655440011')
+
+const email = Courriel('invite@example.com')
+
+const reference = ReferenceInvitation({ email, coordinateurId })
+
+const invitationEnAttente: InvitationEnAttente = {
+  reference,
+  invite: { type: 'SansCompte' },
+  envoyeeLe: new Date('2026-01-01T09:00:00Z'),
+  renvoyeeLe: null,
+  statut: 'EnAttente',
+}
+
+const invitationAcceptee: InvitationAcceptee = {
+  ...invitationEnAttente,
+  invite: { type: 'MediateurInscrit', mediateurId },
+  renvoyeeLe: new Date('2026-01-05T09:00:00Z'),
+  statut: 'Acceptee',
+  accepteeLe: new Date('2026-01-06T09:00:00Z'),
+}
+
+const invitationRefusee: InvitationRefusee = {
+  ...invitationEnAttente,
+  statut: 'Refusee',
+  refuseeLe: new Date('2026-01-03T09:00:00Z'),
+}
+
 const maintenant = new Date('2026-10-14T09:00:00Z')
-const nouveau = Email('nouveau@example.com')
-const inscrit = Email('inscrit@example.com')
-const membre = Email('membre@example.com')
+const nouveau = Courriel('nouveau@example.com')
+const inscrit = Courriel('inscrit@example.com')
+const membre = Courriel('membre@example.com')
 const mediateurInscrit = MediateurId('550e8400-e29b-41d4-a716-446655440041')
 
 const existant = {
   invitations: [],
-  membresActifs: new Set<Email>(),
-  mediateursConnus: new Map<Email, MediateurId>(),
+  membresActifs: new Set<Courriel>(),
+  mediateursConnus: new Map<Courriel, MediateurId>(),
 }
 
 const emailsPlanifies = (resultat: ReturnType<typeof planifier>) =>
@@ -27,7 +58,7 @@ describe('planifier des invitations', () => {
   it('invite chaque adresse une seule fois, même saisie deux fois', () => {
     const resultat = planifier({
       coordinateurId,
-      candidats: [nouveau, Email('NOUVEAU@example.com')],
+      candidats: [nouveau, Courriel('NOUVEAU@example.com')],
       existant,
       maintenant,
     })

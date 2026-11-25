@@ -1,25 +1,24 @@
 'use client'
 
+import { useDataTableSelection } from '@/libraries/data-table/selection'
+import { PiedDeListe } from '@/libraries/etat-d-url/liste'
 import {
-  type DataTableUrlState,
-  useDataTableSelection,
-} from '@/libraries/data-table'
-import { BeneficiairesPagination } from './BeneficiairesPagination'
+  type LiensDeLaListe,
+  paginationDesBeneficiaires,
+} from '../filtres/liste-des-beneficiaires.filtre'
+import type { VueDeMesBeneficiaires } from '../presenters/lister-beneficiaires.presenter'
 import { BeneficiairesSelectionToolbar } from './BeneficiairesSelectionToolbar'
 import { BeneficiairesTable } from './BeneficiairesTable'
 import DeleteBulkBeneficiairesModalContent from './DeleteBulkBeneficiairesModalContent'
-import type { MesBeneficiairesView } from './lister-beneficiaires.presenter'
 
-type ResultsView = Extract<MesBeneficiairesView, { tag: 'results' }>
+type ResultsView = Extract<VueDeMesBeneficiaires, { tag: 'results' }>
 
 export const BeneficiairesResults = ({
   view,
-  state,
-  baseHref,
+  liens,
 }: {
   view: ResultsView
-  state: DataTableUrlState
-  baseHref: string
+  liens: LiensDeLaListe
 }) => {
   const selection = useDataTableSelection(view.rows.map((row) => row.id))
 
@@ -31,15 +30,12 @@ export const BeneficiairesResults = ({
       />
       <BeneficiairesTable
         rows={view.rows}
-        state={state}
-        baseHref={baseHref}
+        colonnes={liens.colonnes}
         selection={selection}
       />
-      <BeneficiairesPagination
-        state={state}
-        baseHref={baseHref}
-        totalItems={view.pagination.totalItems}
-        pageSize={view.pagination.pageSize}
+      <PiedDeListe
+        liens={liens.pages}
+        pagination={paginationDesBeneficiaires}
       />
       <DeleteBulkBeneficiairesModalContent
         selectedIds={[...selection.selectedIds]}

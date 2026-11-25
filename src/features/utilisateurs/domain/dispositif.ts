@@ -9,3 +9,7 @@ export type Dispositif = Model.TypeOf<typeof Dispositif>
 
 export const dispositifDe = (estConseillerNumerique: boolean): Dispositif =>
   Dispositif(estConseillerNumerique ? 'ConseillerNumerique' : 'HorsDispositif')
+
+export const estEnPoste = (
+  personne: { readonly conseillerNumeriqueEnPoste: object | null } | null,
+): boolean => personne?.conseillerNumeriqueEnPoste != null

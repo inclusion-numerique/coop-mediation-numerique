@@ -1,10 +1,6 @@
 import classNames from 'classnames'
-import { materielIcons } from '@/features/activites/ui/libelles/materiel'
-import { Materiel } from '@/generated/prisma/browser'
-import {
-  numberToPercentage,
-  numberToString,
-} from '@/libraries/nombre/formatNumber'
+import { materielIcons } from '@/features/activites/ui/labels/libelles/materiel.labels'
+import { numberToPercentage, numberToString } from '@/libraries/nombre'
 
 export const StatistiqueMateriel = ({
   label,
@@ -14,7 +10,7 @@ export const StatistiqueMateriel = ({
   className,
 }: {
   label: string
-  value: Materiel
+  value: keyof typeof materielIcons
   count: number
   proportion: number
   className?: string

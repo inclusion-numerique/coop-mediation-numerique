@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import type { ActiviteCoordinateur, ActiviteMediateur } from './activite'
-import { cycleDeVie } from './cycle-de-vie'
-import { JAMAIS, jalon } from './jalon'
 import { rattachements } from './rattachements'
+import { cycleDeVie } from './relances/cycle-de-vie'
+import { JAMAIS, jalon } from './relances/jalon'
 import { RoleUtilisateur } from './role-utilisateur'
 import { type SituationDuCompte, statutDe } from './statut-compte'
 
@@ -36,7 +36,7 @@ const inscrit = ({
   visite = null,
 }: {
   depuis?: number
-  role?: 'User' | 'Admin' | 'Support'
+  role?: 'User' | 'Admin'
   med?: ActiviteMediateur | null
   coord?: ActiviteCoordinateur | null
   visite?: number | null
@@ -83,12 +83,12 @@ describe('statut d’un compte', () => {
     ).toEqual({ _tag: 'Supprime' })
   })
 
-  it.each([
-    ['Admin', 'Administrateur'],
-    ['Support', 'Support'],
-  ] as const)('%s est hors cycle de vie', (role, tag) => {
-    expect(statutDe(inscrit({ role }), MAINTENANT)).toEqual({ _tag: tag })
-  })
+  it.each([['Admin', 'Administrateur']] as const)(
+    '%s est hors cycle de vie',
+    (role, tag) => {
+      expect(statutDe(inscrit({ role }), MAINTENANT)).toEqual({ _tag: tag })
+    },
+  )
 
   it.each([
     [0, 0],
