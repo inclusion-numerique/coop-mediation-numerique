@@ -1,5 +1,5 @@
 import type { Worksheet } from 'exceljs'
-import { onlyDefinedAndNotNull } from '@/libraries/collections/only-defined-and-not-null'
+import { onlyDefinedAndNotNull } from '@/libraries/collections'
 
 export type AutosizeColumnsOptions = {
   fixedColumns?: Record<number, number>
