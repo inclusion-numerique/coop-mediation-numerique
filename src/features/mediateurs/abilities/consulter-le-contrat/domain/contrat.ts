@@ -1,4 +1,5 @@
-import { addMonths, isBefore } from 'date-fns'
+import { addMonths } from 'date-fns/addMonths'
+import { isBefore } from 'date-fns/isBefore'
 import { EcheanceDuContrat } from './echeance-du-contrat'
 import type { TypeDeContrat } from './type-de-contrat'
 

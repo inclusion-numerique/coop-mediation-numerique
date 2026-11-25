@@ -1,4 +1,4 @@
-import { differenceInMonths } from 'date-fns'
+import { differenceInMonths } from 'date-fns/differenceInMonths'
 import { dateAsDayConventional } from '@/libraries/date'
 import type {
   Contrat,

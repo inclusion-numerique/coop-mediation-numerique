@@ -1,8 +1,12 @@
-export * from './auteur-id'
-export * from './coordinateur-id'
-export * from './lien-de-partage-id'
-export * from './lien-du-perimetre'
-export * from './mediateur-id'
-export * from './perimetre-partage'
-export * from './proprietaire-partage'
-export * from './utilisateur-id'
+export { AuteurId } from './auteur-id'
+export { CoordinateurId } from './coordinateur-id'
+export { LienDePartageId } from './lien-de-partage-id'
+export type { LienDuPerimetre } from './lien-du-perimetre'
+export { MediateurId } from './mediateur-id'
+export { PerimetrePartage } from './perimetre-partage'
+export type { ProprietairePartage, Rattachements } from './proprietaire-partage'
+export {
+  proprietaireDuPerimetre,
+  proprietairesPossibles,
+} from './proprietaire-partage'
+export { UtilisateurId } from './utilisateur-id'
