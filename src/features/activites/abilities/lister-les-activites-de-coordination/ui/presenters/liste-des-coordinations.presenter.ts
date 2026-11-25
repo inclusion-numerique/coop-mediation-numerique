@@ -1,6 +1,9 @@
-import { formatInTimeZone } from 'date-fns-tz'
 import { formatActiviteDayDate } from '@/features/activites/ui/presenters/format-du-jour-d-activite.presenter'
-import { dateAsDayInTimeZone, dateAsTimeInTimeZone } from '@/libraries/date'
+import {
+  dateAsDayInTimeZone,
+  dateAsTimeInTimeZone,
+  formatInTimeZone,
+} from '@/libraries/date'
 import { pluriel } from '@/libraries/pluriel'
 import {
   type ActiviteDeCoordination,

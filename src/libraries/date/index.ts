@@ -13,4 +13,5 @@ export {
 export { dateAsIsoDay } from './date-as-iso-day'
 export { dureeAsString } from './duree-as-string'
 export { dateFormatter, formatDate } from './format-date'
+export { formatInTimeZone } from './format-in-time-zone'
 export { libelleCourtDuMois } from './month-short-labels'

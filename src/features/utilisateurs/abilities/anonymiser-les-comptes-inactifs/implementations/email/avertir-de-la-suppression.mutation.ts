@@ -1,4 +1,3 @@
-import { formatInTimeZone } from 'date-fns-tz'
 import { contactEmail } from '@/configuration/projet'
 import {
   emailTransport,
@@ -6,6 +5,7 @@ import {
   throwOnSendMailFailure,
 } from '@/configuration/smtp'
 import { inactiviteProlongeeAvertissementEmail } from '@/features/utilisateurs/abilities/anonymiser-les-comptes-inactifs/implementations/email/avertissement-d-inactivite-prolongee.email'
+import { formatInTimeZone } from '@/libraries/date'
 import { compileMjml } from '@/libraries/emails/rendu'
 import type { AvertirDeLaSuppression } from '../../domain'
 

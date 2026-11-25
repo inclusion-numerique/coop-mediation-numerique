@@ -1,6 +1,6 @@
+import { TZDate } from '@date-fns/tz'
 import { isAfter } from 'date-fns/isAfter'
 import { isBefore } from 'date-fns/isBefore'
-import { fromZonedTime } from 'date-fns-tz'
 
 export type EtatContrat =
   | { readonly _tag: 'EnCours' }
@@ -19,7 +19,14 @@ export const etatContrat = (rupture: Date | null): EtatContrat =>
   rupture == null ? { _tag: 'EnCours' } : { _tag: 'Rompu', le: rupture }
 
 const debutDuJourAParis = (jour: Date): Date =>
-  fromZonedTime(`${jour.toISOString().slice(0, 10)}T00:00:00`, 'Europe/Paris')
+  new Date(
+    new TZDate(
+      jour.getUTCFullYear(),
+      jour.getUTCMonth(),
+      jour.getUTCDate(),
+      'Europe/Paris',
+    ).getTime(),
+  )
 
 const rupturePassee = (contrat: Contrat, maintenant: Date): Date | null =>
   contrat.etat._tag === 'Rompu' &&
