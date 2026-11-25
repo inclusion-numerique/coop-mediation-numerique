@@ -1481,10 +1481,11 @@ const COUCHES = [
   },
 ]
 
-const LIBRARIES = require('node:fs')
-  .readdirSync('src/libraries', { withFileTypes: true })
-  .filter((entree) => entree.isDirectory())
-  .map((entree) => entree.name)
+const sousDossiers = (dossier) =>
+  require('node:fs')
+    .readdirSync(dossier, { withFileTypes: true })
+    .filter((entree) => entree.isDirectory())
+    .map((entree) => entree.name)
 
 const IMPORTS_ADMIS_DES_LIBRARIES = {
   '@arckit/resultset': ['etat-d-url'],
@@ -1589,70 +1590,129 @@ const IMPORTS_ADMIS_DES_LIBRARIES = {
   zustand: ['ui'],
 }
 
-const LIBRARIES_ADMISES = Object.entries(IMPORTS_ADMIS_DES_LIBRARIES).reduce(
-  (parLibrary, [nom, libraries]) =>
-    libraries.reduce(
-      (acc, library) => ({
-        ...acc,
-        [library]: [...(acc[library] ?? []), nom],
-      }),
-      parLibrary,
-    ),
-  {},
-)
+const IMPORTS_ADMIS_DE_LA_CONFIGURATION = {
+  '@arckit/telemetry': ['telemetry'],
+  '@codegouvfr/react-dsfr': ['dsfr'],
+  '@prisma/adapter-pg': ['prisma'],
+  '@sentry/nextjs': ['telemetry'],
+  '@sentry/node': ['telemetry'],
+  'configuration/environnement': [
+    'brevo',
+    'prisma',
+    'projet',
+    'recherche-entreprises',
+    'smtp',
+    'telemetry',
+  ],
+  'configuration/projet': ['brevo', 'recherche-entreprises', 'telemetry'],
+  'configuration/telemetry': ['ban', 'nextjs', 'prisma'],
+  'libraries/ban': ['ban'],
+  'libraries/chemin-interne': ['projet'],
+  'libraries/navigateur': ['projet'],
+  'libraries/nextjs': ['nextjs', 'telemetry'],
+  'libraries/recherche-entreprises': ['recherche-entreprises'],
+  next: ['dsfr', 'projet', 'telemetry'],
+  nodemailer: ['smtp'],
+  'postgres-array': ['prisma'],
+  react: ['telemetry'],
+  zod: ['environnement'],
+}
 
-const admisDansLaLibrary = (library, supplementaires) => [
-  `^src/libraries/${library}/`,
-  ...OUTILS_DE_TEST.map(cible),
-  ...supplementaires.map(cible),
-]
-
-const LIBRARIES_REGLES = [
-  {
-    name: 'library-sans-metier',
-    severity: 'error',
-    comment:
-      "Une library n'importe ni app/, ni les features, ni la configuration, ni les jobs, ni le CLI : elle ne porte aucun concept métier ni aucun branchement",
-    from: { path: '^src/libraries/' },
-    to: { path: '^src/(?:app|features|configuration|jobs|cli)/' },
-  },
-  ...LIBRARIES.map((library) => ({
-    name: `entrees-de-la-library (${library})`,
-    severity: 'error',
-    comment: `Hors d'elle-même, la library ${library} s'importe par ses entrées : l'index.ts de sa racine ou celui d'un sujet de premier niveau`,
-    from: { pathNot: `^src/libraries/${library}/` },
-    to: {
-      path: `^src/libraries/${library}/`,
-      pathNot: [
-        `^src/libraries/${library}/index[.]tsx?$`,
-        `^src/libraries/${library}/[^/]+/index[.]tsx?$`,
-      ],
-    },
-  })),
-  {
-    name: 'imports-d-une-library',
-    severity: 'error',
-    comment:
-      "Une library n'importe qu'elle-même et ses outils de test ; une autre library, un paquet ou un module de Node est une ligne d'IMPORTS_ADMIS_DES_LIBRARIES",
-    from: {
-      path: '^src/libraries/([^/]+)/',
-      pathNot: cles(LIBRARIES_ADMISES).map(
-        (library) => `^src/libraries/${library}/`,
+const parModule = (table) =>
+  Object.entries(table).reduce(
+    (parNom, [cibleAdmise, modules]) =>
+      modules.reduce(
+        (acc, module) => ({
+          ...acc,
+          [module]: [...(acc[module] ?? []), cibleAdmise],
+        }),
+        parNom,
       ),
+    {},
+  )
+
+const zoneDeModules = ({ racine, nom, regles, entrees, interdits, table }) => {
+  const admis = parModule(table)
+  const admisDansLeModule = (module, supplementaires) => [
+    `^src/${racine}/${module}/`,
+    ...OUTILS_DE_TEST.map(cible),
+    ...supplementaires.map(cible),
+  ]
+  return [
+    {
+      name: regles.sansMetier,
+      severity: 'error',
+      comment: `${nom} n'importe ni ${interdits.join(', ni ')}`,
+      from: { path: `^src/${racine}/` },
+      to: {
+        path: `^src/(?:${interdits.map((zone) => zone.replace(/\/$/, '')).join('|')})/`,
+      },
     },
-    to: { pathNot: admisDansLaLibrary('$1', []) },
+    ...sousDossiers(`src/${racine}`).map((module) => ({
+      name: `${regles.entrees} (${module})`,
+      severity: 'error',
+      comment: `Hors de lui-même, ${racine}/${module} s'importe par ses entrées`,
+      from: { pathNot: `^src/${racine}/${module}/` },
+      to: {
+        path: `^src/${racine}/${module}/`,
+        pathNot: entrees.map((entree) => `^src/${racine}/${module}/${entree}`),
+      },
+    })),
+    {
+      name: regles.imports,
+      severity: 'error',
+      comment: `${nom} n'importe que lui-même et ses outils de test ; le reste est une ligne de sa table d'imports admis`,
+      from: {
+        path: `^src/${racine}/([^/]+)/`,
+        pathNot: cles(admis).map((module) => `^src/${racine}/${module}/`),
+      },
+      to: { pathNot: admisDansLeModule('$1', []) },
+    },
+    ...Object.entries(admis).map(([module, noms]) => ({
+      name: `${regles.imports} (${module})`,
+      severity: 'error',
+      comment: `Exception : ${racine}/${module} importe en plus ${noms.join(', ')}`,
+      from: { path: `^src/${racine}/${module}/` },
+      to: { pathNot: admisDansLeModule(module, noms) },
+    })),
+  ]
+}
+
+const LIBRARIES_REGLES = zoneDeModules({
+  racine: 'libraries',
+  nom: 'Une library',
+  regles: {
+    sansMetier: 'library-sans-metier',
+    entrees: 'entrees-de-la-library',
+    imports: 'imports-d-une-library',
   },
-  ...Object.entries(LIBRARIES_ADMISES).map(([library, noms]) => ({
-    name: `imports-d-une-library (${library})`,
-    severity: 'error',
-    comment: `Exception des libraries : ${library} importe en plus ${noms.join(', ')}`,
-    from: { path: `^src/libraries/${library}/` },
-    to: { pathNot: admisDansLaLibrary(library, noms) },
-  })),
-]
+  entrees: ['index[.]tsx?$', '[^/]+/index[.]tsx?$'],
+  interdits: ['app', 'features', 'configuration', 'jobs', 'cli'],
+  table: IMPORTS_ADMIS_DES_LIBRARIES,
+})
+
+const CONFIGURATION_REGLES = zoneDeModules({
+  racine: 'configuration',
+  nom: 'Un module de configuration',
+  regles: {
+    sansMetier: 'configuration-sans-metier',
+    entrees: 'entrees-du-module-de-configuration',
+    imports: 'imports-d-un-module-de-configuration',
+  },
+  entrees: ['index[.]tsx?$', 'serveur[.]tsx?$', '[^/]+/index[.]tsx?$'],
+  interdits: ['app', 'features', 'jobs', 'cli'],
+  table: IMPORTS_ADMIS_DE_LA_CONFIGURATION,
+})
 
 module.exports = {
-  forbidden: [...GLOBAL, ...APP, ...FEATURES, ...COUCHES, ...LIBRARIES_REGLES],
+  forbidden: [
+    ...GLOBAL,
+    ...APP,
+    ...FEATURES,
+    ...COUCHES,
+    ...LIBRARIES_REGLES,
+    ...CONFIGURATION_REGLES,
+  ],
   options: {
     doNotFollow: { path: ['node_modules'] },
     exclude: { path: '^src/generated/' },
