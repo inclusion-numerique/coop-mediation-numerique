@@ -1,2 +1,2 @@
-export * from './client'
-export * from './client-binder'
+export { inject, keyFor, provide } from './client'
+export { ClientBinder } from './client-binder'

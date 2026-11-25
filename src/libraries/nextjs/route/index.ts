@@ -1,2 +1,2 @@
-export * from './adresse-avec'
-export * from './route-construite'
+export { adresseAvec } from './adresse-avec'
+export { routeConstruite } from './route-construite'
