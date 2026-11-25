@@ -2,7 +2,7 @@ import { prismaClient } from '@/configuration/prisma'
 import {
   avecIdentifiantCarto,
   inscriptionPourLIdentifiantCarto,
-} from '../../../../implementations/prisma/registre'
+} from '../../../../implementations/prisma/registre/identifiants-carto.query'
 
 export const activitesEnCoursDeLUtilisateur = async (userId: string) => {
   const activites = await prismaClient.mediateurEnActivite.findMany({

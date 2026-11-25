@@ -6,7 +6,7 @@ import {
   lieuCoopToDomain,
   lieuToDomain,
 } from '../../../../implementations/prisma/lieu.transfer'
-import { inscriptionPourLaFiche } from '../../../../implementations/prisma/registre'
+import { inscriptionPourLaFiche } from '../../../../implementations/prisma/registre/fiche-du-registre.select'
 import {
   type FicheDuLieu,
   NombreDActivites,

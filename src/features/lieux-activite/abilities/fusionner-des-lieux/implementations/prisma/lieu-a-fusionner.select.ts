@@ -1,5 +1,5 @@
 import type { Prisma } from '@/generated/prisma/client'
-import { inscriptionPourLIdentifiantCarto } from '../../../../implementations/prisma/registre'
+import { inscriptionPourLIdentifiantCarto } from '../../../../implementations/prisma/registre/identifiants-carto.query'
 
 export const lieuAFusionnerInclude = {
   inscriptionRegistre: inscriptionPourLIdentifiantCarto,

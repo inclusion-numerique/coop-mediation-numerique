@@ -3,12 +3,10 @@ import type { LieuInclusion, Prisma } from '@/generated/prisma/client'
 import { unionArrays } from '@/libraries/collections'
 import { failure, type Result, success } from '@/libraries/result'
 import type { LieuId } from '../../../../domain/identifiants/lieu-id'
-import {
-  ecrireLeLieuAuRegistre,
-  inscriptionPourLIdentifiantCarto,
-  retirerDuRegistre,
-  toutesLesColonnes,
-} from '../../../../implementations/prisma/registre/index'
+import { toutesLesColonnes } from '../../../../implementations/prisma/registre/colonnes-a-ecrire.select'
+import { ecrireLeLieuAuRegistre } from '../../../../implementations/prisma/registre/ecrire-au-registre.mutation'
+import { inscriptionPourLIdentifiantCarto } from '../../../../implementations/prisma/registre/identifiants-carto.query'
+import { retirerDuRegistre } from '../../../../implementations/prisma/registre/retirer-du-registre.mutation'
 import { type EchecDeFusion, LieuIntrouvable } from '../../domain'
 
 type PrismaTransaction = Prisma.TransactionClient

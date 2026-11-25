@@ -6,11 +6,9 @@ import {
   lieuCorrele,
   preparerCorrele,
 } from '../../../../implementations/prisma/lieu-correle.mutation'
-import {
-  ecrireLeLieuAuRegistre,
-  identiteDuLieu,
-  inscriptionPourLIdentifiantCarto,
-} from '../../../../implementations/prisma/registre'
+import { identiteDuLieu } from '../../../../implementations/prisma/registre/colonnes-a-ecrire.select'
+import { ecrireLeLieuAuRegistre } from '../../../../implementations/prisma/registre/ecrire-au-registre.mutation'
+import { inscriptionPourLIdentifiantCarto } from '../../../../implementations/prisma/registre/identifiants-carto.query'
 
 export type LieuDecrit = LieuAMaterialiser &
   Omit<Prisma.LieuInclusionCreateManyInput, 'id'>

@@ -12,10 +12,10 @@ import {
   preparerCorrele,
 } from '../../../../implementations/prisma/lieu-correle.mutation'
 import {
-  ecrireAuRegistre,
   identiteDuLieu,
   toutesLesColonnes,
-} from '../../../../implementations/prisma/registre/index'
+} from '../../../../implementations/prisma/registre/colonnes-a-ecrire.select'
+import { ecrireAuRegistre } from '../../../../implementations/prisma/registre/ecrire-au-registre.mutation'
 import { type EchecDeCreation, MediateurRequis } from '../../domain/errors'
 
 const rattacher = async (

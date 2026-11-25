@@ -3,10 +3,10 @@ import { lieuToDomain } from '../../../../implementations/prisma/lieu.transfer'
 import type { LigneDuLieu } from '../../../../implementations/prisma/ligne-du-lieu.select'
 import {
   aBougeDepuis,
-  avecIdentifiantCarto,
   derniereEcriture,
-  inscriptionPourLaFiche,
-} from '../../../../implementations/prisma/registre'
+} from '../../../../implementations/prisma/registre/derniere-ecriture.transfer'
+import { inscriptionPourLaFiche } from '../../../../implementations/prisma/registre/fiche-du-registre.select'
+import { avecIdentifiantCarto } from '../../../../implementations/prisma/registre/identifiants-carto.query'
 
 const champsDuStandard = (ligne: LigneDuLieu) => {
   const { fiche, tracabilite } = lieuToDomain(ligne)

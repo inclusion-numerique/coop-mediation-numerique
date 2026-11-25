@@ -12,7 +12,10 @@ import type {
 import { NombreDeMediateurs } from '../../domain/nombres'
 import { SourceCartographie } from '../../domain/registre/tracabilite'
 import { adresseDesColonnes } from './adresse-des-colonnes.select'
-import { adresseDeLInscription, inscriptionPourLaFiche } from './registre'
+import {
+  adresseDeLInscription,
+  inscriptionPourLaFiche,
+} from './registre/fiche-du-registre.select'
 import { derniereModificationExterne } from './registre/modification-du-registre.transfer'
 
 export const projectionDuLieuEnListe = {

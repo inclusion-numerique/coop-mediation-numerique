@@ -1,5 +1,5 @@
 import { lieuFromDomain } from '../../../../implementations/prisma/lieu.transfer'
-import { type ColonnesDuRegistre } from '../../../../implementations/prisma/registre/index'
+import { type ColonnesDuRegistre } from '../../../../implementations/prisma/registre/lieu.transfer'
 import type { SectionDeLaFiche } from '../../domain/modification-lieu'
 
 export type ColonnesDuLieu = ReturnType<typeof lieuFromDomain>

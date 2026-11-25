@@ -1,9 +1,7 @@
 import { prismaClient } from '@/configuration/prisma'
 import type { MediateurId } from '../../../../domain/identifiants/mediateur-id'
-import {
-  champsDAffichage,
-  inscriptionPourLaFiche,
-} from '../../../../implementations/prisma/registre'
+import { champsDAffichage } from '../../../../implementations/prisma/registre/champs-d-affichage.select'
+import { inscriptionPourLaFiche } from '../../../../implementations/prisma/registre/fiche-du-registre.select'
 
 export const listerLesLieuxPourLInscription = async ({
   mediateurId,

@@ -1,9 +1,7 @@
 import { prismaClient } from '@/configuration/prisma'
 import type { Prisma } from '@/generated/prisma/client'
-import {
-  champsDAffichage,
-  inscriptionPourLaFiche,
-} from '../../../../implementations/prisma/registre'
+import { champsDAffichage } from '../../../../implementations/prisma/registre/champs-d-affichage.select'
+import { inscriptionPourLaFiche } from '../../../../implementations/prisma/registre/fiche-du-registre.select'
 import type { LigneDeLaListe } from '../../domain/ligne-de-la-liste'
 
 const searchStructureSelect = {

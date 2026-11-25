@@ -1,7 +1,7 @@
 import { prismaClient } from '@/configuration/prisma'
 import type { Lieu } from '../../../../domain/lieu'
 import { lieuFromDomain } from '../../../../implementations/prisma/lieu.transfer'
-import { ecrireAuRegistre } from '../../../../implementations/prisma/registre'
+import { ecrireAuRegistre } from '../../../../implementations/prisma/registre/ecrire-au-registre.mutation'
 import type { SectionDeLaFiche } from '../../domain/modification-lieu'
 import {
   type ColonnesDuLieu,

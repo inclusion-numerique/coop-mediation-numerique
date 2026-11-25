@@ -8,12 +8,12 @@ import {
   lieuCorrele,
   preparerCorrele,
 } from '../../../../implementations/prisma/lieu-correle.mutation'
+import { colonnesRapporteesParLaCartographie } from '../../../../implementations/prisma/registre/colonnes-a-ecrire.select'
+import { ecrireLeLieuAuRegistre } from '../../../../implementations/prisma/registre/ecrire-au-registre.mutation'
 import {
-  colonnesRapporteesParLaCartographie,
-  ecrireLeLieuAuRegistre,
   inscriptionPourLIdentifiantCarto,
   lieuCoopPorteurDeLaCarto,
-} from '../../../../implementations/prisma/registre'
+} from '../../../../implementations/prisma/registre/identifiants-carto.query'
 import {
   type AdresseValidee,
   estExistant,

@@ -31,21 +31,27 @@ rules:
       - "!src/features/**/implementations/*"
       - "!src/features/**/implementations/*/*"
       - "!src/features/**/ui/{columns,components,filtres,forms,hooks,labels,layouts,pages,presenters,search-params,slots}"
-      - "!src/features/**/ui/{columns,components,filtres,forms,hooks,labels,layouts,pages,presenters,search-params,slots}/*"
+      - "!src/features/**/ui/{components,forms,labels,presenters}/*"
 
   - id: racine-d-une-feature
-    kind: dir_only_contains
+    kind: for_each_dir
     level: error
-    message: "À la racine d'une feature, seuls les hooks Cucumber partagés et la spécification d'une feature sans ability (§1, TS-1)"
+    message: "À la racine d'une feature, seuls ses hooks Cucumber partagés, nommés d'après leur sujet, et la spécification d'une feature sans ability, nommée d'après elle (§1, TS-1)"
     select: "src/features/*"
-    allow: ["*.cucumber.ts", "*.feature.md", "*.steps.ts"]
+    require:
+      - kind: dir_only_contains
+        select: "{path}"
+        allow: ["*.cucumber.ts", "{basename}.feature.md", "{basename}.steps.ts"]
 
   - id: racine-d-une-ability
-    kind: dir_only_contains
+    kind: for_each_dir
     level: error
-    message: "À la racine d'une ability, seules sa spécification et ses steps (§4)"
+    message: "À la racine d'une ability, seules sa spécification et ses steps, nommées d'après elle (§4)"
     select: "src/features/*/abilities/*"
-    allow: ["*.ability.md", "*.steps.ts"]
+    require:
+      - kind: dir_only_contains
+        select: "{path}"
+        allow: ["{basename}.ability.md", "{basename}.steps.ts"]
 
   - id: specification-de-l-ability
     kind: for_each_dir
@@ -100,6 +106,20 @@ rules:
       - "src/app/_actions/*"
       - "src/libraries/*"
       - "src/configuration/*"
+
+  - id: nom-d-un-fichier-du-domaine
+    kind: filename_regex
+    level: error
+    message: "Un fichier du domaine n'a pas de catégorie : <nom>.ts, son test <nom>.spec.ts (ST-5)"
+    paths: ["src/features/**/domain/**"]
+    pattern: '^[a-z0-9]+(-[a-z0-9]+)*(\.spec)?\.ts$'
+
+  - id: nom-d-une-implementation
+    kind: filename_regex
+    level: error
+    message: "Une implémentation porte une seule catégorie, celle de son rôle (ST-5)"
+    paths: ["src/features/**/implementations/**"]
+    pattern: '^([a-z0-9]+(-[a-z0-9]+)*\.(query|mutation|transfer|client|sql|where|select|order-by|payload|params|response|middleware|classeur|adapter)(\.(spec|integration))?\.ts|[a-z0-9]+(-[a-z0-9]+)*\.(email|email-fragment)(\.spec)?\.tsx|[a-z0-9]+(-[a-z0-9]+)*\.d\.ts|[a-z0-9]+(-[a-z0-9]+)*\.(openapi|openapi-config)\.json|index\.ts)$'
 
   - id: implementations-par-categorie
     kind: dir_only_contains
@@ -387,10 +407,16 @@ rules:
   - id: dossiers-en-kebab-case
     kind: dir_absent
     level: error
-    message: "Dossier en kebab-case (ST-1)"
+    message: "Dossier en kebab-case : minuscules sans accent, chiffres, tirets simples entre deux mots (ST-1)"
     paths:
-      - "src/**/*[A-Z_.]*"
-      - "e2e/**/*[A-Z_.]*"
+      - "src/**/*[^a-z0-9/-]*"
+      - "e2e/**/*[^a-z0-9/-]*"
+      - "src/**/-*"
+      - "src/**/*-"
+      - "src/**/*--*"
+      - "e2e/**/-*"
+      - "e2e/**/*-"
+      - "e2e/**/*--*"
       - "!src/app/**"
       - "!src/generated/**"
 
@@ -401,6 +427,7 @@ rules:
     paths:
       - "src/app/**/*[A-Z]*"
       - "src/app/**/_*"
+      - "src/app/**/*[^a-z0-9/()._@-]*"
       - "!src/app/**/[[]*]"
       - "!src/app/_actions"
 
@@ -425,6 +452,73 @@ rules:
       - "!src/features/*/abilities/*/*.{ability.md,steps.ts}"
       - "!src/features/*/*.{cucumber.ts,steps.ts,feature.md}"
       - "!src/features/**/implementations/openapi/*.openapi*.json"
+
+  - id: barrels-d-une-feature
+    kind: file_absent
+    level: error
+    message: "Dans une feature, un barrel n'est admis que dans domain/index.ts et implementations/<technique>/index.ts : ailleurs, on importe le fichier qui définit le symbole (ST-2)"
+    paths:
+      - "src/features/**/index.{ts,tsx}"
+      - "!src/features/**/domain/index.ts"
+      - "!src/features/**/implementations/*/index.ts"
+
+  - id: tests-executes
+    kind: file_absent
+    level: error
+    message: "Un test se nomme .spec, .integration, .stories ou .cy (.tsx), ou page.test et route.test dans app : sinon personne ne l'exécute (D1, ST-7)"
+    paths:
+      - "src/**/*.test.{ts,tsx}"
+      - "src/**/*.{stories,cy}.ts"
+      - "src/**/*.integration.tsx"
+      - "!src/app/**/{page,route}.test.ts"
+
+  - id: declarations-de-types
+    kind: file_absent
+    level: error
+    message: "Un .d.ts augmente un module extérieur à côté du code qui en dépend : dans une technique d'implementations/ ou dans configuration/ (ST-5)"
+    paths:
+      - "src/**/*.d.ts"
+      - "!src/features/**/implementations/*/*.d.ts"
+      - "!src/configuration/**/*.d.ts"
+
+  - id: racine-de-library-en-typescript-pur
+    kind: file_absent
+    level: error
+    message: "La racine d'une library est du TypeScript pur, chargeable partout : un composant vit dans un sujet (ST-2)"
+    paths: ["src/libraries/*/*.tsx"]
+
+  - id: pas-de-sous-dossier
+    kind: dir_absent
+    level: error
+    message: "Une tâche et les actions d'une feature tiennent dans un seul dossier"
+    paths:
+      - "src/jobs/*/*"
+      - "src/app/_actions/*/*"
+
+  - id: racine-des-jobs
+    kind: dir_only_contains
+    level: error
+    message: "La racine de jobs/ ne contient que le point d'entrée et ses modules TypeScript"
+    select: "src/jobs"
+    allow: ["*.ts"]
+
+  - id: racine-d-e2e
+    kind: dir_only_contains
+    level: error
+    message: "La racine d'e2e/ ne contient que les parcours et la configuration de l'outillage"
+    select: "e2e"
+    allow:
+      ["*.e2e.ts", "tsconfig.json", "biome.json", "cypress.env", "timings.json"]
+
+  - id: pas-de-fichier-blanc
+    kind: file_content_matches
+    level: error
+    message: "Un fichier qui ne contient que des blancs n'a rien à faire dans le dépôt"
+    paths:
+      - "src/**/*.{ts,tsx,md,css,json}"
+      - "e2e/**/*.{ts,tsx,md,json}"
+      - "!src/generated/**"
+    pattern: '\S'
 
   - id: pas-de-fichier-vide
     kind: no_empty_files
@@ -485,4 +579,6 @@ rules:
       - "src/libraries/*/*/index.{ts,tsx}"
       - "src/configuration/*/index.{ts,tsx}"
       - "src/configuration/*/serveur.{ts,tsx}"
+      - "src/features/**/domain/index.ts"
+      - "src/features/**/implementations/*/index.ts"
     pattern: '(?m)^(''use (client|server)''|"use (client|server)"|import |const |let |var |function |async |class |enum |interface |type |declare |export (const|let|var|function|async|class|enum|interface|default|declare)\b|export type [A-Za-z_$][\w$]*\s*[<=])'

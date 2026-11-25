@@ -4,7 +4,7 @@ import { LieuId } from '../../../../domain/identifiants/lieu-id'
 import {
   avecIdentifiantCarto,
   inscriptionPourLIdentifiantCarto,
-} from '../../../../implementations/prisma/registre'
+} from '../../../../implementations/prisma/registre/identifiants-carto.query'
 import type { LireLieuxDejaRattaches } from '../../domain'
 
 export const lireLieuxDejaRattaches: LireLieuxDejaRattaches = async (
