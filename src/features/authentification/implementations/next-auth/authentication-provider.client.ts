@@ -5,7 +5,7 @@ import {
   estLocal,
   estMain,
   estPreview,
-} from '@/configuration/projet/deploiement'
+} from '@/configuration/projet'
 import { proConnectProviderId } from '../proconnect/proconnect-provider-id.client'
 
 /**

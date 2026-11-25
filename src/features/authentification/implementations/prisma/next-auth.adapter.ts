@@ -2,10 +2,7 @@ import { PrismaAdapter } from '@auth/prisma-adapter'
 import type { Awaitable } from 'next-auth'
 import type { Adapter, AdapterAccount, AdapterUser } from 'next-auth/adapters'
 import { v4 } from 'uuid'
-import {
-  extendedPrismaClient,
-  prismaClient,
-} from '@/configuration/prisma/prisma-client'
+import { extendedPrismaClient, prismaClient } from '@/configuration/prisma'
 import type { SynchroniserLaPersonne } from '@/features/authentification/implementations/prisma/synchroniser-la-personne.mutation'
 import { proConnectProviderId } from '@/features/authentification/implementations/proconnect/proconnect-provider-id.client'
 

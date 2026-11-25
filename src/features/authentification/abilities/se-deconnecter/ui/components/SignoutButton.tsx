@@ -3,7 +3,7 @@
 import type { ButtonProps } from '@codegouvfr/react-dsfr/Button'
 import Button from '@codegouvfr/react-dsfr/Button'
 import { type ReactNode, useState } from 'react'
-import { buttonLoadingClassname } from '@/libraries/ui/utils/button-loading-classname'
+import { buttonLoadingClassname } from '@/libraries/ui/utils'
 
 const SignoutButton = ({
   children = 'Se déconnecter',

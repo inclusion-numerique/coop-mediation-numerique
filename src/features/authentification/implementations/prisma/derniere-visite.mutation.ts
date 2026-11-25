@@ -1,4 +1,4 @@
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 
 const THROTTLE_MS = 60 * 60 * 1000 // 1 hour
 

@@ -1,7 +1,7 @@
 import mailSend from '@codegouvfr/react-dsfr/dsfr/artwork/pictograms/digital/mail-send.svg'
 import { getAssetUrl } from '@codegouvfr/react-dsfr/tools/getAssetUrl'
 import { cookies } from 'next/headers'
-import { contactEmail } from '@/configuration/projet/config'
+import { contactEmail } from '@/configuration/projet'
 import { AuthCard } from '@/features/authentification/ui/components/AuthCard'
 
 export const Verify = async () => {

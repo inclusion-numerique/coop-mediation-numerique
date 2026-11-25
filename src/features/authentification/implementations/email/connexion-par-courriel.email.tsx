@@ -6,10 +6,10 @@ import {
   MjmlText,
 } from '@faire/mjml-react'
 import { renderToMjml } from '@faire/mjml-react/utils/renderToMjml'
-import { getServerBaseUrl } from '@/configuration/projet/base-url'
-import { projectTitle } from '@/configuration/projet/config'
-import LayoutWithFooter from '@/libraries/emails/components/LayoutWithFooter'
-import { brandColor } from '@/libraries/emails/styles'
+import { projectTitle } from '@/configuration/projet'
+import { getServerBaseUrl } from '@/configuration/projet/serveur'
+import { brandColor } from '@/libraries/emails'
+import { LayoutWithFooter } from '@/libraries/emails/components'
 
 export const connexionParCourriel = {
   text: ({ url }: { url: string }): string =>

@@ -7,7 +7,7 @@ import { Route } from 'next'
 import { signIn } from 'next-auth/react'
 import { useForm } from 'react-hook-form'
 import z from 'zod'
-import InputFormField from '@/libraries/ui/form/InputFormField'
+import { InputFormField } from '@/libraries/ui/form'
 
 const SigninFormValidation = z.object({
   email: z

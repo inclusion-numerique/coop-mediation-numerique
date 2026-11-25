@@ -1,4 +1,4 @@
-import { environnementClient } from '@/configuration/environnement/client'
+import { environnementClient } from '@/configuration/environnement'
 
 export const proConnectHostname =
   environnementClient.NEXT_PUBLIC_PROCONNECT_HOSTNAME

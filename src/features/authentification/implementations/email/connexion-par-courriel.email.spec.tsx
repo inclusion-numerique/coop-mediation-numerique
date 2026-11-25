@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { connexionParCourriel } from '@/features/authentification/implementations/email/connexion-par-courriel.email'
-import { createMjmlTemplateOutput } from '@/libraries/emails/output-template-html'
+import { createMjmlTemplateOutput } from '@/libraries/emails/rendu'
 
 describe('Template: connexionParCourriel', () => {
   const output = createMjmlTemplateOutput('emailSignin')

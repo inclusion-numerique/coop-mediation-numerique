@@ -1,8 +1,8 @@
 import Link from 'next/link'
-import { projectTitle } from '@/configuration/projet/config'
+import { projectTitle } from '@/configuration/projet'
 import { connexionImpossibleMessage } from '@/features/authentification/abilities/se-connecter/ui/labels/erreur-de-connexion.labels'
 import { AuthCard } from '@/features/authentification/ui/components/AuthCard'
-import Breadcrumbs from '@/libraries/ui/components/Breadcrumbs'
+import { Breadcrumbs } from '@/libraries/ui/components'
 
 export const ErreurDeConnexionPage = ({
   error,

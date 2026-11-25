@@ -3,7 +3,7 @@ import ProConnectSigninButton from '@/features/authentification/abilities/se-con
 import { EmailSigninForm } from '@/features/authentification/abilities/se-connecter/ui/forms/EmailSigninForm'
 import { messageDErreurDeConnexion } from '@/features/authentification/abilities/se-connecter/ui/labels/erreur-de-connexion.labels'
 import { AuthCard } from '@/features/authentification/ui/components/AuthCard'
-import LogoCoop from '@/libraries/ui/components/LogoCoop'
+import { LogoCoop } from '@/libraries/ui/components'
 
 export type MoyenDeConnexion =
   | { readonly via: 'proconnect'; readonly fournisseur: string }

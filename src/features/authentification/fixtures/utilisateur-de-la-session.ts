@@ -1,4 +1,4 @@
-import { previewBranchAuthFallbacks } from '@/configuration/projet/preview-branch-auth-fallbacks'
+import { previewBranchAuthFallbacks } from '@/configuration/projet'
 import type { UtilisateurDeLaSession } from '@/features/authentification/domain/utilisateur-de-la-session'
 
 export const utilisateurDeLaSession = {
