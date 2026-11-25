@@ -3,7 +3,10 @@ import { estUtilisable } from '@/features/rdvsp/domain/compte/compte-rdv'
 import { EchecDeSynchronisation } from '@/features/rdvsp/domain/compte/echec-de-synchronisation'
 import { diagnosticErreur } from '@/features/rdvsp/domain/errors'
 import { OrganisationId } from '@/features/rdvsp/domain/identifiants/organisation-id'
-import { rdvServicePublicApiBinding } from '@/features/rdvsp/implementations/rdv-service-public.binding'
+import { rdvServicePublicApi } from '@/features/rdvsp/implementations/api/rdv-service-public.client'
+import { configurationRdvServicePublic } from '@/features/rdvsp/implementations/api/rdv-service-public-configuration.client'
+import { enregistrerLesJetons } from '@/features/rdvsp/implementations/prisma/jetons-du-compte.mutation'
+import { jetonsCourants } from '@/features/rdvsp/implementations/prisma/jetons-du-compte.query'
 import { success } from '@/libraries/result'
 import {
   type ReconcilierLesRdvsDuMediateur,
@@ -71,7 +74,11 @@ export const synchroniserCompteAvec =
           compte: aInstaller,
           appendLog: (log) => journal.push(...[log].flat()),
           ...(portee === undefined ? {} : { organisationIds: [...portee] }),
-          api: rdvServicePublicApiBinding,
+          api: rdvServicePublicApi({
+            ...configurationRdvServicePublic(),
+            onJetonsRenouveles: enregistrerLesJetons,
+            jetonsCourants,
+          }),
           noterLesWebhooksInvalides,
         })
 

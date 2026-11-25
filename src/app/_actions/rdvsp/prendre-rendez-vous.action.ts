@@ -13,7 +13,10 @@ import { beneficiaireADemander } from '@/features/rdvsp/abilities/prendre-rendez
 import { compteDuMediateur } from '@/features/rdvsp/abilities/prendre-rendez-vous/implementations/prisma/compte-du-mediateur.query'
 import { lierUsagerAuBeneficiaire } from '@/features/rdvsp/abilities/prendre-rendez-vous/implementations/prisma/lier-usager-au-beneficiaire.mutation'
 import { UtilisateurCoopId } from '@/features/rdvsp/domain/identifiants/utilisateur-coop-id'
-import { rdvServicePublicApiBinding } from '@/features/rdvsp/implementations/rdv-service-public.binding'
+import { rdvServicePublicApi } from '@/features/rdvsp/implementations/api/rdv-service-public.client'
+import { configurationRdvServicePublic } from '@/features/rdvsp/implementations/api/rdv-service-public-configuration.client'
+import { enregistrerLesJetons } from '@/features/rdvsp/implementations/prisma/jetons-du-compte.mutation'
+import { jetonsCourants } from '@/features/rdvsp/implementations/prisma/jetons-du-compte.query'
 import { fromResult, withInput } from '@/libraries/nextjs'
 
 export const prendreRendezVousAction = actionBuilder()
@@ -27,7 +30,11 @@ export const prendreRendezVousAction = actionBuilder()
         const resultat = await prendreRendezVous({
           beneficiaireADemander,
           compteDuMediateur,
-          creerDemandeRdv: rdvServicePublicApiBinding.creerDemandeRdv,
+          creerDemandeRdv: rdvServicePublicApi({
+            ...configurationRdvServicePublic(),
+            onJetonsRenouveles: enregistrerLesJetons,
+            jetonsCourants,
+          }).creerDemandeRdv,
           lierUsager: lierUsagerAuBeneficiaire,
           urlDossierBeneficiaire: (id) =>
             getServerUrl(`/coop/mes-beneficiaires/${id}/accompagnements`, {

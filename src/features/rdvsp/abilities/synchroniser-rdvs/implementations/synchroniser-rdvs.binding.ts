@@ -1,5 +1,8 @@
 import type { CreerOuFusionnerDepuisUsagersExternes } from '@/features/rdvsp/domain/ports'
-import { rdvServicePublicApiBinding } from '@/features/rdvsp/implementations/rdv-service-public.binding'
+import { rdvServicePublicApi } from '@/features/rdvsp/implementations/api/rdv-service-public.client'
+import { configurationRdvServicePublic } from '@/features/rdvsp/implementations/api/rdv-service-public-configuration.client'
+import { enregistrerLesJetons } from '@/features/rdvsp/implementations/prisma/jetons-du-compte.mutation'
+import { jetonsCourants } from '@/features/rdvsp/implementations/prisma/jetons-du-compte.query'
 import {
   type SynchroniserRdvs,
   synchroniserRdvs,
@@ -22,7 +25,11 @@ export const synchroniserLesRdvsAvec =
     journaliser: (message: string) => void
   }): SynchroniserRdvs =>
     synchroniserRdvs({
-      listerRdvs: rdvServicePublicApiBinding.listerRdvs,
+      listerRdvs: rdvServicePublicApi({
+        ...configurationRdvServicePublic(),
+        onJetonsRenouveles: enregistrerLesJetons,
+        jetonsCourants,
+      }).listerRdvs,
       rdvsDejaImportes,
       etatConnuDuLot,
       appliquerPlan: appliquerPlanLot,

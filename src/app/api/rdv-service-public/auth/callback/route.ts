@@ -25,12 +25,15 @@ import { synchroniserLesOrganisations } from '@/features/rdvsp/abilities/synchro
 import { synchroniserLesRdvsAvec } from '@/features/rdvsp/abilities/synchroniser-rdvs/implementations/synchroniser-rdvs.binding'
 import { UtilisateurCoopId } from '@/features/rdvsp/domain/identifiants/utilisateur-coop-id'
 import { EmailExterne } from '@/features/rdvsp/domain/identite'
+import { rdvServicePublicApi } from '@/features/rdvsp/implementations/api/rdv-service-public.client'
+import { configurationRdvServicePublic } from '@/features/rdvsp/implementations/api/rdv-service-public-configuration.client'
 import { rdvspOAuthHostname } from '@/features/rdvsp/implementations/oauth/rdvsp-oauth.client'
 import {
   rdvServicePublicOAuthConfig,
   rdvServicePublicOauthCallbackUrl,
 } from '@/features/rdvsp/implementations/oauth/rdvsp-oauth-callback.client'
-import { rdvServicePublicApiBinding } from '@/features/rdvsp/implementations/rdv-service-public.binding'
+import { enregistrerLesJetons } from '@/features/rdvsp/implementations/prisma/jetons-du-compte.mutation'
+import { jetonsCourants } from '@/features/rdvsp/implementations/prisma/jetons-du-compte.query'
 import {
   decodeSerializableState,
   type EncodedState,
@@ -86,7 +89,11 @@ export const GET = async (request: NextRequest) => {
         environnementServeur().RDV_SERVICE_PUBLIC_OAUTH_CLIENT_SECRET,
       redirectUri: rdvServicePublicOauthCallbackUrl,
     }),
-    identifierAgent: rdvServicePublicApiBinding.identifierAgent,
+    identifierAgent: rdvServicePublicApi({
+      ...configurationRdvServicePublic(),
+      onJetonsRenouveles: enregistrerLesJetons,
+      jetonsCourants,
+    }).identifierAgent,
     compteExistant: compteRdvExistant,
     enregistrer: enregistrerCompteConnecte,
   })({

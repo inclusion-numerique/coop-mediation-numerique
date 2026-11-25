@@ -1,4 +1,7 @@
-import { rdvServicePublicApiBinding } from '@/features/rdvsp/implementations/rdv-service-public.binding'
+import { rdvServicePublicApi } from '@/features/rdvsp/implementations/api/rdv-service-public.client'
+import { configurationRdvServicePublic } from '@/features/rdvsp/implementations/api/rdv-service-public-configuration.client'
+import { enregistrerLesJetons } from '@/features/rdvsp/implementations/prisma/jetons-du-compte.mutation'
+import { jetonsCourants } from '@/features/rdvsp/implementations/prisma/jetons-du-compte.query'
 import {
   type SynchroniserOrganisations,
   synchroniserOrganisations,
@@ -8,7 +11,11 @@ import { etatOrganisations } from './prisma/etat-organisations.query'
 
 export const synchroniserLesOrganisations: SynchroniserOrganisations =
   synchroniserOrganisations({
-    listerOrganisations: rdvServicePublicApiBinding.listerOrganisations,
+    listerOrganisations: rdvServicePublicApi({
+      ...configurationRdvServicePublic(),
+      onJetonsRenouveles: enregistrerLesJetons,
+      jetonsCourants,
+    }).listerOrganisations,
     etatOrganisations,
     appliquerPlan: appliquerPlanOrganisations,
   })
