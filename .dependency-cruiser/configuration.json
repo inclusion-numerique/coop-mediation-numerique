@@ -1,0 +1,29 @@
+{
+  "@arckit/telemetry": ["telemetry"],
+  "@codegouvfr/react-dsfr": ["dsfr"],
+  "@prisma/adapter-pg": ["prisma"],
+  "@sentry/nextjs": ["telemetry"],
+  "@sentry/node": ["telemetry"],
+  "configuration/environnement": [
+    "brevo",
+    "prisma",
+    "projet",
+    "recherche-entreprises",
+    "smtp",
+    "telemetry"
+  ],
+  "configuration/projet": ["brevo", "recherche-entreprises", "telemetry"],
+  "configuration/telemetry": ["ban", "nextjs", "prisma"],
+  "libraries/ban": ["ban"],
+  "libraries/chemin-interne": ["projet"],
+  "libraries/navigateur": ["projet"],
+  "libraries/nextjs": ["nextjs", "telemetry"],
+  "libraries/recherche-entreprises": ["recherche-entreprises"],
+  "next": ["dsfr", "projet", "telemetry"],
+  "nodemailer": ["smtp"],
+  "postgres-array": ["prisma"],
+  "react": ["telemetry"],
+  "zod": ["environnement"],
+  "generated/prisma": ["prisma"],
+  "generated/entrepot": ["prisma"]
+}

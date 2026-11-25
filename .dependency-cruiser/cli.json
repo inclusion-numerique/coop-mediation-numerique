@@ -1,0 +1,24 @@
+{
+  "@octokit/core": ["github"],
+  "@octokit/plugin-rest-endpoint-methods": ["github"],
+  "axios": [
+    "commands",
+    "get-avec-nouvelles-tentatives.spec.ts",
+    "get-avec-nouvelles-tentatives.ts",
+    "secrets"
+  ],
+  "configuration/environnement": ["commands", "fixtures", "github", "secrets"],
+  "configuration/prisma": ["commands", "fixtures"],
+  "configuration/projet": ["commands", "github"],
+  "libraries/chemins": ["commands", "dot-env-file.ts"],
+  "libraries/fixtures": ["fixtures"],
+  "nanoid": ["secrets"],
+  "node:child_process": ["commands"],
+  "node:crypto": ["branch-namespace.ts"],
+  "node:fs": ["commands"],
+  "node:fs/promises": ["commands", "dot-env-file.ts"],
+  "node:path": ["commands", "dot-env-file.ts"],
+  "node:util": ["commands"],
+  "p-retry": ["get-avec-nouvelles-tentatives.ts", "secrets"],
+  "generated/prisma": ["fixtures"]
+}

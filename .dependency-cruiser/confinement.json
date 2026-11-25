@@ -1,0 +1,52 @@
+{
+  "generated/prisma": [
+    "/implementations/prisma/",
+    "^src/configuration/prisma/",
+    "^src/cli/fixtures/",
+    "tests de composition"
+  ],
+  "generated/entrepot": [
+    "/implementations/entrepot/",
+    "^src/configuration/prisma/"
+  ],
+  "@sentry/nextjs": ["^src/configuration/telemetry/", "^next[.]config[.]ts$"],
+  "@sentry/node": ["^src/configuration/telemetry/"],
+  "@arckit/telemetry": [
+    "^src/configuration/telemetry/",
+    "^src/libraries/nextjs/"
+  ],
+  "@prisma/adapter-pg": ["^src/configuration/prisma/"],
+  "@auth/prisma-adapter": [
+    "^src/features/authentification/implementations/prisma/"
+  ],
+  "@auth/core": ["^src/features/authentification/"],
+  "next-auth": ["^src/features/authentification/", "^src/app/api/auth/"],
+  "jsonwebtoken": [
+    "^src/features/authentification/implementations/proconnect/"
+  ],
+  "nodemailer": [
+    "^src/configuration/smtp/",
+    "^src/features/authentification/implementations/email/"
+  ],
+  "axios": ["/implementations/(?:api|brevo|proconnect)/", "^src/cli/"],
+  "exceljs": [
+    "/implementations/excel/",
+    "^src/libraries/tableur/",
+    "tests de composition"
+  ],
+  "react-hook-form": [
+    "^src/features/authentification/abilities/se-connecter/ui/forms/",
+    "^src/libraries/ui/",
+    "^src/libraries/adresse/",
+    "^src/features/beneficiaire/ui/forms/"
+  ],
+  "@hookform/resolvers": [
+    "^src/features/authentification/abilities/se-connecter/ui/forms/",
+    "^src/libraries/ui/",
+    "^src/features/beneficiaire/ui/forms/"
+  ],
+  "nuqs": ["^src/libraries/etat-d-url/", "^src/app/layout[.]tsx$", "^e2e/"],
+  "piqure": ["^src/libraries/nextjs/"],
+  "mjml": ["^src/libraries/emails/"],
+  "@faire/mjml-react": ["^src/libraries/emails/", "/implementations/email/"]
+}
