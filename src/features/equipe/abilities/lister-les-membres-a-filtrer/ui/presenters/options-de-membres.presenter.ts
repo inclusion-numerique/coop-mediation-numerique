@@ -1,4 +1,4 @@
-import type { SelectOption } from '@/libraries/ui/form'
+import type { SelectOption } from '@/libraries/ui'
 import type { MembreAFiltrer } from '../../domain'
 
 export const optionDeMembre = ({
