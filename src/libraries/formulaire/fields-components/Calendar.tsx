@@ -2,7 +2,7 @@ import { useFieldContext } from '@/libraries/formulaire/form-context'
 import {
   Calendar as CalendarBase,
   CalendarProps as CalendarBaseProps,
-} from '@/libraries/ui/primitives/calendar/Calendar'
+} from '@/libraries/ui/primitives'
 
 type ValuePiece = Date | null
 type Value = ValuePiece | [ValuePiece, ValuePiece]

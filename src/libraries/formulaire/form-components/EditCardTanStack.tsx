@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation'
 import type { ReactNode } from 'react'
 import { useState } from 'react'
 import { handleSubmit } from '@/libraries/formulaire/handle-submit'
-import Card from '../../ui/components/Card'
+import { Card } from '../../ui/components'
 
 const EditCardTanStack = ({
   id,

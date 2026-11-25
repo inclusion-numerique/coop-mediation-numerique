@@ -2,7 +2,7 @@ import { useFieldContext } from '@/libraries/formulaire/form-context'
 import {
   RichTextarea as RichTextareaBase,
   RichTextareaProps as RichTextareaBaseProps,
-} from '@/libraries/ui/primitives/form/RichTextarea'
+} from '@/libraries/ui/primitives'
 
 type RichTextareaProps = Omit<RichTextareaBaseProps, 'id' | 'name'> & {
   isPending: boolean

@@ -11,7 +11,7 @@ import {
   ReactNode,
 } from 'react'
 import { useFieldContext } from '@/libraries/formulaire/form-context'
-import { Pictogram } from '@/libraries/pictograms/pictogram'
+import { Pictogram } from '@/libraries/pictograms'
 import { casesCochees } from './cases-cochees'
 
 type CheckboxProps<T> = Omit<DsfrCheckboxProps, 'name' | 'options'> & {

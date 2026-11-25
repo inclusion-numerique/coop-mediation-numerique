@@ -12,8 +12,8 @@ import {
   ReactNode,
 } from 'react'
 import { useFieldContext } from '@/libraries/formulaire/form-context'
-import { Pictogram } from '@/libraries/pictograms/pictogram'
-import Stars from '@/libraries/ui/components/Stars'
+import { Pictogram } from '@/libraries/pictograms'
+import { Stars } from '@/libraries/ui/components'
 
 type RadioButtonsProps = Omit<DsfrRadioButtonsProps, 'name' | 'options'> & {
   isPending: boolean
