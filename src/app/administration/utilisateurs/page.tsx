@@ -3,21 +3,23 @@ import { rechercherDesCoordinateursAction } from '@/app/_actions/utilisateurs/re
 import { rechercherDesEmployeusesAction } from '@/app/_actions/utilisateurs/rechercher-des-employeuses.action'
 import { rechercherDesLieuxAction } from '@/app/_actions/utilisateurs/rechercher-des-lieux.action'
 import { metadataTitle } from '@/configuration/projet'
-import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticate-user.middleware'
+import { authenticateAdmin } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
 import { nomDeLEmployeuse } from '@/features/employeuse/abilities/consulter-employeuse/implementations/prisma/nom-de-l-employeuse.query'
 import { communesDesEmployeuses } from '@/features/employeuse/abilities/rechercher-employeuse/implementations/prisma/communes-des-employeuses.query'
+import { optionsDesCommunes } from '@/features/employeuse/abilities/rechercher-employeuse/ui/presenters/option-de-la-commune.presenter'
 import { lieuxChoisis } from '@/features/lieux-activite/abilities/lister-les-options-de-lieux/implementations/prisma/lieux-a-choisir.query'
 import { BoutonExporterLesUtilisateurs } from '@/features/utilisateurs/abilities/exporter-les-utilisateurs/ui/slots/BoutonExporterLesUtilisateurs.slot'
 import { RECHERCHER_DES_COMMUNES_ACTION_KEY } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/action/rechercher-des-communes.key'
 import { RECHERCHER_DES_COORDINATEURS_ACTION_KEY } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/action/rechercher-des-coordinateurs.key'
 import { RECHERCHER_DES_EMPLOYEUSES_ACTION_KEY } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/action/rechercher-des-employeuses.key'
 import { RECHERCHER_DES_LIEUX_ACTION_KEY } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/action/rechercher-des-lieux.key'
-import { optionsDesFiltres } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/implementations/prisma/options-des-filtres.query'
+import { coordinateursChoisis } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/implementations/prisma'
 import { rechercherDesUtilisateurs } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/implementations/prisma/rechercher-des-utilisateurs.query'
 import { listeDesUtilisateurs } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui/filtres/liste-des-utilisateurs.filtre'
 import { UtilisateursPage } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui/pages/UtilisateursPage'
 import { optionDuCoordinateur } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui/presenters/coordinateur-a-choisir.presenter'
 import { liensDeLaListe } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui/presenters/liste-des-utilisateurs.presenter'
+import { optionsDesFiltres } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui/presenters/options-des-filtres.presenter'
 import { BarreDesUtilisateurs } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui/slots/BarreDesUtilisateurs.slot'
 import {
   filtresDesUtilisateurs,
@@ -52,7 +54,9 @@ const Page = async (props: {
     }),
     optionsDesFiltres(filtres, {
       optionDuCoordinateur,
-      communes: communesDesEmployeuses,
+      coordinateurs: coordinateursChoisis,
+      communes: async (codesInsee) =>
+        optionsDesCommunes(await communesDesEmployeuses(codesInsee)),
       lieux: lieuxChoisis,
       nomDeLEmployeuse,
     }),

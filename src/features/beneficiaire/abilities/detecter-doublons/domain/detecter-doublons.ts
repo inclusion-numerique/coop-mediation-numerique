@@ -1,6 +1,7 @@
 import type { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
+import type { DuplicateBeneficiaire } from '@/features/beneficiaire/domain/doublon-de-beneficiaire'
 import type { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
-import type { BeneficiaireDoublon, DuplicateBeneficiaire } from './types'
+import type { BeneficiaireDoublon } from './types'
 
 /**
  * Détection des doublons d'un bénéficiaire déjà persisté, depuis son seul id :

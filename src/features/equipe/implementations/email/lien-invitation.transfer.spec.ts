@@ -1,13 +1,13 @@
 import { describe, expect, it } from 'vitest'
 import { encodeSerializableState } from '@/libraries/etat-encode'
-import { CoordinateurId } from '../identifiants/coordinateur-id'
-import { Courriel } from '../identite/courriel'
+import { CoordinateurId } from '../../domain/identifiants/coordinateur-id'
+import { Courriel } from '../../domain/identite/courriel'
+import { ReferenceInvitation } from '../../domain/invitation/reference-invitation'
 import {
   codeInvitation,
   lienInvitation,
   referenceDuCode,
-} from './lien-invitation'
-import { ReferenceInvitation } from './reference-invitation'
+} from './lien-invitation.transfer'
 
 const reference = ReferenceInvitation({
   email: Courriel('Invite@Example.com'),

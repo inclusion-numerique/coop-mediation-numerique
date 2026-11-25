@@ -5,3 +5,4 @@ export {
   SelectionDesConseillers,
   SelectionDesSupprimes,
 } from './criteres-d-exposition'
+export type { UtilisateurExpose } from './utilisateur-expose'

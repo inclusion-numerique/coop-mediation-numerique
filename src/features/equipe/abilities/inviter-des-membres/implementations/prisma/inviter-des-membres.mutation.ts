@@ -5,12 +5,12 @@ import {
   type CoordinateurId,
   CoordinateurIntrouvable,
   Courriel,
+  type EnvoyerUneInvitation,
   type InvitationEnAttente,
   MediateurId,
   type NomAffiche,
   type UtilisateurId,
 } from '../../../../domain'
-import { envoyerUneInvitation } from '../../../../implementations/email'
 import { lireLeCoordinateur } from '../../../../implementations/prisma/coordinateur.query'
 import {
   fromInvitation,
@@ -112,7 +112,7 @@ const enregistrer = (
   )
 
 const envoyer =
-  (de: NomAffiche) =>
+  (envoyerUneInvitation: EnvoyerUneInvitation, de: NomAffiche) =>
   async (invitation: InvitationEnAttente): Promise<Courriel | null> => {
     try {
       await envoyerUneInvitation({
@@ -126,59 +126,63 @@ const envoyer =
     }
   }
 
-export const inviterDesMembres = async ({
-  coordinateurId,
-  candidats,
-  auteurId,
-  maintenant = new Date(),
-}: {
-  coordinateurId: CoordinateurId
-  candidats: readonly Courriel[]
-  auteurId: UtilisateurId
-  maintenant?: Date
-}): Promise<
-  Result<
-    InvitationsEnvoyees,
-    AucuneInvitationAEnvoyer | CoordinateurIntrouvable
-  >
-> => {
-  const coordinateur = await lireLeCoordinateur(coordinateurId)
-  if (coordinateur === null) return failure(CoordinateurIntrouvable())
-
-  const { existant, emailsStockes } = await lireLExistant(
+export const inviterDesMembres =
+  ({ envoyerUneInvitation }: { envoyerUneInvitation: EnvoyerUneInvitation }) =>
+  async ({
     coordinateurId,
     candidats,
-  )
-  const planification = planifier({
-    coordinateurId: coordinateurId,
-    candidats,
-    existant,
-    maintenant,
-  })
-  if (!planification.success) return planification
+    auteurId,
+    maintenant = new Date(),
+  }: {
+    coordinateurId: CoordinateurId
+    candidats: readonly Courriel[]
+    auteurId: UtilisateurId
+    maintenant?: Date
+  }): Promise<
+    Result<
+      InvitationsEnvoyees,
+      AucuneInvitationAEnvoyer | CoordinateurIntrouvable
+    >
+  > => {
+    const coordinateur = await lireLeCoordinateur(coordinateurId)
+    if (coordinateur === null) return failure(CoordinateurIntrouvable())
 
-  const { aEnvoyer, ecartes } = planification.data
-
-  await enregistrer(aEnvoyer, emailsStockes)
-
-  addMutationLog({
-    userId: auteurId,
-    nom: 'InviterMediateursCoordonnes',
-    data: {
+    const { existant, emailsStockes } = await lireLExistant(
+      coordinateurId,
+      candidats,
+    )
+    const planification = planifier({
       coordinateurId: coordinateurId,
-      emails: aEnvoyer.map(({ reference }) => reference.email),
-    },
-  })
+      candidats,
+      existant,
+      maintenant,
+    })
+    if (!planification.success) return planification
 
-  const echecs = (
-    await Promise.all(aEnvoyer.map(envoyer(coordinateur.nom)))
-  ).filter((email): email is Courriel => email !== null)
+    const { aEnvoyer, ecartes } = planification.data
 
-  return success({
-    envoyees: aEnvoyer
-      .map(({ reference }) => reference.email)
-      .filter((email) => !echecs.includes(email)),
-    ecartees: ecartes,
-    echecs,
-  })
-}
+    await enregistrer(aEnvoyer, emailsStockes)
+
+    addMutationLog({
+      userId: auteurId,
+      nom: 'InviterMediateursCoordonnes',
+      data: {
+        coordinateurId: coordinateurId,
+        emails: aEnvoyer.map(({ reference }) => reference.email),
+      },
+    })
+
+    const echecs = (
+      await Promise.all(
+        aEnvoyer.map(envoyer(envoyerUneInvitation, coordinateur.nom)),
+      )
+    ).filter((email): email is Courriel => email !== null)
+
+    return success({
+      envoyees: aEnvoyer
+        .map(({ reference }) => reference.email)
+        .filter((email) => !echecs.includes(email)),
+      ecartees: ecartes,
+      echecs,
+    })
+  }

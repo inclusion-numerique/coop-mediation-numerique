@@ -2,38 +2,19 @@ import type { Prisma } from '@/generated/prisma/client'
 import type {
   BeneficiaireId,
   CriteresDesActivites,
-  EmployeuseDesActivites,
-  TagDeLActivite,
   TagsUtilisables,
 } from '../../../../domain'
 import { dansLaPeriodeDAppartenance } from '../../../../implementations/prisma/statistiques/periode-d-appartenance.sql'
 import {
   type Demandeur,
   mediateursAutorises,
+  type NomDeFiltre,
+  type NomDeFiltreDeBeneficiaire,
+  type NomsDesFiltresExportes,
   perimetreDeLExport,
 } from '../../domain'
 import { employeusesNommees } from './employeuses-nommees.query'
-import {
-  type MediateurNomme,
-  mediateursNommes,
-} from './mediateurs-nommes.query'
-
-export type NomDeFiltre = { readonly label: string; readonly value: string }
-
-export type NomDeFiltreDeBeneficiaire = {
-  readonly label: string
-  readonly value: { readonly id?: string | null } | null
-}
-
-export type NomsDesFiltresExportes = {
-  readonly beneficiaires: readonly NomDeFiltreDeBeneficiaire[]
-  readonly mediateurs: readonly MediateurNomme[]
-  readonly employeuses: readonly EmployeuseDesActivites[]
-  readonly communes: readonly NomDeFiltre[]
-  readonly departements: readonly NomDeFiltre[]
-  readonly lieux: readonly NomDeFiltre[]
-  readonly tags: readonly TagDeLActivite[]
-}
+import { mediateursNommes } from './mediateurs-nommes.query'
 
 const siFiltre = <T>(
   valeurs: readonly unknown[],

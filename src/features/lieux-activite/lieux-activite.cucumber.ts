@@ -10,6 +10,7 @@ import {
   type CreerLieuActiviteData,
   CreerLieuActiviteValidation,
 } from '@/features/lieux-activite/action/creer-lieu-activite.validation'
+import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
 import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
 import { UtilisateurId } from '@/features/lieux-activite/domain/identifiants/utilisateur-id'
 import { horairesVides } from '@/features/lieux-activite/domain/saisie/horaires-d-ouverture'
@@ -385,7 +386,12 @@ const renseigner = (
 
 const creerUnLieuDActivite = (saisie: CreerLieuActiviteData) =>
   creerLieuActivite({
-    lieu: nouveauLieu(saisie, UtilisateurId(utilisateurCourant()), new Date()),
+    lieu: nouveauLieu(
+      saisie,
+      UtilisateurId(utilisateurCourant()),
+      new Date(),
+      LieuId(crypto.randomUUID()),
+    ),
     mediateurId: MediateurId(mediateurCourant()),
   })
 

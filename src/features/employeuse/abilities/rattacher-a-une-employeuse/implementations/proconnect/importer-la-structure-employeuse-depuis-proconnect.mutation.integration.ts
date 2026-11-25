@@ -1,5 +1,6 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from 'vitest'
 import { prismaClient } from '@/configuration/prisma'
+import { estConseillerNumeriqueEnPoste } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/prisma/conseiller-numerique-en-poste.query'
 import { rattacherAUneEmployeuseDepuisSiret } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/prisma/rattacher-depuis-siret.mutation'
 import { importerLaStructureEmployeuseDepuisProConnect } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/proconnect/importer-la-structure-employeuse-depuis-proconnect.mutation'
 
@@ -10,8 +11,9 @@ const NOS_UTILISATEURS = [MEDIATEUR, CONSEILLER]
 const PROCONNECT_SIRET = '11111111111111'
 const OTHER_SIRET = '22222222222222'
 
-const importer = importerLaStructureEmployeuseDepuisProConnect(
-  rattacherAUneEmployeuseDepuisSiret({
+const importer = importerLaStructureEmployeuseDepuisProConnect({
+  estConseillerNumeriqueEnPoste,
+  rattacherDepuisSiret: rattacherAUneEmployeuseDepuisSiret({
     geocoder: async () => null,
     signaler: () => undefined,
     garantirLaPersonne: ({ coopUserId, email }, transaction) =>
@@ -35,7 +37,7 @@ const importer = importerLaStructureEmployeuseDepuisProConnect(
           }
         : null,
   }),
-)
+})
 
 const employeusesActivesDe = async (userId: string) =>
   (

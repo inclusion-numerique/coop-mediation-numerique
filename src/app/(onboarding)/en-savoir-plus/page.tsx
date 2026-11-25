@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 import { metadataTitle } from '@/configuration/projet'
-import { authenticateUser } from '@/features/authentification/implementations/session/authenticate-user.middleware'
+import { authenticateUser } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
 import { BienvenuePage } from '@/features/utilisateurs/abilities/marquer-l-onboarding-comme-vu/ui/pages/BienvenuePage'
 
 export const metadata: Metadata = {

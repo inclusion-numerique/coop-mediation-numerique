@@ -15,6 +15,7 @@ import { lireFaitsInscription } from '@/features/inscription/abilities/valider/i
 import { UtilisateurId } from '@/features/inscription/domain'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { inscrireALaListeDeDiffusion } from '@/features/utilisateurs/abilities/activer-la-mediation-numerique/implementations/brevo/inscrire-a-la-liste-de-diffusion.mutation'
+import { inscritAInscrire } from '@/features/utilisateurs/abilities/activer-la-mediation-numerique/implementations/prisma/inscrit-a-inscrire.query'
 import { fromResult, withInput } from '@/libraries/nextjs'
 
 const validerAvec = (
@@ -36,7 +37,7 @@ export const validerAction = actionBuilder()
     fromResult(
       async ({ user }) =>
         validerAvec(
-          inscrireALaListeDeDiffusion,
+          inscrireALaListeDeDiffusion(inscritAInscrire),
           accepterLesInvitationsEnAttente,
         )(UtilisateurId(user.id), new Date()),
       { onError: VALIDER_ERRORS },

@@ -1,14 +1,13 @@
-import type { SelectOption } from '@/libraries/ui'
+import type { OptionChoisie } from '../../../../domain/option-de-lieu'
 
-export type LieuActiviteOption = SelectOption<
-  string,
-  {
+export type LieuActiviteOption = OptionChoisie & {
+  extra: {
     nom: string
     adresse: string
     activites: number
     mostUsed: boolean
   }
->
+}
 
 export const adresseComplete = ({
   adresse,

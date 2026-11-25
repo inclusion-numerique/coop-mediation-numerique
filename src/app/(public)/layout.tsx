@@ -1,6 +1,6 @@
 import { PropsWithChildren } from 'react'
 import { pageDAccueil } from '@/features/authentification/domain/page-d-accueil'
-import { getSessionUser } from '@/features/authentification/implementations/session/session-user.query'
+import { getSessionUser } from '@/features/authentification/middlewares/with-utilisateur-de-la-session'
 import { PubliqueLayout } from '@/features/navigation/ui/layouts/PubliqueLayout'
 import Header from '@/features/navigation/ui/slots/Header.slot'
 import PublicFooter from '@/features/navigation/ui/slots/PublicFooter.slot'

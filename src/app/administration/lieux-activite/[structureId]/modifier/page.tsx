@@ -5,7 +5,7 @@ import { appliquerLesDifferencesAction } from '@/app/_actions/lieux-activite/app
 import { modifierLaFicheDuLieuAction } from '@/app/_actions/lieux-activite/modifier-la-fiche-du-lieu.action'
 import { retirerUnMediateurDuLieuAction } from '@/app/_actions/lieux-activite/retirer-un-mediateur-du-lieu.action'
 import { metadataTitle } from '@/configuration/projet'
-import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticate-user.middleware'
+import { authenticateAdmin } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
 import { listerLesMediateursDuLieu } from '@/features/lieux-activite/abilities/lister-les-mediateurs-du-lieu/implementations/prisma/mediateurs-du-lieu.query'
 import { MediateursDuLieu } from '@/features/lieux-activite/abilities/lister-les-mediateurs-du-lieu/ui/slots/MediateursDuLieu.slot'
 import { APPLIQUER_LES_DIFFERENCES_ACTION_KEY } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/action/appliquer-les-differences.key'

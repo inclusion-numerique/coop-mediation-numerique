@@ -1,5 +1,5 @@
 import { creerBeneficiaireAction } from '@/app/_actions/beneficiaire/creer-beneficiaire.action'
-import { authenticateMediateur } from '@/features/authentification/implementations/session/authenticate-user.middleware'
+import { authenticateMediateur } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
 import {
   CreerBeneficiairePage,
   type SaisieDuCraEncodee,

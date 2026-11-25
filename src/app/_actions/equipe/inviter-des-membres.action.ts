@@ -14,6 +14,7 @@ import {
   Courriel,
   UtilisateurId,
 } from '@/features/equipe/domain'
+import { envoyerUneInvitation } from '@/features/equipe/implementations/email'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { fromResult, withInput } from '@/libraries/nextjs'
 import { failure, type Result } from '@/libraries/result'
@@ -37,7 +38,7 @@ export const inviterDesMembresAction = actionBuilder()
       > =>
         user.coordinateur == null
           ? failure(ActionNonAutorisee())
-          : inviterDesMembres({
+          : inviterDesMembres({ envoyerUneInvitation })({
               coordinateurId: CoordinateurId(user.coordinateur.id),
               candidats: input.emails.map(Courriel),
               auteurId: UtilisateurId(user.id),

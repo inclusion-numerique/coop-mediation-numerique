@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import type { CraV1Expose } from '../prisma/cras-v1-exposes.query'
+import type { CraV1Expose } from '../../domain'
 import { craV1Expose } from './cra-v1-expose.transfer'
 
 const cra: CraV1Expose = {

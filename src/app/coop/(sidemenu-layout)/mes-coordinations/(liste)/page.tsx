@@ -17,7 +17,7 @@ import {
   filtresDesCoordinations,
 } from '@/features/activites/ui/filtres/coordinations.filtre'
 import { estMediateur } from '@/features/authentification/domain/profils-d-utilisateur'
-import { authenticateCoordinateur } from '@/features/authentification/implementations/session/authenticate-user.middleware'
+import { authenticateCoordinateur } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
 import { ClientBinder } from '@/libraries/nextjs/injection'
 
 export const metadata: Metadata = {

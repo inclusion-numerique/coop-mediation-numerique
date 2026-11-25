@@ -3,7 +3,7 @@ import { validerAction } from '@/app/_actions/inscription/valider.action'
 import { rechercherUnLieuActiviteAction } from '@/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
 import { metadataTitle } from '@/configuration/projet'
 import { aTermineSonInscription } from '@/features/authentification/domain/page-d-accueil'
-import { authenticateUser } from '@/features/authentification/implementations/session/authenticate-user.middleware'
+import { authenticateUser } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
 import { consulterEmployeuseActuelle } from '@/features/employeuse/abilities/consulter-employeuse-actuelle/implementations/prisma/consulter-employeuse-actuelle.query'
 import { employeuseActuelleAffichage } from '@/features/employeuse/abilities/consulter-employeuse-actuelle/ui/presenters/employeuse-actuelle.presenter'
 import StructureAdministrativeCard from '@/features/employeuse/ui/slots/StructureAdministrativeCard.slot'
@@ -15,7 +15,7 @@ import { employeuseAffichee } from '@/features/inscription/ui/presenters/employe
 import { listerLesLieuxPourLInscription } from '@/features/lieux-activite/abilities/lister-les-lieux-pour-l-inscription/implementations/prisma/lister-les-lieux-pour-l-inscription.query'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
 import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
-import { SaisieDuLieuCard } from '@/features/lieux-activite/ui/slots/SaisieDuLieuCard.slot'
+import { CarteDuLieuSaisi } from '@/features/lieux-activite/ui/slots/CarteDuLieuSaisi.slot'
 import { ClientBinder } from '@/libraries/nextjs/injection'
 
 export const dynamic = 'force-dynamic'
@@ -60,7 +60,7 @@ const RecapitulatifPageRoute = async () => {
         <RecapitulatifPage
           data={data}
           cartesDesLieux={data.lieuxActivite.map((lieu) => (
-            <SaisieDuLieuCard key={lieu.id} lieu={lieu} className="fr-mt-4v" />
+            <CarteDuLieuSaisi key={lieu.id} lieu={lieu} />
           ))}
           carteEmployeuse={
             data.structureEmployeuse && (

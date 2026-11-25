@@ -24,7 +24,7 @@ import { rdvServicePublicApi } from '@/features/rdvsp/implementations/api/rdv-se
 import { configurationRdvServicePublic } from '@/features/rdvsp/implementations/api/rdv-service-public-configuration.client'
 import { enregistrerLesJetons } from '@/features/rdvsp/implementations/prisma/jetons-du-compte.mutation'
 import { jetonsCourants } from '@/features/rdvsp/implementations/prisma/jetons-du-compte.query'
-import { tagsVisiblesPar } from '@/features/tags/abilities/lire-les-tags-visibles/implementations/session/tags-visibles-par.query'
+import { tagsVisiblesPar } from '@/features/tags/abilities/lire-les-tags-visibles/implementations/prisma/tags-visibles-par.query'
 import { acteurDe } from '@/features/tags/domain'
 import { fromResult, withInput } from '@/libraries/nextjs'
 

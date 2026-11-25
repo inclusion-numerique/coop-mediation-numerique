@@ -12,7 +12,6 @@ import {
   Services,
   Typologies,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import { v4 } from 'uuid'
 import type { CreerLieuActiviteData } from '@/features/lieux-activite/action/creer-lieu-activite.validation'
 import { VisibiliteCartographie } from '../../../domain/cartographie-nationale/visibilite-cartographie'
 import type { Fiche } from '../../../domain/fiche'
@@ -144,8 +143,9 @@ export const nouveauLieu = (
   saisie: CreerLieuActiviteData,
   par: UtilisateurId,
   maintenant: Date,
+  id: LieuId,
 ): Lieu => ({
-  id: LieuId(v4()),
+  id,
   fiche: ficheSaisie(saisie),
   visibilite: VisibiliteCartographie(
     saisie.visiblePourCartographieNationale ? 'Publie' : 'NonPublie',

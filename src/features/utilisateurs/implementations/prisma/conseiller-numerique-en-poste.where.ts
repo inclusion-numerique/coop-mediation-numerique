@@ -4,10 +4,6 @@ export const enPosteSelect = {
   conseillerNumeriqueEnPoste: { select: { personneId: true } },
 } satisfies Prisma.PersonneMainSelect
 
-export const estEnPoste = (
-  personne: { readonly conseillerNumeriqueEnPoste: object | null } | null,
-): boolean => personne?.conseillerNumeriqueEnPoste != null
-
 const enPoste = {
   conseillerNumeriqueEnPoste: { isNot: null },
 } satisfies Prisma.PersonneMainWhereInput

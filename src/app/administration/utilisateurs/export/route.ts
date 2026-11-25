@@ -3,12 +3,14 @@ import { utilisateurDuJetonDeSession } from '@/features/authentification/impleme
 import { jetonDeSessionDesCookies } from '@/features/authentification/implementations/session/session-token-from-cookies.query'
 import { nomDeLEmployeuse } from '@/features/employeuse/abilities/consulter-employeuse/implementations/prisma/nom-de-l-employeuse.query'
 import { communesDesEmployeuses } from '@/features/employeuse/abilities/rechercher-employeuse/implementations/prisma/communes-des-employeuses.query'
+import { optionsDesCommunes } from '@/features/employeuse/abilities/rechercher-employeuse/ui/presenters/option-de-la-commune.presenter'
 import { lieuxChoisis } from '@/features/lieux-activite/abilities/lister-les-options-de-lieux/implementations/prisma/lieux-a-choisir.query'
 import { classeurDesUtilisateurs } from '@/features/utilisateurs/abilities/exporter-les-utilisateurs/implementations/excel/classeur-des-utilisateurs.classeur'
 import { utilisateursAExporter } from '@/features/utilisateurs/abilities/exporter-les-utilisateurs/implementations/prisma/utilisateurs-a-exporter.query'
 import { colonnesDeLExport } from '@/features/utilisateurs/abilities/exporter-les-utilisateurs/ui/presenters/colonnes-de-l-export.presenter'
-import { optionsDesFiltres } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/implementations/prisma/options-des-filtres.query'
+import { coordinateursChoisis } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/implementations/prisma'
 import { optionDuCoordinateur } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui/presenters/coordinateur-a-choisir.presenter'
+import { optionsDesFiltres } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui/presenters/options-des-filtres.presenter'
 import {
   filtresDesUtilisateurs,
   filtresUtilisateursDesFiltres,
@@ -40,7 +42,9 @@ export const GET = async (request: NextRequest) => {
     }),
     optionsDesFiltres(filtres, {
       optionDuCoordinateur,
-      communes: communesDesEmployeuses,
+      coordinateurs: coordinateursChoisis,
+      communes: async (codesInsee) =>
+        optionsDesCommunes(await communesDesEmployeuses(codesInsee)),
       lieux: lieuxChoisis,
       nomDeLEmployeuse,
     }),

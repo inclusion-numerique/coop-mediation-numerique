@@ -6,7 +6,7 @@ import {
   estMain,
   estPreview,
 } from '@/configuration/projet'
-import { proConnectProviderId } from '../proconnect/proconnect-provider-id.client'
+import { proConnectProviderId } from '../../domain/fournisseur-proconnect'
 
 /**
  * Depending on the environment we have a different provider configuration

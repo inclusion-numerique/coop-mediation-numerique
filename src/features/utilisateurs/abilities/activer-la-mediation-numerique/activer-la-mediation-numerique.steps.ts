@@ -8,6 +8,7 @@ import {
   activer,
   compteQuiActive,
 } from '@/features/utilisateurs/abilities/activer-la-mediation-numerique/implementations/prisma/activer.mutation'
+import { inscritAInscrire } from '@/features/utilisateurs/abilities/activer-la-mediation-numerique/implementations/prisma/inscrit-a-inscrire.query'
 import type { SynchroniserLaPersonne } from '@/features/utilisateurs/implementations/prisma/registre-des-personnes.mutation'
 import { semerUnCompteDeListe } from '@/features/utilisateurs/utilisateurs.cucumber'
 
@@ -17,7 +18,7 @@ const activerLaMediationNumeriqueAvec = (
   activerLaMediationNumerique({
     lireLeCompteQuiActive: compteQuiActive,
     activer: activer(synchroniserLaPersonne),
-    inscrireALaListeDeDiffusion,
+    inscrireALaListeDeDiffusion: inscrireALaListeDeDiffusion(inscritAInscrire),
   })
 
 const activation: {

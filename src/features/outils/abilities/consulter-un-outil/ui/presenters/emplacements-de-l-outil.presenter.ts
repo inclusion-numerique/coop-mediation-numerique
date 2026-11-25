@@ -1,5 +1,10 @@
+import type { ReactNode } from 'react'
 import type { SlugOutil, ValeurDeSlugOutil } from '../../domain/index'
-import type { EmplacementsDeLaFiche } from '../pages/OutilPage'
+
+export type EmplacementsDeLaFiche = {
+  readonly avis?: ReactNode
+  readonly acces?: ReactNode
+}
 
 export type FournisseursDEmplacements = {
   readonly [Slug in ValeurDeSlugOutil]?: () => Promise<EmplacementsDeLaFiche>

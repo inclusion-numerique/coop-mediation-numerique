@@ -23,7 +23,7 @@ import {
   estCoordinateur,
   estMediateur,
 } from '@/features/authentification/domain/profils-d-utilisateur'
-import { authenticateMediateur } from '@/features/authentification/implementations/session/authenticate-user.middleware'
+import { authenticateMediateur } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
 import { periodeDesRendezVous } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/periode-des-rendez-vous.query'
 import {
   rendezVousAListerSql,

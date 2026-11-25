@@ -5,10 +5,12 @@ import {
   withClientApi,
   withQueryParams,
 } from '@/features/clients-api/abilities/authentifier-un-client-api/implementations/api-v1'
+import { authentifierUnClientApi } from '@/features/clients-api/abilities/authentifier-un-client-api/implementations/prisma/authentifier-un-client-api.query'
 import {
   criteresDesLieuxActivite,
   LieuxActiviteQueryParamsValidation,
 } from '@/features/clients-api/abilities/lire-les-lieux-activite/implementations/api-v1/lieux-activite.params'
+import { verifySecret } from '@/features/clients-api/implementations/secret/hash-secret.adapter'
 import { lieuPublieExpose } from '@/features/lieux-activite/abilities/publier-les-lieux/implementations/api/lieu-publie.transfer'
 import { lieuxPublies } from '@/features/lieux-activite/abilities/publier-les-lieux/implementations/prisma/lieux-publies.query'
 
@@ -209,7 +211,7 @@ export const revalidate = 0
  */
 
 export const GET = routeBuilder()
-  .use(withClientApi(['LieuxActivite']))
+  .use(withClientApi(authentifierUnClientApi(verifySecret))(['LieuxActivite']))
   .use(withQueryParams(LieuxActiviteQueryParamsValidation))
   .handle(
     withApiV1Errors(async ({ queryParams }) => {

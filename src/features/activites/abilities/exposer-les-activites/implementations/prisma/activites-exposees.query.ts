@@ -1,6 +1,10 @@
 import { prismaClient } from '@/configuration/prisma'
 import { Prisma } from '@/generated/prisma/client'
-import type { CriteresDExposition, CurseurDActivite } from '../../domain'
+import type {
+  ActiviteExposee,
+  CriteresDExposition,
+  CurseurDActivite,
+} from '../../domain'
 
 const activiteExposeeSelect = {
   id: true,
@@ -35,10 +39,6 @@ const activiteExposeeSelect = {
     },
   },
 } satisfies Prisma.ActiviteSelect
-
-export type ActiviteExposee = Prisma.ActiviteGetPayload<{
-  select: typeof activiteExposeeSelect
-}>
 
 const apresLeCurseur = (
   curseur: CurseurDActivite | null,

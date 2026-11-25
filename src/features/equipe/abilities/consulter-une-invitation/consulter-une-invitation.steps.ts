@@ -5,7 +5,6 @@ import { consulterUneInvitation } from '@/features/equipe/abilities/consulter-un
 import {
   CoordinateurId,
   Courriel,
-  codeInvitation,
   ReferenceInvitation,
 } from '@/features/equipe/domain'
 import {
@@ -15,6 +14,10 @@ import {
   semerUneInvitation,
   semerUnMediateurDEquipe,
 } from '@/features/equipe/equipe.cucumber'
+import {
+  codeInvitation,
+  referenceDuCode,
+} from '@/features/equipe/implementations/email/lien-invitation.transfer'
 
 const contexte: {
   coordinateur?: CoordinateurSeme
@@ -59,11 +62,13 @@ const semer = async ({
 
 const ouvrir = async (session: string | null) => {
   contexte.vue = await consulterUneInvitation({
-    code: codeInvitation(
-      ReferenceInvitation({
-        email: Courriel(emailInvite()),
-        coordinateurId: CoordinateurId(coordinateur().coordinateurId),
-      }),
+    reference: referenceDuCode(
+      codeInvitation(
+        ReferenceInvitation({
+          email: Courriel(emailInvite()),
+          coordinateurId: CoordinateurId(coordinateur().coordinateurId),
+        }),
+      ),
     ),
     session: session === null ? null : Courriel(session),
   })

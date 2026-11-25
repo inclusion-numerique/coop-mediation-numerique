@@ -144,6 +144,14 @@ const ROUTES_ADMISES = {
     '^src/libraries/departement/',
   ],
   '^src/app/global-error[.]tsx$': ['^src/configuration/telemetry/index[.]ts$'],
+  '^src/app/error[.]tsx$': ['^src/configuration/telemetry/index[.]ts$'],
+  '^src/app/coop/error[.]tsx$': ['^src/configuration/telemetry/index[.]ts$'],
+  '^src/app/administration/error[.]tsx$': [
+    '^src/configuration/telemetry/index[.]ts$',
+  ],
+  '^src/app/administration/outils/page[.]tsx$': [
+    '^src/configuration/telemetry/index[.]ts$',
+  ],
   '^src/app/inscription/[(]etapes[)]/initialiser/page[.]tsx$': [
     '^src/configuration/ban/index[.]ts$',
   ],
@@ -186,6 +194,7 @@ const SERVER_ACTIONS_ADMISES = {
     ['^src/libraries/etat-d-url/'],
   '^src/app/_actions/rdvsp/creer-activite-depuis-rdv[.]action[.]ts$': [
     '^src/features/activites/ui/presenters/saisie/url-de-saisie-depuis-un-rendez-vous[.]presenter[.]ts$',
+    '^src/configuration/projet/serveur[.]ts$',
   ],
   '^src/app/_actions/rdvsp/prendre-rendez-vous[.]action[.]ts$': [
     '^src/configuration/projet/serveur[.]ts$',
@@ -225,6 +234,9 @@ const SERVER_ACTIONS_ADMISES = {
     [
       '^src/features/utilisateurs/abilities/lister-les-utilisateurs/ui/presenters/coordinateur-a-choisir[.]presenter[.]ts$',
     ],
+  '^src/app/_actions/utilisateurs/rechercher-des-communes[.]action[.]ts$': [
+    '^src/features/employeuse/abilities/rechercher-employeuse/ui/presenters/option-de-la-commune[.]presenter[.]ts$',
+  ],
   '^src/app/_actions/utilisateurs/rechercher-des-employeuses[.]action[.]ts$': [
     '^src/features/employeuse/ui/presenters/employeuse[.]presenter[.]ts$',
   ],

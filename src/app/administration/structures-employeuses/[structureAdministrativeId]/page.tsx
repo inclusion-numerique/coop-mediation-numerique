@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { metadataTitle } from '@/configuration/projet'
-import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticate-user.middleware'
+import { authenticateAdmin } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
 import { consulterEmployeuse } from '@/features/employeuse/abilities/consulter-employeuse/implementations/prisma/consulter-employeuse.query'
 import EmployeusePage from '@/features/employeuse/abilities/consulter-employeuse/ui/pages/EmployeusePage'
 import { employeuseConsulteeAffichage } from '@/features/employeuse/abilities/consulter-employeuse/ui/presenters/employeuse-consultee.presenter'

@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import type { CraV1Expose } from '../prisma/cras-v1-exposes.query'
+import type { CraV1Expose } from '../../domain'
 
 export type CraV1Attributes = {
   imported_at: string

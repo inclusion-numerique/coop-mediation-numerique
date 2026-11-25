@@ -3,25 +3,16 @@ import { contentId } from '@/libraries/liens-d-evitement'
 import { SkipLinksPortal } from '@/libraries/liens-d-evitement/composants'
 import { telephoneDisplayString } from '@/libraries/telephone'
 import { CoopBreadcrumbs } from '@/libraries/ui/components'
-import { type LigneEquipe } from '../../../../domain'
 import type { MembresDeLEquipe } from '../../domain'
-import type { ParametresDeLaListe } from '../filtres/liste-de-l-equipe.filtre'
-import { ListeDeLEquipe } from '../slots/ListeDeLEquipe.slot'
 
 const EquipeListePage = ({
   membres,
-  searchParams,
-  baseHref,
   enTete,
-  exporter,
-  actions,
+  liste,
 }: {
   membres: MembresDeLEquipe
-  searchParams: ParametresDeLaListe
-  baseHref: string
   enTete: ReactNode
-  exporter: ReactNode
-  actions: ((ligne: LigneEquipe) => ReactNode) | null
+  liste: ReactNode
 }) => {
   const { coordinateur } = membres
 
@@ -62,13 +53,7 @@ const EquipeListePage = ({
               )}
             </div>
           </div>
-          <ListeDeLEquipe
-            membres={membres}
-            searchParams={searchParams}
-            baseHref={baseHref}
-            exporter={exporter}
-            actions={actions}
-          />
+          {liste}
         </main>
       </div>
     </>

@@ -1,10 +1,11 @@
-import Excel from 'exceljs'
+import Excel, { type Workbook } from 'exceljs'
 import {
   sexLabels,
   statutSocialLabels,
   trancheAgeLabels,
 } from '@/features/beneficiaire/domain'
 import {
+  type AuteurDExport,
   addExportMetadata,
   addTitleRow,
   autosizeColumns,
@@ -49,7 +50,10 @@ const toRow = (beneficiaire: BeneficiaireExportRow) => [
   beneficiaire.notes ? htmlToText(beneficiaire.notes) : '',
 ]
 
-export const classeurDesBeneficiaires: ConstruireLeClasseurDesBeneficiaires = ({
+export const classeurDesBeneficiaires: ConstruireLeClasseurDesBeneficiaires<
+  AuteurDExport,
+  Workbook
+> = ({
   beneficiaires,
   filters,
   auteur,

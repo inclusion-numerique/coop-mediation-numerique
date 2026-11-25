@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import type { UtilisateurExpose } from '../prisma/utilisateurs-exposes.query'
+import type { UtilisateurExpose } from '../../domain'
 import { utilisateurExpose } from './utilisateur-expose.transfer'
 
 const creation = new Date('2025-03-01T08:00:00.000Z')
@@ -41,15 +41,11 @@ const complet: UtilisateurExpose = {
     affectationsEmploi: [
       {
         id: 5,
-        source: 'coop',
-        estActive: true,
         structureAdministrativeId: 17,
         createdAt: creation,
       },
       {
         id: 6,
-        source: 'dataspace',
-        estActive: true,
         structureAdministrativeId: 18,
         createdAt: null,
       },
@@ -77,22 +73,17 @@ const complet: UtilisateurExpose = {
     enActivite: [
       {
         id: 'a1b2c3d4-e5f6-4789-8abc-def012345678',
-        mediateurId,
         structureId: 'b2c3d4e5-f6a7-4890-9bcd-ef0123456789',
         debut: creation,
         fin: suppression,
         creation,
-        creationParId: null,
         modification,
-        derniereModificationParId: null,
         suppression: null,
-        suppressionParId: null,
       },
     ],
     coordinations: [
       {
         id: 'c3d4e5f6-a7b8-4901-8cde-f01234567890',
-        mediateurId,
         coordinateurId: 'd4e5f6a7-b8c9-4012-9def-012345678901',
         creation,
         modification,
@@ -109,7 +100,6 @@ const complet: UtilisateurExpose = {
       {
         id: 'e5f6a7b8-c9d0-4123-8ef0-123456789012',
         mediateurId: autreMediateurId,
-        coordinateurId,
         creation,
         modification,
         suppression: null,

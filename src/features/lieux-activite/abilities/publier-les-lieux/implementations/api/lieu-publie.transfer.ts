@@ -2,8 +2,7 @@ import {
   type SchemaLieuMediationNumerique,
   toSchemaLieuMediationNumerique,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import type { LieuPublie } from '../../domain/lieu-publie'
-import type { Aidant } from '../prisma/lieux-publies.query'
+import type { Aidant, LieuPublie } from '../../domain/lieu-publie'
 
 export type LieuPublieExpose = SchemaLieuMediationNumerique & {
   aidants?: Aidant[]

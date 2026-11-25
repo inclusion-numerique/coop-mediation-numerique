@@ -3,11 +3,12 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import { Input } from '@codegouvfr/react-dsfr/Input'
 import { useState } from 'react'
-import { signaler } from '@/configuration/telemetry'
+import { useSignaler } from '../hooks/use-signaler'
 
 export const ExportDesAccompagnementsParDepartement = () => {
   const [date, setDate] = useState('')
   const [isDownloading, setIsDownloading] = useState(false)
+  const signaler = useSignaler()
 
   const handleDownload = async () => {
     setIsDownloading(true)

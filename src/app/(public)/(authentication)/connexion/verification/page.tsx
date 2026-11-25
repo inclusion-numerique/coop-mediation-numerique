@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import { metadataTitle } from '@/configuration/projet'
 import { getServerUrl } from '@/configuration/projet/serveur'
 import { VerificationPage } from '@/features/authentification/abilities/se-connecter/ui/pages/VerificationPage'
-import { getSessionUser } from '@/features/authentification/implementations/session/session-user.query'
+import { getSessionUser } from '@/features/authentification/middlewares/with-utilisateur-de-la-session'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0

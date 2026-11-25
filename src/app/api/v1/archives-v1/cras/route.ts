@@ -8,7 +8,9 @@ import {
   withClientApi,
   withQueryParams,
 } from '@/features/clients-api/abilities/authentifier-un-client-api/implementations/api-v1'
+import { authentifierUnClientApi } from '@/features/clients-api/abilities/authentifier-un-client-api/implementations/prisma/authentifier-un-client-api.query'
 import { reponseDesCrasV1 } from '@/features/clients-api/abilities/lire-les-cras-v1/implementations/api-v1/cras-v1.response'
+import { verifySecret } from '@/features/clients-api/implementations/secret/hash-secret.adapter'
 import {
   JsonApiCursorPaginationQueryParamsValidation,
   prismaCursorPagination,
@@ -294,7 +296,7 @@ import {
  */
 
 export const GET = routeBuilder()
-  .use(withClientApi(['Activites']))
+  .use(withClientApi(authentifierUnClientApi(verifySecret))(['Activites']))
   .use(withQueryParams(JsonApiCursorPaginationQueryParamsValidation))
   .handle(
     withApiV1Errors(async ({ queryParams }) => {

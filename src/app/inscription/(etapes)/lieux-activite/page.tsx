@@ -3,9 +3,9 @@ import { renseignerLieuxActiviteAction } from '@/app/_actions/inscription/rensei
 import { creerUnLieuActiviteAction } from '@/app/_actions/lieux-activite/creer-lieu-activite.action'
 import { rechercherDesLieuxAAjouterAction } from '@/app/_actions/lieux-activite/rechercher-des-lieux-a-ajouter.action'
 import { rechercherUnLieuActiviteAction } from '@/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
-import { metadataTitle } from '@/configuration/projet'
+import { estMain, metadataTitle } from '@/configuration/projet'
 import { aTermineSonInscription } from '@/features/authentification/domain/page-d-accueil'
-import { authenticateUser } from '@/features/authentification/implementations/session/authenticate-user.middleware'
+import { authenticateUser } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
 import LieuxActivitePage from '@/features/inscription/abilities/renseigner-lieux-activite/ui/pages/LieuxActivitePage'
 import { CREER_UN_LIEU_KEY } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/action/creer-un-lieu.key'
 import { ENREGISTRER_LA_SELECTION_DE_LIEUX_KEY } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/action/enregistrer-la-selection.key'
@@ -14,7 +14,7 @@ import { AjouterDesLieuxActivitePage } from '@/features/lieux-activite/abilities
 import { listerLesLieuxPourLInscription } from '@/features/lieux-activite/abilities/lister-les-lieux-pour-l-inscription/implementations/prisma/lister-les-lieux-pour-l-inscription.query'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
 import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
-import { rdvWebsiteLink } from '@/features/rdvsp/ui/presenters/liens.presenter'
+import { lienDuSiteRdv } from '@/features/rdvsp/ui/presenters/liens.presenter'
 import { ClientBinder } from '@/libraries/nextjs/injection'
 
 export const dynamic = 'force-dynamic'
@@ -76,7 +76,7 @@ const LieuxActivitePageRoute = async () => {
                     _tag: 'Selection',
                     suivantHref: '/inscription/recapitulatif',
                   }}
-                  lienDePriseDeRendezVous={rdvWebsiteLink}
+                  lienDePriseDeRendezVous={lienDuSiteRdv(estMain())}
                 />
               }
             />

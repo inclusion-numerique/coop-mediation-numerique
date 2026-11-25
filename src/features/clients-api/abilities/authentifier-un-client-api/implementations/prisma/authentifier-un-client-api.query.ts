@@ -1,38 +1,29 @@
 import { prismaClient } from '@/configuration/prisma'
 import {
+  type AuthentifierUnClientApi,
   ClientApiId,
-  type IssueDAuthentification,
   issueDAuthentification,
-  type PorteeApi,
+  type VerifierUnSecret,
 } from '@/features/clients-api/domain'
 import {
   clientApiSelect,
   versClientApi,
 } from '@/features/clients-api/implementations/prisma/client-api.transfer'
-import { verifySecret } from '@/features/clients-api/implementations/secret/hash-secret.adapter'
 
-export const authentifierUnClientApi = async ({
-  clientApiId,
-  secret,
-  portees,
-  maintenant = new Date(),
-}: {
-  readonly clientApiId: string
-  readonly secret: string
-  readonly portees: readonly PorteeApi[]
-  readonly maintenant?: Date
-}): Promise<IssueDAuthentification> => {
-  const id = ClientApiId.safe(clientApiId)
-  const ligne =
-    id === null
-      ? null
-      : await prismaClient.apiClient.findUnique({
-          where: { id },
-          select: { ...clientApiSelect, secretHash: true },
-        })
+export const authentifierUnClientApi =
+  (verifierLeSecret: VerifierUnSecret): AuthentifierUnClientApi =>
+  async ({ clientApiId, secret, portees, maintenant = new Date() }) => {
+    const id = ClientApiId.safe(clientApiId)
+    const ligne =
+      id === null
+        ? null
+        : await prismaClient.apiClient.findUnique({
+            where: { id },
+            select: { ...clientApiSelect, secretHash: true },
+          })
 
-  if (ligne === null || !verifySecret(secret, ligne.secretHash))
-    return 'NonAuthentifie'
+    if (ligne === null || !verifierLeSecret(secret, ligne.secretHash))
+      return 'NonAuthentifie'
 
-  return issueDAuthentification(versClientApi(ligne), portees, maintenant)
-}
+    return issueDAuthentification(versClientApi(ligne), portees, maintenant)
+  }

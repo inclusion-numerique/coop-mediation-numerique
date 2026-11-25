@@ -30,7 +30,7 @@ import { utilisateurDeLaSessionParId } from '@/features/authentification/impleme
 import {
   authenticateAdmin,
   authenticateUser,
-} from '@/features/authentification/implementations/session/authenticate-user.middleware'
+} from '@/features/authentification/middlewares/with-utilisateur-authentifie'
 import { consulterHistoriqueEmployeuses } from '@/features/employeuse/abilities/consulter-historique-employeuses/implementations/prisma/consulter-historique-employeuses.query'
 import { historiqueEmployeusesAffichage } from '@/features/employeuse/abilities/consulter-historique-employeuses/ui/presenters/historique-employeuses.presenter'
 import { HistoriqueDesEmployeuses } from '@/features/employeuse/abilities/consulter-historique-employeuses/ui/slots/HistoriqueDesEmployeuses.slot'

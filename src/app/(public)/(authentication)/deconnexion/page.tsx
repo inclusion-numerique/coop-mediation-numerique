@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { metadataTitle } from '@/configuration/projet'
 import { DeconnexionPage } from '@/features/authentification/abilities/se-deconnecter/ui/pages/DeconnexionPage'
-import { getSessionUser } from '@/features/authentification/implementations/session/session-user.query'
+import { getSessionUser } from '@/features/authentification/middlewares/with-utilisateur-de-la-session'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0

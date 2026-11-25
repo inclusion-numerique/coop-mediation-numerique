@@ -4,7 +4,7 @@ import { supprimerBeneficiairesAction } from '@/app/_actions/beneficiaire/suppri
 import { prendreRendezVousAction } from '@/app/_actions/rdvsp/prendre-rendez-vous.action'
 import { rattraperRdvsSansWebhookAction } from '@/app/_actions/rdvsp/rattraper-rdvs-sans-webhook.action'
 import BeneficiaireEnregistrerUneActivite from '@/features/activites/ui/slots/BeneficiaireEnregistrerUneActivite.slot'
-import { authenticateMediateur } from '@/features/authentification/implementations/session/authenticate-user.middleware'
+import { authenticateMediateur } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
 import { consulterBeneficiaire } from '@/features/beneficiaire/abilities/consulter-beneficiaire/implementations/prisma/consulter-beneficiaire.query'
 import BeneficiaireConsultationLayout from '@/features/beneficiaire/abilities/consulter-beneficiaire/ui/layouts/BeneficiaireConsultationLayout'
 import { findDuplicatesForBeneficiaireById } from '@/features/beneficiaire/abilities/detecter-doublons/implementations/prisma/index'

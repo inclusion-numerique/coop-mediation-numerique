@@ -143,3 +143,7 @@ export type CreerOuFusionnerDepuisUsagersExternes<Fusionne = unknown> =
     merges: readonly Fusionne[]
     skipped: readonly { readonly rdvUserId: number; readonly reason: unknown }[]
   }>
+
+export type RevoquerJetons = (
+  jetons: JetonsOAuth,
+) => Promise<Result<void, ErreurRdvApi>>

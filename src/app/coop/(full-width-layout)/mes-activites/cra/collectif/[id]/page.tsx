@@ -14,14 +14,15 @@ import { RECHERCHER_DES_TAGS_DU_CRA_KEY } from '@/features/activites/action/rech
 import { activiteDeMediationLue } from '@/features/activites/implementations/prisma/activite-de-mediation-lue.query'
 import { dureesFrequentesDuMediateur } from '@/features/activites/implementations/prisma/durees-frequentes.query'
 import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
-import { authenticateMediateur } from '@/features/authentification/implementations/session/authenticate-user.middleware'
+import { authenticateMediateur } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
 import { beneficiairesLesPlusSuivis } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/implementations/prisma/beneficiaires-les-plus-suivis.query'
 import { consulterEmployeuseAUneDate } from '@/features/employeuse/abilities/consulter-employeuse-a-une-date/implementations/prisma/consulter-employeuse-a-une-date.query'
 import RattacherEmployeusePage from '@/features/employeuse/abilities/rattacher-a-une-employeuse/ui/pages/RattacherEmployeusePage'
+import RattacherEmployeuseForm from '@/features/employeuse/abilities/rattacher-a-une-employeuse/ui/slots/RattacherEmployeuseForm.slot'
 import { lieuxDuMediateur } from '@/features/lieux-activite/abilities/lister-les-options-de-lieux/implementations/prisma/options-de-lieux-du-mediateur.query'
 import { rendezVousLies } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/rdvs-des-activites.query'
 import { visibilitesProposees } from '@/features/tags/abilities/creer-un-tag/ui/presenters/visibilites.presenter'
-import { tagsInitiauxAvec } from '@/features/tags/abilities/rechercher-des-tags/implementations/session/tags-initiaux-par.query'
+import { tagsInitiauxAvec } from '@/features/tags/abilities/rechercher-des-tags/implementations/prisma/tags-initiaux-par.query'
 import { acteurDe } from '@/features/tags/domain'
 import { tagAffiche } from '@/features/tags/ui/presenters/tag-affiche.presenter'
 import { ClientBinder } from '@/libraries/nextjs/injection'
@@ -43,7 +44,12 @@ const UpdateCraCollectifPage = async ({
   })
 
   if (!employeuse) {
-    return <RattacherEmployeusePage motif="Enregistrer une activité" />
+    return (
+      <RattacherEmployeusePage
+        motif="Enregistrer une activité"
+        formulaire={<RattacherEmployeuseForm nextStepPath={null} />}
+      />
+    )
   }
 
   const acteur = acteurDe(profilDeLaSession(user))

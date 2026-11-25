@@ -1,14 +1,11 @@
 import { prismaClient } from '@/configuration/prisma'
 import { Prisma } from '@/generated/prisma/client'
 import { lieuExploitableSql } from '../../../../implementations/prisma/lieu-exploitable.sql'
-import { type LieuPublie, LieuPublieSchema } from '../../domain/lieu-publie'
-
-export type Aidant = {
-  id: string
-  nom: string
-  courriel: string
-  telephone?: string
-}
+import {
+  type Aidant,
+  type LieuPublie,
+  LieuPublieSchema,
+} from '../../domain/lieu-publie'
 
 export const lieuxPublies = async ({
   ids,

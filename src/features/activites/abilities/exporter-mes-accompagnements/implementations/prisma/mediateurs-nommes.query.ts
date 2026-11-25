@@ -1,11 +1,7 @@
 import { prismaClient } from '@/configuration/prisma'
 import { nomAffiche } from '@/libraries/nom-affiche'
 import type { CoordinateurId, MediateurId } from '../../../../domain'
-
-export type MediateurNomme = {
-  readonly label: string
-  readonly value: { readonly mediateurId: string }
-}
+import type { MediateurNomme } from '../../domain'
 
 type Appartenance = { readonly suppression: Date | null }
 

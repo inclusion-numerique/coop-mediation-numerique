@@ -1,5 +1,5 @@
 import type { UtilisateurDeLaSession } from '@/features/authentification/domain/utilisateur-de-la-session'
-import { getSessionUser } from '@/features/authentification/implementations/session/session-user.query'
+import { getSessionUser } from '@/features/authentification/middlewares/with-utilisateur-de-la-session'
 import type { PipeMiddleware, ServerActionResult } from '@/libraries/nextjs'
 import { ServerActionError } from '@/libraries/nextjs'
 

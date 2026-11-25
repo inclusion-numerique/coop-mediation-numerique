@@ -4,6 +4,7 @@ import { actionBuilder } from '@/configuration/nextjs'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { RETIRER_UN_MEDIATEUR_DU_LIEU_ERRORS } from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/action/retirer-un-mediateur-du-lieu.errors'
 import { RetirerUnMediateurDuLieuValidation } from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/action/retirer-un-mediateur-du-lieu.validation'
+import { envoyerLeRetraitDuLieu } from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/implementations/email/envoyer-le-retrait-du-lieu.mutation'
 import { retirerUnMediateurDuLieu } from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/implementations/prisma/retirer-un-mediateur-du-lieu.mutation'
 import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
 import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
@@ -30,7 +31,7 @@ export const retirerUnMediateurDuLieuAction = actionBuilder()
   .execute(
     fromResult(
       async ({ user, input }) =>
-        retirerUnMediateurDuLieu({
+        retirerUnMediateurDuLieu({ envoyerLeRetraitDuLieu })({
           mediateurId: MediateurId(input.mediateurId),
           lieuId: LieuId(input.lieuId),
           auteur: {

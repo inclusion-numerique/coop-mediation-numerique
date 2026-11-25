@@ -1,6 +1,10 @@
 import type { NextRequest } from 'next/server'
+import { demandeurDe } from '@/features/activites/abilities/exporter-mes-accompagnements/domain'
 import { classeurDeMesAccompagnements } from '@/features/activites/abilities/exporter-mes-accompagnements/implementations/excel/classeur-de-mes-accompagnements.classeur'
+import { exporterMesAccompagnements } from '@/features/activites/abilities/exporter-mes-accompagnements/implementations/prisma/accompagnements-a-exporter.query'
+import { nomsDesFiltresExportes } from '@/features/activites/abilities/exporter-mes-accompagnements/implementations/prisma/noms-des-filtres-exportes.query'
 import { classeurPresenteAvec } from '@/features/activites/abilities/exporter-mes-accompagnements/ui/presenters/export.presenter'
+import { tagsUtilisablesDepuis } from '@/features/activites/domain/fournisseurs-de-la-saisie'
 import { criteresDesFiltres } from '@/features/activites/ui/filtres/activites.filtre'
 import { filtresDeToutesLesActivites } from '@/features/activites/ui/filtres/toutes-les-activites.filtre'
 import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
@@ -14,7 +18,7 @@ import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
 import { mediateurCoordonnesEtAnciensIdsFor } from '@/features/equipe/domain/mediateurs-coordonnes'
 import { communesDuMediateur } from '@/features/lieux-activite/abilities/lister-les-options-de-lieux/implementations/prisma/communes-du-mediateur.query'
 import { getLieuxDesActivitesOptions } from '@/features/lieux-activite/abilities/lister-les-options-de-lieux/implementations/prisma/options-de-lieux-des-activites.query'
-import { tagsVisiblesPar } from '@/features/tags/abilities/lire-les-tags-visibles/implementations/session/tags-visibles-par.query'
+import { tagsVisiblesPar } from '@/features/tags/abilities/lire-les-tags-visibles/implementations/prisma/tags-visibles-par.query'
 import { acteurDe } from '@/features/tags/domain'
 import { auteurDeLExport } from '@/features/utilisateurs/ui/presenters/auteur-de-l-export.presenter'
 import { dateAsIsoDay } from '@/libraries/date'
@@ -35,20 +39,22 @@ export const GET = async (request: NextRequest) => {
   const valeurs = filtresDeToutesLesActivites.charger(
     request.nextUrl.searchParams,
   )
-  const classeur = await classeurDeMesAccompagnements({
-    criteres: criteresDesFiltres(valeurs),
-    demandeur: {
-      mediateurId: user.mediateur?.id ?? null,
-      coordinateurId: user.coordinateur?.id ?? null,
-      equipe: mediateurCoordonnesEtAnciensIdsFor(user),
-    },
-    auteur: auteurDeLExport(user),
-    fuseau: user.timezone,
-    presenter: classeurPresenteAvec(valeurs),
-    fournisseurs: {
+  const criteres = criteresDesFiltres(valeurs)
+  const demandeur = demandeurDe({
+    mediateurId: user.mediateur?.id ?? null,
+    coordinateurId: user.coordinateur?.id ?? null,
+    equipe: mediateurCoordonnesEtAnciensIdsFor(user),
+  })
+  const [exportDes, noms] = await Promise.all([
+    exporterMesAccompagnements({ demandeur, criteres }),
+    nomsDesFiltresExportes({
+      demandeur,
+      criteres,
       lieuxDesActivites: getLieuxDesActivitesOptions,
       communesEtDepartements: communesDuMediateur,
-      tagsVisibles: tagsVisiblesPar(acteurDe(profilDeLaSession(user))),
+      tagsUtilisables: tagsUtilisablesDepuis(
+        tagsVisiblesPar(acteurDe(profilDeLaSession(user))),
+      ),
       beneficiaires: async (ids) =>
         optionsDesBeneficiairesInitiaux(
           await beneficiairesInitiaux(beneficiairesProposes)({
@@ -56,7 +62,15 @@ export const GET = async (request: NextRequest) => {
             includeBeneficiaireIds: ids.map(BeneficiaireId),
           }),
         ),
-    },
+    }),
+  ])
+  const classeur = classeurDeMesAccompagnements({
+    criteres,
+    noms,
+    exportDes,
+    auteur: auteurDeLExport(user),
+    fuseau: user.timezone,
+    presenter: classeurPresenteAvec(valeurs),
   })
 
   const data = await classeur.xlsx.writeBuffer()

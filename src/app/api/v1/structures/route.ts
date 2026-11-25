@@ -5,11 +5,13 @@ import {
   withClientApi,
   withQueryParams,
 } from '@/features/clients-api/abilities/authentifier-un-client-api/implementations/api-v1'
+import { authentifierUnClientApi } from '@/features/clients-api/abilities/authentifier-un-client-api/implementations/prisma/authentifier-un-client-api.query'
 import {
   criteresDesStructures,
   StructuresQueryParamsValidation,
 } from '@/features/clients-api/abilities/lire-les-structures/implementations/api-v1/structures.params'
 import { reponseDesStructures } from '@/features/clients-api/abilities/lire-les-structures/implementations/api-v1/structures.response'
+import { verifySecret } from '@/features/clients-api/implementations/secret/hash-secret.adapter'
 import { lieuInventorie } from '@/features/lieux-activite/abilities/inventorier-les-lieux/implementations/api/lieu-inventorie.transfer'
 import { inventaireDesLieux } from '@/features/lieux-activite/abilities/inventorier-les-lieux/implementations/prisma/inventaire-des-lieux.query'
 import { curseurLu, prismaCursorPagination } from '@/libraries/json-api'
@@ -320,7 +322,7 @@ import { curseurLu, prismaCursorPagination } from '@/libraries/json-api'
  */
 
 export const GET = routeBuilder()
-  .use(withClientApi(['Structures']))
+  .use(withClientApi(authentifierUnClientApi(verifySecret))(['Structures']))
   .use(withQueryParams(StructuresQueryParamsValidation))
   .handle(
     withApiV1Errors(async ({ queryParams }) => {

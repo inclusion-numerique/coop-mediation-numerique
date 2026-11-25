@@ -3,7 +3,7 @@ import type {
   STATUTS_SOCIAUX,
   TRANCHES_D_AGE,
 } from '../../../../domain'
-import type { ActiviteExposee } from '../prisma/activites-exposees.query'
+import type { ActiviteExposee, BeneficiaireCompte } from '../../domain'
 import {
   autonomieApiValues,
   materielApiValues,
@@ -150,9 +150,6 @@ const incremente = <Cle extends string>(
   compteurs: { [key in Cle]: number },
   cle: Cle,
 ): { [key in Cle]: number } => ({ ...compteurs, [cle]: compteurs[cle] + 1 })
-
-type BeneficiaireCompte =
-  ActiviteExposee['accompagnements'][number]['beneficiaire']
 
 const compteBeneficiaire = (
   compte: BeneficiairesAttributes,

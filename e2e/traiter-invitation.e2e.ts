@@ -3,9 +3,9 @@ import { goToMostRecentEmailReceived } from '@e2e/support/maildev'
 import {
   CoordinateurId,
   Courriel,
-  lienInvitation,
   ReferenceInvitation,
 } from '@/features/equipe/domain'
+import { lienInvitation } from '@/features/equipe/implementations/email/lien-invitation.transfer'
 import {
   conseillerNumerique,
   conseillerNumeriqueMediateurId,

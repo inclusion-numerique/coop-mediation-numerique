@@ -13,11 +13,13 @@ import {
 } from '@/features/lieux-activite/action/creer-lieu-activite.validation'
 import type { Fiche } from '@/features/lieux-activite/domain/fiche'
 import { horairesVides } from '@/features/lieux-activite/domain/saisie/horaires-d-ouverture'
+import { LieuId } from '../../../domain/identifiants/lieu-id'
 import { UtilisateurId } from '../../../domain/identifiants/utilisateur-id'
 import { nouveauLieu } from './saisie-du-lieu.transfer'
 
 const auteur = UtilisateurId('550e8400-e29b-41d4-a716-446655440001')
 const maintenant = new Date('2026-09-07T10:00:00Z')
+const LIEU_ID = LieuId('550e8400-e29b-41d4-a716-446655440099')
 
 const saisie = (
   champs: Partial<CreerLieuActiviteData> = {},
@@ -57,7 +59,7 @@ const saisie = (
 })
 
 const lieuDe = (champs: Partial<CreerLieuActiviteData> = {}) =>
-  nouveauLieu(saisie(champs), auteur, maintenant)
+  nouveauLieu(saisie(champs), auteur, maintenant, LIEU_ID)
 
 describe('l’identité du lieu créé', () => {
   it('porte le nom, l’adresse et la localisation reconnus par la BAN', () => {
@@ -243,8 +245,8 @@ describe('la traçabilité', () => {
     })
   })
 
-  it('donne au lieu un identifiant qui lui est propre', () => {
-    expect(lieuDe().id).not.toBe(lieuDe().id)
+  it('porte l’identifiant qui lui est attribué', () => {
+    expect(lieuDe().id).toBe(LIEU_ID)
   })
 })
 
@@ -309,7 +311,7 @@ const ficheDe = (champs: Record<string, unknown>): Fiche | null => {
   })
 
   return analyse.success
-    ? nouveauLieu(analyse.data, auteur, new Date()).fiche
+    ? nouveauLieu(analyse.data, auteur, new Date(), LIEU_ID).fiche
     : null
 }
 

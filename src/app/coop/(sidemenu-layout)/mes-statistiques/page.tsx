@@ -65,7 +65,7 @@ import { criteresDesStatistiquesDesFiltres } from '@/features/activites/ui/filtr
 import { filtresDesStatistiques } from '@/features/activites/ui/filtres/statistiques.filtre'
 import { barreDesStatistiquesAvec } from '@/features/activites/ui/presenters/barre-des-statistiques.presenter'
 import { BarreDesStatistiques } from '@/features/activites/ui/slots/BarreDesStatistiques.slot'
-import { authenticateMediateurOrCoordinateur } from '@/features/authentification/implementations/session/authenticate-user.middleware'
+import { authenticateMediateurOrCoordinateur } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
 import { membresAFiltrerDuDemandeur } from '@/features/equipe/abilities/lister-les-membres-a-filtrer/implementations/prisma/membres-a-filtrer-du-demandeur.query'
 import { optionDeMembre } from '@/features/equipe/abilities/lister-les-membres-a-filtrer/ui/presenters/options-de-membres.presenter'
 import { consulterMesLiensDePartage } from '@/features/mediateurs/abilities/consulter-mes-liens-de-partage/implementations/prisma/consulter-mes-liens-de-partage.query'

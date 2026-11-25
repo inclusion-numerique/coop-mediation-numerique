@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { metadataTitle } from '@/configuration/projet'
-import { authenticateMediateurOrCoordinateur } from '@/features/authentification/implementations/session/authenticate-user.middleware'
+import { authenticateMediateurOrCoordinateur } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
 import { hrefDuReseau } from '@/features/mon-reseau/ui/presenters/liens.presenter'
 import {
   DEPARTEMENT_PAR_DEFAUT,

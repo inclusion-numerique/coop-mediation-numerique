@@ -1,5 +1,5 @@
 import { metadataTitle } from '@/configuration/projet'
-import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticate-user.middleware'
+import { authenticateAdmin } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
 import { comptesRdv } from '@/features/rdvsp/abilities/administrer-comptes-rdv/implementations/prisma/comptes-rdv.query'
 import AdministrationRdvspPage from '@/features/rdvsp/abilities/administrer-comptes-rdv/ui/pages/AdministrationRdvspPage'
 

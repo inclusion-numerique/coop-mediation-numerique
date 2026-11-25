@@ -9,13 +9,16 @@ import {
   portees,
   retenirLeClient,
 } from '@/features/clients-api/clients-api.cucumber'
+import { nouveauSecret } from '@/features/clients-api/implementations/secret/secret.adapter'
 
-const creation: { resultat?: Awaited<ReturnType<typeof creerUnClientApi>> } = {}
+const creation: {
+  resultat?: Awaited<ReturnType<ReturnType<typeof creerUnClientApi>>>
+} = {}
 
 When(
   "l'administration crée le client API {string} avec les permissions {string} à partir du {word}",
   async (nom: string, liste: string, debut: string) => {
-    creation.resultat = await creerUnClientApi({
+    creation.resultat = await creerUnClientApi(nouveauSecret)({
       nom: nomUnique(nom),
       portees: portees(liste),
       validite: { debut: jour(debut), fin: null },

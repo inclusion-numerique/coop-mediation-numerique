@@ -11,6 +11,12 @@ export type {
 } from './activite-exportee'
 export { CodesPostaux } from './codes-postaux'
 export { demandeurDe } from './demandeur'
+export type {
+  MediateurNomme,
+  NomDeFiltre,
+  NomDeFiltreDeBeneficiaire,
+  NomsDesFiltresExportes,
+} from './noms-des-filtres-exportes'
 export {
   type Demandeur,
   estUnExportPersonnel,

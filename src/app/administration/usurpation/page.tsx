@@ -2,7 +2,7 @@ import { reinitialiserUneFixtureAction } from '@/app/_actions/utilisateurs/reini
 import { usurperUnUtilisateurAction } from '@/app/_actions/utilisateurs/usurper-un-utilisateur.action'
 import { environnementServeur } from '@/configuration/environnement/serveur'
 import { estMain, metadataTitle } from '@/configuration/projet'
-import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticate-user.middleware'
+import { authenticateAdmin } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
 import { REINITIALISER_UNE_FIXTURE_ACTION_KEY } from '@/features/utilisateurs/abilities/reinitialiser-une-fixture/action/reinitialiser-une-fixture.key'
 import { BoutonReinitialiser } from '@/features/utilisateurs/abilities/reinitialiser-une-fixture/ui/slots/BoutonReinitialiser.slot'
 import { USURPER_UN_UTILISATEUR_ACTION_KEY } from '@/features/utilisateurs/abilities/usurper-un-utilisateur/action/usurper-un-utilisateur.key'

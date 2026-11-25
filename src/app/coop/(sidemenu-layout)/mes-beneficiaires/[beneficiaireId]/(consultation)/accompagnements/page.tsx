@@ -12,7 +12,7 @@ import {
   MediateurId as MediateurDesActivites,
 } from '@/features/activites/domain'
 import { lectureDeLaPagination } from '@/features/activites/ui/filtres/liste-des-activites.filtre'
-import { authenticateMediateur } from '@/features/authentification/implementations/session/authenticate-user.middleware'
+import { authenticateMediateur } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
 import { consulterBeneficiaire } from '@/features/beneficiaire/abilities/consulter-beneficiaire/implementations/prisma/consulter-beneficiaire.query'
 import ViewBeneficiaireAccompagnementsPage from '@/features/beneficiaire/abilities/consulter-beneficiaire/ui/pages/ViewBeneficiaireAccompagnementsPage'
 import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'

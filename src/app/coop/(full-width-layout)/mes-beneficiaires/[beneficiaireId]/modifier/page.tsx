@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 import { modifierBeneficiaireAction } from '@/app/_actions/beneficiaire/modifier-beneficiaire.action'
-import { authenticateMediateur } from '@/features/authentification/implementations/session/authenticate-user.middleware'
+import { authenticateMediateur } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
 import { beneficiaireAEditer } from '@/features/beneficiaire/abilities/modifier-beneficiaire/implementations/prisma/beneficiaire-a-editer.query'
 import { ModifierBeneficiairePage } from '@/features/beneficiaire/abilities/modifier-beneficiaire/ui/pages/ModifierBeneficiairePage'
 import { presentBeneficiaireAModifier } from '@/features/beneficiaire/abilities/modifier-beneficiaire/ui/presenters/modifier-beneficiaire.presenter'

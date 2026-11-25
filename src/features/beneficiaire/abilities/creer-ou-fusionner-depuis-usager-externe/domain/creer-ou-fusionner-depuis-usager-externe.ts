@@ -36,3 +36,9 @@ export type CreerOuFusionnerBeneficiairesDepuisUsagersExternes = (input: {
   merges: MergedBeneficiaire[]
   skipped: { readonly rdvUserId: number; readonly reason: unknown }[]
 }>
+
+export type CommuneFields = {
+  readonly commune: string
+  readonly communeCodePostal: string
+  readonly communeCodeInsee: string
+}

@@ -1,6 +1,6 @@
 import { prismaClient } from '@/configuration/prisma'
 import { departementCodeFromInseeRegex } from '@/features/lieux-activite/implementations/prisma/departement-du-code-insee.sql'
-import type { SelectOption } from '@/libraries/ui'
+import type { OptionChoisie } from '../../../../domain/option-de-lieu'
 
 export const communesDesLieux = async ({
   departementCode,
@@ -30,7 +30,7 @@ export const communesDesLieux = async ({
     ORDER BY commune ASC
   `
 
-  const communesOptions: SelectOption[] = communes.map(
+  const communesOptions: OptionChoisie[] = communes.map(
     ({ code, code_postal, commune }) => ({
       value: code,
       label: `${commune} · ${code_postal}`,

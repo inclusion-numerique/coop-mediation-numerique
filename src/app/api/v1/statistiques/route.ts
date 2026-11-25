@@ -30,8 +30,10 @@ import {
   withClientApi,
   withQueryParams,
 } from '@/features/clients-api/abilities/authentifier-un-client-api/implementations/api-v1'
+import { authentifierUnClientApi } from '@/features/clients-api/abilities/authentifier-un-client-api/implementations/prisma/authentifier-un-client-api.query'
 import { statistiquesQueryParamsValidation } from '@/features/clients-api/abilities/lire-les-statistiques/implementations/api-v1/statistiques.params'
 import { reponseDesStatistiques } from '@/features/clients-api/abilities/lire-les-statistiques/implementations/api-v1/statistiques.response'
+import { verifySecret } from '@/features/clients-api/implementations/secret/hash-secret.adapter'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/rdvs-des-activites.query'
 import { FiltresDesStatistiquesValidation } from '@/features/statistiques/abilities/exposer-les-statistiques/implementations/api/filtres-des-statistiques.params'
 import {
@@ -406,7 +408,7 @@ const statistiquesDesActivites = statistiquesAvec({
  */
 
 export const GET = routeBuilder()
-  .use(withClientApi(['Statistiques']))
+  .use(withClientApi(authentifierUnClientApi(verifySecret))(['Statistiques']))
   .use(
     withQueryParams(
       statistiquesQueryParamsValidation(FiltresDesStatistiquesValidation),

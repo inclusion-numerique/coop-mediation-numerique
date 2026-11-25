@@ -1,6 +1,7 @@
 'use server'
 
 import { actionBuilder } from '@/configuration/nextjs'
+import { getServerUrl } from '@/configuration/projet/serveur'
 import { urlDeSaisieDepuisUnRendezVousAvec } from '@/features/activites/implementations/prisma/url-de-saisie-depuis-un-rendez-vous.query'
 import { cheminDeSaisieSelonLesDureesFrequentes } from '@/features/activites/ui/presenters/saisie/url-de-saisie-depuis-un-rendez-vous.presenter'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
@@ -24,8 +25,10 @@ const creerUneActiviteDepuisUnRdv = creerActiviteDepuisRdv({
   creerOuFusionnerBeneficiaires: creerOuFusionnerBeneficiaires(
     creerOuFusionnerBeneficiairesDepuisUsagersExternes({ communeDeLAdresse }),
   ),
-  preparerUrlCreationCra: urlDeSaisieDepuisUnRendezVousAvec(
-    cheminDeSaisieSelonLesDureesFrequentes,
+  preparerUrlCreationCra: urlDeSaisieDepuisUnRendezVousAvec((saisie) =>
+    getServerUrl(cheminDeSaisieSelonLesDureesFrequentes(saisie), {
+      absolutePath: true,
+    }),
   ),
 })
 

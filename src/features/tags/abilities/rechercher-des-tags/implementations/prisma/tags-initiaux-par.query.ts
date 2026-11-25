@@ -1,5 +1,5 @@
 import { type Acteur, TagId } from '../../../../domain'
-import { rechercherDesTags } from '../prisma'
+import { rechercherDesTags } from './rechercher-des-tags.query'
 
 type TagTrouve = Awaited<ReturnType<typeof rechercherDesTags>>[number]
 

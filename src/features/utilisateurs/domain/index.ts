@@ -13,7 +13,7 @@ export {
   SANS_CONTRAT,
   situationDansLeDispositif,
 } from './contact-brevo'
-export { Dispositif, dispositifDe } from './dispositif'
+export { Dispositif, dispositifDe, estEnPoste } from './dispositif'
 export { CompteSupprime, UtilisateurIntrouvable } from './errors'
 export { AuteurId } from './identifiants/auteur-id'
 export { CoordinateurId } from './identifiants/coordinateur-id'

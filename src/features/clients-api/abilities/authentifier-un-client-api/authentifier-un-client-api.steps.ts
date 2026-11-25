@@ -8,6 +8,7 @@ import {
   semerUnClientApi,
 } from '@/features/clients-api/clients-api.cucumber'
 import type { IssueDAuthentification } from '@/features/clients-api/domain'
+import { verifySecret } from '@/features/clients-api/implementations/secret/hash-secret.adapter'
 
 const appel: { issue?: IssueDAuthentification } = {}
 
@@ -29,7 +30,7 @@ When(
   /^le client API "([^"]+)" appelle une route "([^"]+)" le (\S+) avec (son secret|un autre secret)$/,
   async (nom: string, liste: string, date: string, secret: string) => {
     const seme = clientSeme(nom)
-    appel.issue = await authentifierUnClientApi({
+    appel.issue = await authentifierUnClientApi(verifySecret)({
       clientApiId: seme.id,
       secret: secret === 'son secret' ? seme.secret : 'f'.repeat(64),
       portees: portees(liste),

@@ -3,13 +3,17 @@ import { redirect } from 'next/navigation'
 import { accepterUneInvitationAction } from '@/app/_actions/equipe/accepter-une-invitation.action'
 import { refuserUneInvitationAction } from '@/app/_actions/equipe/refuser-une-invitation.action'
 import { metadataTitle } from '@/configuration/projet'
-import { getSessionUser } from '@/features/authentification/implementations/session/session-user.query'
+import { getSessionUser } from '@/features/authentification/middlewares/with-utilisateur-de-la-session'
 import { consulterUneInvitation } from '@/features/equipe/abilities/consulter-une-invitation/implementations/prisma/consulter-une-invitation.query'
 import { default as InvitationEnAttentePage } from '@/features/equipe/abilities/consulter-une-invitation/ui/pages/InvitationEnAttentePage'
 import { default as InvitationPlusValide } from '@/features/equipe/abilities/consulter-une-invitation/ui/slots/InvitationPlusValide.slot'
 import { ACCEPTER_UNE_INVITATION_ACTION_KEY } from '@/features/equipe/action/accepter-une-invitation.key'
 import { REFUSER_UNE_INVITATION_ACTION_KEY } from '@/features/equipe/action/refuser-une-invitation.key'
-import { Courriel, lienInvitation } from '@/features/equipe/domain'
+import { Courriel } from '@/features/equipe/domain'
+import {
+  lienInvitation,
+  referenceDuCode,
+} from '@/features/equipe/implementations/email/lien-invitation.transfer'
 import { default as ReponseAInvitation } from '@/features/equipe/ui/slots/ReponseAInvitation.slot'
 import type { EncodedState } from '@/libraries/etat-encode'
 import { ClientBinder } from '@/libraries/nextjs/injection'
@@ -25,7 +29,7 @@ const InvitationPage = async (props: {
   const user = await getSessionUser()
 
   const vue = await consulterUneInvitation({
-    code: data,
+    reference: referenceDuCode(data),
     session: user == null ? null : Courriel.safe(user.email),
   })
 

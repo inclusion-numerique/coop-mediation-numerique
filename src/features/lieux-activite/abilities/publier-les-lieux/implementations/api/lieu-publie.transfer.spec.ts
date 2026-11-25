@@ -1,7 +1,7 @@
 import { Service } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { describe, expect, it } from 'vitest'
+import type { Aidant } from '../../domain/lieu-publie'
 import { LieuPublieSchema } from '../../domain/lieu-publie'
-import type { Aidant } from '../prisma/lieux-publies.query'
 import { lieuPublieExpose } from './lieu-publie.transfer'
 
 const lieu = LieuPublieSchema.parse({

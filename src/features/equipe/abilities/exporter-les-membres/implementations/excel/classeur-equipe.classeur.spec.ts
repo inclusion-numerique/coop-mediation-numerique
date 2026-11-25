@@ -1,7 +1,15 @@
+import { Search, Sort } from '@arckit/resultset'
 import { describe, expect, it } from 'vitest'
-import { criteresDeLEquipe } from '@/features/equipe/ui/filtres/equipe.filtre'
 import type { AuteurDExport } from '@/libraries/tableur'
+import type { CriteresEquipe } from '../../../../domain'
 import { classeurEquipe, type MembreExporte } from './classeur-equipe.classeur'
+
+const criteresParDefaut: CriteresEquipe = {
+  recherche: Search(''),
+  statuts: [],
+  role: null,
+  tri: Sort('statut', 'asc'),
+}
 
 const auteur: AuteurDExport = {
   nom: 'Osmont',
@@ -24,7 +32,7 @@ const membre = (surcharges: Partial<MembreExporte> = {}): MembreExporte => ({
 const premiereLigne = (membres: MembreExporte[]): unknown[] => {
   const tableau = classeurEquipe({
     membres,
-    criteres: criteresDeLEquipe({}),
+    criteres: criteresParDefaut,
     auteur,
     genereLe: new Date('2026-08-06T12:00:00Z'),
   })

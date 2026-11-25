@@ -19,13 +19,14 @@ import {
   semerUneInvitation,
   semerUnMediateurDEquipe,
 } from '@/features/equipe/equipe.cucumber'
+import { prevenirLeCoordinateur } from '@/features/equipe/implementations/email'
 
 const contexte: {
   coordinateur?: CoordinateurSeme
   invite?: MediateurSeme
   note?: MediateurSeme
   inscriptionValidee?: boolean
-  issue?: Awaited<ReturnType<typeof accepterUneInvitation>>
+  issue?: Awaited<ReturnType<ReturnType<typeof accepterUneInvitation>>>
 } = {}
 
 const coordinateur = (): CoordinateurSeme => {
@@ -82,7 +83,7 @@ const accepterPar = async (
   mediateur: MediateurSeme,
   inscriptionValidee = true,
 ) => {
-  contexte.issue = await accepterUneInvitation({
+  contexte.issue = await accepterUneInvitation({ prevenirLeCoordinateur })({
     reference: ReferenceInvitation({
       email: Courriel(invite().email),
       coordinateurId: CoordinateurId(coordinateur().coordinateurId),

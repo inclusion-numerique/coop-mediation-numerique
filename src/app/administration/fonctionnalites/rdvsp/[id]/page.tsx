@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import { declencherSynchronisationAction } from '@/app/_actions/rdvsp/declencher-synchronisation.action'
 import { metadataTitle } from '@/configuration/projet'
-import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticate-user.middleware'
+import { authenticateAdmin } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
 import { compteRdvDetaille } from '@/features/rdvsp/abilities/administrer-comptes-rdv/implementations/prisma/compte-rdv-detaille.query'
 import { AdministrationRdvspUserPage } from '@/features/rdvsp/abilities/administrer-comptes-rdv/ui/pages/AdministrationRdvspUserPage'
 import { DECLENCHER_SYNCHRONISATION_ACTION_KEY } from '@/features/rdvsp/action/declencher-synchronisation.key'

@@ -1,5 +1,5 @@
 import Button from '@codegouvfr/react-dsfr/Button'
-import { ModaleDeSaisie } from '@/features/activites/ui/slots/ModaleDeSaisie.slot'
+import { ModaleDeSaisie } from '@/features/activites/ui/components/ModaleDeSaisie'
 
 export const AucuneActivite = () => (
   <div className="fr-border-radius--8 fr-mt-6v fr-p-12v fr-background-alt--blue-france fr-align-items-center">

@@ -6,6 +6,7 @@ import { CREER_LIEU_ACTIVITE_ERRORS } from '@/features/lieux-activite/abilities/
 import { nouveauLieu } from '@/features/lieux-activite/abilities/creer-lieu-activite/action/saisie-du-lieu.transfer'
 import { creerLieuActivite } from '@/features/lieux-activite/abilities/creer-lieu-activite/implementations/prisma/creer-lieu-activite.mutation'
 import { CreerLieuActiviteValidation } from '@/features/lieux-activite/action/creer-lieu-activite.validation'
+import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
 import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
 import { UtilisateurId } from '@/features/lieux-activite/domain/identifiants/utilisateur-id'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
@@ -19,7 +20,12 @@ export const creerUnLieuActiviteAction = actionBuilder()
     fromResult(
       async ({ user, input }) =>
         creerLieuActivite({
-          lieu: nouveauLieu(input, UtilisateurId(user.id), new Date()),
+          lieu: nouveauLieu(
+            input,
+            UtilisateurId(user.id),
+            new Date(),
+            LieuId(crypto.randomUUID()),
+          ),
           mediateurId:
             user.mediateur == null ? null : MediateurId(user.mediateur.id),
         }),

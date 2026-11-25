@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { metadataTitle } from '@/configuration/projet'
-import { authenticateUser } from '@/features/authentification/implementations/session/authenticate-user.middleware'
+import { authenticateUser } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
 import { OnboardingContributionCoordinateurPage } from '@/features/utilisateurs/abilities/marquer-l-onboarding-comme-vu/ui/pages/OnboardingContributionCoordinateurPage'
 
 export const dynamic = 'force-dynamic'

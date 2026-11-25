@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import InscriptionStepsLayout from '../slots/InscriptionStepsLayout.slot'
+import InscriptionStepsLayout from '../layouts/InscriptionStepsLayout'
 
 export const InscriptionReserveeAuxUtilisateursPage = () => (
   <InscriptionStepsLayout>

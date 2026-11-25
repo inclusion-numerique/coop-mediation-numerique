@@ -1,5 +1,4 @@
 import classNames from 'classnames'
-import type { ReactNode } from 'react'
 import { contentId } from '@/libraries/liens-d-evitement'
 import { SkipLinksPortal } from '@/libraries/liens-d-evitement/composants'
 import {
@@ -12,11 +11,7 @@ import { ComingSoon } from '../components/ComingSoon'
 import { Features } from '../components/Features'
 import { Hero } from '../components/Hero'
 import type { FicheOutil } from '../labels/fiches/fiche-outil.labels'
-
-export type EmplacementsDeLaFiche = {
-  readonly avis?: ReactNode
-  readonly acces?: ReactNode
-}
+import type { EmplacementsDeLaFiche } from '../presenters/emplacements-de-l-outil.presenter'
 
 export const OutilPage = ({
   emplacements = {},

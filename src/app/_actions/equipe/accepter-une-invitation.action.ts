@@ -14,6 +14,7 @@ import {
   ReferenceInvitation,
   UtilisateurId,
 } from '@/features/equipe/domain'
+import { prevenirLeCoordinateur } from '@/features/equipe/implementations/email'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { fromResult, withInput } from '@/libraries/nextjs'
 
@@ -35,7 +36,7 @@ export const accepterUneInvitationAction = actionBuilder()
   .execute(
     fromResult(
       async ({ user, input }) =>
-        accepterUneInvitation({
+        accepterUneInvitation({ prevenirLeCoordinateur })({
           reference: ReferenceInvitation({
             email: Courriel(input.email),
             coordinateurId: CoordinateurId(input.coordinateurId),

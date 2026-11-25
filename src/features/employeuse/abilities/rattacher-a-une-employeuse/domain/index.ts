@@ -1,1 +1,4 @@
-export type { RattacherAUneEmployeuseDepuisSiret } from './rattacher-a-une-employeuse'
+export type {
+  EstConseillerNumeriqueEnPoste,
+  RattacherAUneEmployeuseDepuisSiret,
+} from './rattacher-a-une-employeuse'

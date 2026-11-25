@@ -1,8 +1,8 @@
 import React from 'react'
+import { ID_DE_LA_MODALE_DE_SAISIE } from '@/features/activites/ui/presenters/modale-de-saisie.presenter'
 import CreateCraModal from '@/features/activites/ui/slots/CreateCraModal.slot'
-import { ModaleDeSaisie } from '@/features/activites/ui/slots/ModaleDeSaisie.slot'
 import { pageDAccueil } from '@/features/authentification/domain/page-d-accueil'
-import { authenticateUser } from '@/features/authentification/implementations/session/authenticate-user.middleware'
+import { authenticateUser } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
 import { CoopAvecMenuLayout } from '@/features/navigation/ui/layouts/CoopAvecMenuLayout'
 import CoopSideMenu from '@/features/navigation/ui/slots/CoopSideMenu.slot'
 import Header from '@/features/navigation/ui/slots/Header.slot'
@@ -31,7 +31,7 @@ const CoopSidemenuLayout = async ({
         <CoopSideMenu
           user={user}
           titreDesStatistiques={titreDesStatistiques(user)}
-          saisieDUneActivite={ModaleDeSaisie.id}
+          saisieDUneActivite={ID_DE_LA_MODALE_DE_SAISIE}
         />
       }
       modales={

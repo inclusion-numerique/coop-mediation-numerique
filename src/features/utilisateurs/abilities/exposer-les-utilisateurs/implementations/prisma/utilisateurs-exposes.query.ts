@@ -4,7 +4,7 @@ import {
   enPosteWhere,
 } from '@/features/utilisateurs/implementations/prisma/conseiller-numerique-en-poste.where'
 import type { Prisma } from '@/generated/prisma/client'
-import type { CriteresDExposition } from '../../domain'
+import type { CriteresDExposition, UtilisateurExpose } from '../../domain'
 
 const filtresDeSuppression = {
   Exclus: { equals: null },
@@ -125,10 +125,6 @@ const exposeSelect = (criteres: CriteresDExposition) => {
     },
   } satisfies Prisma.UserSelect
 }
-
-export type UtilisateurExpose = Prisma.UserGetPayload<{
-  select: ReturnType<typeof exposeSelect>
-}>
 
 export const utilisateursExposes = async ({
   criteres,

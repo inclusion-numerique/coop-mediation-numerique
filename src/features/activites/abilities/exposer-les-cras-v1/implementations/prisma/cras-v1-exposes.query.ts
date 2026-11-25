@@ -1,6 +1,6 @@
 import { prismaClient } from '@/configuration/prisma'
 import type { Prisma } from '@/generated/prisma/client'
-import type { Horodatage } from '../../domain'
+import type { CraV1Expose, Horodatage } from '../../domain'
 
 const craV1ExposeSelect = {
   id: true,
@@ -50,10 +50,6 @@ const craV1ExposeSelect = {
   structureCodeDepartement: true,
   structureCodeRegion: true,
 } satisfies Prisma.CraConseillerNumeriqueV1Select
-
-export type CraV1Expose = Prisma.CraConseillerNumeriqueV1GetPayload<{
-  select: typeof craV1ExposeSelect
-}>
 
 export const crasV1Exposes = async ({
   take,

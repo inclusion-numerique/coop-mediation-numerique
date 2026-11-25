@@ -1,11 +1,10 @@
-import { unstable_cache } from 'next/cache'
 import type { MesureDesUtilisateursActifs } from '../../domain/ports'
 import { lireLesAccompagnements } from './accompagnements.query'
 import { lireLesBeneficiaires } from './beneficiaires.query'
 import { suiviDesBeneficiaires } from './suivi-des-beneficiaires.query'
 import { lireLesUtilisateursActifs } from './utilisateurs-actifs.query'
 
-const getStatistiquesPubliquesPageDataUncached = async (
+export const statistiquesPubliques = async (
   mesure: MesureDesUtilisateursActifs,
 ) => {
   const [
@@ -30,10 +29,3 @@ const getStatistiquesPubliquesPageDataUncached = async (
     utilisateursActifs,
   }
 }
-
-export const statistiquesPubliques = (mesure: MesureDesUtilisateursActifs) =>
-  unstable_cache(
-    () => getStatistiquesPubliquesPageDataUncached(mesure),
-    ['statistiques-publiques'],
-    { revalidate: 3600 },
-  )()

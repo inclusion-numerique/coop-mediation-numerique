@@ -1,5 +1,7 @@
-import { type RattacherAUneEmployeuseDepuisSiret } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/domain'
-import { estConseillerNumeriqueEnPoste } from '../prisma/conseiller-numerique-en-poste.query'
+import type {
+  EstConseillerNumeriqueEnPoste,
+  RattacherAUneEmployeuseDepuisSiret,
+} from '@/features/employeuse/abilities/rattacher-a-une-employeuse/domain'
 
 export type ResultatDeLImportDepuisProConnect = {
   success: boolean
@@ -19,7 +21,13 @@ export type ResultatDeLImportDepuisProConnect = {
  * fidèlement l'ancienne logique de clôture/chevauchement des emplois coop (artefact du modèle daté).
  */
 export const importerLaStructureEmployeuseDepuisProConnect =
-  (rattacherDepuisSiret: RattacherAUneEmployeuseDepuisSiret) =>
+  ({
+    rattacherDepuisSiret,
+    estConseillerNumeriqueEnPoste,
+  }: {
+    readonly rattacherDepuisSiret: RattacherAUneEmployeuseDepuisSiret
+    readonly estConseillerNumeriqueEnPoste: EstConseillerNumeriqueEnPoste
+  }) =>
   async ({
     userId,
     siret,

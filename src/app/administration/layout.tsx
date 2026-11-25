@@ -1,6 +1,6 @@
 import { PropsWithChildren } from 'react'
 import { pageDAccueil } from '@/features/authentification/domain/page-d-accueil'
-import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticate-user.middleware'
+import { authenticateAdmin } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
 import { AdministrationLayout } from '@/features/navigation/ui/layouts/AdministrationLayout'
 import AdministrationSideMenu from '@/features/navigation/ui/slots/AdministrationSideMenu.slot'
 import Header from '@/features/navigation/ui/slots/Header.slot'

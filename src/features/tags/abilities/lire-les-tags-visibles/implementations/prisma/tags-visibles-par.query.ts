@@ -1,5 +1,5 @@
 import { type Acteur, type Tag, TagId } from '../../../../domain'
-import { lireLesTagsVisibles } from '../prisma/lire-les-tags-visibles.query'
+import { lireLesTagsVisibles } from './lire-les-tags-visibles.query'
 
 export const tagsVisiblesPar =
   (acteur: Acteur) =>

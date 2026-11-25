@@ -13,7 +13,7 @@ import {
   Jour,
   MediateurId as MediateurIdDesActivites,
 } from '@/features/activites/domain'
-import { authenticateMediateurOrCoordinateur } from '@/features/authentification/implementations/session/authenticate-user.middleware'
+import { authenticateMediateurOrCoordinateur } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
 import { consulterEmployeuseAUneDate } from '@/features/employeuse/abilities/consulter-employeuse-a-une-date/implementations/prisma/consulter-employeuse-a-une-date.query'
 import { emploiEmployeuseAffichage } from '@/features/employeuse/ui/presenters/employeuse-emploi.presenter'
 import ActeurStructureEmployeuse from '@/features/employeuse/ui/slots/ActeurStructureEmployeuse.slot'

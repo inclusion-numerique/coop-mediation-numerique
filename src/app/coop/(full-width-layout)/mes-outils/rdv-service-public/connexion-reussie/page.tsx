@@ -1,7 +1,8 @@
 import { notFound } from 'next/navigation'
-import { metadataTitle } from '@/configuration/projet'
-import { getSessionUser } from '@/features/authentification/implementations/session/session-user.query'
+import { estMain, metadataTitle } from '@/configuration/projet'
+import { getSessionUser } from '@/features/authentification/middlewares/with-utilisateur-de-la-session'
 import ConnexionReussiePage from '@/features/rdvsp/abilities/connecter-compte-rdv/ui/pages/ConnexionReussiePage'
+import { lienDuSiteRdv } from '@/features/rdvsp/ui/presenters/liens.presenter'
 
 export const metadata = {
   title: metadataTitle('Connexion à RDV Service Public réussie'),
@@ -13,7 +14,10 @@ const Page = async () => {
   return user === null ? (
     notFound()
   ) : (
-    <ConnexionReussiePage rdvAccount={user.rdvAccount} />
+    <ConnexionReussiePage
+      rdvAccount={user.rdvAccount}
+      lienDuSiteRdv={lienDuSiteRdv(estMain())}
+    />
   )
 }
 

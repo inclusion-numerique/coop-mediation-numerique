@@ -1,5 +1,5 @@
 import { Button } from '@codegouvfr/react-dsfr/Button'
-import { ModaleDeSaisie } from './ModaleDeSaisie.slot'
+import { ModaleDeSaisie } from '../components/ModaleDeSaisie'
 
 export const BoutonEnregistrerUneActivite = () => (
   <Button

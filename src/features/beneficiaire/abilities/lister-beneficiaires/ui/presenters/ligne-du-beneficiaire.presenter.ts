@@ -1,4 +1,3 @@
-import type { Route } from 'next'
 import type { BeneficiaireListItem } from '@/features/beneficiaire/abilities/lister-beneficiaires/domain/lister-beneficiaires'
 import { numberToString } from '@/libraries/nombre'
 
@@ -8,7 +7,7 @@ import { numberToString } from '@/libraries/nombre'
  */
 export type BeneficiaireRow = {
   readonly id: string
-  readonly href: Route<`/coop/mes-beneficiaires/${string}`>
+  readonly href: `/coop/mes-beneficiaires/${string}`
   readonly label: string
   readonly nom: string
   readonly prenom: string

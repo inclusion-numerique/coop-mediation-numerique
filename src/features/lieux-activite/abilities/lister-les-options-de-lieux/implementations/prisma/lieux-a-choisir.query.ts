@@ -1,6 +1,6 @@
 import { prismaClient } from '@/configuration/prisma'
 import type { Prisma } from '@/generated/prisma/client'
-import type { SelectOption } from '@/libraries/ui'
+import type { OptionChoisie } from '../../../../domain/option-de-lieu'
 import { lieuExploitable } from '../../../../implementations/prisma/lieu-exploitable.sql'
 
 const lieuSelect = {
@@ -17,7 +17,7 @@ const optionDuLieu = ({
   codePostal,
 }: Prisma.LieuInclusionGetPayload<{
   select: typeof lieuSelect
-}>): SelectOption => ({
+}>): OptionChoisie => ({
   value: id,
   label: `${nom} · ${codePostal} ${commune}`,
 })
@@ -31,7 +31,7 @@ export const rechercherDesLieuxAChoisir = async ({
 }: {
   readonly recherche: string
   readonly limite: number
-}): Promise<readonly SelectOption[]> =>
+}): Promise<readonly OptionChoisie[]> =>
   (
     await prismaClient.lieuInclusion.findMany({
       where: {
@@ -55,7 +55,7 @@ export const rechercherDesLieuxAChoisir = async ({
 
 export const lieuxChoisis = async (
   ids: readonly string[],
-): Promise<readonly SelectOption[]> =>
+): Promise<readonly OptionChoisie[]> =>
   ids.length === 0
     ? []
     : (

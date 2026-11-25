@@ -1,7 +1,7 @@
 import { prismaClient } from '@/configuration/prisma'
 import type { UtilisateurDeLaSession } from '@/features/authentification/domain/utilisateur-de-la-session'
 import { enregistrerLaDerniereVisite } from '@/features/authentification/implementations/prisma/derniere-visite.mutation'
-import { serializePrismaSessionUser } from '@/features/authentification/implementations/session/serialize-prisma-session-user.transfer'
+import { serializePrismaSessionUser } from '@/features/authentification/implementations/prisma/serialize-prisma-session-user.transfer'
 import { utilisateurDeLaSessionSelect } from './utilisateur-de-la-session.select'
 
 const querySessionUser = async (sessionToken: string) =>

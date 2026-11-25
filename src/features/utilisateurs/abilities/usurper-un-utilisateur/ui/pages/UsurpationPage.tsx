@@ -8,8 +8,8 @@ import {
   CoopPageContainer,
 } from '@/libraries/ui/components'
 import type { CompteDeTest } from '../../domain'
+import { BoutonDUsurpation } from '../components/BoutonDUsurpation'
 import { UsurpationLibre } from '../components/UsurpationLibre'
-import { BoutonUsurper } from '../slots/BoutonUsurper.slot'
 
 export const UsurpationPage = ({
   comptesDeTest,
@@ -53,7 +53,10 @@ export const UsurpationPage = ({
                       <tr key={id}>
                         <th>{nom}</th>
                         <td>
-                          <BoutonUsurper taille="small" utilisateurId={id} />
+                          <BoutonDUsurpation
+                            taille="small"
+                            utilisateurId={id}
+                          />
                         </td>
                         <td>{reinitialiser(id)}</td>
                       </tr>

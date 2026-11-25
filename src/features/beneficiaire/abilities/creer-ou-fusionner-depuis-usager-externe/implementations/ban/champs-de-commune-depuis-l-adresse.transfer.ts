@@ -3,12 +3,7 @@ import {
   type Feature,
   searchAdresse,
 } from '@/libraries/ban'
-
-export type CommuneFields = {
-  commune: string
-  communeCodePostal: string
-  communeCodeInsee: string
-}
+import type { CommuneFields } from '../../domain/creer-ou-fusionner-depuis-usager-externe'
 
 export const communeDuResultat = (
   feature: Feature | null,

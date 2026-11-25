@@ -19,7 +19,7 @@ import { DernieresActivites } from '@/features/activites/abilities/lister-les-de
 import { liensVersMesRendezVous } from '@/features/activites/abilities/lister-mes-activites/ui/presenters/liens-vers-mes-rendez-vous.presenter'
 import { SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ACTION_KEY } from '@/features/activites/action/supprimer-une-activite-de-mediation.key'
 import { BoutonEnregistrerUneActivite } from '@/features/activites/ui/slots/BoutonEnregistrerUneActivite.slot'
-import { authenticateMediateurOrCoordinateur } from '@/features/authentification/implementations/session/authenticate-user.middleware'
+import { authenticateMediateurOrCoordinateur } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
 import { compterLesMembres } from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/lister-les-membres.query'
 import { ResumeDeLEquipe } from '@/features/equipe/abilities/lister-les-membres/ui/slots/ResumeDeLEquipe.slot'
 import { RAFRAICHIR_ACCUEIL_RDV_ACTION_KEY } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/action/rafraichir-accueil-rdv.key'

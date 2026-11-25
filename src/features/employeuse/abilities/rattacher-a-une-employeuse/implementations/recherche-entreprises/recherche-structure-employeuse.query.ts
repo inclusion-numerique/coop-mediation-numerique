@@ -1,9 +1,7 @@
 import { rechercheApiEntreprise } from '@/configuration/recherche-entreprises'
 import { etablissementsDepuisUniteLegale } from '@/libraries/recherche-entreprises'
 import type { Employeuse } from '../../../../domain/employeuse'
-// Modules visés directement plutôt que le barrel `../../../server` : celui-ci réexporte cette
-// implémentation, et l'atteindre depuis ici fermerait un cycle d'imports.
-import { rechercherEmployeuse } from '../../../../implementations/prisma/rechercher-employeuse.query'
+import type { RechercherEmployeuse } from '../../../../domain/rechercher-employeuse'
 import type { StructureTrouvee } from '../../domain/employeuse-choisie'
 
 type EmployeuseRecherchee = {
@@ -17,7 +15,15 @@ type EmployeuseRecherchee = {
 }
 
 export const rechercheStructureEmployeuseAvec =
-  (employeuseRecherchee: (employeuse: Employeuse) => EmployeuseRecherchee) =>
+  ({
+    employeuseRecherchee,
+    rechercherEmployeuse,
+  }: {
+    readonly employeuseRecherchee: (
+      employeuse: Employeuse,
+    ) => EmployeuseRecherchee
+    readonly rechercherEmployeuse: RechercherEmployeuse
+  }) =>
   async (
     query: string,
   ): Promise<{

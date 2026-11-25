@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { AdministrationInfoCard } from '@/libraries/ui/components'
-import { BoutonUsurper } from '../slots/BoutonUsurper.slot'
+import { BoutonDUsurpation } from './BoutonDUsurpation'
 
 export const UsurpationLibre = () => {
   const [utilisateurId, setUtilisateurId] = useState('')
@@ -20,7 +20,7 @@ export const UsurpationLibre = () => {
           value={utilisateurId}
           onChange={(event) => setUtilisateurId(event.target.value)}
         />
-        <BoutonUsurper
+        <BoutonDUsurpation
           desactive={utilisateurId === ''}
           utilisateurId={utilisateurId}
         />

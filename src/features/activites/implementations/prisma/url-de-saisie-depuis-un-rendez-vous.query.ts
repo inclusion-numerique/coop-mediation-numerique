@@ -1,4 +1,3 @@
-import { getServerUrl } from '@/configuration/projet/serveur'
 import { MediateurId } from '../../domain'
 import { dureesFrequentesDuMediateur } from './durees-frequentes.query'
 
@@ -19,13 +18,10 @@ export const urlDeSaisieDepuisUnRendezVousAvec =
     readonly mediateurId: string
     readonly beneficiaires: readonly Participant[]
   }): Promise<string> =>
-    getServerUrl(
-      cheminDeSaisie({
-        rendezVous,
-        participants: beneficiaires,
-        dureesFrequentes: await dureesFrequentesDuMediateur(
-          MediateurId(mediateurId),
-        ),
-      }),
-      { absolutePath: true },
-    )
+    cheminDeSaisie({
+      rendezVous,
+      participants: beneficiaires,
+      dureesFrequentes: await dureesFrequentesDuMediateur(
+        MediateurId(mediateurId),
+      ),
+    })

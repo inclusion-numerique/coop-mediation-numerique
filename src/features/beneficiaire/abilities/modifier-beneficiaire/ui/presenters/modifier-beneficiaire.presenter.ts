@@ -1,4 +1,3 @@
-import type { DefaultValues } from 'react-hook-form'
 import type { BeneficiaireAEditer } from '@/features/beneficiaire/abilities/modifier-beneficiaire/domain/beneficiaire-a-editer'
 import { nomAfficheDepuisLIdentite } from '@/features/beneficiaire/domain/beneficiaire'
 import type { BeneficiaireData } from '@/features/beneficiaire/ui/forms/beneficiaire.validation'
@@ -34,7 +33,7 @@ const beneficiaireCommuneResidenceToPreviewBanData = ({
 export type VueDeModificationDuBeneficiaire = {
   beneficiaireId: string
   displayName: string
-  defaultValues: DefaultValues<BeneficiaireData> & {
+  defaultValues: Partial<BeneficiaireData> & {
     id: string
     mediateurId: string
   }

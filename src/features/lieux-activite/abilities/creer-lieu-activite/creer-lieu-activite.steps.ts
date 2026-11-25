@@ -9,6 +9,7 @@ import { prismaClient } from '@/configuration/prisma'
 import { nouveauLieu } from '@/features/lieux-activite/abilities/creer-lieu-activite/action/saisie-du-lieu.transfer'
 import { creerLieuActivite } from '@/features/lieux-activite/abilities/creer-lieu-activite/implementations/prisma/creer-lieu-activite.mutation'
 import type { CreerLieuActiviteData } from '@/features/lieux-activite/action/creer-lieu-activite.validation'
+import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
 import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
 import { UtilisateurId } from '@/features/lieux-activite/domain/identifiants/utilisateur-id'
 import { horairesVides } from '@/features/lieux-activite/domain/saisie/horaires-d-ouverture'
@@ -63,6 +64,7 @@ const creer = async (
       quoi,
       UtilisateurId(ficheSemee().userIds[0] ?? ''),
       new Date(),
+      LieuId(crypto.randomUUID()),
     ),
     mediateurId: mediateurId == null ? null : MediateurId(mediateurId),
   })

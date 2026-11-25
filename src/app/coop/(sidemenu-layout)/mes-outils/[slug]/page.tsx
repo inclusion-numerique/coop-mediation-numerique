@@ -2,11 +2,11 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { declencherSynchronisationAction } from '@/app/_actions/rdvsp/declencher-synchronisation.action'
 import { deconnecterCompteRdvAction } from '@/app/_actions/rdvsp/deconnecter-compte-rdv.action'
-import { metadataTitle } from '@/configuration/projet'
+import { estMain, metadataTitle } from '@/configuration/projet'
 import {
   getAuthenticatedSessionUser,
   getSessionUser,
-} from '@/features/authentification/implementations/session/session-user.query'
+} from '@/features/authentification/middlewares/with-utilisateur-de-la-session'
 import { visibiliteSurLaCartographie } from '@/features/lieux-activite/abilities/mesurer-la-visibilite-sur-la-cartographie/implementations/prisma/visibilite-sur-la-cartographie.query'
 import { AccesCartographieNationale } from '@/features/lieux-activite/abilities/mesurer-la-visibilite-sur-la-cartographie/ui/slots/AccesCartographieNationale.slot'
 import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
@@ -23,7 +23,7 @@ import {
 import { DECLENCHER_SYNCHRONISATION_ACTION_KEY } from '@/features/rdvsp/action/declencher-synchronisation.key'
 import { DECONNECTER_COMPTE_RDV_ACTION_KEY } from '@/features/rdvsp/action/deconnecter-compte-rdv.key'
 import { lienDeConnexionARdvServicePublic } from '@/features/rdvsp/implementations/oauth/rdvsp-oauth-callback.client'
-import { rdvWebsiteLink } from '@/features/rdvsp/ui/presenters/liens.presenter'
+import { lienDuSiteRdv } from '@/features/rdvsp/ui/presenters/liens.presenter'
 import RdvServicePublicAccessCard from '@/features/rdvsp/ui/slots/RdvServicePublicAccess.slot'
 import RdvServicePublicMigrationNotice from '@/features/rdvsp/ui/slots/RdvServicePublicMigrationNotice.slot'
 import { CodeInsee } from '@/libraries/insee'
@@ -36,7 +36,7 @@ const slugDeLaPage = async ({ params }: Props): Promise<SlugOutil> => {
   return slug ?? notFound()
 }
 
-const sites: SitesDesOutils = { rdvServicePublic: rdvWebsiteLink }
+const sites: SitesDesOutils = { rdvServicePublic: lienDuSiteRdv(estMain()) }
 
 const fournisseurs: FournisseursDEmplacements = {
   'rdv-service-public': async () => {
@@ -55,6 +55,7 @@ const fournisseurs: FournisseursDEmplacements = {
             <RdvServicePublicAccessCard
               user={user}
               lienDeConnexion={lienDeConnexionARdvServicePublic()}
+              lienDuSiteRdv={lienDuSiteRdv(estMain())}
             />
           </ClientBinder>
         </ClientBinder>

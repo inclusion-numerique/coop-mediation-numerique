@@ -64,3 +64,10 @@ export const LieuPublieSchema = z.object({
 })
 
 export type LieuPublie = z.output<typeof LieuPublieSchema>
+
+export type Aidant = {
+  id: string
+  nom: string
+  courriel: string
+  telephone?: string
+}

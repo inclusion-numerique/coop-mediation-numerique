@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation'
-import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticate-user.middleware'
+import { authenticateAdmin } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
 
 const Page = async () => {
   await authenticateAdmin()

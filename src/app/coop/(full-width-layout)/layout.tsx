@@ -1,7 +1,7 @@
 import React from 'react'
 import CreateCraModal from '@/features/activites/ui/slots/CreateCraModal.slot'
 import { pageDAccueil } from '@/features/authentification/domain/page-d-accueil'
-import { authenticateUser } from '@/features/authentification/implementations/session/authenticate-user.middleware'
+import { authenticateUser } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
 import { CoopPleineLargeurLayout } from '@/features/navigation/ui/layouts/CoopPleineLargeurLayout'
 import Header from '@/features/navigation/ui/slots/Header.slot'
 import MinimalFooter from '@/features/navigation/ui/slots/MinimalFooter.slot'

@@ -3,6 +3,7 @@ import Email from 'next-auth/providers/email'
 import { previewBranchAuthFallbacks } from '@/configuration/projet'
 import { expediteur, serveurSmtp } from '@/configuration/smtp'
 import { signaler } from '@/configuration/telemetry/serveur'
+import { proConnectProviderId } from '@/features/authentification/domain/fournisseur-proconnect'
 import { UtilisateurDeLaSession } from '@/features/authentification/domain/utilisateur-de-la-session'
 import { sendVerificationRequest } from '@/features/authentification/implementations/email/send-verification-request.mutation'
 import { authenticationViaProconnect } from '@/features/authentification/implementations/next-auth/authentication-provider.client'
@@ -12,7 +13,6 @@ import { enregistrerLesDonneesDeLUtilisateur } from '@/features/authentification
 import { nextAuthAdapter } from '@/features/authentification/implementations/prisma/next-auth.adapter'
 import type { SynchroniserLaPersonne } from '@/features/authentification/implementations/prisma/synchroniser-la-personne.mutation'
 import { ProConnectProvider } from '@/features/authentification/implementations/proconnect/proconnect-provider.client'
-import { proConnectProviderId } from '@/features/authentification/implementations/proconnect/proconnect-provider-id.client'
 import { telephoneEnregistrable } from '@/libraries/telephone'
 
 const sessionUserHasOutdatedData = ({

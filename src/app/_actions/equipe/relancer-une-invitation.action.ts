@@ -11,6 +11,7 @@ import {
   ReferenceInvitation,
   UtilisateurId,
 } from '@/features/equipe/domain'
+import { envoyerUneInvitation } from '@/features/equipe/implementations/email'
 import { gestionnaireDe } from '@/features/equipe/implementations/session'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { fromResult, withInput } from '@/libraries/nextjs'
@@ -22,7 +23,7 @@ export const relancerUneInvitationAction = actionBuilder()
   .execute(
     fromResult(
       async ({ user, input }) =>
-        relancerUneInvitation({
+        relancerUneInvitation({ envoyerUneInvitation })({
           reference: ReferenceInvitation({
             email: Courriel(input.email),
             coordinateurId: CoordinateurId(input.coordinateurId),

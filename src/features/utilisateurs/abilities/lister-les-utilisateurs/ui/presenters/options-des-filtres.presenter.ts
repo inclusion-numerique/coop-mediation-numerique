@@ -1,7 +1,7 @@
 import type { FiltresUtilisateurs } from '@/features/utilisateurs/domain'
 import { departementsByCode } from '@/libraries/departement'
 import type { SelectOption } from '@/libraries/ui'
-import { coordinateursChoisis } from '.'
+import type { CoordinateurAChoisir } from '../../domain'
 
 export type SourcesDesOptions = {
   readonly communes: (
@@ -9,8 +9,11 @@ export type SourcesDesOptions = {
   ) => Promise<readonly SelectOption[]>
   readonly lieux: (ids: readonly string[]) => Promise<readonly SelectOption[]>
   readonly nomDeLEmployeuse: (id: number) => Promise<string | null>
+  readonly coordinateurs: (
+    ids: FiltresUtilisateurs['coordinateurs'],
+  ) => Promise<readonly CoordinateurAChoisir[]>
   readonly optionDuCoordinateur: (
-    coordinateur: Awaited<ReturnType<typeof coordinateursChoisis>>[number],
+    coordinateur: CoordinateurAChoisir,
   ) => SelectOption
 }
 
@@ -51,7 +54,7 @@ export const optionsDesFiltres = async (
     sources.communes(filtres.communes),
     sources.lieux(filtres.lieux),
     employeusesChoisies(filtres.employeuses, sources.nomDeLEmployeuse),
-    coordinateursChoisis(filtres.coordinateurs),
+    sources.coordinateurs(filtres.coordinateurs),
   ])
 
   return {

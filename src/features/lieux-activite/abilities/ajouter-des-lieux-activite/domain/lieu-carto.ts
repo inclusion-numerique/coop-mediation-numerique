@@ -1,8 +1,7 @@
-import { v4 } from 'uuid'
 import type { IdsCartographieNationale } from '../../../domain/cartographie-nationale/ids-cartographie-nationale'
 import { VisibiliteCartographie } from '../../../domain/cartographie-nationale/visibilite-cartographie'
 import type { Fiche } from '../../../domain/fiche'
-import { LieuId } from '../../../domain/identifiants/lieu-id'
+import type { LieuId } from '../../../domain/identifiants/lieu-id'
 import type { Lieu } from '../../../domain/lieu'
 import {
   ModificationInconnue,
@@ -27,8 +26,9 @@ const derniereModification = (
 export const lieuDepuisCarto = (
   { idsCartographieNationale, source, fiche }: LieuCarto,
   maintenant: Date,
+  id: LieuId,
 ): Lieu => ({
-  id: LieuId(v4()),
+  id,
   fiche,
   visibilite: VisibiliteCartographie('Publie'),
   idsCartographieNationale,

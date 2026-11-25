@@ -7,7 +7,7 @@ import {
   BeneficiaireId as BeneficiaireDesActivites,
   MediateurId as MediateurDesActivites,
 } from '@/features/activites/domain/index'
-import { authenticateMediateur } from '@/features/authentification/implementations/session/authenticate-user.middleware'
+import { authenticateMediateur } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
 import { consulterBeneficiaire } from '@/features/beneficiaire/abilities/consulter-beneficiaire/implementations/prisma/consulter-beneficiaire.query'
 import ViewBeneficiaireInformationsPage from '@/features/beneficiaire/abilities/consulter-beneficiaire/ui/pages/ViewBeneficiaireInformationsPage'
 import { BoutonModifierLeBeneficiaire } from '@/features/beneficiaire/abilities/modifier-beneficiaire/ui/slots/BoutonModifierLeBeneficiaire.slot'

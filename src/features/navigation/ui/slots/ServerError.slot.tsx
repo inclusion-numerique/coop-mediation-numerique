@@ -5,7 +5,6 @@ import technicalError from '@codegouvfr/react-dsfr/dsfr/artwork/pictograms/syste
 import { getAssetUrl } from '@codegouvfr/react-dsfr/tools/getAssetUrl'
 import { PropsWithChildren, useEffect } from 'react'
 import { contactEmail } from '@/configuration/projet'
-import { signaler } from '@/configuration/telemetry'
 
 const GenericError = ({
   title,
@@ -78,12 +77,14 @@ const GenericError = ({
 
 export const ServerError = ({
   error,
+  signaler,
 }: {
   error: Error & { digest?: string }
+  signaler: (erreur: unknown) => void
 }) => {
   useEffect(() => {
     signaler(error)
-  }, [error])
+  }, [error, signaler])
 
   return (
     <GenericError

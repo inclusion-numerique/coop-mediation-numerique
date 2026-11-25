@@ -6,9 +6,6 @@ import type { Nom } from '@/features/beneficiaire/domain/nom'
 import type { Prenom } from '@/features/beneficiaire/domain/prenom'
 import type { Telephone } from '@/libraries/telephone'
 
-// Projection d'un bénéficiaire candidat à la déduplication. Partagée au niveau
-// feature : consommée par l'ability `detecter-doublons` ET par l'ability
-// `creer-ou-fusionner-depuis-usager-externe` (sans dépendance inter-ability).
 export type DuplicateBeneficiaire = {
   readonly id: BeneficiaireId
   readonly nom: Nom | null

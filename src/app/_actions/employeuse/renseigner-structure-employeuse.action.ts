@@ -8,7 +8,7 @@ import {
   identiteDeLEmployeuseChoisie,
   RenseignerStructureEmployeuseValidation,
 } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/domain/employeuse-choisie'
-import { etablissementDepuisSiret } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/api/etablissement-depuis-siret.query'
+import { etablissementDepuisSiret } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/api-entreprise/etablissement-depuis-siret.query'
 import type { RegistreDesPersonnes } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/prisma/rattacher-a-une-employeuse.mutation'
 import { rattacherAUneEmployeuse } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/prisma/rattacher-a-une-employeuse.mutation'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'

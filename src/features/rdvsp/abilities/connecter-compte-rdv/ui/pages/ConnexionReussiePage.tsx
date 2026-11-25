@@ -12,8 +12,10 @@ import RdvServicePublicConnexionCard from '../components/RdvServicePublicConnexi
 
 const ConnexionReussiePage = ({
   rdvAccount,
+  lienDuSiteRdv,
 }: {
   rdvAccount: { readonly organisations: readonly unknown[] } | null
+  lienDuSiteRdv: string
 }) => {
   const hasSetupRdvspAccount = (rdvAccount?.organisations.length ?? 0) > 0
 
@@ -106,7 +108,7 @@ const ConnexionReussiePage = ({
             <div className="fr-btns-group fr-my-0">
               <Button
                 linkProps={{
-                  href: lienDeMonAgendaRdv,
+                  href: lienDeMonAgendaRdv(lienDuSiteRdv),
                   target: '_blank',
                 }}
                 className="fr-mb-0"

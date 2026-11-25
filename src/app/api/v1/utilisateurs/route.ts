@@ -5,11 +5,13 @@ import {
   withClientApi,
   withQueryParams,
 } from '@/features/clients-api/abilities/authentifier-un-client-api/implementations/api-v1'
+import { authentifierUnClientApi } from '@/features/clients-api/abilities/authentifier-un-client-api/implementations/prisma/authentifier-un-client-api.query'
 import {
   curseurDUtilisateur,
   UtilisateursQueryParamsValidation,
 } from '@/features/clients-api/abilities/lire-les-utilisateurs/implementations/api-v1/utilisateurs.params'
 import { reponseDesUtilisateurs } from '@/features/clients-api/abilities/lire-les-utilisateurs/implementations/api-v1/utilisateurs.response'
+import { verifySecret } from '@/features/clients-api/implementations/secret/hash-secret.adapter'
 import { criteresDExposition } from '@/features/utilisateurs/abilities/exposer-les-utilisateurs/implementations/api/criteres-d-exposition.transfer'
 import { utilisateurExpose } from '@/features/utilisateurs/abilities/exposer-les-utilisateurs/implementations/api/utilisateur-expose.transfer'
 import { utilisateursExposes } from '@/features/utilisateurs/abilities/exposer-les-utilisateurs/implementations/prisma/utilisateurs-exposes.query'
@@ -321,7 +323,7 @@ import { curseurLu, prismaCursorPagination } from '@/libraries/json-api'
  */
 
 export const GET = routeBuilder()
-  .use(withClientApi(['Utilisateurs']))
+  .use(withClientApi(authentifierUnClientApi(verifySecret))(['Utilisateurs']))
   .use(withQueryParams(UtilisateursQueryParamsValidation))
   .handle(
     withApiV1Errors(async ({ queryParams }) => {

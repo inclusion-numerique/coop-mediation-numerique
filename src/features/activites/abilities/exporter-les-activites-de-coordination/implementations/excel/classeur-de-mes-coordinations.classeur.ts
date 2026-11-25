@@ -1,12 +1,8 @@
-import {
-  type ActiviteDeCoordination,
-  CoordinateurId,
-  type CriteresDesCoordinations,
-  type TagDeLActivite,
+import type {
+  ActiviteDeCoordination,
+  CriteresDesCoordinations,
+  TagDeLActivite,
 } from '../../../../domain'
-import { tagsUtilisablesDepuis } from '../../../../domain/fournisseurs-de-la-saisie'
-import { tagsRappeles } from '../../domain/tags-rappeles'
-import { exporterLesActivitesDeCoordination } from '../prisma/activites-a-exporter.query'
 import { classeurDesCoordinations } from './classeur-des-coordinations.classeur'
 
 type Presenter = (donnees: {
@@ -19,35 +15,23 @@ type Presenter = (donnees: {
   'auteur' | 'fuseau' | 'genereLe'
 >
 
-export const classeurDeMesCoordinations = async ({
+export const classeurDeMesCoordinations = ({
+  activites,
+  tags,
   criteres,
-  coordinateurId,
   auteur,
   fuseau,
-  tagsVisibles,
   presenter,
 }: {
+  readonly activites: readonly ActiviteDeCoordination[]
+  readonly tags: readonly TagDeLActivite[]
   readonly criteres: CriteresDesCoordinations
-  readonly coordinateurId: string
   readonly auteur: Parameters<typeof classeurDesCoordinations>[0]['auteur']
   readonly fuseau: string
-  readonly tagsVisibles: Parameters<typeof tagsUtilisablesDepuis>[0]
   readonly presenter: Presenter
-}) => {
-  const [activites, tags] = await Promise.all([
-    exporterLesActivitesDeCoordination({
-      coordinateurId: CoordinateurId(coordinateurId),
-      criteres,
-    }),
-    tagsRappeles({
-      criteres,
-      tagsUtilisables: tagsUtilisablesDepuis(tagsVisibles),
-    }),
-  ])
-
-  return classeurDesCoordinations({
+}) =>
+  classeurDesCoordinations({
     ...presenter({ activites, criteres, tags, fuseau }),
     auteur,
     fuseau,
   })
-}

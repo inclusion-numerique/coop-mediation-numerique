@@ -40,6 +40,10 @@ export type RattacherAUneEmployeuse = (input: {
  * Même rattachement, à partir du seul SIRET : l'identité est résolue chez
  * SIRENE avant d'être confiée au cas d'usage.
  */
+export type EstConseillerNumeriqueEnPoste = (
+  userId: string,
+) => Promise<boolean | null>
+
 export type RattacherAUneEmployeuseDepuisSiret = (input: {
   userId: string
   siret: string

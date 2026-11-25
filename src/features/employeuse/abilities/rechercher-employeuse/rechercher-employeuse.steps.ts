@@ -68,7 +68,7 @@ Given(
 When('je cherche la commune {string}', async (recherche: string) => {
   communes.proposees = (
     await rechercherDesCommunesDesEmployeuses({ recherche, limite: 20 })
-  ).map(({ value }) => value)
+  ).map(({ codeInsee }) => codeInsee)
 })
 
 Then('la commune de code INSEE {string} est proposée', (codeInsee: string) => {

@@ -9,14 +9,16 @@ import {
 import { RDVServicePublicCoopConnexion } from '@/libraries/pictograms/services'
 import { statutDuCompteDeLaSession } from '../../domain/compte/sante-compte'
 import GererRdvServicePublicModal from '../components/GererRdvServicePublicModal'
-import RdvServicePublicStatusTag from './RdvServicePublicStatusTag.slot'
+import RdvServicePublicStatusTag from '../components/RdvServicePublicStatusTag'
 
 const RdvServicePublicAccess = ({
   user,
   lienDeConnexion,
+  lienDuSiteRdv,
 }: {
   user: ComponentProps<typeof GererRdvServicePublicModal>['user']
   lienDeConnexion: string
+  lienDuSiteRdv: string
 }) => {
   const status = statutDuCompteDeLaSession(user.rdvAccount)
 
@@ -72,7 +74,7 @@ const RdvServicePublicAccess = ({
           <div className="fr-btns-group fr-btns-group--icon-left fr-mt-8v">
             <Button
               linkProps={{
-                href: lienDeMonAgendaRdv,
+                href: lienDeMonAgendaRdv(lienDuSiteRdv),
                 target: '_blank',
               }}
               priority="primary"

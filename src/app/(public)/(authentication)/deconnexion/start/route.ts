@@ -1,6 +1,7 @@
 import type { NextRequest } from 'next/server'
 import { v4 } from 'uuid'
 import { getServerUrl } from '@/configuration/projet/serveur'
+import { jetonsProconnect } from '@/features/authentification/abilities/se-deconnecter/implementations/prisma'
 import { idTokenPourDeconnexion } from '@/features/authentification/abilities/se-deconnecter/implementations/proconnect/se-deconnecter.query'
 import { utilisateurDuJetonDeSession } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
 import type { ProconnectSignoutState } from '@/features/authentification/implementations/proconnect/proconnect-signout.transfer'
@@ -31,7 +32,9 @@ export const GET = async (request: NextRequest) => {
 
   if (!user) return redirectionVers(callbackUrl)
 
-  const idTokenHint = await idTokenPourDeconnexion(user.id)
+  const idTokenHint = await idTokenPourDeconnexion(
+    await jetonsProconnect(user.id),
+  )
 
   if (idTokenHint) {
     return redirectionVers(

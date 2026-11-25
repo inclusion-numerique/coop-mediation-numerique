@@ -5,6 +5,7 @@ import {
   CoordinateurId,
   type DatesDeContrat,
   dispositifDe,
+  estEnPoste,
   type InscritDeLaListe,
   MediateurId,
   Nom,
@@ -14,10 +15,7 @@ import {
   situationDansLeDispositif,
   UtilisateurId,
 } from '../../domain'
-import {
-  enPosteSelect,
-  estEnPoste,
-} from './conseiller-numerique-en-poste.where'
+import { enPosteSelect } from './conseiller-numerique-en-poste.where'
 
 export const inscritDeLaListeSelect = {
   id: true,

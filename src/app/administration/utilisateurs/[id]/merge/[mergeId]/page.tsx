@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation'
 import { fusionnerDesComptesAction } from '@/app/_actions/utilisateurs/fusionner-des-comptes.action'
 import { rechercherDesComptesAFusionnerAction } from '@/app/_actions/utilisateurs/rechercher-des-comptes-a-fusionner.action'
 import { metadataTitle } from '@/configuration/projet'
-import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticate-user.middleware'
+import { authenticateAdmin } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
 import {
   FUSIONNER_DES_COMPTES_ACTION_KEY,
   RECHERCHER_DES_COMPTES_A_FUSIONNER_ACTION_KEY,

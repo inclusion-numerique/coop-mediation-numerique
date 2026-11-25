@@ -18,11 +18,12 @@ import {
   semerUneInvitation,
   semerUnMediateurDEquipe,
 } from '@/features/equipe/equipe.cucumber'
+import { envoyerUneInvitation } from '@/features/equipe/implementations/email'
 
 const contexte: {
   coordinateur?: CoordinateurSeme
   mediateur?: MediateurSeme
-  issue?: Awaited<ReturnType<typeof inviterDesMembres>>
+  issue?: Awaited<ReturnType<ReturnType<typeof inviterDesMembres>>>
   proposes?: MediateursAInviter
 } = {}
 
@@ -40,7 +41,7 @@ const unique = (email: string): string =>
   email.replace('@', `+${coordinateur().coordinateurId.slice(0, 8)}@`)
 
 const inviter = async (emails: readonly string[]) => {
-  contexte.issue = await inviterDesMembres({
+  contexte.issue = await inviterDesMembres({ envoyerUneInvitation })({
     coordinateurId: CoordinateurId(coordinateur().coordinateurId),
     candidats: emails.map(Courriel),
     auteurId: UtilisateurId(coordinateur().userId),

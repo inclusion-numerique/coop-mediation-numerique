@@ -11,8 +11,10 @@ import {
   withClientApi,
   withQueryParams,
 } from '@/features/clients-api/abilities/authentifier-un-client-api/implementations/api-v1'
+import { authentifierUnClientApi } from '@/features/clients-api/abilities/authentifier-un-client-api/implementations/prisma/authentifier-un-client-api.query'
 import { ActivitesQueryParamsValidation } from '@/features/clients-api/abilities/lire-les-activites/implementations/api-v1/activites.params'
 import { reponseDesActivites } from '@/features/clients-api/abilities/lire-les-activites/implementations/api-v1/activites.response'
+import { verifySecret } from '@/features/clients-api/implementations/secret/hash-secret.adapter'
 import { curseurLu, prismaCursorPagination } from '@/libraries/json-api'
 
 /**
@@ -320,7 +322,7 @@ import { curseurLu, prismaCursorPagination } from '@/libraries/json-api'
  */
 
 export const GET = routeBuilder()
-  .use(withClientApi(['Activites']))
+  .use(withClientApi(authentifierUnClientApi(verifySecret))(['Activites']))
   .use(withQueryParams(ActivitesQueryParamsValidation))
   .handle(
     withApiV1Errors(async ({ queryParams }) => {

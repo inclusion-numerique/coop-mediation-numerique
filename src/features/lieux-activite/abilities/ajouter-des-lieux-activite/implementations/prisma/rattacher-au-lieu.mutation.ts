@@ -1,4 +1,5 @@
 import { v4 } from 'uuid'
+import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
 import type { Prisma } from '@/generated/prisma/client'
 import {
   fromAdresse,
@@ -107,7 +108,9 @@ const lieuARattacher = async (
     transaction,
     lieuCarto
       ? {
-          ...lieuFromDomain(lieuDepuisCarto(lieuCarto, maintenant)),
+          ...lieuFromDomain(
+            lieuDepuisCarto(lieuCarto, maintenant, LieuId(v4())),
+          ),
           ...adresseValidee(lieu),
         }
       : lieuDepuisAdresse(lieu),

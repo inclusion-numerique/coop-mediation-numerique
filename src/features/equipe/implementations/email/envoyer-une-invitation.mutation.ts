@@ -7,11 +7,8 @@ import {
 import { invitationDUnMediateur } from '@/features/equipe/implementations/email/invitation-d-un-mediateur.email'
 import { invitationDUnNouveauMediateur } from '@/features/equipe/implementations/email/invitation-d-un-nouveau-mediateur.email'
 import { compileMjml } from '@/libraries/emails/rendu'
-import {
-  type InvitationEnAttente,
-  lienInvitation,
-  type NomAffiche,
-} from '../../domain'
+import { type InvitationEnAttente, type NomAffiche } from '../../domain'
+import { lienInvitation } from './lien-invitation.transfer'
 
 const gabarits = {
   SansCompte: invitationDUnNouveauMediateur,

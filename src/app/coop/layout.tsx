@@ -5,8 +5,8 @@ import {
   aTermineSonInscription,
   pageDAccueil,
 } from '@/features/authentification/domain/page-d-accueil'
-import { authenticateUser } from '@/features/authentification/implementations/session/authenticate-user.middleware'
-import InscriptionStepsLayout from '@/features/inscription/ui/slots/InscriptionStepsLayout.slot'
+import { authenticateUser } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
+import InscriptionStepsLayout from '@/features/inscription/ui/layouts/InscriptionStepsLayout'
 import { BanniereDeMaintenance } from '@/features/maintenance-mode/abilities/consulter-la-maintenance/ui/slots/BanniereDeMaintenance.slot'
 import { messageAffiche } from '@/features/maintenance-mode/domain'
 import { consulterLaMaintenance } from '@/features/maintenance-mode/implementations/prisma/etat-de-maintenance.query'
@@ -17,6 +17,8 @@ import { MediateurId } from '@/features/mediateurs/domain'
 import { accesALaCoop } from '@/features/navigation/domain'
 import { CoopShellLayout } from '@/features/navigation/ui/layouts/CoopShellLayout'
 import { AccesReserveAuxUtilisateurs } from '@/features/navigation/ui/slots/AccesReserveAuxUtilisateurs.slot'
+import Header from '@/features/navigation/ui/slots/Header.slot'
+import PublicFooter from '@/features/navigation/ui/slots/PublicFooter.slot'
 import TerminerUsurpationHeaderUserMenuItem from '@/features/utilisateurs/abilities/terminer-l-usurpation/ui/slots/TerminerUsurpationHeaderUserMenuItem.slot'
 import { ClientBinder } from '@/libraries/nextjs/injection'
 
@@ -31,9 +33,16 @@ const Layout = async ({ children }: PropsWithChildren) => {
     return (
       <CoopShellLayout
         cadre="etape"
-        user={user}
-        accueil={pageDAccueil(user)}
-        terminerUsurpation={<TerminerUsurpationHeaderUserMenuItem />}
+        entete={
+          <Header
+            user={user}
+            accueil={pageDAccueil(user)}
+            terminerUsurpation={<TerminerUsurpationHeaderUserMenuItem />}
+            fullWidth
+            variant="coop"
+          />
+        }
+        pied={<PublicFooter />}
       >
         <InscriptionStepsLayout>
           <AccesReserveAuxUtilisateurs role={acces.role} />
@@ -57,9 +66,16 @@ const Layout = async ({ children }: PropsWithChildren) => {
     return (
       <CoopShellLayout
         cadre="etape"
-        user={user}
-        accueil={pageDAccueil(user)}
-        terminerUsurpation={<TerminerUsurpationHeaderUserMenuItem />}
+        entete={
+          <Header
+            user={user}
+            accueil={pageDAccueil(user)}
+            terminerUsurpation={<TerminerUsurpationHeaderUserMenuItem />}
+            fullWidth
+            variant="coop"
+          />
+        }
+        pied={<PublicFooter />}
       >
         <InscriptionStepsLayout>
           <ClientBinder

@@ -9,6 +9,7 @@ import {
   ClientApiValidation,
   definitionDepuis,
 } from '@/features/clients-api/action/client-api.validation'
+import { nouveauSecret } from '@/features/clients-api/implementations/secret/secret.adapter'
 import { fromResult, withInput } from '@/libraries/nextjs'
 import { success } from '@/libraries/result'
 
@@ -19,7 +20,9 @@ export const creerUnClientApiAction = actionBuilder()
   .execute(
     fromResult(
       async ({ input }) => {
-        const resultat = await creerUnClientApi(definitionDepuis(input))
+        const resultat = await creerUnClientApi(nouveauSecret)(
+          definitionDepuis(input),
+        )
         return resultat.success
           ? success({ clientApiId: resultat.data.client.id })
           : resultat

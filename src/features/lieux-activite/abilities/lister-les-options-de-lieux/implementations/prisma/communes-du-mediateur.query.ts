@@ -1,7 +1,7 @@
 import { prismaClient } from '@/configuration/prisma'
 import { Prisma } from '@/generated/prisma/client'
 import { departementsDesCodesInsee } from '@/libraries/departement'
-import type { SelectOption } from '@/libraries/ui'
+import type { OptionChoisie } from '../../../../domain/option-de-lieu'
 
 export const communesDuMediateur = async ({
   mediateurIds,
@@ -43,10 +43,10 @@ export const communesDuMediateur = async ({
       ({
         value: code,
         label: `${commune} · ${code_postal}`,
-      }) satisfies SelectOption,
+      }) satisfies OptionChoisie,
   )
 
-  const departementsOptions: SelectOption[] = departementsDesCodesInsee(
+  const departementsOptions: OptionChoisie[] = departementsDesCodesInsee(
     communes.map(({ code }) => code),
   ).map(({ code, nom }) => ({
     value: code,

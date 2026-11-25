@@ -51,7 +51,7 @@ export const typologieLibelles: Record<Typologie, string> = {
   EPCI: 'Intercommunalité (EPCI)',
   EPI: 'Espace Public Internet (EPI)',
   EPIDE: "EPIDE - Établissement pour l'insertion dans l'emploi",
-  EPN: 'Espace publique numérique (EPN)',
+  EPN: 'Espace public numérique (EPN)',
   ES: 'Épicerie solidaire (ES)',
   ESAT: 'Établissements ou services d’aide par le travail (ESAT)',
   ESS: "Entreprise de l'Économie Sociale et Solidaire",

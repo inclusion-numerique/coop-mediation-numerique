@@ -1,7 +1,7 @@
 import { Button } from '@codegouvfr/react-dsfr/Button'
 import { statutIntegration } from '@/features/rdvsp/domain/compte/sante-compte'
+import RdvServicePublicStatusTag from '@/features/rdvsp/ui/components/RdvServicePublicStatusTag'
 import { hrefDuCompteRdvEnAdministration } from '@/features/rdvsp/ui/presenters/liens.presenter'
-import RdvServicePublicStatusTag from '@/features/rdvsp/ui/slots/RdvServicePublicStatusTag.slot'
 import { dateAsDayAndTimeInTimeZone } from '@/libraries/date'
 import { contentId } from '@/libraries/liens-d-evitement'
 import { SkipLinksPortal } from '@/libraries/liens-d-evitement/composants'

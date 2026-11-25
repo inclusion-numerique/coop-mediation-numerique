@@ -4,7 +4,7 @@ import {
   cheminDeDuplicationDeCoordination,
   saisieDAnimation,
 } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/presenters/page-de-saisie.presenter'
-import { authenticateCoordinateur } from '@/features/authentification/implementations/session/authenticate-user.middleware'
+import { authenticateCoordinateur } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
 
 const DupliquerCraAnimationPage = async ({
   searchParams,

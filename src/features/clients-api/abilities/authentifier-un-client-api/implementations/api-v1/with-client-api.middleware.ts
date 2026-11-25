@@ -2,21 +2,24 @@ import { type NextRequest, NextResponse } from 'next/server'
 import { signaler } from '@/configuration/telemetry/serveur'
 import { isAuthenticatedApiClientRequest } from '@/features/clients-api/abilities/authentifier-un-client-api/implementations/api-v1/is-authenticated-api-client-request.middleware'
 import type {
+  AuthentifierUnClientApi,
   IssueDAuthentification,
   PorteeApi,
 } from '@/features/clients-api/domain'
 import { apiV1AuthorizationScheme } from '@/libraries/json-api'
 
 const issueDeLaRequete = (
+  authentifierUnClientApi: AuthentifierUnClientApi,
   request: NextRequest,
   portees: PorteeApi[],
 ): Promise<IssueDAuthentification> =>
-  isAuthenticatedApiClientRequest(request, portees).catch(
-    (error: unknown): IssueDAuthentification => {
-      signaler(error)
-      return 'NonAuthentifie'
-    },
-  )
+  isAuthenticatedApiClientRequest(authentifierUnClientApi)(
+    request,
+    portees,
+  ).catch((error: unknown): IssueDAuthentification => {
+    signaler(error)
+    return 'NonAuthentifie'
+  })
 
 const REFUS: Record<
   Exclude<IssueDAuthentification, 'Authentifie'>,
@@ -34,11 +37,16 @@ const REFUS: Record<
 }
 
 export const withClientApi =
+  (authentifierUnClientApi: AuthentifierUnClientApi) =>
   (portees: PorteeApi[]) =>
   async (
     _ctx: object,
     request: NextRequest,
   ): Promise<{ ctx: object } | NextResponse> => {
-    const issue = await issueDeLaRequete(request, portees)
+    const issue = await issueDeLaRequete(
+      authentifierUnClientApi,
+      request,
+      portees,
+    )
     return issue === 'Authentifie' ? { ctx: {} } : REFUS[issue]()
   }

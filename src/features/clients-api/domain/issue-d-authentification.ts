@@ -7,6 +7,13 @@ export type IssueDAuthentification =
   | 'NonAuthentifie'
   | 'NonAutorise'
 
+export type AuthentifierUnClientApi = (demande: {
+  readonly clientApiId: string
+  readonly secret: string
+  readonly portees: readonly PorteeApi[]
+  readonly maintenant?: Date
+}) => Promise<IssueDAuthentification>
+
 export const issueDAuthentification = (
   client: Pick<ClientApi, 'portees' | 'validite'>,
   portees: readonly PorteeApi[],

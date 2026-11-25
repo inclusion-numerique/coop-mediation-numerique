@@ -6,15 +6,16 @@ import {
   clientSeme,
   leSecretOuvreLAcces,
 } from '@/features/clients-api/clients-api.cucumber'
+import { nouveauSecret } from '@/features/clients-api/implementations/secret/secret.adapter'
 
 const renouvellement: {
-  resultat?: Awaited<ReturnType<typeof renouvelerLeSecret>>
+  resultat?: Awaited<ReturnType<ReturnType<typeof renouvelerLeSecret>>>
 } = {}
 
 When(
   "l'administration renouvelle le secret du client API {string}",
   async (nom: string) => {
-    renouvellement.resultat = await renouvelerLeSecret({
+    renouvellement.resultat = await renouvelerLeSecret(nouveauSecret)({
       clientApiId: clientSeme(nom).id,
     })
   },
@@ -23,7 +24,9 @@ When(
 When(
   "l'administration renouvelle le secret d'un client API qui n'existe pas",
   async () => {
-    renouvellement.resultat = await renouvelerLeSecret({ clientApiId: v4() })
+    renouvellement.resultat = await renouvelerLeSecret(nouveauSecret)({
+      clientApiId: v4(),
+    })
   },
 )
 

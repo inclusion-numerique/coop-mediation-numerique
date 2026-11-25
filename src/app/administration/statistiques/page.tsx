@@ -43,7 +43,7 @@ import { criteresDesStatistiquesDesFiltres } from '@/features/activites/ui/filtr
 import { filtresDesStatistiques } from '@/features/activites/ui/filtres/statistiques.filtre'
 import { barreDesStatistiquesAvec } from '@/features/activites/ui/presenters/barre-des-statistiques.presenter'
 import { BarreDesStatistiques } from '@/features/activites/ui/slots/BarreDesStatistiques.slot'
-import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticate-user.middleware'
+import { authenticateAdmin } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/rdvs-des-activites.query'
 import { StatistiquesNationalesPage } from '@/features/statistiques/ui/pages/StatistiquesNationalesPage'
 import {

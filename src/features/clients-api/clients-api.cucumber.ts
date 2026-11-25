@@ -10,6 +10,7 @@ import {
   PorteeApi,
 } from '@/features/clients-api/domain'
 import { verifySecret } from '@/features/clients-api/implementations/secret/hash-secret.adapter'
+import { nouveauSecret } from '@/features/clients-api/implementations/secret/secret.adapter'
 import { createTestApiV1Request } from '@/libraries/json-api'
 import { creerUnClientApi } from './abilities/creer-un-client-api/implementations/prisma/creer-un-client-api.mutation'
 
@@ -53,7 +54,7 @@ export const semerUnClientApi = async ({
   debut?: string
   fin?: string | null
 }): Promise<ClientSeme> => {
-  const creation = await creerUnClientApi({
+  const creation = await creerUnClientApi(nouveauSecret)({
     nom: nomUnique(nom),
     portees: portees(liste),
     validite: { debut: jour(debut), fin: fin === null ? null : jour(fin) },

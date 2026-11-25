@@ -25,6 +25,7 @@ import {
   ouvrirJournal,
 } from '@/features/rdvsp/abilities/synchroniser-compte-rdv/implementations/prisma/journal-synchronisation.mutation'
 import { noterLaSynchronisationReussie } from '@/features/rdvsp/abilities/synchroniser-compte-rdv/implementations/prisma/synchronisation-reussie.mutation'
+import { noterLesWebhooksInvalides } from '@/features/rdvsp/abilities/synchroniser-compte-rdv/implementations/prisma/webhooks-invalides.mutation'
 import { reconcilierWebhooks } from '@/features/rdvsp/abilities/synchroniser-compte-rdv/implementations/webhook/reconcilier-webhooks.adapter'
 import { synchroniserOrganisations } from '@/features/rdvsp/abilities/synchroniser-organisations/domain/synchroniser-organisations'
 import { appliquerPlanOrganisations } from '@/features/rdvsp/abilities/synchroniser-organisations/implementations/prisma/appliquer-plan-organisations.mutation'
@@ -83,7 +84,10 @@ const declencher = consignerLEchec(
               journaliser,
             }),
           }),
-        reconcilierWebhooks: reconcilierWebhooks(rdvServicePublic),
+        reconcilierWebhooks: reconcilierWebhooks({
+          api: rdvServicePublic,
+          noterLesWebhooksInvalides,
+        }),
         detacherOrganisations,
         ouvrirJournal,
         cloturerJournal,

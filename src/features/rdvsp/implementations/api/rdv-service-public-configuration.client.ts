@@ -1,13 +1,11 @@
+import { environnementClient } from '@/configuration/environnement'
 import { environnementServeur } from '@/configuration/environnement/serveur'
 import { getServerUrl } from '@/configuration/projet/serveur'
-import {
-  rdvspOAuthClientId,
-  rdvspOAuthHostname,
-} from '../oauth/rdvsp-oauth.client'
 
 export const configurationOAuthRdvsp = () => ({
-  hostname: rdvspOAuthHostname,
-  clientId: rdvspOAuthClientId,
+  hostname: environnementClient().NEXT_PUBLIC_RDV_SERVICE_PUBLIC_OAUTH_HOSTNAME,
+  clientId:
+    environnementClient().NEXT_PUBLIC_RDV_SERVICE_PUBLIC_OAUTH_CLIENT_ID,
   clientSecret: environnementServeur().RDV_SERVICE_PUBLIC_OAUTH_CLIENT_SECRET,
 })
 
