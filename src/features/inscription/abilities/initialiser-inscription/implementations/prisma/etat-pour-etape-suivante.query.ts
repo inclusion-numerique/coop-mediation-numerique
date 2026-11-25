@@ -1,4 +1,4 @@
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 import type { LireEtatPourEtapeSuivante } from '@/features/inscription/abilities/initialiser-inscription/domain'
 import { ProfilInscription } from '@/features/inscription/domain'
 

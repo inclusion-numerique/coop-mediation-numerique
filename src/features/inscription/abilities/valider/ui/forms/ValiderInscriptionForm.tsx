@@ -8,14 +8,14 @@ import {
   type ValiderFormData,
   ValiderValidation,
 } from '@/features/inscription/abilities/valider/action/valider.validation'
-import { handleSubmit } from '@/libraries/formulaire/handle-submit'
+import { handleSubmit } from '@/libraries/formulaire'
 import {
   type DefaultValues,
   useAppForm,
-} from '@/libraries/formulaire/use-app-form'
-import { useHydrated } from '@/libraries/formulaire/use-hydrated'
-import { inject } from '@/libraries/nextjs/injection/client'
-import { createToast } from '@/libraries/ui/toast/create-toast'
+  useHydrated,
+} from '@/libraries/formulaire/hooks'
+import { inject } from '@/libraries/nextjs/injection'
+import { createToast } from '@/libraries/ui/toast'
 import { VALIDER_ACTION_KEY } from '../../action/valider.key'
 
 const erreurValidation = () =>

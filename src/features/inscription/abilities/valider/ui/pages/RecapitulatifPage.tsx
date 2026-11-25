@@ -10,8 +10,7 @@ import {
 } from '@/features/inscription/domain'
 import InscriptionCard from '@/features/inscription/ui/components/InscriptionCard'
 import { pluriel } from '@/libraries/pluriel'
-import IconInSquare from '@/libraries/ui/components/IconInSquare'
-import InfoLabelValue from '@/libraries/ui/components/InfoLabelValue'
+import { IconInSquare, InfoLabelValue } from '@/libraries/ui/components'
 import ConseillerNumeriqueRoleNotice from '../components/ConseillerNumeriqueRoleNotice'
 import type { RecapitulatifPageData } from '../presenters/recapitulatif.presenter'
 

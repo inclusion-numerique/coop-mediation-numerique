@@ -1,4 +1,4 @@
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 import type { LireLEtatDeLInscription } from '../../domain/ports'
 import { inscriptionEtatToDomain } from './inscription-etat.transfer'
 

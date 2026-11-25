@@ -1,6 +1,6 @@
 import classNames from 'classnames'
 import { PropsWithChildren, ReactNode } from 'react'
-import BackButton from '@/libraries/ui/components/BackButton'
+import { BackButton } from '@/libraries/ui/components'
 
 const InscriptionCard = ({
   children,

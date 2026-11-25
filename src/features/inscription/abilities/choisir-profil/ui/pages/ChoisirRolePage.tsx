@@ -12,15 +12,15 @@ import {
   type Role,
 } from '@/features/inscription/domain'
 import { cheminDeLEtape } from '@/features/inscription/ui/presenters/chemin-de-l-etape.presenter'
-import { handleSubmit } from '@/libraries/formulaire/handle-submit'
+import { handleSubmit } from '@/libraries/formulaire'
 import {
   type DefaultValues,
   useAppForm,
-} from '@/libraries/formulaire/use-app-form'
-import { useHydrated } from '@/libraries/formulaire/use-hydrated'
+  useHydrated,
+} from '@/libraries/formulaire/hooks'
 import type { ServerActionResult } from '@/libraries/nextjs'
-import LogoCoop from '@/libraries/ui/components/LogoCoop'
-import { createToast } from '@/libraries/ui/toast/create-toast'
+import { LogoCoop } from '@/libraries/ui/components'
+import { createToast } from '@/libraries/ui/toast'
 
 type EnregistrerProfil = (data: ChoisirProfilFormData) => Promise<
   ServerActionResult<{

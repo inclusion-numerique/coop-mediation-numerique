@@ -1,4 +1,4 @@
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 import type { LireLAdresseDeLEmployeuse } from '../../domain/ports'
 
 export const lireLAdresseDeLEmployeuse: LireLAdresseDeLEmployeuse = async (

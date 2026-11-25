@@ -1,6 +1,6 @@
 import classNames from 'classnames'
 import Link from 'next/link'
-import { contactEmail } from '@/configuration/projet/config'
+import { contactEmail } from '@/configuration/projet'
 
 const InscriptionInvalidInformationContactSupportLink = ({
   className,

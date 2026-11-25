@@ -1,6 +1,6 @@
 import type { UtilisateurId } from '@/features/inscription/domain'
 import type { LireLEtatDeLInscription } from '@/features/inscription/domain/ports'
-import { onlyDefinedAndNotNull } from '@/libraries/collections/only-defined-and-not-null'
+import { onlyDefinedAndNotNull } from '@/libraries/collections'
 import { type Result, success } from '@/libraries/result'
 import {
   deciderLesLieux,

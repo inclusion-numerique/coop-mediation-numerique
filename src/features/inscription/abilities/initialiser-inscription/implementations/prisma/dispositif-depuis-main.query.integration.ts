@@ -1,6 +1,6 @@
 import { v4 } from 'uuid'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 import { profilDepuisDispositif } from '@/features/inscription/domain'
 import { dispositifDepuisMain } from './dispositif-depuis-main.query'
 

@@ -1,4 +1,4 @@
-import type { AdresseBanData } from '@/libraries/adresse/adresse-ban-validation'
+import type { AdresseBanData } from '@/libraries/adresse'
 import type { EmployeuseLue } from '.'
 
 const adresseRetenue = (
