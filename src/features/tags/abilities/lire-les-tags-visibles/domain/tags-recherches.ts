@@ -1,4 +1,4 @@
-import { contientSansAccent } from '@/libraries/texte/sans-accent'
+import { contientSansAccent } from '@/libraries/texte'
 import type { Tag } from '../../../domain'
 
 const TAGS_TROUVES = 10

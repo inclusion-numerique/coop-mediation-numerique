@@ -1,7 +1,7 @@
 import assert from 'node:assert'
 import { Page, PageSize, Sort } from '@arckit/resultset'
 import { Given, Then, When } from '@cucumber/cucumber'
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 import type { Acteur } from '@/features/tags/domain'
 import {
   acteurMediateur,

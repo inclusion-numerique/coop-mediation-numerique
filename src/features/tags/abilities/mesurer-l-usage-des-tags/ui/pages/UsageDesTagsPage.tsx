@@ -1,9 +1,11 @@
-import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
-import { contentId } from '@/libraries/liens-d-evitement/skip-links'
-import { numberToString } from '@/libraries/nombre/format-number'
-import AdministrationBreadcrumbs from '@/libraries/ui/components/administration/AdministrationBreadcrumbs'
-import AdministrationTitle from '@/libraries/ui/components/administration/AdministrationTitle'
-import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
+import { contentId } from '@/libraries/liens-d-evitement'
+import { SkipLinksPortal } from '@/libraries/liens-d-evitement/composants'
+import { numberToString } from '@/libraries/nombre'
+import {
+  AdministrationBreadcrumbs,
+  AdministrationTitle,
+  CoopPageContainer,
+} from '@/libraries/ui/components'
 import { LigneDuTag } from '../../../../ui/components/LigneDuTag'
 import type { UsageDesTags } from '../../domain'
 import { CounterCard } from '../components/CounterCard'

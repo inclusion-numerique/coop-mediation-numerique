@@ -1,7 +1,7 @@
 'use client'
 
 import { Sort } from '@arckit/resultset'
-import { ChoixDuTri } from '@/libraries/etat-d-url/liste/ChoixDuTri'
+import { ChoixDuTri } from '@/libraries/etat-d-url/liste'
 import { triDesTags } from '../filtres/liste-des-tags.filtre'
 
 export const TriDesTags = () => (

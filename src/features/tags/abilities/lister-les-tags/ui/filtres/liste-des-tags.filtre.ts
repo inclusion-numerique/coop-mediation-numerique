@@ -1,7 +1,5 @@
 import { Sort } from '@arckit/resultset'
-import { composerLEtat } from '@/libraries/etat-d-url/definition/composition'
-import { pagination } from '@/libraries/etat-d-url/definition/pagination'
-import { triParmi } from '@/libraries/etat-d-url/definition/tri-parmi'
+import { composerLEtat, pagination, triParmi } from '@/libraries/etat-d-url'
 import type { ColonneDesTags } from '../../domain'
 
 export const triDesTags = triParmi({
