@@ -5,7 +5,6 @@ export const logEffacementReport = (compte: CompteSupprime): void => {
   addMutationLog({
     userId: compte.id,
     nom: 'SupprimerCompte',
-    duration: 0,
     data: {
       motif: compte.motif,
       supprimeLe: compte.supprimeLe.toISOString(),

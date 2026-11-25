@@ -66,7 +66,6 @@ export const accepterUneInvitation = async ({
   addMutationLog({
     userId: auteurId,
     nom: 'AccepterInvitationMediateurCoordonne',
-    duration: 0,
     data: { email: reference.email, coordinateurId: reference.coordinateurId },
   })
 

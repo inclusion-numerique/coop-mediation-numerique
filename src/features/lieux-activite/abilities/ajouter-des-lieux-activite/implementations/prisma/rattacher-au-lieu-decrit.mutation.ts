@@ -67,7 +67,6 @@ export const rattacherAuLieuDecrit = async ({
     addMutationLog({
       userId,
       nom: 'CreerMediateurEnActivite',
-      duration: 0,
       data: trace,
     })
 
@@ -98,7 +97,6 @@ export const detacherDuLieuDecrit = async ({
   addMutationLog({
     userId,
     nom: 'SupprimerMediateurEnActivite',
-    duration: 0,
     data: trace,
   })
 

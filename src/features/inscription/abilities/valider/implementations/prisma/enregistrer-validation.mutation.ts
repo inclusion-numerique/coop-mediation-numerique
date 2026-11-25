@@ -1,4 +1,4 @@
-import { prismaClient } from '@/configuration/prisma'
+import { addMutationLog, prismaClient } from '@/configuration/prisma'
 import type { EnregistrerValidation } from '../../domain/ports'
 
 /**
@@ -18,5 +18,11 @@ export const enregistrerValidation: EnregistrerValidation = async ({
       onboardingStatus: null,
       ...(cguAPoser === null ? {} : { acceptationCgu: cguAPoser }),
     },
+  })
+
+  addMutationLog({
+    userId,
+    nom: 'ValiderInscription',
+    data: { id: userId },
   })
 }

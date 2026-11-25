@@ -79,7 +79,6 @@ export const relancerUneInvitation = async ({
   addMutationLog({
     userId: auteurId,
     nom: 'RenvoyerInvitationMediateurCoordonne',
-    duration: 0,
     data: { email: reference.email, coordinateurId: reference.coordinateurId },
   })
 

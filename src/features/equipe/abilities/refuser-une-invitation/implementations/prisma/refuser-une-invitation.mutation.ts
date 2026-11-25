@@ -36,7 +36,6 @@ export const refuserUneInvitation = async ({
   addMutationLog({
     userId: auteurId,
     nom: 'RefuserInvitationMediateurCoordonne',
-    duration: 0,
     data: { email: reference.email, coordinateurId: reference.coordinateurId },
   })
 

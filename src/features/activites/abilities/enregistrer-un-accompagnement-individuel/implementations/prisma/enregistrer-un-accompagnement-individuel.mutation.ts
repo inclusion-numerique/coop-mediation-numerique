@@ -147,7 +147,6 @@ export const enregistrerUnAccompagnementIndividuel = async ({
       enregistrement.data._tag === 'Creation'
         ? 'CreerActivite'
         : 'ModifierActivite',
-    duration: 0,
     data: { type: 'Individuel', id: accompagnement.data.id },
   })
 

@@ -5,12 +5,10 @@ export const ouvrirLUsurpation = async ({
   jetonDeSession,
   cibleId,
   usurpateurId,
-  duree,
 }: {
   readonly jetonDeSession: string
   readonly cibleId: UtilisateurId
   readonly usurpateurId: string
-  readonly duree: () => number
 }): Promise<void> => {
   await prismaClient.$transaction([
     prismaClient.session.deleteMany({ where: { usurperId: usurpateurId } }),
@@ -23,7 +21,6 @@ export const ouvrirLUsurpation = async ({
   addMutationLog({
     userId: usurpateurId,
     nom: 'UsurperUtilisateur',
-    duration: duree(),
     data: { initialUserId: usurpateurId, userId: cibleId },
   })
 }

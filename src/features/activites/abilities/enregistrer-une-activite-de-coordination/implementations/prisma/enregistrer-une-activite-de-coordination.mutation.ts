@@ -154,7 +154,6 @@ export const enregistrerUneActiviteDeCoordination = async ({
       enregistrement.data._tag === 'Creation'
         ? 'CreerActiviteCoordination'
         : 'ModifierActiviteCoordination',
-    duration: 0,
     data: { type: activite.data._tag, id: activite.data.id },
   })
 

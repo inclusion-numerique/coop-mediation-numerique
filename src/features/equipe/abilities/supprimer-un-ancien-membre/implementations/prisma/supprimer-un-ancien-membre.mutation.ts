@@ -49,7 +49,6 @@ export const supprimerUnAncienMembre = async ({
   addMutationLog({
     userId: auteurId,
     nom: 'SupprimerDefinitivementMediateurCoordonne',
-    duration: 0,
     data: { mediateurId, coordinateurId },
   })
 

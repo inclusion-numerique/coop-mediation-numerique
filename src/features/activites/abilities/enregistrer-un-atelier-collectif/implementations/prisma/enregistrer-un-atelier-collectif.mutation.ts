@@ -149,7 +149,6 @@ export const enregistrerUnAtelierCollectif = async ({
       enregistrement.data._tag === 'Creation'
         ? 'CreerActivite'
         : 'ModifierActivite',
-    duration: 0,
     data: { type: 'Collectif', id: atelier.data.id },
   })
 

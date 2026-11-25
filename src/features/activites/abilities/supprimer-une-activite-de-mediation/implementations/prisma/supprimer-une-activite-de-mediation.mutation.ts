@@ -78,7 +78,6 @@ export const supprimerUneActiviteDeMediation = async ({
   addMutationLog({
     userId: auteurId,
     nom: 'SupprimerActivite',
-    duration: 0,
     data: { type: activite.type, id: activiteId },
   })
 

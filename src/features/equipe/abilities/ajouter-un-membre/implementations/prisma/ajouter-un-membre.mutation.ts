@@ -69,7 +69,6 @@ export const ajouterUnMembre = async ({
   addMutationLog({
     userId: auteurId,
     nom: 'CreerMediateurCoordonne',
-    duration: 0,
     data: { mediateurId, coordinateurId },
   })
 

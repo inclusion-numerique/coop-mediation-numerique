@@ -2209,7 +2209,7 @@ model Mutation {
 
   nom MutationName @map("nom")
 
-  duration Int
+  duration Int?
 
   // Do not include sensitive data, only useful for debugging or auditing
   data Json

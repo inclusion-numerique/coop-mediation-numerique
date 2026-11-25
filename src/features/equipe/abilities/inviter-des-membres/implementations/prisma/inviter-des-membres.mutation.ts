@@ -164,7 +164,6 @@ export const inviterDesMembres = async ({
   addMutationLog({
     userId: auteurId,
     nom: 'InviterMediateursCoordonnes',
-    duration: 0,
     data: {
       coordinateurId: coordinateurId,
       emails: aEnvoyer.map(({ reference }) => reference.email),

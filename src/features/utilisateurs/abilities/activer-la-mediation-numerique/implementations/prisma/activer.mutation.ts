@@ -16,11 +16,9 @@ export const activer =
   async ({
     utilisateurId,
     coordinateurId,
-    duree,
   }: {
     readonly utilisateurId: string
     readonly coordinateurId: string
-    readonly duree: () => number
   }): Promise<string> => {
     const mediateur = await prismaClient.$transaction(async (transaction) => {
       const active = await transaction.mediateur.upsert({
@@ -36,7 +34,6 @@ export const activer =
     addMutationLog({
       userId: utilisateurId,
       nom: 'CreerMediateur',
-      duration: duree(),
       data: { coordinateurId },
     })
 

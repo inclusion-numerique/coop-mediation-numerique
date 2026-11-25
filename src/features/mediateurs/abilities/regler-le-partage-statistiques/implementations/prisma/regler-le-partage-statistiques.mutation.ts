@@ -1,6 +1,5 @@
 import { randomUUID } from 'node:crypto'
 import { addMutationLog, prismaClient } from '@/configuration/prisma'
-import { createStopwatch } from '@/libraries/chronometre'
 import { type Result, success } from '@/libraries/result'
 import type {
   AuteurId,
@@ -52,8 +51,6 @@ export const reglerLePartageStatistiques = async ({
 }): Promise<
   Result<void, AucuneStatistiqueAPartager | PerimetreNonRattache>
 > => {
-  const stopwatch = createStopwatch()
-
   const proprietaire = proprietaireChoisi(rattachements, perimetre)
   if (!proprietaire.success) return proprietaire
 
@@ -63,7 +60,6 @@ export const reglerLePartageStatistiques = async ({
   addMutationLog({
     userId: auteurId,
     nom: 'ReglerPartageStatistiques',
-    duration: stopwatch.stop().duration,
     data: { ...partage, actif },
   })
 

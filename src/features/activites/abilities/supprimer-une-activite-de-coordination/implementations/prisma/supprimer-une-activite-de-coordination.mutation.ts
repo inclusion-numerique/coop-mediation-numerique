@@ -44,7 +44,6 @@ export const supprimerUneActiviteDeCoordination = async ({
   addMutationLog({
     userId: auteurId,
     nom: 'SupprimerActiviteCoordination',
-    duration: 0,
     data: { type: activite.type, id: activiteId },
   })
 

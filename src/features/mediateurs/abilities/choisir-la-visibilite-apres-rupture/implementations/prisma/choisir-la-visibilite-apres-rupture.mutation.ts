@@ -1,7 +1,6 @@
 import { addMutationLog, prismaClient } from '@/configuration/prisma'
 import type { AuteurId, MediateurId } from '@/features/mediateurs/domain'
 import type { SynchroniserLaPersonne } from '@/features/mediateurs/implementations/prisma/synchroniser-la-personne.mutation'
-import { createStopwatch } from '@/libraries/chronometre'
 import { failure, type Result, success } from '@/libraries/result'
 import {
   AucuneRuptureEnAttente,
@@ -28,8 +27,6 @@ export const choisirLaVisibiliteApresRupture =
     readonly auteurId: AuteurId
     readonly maintenant?: Date
   }): Promise<Result<void, ChoisirLaVisibiliteApresRuptureError>> => {
-    const stopwatch = createStopwatch()
-
     const mediateur = await lireMediateurEtContrats(mediateurId)
 
     if (mediateur == null) return failure(MediateurIntrouvable(mediateurId))
@@ -74,7 +71,6 @@ export const choisirLaVisibiliteApresRupture =
     addMutationLog({
       userId: auteurId,
       nom: 'SetMediateurVisibility',
-      duration: stopwatch.stop().duration,
       data: {
         mediateurId,
         reponse,

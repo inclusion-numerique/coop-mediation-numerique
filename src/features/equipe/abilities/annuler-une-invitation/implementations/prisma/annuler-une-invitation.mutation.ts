@@ -42,7 +42,6 @@ export const annulerUneInvitation = async ({
   addMutationLog({
     userId: auteurId,
     nom: 'AnnulerInvitationMediateurCoordonne',
-    duration: 0,
     data: { email: reference.email, coordinateurId: reference.coordinateurId },
   })
 
