@@ -10,18 +10,17 @@ import {
 } from '@/features/lieux-activite/ui/labels/adresse-non-verifiable.labels'
 import { typologieStructureOptions } from '@/features/lieux-activite/ui/labels/options-du-lieu.labels'
 import {
-  AdresseBanComboBox,
-  AdresseBanOptions,
-} from '@/libraries/adresse/AdresseBanComboBox'
-import {
+  geocoderPrecisement,
   SERVICE_ADRESSE_INDISPONIBLE,
   siIndisponible,
-} from '@/libraries/ban/api-adresse'
-import { geocoderPrecisement } from '@/libraries/ban/geocoder-precisement'
-import { withForm } from '@/libraries/formulaire/use-app-form'
-import RedAsterisk from '@/libraries/ui/form/RedAsterisk'
-import { optionsWithEmptyValue } from '@/libraries/ui/form/utils/options'
-import { Options } from '@/libraries/ui/primitives/Options'
+} from '@/libraries/ban'
+import {
+  AdresseBanComboBox,
+  AdresseBanOptions,
+} from '@/libraries/ban/composants'
+import { withForm } from '@/libraries/formulaire/hooks'
+import { optionsWithEmptyValue, RedAsterisk } from '@/libraries/ui/form'
+import { Options } from '@/libraries/ui/primitives'
 import { informationsGeneralesFormOptions } from './informations-generales.form-data'
 import { SiretSearchComboBox, SiretSearchOptions } from './SiretSearchComboBox'
 

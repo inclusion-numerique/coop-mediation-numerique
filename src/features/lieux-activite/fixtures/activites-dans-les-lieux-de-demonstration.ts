@@ -1,6 +1,6 @@
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 import type { Prisma } from '@/generated/prisma/client'
-import { mergeUuids } from '@/libraries/fixtures/merge-uuids'
+import { mergeUuids } from '@/libraries/fixtures'
 import { centreSocial, mediateque } from './lieux-de-demonstration'
 
 export type MediateursDesPersonas = {

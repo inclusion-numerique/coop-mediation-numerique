@@ -2,7 +2,7 @@
 
 import Button from '@codegouvfr/react-dsfr/Button'
 import { type ReactNode, useState } from 'react'
-import Card from '@/libraries/ui/components/Card'
+import { Card } from '@/libraries/ui/components'
 import type { MediateurDuLieu } from '../../domain'
 import { CarteDuMediateur } from '../components/CarteDuMediateur'
 

@@ -1,8 +1,8 @@
 import { MjmlColumn, MjmlSection, MjmlText } from '@faire/mjml-react'
 import { renderToMjml } from '@faire/mjml-react/utils/renderToMjml'
-import { getServerBaseUrl } from '@/configuration/projet/base-url'
-import { projectTitle } from '@/configuration/projet/config'
-import LayoutWithFooter from '@/libraries/emails/components/LayoutWithFooter'
+import { projectTitle } from '@/configuration/projet'
+import { getServerBaseUrl } from '@/configuration/projet/serveur'
+import { LayoutWithFooter } from '@/libraries/emails/components'
 
 const STANDARD_TEXT = {
   fontWeight: '400',

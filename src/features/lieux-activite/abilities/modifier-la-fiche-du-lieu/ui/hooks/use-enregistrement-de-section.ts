@@ -1,7 +1,7 @@
 'use client'
 
 import type { ServerActionResult } from '@/libraries/nextjs'
-import { createToast } from '@/libraries/ui/toast/create-toast'
+import { createToast } from '@/libraries/ui/toast'
 import type { ModifierLaFicheDuLieuSaisie } from '../../action/modifier-la-fiche-du-lieu.validation'
 
 export type EnregistrerUneSection = (

@@ -1,6 +1,6 @@
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 import type { Prisma } from '@/generated/prisma/client'
-import { motsDe } from '@/libraries/texte/mots'
+import { motsDe } from '@/libraries/texte'
 import type { CriteresDeLaListe } from '../../domain/criteres-de-la-liste'
 import type { PageDeLieux } from '../../domain/ligne-de-la-liste'
 import { lieuxPourLaListe } from './lieux-pour-la-liste.query'

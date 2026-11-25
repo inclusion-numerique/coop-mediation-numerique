@@ -1,6 +1,6 @@
 import type { z } from 'zod'
-import type { ServerActionResult } from '@/libraries/nextjs/action/result'
-import { keyFor } from '@/libraries/nextjs/injection/client'
+import type { ServerActionResult } from '@/libraries/nextjs'
+import { keyFor } from '@/libraries/nextjs/injection'
 import type { LieuxAAjouterValidation } from './ajouter-des-lieux-activite.validation'
 
 export const ENREGISTRER_LA_SELECTION_DE_LIEUX_KEY = keyFor<

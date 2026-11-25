@@ -1,6 +1,6 @@
 import type { z } from 'zod'
-import type { ServerActionResult } from '@/libraries/nextjs/action/result'
-import { keyFor } from '@/libraries/nextjs/injection/client'
+import type { ServerActionResult } from '@/libraries/nextjs'
+import { keyFor } from '@/libraries/nextjs/injection'
 import type { RetirerUnMediateurDuLieuValidation } from './retirer-un-mediateur-du-lieu.validation'
 
 export const RETIRER_UN_MEDIATEUR_DU_LIEU_ACTION_KEY = keyFor<

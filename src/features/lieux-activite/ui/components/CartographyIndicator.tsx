@@ -1,7 +1,7 @@
 import classNames from 'classnames'
 import Link from 'next/link'
 import { lienDuLieuDansLaCartographie } from '@/features/lieux-activite/ui/presenters/liens-de-la-cartographie.presenter'
-import TooltipIcon from '@/libraries/ui/components/TooltipIcon'
+import { TooltipIcon } from '@/libraries/ui/components'
 
 import type { StatutCartographie } from '../presenters/statut-cartographie.presenter'
 

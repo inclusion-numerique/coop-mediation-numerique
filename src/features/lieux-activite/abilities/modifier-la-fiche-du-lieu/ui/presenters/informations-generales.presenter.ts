@@ -2,9 +2,11 @@ import {
   Itinerance,
   type Typologie,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import { getAdresseBanLabel } from '@/libraries/adresse/adresse-ban-label'
-import type { AdresseBanData } from '@/libraries/adresse/adresse-ban-validation'
-import { banDefaultValueToAdresseBanData } from '@/libraries/adresse/ban-default-value-to-adresse-ban-data'
+import type { AdresseBanData } from '@/libraries/adresse'
+import {
+  banDefaultValueToAdresseBanData,
+  getAdresseBanLabel,
+} from '@/libraries/adresse'
 import type { Fiche } from '../../../../domain/fiche'
 import type { Lieu } from '../../../../domain/lieu'
 import type { EtablissementTrouve } from '../../action/rechercher-un-etablissement.key'

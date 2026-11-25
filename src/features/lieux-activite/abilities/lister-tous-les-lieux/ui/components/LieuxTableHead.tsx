@@ -1,4 +1,4 @@
-import { EnTeteTriable } from '@/libraries/etat-d-url/liste/EnTeteTriable'
+import { EnTeteTriable } from '@/libraries/etat-d-url/liste'
 import type { LiensDeLaListe } from '../filtres/liste-des-lieux.filtre'
 
 export const LieuxTableHead = ({

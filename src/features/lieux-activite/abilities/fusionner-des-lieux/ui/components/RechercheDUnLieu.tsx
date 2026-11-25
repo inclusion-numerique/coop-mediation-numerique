@@ -1,10 +1,9 @@
 'use client'
 
 import Button from '@codegouvfr/react-dsfr/Button'
-import { useAppForm } from '@/libraries/formulaire/use-app-form'
-import { useHydrated } from '@/libraries/formulaire/use-hydrated'
+import { useAppForm, useHydrated } from '@/libraries/formulaire/hooks'
 import { pluriel } from '@/libraries/pluriel'
-import { Options } from '@/libraries/ui/primitives/Options'
+import { Options } from '@/libraries/ui/primitives'
 import {
   LieuAFusionnerOptions,
   type LieuChoisi,

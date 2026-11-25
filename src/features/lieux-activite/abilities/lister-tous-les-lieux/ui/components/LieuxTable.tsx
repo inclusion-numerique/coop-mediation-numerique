@@ -1,4 +1,4 @@
-import { DataTable } from '@/libraries/data-table'
+import { DataTable } from '@/libraries/data-table/table'
 import type { LigneDeLaListe } from '../../domain/ligne-de-la-liste'
 import type { LiensDeLaListe } from '../filtres/liste-des-lieux.filtre'
 import { LieuTableRow } from './LieuTableRow'

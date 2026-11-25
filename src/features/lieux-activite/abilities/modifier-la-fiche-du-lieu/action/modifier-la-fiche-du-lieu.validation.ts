@@ -24,7 +24,7 @@ import {
   SiteWebSaisi,
   texteFacultatif,
 } from '@/features/lieux-activite/domain/saisie/regles-de-saisie'
-import { AdresseBanValidation } from '@/libraries/adresse/adresse-ban-validation'
+import { AdresseBanValidation } from '@/libraries/adresse'
 import { HorairesValidation } from '../../../action/horaires.validation'
 
 export const InformationsGeneralesSaisie = z

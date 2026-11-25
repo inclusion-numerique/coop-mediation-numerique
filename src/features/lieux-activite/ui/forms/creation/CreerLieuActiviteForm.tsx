@@ -7,10 +7,9 @@ import { useEffect } from 'react'
 import { DisplayOnCartography } from '@/features/lieux-activite/ui/components/DisplayOnCartography'
 import { LieuAccueillantPublicTitle } from '@/features/lieux-activite/ui/components/LieuAccueillantPublicTitle'
 import { ServiceInclusionNumeriqueTitle } from '@/features/lieux-activite/ui/components/ServiceInclusionNumeriqueTitle'
-import { handleSubmit } from '@/libraries/formulaire/handle-submit'
-import { useAppForm } from '@/libraries/formulaire/use-app-form'
-import { useHydrated } from '@/libraries/formulaire/use-hydrated'
-import { CompleteFields } from '@/libraries/ui/form/CompleteFields'
+import { handleSubmit } from '@/libraries/formulaire'
+import { useAppForm, useHydrated } from '@/libraries/formulaire/hooks'
+import { CompleteFields } from '@/libraries/ui/form'
 import {
   type CreerLieuActiviteFormData,
   CreerLieuActiviteFormValidation,

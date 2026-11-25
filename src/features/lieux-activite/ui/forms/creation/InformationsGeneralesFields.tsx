@@ -6,12 +6,14 @@ import { libelleDeTypologie } from '@/features/lieux-activite/ui/labels/typologi
 import {
   AdresseBanComboBox,
   AdresseBanOptions,
-} from '@/libraries/adresse/AdresseBanComboBox'
-import { withForm } from '@/libraries/formulaire/use-app-form'
-import RedAsterisk from '@/libraries/ui/form/RedAsterisk'
-import RequiredFieldsDisclaimer from '@/libraries/ui/form/RequiredFieldsDisclaimer'
-import { optionsWithEmptyValue } from '@/libraries/ui/form/utils/options'
-import { Options } from '@/libraries/ui/primitives/Options'
+} from '@/libraries/ban/composants'
+import { withForm } from '@/libraries/formulaire/hooks'
+import {
+  optionsWithEmptyValue,
+  RedAsterisk,
+  RequiredFieldsDisclaimer,
+} from '@/libraries/ui/form'
+import { Options } from '@/libraries/ui/primitives'
 import { creerLieuActiviteFormOptions } from '../creer-lieu-activite.form-options'
 
 export const InformationsGeneralesFields = withForm({

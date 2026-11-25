@@ -2,10 +2,10 @@ import { Sort } from '@arckit/resultset'
 import {
   type AdresseCourante,
   composerLEtat,
-} from '@/libraries/etat-d-url/definition/composition'
-import { pagination } from '@/libraries/etat-d-url/definition/pagination'
-import { rechercheLibre } from '@/libraries/etat-d-url/definition/recherche-libre'
-import { triParmi } from '@/libraries/etat-d-url/definition/tri-parmi'
+  pagination,
+  rechercheLibre,
+  triParmi,
+} from '@/libraries/etat-d-url'
 import {
   COLONNES_TRIABLES,
   type CriteresDeLaListe,

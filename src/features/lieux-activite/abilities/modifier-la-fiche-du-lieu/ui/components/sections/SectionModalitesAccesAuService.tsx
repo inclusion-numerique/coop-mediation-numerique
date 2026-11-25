@@ -3,8 +3,8 @@
 import { useStore } from '@tanstack/react-form'
 import type { z } from 'zod'
 import { fraisAChargeOptions } from '@/features/lieux-activite/ui/labels/options-du-lieu.labels'
-import EditCardTanStack from '@/libraries/formulaire/form-components/EditCardTanStack'
-import { useAppForm } from '@/libraries/formulaire/use-app-form'
+import { EditCardTanStack } from '@/libraries/formulaire/form-components'
+import { useAppForm } from '@/libraries/formulaire/hooks'
 import { telephoneDisplayString } from '@/libraries/telephone'
 import {
   ModalitesAccesAuServiceFormValidation,

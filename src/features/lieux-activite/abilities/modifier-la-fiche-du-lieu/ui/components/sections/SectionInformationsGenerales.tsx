@@ -4,8 +4,8 @@ import Alert from '@codegouvfr/react-dsfr/Alert'
 import { useStore } from '@tanstack/react-form'
 import type { Route } from 'next'
 import Link from 'next/link'
-import EditCardTanStack from '@/libraries/formulaire/form-components/EditCardTanStack'
-import { useAppForm } from '@/libraries/formulaire/use-app-form'
+import { EditCardTanStack } from '@/libraries/formulaire/form-components'
+import { useAppForm } from '@/libraries/formulaire/hooks'
 import {
   CONFIRMATION_DU_PARTAGE_MANQUANTE,
   confirmationDuPartageManquante,

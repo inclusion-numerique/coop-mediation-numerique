@@ -3,7 +3,7 @@ import type { SuggestionAffichee } from '@/features/lieux-activite/abilities/ajo
 import {
   AdresseIndisponible,
   SERVICE_ADRESSE_INDISPONIBLE,
-} from '@/libraries/ban/api-adresse'
+} from '@/libraries/ban'
 import {
   auPanier,
   type LieuAuPanier,

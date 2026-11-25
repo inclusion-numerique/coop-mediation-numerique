@@ -1,6 +1,6 @@
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 import type { Prisma } from '@/generated/prisma/client'
-import { toTitleCase } from '@/libraries/texte/to-title-case'
+import { toTitleCase } from '@/libraries/texte'
 
 const LIMITE = 50
 

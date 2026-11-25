@@ -1,5 +1,5 @@
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 import type { Prisma } from '@/generated/prisma/client'
 import { failure, type Result, success } from '@/libraries/result'
 import { estPublie } from '../../../../domain/cartographie-nationale/visibilite-cartographie'

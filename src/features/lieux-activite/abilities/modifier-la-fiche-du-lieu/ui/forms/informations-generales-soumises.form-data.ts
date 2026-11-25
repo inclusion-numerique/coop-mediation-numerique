@@ -1,4 +1,4 @@
-import type { AdresseBanData } from '@/libraries/adresse/adresse-ban-validation'
+import type { AdresseBanData } from '@/libraries/adresse'
 import type { SaisieDeSection } from '../../action/modifier-la-fiche-du-lieu.validation'
 import type { InformationsGeneralesFormData } from './informations-generales.form-data'
 

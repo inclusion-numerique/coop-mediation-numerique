@@ -1,4 +1,4 @@
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 import { Prisma } from '@/generated/prisma/client'
 import { lieuExploitableSql } from '../../../../implementations/prisma/lieu-exploitable.sql'
 import { type LieuPublie, LieuPublieSchema } from '../../domain/lieu-publie'

@@ -1,4 +1,4 @@
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 import { champsCommuns, type FusionApercue } from '../../domain'
 import { lieuAFusionnerInclude } from './lieu-a-fusionner.select'
 import { lieuAFusionnerToDomain } from './lieu-a-fusionner.transfer'

@@ -6,12 +6,11 @@ import {
   Service,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import type { ComponentType } from 'react'
-import { InternetIcon } from '@/libraries/pictograms/digital/InternetIcon'
-import { SittingAtATableIcon } from '@/libraries/pictograms/user/SittingAtATableIcon'
-import { TeacherIcon } from '@/libraries/pictograms/user/TeacherIcon'
-import { PairIcon } from '@/libraries/pictograms/work/PairIcon'
-import type { SelectOption } from '@/libraries/ui/form/utils/options'
-import { labelsToOptions } from '@/libraries/ui/form/utils/options'
+import { InternetIcon } from '@/libraries/pictograms/digital'
+import { SittingAtATableIcon, TeacherIcon } from '@/libraries/pictograms/user'
+import { PairIcon } from '@/libraries/pictograms/work'
+import type { SelectOption } from '@/libraries/ui/form'
+import { labelsToOptions } from '@/libraries/ui/form'
 import { FormationLabelPropose } from '../../domain/nomenclatures'
 import { typologieLibelles } from './typologie.labels'
 

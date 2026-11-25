@@ -1,6 +1,6 @@
 import type { SuggestionsDeLieux } from '@/features/lieux-activite/domain/suggestion-de-lieu'
-import type { ServerActionResult } from '@/libraries/nextjs/action/result'
-import { keyFor } from '@/libraries/nextjs/injection/client'
+import type { ServerActionResult } from '@/libraries/nextjs'
+import { keyFor } from '@/libraries/nextjs/injection'
 
 export const RECHERCHER_DES_LIEUX_KEY = keyFor<
   (input: {

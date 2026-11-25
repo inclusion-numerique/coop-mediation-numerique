@@ -2,8 +2,7 @@
 
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useState } from 'react'
-import Card from '@/libraries/ui/components/Card'
-import IconInSquare from '@/libraries/ui/components/IconInSquare'
+import { Card, IconInSquare } from '@/libraries/ui/components'
 import type { LieuEnListe } from '../../domain/lieu-en-liste'
 import LieuActiviteCard from '../components/LieuActiviteCard'
 import { hrefDuLieuEnListe } from '../presenters/href-du-lieu.presenter'

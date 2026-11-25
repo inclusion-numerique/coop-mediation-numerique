@@ -1,10 +1,12 @@
-import { PiedDeListe } from '@/libraries/etat-d-url/liste/PiedDeListe'
-import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
-import { contentId } from '@/libraries/liens-d-evitement/skip-links'
+import { PiedDeListe } from '@/libraries/etat-d-url/liste'
+import { contentId } from '@/libraries/liens-d-evitement'
+import { SkipLinksPortal } from '@/libraries/liens-d-evitement/composants'
 import { pluriel } from '@/libraries/pluriel'
-import AdministrationBreadcrumbs from '@/libraries/ui/components/administration/AdministrationBreadcrumbs'
-import AdministrationTitle from '@/libraries/ui/components/administration/AdministrationTitle'
-import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
+import {
+  AdministrationBreadcrumbs,
+  AdministrationTitle,
+  CoopPageContainer,
+} from '@/libraries/ui/components'
 import type { PageDeLieux } from '../../domain/ligne-de-la-liste'
 import { LieuxTable } from '../components/LieuxTable'
 import { RechercheDeLieux } from '../components/RechercheDeLieux'

@@ -3,12 +3,14 @@ import { ApercuDeLaFusion } from '@/features/lieux-activite/abilities/fusionner-
 import { ChoisirLeLieuAFusionner } from '@/features/lieux-activite/abilities/fusionner-des-lieux/ui/components/ChoisirLeLieuAFusionner'
 import ValiderLaFusion from '@/features/lieux-activite/abilities/fusionner-des-lieux/ui/components/ValiderLaFusion'
 import { hrefDeModificationDuLieu } from '@/features/lieux-activite/ui/presenters/href-du-lieu.presenter'
-import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
-import { contentId } from '@/libraries/liens-d-evitement/skip-links'
-import { toTitleCase } from '@/libraries/texte/to-title-case'
-import AdministrationBreadcrumbs from '@/libraries/ui/components/administration/AdministrationBreadcrumbs'
-import AdministrationTitle from '@/libraries/ui/components/administration/AdministrationTitle'
-import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
+import { contentId } from '@/libraries/liens-d-evitement'
+import { SkipLinksPortal } from '@/libraries/liens-d-evitement/composants'
+import { toTitleCase } from '@/libraries/texte'
+import {
+  AdministrationBreadcrumbs,
+  AdministrationTitle,
+  CoopPageContainer,
+} from '@/libraries/ui/components'
 import { nomAffiche } from '../presenters/nom-affiche.presenter'
 
 export const ApercuDeLaFusionPage = ({

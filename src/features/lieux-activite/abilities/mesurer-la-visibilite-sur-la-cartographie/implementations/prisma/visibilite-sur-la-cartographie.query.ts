@@ -1,4 +1,4 @@
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 import { departementCodeFromInseeRegex } from '@/features/lieux-activite/implementations/prisma/departement-du-code-insee.sql'
 import { Prisma } from '@/generated/prisma/client'
 import { type CodeDepartement, CodeInsee } from '@/libraries/insee'

@@ -1,6 +1,6 @@
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 import type { Prisma } from '@/generated/prisma/client'
-import type { SelectOption } from '@/libraries/ui/form/utils/options'
+import type { SelectOption } from '@/libraries/ui/form'
 import { lieuExploitable } from '../../../../implementations/prisma/lieu-exploitable.sql'
 
 const lieuSelect = {

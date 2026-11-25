@@ -5,7 +5,7 @@ import {
   priseEnChargeSpecifiqueOptions,
   publicSpecifiquementAdresseOptions,
 } from '@/features/lieux-activite/ui/labels/options-du-lieu.labels'
-import { withForm } from '@/libraries/formulaire/use-app-form'
+import { withForm } from '@/libraries/formulaire/hooks'
 import { creerLieuActiviteFormOptions } from '../creer-lieu-activite.form-options'
 
 const tousLesPublics: PublicSpecifiquementAdresse[] =

@@ -3,7 +3,7 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import { type ReactNode, useState } from 'react'
 import LieuActiviteSideMenu from '@/features/lieux-activite/abilities/creer-lieu-activite/ui/components/LieuActiviteSideMenu'
-import IconInSquare from '@/libraries/ui/components/IconInSquare'
+import { IconInSquare } from '@/libraries/ui/components'
 import CreerLieuActiviteForm from '../../../../ui/forms/creation/CreerLieuActiviteForm'
 import type { CreerLieuActiviteFormData } from '../../../../ui/forms/creer-lieu-activite.form-data'
 
