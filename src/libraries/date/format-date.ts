@@ -1,9 +1,7 @@
-import {
-  format as dateFnsFormat,
-  type FormatOptions,
-  setDefaultOptions,
-} from 'date-fns'
-import { fr } from 'date-fns/locale'
+import type { FormatOptions } from 'date-fns'
+import { format as dateFnsFormat } from 'date-fns/format'
+import { fr } from 'date-fns/locale/fr'
+import { setDefaultOptions } from 'date-fns/setDefaultOptions'
 
 setDefaultOptions({ locale: fr })
 
