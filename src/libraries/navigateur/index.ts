@@ -1,3 +1,3 @@
-export * from './download'
-export * from './is-browser'
-export * from './replace-route-without-rerender'
+export { download } from './download'
+export { isBrowser } from './is-browser'
+export { replaceRouteWithoutRerender } from './replace-route-without-rerender'
