@@ -2,13 +2,15 @@
 
 import { Popover } from 'radix-ui'
 import { useState } from 'react'
-import { Pictogram } from '@/libraries/pictograms/pictogram'
-import { AbcDiagLogo } from '@/libraries/pictograms/services/AbcDiagLogo'
-import { AidantsConnectLogo } from '@/libraries/pictograms/services/AidantsConnectLogo'
-import { CartographieLogo } from '@/libraries/pictograms/services/CartographieLogo'
-import { LesBasesLogo } from '@/libraries/pictograms/services/LesBasesLogo'
-import { PixOrgaLogo } from '@/libraries/pictograms/services/PixOrgaLogo'
-import { RDVServicePublicLogo } from '@/libraries/pictograms/services/RDVServicePublicLogo'
+import { Pictogram } from '@/libraries/pictograms'
+import {
+  AbcDiagLogo,
+  AidantsConnectLogo,
+  CartographieLogo,
+  LesBasesLogo,
+  PixOrgaLogo,
+  RDVServicePublicLogo,
+} from '@/libraries/pictograms/services'
 
 const tools: { label: string; href: string; icon: Pictogram }[] = [
   {

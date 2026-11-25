@@ -1,10 +1,12 @@
 import {
+  branche,
   chromaticAppId,
+  estDev,
+  estPreview,
   mainLiveUrl,
   projectTitle,
   repositoryUrl,
-} from '@/configuration/projet/config'
-import { branche, estDev, estPreview } from '@/configuration/projet/deploiement'
+} from '@/configuration/projet'
 
 export const EnvInformation = () => {
   // Only display something on preview env and dev env

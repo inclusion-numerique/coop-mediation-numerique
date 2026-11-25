@@ -4,7 +4,7 @@ import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import type { SideMenuProps } from '@codegouvfr/react-dsfr/SideMenu'
 import SideMenu from '@codegouvfr/react-dsfr/SideMenu'
 import { usePathname } from 'next/navigation'
-import { contactEmail } from '@/configuration/projet/config'
+import { contactEmail } from '@/configuration/projet'
 import { hrefDesStatistiquesDeLaPeriode } from '@/features/navigation/ui/presenters/liens.presenter'
 import type { UtilisateurDeLaNavigation } from '../layouts/CoopShellLayout'
 
