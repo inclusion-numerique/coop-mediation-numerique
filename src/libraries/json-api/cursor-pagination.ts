@@ -7,7 +7,7 @@ import {
   decodeSerializableState,
   EncodedState,
   encodeSerializableState,
-} from '@/libraries/etat-encode/encode-serializable-state'
+} from '@/libraries/etat-encode'
 import { apiV1Url } from '@/libraries/json-api/api-v1-url'
 import type { JsonApiListMeta } from '@/libraries/json-api/json-api-types'
 
