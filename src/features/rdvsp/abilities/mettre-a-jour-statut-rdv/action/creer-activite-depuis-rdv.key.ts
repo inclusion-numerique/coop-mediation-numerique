@@ -1,5 +1,5 @@
-import type { ServerActionResult } from '@/libraries/nextjs/action/result'
-import { keyFor } from '@/libraries/nextjs/injection/client'
+import type { ServerActionResult } from '@/libraries/nextjs'
+import { keyFor } from '@/libraries/nextjs/injection'
 
 export const CREER_ACTIVITE_DEPUIS_RDV_ACTION_KEY = keyFor<
   (input: {

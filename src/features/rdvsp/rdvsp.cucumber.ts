@@ -1,5 +1,5 @@
 import { After, Before, BeforeAll, setDefaultTimeout } from '@cucumber/cucumber'
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 import type { Prisma } from '@/generated/prisma/client'
 import { UtilisateurCoopId } from './domain/identifiants/utilisateur-coop-id'
 import { EmailExterne } from './domain/identite'

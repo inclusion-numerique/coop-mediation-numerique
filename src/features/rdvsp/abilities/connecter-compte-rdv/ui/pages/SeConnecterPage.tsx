@@ -1,6 +1,6 @@
 import Button from '@codegouvfr/react-dsfr/Button'
-import { RDVServicePublicLogo } from '@/libraries/pictograms/services/RDVServicePublicLogo'
-import BackButton from '@/libraries/ui/components/BackButton'
+import { RDVServicePublicLogo } from '@/libraries/pictograms/services'
+import { BackButton } from '@/libraries/ui/components'
 import RdvServicePublicConnexionCard from '../components/RdvServicePublicConnexionCard'
 
 const SeConnecterPage = ({ lienDeConnexion }: { lienDeConnexion: string }) => {

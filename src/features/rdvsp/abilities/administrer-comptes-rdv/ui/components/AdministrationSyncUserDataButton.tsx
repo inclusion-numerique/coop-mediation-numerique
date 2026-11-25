@@ -4,9 +4,9 @@ import { Button } from '@codegouvfr/react-dsfr/Button'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { DECLENCHER_SYNCHRONISATION_ACTION_KEY } from '@/features/rdvsp/action/declencher-synchronisation.key'
-import { inject } from '@/libraries/nextjs/injection/client'
-import { createToast } from '@/libraries/ui/toast/create-toast'
-import { buttonLoadingClassname } from '@/libraries/ui/utils/button-loading-classname'
+import { inject } from '@/libraries/nextjs/injection'
+import { createToast } from '@/libraries/ui/toast'
+import { buttonLoadingClassname } from '@/libraries/ui/utils'
 
 const AdministrationSyncUserDataButton = ({
   user: { id },

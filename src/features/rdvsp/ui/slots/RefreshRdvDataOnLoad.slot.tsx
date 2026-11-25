@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import { useEffect, useRef } from 'react'
-import { inject } from '@/libraries/nextjs/injection/client'
+import { inject } from '@/libraries/nextjs/injection'
 import { RATTRAPER_RDVS_SANS_WEBHOOK_ACTION_KEY } from '../../action/rattraper-rdvs-sans-webhook.key'
 
 /**

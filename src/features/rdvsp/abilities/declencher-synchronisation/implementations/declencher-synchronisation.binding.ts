@@ -1,4 +1,4 @@
-import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
+import { signaler } from '@/configuration/telemetry/serveur'
 import { echecDefinitif } from '@/features/rdvsp/domain/compte/echec-de-synchronisation'
 import { consignerLEchec } from '../domain/consigner-l-echec'
 import {

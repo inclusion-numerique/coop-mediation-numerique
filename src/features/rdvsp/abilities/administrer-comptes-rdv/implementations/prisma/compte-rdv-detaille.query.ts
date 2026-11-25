@@ -1,4 +1,4 @@
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 import type { CompteAdministre } from '../../domain/comptes-administres'
 
 export const compteRdvDetaille = async ({

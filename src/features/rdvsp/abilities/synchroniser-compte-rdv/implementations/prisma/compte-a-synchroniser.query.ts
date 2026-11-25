@@ -1,4 +1,4 @@
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 import type { CompteRdv } from '../../../../domain/compte/compte-rdv'
 import { compteRdvToDomain } from '../../../../implementations/prisma/compte-rdv.transfer'
 

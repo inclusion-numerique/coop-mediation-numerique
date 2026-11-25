@@ -1,4 +1,4 @@
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 import type { DetacherOrganisations } from '../../domain/synchroniser-compte-rdv'
 
 export const detacherOrganisations: DetacherOrganisations = async ({

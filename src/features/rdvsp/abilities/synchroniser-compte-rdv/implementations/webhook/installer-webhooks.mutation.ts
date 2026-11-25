@@ -1,4 +1,4 @@
-import { getServerUrl } from '@/configuration/projet/base-url'
+import { getServerUrl } from '@/configuration/projet/serveur'
 import type {
   BilanModele,
   OperationSynchronisation,

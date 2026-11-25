@@ -6,8 +6,8 @@ import {
   rdvIntegrationEnSavoirPlusLink,
   rdvServicePublicGettingStartedLink,
 } from '@/features/rdvsp/ui/presenters/liens.presenter'
-import { RDVServicePublicLogo } from '@/libraries/pictograms/services/RDVServicePublicLogo'
-import IconInSquare from '@/libraries/ui/components/IconInSquare'
+import { RDVServicePublicLogo } from '@/libraries/pictograms/services'
+import { IconInSquare } from '@/libraries/ui/components'
 import RdvServicePublicConnexionCard from '../components/RdvServicePublicConnexionCard'
 
 const ConnexionReussiePage = ({

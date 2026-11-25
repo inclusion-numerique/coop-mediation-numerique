@@ -3,10 +3,10 @@
 import { useRouter } from 'next/navigation'
 import { type ChangeEvent, useEffect, useRef, useState } from 'react'
 import { RATTRAPER_RDVS_SANS_WEBHOOK_ACTION_KEY } from '@/features/rdvsp/action/rattraper-rdvs-sans-webhook.key'
-import { inject } from '@/libraries/nextjs/injection/client'
-import { routeConstruite } from '@/libraries/nextjs/route/route-construite'
-import { RDVServicePublicLogo } from '@/libraries/pictograms/services/RDVServicePublicLogo'
-import { Spinner } from '@/libraries/ui/components/Spinner'
+import { routeConstruite } from '@/libraries/nextjs'
+import { inject } from '@/libraries/nextjs/injection'
+import { RDVServicePublicLogo } from '@/libraries/pictograms/services'
+import { Spinner } from '@/libraries/ui/components'
 import { AFFICHER_RDVS_DANS_ACTIVITES_ACTION_KEY } from '../../action/afficher-rdvs-dans-activites.key'
 
 const AfficherLesRdvs = ({

@@ -1,4 +1,4 @@
-import { estMain } from '@/configuration/projet/deploiement'
+import { estMain } from '@/configuration/projet'
 
 export const rdvIntegrationEnSavoirPlusLink =
   'https://docs.numerique.gouv.fr/docs/49af7c6f-94c8-4160-b154-91b05ba2295a/'

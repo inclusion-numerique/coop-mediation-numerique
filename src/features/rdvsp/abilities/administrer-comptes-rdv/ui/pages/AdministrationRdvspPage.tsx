@@ -2,14 +2,16 @@ import { Button } from '@codegouvfr/react-dsfr/Button'
 import { statutIntegration } from '@/features/rdvsp/domain/compte/sante-compte'
 import RdvServicePublicStatusTag from '@/features/rdvsp/ui/components/RdvServicePublicStatusTag'
 import { hrefDuCompteRdvEnAdministration } from '@/features/rdvsp/ui/presenters/liens.presenter'
-import { dateAsDayAndTimeInTimeZone } from '@/libraries/date/date-as-day-and-time'
-import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
-import { contentId } from '@/libraries/liens-d-evitement/skip-links'
-import { numberToString } from '@/libraries/nombre/format-number'
+import { dateAsDayAndTimeInTimeZone } from '@/libraries/date'
+import { contentId } from '@/libraries/liens-d-evitement'
+import { SkipLinksPortal } from '@/libraries/liens-d-evitement/composants'
+import { numberToString } from '@/libraries/nombre'
 import { pluriel } from '@/libraries/pluriel'
-import AdministrationBreadcrumbs from '@/libraries/ui/components/administration/AdministrationBreadcrumbs'
-import AdministrationTitle from '@/libraries/ui/components/administration/AdministrationTitle'
-import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
+import {
+  AdministrationBreadcrumbs,
+  AdministrationTitle,
+  CoopPageContainer,
+} from '@/libraries/ui/components'
 import type { ComptesAdministres } from '../../domain/comptes-administres'
 
 const AdministrationRdvspPage = async ({

@@ -6,7 +6,7 @@ import {
   lienDeMonAgendaRdv,
   rdvIntegrationEnSavoirPlusLink,
 } from '@/features/rdvsp/ui/presenters/liens.presenter'
-import { RDVServicePublicCoopConnexion } from '@/libraries/pictograms/services/RDVServicePublicCoopConnexion'
+import { RDVServicePublicCoopConnexion } from '@/libraries/pictograms/services'
 import { statutDuCompteDeLaSession } from '../../domain/compte/sante-compte'
 import GererRdvServicePublicModal from '../components/GererRdvServicePublicModal'
 import RdvServicePublicStatusTag from '../components/RdvServicePublicStatusTag'

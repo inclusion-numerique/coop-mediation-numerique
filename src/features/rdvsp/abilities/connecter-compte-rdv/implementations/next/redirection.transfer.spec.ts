@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { getServerBaseUrl } from '@/configuration/projet/base-url'
+import { getServerBaseUrl } from '@/configuration/projet/serveur'
 import { redirection } from './redirection.transfer'
 
 const adresseAbsolue = (chemin: string): string =>

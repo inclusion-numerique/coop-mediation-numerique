@@ -1,5 +1,5 @@
 import { environnementServeur } from '@/configuration/environnement/serveur'
-import { getServerUrl } from '@/configuration/projet/base-url'
+import { getServerUrl } from '@/configuration/projet/serveur'
 import {
   rdvspOAuthClientId,
   rdvspOAuthHostname,

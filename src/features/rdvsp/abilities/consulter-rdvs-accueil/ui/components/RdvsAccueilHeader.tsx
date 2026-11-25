@@ -1,7 +1,7 @@
 import Link from 'next/link'
-import { routeConstruite } from '@/libraries/nextjs/route/route-construite'
-import { RDVServicePublicLogo } from '@/libraries/pictograms/services/RDVServicePublicLogo'
-import { Spinner } from '@/libraries/ui/components/Spinner'
+import { routeConstruite } from '@/libraries/nextjs'
+import { RDVServicePublicLogo } from '@/libraries/pictograms/services'
+import { Spinner } from '@/libraries/ui/components'
 
 const RdvsAccueilHeader = ({
   isLoading,

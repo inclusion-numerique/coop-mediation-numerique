@@ -1,7 +1,7 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import Link from 'next/link'
 import { rdvSupportEmail } from '@/features/rdvsp/ui/presenters/liens.presenter'
-import IconInSquare from '@/libraries/ui/components/IconInSquare'
+import { IconInSquare } from '@/libraries/ui/components'
 import RdvServicePublicConnexionCard from '../components/RdvServicePublicConnexionCard'
 
 // add params error_description and error from next query

@@ -1,4 +1,4 @@
-import { environnementClient } from '@/configuration/environnement/client'
+import { environnementClient } from '@/configuration/environnement'
 
 export const rdvspOAuthHostname =
   environnementClient.NEXT_PUBLIC_RDV_SERVICE_PUBLIC_OAUTH_HOSTNAME
