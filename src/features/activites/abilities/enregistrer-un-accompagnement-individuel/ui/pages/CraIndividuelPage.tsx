@@ -11,8 +11,8 @@ import type {
 import type { DefaultValues } from '@/libraries/formulaire/hooks'
 import { contentId } from '@/libraries/liens-d-evitement'
 import { SkipLinksPortal } from '@/libraries/liens-d-evitement/composants'
+import type { SelectOption } from '@/libraries/ui'
 import { BackButtonWithModal, CoopBreadcrumbs } from '@/libraries/ui/components'
-import type { SelectOption } from '@/libraries/ui/form'
 import { RequiredFieldsDisclamer } from '@/libraries/ui/form'
 
 type CraIndividuelPageData = {

@@ -1,4 +1,4 @@
-import { labelsToOptions } from '@/libraries/ui/form'
+import { labelsToOptions } from '@/libraries/ui'
 import { AUTONOMIES } from '../../../domain'
 
 export const autonomieValues = AUTONOMIES

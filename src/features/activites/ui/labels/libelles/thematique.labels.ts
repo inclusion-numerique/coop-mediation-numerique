@@ -30,7 +30,7 @@ import {
   ProfessionalIcon,
   ScolarshipIcon,
 } from '@/libraries/pictograms/work'
-import { labelsToOptions } from '@/libraries/ui/form'
+import { labelsToOptions } from '@/libraries/ui'
 import {
   THEMATIQUES_ADMINISTRATIVES,
   THEMATIQUES_DE_MEDIATION,

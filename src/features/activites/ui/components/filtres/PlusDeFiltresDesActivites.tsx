@@ -6,7 +6,7 @@ import {
   RechercheEnLigne,
 } from '@/libraries/etat-d-url/filtres'
 import { inject } from '@/libraries/nextjs/injection'
-import type { SelectOption } from '@/libraries/ui/form'
+import type { SelectOption } from '@/libraries/ui'
 import { RECHERCHER_LES_EMPLOYEUSES_DE_LA_LISTE_KEY } from '../../../action/rechercher-employeuses.key'
 import {
   filtreDeLaSource,

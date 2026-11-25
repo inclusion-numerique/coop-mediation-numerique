@@ -1,4 +1,4 @@
-import { labelsToOptions } from '@/libraries/ui/form'
+import { labelsToOptions } from '@/libraries/ui'
 import { NIVEAUX_D_ATELIER } from '../../../domain'
 
 export const niveauAtelierValues = NIVEAUX_D_ATELIER

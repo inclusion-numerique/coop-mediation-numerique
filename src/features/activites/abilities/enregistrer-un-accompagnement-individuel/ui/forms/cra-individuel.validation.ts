@@ -3,7 +3,7 @@ import { BeneficiaireCraValidation } from '@/features/activites/ui/forms/benefic
 import { CraValidation } from '@/features/activites/ui/forms/cra.validation'
 import { autonomieValues } from '@/features/activites/ui/labels/libelles/autonomie.labels'
 import { structuresRedirectionValues } from '@/features/activites/ui/labels/libelles/structures-redirection.labels'
-import { yesOrNo } from '@/libraries/ui/form'
+import { yesOrNo } from '@/libraries/ui'
 
 export const CraIndividuelValidation = CraValidation.extend({
   beneficiaire: BeneficiaireCraValidation.nullish(),

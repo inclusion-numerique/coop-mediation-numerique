@@ -32,7 +32,7 @@ import { useAppForm } from '@/libraries/formulaire/hooks'
 import { replaceRouteWithoutRerender } from '@/libraries/navigateur'
 import { adresseAvec } from '@/libraries/nextjs'
 import { inject } from '@/libraries/nextjs/injection'
-import type { SelectOption } from '@/libraries/ui/form'
+import type { SelectOption } from '@/libraries/ui'
 import { createToast } from '@/libraries/ui/toast'
 
 const CraCollectifForm = ({

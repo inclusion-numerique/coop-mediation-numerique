@@ -6,7 +6,7 @@ import {
   RechercheEnLigne,
 } from '@/libraries/etat-d-url/filtres'
 import { inject } from '@/libraries/nextjs/injection'
-import type { SelectOption } from '@/libraries/ui/form'
+import type { SelectOption } from '@/libraries/ui'
 import {
   type GenreDuLieuRecherche,
   RECHERCHER_LES_LIEUX_DES_ACTIVITES_KEY,

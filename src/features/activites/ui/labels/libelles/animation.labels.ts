@@ -3,7 +3,7 @@ import { EcosystemIcon, InnovationIcon } from '@/libraries/pictograms/digital'
 import { DocumentSignature } from '@/libraries/pictograms/document'
 import { CommunityIcon } from '@/libraries/pictograms/leisure'
 import { Compass } from '@/libraries/pictograms/map'
-import type { SelectOption } from '@/libraries/ui/form'
+import type { SelectOption } from '@/libraries/ui'
 import type {
   Initiative,
   ThematiqueDAnimation,

@@ -1,4 +1,4 @@
-import type { SelectOption } from '@/libraries/ui/form'
+import type { SelectOption } from '@/libraries/ui'
 import type { LieuDesStatistiques } from '../../domain'
 
 export const optionDeLieu = (lieu: LieuDesStatistiques): SelectOption =>

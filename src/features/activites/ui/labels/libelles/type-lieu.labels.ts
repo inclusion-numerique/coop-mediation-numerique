@@ -5,7 +5,7 @@ import {
   SchoolIcon,
 } from '@/libraries/pictograms/buildings'
 import { InternetIcon } from '@/libraries/pictograms/digital'
-import { labelsToOptions } from '@/libraries/ui/form'
+import { labelsToOptions } from '@/libraries/ui'
 import { TYPES_DE_LIEU } from '../../../domain'
 
 export const typeLieuValues = TYPES_DE_LIEU

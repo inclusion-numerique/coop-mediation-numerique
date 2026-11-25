@@ -12,7 +12,7 @@ import type {
 } from '@/features/activites/ui/labels/libelles/profil.labels'
 import type { DefaultValues } from '@/libraries/formulaire/hooks'
 import { withForm } from '@/libraries/formulaire/hooks'
-import type { SelectOption } from '@/libraries/ui/form'
+import type { SelectOption } from '@/libraries/ui'
 import { Options } from '@/libraries/ui/primitives'
 
 const valeursDuFormulaire: DefaultValues<CraIndividuelData> & {

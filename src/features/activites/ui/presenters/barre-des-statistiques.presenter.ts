@@ -1,5 +1,5 @@
 import type { AdresseCourante } from '@/libraries/etat-d-url'
-import type { SelectOption } from '@/libraries/ui/form'
+import type { SelectOption } from '@/libraries/ui'
 import {
   filtresDesStatistiques,
   type ValeursDesStatistiques,

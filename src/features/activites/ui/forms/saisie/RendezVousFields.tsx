@@ -22,7 +22,7 @@ import {
   type DefaultValues,
   withFieldGroup,
 } from '@/libraries/formulaire/hooks'
-import type { SelectOption } from '@/libraries/ui/form'
+import type { SelectOption } from '@/libraries/ui'
 import { RedAsterisk } from '@/libraries/ui/form'
 import { Options } from '@/libraries/ui/primitives'
 

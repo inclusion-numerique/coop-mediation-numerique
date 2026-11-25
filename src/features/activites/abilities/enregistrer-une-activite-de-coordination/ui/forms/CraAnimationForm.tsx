@@ -27,7 +27,7 @@ import type { DefaultValues } from '@/libraries/formulaire/hooks'
 import { useAppForm } from '@/libraries/formulaire/hooks'
 import { replaceRouteWithoutRerender } from '@/libraries/navigateur'
 import { inject } from '@/libraries/nextjs/injection'
-import type { SelectOption } from '@/libraries/ui/form'
+import type { SelectOption } from '@/libraries/ui'
 import { RedAsterisk } from '@/libraries/ui/form'
 import { createToast } from '@/libraries/ui/toast'
 

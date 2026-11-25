@@ -7,7 +7,7 @@ import {
   tagDuFormulaire,
 } from '@/features/activites/ui/presenters/saisie/tag-du-cra.presenter'
 import type { DefaultValues } from '@/libraries/formulaire/hooks'
-import { labelsToOptions } from '@/libraries/ui/form'
+import { labelsToOptions } from '@/libraries/ui'
 
 type CraCoordinationData =
   | CraAnimationData

@@ -2,7 +2,7 @@ import { isEqual } from 'date-fns'
 import { fr } from 'date-fns/locale'
 import { formatInTimeZone } from 'date-fns-tz'
 import { htmlToText } from '@/libraries/texte'
-import { booleanToYesNoLabel } from '@/libraries/ui/form'
+import { booleanToYesNoLabel } from '@/libraries/ui'
 import { valeurDe } from '../../../../../../libraries/collections'
 import type { Equipement, Orientation } from '../../../../domain'
 import {
