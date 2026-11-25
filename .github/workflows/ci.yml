@@ -38,7 +38,7 @@ jobs:
       - name: Detect architecture rules changes
         id: changes
         run: |
-          regles=(biome.json .alint.yml .dependency-cruiser.cjs .dependency-cruiser .claude/settings.json .claude/hooks)
+          regles=(biome.json .alint.yml .dependency-cruiser.cjs .dependency-cruiser)
           if git diff --quiet origin/main...HEAD -- "${regles[@]}"; then
             echo "changes=false" >> "$GITHUB_OUTPUT"
             echo "Aucune règle d'architecture modifiée" >> "$GITHUB_STEP_SUMMARY"

@@ -101,10 +101,10 @@ disparaît.
 ### Une règle ne change qu'avec une validation humaine
 
 Tout changement d'une règle d'architecture, de structure ou d'imports passe
-par une personne. Un agent qui veut modifier une règle doit le faire
-confirmer : la confirmation est demandée par l'outil de l'agent, quel que
-soit son mode. En CI, un tel changement ne peut fusionner qu'après un job
-d'approbation, que seule une personne valide.
+par une personne : la CI le détecte, en affiche le diff, et la branche ne
+peut fusionner qu'après un job d'approbation qu'une personne valide. Sans
+changement de règle, ce job est ignoré. Aucune confirmation n'est demandée
+pendant l'écriture : la validation se fait une fois, à la revue.
 
 ### Consequences
 
@@ -113,8 +113,11 @@ d'approbation, que seule une personne valide.
 - Good, because une exception est une donnée lisible : qui importe quoi, et
   pourquoi elle reste.
 - Good, because un agent ne peut ni contourner une règle sans le dire, ni la
-  changer sans qu'une personne la valide.
+  faire fusionner sans qu'une approbation explicite ne la montre.
 
+- Bad, because un agent qui agit avec le compte de la personne pourrait
+  approuver lui-même : le risque est accepté, la trace de l'approbation
+  restant visible dans la CI.
 - Bad, because dependency-cruiser analyse le code avec l'API de TypeScript,
   que la version native de TypeScript n'offre pas : une version antérieure de
   TypeScript reste installée pour lui.
