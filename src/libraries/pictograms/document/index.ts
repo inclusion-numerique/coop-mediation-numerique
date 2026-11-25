@@ -1,0 +1,5 @@
+export * from './DocumentContentIcon'
+export * from './DocumentSearchIcon'
+export * from './DocumentSignature'
+export * from './NationalIdentityCardIcon'
+export * from './PapersIcon'
