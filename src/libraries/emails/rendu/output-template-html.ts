@@ -3,17 +3,15 @@ import path from 'node:path'
 import { getDirname } from '@/libraries/chemins'
 import { compileMjml } from './mjml'
 
-const outputDirectory = path.resolve(
-  getDirname(import.meta.url),
-  '../../../../var/email',
-)
+const outputDirectory = () =>
+  path.resolve(getDirname(import.meta.url), '../../../../var/email')
 
 async function outputDirectoryIfItDoesNotExist(): Promise<void> {
-  if (existsSync(outputDirectory)) {
+  if (existsSync(outputDirectory())) {
     return
   }
 
-  await fs.mkdir(outputDirectory, { recursive: true })
+  await fs.mkdir(outputDirectory(), { recursive: true })
 }
 
 async function outputHtmlTemplate(
@@ -21,7 +19,7 @@ async function outputHtmlTemplate(
   htmlContent: string,
 ): Promise<void> {
   await outputDirectoryIfItDoesNotExist()
-  await fs.writeFile(`${outputDirectory}/${name}.html`, htmlContent)
+  await fs.writeFile(`${outputDirectory()}/${name}.html`, htmlContent)
 }
 
 async function outputMjmlTemplate(
@@ -30,7 +28,7 @@ async function outputMjmlTemplate(
 ): Promise<void> {
   const htmlContent = await compileMjml(mjmlTemplate)
   await outputHtmlTemplate(name, htmlContent)
-  await fs.writeFile(`${outputDirectory}/${name}.mjml`, mjmlTemplate)
+  await fs.writeFile(`${outputDirectory()}/${name}.mjml`, mjmlTemplate)
 }
 
 /**

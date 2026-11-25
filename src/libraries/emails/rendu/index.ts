@@ -1,2 +1,2 @@
-export * from './mjml'
-export * from './output-template-html'
+export { compileMjml } from './mjml'
+export { createMjmlTemplateOutput } from './output-template-html'

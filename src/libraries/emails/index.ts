@@ -1,2 +1,2 @@
-export * from './email-asset-url'
-export * from './styles'
+export { emailAssetUrl } from './email-asset-url'
+export { backgroundColor, brandColor } from './styles'
