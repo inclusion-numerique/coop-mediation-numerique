@@ -1,8 +1,8 @@
 import type {
   LancerSynchronisation,
   SynchroniserUnCompte,
-} from '../domain/declencher-synchronisation'
-import { compteDeLUtilisateur } from './prisma/compte-de-l-utilisateur.query'
+} from '../../domain/declencher-synchronisation'
+import { compteDeLUtilisateur } from './compte-de-l-utilisateur.query'
 
 export const lancerSynchronisation =
   (synchroniserUnCompte: SynchroniserUnCompte): LancerSynchronisation =>

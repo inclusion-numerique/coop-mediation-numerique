@@ -1,6 +1,8 @@
 import { brevoActif } from '@/configuration/brevo'
 import { errorReporter } from '@/configuration/telemetry/serveur'
-import { synchroniserLesRolesBrevo } from '@/features/utilisateurs/abilities/synchroniser-les-roles-brevo/implementations/synchroniser-les-roles-brevo.binding'
+import { synchroniserLesRolesBrevo } from '@/features/utilisateurs/abilities/synchroniser-les-roles-brevo/domain/synchroniser-les-roles-brevo'
+import { listeDeDiffusionPorts } from '@/features/utilisateurs/abilities/synchroniser-les-roles-brevo/implementations/brevo/liste-de-diffusion.mutation'
+import { inscritsDeLaListe } from '@/features/utilisateurs/abilities/synchroniser-les-roles-brevo/implementations/prisma/inscrits-de-la-liste.query'
 import { output } from '@/libraries/console'
 
 export const executeSynchroniserLesRolesBrevo = async () => {
@@ -9,7 +11,10 @@ export const executeSynchroniserLesRolesBrevo = async () => {
     return { skipped: true }
   }
 
-  const bilan = await synchroniserLesRolesBrevo()
+  const bilan = await synchroniserLesRolesBrevo({
+    ...listeDeDiffusionPorts,
+    lireLesInscrits: inscritsDeLaListe,
+  })()
 
   output(
     `Rôles Brevo : ${bilan.inscrits} inscrits, ${bilan.importes} importés, ${bilan.retires} retirés, ${bilan.illisibles.length} illisibles, ${bilan.echecs.length} lots en échec`,

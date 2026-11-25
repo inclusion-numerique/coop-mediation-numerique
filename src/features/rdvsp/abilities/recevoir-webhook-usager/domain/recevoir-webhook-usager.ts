@@ -5,7 +5,7 @@ import type { Usager } from '@/features/rdvsp/domain/usager'
 import type { EvenementWebhook } from '@/features/rdvsp/domain/webhook/evenement-webhook'
 import type { Result } from '@/libraries/result'
 
-type ResultatWebhookUsager =
+export type ResultatWebhookUsager =
   | {
       readonly _tag: 'traite'
       readonly action: 'misAJour' | 'anonymiseEtSupprime'

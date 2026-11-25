@@ -13,7 +13,7 @@ export type AvertirDeLaSuppression = (avertissement: {
 
 type SupprimerLeCompte = (utilisateurId: UtilisateurId) => Promise<void>
 
-export type AnonymiserLesComptesInactifsPorts = {
+type AnonymiserLesComptesInactifsPorts = {
   readonly avertirDeLaSuppression: AvertirDeLaSuppression
   readonly supprimerLeCompte: SupprimerLeCompte
 }

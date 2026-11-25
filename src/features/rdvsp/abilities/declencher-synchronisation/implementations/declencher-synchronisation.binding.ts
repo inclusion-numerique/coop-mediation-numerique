@@ -5,8 +5,8 @@ import {
   declencherSynchronisation,
   type SynchroniserUnCompte,
 } from '../domain/declencher-synchronisation'
-import { lancerSynchronisation } from './lancer-synchronisation.binding'
 import { compteACible } from './prisma/compte-a-cible.query'
+import { lancerSynchronisation } from './prisma/lancer-synchronisation.adapter'
 import { marquerEchecDeSynchronisation } from './prisma/marquer-echec.mutation'
 
 export const declencherSynchronisationAvec = (

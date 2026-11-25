@@ -1,4 +1,5 @@
 import { type NextRequest, NextResponse } from 'next/server'
+import { environnementServeur } from '@/configuration/environnement/serveur'
 import { signaler } from '@/configuration/telemetry/serveur'
 import { utilisateurDuJetonDeSession } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
 import { jetonDeSessionDesCookies } from '@/features/authentification/implementations/session/session-token-from-cookies.query'
@@ -8,19 +9,28 @@ import {
   CONNECTER_COMPTE_RDV_ERRORS,
 } from '@/features/rdvsp/abilities/connecter-compte-rdv/action/connecter-compte-rdv.errors'
 import { CodeAutorisation } from '@/features/rdvsp/abilities/connecter-compte-rdv/domain/code-autorisation'
+import { connecterCompteRdv } from '@/features/rdvsp/abilities/connecter-compte-rdv/domain/connecter-compte-rdv'
 import {
   type DestinationsDeRetour,
   issuesDuRetour,
   motifDiagnostic,
 } from '@/features/rdvsp/abilities/connecter-compte-rdv/domain/retour-connexion'
-import { connecterCompteRdvBinding } from '@/features/rdvsp/abilities/connecter-compte-rdv/implementations/connecter-compte-rdv.binding'
+import { echangerCodeAutorisation } from '@/features/rdvsp/abilities/connecter-compte-rdv/implementations/api/echanger-code-autorisation.mutation'
 import { redirection } from '@/features/rdvsp/abilities/connecter-compte-rdv/implementations/next/redirection.transfer'
+import { compteRdvExistant } from '@/features/rdvsp/abilities/connecter-compte-rdv/implementations/prisma/compte-rdv-existant.query'
+import { enregistrerCompteConnecte } from '@/features/rdvsp/abilities/connecter-compte-rdv/implementations/prisma/enregistrer-compte-connecte.mutation'
 import { declencherSynchronisationAvec } from '@/features/rdvsp/abilities/declencher-synchronisation/implementations/declencher-synchronisation.binding'
 import { synchroniserCompteAvec } from '@/features/rdvsp/abilities/synchroniser-compte-rdv/implementations/synchroniser-compte-rdv.binding'
 import { synchroniserLesOrganisations } from '@/features/rdvsp/abilities/synchroniser-organisations/implementations/synchroniser-organisations.binding'
 import { synchroniserLesRdvsAvec } from '@/features/rdvsp/abilities/synchroniser-rdvs/implementations/synchroniser-rdvs.binding'
 import { UtilisateurCoopId } from '@/features/rdvsp/domain/identifiants/utilisateur-coop-id'
 import { EmailExterne } from '@/features/rdvsp/domain/identite'
+import { rdvspOAuthHostname } from '@/features/rdvsp/implementations/oauth/rdvsp-oauth.client'
+import {
+  rdvServicePublicOAuthConfig,
+  rdvServicePublicOauthCallbackUrl,
+} from '@/features/rdvsp/implementations/oauth/rdvsp-oauth-callback.client'
+import { rdvServicePublicApiBinding } from '@/features/rdvsp/implementations/rdv-service-public.binding'
 import {
   decodeSerializableState,
   type EncodedState,
@@ -68,7 +78,18 @@ export const GET = async (request: NextRequest) => {
 
   const utilisateurId = UtilisateurCoopId(user.id)
 
-  const connexion = await connecterCompteRdvBinding({
+  const connexion = await connecterCompteRdv({
+    echangerCode: echangerCodeAutorisation({
+      hostname: rdvspOAuthHostname,
+      clientId: rdvServicePublicOAuthConfig.clientId,
+      clientSecret:
+        environnementServeur().RDV_SERVICE_PUBLIC_OAUTH_CLIENT_SECRET,
+      redirectUri: rdvServicePublicOauthCallbackUrl,
+    }),
+    identifierAgent: rdvServicePublicApiBinding.identifierAgent,
+    compteExistant: compteRdvExistant,
+    enregistrer: enregistrerCompteConnecte,
+  })({
     utilisateurId,
     emailUtilisateur: EmailExterne(user.email),
     code: CodeAutorisation(code),

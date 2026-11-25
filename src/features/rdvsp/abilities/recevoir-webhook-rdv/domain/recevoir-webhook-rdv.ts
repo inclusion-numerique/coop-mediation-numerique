@@ -14,7 +14,7 @@ type RaisonNonTraitee = 'payloadInexploitable' | 'aucunAgent' | 'compteInconnu'
  * La Coop ne sait pas traiter n'est pas une défaillance du service émetteur, et
  * lui répondre en échec le ferait réessayer sans fin.
  */
-type ResultatWebhookRdv =
+export type ResultatWebhookRdv =
   | { readonly _tag: 'traite'; readonly action: 'enregistre' | 'supprime' }
   | { readonly _tag: 'ignore'; readonly raison: string }
 

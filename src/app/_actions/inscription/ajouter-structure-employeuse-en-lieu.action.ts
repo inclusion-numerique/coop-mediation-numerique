@@ -5,7 +5,9 @@ import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { consulterEmployeuseActuelle } from '@/features/employeuse/abilities/consulter-employeuse-actuelle/implementations/prisma/consulter-employeuse-actuelle.query'
 import { AJOUTER_STRUCTURE_EMPLOYEUSE_EN_LIEU_ERRORS } from '@/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/action/ajouter-structure-employeuse-en-lieu.errors'
 import { StructureEmployeuseLieuValidation } from '@/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/action/ajouter-structure-employeuse-en-lieu.validation'
-import { ajouterStructureEmployeuseEnLieuAvec } from '@/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/implementations/ajouter-structure-employeuse-en-lieu.binding'
+import { ajouterStructureEmployeuseEnLieu } from '@/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/domain/ajouter-structure-employeuse-en-lieu'
+import { geocoderLAdresse } from '@/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/implementations/ban/geocoder-l-adresse.query'
+import { lireLAdresseDeLEmployeuse } from '@/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/implementations/prisma/adresse-de-l-employeuse.query'
 import { UtilisateurId } from '@/features/inscription/domain'
 import {
   detacherDuLieuDecrit,
@@ -21,10 +23,12 @@ export const ajouterStructureEmployeuseEnLieuAction = actionBuilder()
   .execute(
     fromResult(
       async ({ user, input }) =>
-        ajouterStructureEmployeuseEnLieuAvec({
+        ajouterStructureEmployeuseEnLieu({
           consulterEmployeuseActuelle,
           rattacherAuLieuDecrit,
           detacherDuLieuDecrit,
+          lireLAdresseDeLEmployeuse,
+          geocoderLAdresse,
         })({
           userId: UtilisateurId(user.id),
           estLieuActivite: input.estLieuActivite,

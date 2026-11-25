@@ -6,7 +6,10 @@ import { revoquerPartageStatistiques } from '@/features/mediateurs/abilities/rev
 import { effacerEmpreinteRdv } from '@/features/rdvsp/abilities/effacer-empreinte-rdv/implementations/effacer-empreinte-rdv.binding'
 import { synchroniserPersonne } from '@/features/registre-des-personnes/implementations/prisma/registre-personne.mutation'
 import { retirerLesTagsDUnCompte } from '@/features/tags/abilities/retirer-les-tags-d-un-compte/implementations/prisma/retirer-les-tags-d-un-compte.mutation'
-import { anonymiserLesComptesInactifsAvec } from '@/features/utilisateurs/abilities/anonymiser-les-comptes-inactifs/implementations/anonymiser-les-comptes-inactifs.binding'
+import { anonymiserLesComptesInactifs } from '@/features/utilisateurs/abilities/anonymiser-les-comptes-inactifs/domain/anonymiser-les-comptes-inactifs'
+import { avertirDeLaSuppression } from '@/features/utilisateurs/abilities/anonymiser-les-comptes-inactifs/implementations/email/avertir-de-la-suppression.mutation'
+import { lireLesComptesAExaminer } from '@/features/utilisateurs/abilities/anonymiser-les-comptes-inactifs/implementations/prisma/comptes-a-examiner.query'
+import { noterLAvertissement } from '@/features/utilisateurs/abilities/anonymiser-les-comptes-inactifs/implementations/prisma/noter-l-avertissement.mutation'
 import { RetentionPolicy } from '@/features/utilisateurs/abilities/supprimer-compte/domain/index'
 import type { EffacementsDesAutresFeatures } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/supprimer-compte.binding'
 import { supprimerCompteAvec } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/supprimer-compte.binding'
@@ -48,9 +51,12 @@ export const executeAnonymiserLesComptesInactifs: JobExecutor<
   const simuler = job.payload?.simuler ?? false
   const maintenant = new Date()
 
-  const comptes = await anonymiserLesComptesInactifsAvec(
-    supprimerLeCompte(maintenant),
-  )({ maintenant, simuler })
+  const comptes = await anonymiserLesComptesInactifs({
+    avertirDeLaSuppression,
+    supprimerLeCompte: supprimerLeCompte(maintenant),
+    lireLesComptesAExaminer,
+    noterLAvertissement,
+  })({ maintenant, simuler })
 
   const parEtape = (etape: string) =>
     comptes
