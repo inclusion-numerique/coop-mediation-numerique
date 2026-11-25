@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/nextjs'
-import { environnementClient } from '@/configuration/environnement/client'
+import { environnementClient } from '@/configuration/environnement'
 
 // Routes à ignorer pour le tracing (haut volume, peu d'intérêt)
 const ignoredTraceRoutes = [
