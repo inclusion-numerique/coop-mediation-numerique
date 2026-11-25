@@ -1,4 +1,4 @@
 export { default as ProgressBar } from './ProgressBar'
-export * from './ProgressItemList'
-export * from './QuantifiedShareLegend'
-export * from './QuantifiedShareList'
+export { ProgressItemList } from './ProgressItemList'
+export { QuantifiedShareLegend } from './QuantifiedShareLegend'
+export { QuantifiedShareList } from './QuantifiedShareList'

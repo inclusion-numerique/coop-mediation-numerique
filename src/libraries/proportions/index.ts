@@ -3,5 +3,5 @@ export {
   allocatePercentagesFromRecords,
   computeProportion,
 } from './allocate-percentages'
-export * from './parts-fixees'
-export * from './quantified-share'
+export { partsFixees } from './parts-fixees'
+export type { LabelAndCount, QuantifiedShare } from './quantified-share'
