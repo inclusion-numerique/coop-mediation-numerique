@@ -1,1 +1,1 @@
-export * from './DataTable'
+export { DataTable } from './DataTable'

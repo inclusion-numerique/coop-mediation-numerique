@@ -1,3 +1,4 @@
-export * from './SelectAllHeaderCell'
-export * from './SelectRowCell'
-export * from './use-data-table-selection'
+export { SelectAllHeaderCell } from './SelectAllHeaderCell'
+export { SelectRowCell } from './SelectRowCell'
+export type { DataTableSelection } from './use-data-table-selection'
+export { useDataTableSelection } from './use-data-table-selection'
