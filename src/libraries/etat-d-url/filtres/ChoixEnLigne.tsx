@@ -3,7 +3,7 @@
 import classNames from 'classnames'
 import type { ParserMap } from 'nuqs'
 import { type ReactNode, useState } from 'react'
-import type { FiltreQuelconque } from '../definition/filtre'
+import type { FiltreQuelconque } from '../definition'
 import { useChampDeFiltre } from './conteneur-de-filtres'
 import { useFiltre } from './use-filtre'
 

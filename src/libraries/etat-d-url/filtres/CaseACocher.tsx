@@ -2,7 +2,7 @@
 
 import Checkbox from '@codegouvfr/react-dsfr/Checkbox'
 import type { ParserMap } from 'nuqs'
-import type { FiltreQuelconque } from '../definition/filtre'
+import type { FiltreQuelconque } from '../definition'
 import { useFiltre } from './use-filtre'
 
 export const CaseACocher = ({

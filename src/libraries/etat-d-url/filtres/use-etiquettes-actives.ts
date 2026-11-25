@@ -1,7 +1,7 @@
 'use client'
 
 import type { ParserMap } from 'nuqs'
-import { etiquettesDe, type FiltreQuelconque } from '../definition/filtre'
+import { etiquettesDe, type FiltreQuelconque } from '../definition'
 import { useFiltre } from './use-filtre'
 
 export const useEtiquettesActives = (

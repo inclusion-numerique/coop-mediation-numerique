@@ -1,12 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import {
-  type DateRange,
-  DateRangePicker,
-} from '@/libraries/ui/primitives/calendar/DateRangePicker'
-import { filtreDePeriode } from '../definition/filtre-de-periode'
-import { jourLocal, jourUtc } from '../definition/jour'
+import { type DateRange, DateRangePicker } from '@/libraries/ui/primitives'
+import { filtreDePeriode, jourLocal, jourUtc } from '../definition'
 import { useChampDeFiltre } from './conteneur-de-filtres'
 import { useFiltre } from './use-filtre'
 

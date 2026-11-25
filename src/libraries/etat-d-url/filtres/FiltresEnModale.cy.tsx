@@ -1,8 +1,5 @@
 import { derniereAdresse, monterAvecLUrl } from '@e2e/support/monter-avec-l-url'
-import {
-  filtreDeChoix,
-  filtreDeChoixUnique,
-} from '../definition/filtre-de-choix'
+import { filtreDeChoix, filtreDeChoixUnique } from '../definition'
 import { ChoixEnLigne } from './ChoixEnLigne'
 import { FiltresEnModale } from './FiltresEnModale'
 

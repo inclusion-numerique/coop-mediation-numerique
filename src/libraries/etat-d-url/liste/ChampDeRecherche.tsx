@@ -3,8 +3,8 @@
 import { SearchBar } from '@codegouvfr/react-dsfr/SearchBar'
 import classNames from 'classnames'
 import { useEffect, useRef } from 'react'
-import { rechercheLibre } from '../definition/recherche-libre'
-import { useFiltre } from '../filtres/use-filtre'
+import { rechercheLibre } from '../definition'
+import { useFiltre } from '../filtres'
 
 export const ChampDeRecherche = ({
   placeholder,

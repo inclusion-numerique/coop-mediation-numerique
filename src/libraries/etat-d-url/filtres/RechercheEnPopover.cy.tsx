@@ -1,6 +1,6 @@
 import { derniereAdresse, monterAvecLUrl } from '@e2e/support/monter-avec-l-url'
 import { z } from 'zod'
-import { filtreDeRecherche } from '../definition/filtre-de-recherche'
+import { filtreDeRecherche } from '../definition'
 import { RechercheEnPopover } from './RechercheEnPopover'
 
 const filtreDesLieux = filtreDeRecherche({

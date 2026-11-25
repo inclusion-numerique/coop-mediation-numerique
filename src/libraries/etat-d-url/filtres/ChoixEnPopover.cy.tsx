@@ -1,6 +1,6 @@
 import { derniereAdresse, monterAvecLUrl } from '@e2e/support/monter-avec-l-url'
 import { useState } from 'react'
-import { filtreDeChoix } from '../definition/filtre-de-choix'
+import { filtreDeChoix } from '../definition'
 import { ChoixEnPopover } from './ChoixEnPopover'
 
 const filtreDuType = filtreDeChoix({

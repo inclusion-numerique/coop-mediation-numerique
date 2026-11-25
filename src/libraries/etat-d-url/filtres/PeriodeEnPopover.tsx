@@ -1,6 +1,6 @@
 'use client'
 
-import { filtreDePeriode } from '../definition/filtre-de-periode'
+import { filtreDePeriode } from '../definition'
 import { FiltresEnPopover } from './FiltresEnPopover'
 import { PeriodeEnLigne } from './PeriodeEnLigne'
 

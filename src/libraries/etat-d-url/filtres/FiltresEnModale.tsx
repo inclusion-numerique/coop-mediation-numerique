@@ -5,7 +5,7 @@ import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import { useIsModalOpen } from '@codegouvfr/react-dsfr/Modal/useIsModalOpen'
 import classNames from 'classnames'
 import { type ReactNode, useId, useMemo, useState } from 'react'
-import type { FiltreQuelconque } from '../definition/filtre'
+import type { FiltreQuelconque } from '../definition'
 import { ChampsDeFiltres, useRegistreDeFiltres } from './conteneur-de-filtres'
 import { useEtiquettesActives } from './use-etiquettes-actives'
 

@@ -2,7 +2,7 @@
 
 import type { Sort } from '@arckit/resultset'
 import { parseAsString } from 'nuqs'
-import { useFiltre } from '../filtres/use-filtre'
+import { useFiltre } from '../filtres'
 
 const PARAMETRES_DU_TRI = { tri: parseAsString, ordre: parseAsString }
 

@@ -1,5 +1,5 @@
 import classNames from 'classnames'
-import type { LiensDePagination } from '../definition/composition'
+import type { LiensDePagination } from '../definition'
 import { LignesParPage } from './LignesParPage'
 import { NavigationDePages } from './NavigationDePages'
 

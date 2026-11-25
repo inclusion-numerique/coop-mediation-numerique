@@ -1,4 +1,4 @@
-import { contientSansAccent } from '@/libraries/texte/sans-accent'
+import { contientSansAccent } from '@/libraries/texte'
 
 const OPTIONS_TROUVEES = 10
 

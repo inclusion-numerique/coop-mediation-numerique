@@ -1,8 +1,8 @@
-import type { ComboBoxData } from '@/libraries/formulaire/fields-components/ComboBox'
-import type { ServerActionResult } from '@/libraries/nextjs/action/result'
-import { contientSansAccent } from '@/libraries/texte/sans-accent'
-import type { SelectOption } from '@/libraries/ui/form/utils/options'
-import type { OptionsData } from '@/libraries/ui/primitives/Options'
+import type { ComboBoxData } from '@/libraries/formulaire/fields-components'
+import type { ServerActionResult } from '@/libraries/nextjs'
+import { contientSansAccent } from '@/libraries/texte'
+import type { SelectOption } from '@/libraries/ui/form'
+import type { OptionsData } from '@/libraries/ui/primitives'
 
 export type Rechercher = (input: {
   recherche: string

@@ -6,7 +6,7 @@ import {
   parseAsString,
   useQueryStates,
 } from 'nuqs'
-import { CLES_REMISES_A_ZERO } from '../definition/composition'
+import { CLES_REMISES_A_ZERO } from '../definition'
 
 const REMISES_A_ZERO = Object.fromEntries(
   CLES_REMISES_A_ZERO.map((cle) => [cle, parseAsString]),

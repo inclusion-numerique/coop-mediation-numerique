@@ -1,5 +1,5 @@
 import { derniereAdresse, monterAvecLUrl } from '@e2e/support/monter-avec-l-url'
-import { filtreDeChoix } from '../definition/filtre-de-choix'
+import { filtreDeChoix } from '../definition'
 import { BoutonDeChoix } from './BoutonDeChoix'
 
 const filtreDuType = filtreDeChoix({

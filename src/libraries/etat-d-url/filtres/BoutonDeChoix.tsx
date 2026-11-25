@@ -4,7 +4,7 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'
 import type { ParserMap } from 'nuqs'
 import type { ReactNode } from 'react'
-import type { FiltreQuelconque } from '../definition/filtre'
+import type { FiltreQuelconque } from '../definition'
 import { useFiltre } from './use-filtre'
 
 const enListe = (valeur: unknown): readonly string[] =>
