@@ -1866,6 +1866,62 @@ const CONFINEMENT_REGLES = Object.entries(CONFINEMENT).map(
   }),
 )
 
+const MODULES_CLIENT = require('node:fs')
+  .readdirSync('src', { recursive: true })
+  .map((chemin) => `src/${chemin}`)
+  .filter(
+    (chemin) => /[.]tsx?$/.test(chemin) && !chemin.startsWith('src/generated/'),
+  )
+  .filter((chemin) =>
+    /^\s*['"]use client['"]/.test(
+      require('node:fs').readFileSync(chemin, 'utf8'),
+    ),
+  )
+
+const cheminExact = (chemin) =>
+  `^${chemin.replace(/[.()[\]$^+?*{}|\\]/g, (caractere) => (caractere === ']' ? '\\]' : `[${caractere}]`))}$`
+
+const ENVIRONNEMENTS = [
+  {
+    name: 'node-sans-dsfr-ni-css',
+    severity: 'error',
+    comment:
+      "Le code chargé par Node (domaines, implémentations, tests de composition, CLI, jobs, racine d'une library, entrées d'un module de configuration) n'atteint, même indirectement et par un import de type, ni le DSFR ni une feuille de style",
+    from: {
+      path: [
+        '/domain/',
+        '/implementations/',
+        TEST_DE_COMPOSITION,
+        '^src/cli/',
+        '^src/jobs/',
+        '^src/libraries/[^/]+/index[.]ts$',
+        '^src/configuration/[^/]+/(?:index|serveur)[.]ts$',
+      ],
+      pathNot: '^src/configuration/dsfr/',
+    },
+    to: {
+      path: ['node_modules/@codegouvfr/react-dsfr/', '[.]css$'],
+      reachable: true,
+    },
+  },
+  {
+    name: 'client-sans-serveur',
+    severity: 'error',
+    comment:
+      "Un module 'use client' n'atteint, même indirectement, ni un serveur.ts, ni configuration/prisma, ni un client généré, ni server-only",
+    from: { path: MODULES_CLIENT.map(cheminExact) },
+    to: {
+      path: [
+        '^src/configuration/[^/]+/serveur[.]ts$',
+        '^src/configuration/prisma/',
+        '^src/generated/',
+        'node_modules/server-only/',
+      ],
+      reachable: true,
+    },
+  },
+]
+
 module.exports = {
   forbidden: [
     ...GLOBAL,
@@ -1877,6 +1933,7 @@ module.exports = {
     ...JOBS_REGLES,
     ...CLI_REGLES,
     ...CONFINEMENT_REGLES,
+    ...ENVIRONNEMENTS,
   ],
   options: {
     doNotFollow: { path: ['node_modules', '^src/generated/'] },
