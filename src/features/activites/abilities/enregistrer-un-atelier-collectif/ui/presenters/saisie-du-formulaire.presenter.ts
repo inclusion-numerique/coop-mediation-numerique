@@ -1,10 +1,9 @@
-import type { z } from 'zod'
 import type { CraCollectifData } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/forms/cra-collectif.validation'
 import { minutesDeLaDuree } from '@/features/activites/ui/forms/saisie/duree.form-data'
 import { effacerLesDonneesAdministratives } from '@/features/activites/ui/forms/saisie/effacer-les-donnees-administratives.form-data'
-import type { EnregistrerUnAtelierCollectifValidation } from '../../action/enregistrer-un-atelier-collectif.validation'
+import type { SaisieDUnAtelierCollectif } from '../../action/enregistrer-un-atelier-collectif.validation'
 
-type Saisie = z.input<typeof EnregistrerUnAtelierCollectifValidation>
+type Saisie = SaisieDUnAtelierCollectif
 
 type AdresseDuFormulaire = {
   readonly commune: string

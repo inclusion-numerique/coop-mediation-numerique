@@ -1,8 +1,8 @@
-import { Page, PageSize } from '@arckit/resultset'
 import { notFound } from 'next/navigation'
 import { compterLesThematiquesAbordees } from '@/features/activites/abilities/compter-les-thematiques-abordees/implementations/prisma/thematiques-abordees.query'
 import { thematiquesAbordeesPresentees } from '@/features/activites/abilities/compter-les-thematiques-abordees/ui/presenters/thematiques-abordees.presenter'
 import { listerLHistoriqueDUnBeneficiaire } from '@/features/activites/abilities/lister-mes-activites/implementations/prisma/historique-d-un-beneficiaire.query'
+import { paginationDeLHistorique } from '@/features/activites/abilities/lister-mes-activites/ui/filtres/historique-d-un-beneficiaire.filtre'
 import {
   BeneficiaireId as BeneficiaireDesActivites,
   MediateurId as MediateurDesActivites,
@@ -44,7 +44,7 @@ const BeneficiaireInformationsPage = async (props: {
     listerLHistoriqueDUnBeneficiaire({
       mediateurId: MediateurDesActivites(user.mediateur.id),
       beneficiaireId: BeneficiaireDesActivites(beneficiaire.id),
-      pagination: { page: Page(1), pageSize: PageSize(10) },
+      pagination: paginationDeLHistorique,
       compte: user.rdvAccount?.hasOauthTokens
         ? { _tag: 'Connecte', affichesDansLaListe: true }
         : { _tag: 'NonConnecte' },

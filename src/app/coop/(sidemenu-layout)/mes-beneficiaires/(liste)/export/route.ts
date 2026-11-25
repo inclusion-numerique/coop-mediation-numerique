@@ -6,10 +6,10 @@ import { ExportBeneficiairesFilterValidations } from '@/features/beneficiaire/ab
 import type { ListerLesBeneficiairesAExporter } from '@/features/beneficiaire/abilities/exporter-beneficiaires/domain/exporter-beneficiaires'
 import { exporterBeneficiaires } from '@/features/beneficiaire/abilities/exporter-beneficiaires/domain/exporter-beneficiaires'
 import { classeurDesBeneficiaires } from '@/features/beneficiaire/abilities/exporter-beneficiaires/implementations/excel/classeur-des-beneficiaires.classeur'
+import { nomDuFichierDesBeneficiaires } from '@/features/beneficiaire/abilities/exporter-beneficiaires/ui/presenters/nom-du-fichier.presenter'
 import { listerBeneficiaires } from '@/features/beneficiaire/abilities/lister-beneficiaires/implementations/prisma/lister-beneficiaires.query'
 import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
 import { auteurDeLExport } from '@/features/utilisateurs/ui/presenters/auteur-de-l-export.presenter'
-import { dateAsIsoDay } from '@/libraries/date'
 
 const exporterBeneficiairesAvec = (
   listerBeneficiaires: ListerLesBeneficiairesAExporter,
@@ -49,7 +49,7 @@ export const GET = async (request: NextRequest) => {
   })
 
   const data = await workbook.xlsx.writeBuffer()
-  const filename = `coop-numerique_export-beneficiaires_${dateAsIsoDay(new Date())}.xlsx`
+  const filename = nomDuFichierDesBeneficiaires(new Date())
 
   return new Response(data, {
     status: 200,

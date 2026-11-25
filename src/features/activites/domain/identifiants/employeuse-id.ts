@@ -6,3 +6,5 @@ export const EmployeuseId = defineModel(
 )
 
 export type EmployeuseId = Model.TypeOf<typeof EmployeuseId>
+
+export const EmployeuseIdTextuel = z.coerce.number().pipe(EmployeuseId.schema)

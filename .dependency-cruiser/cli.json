@@ -10,6 +10,7 @@
   "configuration/environnement": ["commands", "fixtures", "github", "secrets"],
   "configuration/prisma": ["commands", "fixtures"],
   "configuration/projet": ["commands", "github"],
+  "generated/prisma": ["fixtures"],
   "libraries/chemins": ["commands", "dot-env-file.ts"],
   "libraries/fixtures": ["fixtures"],
   "nanoid": ["secrets"],
@@ -19,6 +20,5 @@
   "node:fs/promises": ["commands", "dot-env-file.ts"],
   "node:path": ["commands", "dot-env-file.ts"],
   "node:util": ["commands"],
-  "p-retry": ["get-avec-nouvelles-tentatives.ts", "secrets"],
-  "generated/prisma": ["fixtures"]
+  "p-retry": ["get-avec-nouvelles-tentatives.ts", "secrets"]
 }

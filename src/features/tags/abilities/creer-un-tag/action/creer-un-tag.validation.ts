@@ -12,3 +12,5 @@ export const CreerUnTagValidation = SaisieDuTag.extend({
 })
 
 export type Visibilite = z.output<typeof VisibiliteValidation>
+
+export type ValeursDeCreationDeTag = z.input<typeof CreerUnTagValidation>

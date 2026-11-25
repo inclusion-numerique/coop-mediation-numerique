@@ -1,6 +1,4 @@
-import { isEqual } from 'date-fns/isEqual'
-import { fr } from 'date-fns/locale/fr'
-import { dateAsIsoDay, formatInTimeZone } from '@/libraries/date'
+import { dateAsIsoDay, formatInTimeZone, fr, isEqual } from '@/libraries/date'
 import { htmlToText } from '@/libraries/texte'
 import type {
   ActiviteDeCoordination,

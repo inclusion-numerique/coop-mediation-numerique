@@ -5,8 +5,6 @@ import { useSelector } from '@tanstack/react-form'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { z } from 'zod'
-import type { SuggestionAffichee } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/ui/presenters/suggestion-de-lieu.presenter'
 import CreerLieuActiviteForm from '@/features/lieux-activite/ui/forms/creation/CreerLieuActiviteForm'
 import {
   type CreerLieuActiviteFormData,
@@ -32,19 +30,11 @@ import {
   lieuCree,
   selectionner,
 } from '../forms/panier.form-data'
+import {
+  PanierValidation,
+  type ValeursDuPanier,
+} from '../forms/panier.validation'
 import { destination } from '../presenters/destination.presenter'
-
-type FormValues = {
-  lieux: LieuAuPanier[]
-  recherche: SuggestionAffichee | null
-}
-
-const panierShape = z
-  .custom<FormValues>()
-  .refine((value) => value.lieux.length > 0, {
-    message: 'Veuillez sélectionner au moins un lieu d’activité',
-    path: ['lieux'],
-  })
 
 export type IssueDeLaSelection =
   | { readonly _tag: 'Ajout'; readonly retourHref: string }
@@ -110,9 +100,13 @@ export const AjouterDesLieuxActivitePage = ({
   const [enCreation, setEnCreation] = useState<string | null>(null)
   const [rechercheError, setRechercheError] = useState<string | null>(null)
 
+  const valeursInitiales: ValeursDuPanier = {
+    lieux: lieuxInitiaux,
+    recherche: null,
+  }
   const form = useAppForm({
-    validators: { onSubmit: panierShape },
-    defaultValues: { lieux: lieuxInitiaux, recherche: null } as FormValues,
+    validators: { onSubmit: PanierValidation },
+    defaultValues: valeursInitiales,
     onSubmit: async ({ value }) => {
       try {
         const suite =

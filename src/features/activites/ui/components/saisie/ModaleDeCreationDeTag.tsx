@@ -2,8 +2,13 @@
 
 import { useSelector } from '@tanstack/react-form'
 import { type ReactNode, useEffect } from 'react'
-import { z } from 'zod'
 import { CREER_UN_TAG_DU_CRA_KEY } from '@/features/activites/action/creer-un-tag.key'
+import {
+  CreationDeTagValidation,
+  DESCRIPTION_LONGUEUR_MAX,
+  NOM_LONGUEUR_MAX,
+  type ValeursDeCreationDeTag,
+} from '@/features/activites/ui/forms/creation-de-tag.validation'
 import {
   type Tag,
   tagDuFormulaire,
@@ -15,32 +20,6 @@ import { createDynamicModal } from '@/libraries/ui/components'
 import { RedAsterisk } from '@/libraries/ui/form'
 import { createToast } from '@/libraries/ui/toast'
 import { buttonLoadingClassname } from '@/libraries/ui/utils'
-
-const NOM_LONGUEUR_MAX = 80
-const DESCRIPTION_LONGUEUR_MAX = 280
-
-const CreationDeTagValidation = z.object({
-  nom: z
-    .string()
-    .trim()
-    .min(3, 'Le nom du tag doit faire plus de 3 caractères')
-    .max(
-      NOM_LONGUEUR_MAX,
-      `Le nom du tag doit faire moins de ${NOM_LONGUEUR_MAX} caractères`,
-    ),
-  description: z
-    .string()
-    .max(
-      DESCRIPTION_LONGUEUR_MAX,
-      `La description du tag doit faire moins de ${DESCRIPTION_LONGUEUR_MAX} caractères`,
-    )
-    .nullable(),
-  visibilite: z.discriminatedUnion('_tag', [
-    z.object({ _tag: z.literal('Personnel') }),
-    z.object({ _tag: z.literal('Equipe'), coordinateurId: z.guid() }),
-    z.object({ _tag: z.literal('Departemental') }),
-  ]),
-})
 
 export const CreationDeTagDuCra = createDynamicModal<{
   nom: string
@@ -120,7 +99,7 @@ export const ModaleDeCreationDeTag = ({
 }) => {
   const { nom, quandCree } = CreationDeTagDuCra.useState()
 
-  const valeursInitiales: z.input<typeof CreationDeTagValidation> = {
+  const valeursInitiales: ValeursDeCreationDeTag = {
     nom,
     description: null,
     visibilite: { _tag: 'Personnel' },

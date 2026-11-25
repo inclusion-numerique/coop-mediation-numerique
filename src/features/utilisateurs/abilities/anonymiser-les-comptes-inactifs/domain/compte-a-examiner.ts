@@ -1,4 +1,3 @@
-import { max } from 'date-fns/max'
 import {
   type AdresseCourriel,
   coordinateurDe,
@@ -8,6 +7,7 @@ import {
   type Rattachements,
   type UtilisateurId,
 } from '@/features/utilisateurs/domain'
+import { max } from '@/libraries/date'
 
 export type PresenceMediateur = {
   readonly dernierCompteRendu: Jalon

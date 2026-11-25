@@ -99,7 +99,10 @@ export { ActiviteDeCoordinationId } from './identifiants/activite-de-coordinatio
 export { ActiviteId } from './identifiants/activite-id'
 export { BeneficiaireId } from './identifiants/beneficiaire-id'
 export { CoordinateurId } from './identifiants/coordinateur-id'
-export { EmployeuseId } from './identifiants/employeuse-id'
+export {
+  EmployeuseId,
+  EmployeuseIdTextuel,
+} from './identifiants/employeuse-id'
 export { IdentifiantCraV1 } from './identifiants/identifiant-cra-v1'
 export { LieuActiviteId } from './identifiants/lieu-activite-id'
 export { MediateurId } from './identifiants/mediateur-id'

@@ -1,6 +1,5 @@
-import type { z } from 'zod'
 import type { Prisma } from '@/generated/prisma/client'
-import type { Model } from '@/libraries/model'
+import type { Model, Schema } from '@/libraries/model'
 import type { Result } from '@/libraries/result'
 import {
   type ActiviteDeCoordination,
@@ -98,12 +97,12 @@ const precisionDe = (id: string, precision: string | null): Precision => {
 }
 
 const choixDe =
-  <S extends z.ZodType>(modele: Model<S>) =>
+  <S extends Schema>(modele: Model<S>) =>
   (
     id: string,
     valeur: string | null,
     precision: string | null,
-  ): Choix<z.output<S>> => {
+  ): Choix<Model.TypeOf<Model<S>>> => {
     if (valeur === null) {
       throw new ActiviteDeCoordinationIllisible(id, 'choix absent')
     }
@@ -117,12 +116,12 @@ const choixDe =
   }
 
 const choixMultiplesDeLaLigne =
-  <S extends z.ZodType>(modele: Model<S>) =>
+  <S extends Schema>(modele: Model<S>) =>
   (
     id: string,
     valeurs: readonly string[],
     precision: string | null,
-  ): ChoixMultiples<z.output<S>> => {
+  ): ChoixMultiples<Model.TypeOf<Model<S>>> => {
     const avecAutre = valeurs.includes(AUTRE)
     if (!avecAutre && renseigne(precision) !== null) {
       throw new ActiviteDeCoordinationIllisible(id, 'précision sans « autre »')

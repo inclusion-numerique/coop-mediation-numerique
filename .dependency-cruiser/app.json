@@ -1,10 +1,5 @@
 {
   "routes": {
-    "@arckit/resultset": [
-      "app/administration/utilisateurs/[id]/page.tsx",
-      "app/coop/(full-width-layout)/mon-reseau/[departement]/acteurs/[userId]/page.tsx",
-      "app/coop/(sidemenu-layout)/mes-beneficiaires/[beneficiaireId]/(consultation)/(informations)/page.tsx"
-    ],
     "@codegouvfr/react-dsfr": ["app/layout.tsx"],
     "configuration/ban/index.ts": [
       "app/api/auth/[...nextauth]/route.ts",
@@ -29,40 +24,14 @@
     "libraries/chemin-interne": [
       "app/(public)/(authentication)/deconnexion/start/route.ts"
     ],
-    "libraries/date": [
-      "app/administration/clients-api/creer/page.tsx",
-      "app/administration/utilisateurs/[id]/export/accompagnements/route.ts",
-      "app/administration/utilisateurs/[id]/export/statistiques/route.ts",
-      "app/administration/utilisateurs/export/route.ts",
-      "app/coop/(full-width-layout)/mes-equipes/[coordinateurId]/export/route.ts",
-      "app/coop/(sidemenu-layout)/mes-activites/export/route.ts",
-      "app/coop/(sidemenu-layout)/mes-beneficiaires/(liste)/export/route.ts",
-      "app/coop/(sidemenu-layout)/mes-coordinations/export/route.ts",
-      "app/coop/(sidemenu-layout)/mes-statistiques/export/[shareId]/route.ts",
-      "app/coop/(sidemenu-layout)/mes-statistiques/export/route.ts"
-    ],
     "libraries/departement": [
       "app/coop/(full-width-layout)/mon-reseau/[departement]/acteurs/[userId]/page.tsx",
       "app/coop/(full-width-layout)/mon-reseau/[departement]/lieux/[id]/page.tsx",
       "app/coop/(sidemenu-layout)/mon-reseau/[departement]/page.tsx",
       "app/coop/(sidemenu-layout)/mon-reseau/page.tsx"
     ],
-    "libraries/etat-encode": [
-      "app/(public)/(authentication)/deconnexion/callback/route.ts",
-      "app/(public)/(authentication)/deconnexion/start/route.ts",
-      "app/api/rdv-service-public/auth/callback/route.ts",
-      "app/coop/(full-width-layout)/mes-beneficiaires/nouveau/page.tsx",
-      "app/invitations/[data]/page.tsx"
-    ],
     "libraries/insee": [
       "app/coop/(sidemenu-layout)/mes-outils/[slug]/page.tsx"
-    ],
-    "libraries/json-api": [
-      "app/api/v1/activites/route.ts",
-      "app/api/v1/archives-v1/cras/route.ts",
-      "app/api/v1/health/route.ts",
-      "app/api/v1/structures/route.ts",
-      "app/api/v1/utilisateurs/route.ts"
     ],
     "libraries/texte": [
       "app/administration/utilisateurs/export/route.ts",
@@ -75,8 +44,7 @@
     "uuid": [
       "app/(public)/(authentication)/deconnexion/start/route.ts",
       "app/coop/(full-width-layout)/mes-beneficiaires/importer/analyse/route.ts"
-    ],
-    "zod": ["app/api/ppg/accompagnements-departements.csv/route.ts"]
+    ]
   },
   "server-actions": {
     "configuration/ban/index.ts": [
@@ -90,39 +58,14 @@
       "app/_actions/rdvsp/creer-activite-depuis-rdv.action.ts",
       "app/_actions/rdvsp/prendre-rendez-vous.action.ts"
     ],
-    "features/activites/abilities/rechercher-les-employeuses-des-activites/ui/presenters/options-d-employeuses.presenter.ts": [
-      "app/_actions/activites/rechercher-employeuses-des-activites.action.ts",
-      "app/_actions/statistiques/rechercher-les-employeuses-du-partage.action.ts"
-    ],
-    "features/activites/abilities/rechercher-les-lieux-des-statistiques/ui/presenters/options-de-lieux.presenter.ts": [
-      "app/_actions/activites/rechercher-les-lieux-de-mes-activites.action.ts",
-      "app/_actions/statistiques/rechercher-les-lieux-de-mes-statistiques.action.ts",
-      "app/_actions/statistiques/rechercher-les-lieux-du-partage.action.ts",
-      "app/_actions/statistiques/rechercher-les-lieux-nationaux.action.ts"
-    ],
     "features/activites/fixtures/semer-les-cras-de-demonstration.ts": [
       "app/_actions/utilisateurs/reinitialiser-une-fixture.action.ts"
-    ],
-    "features/activites/ui/presenters/saisie/url-de-saisie-depuis-un-rendez-vous.presenter.ts": [
-      "app/_actions/rdvsp/creer-activite-depuis-rdv.action.ts"
     ],
     "features/beneficiaire/fixtures/beneficiaires-de-demonstration.ts": [
       "app/_actions/utilisateurs/reinitialiser-une-fixture.action.ts"
     ],
     "features/beneficiaire/fixtures/semer-les-beneficiaires-de-demonstration.ts": [
       "app/_actions/utilisateurs/reinitialiser-une-fixture.action.ts"
-    ],
-    "features/employeuse/abilities/rechercher-employeuse/ui/presenters/option-de-la-commune.presenter.ts": [
-      "app/_actions/utilisateurs/rechercher-des-communes.action.ts"
-    ],
-    "features/employeuse/ui/presenters/employeuse-recherchee.presenter.ts": [
-      "app/_actions/employeuse/rechercher-structure-employeuse.action.ts"
-    ],
-    "features/employeuse/ui/presenters/employeuse.presenter.ts": [
-      "app/_actions/utilisateurs/rechercher-des-employeuses.action.ts"
-    ],
-    "features/equipe/abilities/lister-les-membres-a-filtrer/ui/presenters/options-de-membres.presenter.ts": [
-      "app/_actions/equipe/rechercher-des-membres.action.ts"
     ],
     "features/equipe/fixtures/semer-les-coordinations-de-demonstration.ts": [
       "app/_actions/utilisateurs/reinitialiser-une-fixture.action.ts"
@@ -132,20 +75,6 @@
     ],
     "features/lieux-activite/fixtures/lieux-de-demonstration.ts": [
       "app/_actions/utilisateurs/reinitialiser-une-fixture.action.ts"
-    ],
-    "features/tags/abilities/fusionner-un-tag/ui/presenters/destinations.presenter.ts": [
-      "app/_actions/tags/rechercher-des-destinations.action.ts"
-    ],
-    "features/tags/abilities/lire-les-tags-visibles/ui/presenters/tag-collectif.presenter.ts": [
-      "app/_actions/statistiques/rechercher-les-tags-collectifs.action.ts"
-    ],
-    "features/tags/ui/presenters/tag-affiche.presenter.ts": [
-      "app/_actions/statistiques/rechercher-les-tags-du-partage.action.ts",
-      "app/_actions/tags/creer-un-tag.action.ts",
-      "app/_actions/tags/rechercher-des-tags.action.ts"
-    ],
-    "features/utilisateurs/abilities/lister-les-utilisateurs/ui/presenters/coordinateur-a-choisir.presenter.ts": [
-      "app/_actions/utilisateurs/rechercher-des-coordinateurs.action.ts"
     ],
     "features/utilisateurs/fixtures/personas.ts": [
       "app/_actions/utilisateurs/reinitialiser-une-fixture.action.ts"

@@ -69,3 +69,7 @@ export const EnregistrerUnAccompagnementIndividuelValidation = z
       ),
     }
   })
+
+export type SaisieDUnAccompagnementIndividuel = z.input<
+  typeof EnregistrerUnAccompagnementIndividuelValidation
+>

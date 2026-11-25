@@ -1,4 +1,3 @@
-import { z } from 'zod'
 import {
   filtreDeChoix,
   filtreDeChoixUnique,
@@ -10,6 +9,7 @@ import {
   type CriteresDesActivites,
   type CriteresDesStatistiques,
   EmployeuseId,
+  EmployeuseIdTextuel,
   FiltreDeDemarche,
   FiltreDeDispositif,
   FiltreDOrigine,
@@ -115,7 +115,7 @@ export const filtreDesEmployeuses = filtreDeRecherche({
   titre: 'Structures employeuses',
   prefixe: 'Structure employeuse : ',
   cle: 'structuresEmployeuses',
-  schema: z.coerce.number().pipe(EmployeuseId.schema),
+  schema: EmployeuseIdTextuel,
 })
 
 export const filtreDesMediateurs = filtreDeRecherche({

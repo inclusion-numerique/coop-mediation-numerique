@@ -90,3 +90,7 @@ export const EnregistrerUnAtelierCollectifValidation = z
       anonymes: anonymes.data,
     }
   })
+
+export type SaisieDUnAtelierCollectif = z.input<
+  typeof EnregistrerUnAtelierCollectifValidation
+>

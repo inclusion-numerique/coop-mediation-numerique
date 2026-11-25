@@ -1,11 +1,10 @@
-import type { z } from 'zod'
 import type { CraAnimationData } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/forms/cra-animation.validation'
 import type { CraEvenementData } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/forms/cra-evenement.validation'
 import type { CraPartenariatData } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/forms/cra-partenariat.validation'
 import { minutesDeLaDuree } from '@/features/activites/ui/forms/saisie/duree.form-data'
-import type { EnregistrerUneActiviteDeCoordinationValidation } from '../../action/enregistrer-une-activite-de-coordination.validation'
+import type { SaisieDUneActiviteDeCoordination } from '../../action/enregistrer-une-activite-de-coordination.validation'
 
-type Saisie = z.input<typeof EnregistrerUneActiviteDeCoordinationValidation>
+type Saisie = SaisieDUneActiviteDeCoordination
 
 const communDu = ({
   id,

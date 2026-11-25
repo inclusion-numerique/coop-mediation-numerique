@@ -4,12 +4,12 @@ import { jetonDeSessionDesCookies } from '@/features/authentification/implementa
 import { classeurDesMembresAvec } from '@/features/equipe/abilities/exporter-les-membres/implementations/excel/classeur-equipe.classeur'
 import { exporterLesMembres } from '@/features/equipe/abilities/exporter-les-membres/implementations/prisma/exporter-les-membres.query'
 import { membreExporte } from '@/features/equipe/abilities/exporter-les-membres/ui/presenters/membre-exporte.presenter'
+import { nomDuFichierDeLEquipe } from '@/features/equipe/abilities/exporter-les-membres/ui/presenters/nom-du-fichier.presenter'
 import { estMembreActif } from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/lister-les-membres.query'
 import { CoordinateurId, MediateurId } from '@/features/equipe/domain'
 import { gestionnaireDe } from '@/features/equipe/implementations/session'
 import { criteresDeLEquipe } from '@/features/equipe/ui/filtres/equipe.filtre'
 import { auteurDeLExport } from '@/features/utilisateurs/ui/presenters/auteur-de-l-export.presenter'
-import { dateAsIsoDay } from '@/libraries/date'
 
 export const GET = async (
   request: NextRequest,
@@ -51,7 +51,7 @@ export const GET = async (
     headers: {
       'Content-Type':
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      'Content-Disposition': `attachment; filename="coop-numerique_export-equipe_${dateAsIsoDay(new Date())}.xlsx"`,
+      'Content-Disposition': `attachment; filename="${nomDuFichierDeLEquipe(new Date())}"`,
     },
   })
 }

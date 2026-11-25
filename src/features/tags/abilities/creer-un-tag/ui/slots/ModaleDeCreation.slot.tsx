@@ -3,7 +3,6 @@
 import { useStore } from '@tanstack/react-form'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
-import type { z } from 'zod'
 import { handleSubmit, useAppForm } from '@/libraries/formulaire/hooks'
 import { inject } from '@/libraries/nextjs/injection'
 import { createDynamicModal } from '@/libraries/ui/components'
@@ -16,7 +15,10 @@ import {
 } from '../../../../domain'
 import { APPARENCE_DE_VISIBILITE } from '../../../../ui/components/ApparenceDeVisibilite'
 import { CREER_UN_TAG_ACTION_KEY } from '../../action/creer-un-tag.key'
-import { CreerUnTagValidation } from '../../action/creer-un-tag.validation'
+import {
+  CreerUnTagValidation,
+  type ValeursDeCreationDeTag,
+} from '../../action/creer-un-tag.validation'
 import {
   cleDeLaVisibilite,
   type OptionDeVisibilite,
@@ -53,7 +55,7 @@ export const ModaleDeCreation = ({
   const { nom } = CreationDUnTag.useState()
   const router = useRouter()
 
-  const valeursInitiales: z.input<typeof CreerUnTagValidation> = {
+  const valeursInitiales: ValeursDeCreationDeTag = {
     nom,
     description: null,
     visibilite: { _tag: 'Personnel' },

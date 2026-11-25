@@ -1,5 +1,7 @@
 import { z } from 'zod'
 
+export type Schema = z.ZodType
+
 export interface Model<S extends z.ZodType> {
   (input: z.input<S>): z.output<S>
   readonly schema: S

@@ -141,3 +141,17 @@ export type ModifierLaFicheDuLieuSaisie = z.infer<
 >
 
 export type SaisieDeSection = ModifierLaFicheDuLieuSaisie['modification']
+
+export type ValeursDeTypesDePublicsAccueillis = z.input<
+  typeof TypesDePublicsAccueillisSaisie
+>
+
+export type ValeursDeDescription = z.input<typeof DescriptionSaisie>
+
+export type ValeursDeModalitesAccesAuService = z.input<
+  typeof ModalitesAccesAuServiceSaisie
+>
+
+export type ValeursDeServicesEtAccompagnement = z.input<
+  typeof ServicesEtAccompagnementSaisie
+>

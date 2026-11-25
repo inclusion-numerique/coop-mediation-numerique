@@ -1,14 +1,16 @@
 'use client'
 
 import { useStore } from '@tanstack/react-form'
-import type { z } from 'zod'
 import {
   modaliteAccompagnementOptions,
   serviceOptions,
 } from '@/features/lieux-activite/ui/labels/options-du-lieu.labels'
 import { EditCardTanStack } from '@/libraries/formulaire/form-components'
 import { useAppForm } from '@/libraries/formulaire/hooks'
-import { ServicesEtAccompagnementSaisie } from '../../../action/modifier-la-fiche-du-lieu.validation'
+import {
+  ServicesEtAccompagnementSaisie,
+  type ValeursDeServicesEtAccompagnement,
+} from '../../../action/modifier-la-fiche-du-lieu.validation'
 import type { EnregistrerUneSection } from '../../hooks/use-enregistrement-de-section'
 import { useEnregistrementDeSection } from '../../hooks/use-enregistrement-de-section'
 import type { ServicesEtAccompagnementAffiches } from '../../presenters/services-et-accompagnement.presenter'
@@ -26,7 +28,7 @@ export const SectionServicesEtAccompagnement = ({
 }) => {
   const soumettre = useEnregistrementDeSection(id, enregistrer)
 
-  const defaultValues: z.input<typeof ServicesEtAccompagnementSaisie> = {
+  const defaultValues: ValeursDeServicesEtAccompagnement = {
     section: 'ServicesEtAccompagnement',
     services: [...servicesEtAccompagnement.services],
     modalitesAccompagnement: [

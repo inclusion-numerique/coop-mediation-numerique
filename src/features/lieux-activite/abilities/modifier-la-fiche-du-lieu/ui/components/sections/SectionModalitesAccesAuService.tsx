@@ -1,7 +1,6 @@
 'use client'
 
 import { useStore } from '@tanstack/react-form'
-import type { z } from 'zod'
 import { fraisAChargeOptions } from '@/features/lieux-activite/ui/labels/options-du-lieu.labels'
 import { EditCardTanStack } from '@/libraries/formulaire/form-components'
 import { useAppForm } from '@/libraries/formulaire/hooks'
@@ -9,6 +8,7 @@ import { telephoneDisplayString } from '@/libraries/telephone'
 import {
   ModalitesAccesAuServiceFormValidation,
   ModalitesAccesAuServiceSaisie,
+  type ValeursDeModalitesAccesAuService,
 } from '../../../action/modifier-la-fiche-du-lieu.validation'
 import type { EnregistrerUneSection } from '../../hooks/use-enregistrement-de-section'
 import { useEnregistrementDeSection } from '../../hooks/use-enregistrement-de-section'
@@ -27,7 +27,7 @@ export const SectionModalitesAccesAuService = ({
 }) => {
   const soumettre = useEnregistrementDeSection(id, enregistrer)
 
-  const defaultValues: z.input<typeof ModalitesAccesAuServiceSaisie> = {
+  const defaultValues: ValeursDeModalitesAccesAuService = {
     section: 'ModalitesAccesAuService',
     surPlace: modalitesAccesAuService.surPlace,
     parTelephone: modalitesAccesAuService.parTelephone,

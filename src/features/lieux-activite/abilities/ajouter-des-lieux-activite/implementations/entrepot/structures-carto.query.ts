@@ -20,7 +20,6 @@ import {
   Typologie,
   Typologies,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import { z } from 'zod'
 import { entrepotPrismaClient } from '@/configuration/prisma'
 import { IdsCartographieNationale } from '@/features/lieux-activite/domain/cartographie-nationale/ids-cartographie-nationale'
 import { coopCartographieNationaleSource } from '@/features/lieux-activite/domain/cartographie-nationale/sources'
@@ -36,6 +35,7 @@ import {
   telephoneValide,
 } from '@/features/lieux-activite/domain/saisie/saisie'
 import type { LieuCarto } from '../../domain'
+import { ContactDeLaLigne } from './contact-de-la-ligne.payload'
 
 const lieuSelect = {
   structureCartographieNationaleId: true,
@@ -76,17 +76,6 @@ type LieuRow = {
   fraisACharge: string[]
   itinerance: string[]
 }
-
-const ContactDeLaLigne = z
-  .object({
-    telephone: z.string().nullish().catch(null),
-    courriels: z
-      .object({ email: z.string().nullish().catch(null) })
-      .nullish()
-      .catch(null),
-    site_web: z.string().nullish().catch(null),
-  })
-  .catch({ telephone: null, courriels: null, site_web: null })
 
 const contactDeLaLigne = (contact: unknown): Contact => {
   const lu = ContactDeLaLigne.parse(contact)

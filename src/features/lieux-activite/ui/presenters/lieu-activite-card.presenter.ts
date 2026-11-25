@@ -1,10 +1,6 @@
 import type { Adresse } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import { format } from 'date-fns/format'
-import { isAfter } from 'date-fns/isAfter'
-import { isBefore } from 'date-fns/isBefore'
-import { subDays } from 'date-fns/subDays'
-import { subYears } from 'date-fns/subYears'
 import { libelleDeLaSource } from '@/features/lieux-activite/domain/cartographie-nationale/sources'
+import { format, isAfter, isBefore, subDays, subYears } from '@/libraries/date'
 import { pluriel } from '@/libraries/pluriel'
 import { estPublie } from '../../domain/cartographie-nationale/visibilite-cartographie'
 import type {

@@ -1,4 +1,22 @@
 export {
+  addDays,
+  addMonths,
+  addYears,
+  differenceInMonths,
+  format,
+  fr,
+  isAfter,
+  isBefore,
+  isEqual,
+  max,
+  parseISO,
+  startOfMonth,
+  subDays,
+  subMonths,
+  subYears,
+  TZDate,
+} from './calendrier'
+export {
   dateAsDay,
   dateAsDayConventional,
   dateAsDayFullWordsInTimezone,

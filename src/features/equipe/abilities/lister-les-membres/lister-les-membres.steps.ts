@@ -1,7 +1,6 @@
 import assert from 'node:assert'
 import { Page, PageSize } from '@arckit/resultset'
 import { Given, Then, When } from '@cucumber/cucumber'
-import { subDays } from 'date-fns/subDays'
 import { type MembresDeLEquipe } from '@/features/equipe/abilities/lister-les-membres/domain/index'
 import { listerLesMembres } from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/lister-les-membres.query'
 import { CoordinateurId, type Lecteur } from '@/features/equipe/domain'
@@ -14,6 +13,7 @@ import {
   semerUnMediateurDEquipe,
 } from '@/features/equipe/equipe.cucumber'
 import { criteresDeLEquipe } from '@/features/equipe/ui/filtres/equipe.filtre'
+import { subDays } from '@/libraries/date'
 
 const contexte: {
   coordinateur?: CoordinateurSeme

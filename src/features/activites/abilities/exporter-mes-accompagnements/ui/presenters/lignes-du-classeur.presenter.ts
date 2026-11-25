@@ -1,6 +1,4 @@
-import { isEqual } from 'date-fns/isEqual'
-import { fr } from 'date-fns/locale/fr'
-import { formatInTimeZone } from '@/libraries/date'
+import { formatInTimeZone, fr, isEqual } from '@/libraries/date'
 import { htmlToText } from '@/libraries/texte'
 import { booleanToYesNoLabel } from '@/libraries/ui'
 import { valeurDe } from '../../../../../../libraries/collections'

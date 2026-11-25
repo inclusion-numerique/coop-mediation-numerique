@@ -4,6 +4,7 @@ import { classeurDeMesAccompagnements } from '@/features/activites/abilities/exp
 import { exporterMesAccompagnements } from '@/features/activites/abilities/exporter-mes-accompagnements/implementations/prisma/accompagnements-a-exporter.query'
 import { nomsDesFiltresExportes } from '@/features/activites/abilities/exporter-mes-accompagnements/implementations/prisma/noms-des-filtres-exportes.query'
 import { classeurPresenteAvec } from '@/features/activites/abilities/exporter-mes-accompagnements/ui/presenters/export.presenter'
+import { nomDuFichierDesAccompagnements } from '@/features/activites/abilities/exporter-mes-accompagnements/ui/presenters/nom-du-fichier.presenter'
 import { tagsUtilisablesDepuis } from '@/features/activites/domain/fournisseurs-de-la-saisie'
 import { criteresDesFiltres } from '@/features/activites/ui/filtres/activites.filtre'
 import { filtresDeToutesLesActivites } from '@/features/activites/ui/filtres/toutes-les-activites.filtre'
@@ -25,7 +26,6 @@ import { tagsVisiblesPar } from '@/features/tags/abilities/lire-les-tags-visible
 import { acteurDe } from '@/features/tags/domain'
 import { UtilisateurId } from '@/features/utilisateurs/domain'
 import { auteurDeLExport } from '@/features/utilisateurs/ui/presenters/auteur-de-l-export.presenter'
-import { dateAsIsoDay } from '@/libraries/date'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -90,7 +90,7 @@ export const GET = async (
     headers: {
       'Content-Type':
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      'Content-Disposition': `attachment; filename="coop-numerique_accompagnements_${dateAsIsoDay(new Date())}.xlsx"`,
+      'Content-Disposition': `attachment; filename="${nomDuFichierDesAccompagnements(new Date())}"`,
     },
   })
 }

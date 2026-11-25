@@ -1,4 +1,3 @@
-import { Sort } from '@arckit/resultset'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { inviterDesMembresAction } from '@/app/_actions/equipe/inviter-des-membres.action'
@@ -20,6 +19,7 @@ import ActeurStructureEmployeuse from '@/features/employeuse/ui/slots/ActeurStru
 import { SUPPRIMER_UN_ANCIEN_MEMBRE_ACTION_KEY } from '@/features/equipe/abilities/supprimer-un-ancien-membre/action/supprimer-un-ancien-membre.key'
 import { default as BoutonSupprimerUnAncienMembre } from '@/features/equipe/abilities/supprimer-un-ancien-membre/ui/slots/BoutonSupprimerUnAncienMembre.slot'
 import { listerLesLieuxDuMediateur } from '@/features/lieux-activite/abilities/lister-les-lieux-du-mediateur/implementations/prisma/lister-les-lieux-du-mediateur.query'
+import { triDesLieuxDuMediateur } from '@/features/lieux-activite/abilities/lister-les-lieux-du-mediateur/ui/filtres/lieux-du-mediateur.filtre'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
 import { MediateurId as MediateurIdDesLieux } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
 import { LieuxRepliables } from '@/features/lieux-activite/ui/slots/LieuxRepliables.slot'
@@ -104,7 +104,7 @@ const Page = async ({ params }: Parametres) => {
       ? null
       : listerLesLieuxDuMediateur({
           mediateurId: MediateurIdDesLieux(mediation.mediateurId),
-          tri: Sort('nom', 'asc'),
+          tri: triDesLieuxDuMediateur,
         }),
     contratVisible(acteur, regard)
       ? consulterLeContrat({

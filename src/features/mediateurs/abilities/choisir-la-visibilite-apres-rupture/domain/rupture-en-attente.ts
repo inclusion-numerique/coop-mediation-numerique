@@ -1,6 +1,4 @@
-import { TZDate } from '@date-fns/tz'
-import { isAfter } from 'date-fns/isAfter'
-import { isBefore } from 'date-fns/isBefore'
+import { isAfter, isBefore, TZDate } from '@/libraries/date'
 
 export type EtatContrat =
   | { readonly _tag: 'EnCours' }

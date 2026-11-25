@@ -1,5 +1,4 @@
-import { format } from 'date-fns/format'
-import { subDays } from 'date-fns/subDays'
+import { format, subDays } from '@/libraries/date'
 import { failure, type Result, success } from '@/libraries/result'
 import {
   type Acteur,

@@ -1,11 +1,13 @@
 'use client'
 
 import { useStore } from '@tanstack/react-form'
-import type { z } from 'zod'
 import { RESUME_MAX_LENGTH } from '@/features/lieux-activite/domain/saisie/regles-de-saisie'
 import { EditCardTanStack } from '@/libraries/formulaire/form-components'
 import { useAppForm } from '@/libraries/formulaire/hooks'
-import { DescriptionSaisie } from '../../../action/modifier-la-fiche-du-lieu.validation'
+import {
+  DescriptionSaisie,
+  type ValeursDeDescription,
+} from '../../../action/modifier-la-fiche-du-lieu.validation'
 import type { EnregistrerUneSection } from '../../hooks/use-enregistrement-de-section'
 import { useEnregistrementDeSection } from '../../hooks/use-enregistrement-de-section'
 import type { DescriptionAffichee } from '../../presenters/description.presenter'
@@ -23,7 +25,7 @@ export const SectionDescription = ({
 }) => {
   const soumettre = useEnregistrementDeSection(id, enregistrer)
 
-  const defaultValues: z.input<typeof DescriptionSaisie> = {
+  const defaultValues: ValeursDeDescription = {
     section: 'Description',
     presentationResume: description.presentationResume,
     presentationDetail: description.presentationDetail,

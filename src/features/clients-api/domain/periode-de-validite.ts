@@ -1,5 +1,4 @@
-import { isAfter } from 'date-fns/isAfter'
-import { isBefore } from 'date-fns/isBefore'
+import { isAfter, isBefore } from '@/libraries/date'
 
 export type PeriodeDeValidite = {
   readonly debut: Date

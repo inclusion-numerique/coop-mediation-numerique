@@ -8,6 +8,7 @@ import { lieuxChoisis } from '@/features/lieux-activite/abilities/lister-les-opt
 import { classeurDesUtilisateurs } from '@/features/utilisateurs/abilities/exporter-les-utilisateurs/implementations/excel/classeur-des-utilisateurs.classeur'
 import { utilisateursAExporter } from '@/features/utilisateurs/abilities/exporter-les-utilisateurs/implementations/prisma/utilisateurs-a-exporter.query'
 import { colonnesDeLExport } from '@/features/utilisateurs/abilities/exporter-les-utilisateurs/ui/presenters/colonnes-de-l-export.presenter'
+import { nomDuFichierDesUtilisateurs } from '@/features/utilisateurs/abilities/exporter-les-utilisateurs/ui/presenters/nom-du-fichier.presenter'
 import { coordinateursChoisis } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/implementations/prisma'
 import { optionDuCoordinateur } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui/presenters/coordinateur-a-choisir.presenter'
 import { optionsDesFiltres } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui/presenters/options-des-filtres.presenter'
@@ -17,7 +18,6 @@ import {
 } from '@/features/utilisateurs/ui/filtres/utilisateurs.filtre'
 import { auteurDeLExport } from '@/features/utilisateurs/ui/presenters/auteur-de-l-export.presenter'
 import { barreDesUtilisateurs } from '@/features/utilisateurs/ui/presenters/barre-des-utilisateurs.presenter'
-import { dateAsIsoDay } from '@/libraries/date'
 import { motsDe } from '@/libraries/texte'
 
 export const dynamic = 'force-dynamic'
@@ -70,7 +70,7 @@ export const GET = async (request: NextRequest) => {
     headers: {
       'Content-Type':
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      'Content-Disposition': `attachment; filename="coop-numerique_utilisateurs_${dateAsIsoDay(maintenant)}.xlsx"`,
+      'Content-Disposition': `attachment; filename="${nomDuFichierDesUtilisateurs(maintenant)}"`,
     },
   })
 }

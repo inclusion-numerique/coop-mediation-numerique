@@ -3,6 +3,7 @@ import { tagsRappeles } from '@/features/activites/abilities/exporter-les-activi
 import { classeurDeMesCoordinations } from '@/features/activites/abilities/exporter-les-activites-de-coordination/implementations/excel/classeur-de-mes-coordinations.classeur'
 import { exporterLesActivitesDeCoordination } from '@/features/activites/abilities/exporter-les-activites-de-coordination/implementations/prisma/activites-a-exporter.query'
 import { lignesDesCoordinations } from '@/features/activites/abilities/exporter-les-activites-de-coordination/ui/presenters/lignes-des-coordinations.presenter'
+import { nomDuFichierDesCoordinations } from '@/features/activites/abilities/exporter-les-activites-de-coordination/ui/presenters/nom-du-fichier.presenter'
 import { CoordinateurId } from '@/features/activites/domain'
 import { tagsUtilisablesDepuis } from '@/features/activites/domain/fournisseurs-de-la-saisie'
 import {
@@ -15,7 +16,6 @@ import { jetonDeSessionDesCookies } from '@/features/authentification/implementa
 import { tagsVisiblesPar } from '@/features/tags/abilities/lire-les-tags-visibles/implementations/prisma/tags-visibles-par.query'
 import { acteurDe } from '@/features/tags/domain'
 import { auteurDeLExport } from '@/features/utilisateurs/ui/presenters/auteur-de-l-export.presenter'
-import { dateAsIsoDay } from '@/libraries/date'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -57,7 +57,7 @@ export const GET = async (request: NextRequest) => {
     headers: {
       'Content-Type':
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      'Content-Disposition': `attachment; filename="coop-numerique_coordinations_${dateAsIsoDay(new Date())}.xlsx"`,
+      'Content-Disposition': `attachment; filename="${nomDuFichierDesCoordinations(new Date())}"`,
     },
   })
 }

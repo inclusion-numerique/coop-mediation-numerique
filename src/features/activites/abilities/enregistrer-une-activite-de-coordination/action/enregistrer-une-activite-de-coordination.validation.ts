@@ -304,3 +304,7 @@ export const EnregistrerUneActiviteDeCoordinationValidation = z
           : partenariatSaisi(saisie, contexte)
     return resultat ?? z.NEVER
   })
+
+export type SaisieDUneActiviteDeCoordination = z.input<
+  typeof EnregistrerUneActiviteDeCoordinationValidation
+>

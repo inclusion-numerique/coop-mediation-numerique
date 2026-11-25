@@ -1,4 +1,3 @@
-import { z } from 'zod'
 import type { Prisma } from '@/generated/prisma/client'
 import {
   type CritereStatut,
@@ -7,6 +6,7 @@ import {
   type Intervalle,
   type RoleFiltre,
   rolesFiltres,
+  UtilisateurId,
 } from '../../domain'
 import { enPosteWhere } from './conseiller-numerique-en-poste.where'
 import type { UtilisateursRattaches } from './utilisateurs-rattaches.query'
@@ -220,7 +220,7 @@ const employeuseWhere = (
 ]
 
 const estUnIdentifiant = (mot: string): boolean =>
-  z.guid().safeParse(mot).success
+  UtilisateurId.safe(mot) !== null
 
 const rechercheWhere = (mots: readonly string[]): Prisma.UserWhereInput[] =>
   mots.map((mot) => ({

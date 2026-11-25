@@ -40,8 +40,8 @@ import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-r
 import { utilisateurDuPartage } from '@/features/statistiques/domain/utilisateur-du-partage'
 import { classeurDesStatistiques } from '@/features/statistiques/implementations/excel/classeur-des-statistiques.classeur'
 import { entreeDuClasseur } from '@/features/statistiques/ui/presenters/entree-du-classeur.presenter'
+import { nomDuFichierDesStatistiques } from '@/features/statistiques/ui/presenters/nom-du-fichier.presenter'
 import { auteurDeLExport } from '@/features/utilisateurs/ui/presenters/auteur-de-l-export.presenter'
-import { dateAsIsoDay } from '@/libraries/date'
 
 const statistiquesDesActivites = statistiquesAvec({
   totalCounts: source(compterLesAccompagnements, totauxPresentes),
@@ -134,9 +134,7 @@ export const GET = async (
   const workbook = classeurDesStatistiques(statistiquesWorksheetInput)
 
   const data = await workbook.xlsx.writeBuffer()
-  const filename = `coop-numerique_statistiques_${dateAsIsoDay(
-    new Date(),
-  )}.xlsx`
+  const filename = nomDuFichierDesStatistiques(new Date())
 
   return new Response(data, {
     status: 200,

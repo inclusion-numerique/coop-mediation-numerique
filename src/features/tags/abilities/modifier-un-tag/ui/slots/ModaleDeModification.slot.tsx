@@ -4,7 +4,6 @@ import Notice from '@codegouvfr/react-dsfr/Notice'
 import { useStore } from '@tanstack/react-form'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
-import type { z } from 'zod'
 import { handleSubmit, useAppForm } from '@/libraries/formulaire/hooks'
 import { inject } from '@/libraries/nextjs/injection'
 import { createDynamicModal } from '@/libraries/ui/components'
@@ -18,7 +17,10 @@ import {
 import { APPARENCE_DE_VISIBILITE } from '../../../../ui/components/ApparenceDeVisibilite'
 import { type TagAffiche } from '../../../../ui/presenters/tag-affiche.presenter'
 import { MODIFIER_UN_TAG_ACTION_KEY } from '../../action/modifier-un-tag.key'
-import { ModifierUnTagValidation } from '../../action/modifier-un-tag.validation'
+import {
+  ModifierUnTagValidation,
+  type ValeursDeModificationDeTag,
+} from '../../action/modifier-un-tag.validation'
 
 export const ModificationDUnTag = createDynamicModal<TagAffiche | null>({
   id: 'edit-tag-modal',
@@ -51,7 +53,7 @@ const VisibiliteDuTag = ({ tag }: { tag: TagAffiche }) => {
 const FormulaireDeModification = ({ tag }: { tag: TagAffiche }) => {
   const router = useRouter()
 
-  const valeursInitiales: z.input<typeof ModifierUnTagValidation> = {
+  const valeursInitiales: ValeursDeModificationDeTag = {
     tagId: tag.id,
     nom: tag.nom,
     description: tag.description,
