@@ -1,5 +1,7 @@
-export * from './add-export-metadata'
-export * from './add-filters'
-export * from './add-title-row'
-export * from './autosize-columns'
-export * from './set-workbook-metadata'
+export type { AuteurDExport } from './add-export-metadata'
+export { addExportMetadata } from './add-export-metadata'
+export { addFilters } from './add-filters'
+export { addTitleRow } from './add-title-row'
+
+export { autosizeColumns } from './autosize-columns'
+export { setWorkbookMetadata } from './set-workbook-metadata'
