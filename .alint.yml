@@ -89,11 +89,11 @@ rules:
     allow: ["*.ts", "*.xlsx"]
 
   - id: racine-des-implementations
-    kind: dir_only_contains
+    kind: file_absent
     level: error
-    message: "À la racine d'implementations/, seuls des .binding.ts, qui assemblent plusieurs techniques (ST-4)"
-    select: "src/features/**/implementations"
-    allow: ["*.binding.ts", "*.binding.{spec,integration}.ts"]
+    message: "Aucun fichier directement dans implementations/ : un dossier par technique (ST-4)"
+    paths:
+      - "src/features/**/implementations/*.*"
 
   - id: implementations-par-categorie
     kind: dir_only_contains
@@ -200,7 +200,7 @@ rules:
     level: error
     message: "Une catégorie ne vit que dans le dossier de son rôle (ST-5, UI-7)"
     paths:
-      - "src/**/*.{presenter,labels,search-params,columns,filtre,slot,key,form-data,form-options,binding,action,job,execution}.{ts,tsx}"
+      - "src/**/*.{presenter,labels,search-params,columns,filtre,slot,key,form-data,form-options,action,job,execution}.{ts,tsx}"
       - "!src/features/**/ui/presenters/**/*.presenter.ts"
       - "!src/features/**/ui/labels/**/*.labels.{ts,tsx}"
       - "!src/features/**/ui/search-params/*.search-params.ts"
@@ -209,7 +209,6 @@ rules:
       - "!src/features/**/ui/slots/*.slot.tsx"
       - "!src/features/**/action/*.key.ts"
       - "!src/features/**/ui/forms/**/*.{form-data,form-options}.ts"
-      - "!src/features/**/implementations/*.binding.ts"
       - "!src/app/_actions/*/*.action.ts"
       - "!src/jobs/*/*.{job,execution}.ts"
 
