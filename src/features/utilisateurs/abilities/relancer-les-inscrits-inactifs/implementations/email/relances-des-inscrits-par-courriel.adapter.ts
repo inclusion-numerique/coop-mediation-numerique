@@ -7,7 +7,7 @@ import { envoyerLaSuppressionDuCompte } from './envoyer-la-suppression-du-compte
 
 const dateFrancaise = (date: Date): string => date.toLocaleDateString('fr-FR')
 
-export const relancesParCourriel = (
+export const relancesDesInscritsParCourriel = (
   totalInscrits: number,
 ): Pick<
   RelancerLesInscritsInactifsPorts,

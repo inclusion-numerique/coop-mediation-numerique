@@ -3,12 +3,19 @@ import path from 'node:path'
 import type { CellValue } from 'exceljs'
 import Excel from 'exceljs'
 import { describe, expect, it } from 'vitest'
+import type { Analysis } from '@/features/beneficiaire/abilities/importer-beneficiaires/domain/analyse-de-l-import'
+import { analyserLaFeuille } from '@/features/beneficiaire/abilities/importer-beneficiaires/domain/analyse-de-l-import'
+import type { FeuilleImport } from '@/features/beneficiaire/abilities/importer-beneficiaires/domain/feuille-import'
+import { clientDesCommunes } from '@/features/beneficiaire/abilities/importer-beneficiaires/implementations/fichier/communes.query'
+import { getBeneficiaireImportSheet } from '../implementations/excel/feuille-d-import.classeur'
 import {
   AnalysisSchema,
   importBeneficiaireWorksheetName,
-} from '../domain/analyse-de-l-import'
-import { analyseImportBeneficiairesExcel } from './analyse-de-l-import.binding'
-import { getBeneficiaireImportSheet } from './excel/feuille-d-import.classeur'
+} from './analyse-de-l-import'
+
+const analyseImportBeneficiairesExcel = async (
+  feuille: FeuilleImport,
+): Promise<Analysis> => analyserLaFeuille(await clientDesCommunes())(feuille)
 
 const enTetes: ReadonlyArray<ReadonlyArray<CellValue>> = [
   ['Instructions'],

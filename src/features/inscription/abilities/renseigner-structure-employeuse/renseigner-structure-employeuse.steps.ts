@@ -3,14 +3,25 @@ import { Before, Given, Then, When } from '@cucumber/cucumber'
 import { prismaClient } from '@/configuration/prisma'
 import { type RenseignerStructureEmployeuseError } from '@/features/inscription/abilities/renseigner-structure-employeuse/domain/decider-la-structure-employeuse'
 import { type RattacherEmployeuse } from '@/features/inscription/abilities/renseigner-structure-employeuse/domain/ports'
+import { renseignerStructureEmployeuse } from '@/features/inscription/abilities/renseigner-structure-employeuse/domain/renseigner-structure-employeuse'
 import { type StructureEmployeuseInput } from '@/features/inscription/abilities/renseigner-structure-employeuse/domain/structure-employeuse-input'
-import { renseignerStructureEmployeuseAvec } from '@/features/inscription/abilities/renseigner-structure-employeuse/implementations/renseigner-structure-employeuse.binding'
+import { projeterEtapeFranchie } from '@/features/inscription/abilities/renseigner-structure-employeuse/implementations/prisma/projeter-etape-franchie.mutation'
 import { ProfilInscription } from '@/features/inscription/domain'
+import { getInscriptionEtat } from '@/features/inscription/implementations/prisma/get-inscription-etat.query'
 import {
   seedProfilChoisi,
   utilisateurDeLInscriptionEnCours,
 } from '@/features/inscription/inscription.cucumber'
 import type { Result } from '@/libraries/result'
+
+const renseignerStructureEmployeuseAvec = (
+  rattacherEmployeuse: RattacherEmployeuse,
+) =>
+  renseignerStructureEmployeuse({
+    lireLEtat: getInscriptionEtat,
+    rattacherEmployeuse,
+    projeterEtapeFranchie,
+  })
 
 let rattachable = true
 let rattachementsDemandes = 0

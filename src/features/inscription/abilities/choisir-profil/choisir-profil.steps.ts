@@ -1,18 +1,27 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { prismaClient } from '@/configuration/prisma'
+import { choisirProfil } from '@/features/inscription/abilities/choisir-profil/domain/choisir-profil'
 import { type ChoisirProfilError } from '@/features/inscription/abilities/choisir-profil/domain/decider-le-role'
-import { choisirProfilAvec } from '@/features/inscription/abilities/choisir-profil/implementations/choisir-profil.binding'
+import { enregistrerProfilChoisi } from '@/features/inscription/abilities/choisir-profil/implementations/prisma/enregistrer-profil-choisi.mutation'
 import {
   type EtapeDInscription,
   ProfilInscription,
   Role,
 } from '@/features/inscription/domain'
+import { getInscriptionEtat } from '@/features/inscription/implementations/prisma/get-inscription-etat.query'
+import type { SynchroniserLaPersonne } from '@/features/inscription/implementations/prisma/synchroniser-la-personne.mutation'
 import {
   seedInscriptionValidee,
   utilisateurDeLInscriptionEnCours,
 } from '@/features/inscription/inscription.cucumber'
 import type { Result } from '@/libraries/result'
+
+const choisirProfilAvec = (synchroniserLaPersonne: SynchroniserLaPersonne) =>
+  choisirProfil({
+    lireLEtat: getInscriptionEtat,
+    enregistrerProfilChoisi: enregistrerProfilChoisi(synchroniserLaPersonne),
+  })
 
 let resultat: Result<
   { readonly role: Role; readonly etapeSuivante: EtapeDInscription },

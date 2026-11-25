@@ -1,12 +1,20 @@
 'use server'
 
+import { geocoder } from '@/configuration/ban'
 import { actionBuilder } from '@/configuration/nextjs'
+import { signaler } from '@/configuration/telemetry/serveur'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { RenseignerStructureEmployeuseValidation } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/domain/employeuse-choisie'
-import { rattacherAUneEmployeuseSaisieBinding } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/rattacher-a-une-employeuse.binding'
+import { rattacherUneSaisie } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/domain/rattacher-une-saisie'
+import { etablissementDepuisSiret } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/api/etablissement-depuis-siret.query'
+import type { RegistreDesPersonnes } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/prisma/rattacher-a-une-employeuse.mutation'
+import { rattacherAUneEmployeuse } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/prisma/rattacher-a-une-employeuse.mutation'
 import { RENSEIGNER_STRUCTURE_EMPLOYEUSE_ERRORS } from '@/features/inscription/abilities/renseigner-structure-employeuse/action/renseigner-structure-employeuse.errors'
-import { renseignerStructureEmployeuseAvec } from '@/features/inscription/abilities/renseigner-structure-employeuse/implementations/renseigner-structure-employeuse.binding'
+import type { RattacherEmployeuse } from '@/features/inscription/abilities/renseigner-structure-employeuse/domain/ports'
+import { renseignerStructureEmployeuse } from '@/features/inscription/abilities/renseigner-structure-employeuse/domain/renseigner-structure-employeuse'
+import { projeterEtapeFranchie } from '@/features/inscription/abilities/renseigner-structure-employeuse/implementations/prisma/projeter-etape-franchie.mutation'
 import { UtilisateurId } from '@/features/inscription/domain'
+import { getInscriptionEtat } from '@/features/inscription/implementations/prisma/get-inscription-etat.query'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import {
   ensurePersonneMain,
@@ -14,6 +22,27 @@ import {
 } from '@/features/registre-des-personnes/implementations/prisma/registre-personne.mutation'
 import { fromResult, withInput } from '@/libraries/nextjs'
 import { success } from '@/libraries/result'
+
+const renseignerStructureEmployeuseAvec = (
+  rattacherEmployeuse: RattacherEmployeuse,
+) =>
+  renseignerStructureEmployeuse({
+    lireLEtat: getInscriptionEtat,
+    rattacherEmployeuse,
+    projeterEtapeFranchie,
+  })
+
+const services = {
+  geocoder,
+  signaler,
+  etablissementDepuisSiret,
+}
+
+const rattacherAUneEmployeuseAvec = (registre: RegistreDesPersonnes) =>
+  rattacherAUneEmployeuse({ ...services, ...registre })
+
+const rattacherUneSaisieAvec = (registre: RegistreDesPersonnes) =>
+  rattacherUneSaisie(rattacherAUneEmployeuseAvec(registre))
 
 const registreDesPersonnes = {
   garantirLaPersonne: ensurePersonneMain,
@@ -38,7 +67,7 @@ export const renseignerStructureEmployeuseAction = actionBuilder()
     fromResult(
       async ({ input, user }) => {
         const resultat = await renseignerStructureEmployeuseAvec(
-          rattacherAUneEmployeuseSaisieBinding(registreDesPersonnes),
+          rattacherUneSaisieAvec(registreDesPersonnes),
         )({
           command: {
             userId: UtilisateurId(user.id),

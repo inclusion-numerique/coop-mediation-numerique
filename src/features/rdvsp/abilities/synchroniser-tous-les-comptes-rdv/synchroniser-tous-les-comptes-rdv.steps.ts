@@ -1,5 +1,7 @@
 import assert from 'node:assert'
 import { Before, Given, Then, When } from '@cucumber/cucumber'
+import { synchroniserTousLesComptesRdv } from '@/features/rdvsp/abilities/synchroniser-tous-les-comptes-rdv/domain/synchroniser-tous-les-comptes-rdv'
+import { lireLesComptesRdv } from '@/features/rdvsp/abilities/synchroniser-tous-les-comptes-rdv/implementations/prisma/comptes-rdv.query'
 import { UtilisateurCoopId } from '@/features/rdvsp/domain/identifiants/utilisateur-coop-id'
 import {
   compteRdvEnBase,
@@ -11,7 +13,14 @@ import {
 import { failure, success } from '@/libraries/result'
 import type { BilanDeSynchronisation } from './domain/bilan'
 import type { DeclencherLaSynchronisation } from './domain/synchroniser-tous-les-comptes-rdv'
-import { synchroniserTousLesComptesRdvAvec } from './implementations/synchroniser-tous-les-comptes-rdv.binding'
+
+const synchroniserTousLesComptesRdvAvec = (
+  declencher: DeclencherLaSynchronisation,
+) =>
+  synchroniserTousLesComptesRdv({
+    lireLesComptes: lireLesComptesRdv,
+    declencher,
+  })
 
 const COMPTE = ID_TEST.compte + 40
 const AUTRE_COMPTE = ID_TEST.compte + 41

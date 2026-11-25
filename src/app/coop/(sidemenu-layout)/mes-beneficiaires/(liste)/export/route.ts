@@ -3,11 +3,21 @@ import { estMediateur } from '@/features/authentification/domain/profils-d-utili
 import { utilisateurDuJetonDeSession } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
 import { jetonDeSessionDesCookies } from '@/features/authentification/implementations/session/session-token-from-cookies.query'
 import { ExportBeneficiairesFilterValidations } from '@/features/beneficiaire/abilities/exporter-beneficiaires/action/filtres-de-l-export.validation'
-import { exporterBeneficiairesAvec } from '@/features/beneficiaire/abilities/exporter-beneficiaires/implementations/exporter-beneficiaires.binding'
+import type { ListerLesBeneficiairesAExporter } from '@/features/beneficiaire/abilities/exporter-beneficiaires/domain/exporter-beneficiaires'
+import { exporterBeneficiaires } from '@/features/beneficiaire/abilities/exporter-beneficiaires/domain/exporter-beneficiaires'
+import { classeurDesBeneficiaires } from '@/features/beneficiaire/abilities/exporter-beneficiaires/implementations/excel/classeur-des-beneficiaires.classeur'
 import { listerBeneficiaires } from '@/features/beneficiaire/abilities/lister-beneficiaires/implementations/prisma/lister-beneficiaires.query'
 import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
 import { auteurDeLExport } from '@/features/utilisateurs/ui/presenters/auteur-de-l-export.presenter'
 import { dateAsIsoDay } from '@/libraries/date'
+
+const exporterBeneficiairesAvec = (
+  listerBeneficiaires: ListerLesBeneficiairesAExporter,
+) =>
+  exporterBeneficiaires({
+    listerBeneficiaires,
+    construireLeClasseur: classeurDesBeneficiaires,
+  })
 
 export const GET = async (request: NextRequest) => {
   const sessionToken = jetonDeSessionDesCookies(request.cookies)

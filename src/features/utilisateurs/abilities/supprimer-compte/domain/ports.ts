@@ -80,3 +80,8 @@ export type SupprimerCompteDependances = SupprimerComptePorts & {
   readonly couperLAcces: CouperLAcces
   readonly journaliserLEffacement: JournaliserLEffacement
 }
+
+export type EffacementsDesAutresFeatures = Omit<
+  SupprimerComptePorts,
+  'hash' | 'retirerDesListesDeDiffusion'
+>

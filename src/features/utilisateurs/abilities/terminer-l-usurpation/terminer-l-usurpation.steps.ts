@@ -2,8 +2,17 @@ import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
+import { terminerLUsurpation as terminer } from '@/features/utilisateurs/abilities/terminer-l-usurpation/domain/terminer-l-usurpation'
+import {
+  rendreLaSession,
+  sessionCourante,
+} from '@/features/utilisateurs/abilities/terminer-l-usurpation/implementations/prisma/session-courante.mutation'
 import { semerUnCompteDeListe } from '@/features/utilisateurs/utilisateurs.cucumber'
-import { terminerLUsurpation } from './implementations/terminer-l-usurpation.binding'
+
+const terminerLUsurpation = terminer({
+  lireLaSession: sessionCourante,
+  rendreLaSession,
+})
 
 const fin: {
   usurpateurId?: string

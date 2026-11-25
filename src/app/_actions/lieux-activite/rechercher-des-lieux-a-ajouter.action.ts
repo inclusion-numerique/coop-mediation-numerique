@@ -4,8 +4,17 @@ import { z } from 'zod'
 import { actionBuilder } from '@/configuration/nextjs'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { RechercheDeLieu } from '@/features/lieux-activite/abilities/rechercher-des-lieux-a-ajouter/domain/recherche-de-lieu'
-import { rechercherDesLieuxAAjouter } from '@/features/lieux-activite/abilities/rechercher-des-lieux-a-ajouter/implementations/rechercher-des-lieux-a-ajouter.binding'
+import { rechercherDesLieuxAAjouter as rechercher } from '@/features/lieux-activite/abilities/rechercher-des-lieux-a-ajouter/domain/rechercher'
+import { chercherDansLAnnuaireDesEntreprises } from '@/features/lieux-activite/abilities/rechercher-des-lieux-a-ajouter/implementations/api-entreprise/annuaire-des-entreprises.query'
+import { chercherDansLaCartographie } from '@/features/lieux-activite/abilities/rechercher-des-lieux-a-ajouter/implementations/entrepot/lieux-de-la-cartographie.query'
+import { chercherDansLaCoop } from '@/features/lieux-activite/abilities/rechercher-des-lieux-a-ajouter/implementations/prisma/lieux-de-la-coop.query'
 import { withInput } from '@/libraries/nextjs'
+
+const rechercherDesLieuxAAjouter = rechercher({
+  chercherDansLaCoop,
+  chercherDansLaCartographie,
+  chercherDansLAnnuaireDesEntreprises,
+})
 
 /**
  * Les suggestions du champ d'ajout : la coop, la cartographie nationale et,

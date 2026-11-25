@@ -1,9 +1,12 @@
 import { redirect } from 'next/navigation'
+import { geocoder } from '@/configuration/ban'
 import { metadataTitle } from '@/configuration/projet'
-import { errorReporter } from '@/configuration/telemetry/serveur'
+import { errorReporter, signaler } from '@/configuration/telemetry/serveur'
 import { aTermineSonInscription } from '@/features/authentification/domain/page-d-accueil'
 import { authenticateUser } from '@/features/authentification/implementations/session/authenticate-user.middleware'
-import { rattacherAUneEmployeuseDepuisSiretBinding } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/rattacher-a-une-employeuse.binding'
+import { etablissementDepuisSiret } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/api/etablissement-depuis-siret.query'
+import type { RegistreDesPersonnes } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/prisma/rattacher-a-une-employeuse.mutation'
+import { rattacherAUneEmployeuseDepuisSiret } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/prisma/rattacher-depuis-siret.mutation'
 import { initialiserInscriptionAvecInfra } from '@/features/inscription/abilities/initialiser-inscription/implementations/prisma/initialiser-inscription.mutation'
 import { UtilisateurId } from '@/features/inscription/domain'
 import { cheminDeLEtape } from '@/features/inscription/ui/presenters/chemin-de-l-etape.presenter'
@@ -12,6 +15,15 @@ import {
   synchroniserPersonne,
 } from '@/features/registre-des-personnes/implementations/prisma/registre-personne.mutation'
 import { garantirLeRoleCoordinateurDuDispositif } from '@/features/utilisateurs/abilities/garantir-le-role-coordinateur-du-dispositif/implementations/prisma/garantir-le-role-coordinateur.mutation'
+
+const services = {
+  geocoder,
+  signaler,
+  etablissementDepuisSiret,
+}
+
+const rattacherDepuisLeSiretAvec = (registre: RegistreDesPersonnes) =>
+  rattacherAUneEmployeuseDepuisSiret({ ...services, ...registre })
 
 const registreDesPersonnes = {
   garantirLaPersonne: ensurePersonneMain,
@@ -36,8 +48,7 @@ const InitialiserInscriptionPage = async () => {
   const { nextStep } = await initialiserInscriptionAvecInfra(
     { userId: UtilisateurId(user.id) },
     {
-      rattacherDepuisSiret:
-        rattacherAUneEmployeuseDepuisSiretBinding(registreDesPersonnes),
+      rattacherDepuisSiret: rattacherDepuisLeSiretAvec(registreDesPersonnes),
       garantirLeRoleCoordinateur:
         garantirLeRoleCoordinateurDuDispositif(synchroniserPersonne),
       synchroniserLaPersonne: synchroniserPersonne,

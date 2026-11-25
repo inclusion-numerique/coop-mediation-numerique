@@ -2,13 +2,36 @@ import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
-import { renseignerLieuxActiviteAvec } from '@/features/inscription/abilities/renseigner-lieux-activite/implementations/renseigner-lieux-activite.binding'
+import type {
+  LireLieuxActiviteExistants,
+  TrouverStructuresCarto,
+} from '@/features/inscription/abilities/renseigner-lieux-activite/domain/ports'
+import { renseignerLieuxActivite } from '@/features/inscription/abilities/renseigner-lieux-activite/domain/renseigner-lieux-activite'
+import type { RattacherAuLieuDesire } from '@/features/inscription/abilities/renseigner-lieux-activite/implementations/prisma/enregistrer-reconciliation.mutation'
+import { enregistrerReconciliation } from '@/features/inscription/abilities/renseigner-lieux-activite/implementations/prisma/enregistrer-reconciliation.mutation'
 import { ProfilInscription } from '@/features/inscription/domain'
+import { getInscriptionEtat } from '@/features/inscription/implementations/prisma/get-inscription-etat.query'
 import {
   seedLieuActivite,
   seedProfilChoisi,
   utilisateurDeLInscriptionEnCours,
 } from '@/features/inscription/inscription.cucumber'
+
+const renseignerLieuxActiviteAvec = <StructureCarto>({
+  trouverStructuresCarto,
+  lireLieuxActiviteExistants,
+  rattacherAuLieuDesire,
+}: {
+  readonly trouverStructuresCarto: TrouverStructuresCarto<StructureCarto>
+  readonly lireLieuxActiviteExistants: LireLieuxActiviteExistants
+  readonly rattacherAuLieuDesire: RattacherAuLieuDesire<StructureCarto>
+}) =>
+  renseignerLieuxActivite({
+    lireLEtat: getInscriptionEtat,
+    lireLieuxActiviteExistants,
+    trouverStructuresCarto,
+    enregistrerReconciliation: enregistrerReconciliation(rattacherAuLieuDesire),
+  })
 
 const etat: {
   ancienneActivite?: { readonly id: string; readonly lieuId: string }

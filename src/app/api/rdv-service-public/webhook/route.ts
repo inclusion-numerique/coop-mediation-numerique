@@ -1,7 +1,8 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { environnementServeur } from '@/configuration/environnement/serveur'
 import { signaler } from '@/configuration/telemetry/serveur'
-import { creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/creer-ou-fusionner-depuis-usager-externe.binding'
+import { communeDeLAdresse } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/ban/commune-de-l-adresse.query'
+import { creerOuFusionnerBeneficiairesDepuisUsagersExternes } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/creer-ou-fusionner-depuis-usager-externe.mutation'
 import { messageDuWebhookRdv } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/domain/message-du-webhook-rdv'
 import { recevoirWebhookRdv } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/domain/recevoir-webhook-rdv'
 import { lireNotificationRdv } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/implementations/api/notification-rdv.params'
@@ -29,6 +30,9 @@ import {
   signatureValide,
 } from '@/features/rdvsp/implementations/webhook/signature-du-webhook.middleware'
 
+const creerOuFusionnerLesBeneficiaires =
+  creerOuFusionnerBeneficiairesDepuisUsagersExternes({ communeDeLAdresse })
+
 const recevoirLeRdv = recevoirWebhookRdv({
   lireNotification: lireNotificationRdv,
   comptePourWebhook,
@@ -37,7 +41,7 @@ const recevoirLeRdv = recevoirWebhookRdv({
   enregistrer: enregistrerRdvDeLaNotification,
   supprimer: supprimerRdvDeLaNotification,
   rapprocherBeneficiaires: rapprocherBeneficiairesDuRdv(
-    creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding,
+    creerOuFusionnerLesBeneficiaires,
     journaliserWebhook,
   ),
 })

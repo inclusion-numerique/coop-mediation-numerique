@@ -1,8 +1,17 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
+import { reinitialiserUneFixture as reinitialiserLaFixture } from '@/features/utilisateurs/abilities/reinitialiser-une-fixture/domain/reinitialiser-une-fixture'
+import {
+  estUneFixture,
+  reinitialiser,
+} from '@/features/utilisateurs/abilities/reinitialiser-une-fixture/implementations/prisma/reinitialiser.mutation'
 import { semerUnCompteDeListe } from '@/features/utilisateurs/utilisateurs.cucumber'
-import { reinitialiserUneFixture } from './implementations/reinitialiser-une-fixture.binding'
+
+const reinitialiserUneFixture = reinitialiserLaFixture({
+  estUneFixture,
+  reinitialiser,
+})
 
 const reinitialisation: {
   compteId?: string

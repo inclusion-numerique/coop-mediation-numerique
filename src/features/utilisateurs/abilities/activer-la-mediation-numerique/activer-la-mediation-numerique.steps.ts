@@ -2,8 +2,23 @@ import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
+import { activerLaMediationNumerique } from '@/features/utilisateurs/abilities/activer-la-mediation-numerique/domain/activer-la-mediation-numerique'
+import { inscrireALaListeDeDiffusion } from '@/features/utilisateurs/abilities/activer-la-mediation-numerique/implementations/brevo/inscrire-a-la-liste-de-diffusion.mutation'
+import {
+  activer,
+  compteQuiActive,
+} from '@/features/utilisateurs/abilities/activer-la-mediation-numerique/implementations/prisma/activer.mutation'
+import type { SynchroniserLaPersonne } from '@/features/utilisateurs/implementations/prisma/registre-des-personnes.mutation'
 import { semerUnCompteDeListe } from '@/features/utilisateurs/utilisateurs.cucumber'
-import { activerLaMediationNumeriqueAvec } from './implementations/activer-la-mediation-numerique.binding'
+
+const activerLaMediationNumeriqueAvec = (
+  synchroniserLaPersonne: SynchroniserLaPersonne,
+) =>
+  activerLaMediationNumerique({
+    lireLeCompteQuiActive: compteQuiActive,
+    activer: activer(synchroniserLaPersonne),
+    inscrireALaListeDeDiffusion,
+  })
 
 const activation: {
   utilisateurId?: string

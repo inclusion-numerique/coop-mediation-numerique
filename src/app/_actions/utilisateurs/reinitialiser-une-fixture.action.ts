@@ -13,9 +13,18 @@ import {
   structureEmployeuse,
 } from '@/features/lieux-activite/fixtures/lieux-de-demonstration'
 import { ReinitialiserUneFixtureValidation } from '@/features/utilisateurs/abilities/reinitialiser-une-fixture/action/reinitialiser-une-fixture.validation'
-import { reinitialiserUneFixture } from '@/features/utilisateurs/abilities/reinitialiser-une-fixture/implementations/reinitialiser-une-fixture.binding'
+import { reinitialiserUneFixture as reinitialiserLaFixture } from '@/features/utilisateurs/abilities/reinitialiser-une-fixture/domain/reinitialiser-une-fixture'
+import {
+  estUneFixture,
+  reinitialiser,
+} from '@/features/utilisateurs/abilities/reinitialiser-une-fixture/implementations/prisma/reinitialiser.mutation'
 import { mediateursDesPersonas } from '@/features/utilisateurs/fixtures/personas'
 import { fromResult, withInput } from '@/libraries/nextjs'
+
+const reinitialiserUneFixture = reinitialiserLaFixture({
+  estUneFixture,
+  reinitialiser,
+})
 
 export const reinitialiserUneFixtureAction = actionBuilder()
   .use(withAuth())
