@@ -1,9 +1,5 @@
 import z from 'zod'
-import {
-  totalDesGenres,
-  totalDesStatutsSociaux,
-  totalDesTranchesDAge,
-} from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/forms/participants-anonymes.form-data'
+import type { DefaultValues } from '@/libraries/formulaire/hooks'
 import { numberToString } from '@/libraries/nombre'
 
 const participantsAnonymesMax = 10_000
@@ -18,6 +14,45 @@ const participantsAnonymeNumber = ({ maxMessage }: { maxMessage: string }) =>
       message: 'Veuillez renseigner un nombre entier',
     })
     .max(participantsAnonymesMax, maxMessage)
+
+const totalDesGenres = ({
+  genreFeminin,
+  genreMasculin,
+  genreNonCommunique,
+}: DefaultValues<ParticipantsAnonymesCraCollectifData>): number =>
+  (genreFeminin ?? 0) + (genreMasculin ?? 0) + (genreNonCommunique ?? 0)
+
+const totalDesTranchesDAge = ({
+  trancheAgeMoinsDeDouze,
+  trancheAgeDouzeDixHuit,
+  trancheAgeDixHuitVingtQuatre,
+  trancheAgeVingtCinqTrenteNeuf,
+  trancheAgeQuaranteCinquanteNeuf,
+  trancheAgeSoixanteSoixanteNeuf,
+  trancheAgeSoixanteDixPlus,
+  trancheAgeNonCommunique,
+}: DefaultValues<ParticipantsAnonymesCraCollectifData>): number =>
+  (trancheAgeMoinsDeDouze ?? 0) +
+  (trancheAgeDouzeDixHuit ?? 0) +
+  (trancheAgeDixHuitVingtQuatre ?? 0) +
+  (trancheAgeVingtCinqTrenteNeuf ?? 0) +
+  (trancheAgeQuaranteCinquanteNeuf ?? 0) +
+  (trancheAgeSoixanteSoixanteNeuf ?? 0) +
+  (trancheAgeSoixanteDixPlus ?? 0) +
+  (trancheAgeNonCommunique ?? 0)
+
+const totalDesStatutsSociaux = ({
+  statutSocialScolarise,
+  statutSocialSansEmploi,
+  statutSocialEnEmploi,
+  statutSocialRetraite,
+  statutSocialNonCommunique,
+}: DefaultValues<ParticipantsAnonymesCraCollectifData>): number =>
+  (statutSocialScolarise ?? 0) +
+  (statutSocialSansEmploi ?? 0) +
+  (statutSocialEnEmploi ?? 0) +
+  (statutSocialRetraite ?? 0) +
+  (statutSocialNonCommunique ?? 0)
 
 export const ParticipantsAnonymesCraCollectifValidation = z
   .object({

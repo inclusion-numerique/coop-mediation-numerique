@@ -4,15 +4,11 @@ import { signaler } from '@/configuration/telemetry/serveur'
 import { createStopwatch } from '@/libraries/chronometre'
 import { executeAnonymiserLesComptesInactifs } from './anonymiser-les-comptes-inactifs/anonymiser-les-comptes-inactifs.execution'
 import { executeInactiveUsersReminders } from './inactive-users-reminders/inactive-users-reminders.execution'
-import type { Job, JobName, JobPayload } from './jobs'
+import type { Job, JobExecutor, JobName } from './jobs'
 import { executeRemoveOrphanBrevoContacts } from './remove-orphan-brevo-contacts/remove-orphan-brevo-contacts.execution'
 import { executeRetirerLesRolesVacants } from './retirer-les-roles-vacants/retirer-les-roles-vacants.execution'
 import { executeSyncRdvspData } from './sync-rdvsp-data/sync-rdvsp-data.execution'
 import { executeSynchroniserLesRolesBrevo } from './synchroniser-les-roles-brevo/synchroniser-les-roles-brevo.execution'
-
-export type JobExecutor<Name extends JobName, Result = unknown> = (
-  job: Job & { name: Name; payload: JobPayload<Name> },
-) => Promise<Result>
 
 // Create an object that for each JobName, MUST has a JobExecutor<Name>
 const jobExecutors: {

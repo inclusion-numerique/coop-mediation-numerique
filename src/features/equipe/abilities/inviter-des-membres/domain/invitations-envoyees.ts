@@ -1,5 +1,5 @@
 import type { Courriel } from '../../../domain'
-import type { Ecart } from './planifier'
+import type { Ecart } from './ecart'
 
 export type InvitationsEnvoyees = {
   readonly envoyees: readonly Courriel[]

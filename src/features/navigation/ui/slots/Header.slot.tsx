@@ -7,7 +7,7 @@ import HeaderBackLink from '@/features/navigation/ui/components/en-tete/HeaderBa
 import { HeaderQuickAccess } from '@/features/navigation/ui/components/en-tete/HeaderQuickAccess'
 import { HeaderUserMenu } from '@/features/navigation/ui/components/en-tete/HeaderUserMenu'
 import { LogoCoop } from '@/libraries/ui/components'
-import type { UtilisateurDeLaNavigation } from '../layouts/CoopShellLayout'
+import type { UtilisateurDeLaNavigation } from '../components/en-tete/HeaderUserMenu'
 
 type HeaderVariant = 'public' | 'coop'
 

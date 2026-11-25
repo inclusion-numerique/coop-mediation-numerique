@@ -4,7 +4,7 @@ import { routeConstruite } from '@/libraries/nextjs'
 import type {
   FicheOutil,
   InformationDAcces,
-} from '../presenters/fiche-de-l-outil.presenter'
+} from '../labels/fiches/fiche-outil.labels'
 
 export const AccessInfoLink = ({
   illustration,

@@ -39,7 +39,8 @@ export type Job = z.infer<typeof JobValidation>
 
 export type JobName = Job['name']
 
-export type JobPayload<Name extends JobName> = Extract<
-  Job,
-  { name: Name }
->['payload']
+type JobPayload<Name extends JobName> = Extract<Job, { name: Name }>['payload']
+
+export type JobExecutor<Name extends JobName, Result = unknown> = (
+  job: Job & { name: Name; payload: JobPayload<Name> },
+) => Promise<Result>

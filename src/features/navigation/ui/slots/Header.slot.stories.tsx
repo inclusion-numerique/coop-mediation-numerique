@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react'
 import Header from '@/features/navigation/ui/slots/Header.slot'
-import type { UtilisateurDeLaNavigation } from '../layouts/CoopShellLayout'
+import type { UtilisateurDeLaNavigation } from '../components/en-tete/HeaderUserMenu'
 
 const utilisateur: UtilisateurDeLaNavigation = {
   role: 'User',

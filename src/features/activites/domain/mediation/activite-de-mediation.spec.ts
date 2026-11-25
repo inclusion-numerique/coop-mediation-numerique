@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { failure, success } from '@/libraries/result'
 import {
   DateDActivite,
+  DateTropLointaine,
   dateDActiviteBornee,
   derniereDateDActivite,
 } from '../date-d-activite'
@@ -12,7 +13,6 @@ import {
   AucuneThematique,
   AucunMaterielAvecMateriel,
   BeneficiaireEnDouble,
-  DateTropLointaine,
   DejaAccompagnesExcedeLeTotal,
   MaterielEnDouble,
   RepartitionExcedeLeTotal,

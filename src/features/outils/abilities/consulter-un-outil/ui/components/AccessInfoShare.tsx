@@ -5,7 +5,7 @@ import { useState } from 'react'
 import type {
   AccesALOutil,
   InformationDAcces,
-} from '../presenters/fiche-de-l-outil.presenter'
+} from '../labels/fiches/fiche-outil.labels'
 
 export const AccessInfoShare = ({
   how,

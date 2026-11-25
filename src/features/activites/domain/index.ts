@@ -76,6 +76,7 @@ export { TypeDEvenement } from './coordination/type-d-evenement'
 export { TypeDeStructurePartenaire } from './coordination/type-de-structure-partenaire'
 export {
   DateDActivite,
+  DateTropLointaine,
   dateDActiviteBornee,
   dateDActiviteDuJour,
   derniereDateDActivite,
@@ -89,7 +90,6 @@ export {
   AtelierSansParticipant,
   BeneficiaireEnDouble,
   BeneficiaireIntrouvable,
-  DateTropLointaine,
   LieuInutilisable,
   RendezVousIndisponible,
   TagInutilisable,

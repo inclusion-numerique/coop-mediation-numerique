@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import type { UtilisateurDeLaSessionRow } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
+import type { UtilisateurDeLaSessionRow } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.select'
 import { serializePrismaSessionUser } from './serialize-prisma-session-user.transfer'
 
 const CREATION = new Date('2026-01-10T08:00:00.000Z')

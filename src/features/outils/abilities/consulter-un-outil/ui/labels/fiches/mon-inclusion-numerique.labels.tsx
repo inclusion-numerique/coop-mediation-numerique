@@ -1,5 +1,5 @@
 import { MonInclusionNumeriqueLogo } from '@/libraries/pictograms/services'
-import type { FicheOutil } from '../../presenters/fiche-de-l-outil.presenter'
+import type { FicheOutil } from './fiche-outil.labels'
 
 export default {
   title: 'Mon Inclusion Numérique',

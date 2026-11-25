@@ -2,7 +2,7 @@ import type { UtilisateurDeLaSession } from '@/features/authentification/domain/
 import type {
   PrismaSessionUsupper,
   UtilisateurDeLaSessionRow,
-} from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
+} from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.select'
 import { splitMediateursCoordonnes } from './coordination-de-la-session.transfer'
 
 const emploisDeLaSession = (

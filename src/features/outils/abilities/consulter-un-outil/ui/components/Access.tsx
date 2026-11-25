@@ -1,5 +1,5 @@
 import Button from '@codegouvfr/react-dsfr/Button'
-import type { FicheOutil } from '../presenters/fiche-de-l-outil.presenter'
+import type { FicheOutil } from '../labels/fiches/fiche-outil.labels'
 import { AccessInfoLink } from './AccessInfoLink'
 import { AccessInfoShare } from './AccessInfoShare'
 

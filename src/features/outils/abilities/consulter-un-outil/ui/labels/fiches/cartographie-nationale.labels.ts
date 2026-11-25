@@ -1,5 +1,5 @@
 import { CartographieLogo } from '@/libraries/pictograms/services'
-import type { FicheOutil } from '../../presenters/fiche-de-l-outil.presenter'
+import type { FicheOutil } from './fiche-outil.labels'
 
 export default {
   title: 'La Cartographie Nationale des lieux d’inclusion numérique',

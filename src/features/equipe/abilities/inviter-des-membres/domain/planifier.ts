@@ -7,13 +7,9 @@ import {
   type MediateurId,
   ReferenceInvitation,
 } from '../../../domain'
+import { type Ecart } from './ecart'
 import { AucuneInvitationAEnvoyer } from './errors'
 import { RaisonDEcart } from './raison-d-ecart'
-
-export type Ecart = {
-  readonly email: Courriel
-  readonly raison: RaisonDEcart
-}
 
 export type Existant = {
   readonly invitations: readonly Invitation[]

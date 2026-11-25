@@ -1,7 +1,6 @@
 import { z } from 'zod'
 import { defineModel, type Model } from '@/libraries/model'
 import { failure, type Result, success } from '@/libraries/result'
-import { DateTropLointaine } from './errors'
 
 export const PREMIERE_DATE_D_ACTIVITE = '2020-11-17'
 
@@ -15,6 +14,15 @@ export const DateDActivite = defineModel(
 )
 
 export type DateDActivite = Model.TypeOf<typeof DateDActivite>
+
+export type DateTropLointaine = {
+  readonly _tag: 'DateTropLointaine'
+  readonly auPlusTard: DateDActivite
+}
+
+export const DateTropLointaine = (
+  auPlusTard: DateDActivite,
+): DateTropLointaine => ({ _tag: 'DateTropLointaine', auPlusTard })
 
 export const dateDActiviteDuJour = (instant: Date): DateDActivite =>
   DateDActivite(instant.toISOString().slice(0, 10))

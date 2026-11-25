@@ -1,5 +1,5 @@
 import { RDVServicePublicLogo } from '@/libraries/pictograms/services'
-import type { FicheOutil } from '../../presenters/fiche-de-l-outil.presenter'
+import type { FicheOutil } from './fiche-outil.labels'
 
 export default (website: string): FicheOutil => ({
   title: 'RDV Service Public',
