@@ -3,7 +3,7 @@ import type {
   EtiquetteAffichee,
   Libelles,
 } from '@/libraries/etat-d-url'
-import type { SelectOption } from '@/libraries/ui/form'
+import type { SelectOption } from '@/libraries/ui'
 
 const SUGGESTIONS = 10
 
