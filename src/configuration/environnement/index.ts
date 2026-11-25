@@ -1,1 +1,1 @@
-export * from './client'
+export { environnementClient } from './client'
