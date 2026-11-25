@@ -1,4 +1,4 @@
-import { environnementClient } from '@/configuration/environnement/client'
+import { environnementClient } from '@/configuration/environnement'
 
 export const projectTitle = environnementClient.NEXT_PUBLIC_APP_NAME
 export const projectSlug = environnementClient.NEXT_PUBLIC_APP_SLUG

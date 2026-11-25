@@ -1,4 +1,4 @@
-import { environnementClient } from '@/configuration/environnement/client'
+import { environnementClient } from '@/configuration/environnement'
 
 export const branche = environnementClient.NEXT_PUBLIC_BRANCH ?? ''
 export const estMain = branche === 'main'
