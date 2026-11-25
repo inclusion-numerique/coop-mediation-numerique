@@ -19,6 +19,7 @@
     "lint": "biome check . && pnpm --silent lint:api && pnpm --silent lint:structure && pnpm --silent lint:imports",
     "lint:structure": "alint check --no-spawn",
     "lint:imports": "depcruise src e2e next.config.ts cypress.config.ts vitest.config.ts prisma.config.ts prisma/entrepot/prisma.config.ts",
+    "lint:imports:tables": "node scripts/regenerer-imports-admis.mjs",
     "lint:fix": "biome check --write .",
     "lint:api": "openapi-linter lint ./src/features/clients-api/implementations/openapi/v1.openapi.json",
     "tsc": "pnpm --silent with-env next typegen && tsc --noEmit && tsc --noEmit -p e2e",
