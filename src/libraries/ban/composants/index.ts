@@ -1,2 +1,3 @@
-export * from './AdresseBanComboBox'
-export * from './CommuneComboBox'
+export { AdresseBanComboBox, AdresseBanOptions } from './AdresseBanComboBox'
+
+export { CommuneComboBox, CommuneOptions } from './CommuneComboBox'
