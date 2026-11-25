@@ -7,7 +7,7 @@ import type {
 } from 'react'
 import { Control, Controller, FieldPath, FieldValues } from 'react-hook-form'
 import RedAsterisk from '@/libraries/ui/form/RedAsterisk'
-import { UiComponentProps } from '@/libraries/ui/utils/ui-component-props'
+import { UiComponentProps } from '@/libraries/ui/utils'
 
 type CommonProps<T extends FieldValues> = {
   control: Control<T>

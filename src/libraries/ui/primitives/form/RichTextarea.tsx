@@ -3,8 +3,10 @@
 import { EditorContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import { ReactNode, useState } from 'react'
-import RichTextFormLinkTooltip from '@/libraries/ui/form/rich-text/RichTextFormLinkTooltip'
-import RichTextFormMenuBar from '@/libraries/ui/form/rich-text/RichTextFormMenuBar'
+import {
+  RichTextFormLinkTooltip,
+  RichTextFormMenuBar,
+} from '@/libraries/ui/form'
 
 // TipTap 3 a intégré `extension-link` à `StarterKit`. Déclarer les deux enregistrerait la
 // marque `link` en double, ce que TipTap rejette au démarrage de l'éditeur — l'option se

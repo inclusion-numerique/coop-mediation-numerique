@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useOnDiff } from '@/libraries/ui/hooks/use-on-diff'
+import { useOnDiff } from '@/libraries/ui/hooks'
 
 const tooltipTopOffset = 40
 
