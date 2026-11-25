@@ -1,19 +1,21 @@
 {
   "$schema": "https://unpkg.com/knip@6/schema.json",
   "entry": [
-    "src/jobs/run-job.ts!",
     "src/jobs/verifier-le-bundle.ts!",
     "src/configuration/telemetry/error-reporter/*/index.*.ts!",
     "src/libraries/server-only-cli/index.ts",
     "src/**/*.{steps,cucumber}.ts",
     "e2e/proconnect-simule/serveur.ts",
-    "e2e/tasks/task-executor.ts"
+    "e2e/tasks/task-executor.ts",
+    "prisma/entrepot/schema.prisma",
+    "prisma/main.reference.prisma"
   ],
   "project": [
-    "src/**/*.{ts,tsx}!",
+    "src/**/*.{ts,tsx,scss,sass,mdx}!",
     "e2e/**/*.ts",
     "scripts/**/*.mjs",
-    "docs/*.mjs"
+    "docs/*.{mjs,astro}",
+    "prisma/**/*.prisma"
   ],
   "cypress": {
     "config": [],
