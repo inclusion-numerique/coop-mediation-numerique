@@ -1,3 +1,3 @@
-export * from './CityHallIcon'
-export * from './HouseIcon'
-export * from './SchoolIcon'
+export { CityHallIcon } from './CityHallIcon'
+export { HouseIcon } from './HouseIcon'
+export { SchoolIcon } from './SchoolIcon'

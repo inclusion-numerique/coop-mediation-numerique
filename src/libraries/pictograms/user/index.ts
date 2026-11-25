@@ -1,4 +1,4 @@
-export * from './ParentIcon'
-export * from './SittingAtATableIcon'
-export * from './TeacherIcon'
-export * from './UserStatsIcon'
+export { ParentIcon } from './ParentIcon'
+export { SittingAtATableIcon } from './SittingAtATableIcon'
+export { TeacherIcon } from './TeacherIcon'
+export { UserStatsIcon } from './UserStatsIcon'

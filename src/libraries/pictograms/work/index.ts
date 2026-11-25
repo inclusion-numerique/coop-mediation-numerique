@@ -1,3 +1,3 @@
-export * from './PairIcon'
-export * from './ProfessionalIcon'
-export * from './ScolarshipIcon'
+export { PairIcon } from './PairIcon'
+export { ProfessionalIcon } from './ProfessionalIcon'
+export { ScolarshipIcon } from './ScolarshipIcon'

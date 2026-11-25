@@ -1,1 +1,1 @@
-export * from './pictogram'
+export type { Pictogram } from './pictogram'

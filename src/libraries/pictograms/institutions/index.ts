@@ -1,2 +1,2 @@
-export * from './JusticeIcon'
-export * from './MoneyIcon'
+export { JusticeIcon } from './JusticeIcon'
+export { MoneyIcon } from './MoneyIcon'

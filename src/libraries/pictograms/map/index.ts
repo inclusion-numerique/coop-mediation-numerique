@@ -1,2 +1,2 @@
-export * from './Compass'
-export * from './TransportationIcon'
+export { Compass } from './Compass'
+export { TransportationIcon } from './TransportationIcon'

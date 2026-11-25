@@ -1,3 +1,3 @@
-export * from './ActivitiesIcon'
-export * from './CommunityIcon'
-export * from './JourneyIcon'
+export { ActivitiesIcon } from './ActivitiesIcon'
+export { CommunityIcon } from './CommunityIcon'
+export { JourneyIcon } from './JourneyIcon'

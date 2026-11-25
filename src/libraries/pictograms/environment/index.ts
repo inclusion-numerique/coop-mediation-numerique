@@ -1,1 +1,1 @@
-export * from './HumanCooperationIcon'
+export { HumanCooperationIcon } from './HumanCooperationIcon'

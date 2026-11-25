@@ -1,2 +1,2 @@
-export * from './PadlockIcon'
-export * from './SystemIcon'
+export { PadlockIcon } from './PadlockIcon'
+export { SystemIcon } from './SystemIcon'

@@ -1,2 +1,2 @@
-export * from './CareIcon'
-export * from './HealthIcon'
+export { CareIcon } from './CareIcon'
+export { HealthIcon } from './HealthIcon'
