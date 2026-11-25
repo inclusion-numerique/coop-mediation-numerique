@@ -9,7 +9,12 @@
     "e2e/proconnect-simule/serveur.ts",
     "e2e/tasks/task-executor.ts"
   ],
-  "project": ["src/**/*.{ts,tsx}!", "e2e/**/*.ts", "scripts/**/*.mjs"],
+  "project": [
+    "src/**/*.{ts,tsx}!",
+    "e2e/**/*.ts",
+    "scripts/**/*.mjs",
+    "docs/*.mjs"
+  ],
   "cypress": {
     "config": [],
     "entry": [
@@ -21,6 +26,10 @@
       "src/**/*.cy.tsx"
     ]
   },
-  "ignoreBinaries": ["scw", "tofu"],
-  "ignoreDependencies": ["markdownlint-cli2"]
+  "ignoreBinaries": ["scw", "tofu", "dot"],
+  "ignoreDependencies": ["markdownlint-cli2"],
+  "astro": {
+    "config": ["docs/astro.config.mjs"],
+    "entry": ["docs/content.config.mjs"]
+  }
 }

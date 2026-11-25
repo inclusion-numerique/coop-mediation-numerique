@@ -46,3 +46,4 @@ node_modules
 !/.claude/workflows
 !/.claude/settings.json
 !/.claude/hooks
+/docs/site/
