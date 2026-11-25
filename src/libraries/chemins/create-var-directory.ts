@@ -6,8 +6,8 @@ import { varDirectory } from './var-directory'
  */
 export const createVarDirectory = () => {
   // Check if the directory exists synchronously
-  if (!existsSync(varDirectory)) {
+  if (!existsSync(varDirectory())) {
     // If it doesn't exist, create it synchronously
-    mkdirSync(varDirectory, { recursive: true })
+    mkdirSync(varDirectory(), { recursive: true })
   }
 }
