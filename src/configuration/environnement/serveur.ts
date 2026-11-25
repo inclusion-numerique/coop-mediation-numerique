@@ -47,3 +47,4 @@ export const environnementServeur = schemaServeur.parse(process.env)
 
 export const verifierEnvironnementServeurWeb = () =>
   schemaServeurWeb.parse(process.env)
+export * from './outillage'
