@@ -1,1 +1,1 @@
-export * from './base-url'
+export { getServerBaseUrl, getServerUrl } from './base-url'
