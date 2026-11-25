@@ -5,12 +5,8 @@ import type { Metadata } from 'next'
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
 import type { PropsWithChildren } from 'react'
 import { terminerLUsurpationAction } from '@/app/_actions/utilisateurs/terminer-l-usurpation.action'
-import {
-  Display,
-  DsfrHead,
-  DsfrProvider,
-  getHtmlAttributes,
-} from '@/configuration/dsfr'
+import { Display, DsfrProvider } from '@/configuration/dsfr'
+import { DsfrHead, getHtmlAttributes } from '@/configuration/dsfr/serveur'
 import { estMain, projectTitle } from '@/configuration/projet'
 import { Matomo } from '@/configuration/telemetry'
 import { EnvInformation } from '@/features/navigation/ui/slots/EnvInformation.slot'
