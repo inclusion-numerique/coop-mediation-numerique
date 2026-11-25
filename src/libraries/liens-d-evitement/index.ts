@@ -1,1 +1,1 @@
-export * from './skip-links'
+export { contentId } from './skip-links'
