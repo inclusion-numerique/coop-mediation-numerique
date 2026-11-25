@@ -1,5 +1,4 @@
 import { Command } from '@commander-js/extra-typings'
-import * as Sentry from '@sentry/node'
 import { checkDeploymentStatus } from '@/cli/commands/deployment/check-deployment-status'
 import { deactivateGithubDeployment } from '@/cli/commands/github/deactivate-github-deployment'
 import { addNextPublicVariablesToDotEnv } from '@/cli/commands/infrastructure/add-next-public-variables-to-dot-env'
@@ -34,9 +33,7 @@ const main = async () => {
   await program.parseAsync()
 }
 
-main().catch(async (error) => {
-  Sentry.captureException(error)
+main().catch((error) => {
   outputError(error instanceof Error ? error.message : String(error))
-  await Sentry.flush(2000)
   process.exit(1)
 })
