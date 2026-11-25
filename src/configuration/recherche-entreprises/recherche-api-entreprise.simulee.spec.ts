@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { previewBranchAuthFallbacks } from '@/configuration/projet/preview-branch-auth-fallbacks'
+import { previewBranchAuthFallbacks } from '@/configuration/projet'
 import { rechercheApiEntrepriseSimulee } from './recherche-api-entreprise.simulee'
 
 describe('doublure e2e de la recherche d’entreprises', () => {
