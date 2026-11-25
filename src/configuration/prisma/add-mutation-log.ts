@@ -3,7 +3,7 @@
  */
 
 import { prismaClient } from '@/configuration/prisma/prisma-client'
-import { errorReporter } from '@/configuration/telemetry/error-reporter/server'
+import { errorReporter } from '@/configuration/telemetry/serveur'
 import type { Prisma } from '@/generated/prisma/client'
 
 const addMutationLogAsync = (data: Prisma.MutationUncheckedCreateInput) =>
