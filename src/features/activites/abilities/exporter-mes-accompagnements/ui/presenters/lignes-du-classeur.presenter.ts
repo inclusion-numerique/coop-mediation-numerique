@@ -1,5 +1,5 @@
-import { isEqual } from 'date-fns'
-import { fr } from 'date-fns/locale'
+import { isEqual } from 'date-fns/isEqual'
+import { fr } from 'date-fns/locale/fr'
 import { formatInTimeZone } from 'date-fns-tz'
 import { htmlToText } from '@/libraries/texte'
 import { booleanToYesNoLabel } from '@/libraries/ui'

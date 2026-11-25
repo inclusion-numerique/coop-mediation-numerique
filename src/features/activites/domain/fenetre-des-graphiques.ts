@@ -1,4 +1,8 @@
-import { format, parseISO, startOfMonth, subDays, subMonths } from 'date-fns'
+import { format } from 'date-fns/format'
+import { parseISO } from 'date-fns/parseISO'
+import { startOfMonth } from 'date-fns/startOfMonth'
+import { subDays } from 'date-fns/subDays'
+import { subMonths } from 'date-fns/subMonths'
 import { Jour } from './jour'
 
 export type FenetreDesGraphiques =

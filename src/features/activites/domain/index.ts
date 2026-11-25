@@ -83,7 +83,18 @@ export {
 } from './date-d-activite'
 export { DureeEnMinutes } from './duree-en-minutes'
 export { Effectif } from './effectif'
-export * from './errors'
+
+export {
+  ActiviteIntrouvable,
+  AtelierSansParticipant,
+  BeneficiaireEnDouble,
+  BeneficiaireIntrouvable,
+  DateTropLointaine,
+  LieuInutilisable,
+  RendezVousIndisponible,
+  TagInutilisable,
+  TypeDActiviteIncompatible,
+} from './errors'
 export { ActiviteDeCoordinationId } from './identifiants/activite-de-coordination-id'
 export { ActiviteId } from './identifiants/activite-id'
 export { BeneficiaireId } from './identifiants/beneficiaire-id'
@@ -119,10 +130,7 @@ export {
 export { AdresseDuLieu } from './mediation/adresse-du-lieu'
 export { AUTONOMIES, Autonomie } from './mediation/autonomie'
 export { MATERIELS, Materiel } from './mediation/materiel'
-export {
-  NIVEAUX_D_ATELIER,
-  NiveauDAtelier,
-} from './mediation/niveau-d-atelier'
+export { NIVEAUX_D_ATELIER, NiveauDAtelier } from './mediation/niveau-d-atelier'
 export { PrecisionDeDemarche } from './mediation/precision-de-demarche'
 export {
   type EmployeuseALaDate,
