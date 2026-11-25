@@ -1,4 +1,4 @@
-# Feature: Lire les CRA v1
+# Fonctionnalité: Lire les CRA v1
 
 > Un partenaire lit les comptes rendus d'activité importés de la première
 > version de la coop par l'API v1, sur la route `/archives-v1/cras`, avec un
@@ -6,43 +6,43 @@
 > une liste paginée par curseur. Ce qui est exposé de chaque CRA est décrit par
 > la spécification de l'exposition des CRA v1.
 
-## Rule: Seul un client qui détient la permission « Activites » lit les CRA v1
+## Règle: Seul un client qui détient la permission « Activites » lit les CRA v1
 
-### Scenario: Un appel sans client API doit s'authentifier
+### Scénario: Un appel sans client API doit s'authentifier
 
-* When un appel sans client API lit les CRA v1
-* Then l'API demande de s'authentifier
+* Quand un appel sans client API lit les CRA v1
+* Alors l'API demande de s'authentifier
 
-### Scenario: Un client sans la permission est refusé
+### Scénario: Un client sans la permission est refusé
 
-* Given un client API "Archives" avec les permissions "Structures"
-* When le client API "Archives" lit les CRA v1
-* Then l'API refuse l'accès
+* Étant donné un client API "Archives" avec les permissions "Structures"
+* Quand le client API "Archives" lit les CRA v1
+* Alors l'API refuse l'accès
 
-### Scenario: Un client qui détient la permission lit une liste JSON:API
+### Scénario: Un client qui détient la permission lit une liste JSON:API
 
-* Given un client API "Archives" avec les permissions "Activites"
-* When le client API "Archives" lit les CRA v1
-* Then l'API répond par une liste JSON:API
+* Étant donné un client API "Archives" avec les permissions "Activites"
+* Quand le client API "Archives" lit les CRA v1
+* Alors l'API répond par une liste JSON:API
 
-## Rule: La taille de page est celle demandée, dans la limite de 500
+## Règle: La taille de page est celle demandée, dans la limite de 500
 
-### Scenario: La page a la taille demandée
+### Scénario: La page a la taille demandée
 
-* Given un client API "Archives" avec les permissions "Activites"
-* When le client API "Archives" lit les CRA v1 avec "page[size]=1"
-* Then la page lue annonce 1 élément par page
+* Étant donné un client API "Archives" avec les permissions "Activites"
+* Quand le client API "Archives" lit les CRA v1 avec "page[size]=1"
+* Alors la page lue annonce 1 élément par page
 
-### Scenario: Une page de plus de 500 CRA est rejetée
+### Scénario: Une page de plus de 500 CRA est rejetée
 
-* Given un client API "Archives" avec les permissions "Activites"
-* When le client API "Archives" lit les CRA v1 avec "page[size]=501"
-* Then l'API rejette la requête
+* Étant donné un client API "Archives" avec les permissions "Activites"
+* Quand le client API "Archives" lit les CRA v1 avec "page[size]=501"
+* Alors l'API rejette la requête
 
-## Rule: Un curseur illisible est rejeté
+## Règle: Un curseur illisible est rejeté
 
-### Scenario: Un curseur qui n'a pas été donné par l'API est rejeté
+### Scénario: Un curseur qui n'a pas été donné par l'API est rejeté
 
-* Given un client API "Archives" avec les permissions "Activites"
-* When le client API "Archives" lit les CRA v1 avec "page[after]=inconnu"
-* Then l'API rejette la requête
+* Étant donné un client API "Archives" avec les permissions "Activites"
+* Quand le client API "Archives" lit les CRA v1 avec "page[after]=inconnu"
+* Alors l'API rejette la requête

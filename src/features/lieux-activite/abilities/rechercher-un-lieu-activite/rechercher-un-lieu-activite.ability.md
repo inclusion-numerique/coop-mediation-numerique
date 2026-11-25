@@ -1,43 +1,43 @@
-# Feature: Rechercher un de ses lieux d'activité
+# Fonctionnalité: Rechercher un de ses lieux d'activité
 
 > La recherche ne porte que sur les lieux où le médiateur exerce : c'est un
 > choix parmi les siens, pas une exploration de l'annuaire.
 
-## Rule: Seuls les lieux où l'on exerce sont proposés
+## Règle: Seuls les lieux où l'on exerce sont proposés
 
-### Scenario: Le lieu d'un autre médiateur n'est pas proposé
+### Scénario: Le lieu d'un autre médiateur n'est pas proposé
 
-* Given un médiateur qui exerce dans un lieu
-* When ce médiateur cherche « Maison »
-* Then la recherche propose ce lieu
-* And un médiateur étranger qui cherche « Maison » ne trouve rien
+* Étant donné un médiateur qui exerce dans un lieu
+* Quand ce médiateur cherche « Maison »
+* Alors la recherche propose ce lieu
+* Et un médiateur étranger qui cherche « Maison » ne trouve rien
 
-### Scenario: Un lieu quitté n'est plus proposé
+### Scénario: Un lieu quitté n'est plus proposé
 
-* Given un médiateur qui exerce dans un lieu
-* When ce médiateur se retire de ce lieu puis cherche « Maison »
-* Then la recherche ne propose rien
+* Étant donné un médiateur qui exerce dans un lieu
+* Quand ce médiateur se retire de ce lieu puis cherche « Maison »
+* Alors la recherche ne propose rien
 
-## Rule: Seuls les lieux exploitables sont proposés
+## Règle: Seuls les lieux exploitables sont proposés
 
-### Scenario: Un lieu sans adresse reconnue par la BAN n'est pas proposé
+### Scénario: Un lieu sans adresse reconnue par la BAN n'est pas proposé
 
-* Given un médiateur qui exerce dans un lieu
-* And ce lieu n'a pas d'adresse reconnue par la BAN
-* When ce médiateur cherche « Maison »
-* Then la recherche ne propose rien
+* Étant donné un médiateur qui exerce dans un lieu
+* Et ce lieu n'a pas d'adresse reconnue par la BAN
+* Quand ce médiateur cherche « Maison »
+* Alors la recherche ne propose rien
 
-### Scenario: Un lieu supprimé n'est pas proposé
+### Scénario: Un lieu supprimé n'est pas proposé
 
-* Given un médiateur qui exerce dans un lieu
-* And ce lieu est supprimé
-* When ce médiateur cherche « Maison »
-* Then la recherche ne propose rien
+* Étant donné un médiateur qui exerce dans un lieu
+* Et ce lieu est supprimé
+* Quand ce médiateur cherche « Maison »
+* Alors la recherche ne propose rien
 
-## Rule: La recherche porte sur le nom du lieu
+## Règle: La recherche porte sur le nom du lieu
 
-### Scenario: Une recherche sans correspondance ne propose rien
+### Scénario: Une recherche sans correspondance ne propose rien
 
-* Given un médiateur qui exerce dans un lieu
-* When ce médiateur cherche « Piscine »
-* Then la recherche ne propose rien
+* Étant donné un médiateur qui exerce dans un lieu
+* Quand ce médiateur cherche « Piscine »
+* Alors la recherche ne propose rien

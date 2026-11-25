@@ -1,79 +1,79 @@
-# Feature: Vérifier ses informations
+# Fonctionnalité: Vérifier ses informations
 
 > Pendant l'inscription, la personne relit ce que la coop sait d'elle : son
 > profil, son nom, son adresse électronique et son employeuse. L'étape décide
 > ensuite où la mener, selon son profil et selon que son employeuse est connue
 > ou non.
 
-## Rule: L'étape suivante dépend du profil et de l'employeuse connue
+## Règle: L'étape suivante dépend du profil et de l'employeuse connue
 
-### Scenario: Un médiateur dont l'employeuse est connue confirme ses lieux d'activité depuis elle
+### Scénario: Un médiateur dont l'employeuse est connue confirme ses lieux d'activité depuis elle
 
-* Given un inscrit au profil "médiateur"
-* And employé par "Médiathèque de Villeurbanne"
-* When il vérifie ses informations
-* Then l'étape suivante est "/inscription/lieux-activite/structure-employeuse"
+* Étant donné un inscrit au profil "médiateur"
+* Et employé par "Médiathèque de Villeurbanne"
+* Quand il vérifie ses informations
+* Alors l'étape suivante est "/inscription/lieux-activite/structure-employeuse"
 
-### Scenario: Un médiateur dont l'employeuse n'est pas connue la renseigne d'abord
+### Scénario: Un médiateur dont l'employeuse n'est pas connue la renseigne d'abord
 
-* Given un inscrit au profil "médiateur"
-* When il vérifie ses informations
-* Then l'étape suivante est "/inscription/renseigner-structure-employeuse"
+* Étant donné un inscrit au profil "médiateur"
+* Quand il vérifie ses informations
+* Alors l'étape suivante est "/inscription/renseigner-structure-employeuse"
 
-### Scenario: Un conseiller numérique dont l'employeuse est connue confirme ses lieux d'activité depuis elle
+### Scénario: Un conseiller numérique dont l'employeuse est connue confirme ses lieux d'activité depuis elle
 
-* Given un inscrit au profil "conseiller numérique"
-* And employé par "Médiathèque de Villeurbanne"
-* When il vérifie ses informations
-* Then l'étape suivante est "/inscription/lieux-activite/structure-employeuse"
+* Étant donné un inscrit au profil "conseiller numérique"
+* Et employé par "Médiathèque de Villeurbanne"
+* Quand il vérifie ses informations
+* Alors l'étape suivante est "/inscription/lieux-activite/structure-employeuse"
 
-### Scenario: Un coordinateur passe directement au récapitulatif
+### Scénario: Un coordinateur passe directement au récapitulatif
 
-* Given un inscrit au profil "coordinateur"
-* And employé par "Département du Rhône"
-* When il vérifie ses informations
-* Then l'étape suivante est "/inscription/recapitulatif"
+* Étant donné un inscrit au profil "coordinateur"
+* Et employé par "Département du Rhône"
+* Quand il vérifie ses informations
+* Alors l'étape suivante est "/inscription/recapitulatif"
 
-## Rule: Le retour mène au choix du rôle
+## Règle: Le retour mène au choix du rôle
 
-### Scenario: Le retour mène au choix du rôle
+### Scénario: Le retour mène au choix du rôle
 
-* Given un inscrit au profil "médiateur"
-* When il vérifie ses informations
-* Then le retour mène à "/inscription/choisir-role"
+* Étant donné un inscrit au profil "médiateur"
+* Quand il vérifie ses informations
+* Alors le retour mène à "/inscription/choisir-role"
 
-## Rule: Le profil affiché est celui choisi, ou « Non renseigné »
+## Règle: Le profil affiché est celui choisi, ou « Non renseigné »
 
-### Scenario: Le profil choisi est affiché par son libellé
+### Scénario: Le profil choisi est affiché par son libellé
 
-* Given un inscrit au profil "médiateur"
-* When il vérifie ses informations
-* Then le profil affiché est "Médiateur·rice numérique"
+* Étant donné un inscrit au profil "médiateur"
+* Quand il vérifie ses informations
+* Alors le profil affiché est "Médiateur·rice numérique"
 
-### Scenario: Sans profil choisi, le profil est « Non renseigné »
+### Scénario: Sans profil choisi, le profil est « Non renseigné »
 
-* Given un inscrit qui n'a pas encore choisi de profil
-* When il vérifie ses informations
-* Then le profil affiché est "Non renseigné"
+* Étant donné un inscrit qui n'a pas encore choisi de profil
+* Quand il vérifie ses informations
+* Alors le profil affiché est "Non renseigné"
 
-## Rule: L'employeuse affichée est la première connue, même sans dénomination
+## Règle: L'employeuse affichée est la première connue, même sans dénomination
 
-### Scenario: L'employeuse connue est affichée
+### Scénario: L'employeuse connue est affichée
 
-* Given un inscrit au profil "médiateur"
-* And employé par "Médiathèque de Villeurbanne"
-* When il vérifie ses informations
-* Then l'employeuse affichée est "Médiathèque de Villeurbanne"
+* Étant donné un inscrit au profil "médiateur"
+* Et employé par "Médiathèque de Villeurbanne"
+* Quand il vérifie ses informations
+* Alors l'employeuse affichée est "Médiathèque de Villeurbanne"
 
-### Scenario: Une employeuse sans dénomination est affichée sans nom
+### Scénario: Une employeuse sans dénomination est affichée sans nom
 
-* Given un inscrit au profil "médiateur"
-* And employé par une structure sans dénomination
-* When il vérifie ses informations
-* Then l'employeuse affichée est ""
+* Étant donné un inscrit au profil "médiateur"
+* Et employé par une structure sans dénomination
+* Quand il vérifie ses informations
+* Alors l'employeuse affichée est ""
 
-### Scenario: Sans employeuse connue, aucune n'est affichée
+### Scénario: Sans employeuse connue, aucune n'est affichée
 
-* Given un inscrit au profil "médiateur"
-* When il vérifie ses informations
-* Then aucune employeuse n'est affichée
+* Étant donné un inscrit au profil "médiateur"
+* Quand il vérifie ses informations
+* Alors aucune employeuse n'est affichée

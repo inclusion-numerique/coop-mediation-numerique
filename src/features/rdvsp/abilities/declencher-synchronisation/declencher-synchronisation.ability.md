@@ -1,96 +1,96 @@
-# Feature: Déclencher une synchronisation RDV Service Public
+# Fonctionnalité: Déclencher une synchronisation RDV Service Public
 
-## Rule: Chacun pour soi, l'assistance pour tous
+## Règle: Chacun pour soi, l'assistance pour tous
 
-### Scenario: Un médiateur synchronise son propre compte
+### Scénario: Un médiateur synchronise son propre compte
 
-* Given un compte RDV synchronisable
-* When je déclenche une synchronisation complète pour moi-même
-* Then la synchronisation a parcouru toutes les organisations
+* Étant donné un compte RDV synchronisable
+* Quand je déclenche une synchronisation complète pour moi-même
+* Alors la synchronisation a parcouru toutes les organisations
 
-### Scenario: Un médiateur ne synchronise pas le compte d'un autre
+### Scénario: Un médiateur ne synchronise pas le compte d'un autre
 
-* Given un compte RDV synchronisable
-* When je déclenche une synchronisation complète pour un autre médiateur
-* Then le déclenchement échoue avec l’erreur "NonAutorise"
-* And aucune synchronisation n’a été lancée
+* Étant donné un compte RDV synchronisable
+* Quand je déclenche une synchronisation complète pour un autre médiateur
+* Alors le déclenchement échoue avec l’erreur "NonAutorise"
+* Et aucune synchronisation n’a été lancée
 
-### Scenario: L'assistance synchronise le compte d'un tiers
+### Scénario: L'assistance synchronise le compte d'un tiers
 
-* Given un compte RDV synchronisable
-* When un administrateur déclenche une synchronisation complète pour moi
-* Then la synchronisation a parcouru toutes les organisations
+* Étant donné un compte RDV synchronisable
+* Quand un administrateur déclenche une synchronisation complète pour moi
+* Alors la synchronisation a parcouru toutes les organisations
 
-## Rule: Le rattrapage ne parcourt que ce que les webhooks n'ont pas rapporté
+## Règle: Le rattrapage ne parcourt que ce que les webhooks n'ont pas rapporté
 
-### Scenario: Rattraper les organisations dont le webhook a échoué
+### Scénario: Rattraper les organisations dont le webhook a échoué
 
-* Given un compte RDV synchronisable dont les webhooks ont échoué sur les organisations "9920001,9920002"
-* When je déclenche un rattrapage pour moi-même
-* Then la synchronisation a parcouru les organisations "9920001,9920002"
+* Étant donné un compte RDV synchronisable dont les webhooks ont échoué sur les organisations "9920001,9920002"
+* Quand je déclenche un rattrapage pour moi-même
+* Alors la synchronisation a parcouru les organisations "9920001,9920002"
 
-### Scenario: Rien à rattraper quand tous les webhooks sont posés
+### Scénario: Rien à rattraper quand tous les webhooks sont posés
 
-* Given un compte RDV synchronisable
-* When je déclenche un rattrapage pour moi-même
-* Then aucune synchronisation n’a été lancée
-* And le déclenchement ne rend aucune date de synchronisation
+* Étant donné un compte RDV synchronisable
+* Quand je déclenche un rattrapage pour moi-même
+* Alors aucune synchronisation n’a été lancée
+* Et le déclenchement ne rend aucune date de synchronisation
 
-### Scenario: Une synchronisation complète reste possible sans webhook en attente
+### Scénario: Une synchronisation complète reste possible sans webhook en attente
 
-* Given un compte RDV synchronisable
-* When je déclenche une synchronisation complète pour moi-même
-* Then la synchronisation a parcouru toutes les organisations
+* Étant donné un compte RDV synchronisable
+* Quand je déclenche une synchronisation complète pour moi-même
+* Alors la synchronisation a parcouru toutes les organisations
 
-## Rule: Un compte sans jetons n'est pas appelé
+## Règle: Un compte sans jetons n'est pas appelé
 
-### Scenario: Compte déconnecté
+### Scénario: Compte déconnecté
 
-* Given un compte RDV déconnecté à synchroniser
-* When je déclenche une synchronisation complète pour moi-même
-* Then aucune synchronisation n’a été lancée
-* And le déclenchement réussit sans dérive
+* Étant donné un compte RDV déconnecté à synchroniser
+* Quand je déclenche une synchronisation complète pour moi-même
+* Alors aucune synchronisation n’a été lancée
+* Et le déclenchement réussit sans dérive
 
-## Rule: Un compte en erreur n'est plus appelé
+## Règle: Un compte en erreur n'est plus appelé
 
 Un compte n'est marqué en erreur que sur un échec qu'un nouvel essai ne résout
 pas : jeton révoqué, agent supprimé, accès refusé. Il n'en sort que par une
 reconnexion OAuth du médiateur, ou par une relance de l'assistance.
 
-### Scenario: Le médiateur ne relance pas un compte en erreur
+### Scénario: Le médiateur ne relance pas un compte en erreur
 
-* Given un compte RDV en erreur à synchroniser
-* When je déclenche une synchronisation complète pour moi-même
-* Then aucune synchronisation n’a été lancée
-* And le déclenchement réussit sans dérive
+* Étant donné un compte RDV en erreur à synchroniser
+* Quand je déclenche une synchronisation complète pour moi-même
+* Alors aucune synchronisation n’a été lancée
+* Et le déclenchement réussit sans dérive
 
-### Scenario: Aucun rattrapage au chargement d'un écran
+### Scénario: Aucun rattrapage au chargement d'un écran
 
-* Given un compte RDV en erreur à synchroniser
-* When je déclenche un rattrapage pour moi-même
-* Then aucune synchronisation n’a été lancée
+* Étant donné un compte RDV en erreur à synchroniser
+* Quand je déclenche un rattrapage pour moi-même
+* Alors aucune synchronisation n’a été lancée
 
-### Scenario: L'assistance relance un compte en erreur
+### Scénario: L'assistance relance un compte en erreur
 
-* Given un compte RDV en erreur à synchroniser
-* When un administrateur déclenche une synchronisation complète pour moi
-* Then la synchronisation a parcouru toutes les organisations
+* Étant donné un compte RDV en erreur à synchroniser
+* Quand un administrateur déclenche une synchronisation complète pour moi
+* Alors la synchronisation a parcouru toutes les organisations
 
-## Rule: Un échec est consigné sur le compte
+## Règle: Un échec est consigné sur le compte
 
-### Scenario: La passe échoue
+### Scénario: La passe échoue
 
-* Given un compte RDV synchronisable
-* And la synchronisation échoue
-* When je déclenche une synchronisation complète pour moi-même
-* Then le déclenchement échoue avec l’erreur "SynchronisationEchouee"
-* And le compte porte l’erreur "Impossible de récupérer les données du compte RDV Service Public"
-* And la date de dernière tentative est enregistrée
+* Étant donné un compte RDV synchronisable
+* Et la synchronisation échoue
+* Quand je déclenche une synchronisation complète pour moi-même
+* Alors le déclenchement échoue avec l’erreur "SynchronisationEchouee"
+* Et le compte porte l’erreur "Impossible de récupérer les données du compte RDV Service Public"
+* Et la date de dernière tentative est enregistrée
 
-## Rule: Sans compte, il n'y a rien à synchroniser
+## Règle: Sans compte, il n'y a rien à synchroniser
 
-### Scenario: Aucun compte connecté
+### Scénario: Aucun compte connecté
 
-* Given aucun compte RDV à synchroniser
-* When je déclenche une synchronisation complète pour moi-même
-* Then le déclenchement échoue avec l’erreur "CompteRdvIntrouvable"
+* Étant donné aucun compte RDV à synchroniser
+* Quand je déclenche une synchronisation complète pour moi-même
+* Alors le déclenchement échoue avec l’erreur "CompteRdvIntrouvable"

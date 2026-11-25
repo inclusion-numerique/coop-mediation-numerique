@@ -1,16 +1,16 @@
-# Feature: Exporter ses activités de coordination
+# Fonctionnalité: Exporter ses activités de coordination
 
-## Rule: L'export reprend toutes les activités qui répondent aux critères, sans pagination
+## Règle: L'export reprend toutes les activités qui répondent aux critères, sans pagination
 
-### Scenario: Export sans critère
+### Scénario: Export sans critère
 
-* Given des activités de coordination enregistrées
-* When j'exporte mes activités de coordination
-* Then 3 activités de coordination sont exportées
+* Étant donné des activités de coordination enregistrées
+* Quand j'exporte mes activités de coordination
+* Alors 3 activités de coordination sont exportées
 
-### Scenario: Export filtré par tag
+### Scénario: Export filtré par tag
 
-* Given des activités de coordination enregistrées
-* When j'exporte mes activités de coordination taguées « Réseau »
-* Then 1 activités de coordination sont exportées
-* And le tag « Réseau » est rappelé dans les filtres de l'export
+* Étant donné des activités de coordination enregistrées
+* Quand j'exporte mes activités de coordination taguées « Réseau »
+* Alors 1 activités de coordination sont exportées
+* Et le tag « Réseau » est rappelé dans les filtres de l'export

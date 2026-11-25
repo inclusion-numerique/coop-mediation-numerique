@@ -2,6 +2,9 @@
   "default": {
     "paths": ["src/**/*.ability.md", "src/**/*.feature.md"],
     "import": ["src/**/*.cucumber.ts", "src/**/*.steps.ts"],
-    "formatOptions": { "snippetInterface": "synchronous" }
+    "formatOptions": {
+      "snippetInterface": "synchronous"
+    },
+    "language": "fr"
   }
 }

@@ -1,61 +1,61 @@
-# Feature: Mettre à jour le statut d'un rendez-vous
+# Fonctionnalité: Mettre à jour le statut d'un rendez-vous
 
-## Rule: RDV Service Public fait autorité sur le statut
+## Règle: RDV Service Public fait autorité sur le statut
 
-### Scenario: Renseigner un rendez-vous honoré
+### Scénario: Renseigner un rendez-vous honoré
 
-* Given un rendez-vous à statuer sur mon compte RDV
-* When je déclare ce rendez-vous "seen"
-* Then le rendez-vous porte le statut "seen"
+* Étant donné un rendez-vous à statuer sur mon compte RDV
+* Quand je déclare ce rendez-vous "seen"
+* Alors le rendez-vous porte le statut "seen"
 
-### Scenario: Le statut enregistré est celui que RDV Service Public confirme
+### Scénario: Le statut enregistré est celui que RDV Service Public confirme
 
-* Given un rendez-vous à statuer sur mon compte RDV
-* And RDV Service Public confirmera le statut "revoked"
-* When je déclare ce rendez-vous "noshow"
-* Then le rendez-vous porte le statut "revoked"
+* Étant donné un rendez-vous à statuer sur mon compte RDV
+* Et RDV Service Public confirmera le statut "revoked"
+* Quand je déclare ce rendez-vous "noshow"
+* Alors le rendez-vous porte le statut "revoked"
 
-### Scenario: Un refus de RDV Service Public laisse la base intacte
+### Scénario: Un refus de RDV Service Public laisse la base intacte
 
-* Given un rendez-vous à statuer sur mon compte RDV
-* And RDV Service Public refusera la mise à jour
-* When je déclare ce rendez-vous "seen"
-* Then la mise à jour échoue avec l’erreur "ApiIndisponible"
-* And le rendez-vous porte toujours le statut "unknown"
+* Étant donné un rendez-vous à statuer sur mon compte RDV
+* Et RDV Service Public refusera la mise à jour
+* Quand je déclare ce rendez-vous "seen"
+* Alors la mise à jour échoue avec l’erreur "ApiIndisponible"
+* Et le rendez-vous porte toujours le statut "unknown"
 
-## Rule: Déclarer un rendez-vous honoré depuis ce parcours écarte le CRA
+## Règle: Déclarer un rendez-vous honoré depuis ce parcours écarte le CRA
 
-### Scenario: Honoré sans CRA
+### Scénario: Honoré sans CRA
 
-* Given un rendez-vous à statuer sur mon compte RDV
-* When je déclare ce rendez-vous "seen"
-* Then le rendez-vous est marqué sans CRA à renseigner
+* Étant donné un rendez-vous à statuer sur mon compte RDV
+* Quand je déclare ce rendez-vous "seen"
+* Alors le rendez-vous est marqué sans CRA à renseigner
 
-### Scenario: Un rendez-vous annulé n'écarte aucun CRA
+### Scénario: Un rendez-vous annulé n'écarte aucun CRA
 
-* Given un rendez-vous à statuer sur mon compte RDV
-* When je déclare ce rendez-vous "revoked"
-* Then le rendez-vous attend toujours un CRA
+* Étant donné un rendez-vous à statuer sur mon compte RDV
+* Quand je déclare ce rendez-vous "revoked"
+* Alors le rendez-vous attend toujours un CRA
 
-## Rule: On ne statue que sur ses propres rendez-vous
+## Règle: On ne statue que sur ses propres rendez-vous
 
-### Scenario: Rendez-vous rattaché à un autre agent
+### Scénario: Rendez-vous rattaché à un autre agent
 
-* Given un rendez-vous à statuer sur le compte RDV d’un autre médiateur
-* When je déclare ce rendez-vous "seen"
-* Then la mise à jour échoue avec l’erreur "RdvNonAutorise"
-* And RDV Service Public n’a pas été sollicité
+* Étant donné un rendez-vous à statuer sur le compte RDV d’un autre médiateur
+* Quand je déclare ce rendez-vous "seen"
+* Alors la mise à jour échoue avec l’erreur "RdvNonAutorise"
+* Et RDV Service Public n’a pas été sollicité
 
-### Scenario: Rendez-vous inconnu de La Coop
+### Scénario: Rendez-vous inconnu de La Coop
 
-* Given un compte RDV lié sans rendez-vous
-* When je déclare un rendez-vous inexistant "seen"
-* Then la mise à jour échoue avec l’erreur "RdvIntrouvable"
-* And RDV Service Public n’a pas été sollicité
+* Étant donné un compte RDV lié sans rendez-vous
+* Quand je déclare un rendez-vous inexistant "seen"
+* Alors la mise à jour échoue avec l’erreur "RdvIntrouvable"
+* Et RDV Service Public n’a pas été sollicité
 
-### Scenario: Médiateur sans compte RDV
+### Scénario: Médiateur sans compte RDV
 
-* Given aucun compte RDV pour statuer
-* When je déclare un rendez-vous inexistant "seen"
-* Then la mise à jour échoue avec l’erreur "CompteNonLie"
-* And RDV Service Public n’a pas été sollicité
+* Étant donné aucun compte RDV pour statuer
+* Quand je déclare un rendez-vous inexistant "seen"
+* Alors la mise à jour échoue avec l’erreur "CompteNonLie"
+* Et RDV Service Public n’a pas été sollicité

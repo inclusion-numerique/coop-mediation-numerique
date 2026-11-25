@@ -1,56 +1,56 @@
-# Feature: Supprimer une activité de médiation
+# Fonctionnalité: Supprimer une activité de médiation
 
-## Rule: Le médiateur supprime ses propres activités
+## Règle: Le médiateur supprime ses propres activités
 
 > La suppression est douce : l'activité quitte l'historique mais reste en
 > base, détachée de ses accompagnements, de ses tags et de son rendez-vous.
 > Les compteurs du médiateur, du lieu et des bénéficiaires suivis suivent.
 
-### Scenario: Le médiateur supprime un accompagnement individuel anonyme
+### Scénario: Le médiateur supprime un accompagnement individuel anonyme
 
-* Given un médiateur ayant accompagné une personne anonyme au lieu d'activité
-* When le médiateur supprime cette activité de médiation
-* Then la suppression de l'activité de médiation réussit
-* And l'activité de médiation est marquée supprimée
-* And l'activité de médiation n'a plus d'accompagnement ni de tag
-* And la personne anonyme n'existe plus
-* And le médiateur compte 0 activité et 0 accompagnement
-* And le lieu d'activité compte 0 activité
+* Étant donné un médiateur ayant accompagné une personne anonyme au lieu d'activité
+* Quand le médiateur supprime cette activité de médiation
+* Alors la suppression de l'activité de médiation réussit
+* Et l'activité de médiation est marquée supprimée
+* Et l'activité de médiation n'a plus d'accompagnement ni de tag
+* Et la personne anonyme n'existe plus
+* Et le médiateur compte 0 activité et 0 accompagnement
+* Et le lieu d'activité compte 0 activité
 
-### Scenario: Le médiateur supprime un atelier mêlant bénéficiaires suivis et anonymes
+### Scénario: Le médiateur supprime un atelier mêlant bénéficiaires suivis et anonymes
 
-* Given un médiateur ayant animé un atelier pour 2 bénéficiaires suivis et 3 personnes anonymes
-* When le médiateur supprime cette activité de médiation
-* Then la suppression de l'activité de médiation réussit
-* And les personnes anonymes n'existent plus
-* And chaque bénéficiaire suivi compte 0 accompagnement
-* And le médiateur compte 0 activité et 0 accompagnement
+* Étant donné un médiateur ayant animé un atelier pour 2 bénéficiaires suivis et 3 personnes anonymes
+* Quand le médiateur supprime cette activité de médiation
+* Alors la suppression de l'activité de médiation réussit
+* Et les personnes anonymes n'existent plus
+* Et chaque bénéficiaire suivi compte 0 accompagnement
+* Et le médiateur compte 0 activité et 0 accompagnement
 
-### Scenario: Le premier accompagnement passe à l'activité suivante
+### Scénario: Le premier accompagnement passe à l'activité suivante
 
-* Given un bénéficiaire suivi accompagné le 3 mars puis le 10 mars
-* When le médiateur supprime l'accompagnement du 3 mars
-* Then l'accompagnement du "10 mars" devient le premier accompagnement du bénéficiaire
+* Étant donné un bénéficiaire suivi accompagné le 3 mars puis le 10 mars
+* Quand le médiateur supprime l'accompagnement du 3 mars
+* Alors l'accompagnement du "10 mars" devient le premier accompagnement du bénéficiaire
 
-### Scenario: À date égale, le premier accompagnement revient au premier enregistré
+### Scénario: À date égale, le premier accompagnement revient au premier enregistré
 
-* Given un bénéficiaire suivi accompagné le 3 mars puis deux fois le 10 mars, enregistré à 9 h et à 14 h
-* When le médiateur supprime l'accompagnement du 3 mars
-* Then l'accompagnement du "10 mars à 9 h" devient le premier accompagnement du bénéficiaire
-* And l'accompagnement du "10 mars à 14 h" n'est pas le premier accompagnement du bénéficiaire
+* Étant donné un bénéficiaire suivi accompagné le 3 mars puis deux fois le 10 mars, enregistré à 9 h et à 14 h
+* Quand le médiateur supprime l'accompagnement du 3 mars
+* Alors l'accompagnement du "10 mars à 9 h" devient le premier accompagnement du bénéficiaire
+* Et l'accompagnement du "10 mars à 14 h" n'est pas le premier accompagnement du bénéficiaire
 
-## Rule: Personne d'autre ne supprime l'activité d'un médiateur
+## Règle: Personne d'autre ne supprime l'activité d'un médiateur
 
-### Scenario: Un autre médiateur tente la suppression
+### Scénario: Un autre médiateur tente la suppression
 
-* Given un médiateur ayant accompagné une personne anonyme au lieu d'activité
-* When un autre médiateur supprime cette activité de médiation
-* Then la suppression de l'activité de médiation échoue avec "ActiviteIntrouvable"
-* And l'activité de médiation n'est pas marquée supprimée
+* Étant donné un médiateur ayant accompagné une personne anonyme au lieu d'activité
+* Quand un autre médiateur supprime cette activité de médiation
+* Alors la suppression de l'activité de médiation échoue avec "ActiviteIntrouvable"
+* Et l'activité de médiation n'est pas marquée supprimée
 
-### Scenario: Une activité déjà supprimée est introuvable
+### Scénario: Une activité déjà supprimée est introuvable
 
-* Given un médiateur ayant accompagné une personne anonyme au lieu d'activité
-* When le médiateur supprime cette activité de médiation
-* And le médiateur supprime cette activité de médiation
-* Then la suppression de l'activité de médiation échoue avec "ActiviteIntrouvable"
+* Étant donné un médiateur ayant accompagné une personne anonyme au lieu d'activité
+* Quand le médiateur supprime cette activité de médiation
+* Et le médiateur supprime cette activité de médiation
+* Alors la suppression de l'activité de médiation échoue avec "ActiviteIntrouvable"

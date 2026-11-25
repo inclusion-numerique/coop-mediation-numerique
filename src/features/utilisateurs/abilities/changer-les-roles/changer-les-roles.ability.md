@@ -1,100 +1,100 @@
-# Feature: Changer les rôles d'un utilisateur
+# Fonctionnalité: Changer les rôles d'un utilisateur
 
 > L'administration ajoute un rôle à tout moment. Elle ne retire un rôle que
 > s'il n'a jamais servi : un médiateur sans bénéficiaire ni activité, un
 > coordinateur sans équipe, sans invitation en attente ni activité de
 > coordination. Les tags du rôle retiré passent au rôle qui reste.
 
-## Rule: Un rôle s'ajoute librement
+## Règle: Un rôle s'ajoute librement
 
-### Scenario: Ajouter le rôle coordinateur à un médiateur
+### Scénario: Ajouter le rôle coordinateur à un médiateur
 
-* Given un médiateur dont on change les rôles
-* When l'administration lui donne les rôles médiateur et coordinateur
-* Then le changement de rôles aboutit
-* And ce compte est médiateur et coordinateur
+* Étant donné un médiateur dont on change les rôles
+* Quand l'administration lui donne les rôles médiateur et coordinateur
+* Alors le changement de rôles aboutit
+* Et ce compte est médiateur et coordinateur
 
-## Rule: Un rôle ne se retire que s'il n'a jamais servi
+## Règle: Un rôle ne se retire que s'il n'a jamais servi
 
-### Scenario: Retirer le rôle médiateur vierge d'un double rôle
+### Scénario: Retirer le rôle médiateur vierge d'un double rôle
 
-* Given un médiateur coordinateur dont on change les rôles
-* And son rôle médiateur porte un tag
-* When l'administration ne lui laisse que le rôle coordinateur
-* Then le changement de rôles aboutit
-* And ce compte n'est plus que coordinateur
-* And le tag appartient désormais à son rôle coordinateur
+* Étant donné un médiateur coordinateur dont on change les rôles
+* Et son rôle médiateur porte un tag
+* Quand l'administration ne lui laisse que le rôle coordinateur
+* Alors le changement de rôles aboutit
+* Et ce compte n'est plus que coordinateur
+* Et le tag appartient désormais à son rôle coordinateur
 
-### Scenario: Le rôle médiateur qui a des activités ne se retire pas
+### Scénario: Le rôle médiateur qui a des activités ne se retire pas
 
-* Given un médiateur coordinateur dont on change les rôles
-* And son rôle médiateur a une activité
-* When l'administration ne lui laisse que le rôle coordinateur
-* Then le changement de rôles échoue avec l'erreur "RoleNonVierge"
-* And ce compte est médiateur et coordinateur
+* Étant donné un médiateur coordinateur dont on change les rôles
+* Et son rôle médiateur a une activité
+* Quand l'administration ne lui laisse que le rôle coordinateur
+* Alors le changement de rôles échoue avec l'erreur "RoleNonVierge"
+* Et ce compte est médiateur et coordinateur
 
-### Scenario: Le rôle coordinateur qui a coordonné ne se retire pas
+### Scénario: Le rôle coordinateur qui a coordonné ne se retire pas
 
-* Given un médiateur coordinateur dont on change les rôles
-* And son rôle coordinateur a une activité de coordination
-* When l'administration ne lui laisse que le rôle médiateur
-* Then le changement de rôles échoue avec l'erreur "RoleNonVierge"
-* And ce compte est médiateur et coordinateur
+* Étant donné un médiateur coordinateur dont on change les rôles
+* Et son rôle coordinateur a une activité de coordination
+* Quand l'administration ne lui laisse que le rôle médiateur
+* Alors le changement de rôles échoue avec l'erreur "RoleNonVierge"
+* Et ce compte est médiateur et coordinateur
 
-## Rule: Un compte garde au moins un rôle
+## Règle: Un compte garde au moins un rôle
 
-### Scenario: Retirer tous les rôles est refusé
+### Scénario: Retirer tous les rôles est refusé
 
-* Given un médiateur dont on change les rôles
-* When l'administration lui retire tous ses rôles
-* Then le changement de rôles échoue avec l'erreur "AucunRoleDemande"
+* Étant donné un médiateur dont on change les rôles
+* Quand l'administration lui retire tous ses rôles
+* Alors le changement de rôles échoue avec l'erreur "AucunRoleDemande"
 
-## Rule: Les comptes administrateur ne se changent pas ici
+## Règle: Les comptes administrateur ne se changent pas ici
 
-### Scenario: Les rôles d'un administrateur ne changent pas
+### Scénario: Les rôles d'un administrateur ne changent pas
 
-* Given un administrateur dont on change les rôles
-* When l'administration lui donne les rôles médiateur et coordinateur
-* Then le changement de rôles échoue avec l'erreur "RoleProtege"
+* Étant donné un administrateur dont on change les rôles
+* Quand l'administration lui donne les rôles médiateur et coordinateur
+* Alors le changement de rôles échoue avec l'erreur "RoleProtege"
 
-## Rule: Le système retire les rôles restés vacants d'un double rôle
+## Règle: Le système retire les rôles restés vacants d'un double rôle
 
 > Un double rôle inscrit depuis plus de 30 jours perd le rôle qu'il n'a
 > jamais utilisé, dans le dispositif comme hors dispositif : le compte garde
 > toujours au moins un rôle. Seul le rôle coordinateur d'un coordinateur du
 > dispositif ne se retire pas, puisque la connexion le recréerait.
 
-### Scenario: Le rôle coordinateur vacant est retiré
+### Scénario: Le rôle coordinateur vacant est retiré
 
-* Given un médiateur coordinateur hors dispositif inscrit depuis 40 jours
-* And son rôle médiateur a une activité
-* When le système cherche les rôles vacants
-* Then le rôle coordinateur de ce compte est repéré comme vacant
-* And son rôle médiateur n'est pas repéré comme vacant
+* Étant donné un médiateur coordinateur hors dispositif inscrit depuis 40 jours
+* Et son rôle médiateur a une activité
+* Quand le système cherche les rôles vacants
+* Alors le rôle coordinateur de ce compte est repéré comme vacant
+* Et son rôle médiateur n'est pas repéré comme vacant
 
-### Scenario: Le rôle vacant d'un conseiller numérique est aussi retiré
+### Scénario: Le rôle vacant d'un conseiller numérique est aussi retiré
 
-* Given un médiateur coordinateur conseiller numérique inscrit depuis 40 jours
-* And son rôle médiateur a une activité
-* When le système cherche les rôles vacants
-* Then le rôle coordinateur de ce compte est repéré comme vacant
+* Étant donné un médiateur coordinateur conseiller numérique inscrit depuis 40 jours
+* Et son rôle médiateur a une activité
+* Quand le système cherche les rôles vacants
+* Alors le rôle coordinateur de ce compte est repéré comme vacant
 
-### Scenario: Le rôle coordinateur d'un coordinateur du dispositif est gardé
+### Scénario: Le rôle coordinateur d'un coordinateur du dispositif est gardé
 
-* Given un coordinateur du dispositif médiateur inscrit depuis 40 jours
-* And son rôle médiateur a une activité
-* When le système cherche les rôles vacants
-* Then le rôle coordinateur de ce compte n'est pas repéré comme vacant
+* Étant donné un coordinateur du dispositif médiateur inscrit depuis 40 jours
+* Et son rôle médiateur a une activité
+* Quand le système cherche les rôles vacants
+* Alors le rôle coordinateur de ce compte n'est pas repéré comme vacant
 
-### Scenario: Un coordinateur déclaré sans affectation au dispositif perd son rôle vacant
+### Scénario: Un coordinateur déclaré sans affectation au dispositif perd son rôle vacant
 
-* Given un médiateur coordinateur déclaré coordinateur sans affectation au dispositif inscrit depuis 40 jours
-* And son rôle médiateur a une activité
-* When le système cherche les rôles vacants
-* Then le rôle coordinateur de ce compte est repéré comme vacant
+* Étant donné un médiateur coordinateur déclaré coordinateur sans affectation au dispositif inscrit depuis 40 jours
+* Et son rôle médiateur a une activité
+* Quand le système cherche les rôles vacants
+* Alors le rôle coordinateur de ce compte est repéré comme vacant
 
-### Scenario: Un double rôle inscrit depuis moins de 30 jours garde ses rôles
+### Scénario: Un double rôle inscrit depuis moins de 30 jours garde ses rôles
 
-* Given un médiateur coordinateur hors dispositif inscrit depuis 10 jours
-* When le système cherche les rôles vacants
-* Then aucun rôle de ce compte n'est repéré comme vacant
+* Étant donné un médiateur coordinateur hors dispositif inscrit depuis 10 jours
+* Quand le système cherche les rôles vacants
+* Alors aucun rôle de ce compte n'est repéré comme vacant

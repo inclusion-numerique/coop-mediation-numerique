@@ -1,26 +1,26 @@
-# Feature: Choisir son profil d’inscription
+# Fonctionnalité: Choisir son profil d’inscription
 
-## Rule: Choisir un profil pose le profil, accepte les CGU et garantit le compte de rôle
+## Règle: Choisir un profil pose le profil, accepte les CGU et garantit le compte de rôle
 
-### Scenario: Un médiateur choisit son profil
+### Scénario: Un médiateur choisit son profil
 
-* When je choisis le profil "Mediateur"
-* Then le profil d’inscription de l’utilisateur est "Mediateur"
-* And un compte médiateur existe pour l’utilisateur
-* And aucun compte coordinateur n’existe pour l’utilisateur
+* Quand je choisis le profil "Mediateur"
+* Alors le profil d’inscription de l’utilisateur est "Mediateur"
+* Et un compte médiateur existe pour l’utilisateur
+* Et aucun compte coordinateur n’existe pour l’utilisateur
 
-### Scenario: Un coordinateur choisit son profil
+### Scénario: Un coordinateur choisit son profil
 
-* When je choisis le profil "Coordinateur"
-* Then le profil d’inscription de l’utilisateur est "Coordinateur"
-* And un compte coordinateur existe pour l’utilisateur
-* And aucun compte médiateur n’existe pour l’utilisateur
+* Quand je choisis le profil "Coordinateur"
+* Alors le profil d’inscription de l’utilisateur est "Coordinateur"
+* Et un compte coordinateur existe pour l’utilisateur
+* Et aucun compte médiateur n’existe pour l’utilisateur
 
-## Rule: Une inscription validée ne se re-choisit pas
+## Règle: Une inscription validée ne se re-choisit pas
 
-### Scenario: Choisir un profil alors que l'inscription est déjà validée
+### Scénario: Choisir un profil alors que l'inscription est déjà validée
 
-* Given mon inscription est déjà validée avec le profil "Mediateur"
-* When je choisis le profil "Coordinateur"
-* Then le choix du profil est refusé car l’inscription est déjà validée
-* And le profil d’inscription de l’utilisateur est "Mediateur"
+* Étant donné mon inscription est déjà validée avec le profil "Mediateur"
+* Quand je choisis le profil "Coordinateur"
+* Alors le choix du profil est refusé car l’inscription est déjà validée
+* Et le profil d’inscription de l’utilisateur est "Mediateur"

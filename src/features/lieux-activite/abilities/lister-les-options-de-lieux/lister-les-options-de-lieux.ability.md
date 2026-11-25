@@ -1,73 +1,73 @@
-# Feature: Proposer des lieux dans un filtre
+# Fonctionnalité: Proposer des lieux dans un filtre
 
 > Les écrans qui filtrent par lieu — activités, utilisateurs, statistiques —
 > ont besoin de la même liste de choix. Elle vit ici parce que le lieu en est
 > le sujet ; le nombre d'activités n'est qu'un signal de classement.
 
-## Rule: Le lieu où l'on travaille le plus est proposé en tête
+## Règle: Le lieu où l'on travaille le plus est proposé en tête
 
-### Scenario: Le lieu le plus utilisé est signalé
+### Scénario: Le lieu le plus utilisé est signalé
 
-* Given un médiateur qui exerce dans un lieu
-* When on demande les options de lieux de ce médiateur
-* Then ce lieu est proposé
+* Étant donné un médiateur qui exerce dans un lieu
+* Quand on demande les options de lieux de ce médiateur
+* Alors ce lieu est proposé
 
-## Rule: On ne propose que les lieux où le médiateur exerce
+## Règle: On ne propose que les lieux où le médiateur exerce
 
-### Scenario: Aucun lieu pour un médiateur sans rattachement
+### Scénario: Aucun lieu pour un médiateur sans rattachement
 
-* Given un médiateur qui exerce dans un lieu
-* When on demande les options de lieux d'un médiateur étranger
-* Then aucun lieu n'est proposé
+* Étant donné un médiateur qui exerce dans un lieu
+* Quand on demande les options de lieux d'un médiateur étranger
+* Alors aucun lieu n'est proposé
 
-### Scenario: Sans médiateur, rien n'est proposé
+### Scénario: Sans médiateur, rien n'est proposé
 
-* Given un médiateur qui exerce dans un lieu
-* When on demande les options de lieux de personne
-* Then aucun lieu n'est proposé
+* Étant donné un médiateur qui exerce dans un lieu
+* Quand on demande les options de lieux de personne
+* Alors aucun lieu n'est proposé
 
-## Rule: Seuls les lieux exploitables sont proposés à la saisie
+## Règle: Seuls les lieux exploitables sont proposés à la saisie
 
-### Scenario: Un lieu sans adresse reconnue par la BAN n'est pas proposé à la saisie
+### Scénario: Un lieu sans adresse reconnue par la BAN n'est pas proposé à la saisie
 
-* Given un médiateur qui exerce dans un lieu
-* And ce lieu n'a pas d'adresse reconnue par la BAN
-* When on demande les options de lieux de ce médiateur
-* Then aucun lieu n'est proposé
+* Étant donné un médiateur qui exerce dans un lieu
+* Et ce lieu n'a pas d'adresse reconnue par la BAN
+* Quand on demande les options de lieux de ce médiateur
+* Alors aucun lieu n'est proposé
 
-### Scenario: Un lieu supprimé n'est pas proposé à la saisie
+### Scénario: Un lieu supprimé n'est pas proposé à la saisie
 
-* Given un médiateur qui exerce dans un lieu
-* And ce lieu est supprimé
-* When on demande les options de lieux de ce médiateur
-* Then aucun lieu n'est proposé
+* Étant donné un médiateur qui exerce dans un lieu
+* Et ce lieu est supprimé
+* Quand on demande les options de lieux de ce médiateur
+* Alors aucun lieu n'est proposé
 
-## Rule: Le filtre de l'administration ne propose que des lieux exploitables
+## Règle: Le filtre de l'administration ne propose que des lieux exploitables
 
 > L'administration cherche un lieu par son nom, sa commune ou son code postal,
 > parmi tous les lieux, sans liste chargée d'avance.
 
-### Scenario: Un lieu exploitable est proposé à l'administration
+### Scénario: Un lieu exploitable est proposé à l'administration
 
-* Given un médiateur qui exerce dans un lieu
-* When on cherche ce lieu par son nom pour filtrer dans l'administration
-* Then ce lieu figure parmi les lieux proposés
+* Étant donné un médiateur qui exerce dans un lieu
+* Quand on cherche ce lieu par son nom pour filtrer dans l'administration
+* Alors ce lieu figure parmi les lieux proposés
 
-### Scenario: Un lieu sans adresse reconnue par la BAN n'est pas proposé à l'administration
+### Scénario: Un lieu sans adresse reconnue par la BAN n'est pas proposé à l'administration
 
-* Given un médiateur qui exerce dans un lieu
-* And ce lieu n'a pas d'adresse reconnue par la BAN
-* When on cherche ce lieu par son nom pour filtrer dans l'administration
-* Then ce lieu ne figure pas parmi les lieux proposés
+* Étant donné un médiateur qui exerce dans un lieu
+* Et ce lieu n'a pas d'adresse reconnue par la BAN
+* Quand on cherche ce lieu par son nom pour filtrer dans l'administration
+* Alors ce lieu ne figure pas parmi les lieux proposés
 
-### Scenario: Un lieu supprimé n'est pas proposé à l'administration
+### Scénario: Un lieu supprimé n'est pas proposé à l'administration
 
-* Given un médiateur qui exerce dans un lieu
-* And ce lieu est supprimé
-* When on cherche ce lieu par son nom pour filtrer dans l'administration
-* Then ce lieu ne figure pas parmi les lieux proposés
+* Étant donné un médiateur qui exerce dans un lieu
+* Et ce lieu est supprimé
+* Quand on cherche ce lieu par son nom pour filtrer dans l'administration
+* Alors ce lieu ne figure pas parmi les lieux proposés
 
-## Rule: Pour filtrer, on propose les lieux des activités comptées dans les statistiques et les lieux actuels du médiateur
+## Règle: Pour filtrer, on propose les lieux des activités comptées dans les statistiques et les lieux actuels du médiateur
 
 > Les statistiques comptent toutes les activités du médiateur, y compris celles
 > d'un lieu qu'il a quitté : le filtre doit permettre de les isoler. Pour un
@@ -77,24 +77,24 @@
 > équipe, qui ne filtreraient rien. La saisie, elle, ne propose que les lieux
 > où l'on exerce encore.
 
-### Scenario: Un lieu quitté avec des activités reste filtrable
+### Scénario: Un lieu quitté avec des activités reste filtrable
 
-* Given un médiateur qui exerce dans un lieu
-* And ce médiateur a des activités dans ce lieu
-* And ce médiateur a quitté ce lieu
-* When on demande les lieux pour filtrer les activités de ce médiateur
-* Then ce lieu est proposé
+* Étant donné un médiateur qui exerce dans un lieu
+* Et ce médiateur a des activités dans ce lieu
+* Et ce médiateur a quitté ce lieu
+* Quand on demande les lieux pour filtrer les activités de ce médiateur
+* Alors ce lieu est proposé
 
-### Scenario: Un lieu actuel sans activité reste proposé au médiateur
+### Scénario: Un lieu actuel sans activité reste proposé au médiateur
 
-* Given un médiateur qui exerce dans un lieu
-* When on demande les lieux pour filtrer les activités de ce médiateur
-* Then ce lieu est proposé
+* Étant donné un médiateur qui exerce dans un lieu
+* Quand on demande les lieux pour filtrer les activités de ce médiateur
+* Alors ce lieu est proposé
 
-### Scenario: Un lieu quitté n'est plus proposé à la saisie
+### Scénario: Un lieu quitté n'est plus proposé à la saisie
 
-* Given un médiateur qui exerce dans un lieu
-* And ce médiateur a des activités dans ce lieu
-* And ce médiateur a quitté ce lieu
-* When on demande les options de lieux de ce médiateur
-* Then aucun lieu n'est proposé
+* Étant donné un médiateur qui exerce dans un lieu
+* Et ce médiateur a des activités dans ce lieu
+* Et ce médiateur a quitté ce lieu
+* Quand on demande les options de lieux de ce médiateur
+* Alors aucun lieu n'est proposé

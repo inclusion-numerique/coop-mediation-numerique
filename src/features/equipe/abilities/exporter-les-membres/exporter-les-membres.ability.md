@@ -1,18 +1,18 @@
-# Feature: Exporter les membres d'une équipe
+# Fonctionnalité: Exporter les membres d'une équipe
 
-## Rule: L'export reprend les membres filtrés, avec leur statut
+## Règle: L'export reprend les membres filtrés, avec leur statut
 
-### Scenario: Le coordinateur exporte les archives de son équipe
+### Scénario: Le coordinateur exporte les archives de son équipe
 
-* Given un coordinateur dont l'équipe compte un membre actif et un ancien membre
-* When le coordinateur exporte les archives de son équipe
-* Then l'export compte 1 membre
-* And ce membre exporté est un ancien membre
+* Étant donné un coordinateur dont l'équipe compte un membre actif et un ancien membre
+* Quand le coordinateur exporte les archives de son équipe
+* Alors l'export compte 1 membre
+* Et ce membre exporté est un ancien membre
 
-## Rule: Seuls les membres actifs, le coordinateur et les administrateurs exportent une équipe
+## Règle: Seuls les membres actifs, le coordinateur et les administrateurs exportent une équipe
 
-### Scenario: Le coordinateur d'une autre équipe ne peut pas l'exporter
+### Scénario: Le coordinateur d'une autre équipe ne peut pas l'exporter
 
-* Given un coordinateur dont l'équipe compte un membre actif et un ancien membre
-* When le coordinateur d'une autre équipe exporte cette équipe
-* Then l'export est refusé
+* Étant donné un coordinateur dont l'équipe compte un membre actif et un ancien membre
+* Quand le coordinateur d'une autre équipe exporte cette équipe
+* Alors l'export est refusé

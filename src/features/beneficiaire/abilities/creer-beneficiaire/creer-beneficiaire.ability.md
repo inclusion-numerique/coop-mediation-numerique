@@ -1,40 +1,40 @@
-# Feature: Créer un bénéficiaire
+# Fonctionnalité: Créer un bénéficiaire
 
-## Rule: Un bénéficiaire identifié est créé pour le médiateur courant
+## Règle: Un bénéficiaire identifié est créé pour le médiateur courant
 
-### Scenario: Créer un bénéficiaire avec les informations minimales
+### Scénario: Créer un bénéficiaire avec les informations minimales
 
-* When je crée un bénéficiaire avec les données suivantes
+* Quand je crée un bénéficiaire avec les données suivantes
   | Champ  | Valeur |
   | prenom | Jean   |
   | nom    | Dupont |
-* Then le bénéficiaire est créé avec les données suivantes
+* Alors le bénéficiaire est créé avec les données suivantes
   | Champ   | Valeur |
   | prenom  | Jean   |
   | nom     | Dupont |
   | anonyme | false  |
-* And le compteur de bénéficiaires du médiateur est incrémenté de 1
+* Et le compteur de bénéficiaires du médiateur est incrémenté de 1
 
-## Rule: La tranche d'âge est dérivée de l'année de naissance, sinon la saisie est conservée
+## Règle: La tranche d'âge est dérivée de l'année de naissance, sinon la saisie est conservée
 
-### Scenario: Avec une année de naissance, la tranche est calculée
+### Scénario: Avec une année de naissance, la tranche est calculée
 
-* When je crée un bénéficiaire né en 1990
-* Then la tranche d'âge du bénéficiaire est "VingtCinqTrenteNeuf"
+* Quand je crée un bénéficiaire né en 1990
+* Alors la tranche d'âge du bénéficiaire est "VingtCinqTrenteNeuf"
 
-### Scenario: Sans année de naissance, la tranche saisie est conservée
+### Scénario: Sans année de naissance, la tranche saisie est conservée
 
-* When je crée un bénéficiaire avec les données suivantes
+* Quand je crée un bénéficiaire avec les données suivantes
   | Champ      | Valeur          |
   | prenom     | Marie           |
   | nom        | Curie           |
   | trancheAge | SoixanteDixPlus |
-* Then la tranche d'âge du bénéficiaire est "SoixanteDixPlus"
+* Alors la tranche d'âge du bénéficiaire est "SoixanteDixPlus"
 
-### Scenario: Sans année de naissance ni tranche saisie, la tranche est "NonCommunique"
+### Scénario: Sans année de naissance ni tranche saisie, la tranche est "NonCommunique"
 
-* When je crée un bénéficiaire avec les données suivantes
+* Quand je crée un bénéficiaire avec les données suivantes
   | Champ  | Valeur |
   | prenom | Marie  |
   | nom    | Curie  |
-* Then la tranche d'âge du bénéficiaire est "NonCommunique"
+* Alors la tranche d'âge du bénéficiaire est "NonCommunique"

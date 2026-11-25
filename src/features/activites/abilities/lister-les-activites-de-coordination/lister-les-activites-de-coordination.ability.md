@@ -1,49 +1,49 @@
-# Feature: Lister ses activités de coordination
+# Fonctionnalité: Lister ses activités de coordination
 
-## Rule: Le coordinateur ne voit que ses activités vivantes, de la plus récente à la plus ancienne
+## Règle: Le coordinateur ne voit que ses activités vivantes, de la plus récente à la plus ancienne
 
-### Scenario: Les activités supprimées et celles d'un autre coordinateur sont écartées
+### Scénario: Les activités supprimées et celles d'un autre coordinateur sont écartées
 
-* Given des activités de coordination enregistrées
-* When je liste mes activités de coordination
-* Then 3 activités de coordination sont listées
-* And les types listés sont "Partenariat, Evenement, Animation"
+* Étant donné des activités de coordination enregistrées
+* Quand je liste mes activités de coordination
+* Alors 3 activités de coordination sont listées
+* Et les types listés sont "Partenariat, Evenement, Animation"
 
-## Rule: Les critères de recherche se cumulent
+## Règle: Les critères de recherche se cumulent
 
-### Scenario: Filtrer par type
+### Scénario: Filtrer par type
 
-* Given des activités de coordination enregistrées
-* When je liste mes activités de coordination de type "Animation,Evenement"
-* Then les types listés sont "Evenement, Animation"
+* Étant donné des activités de coordination enregistrées
+* Quand je liste mes activités de coordination de type "Animation,Evenement"
+* Alors les types listés sont "Evenement, Animation"
 
-### Scenario: Filtrer par tag
+### Scénario: Filtrer par tag
 
-* Given des activités de coordination enregistrées
-* When je liste mes activités de coordination taguées « Élus »
-* Then les types listés sont "Partenariat"
+* Étant donné des activités de coordination enregistrées
+* Quand je liste mes activités de coordination taguées « Élus »
+* Alors les types listés sont "Partenariat"
 
-### Scenario: Filtrer par période
+### Scénario: Filtrer par période
 
-* Given des activités de coordination enregistrées
-* When je liste mes activités de coordination du "2026-05-01" au "2026-06-01"
-* Then les types listés sont "Evenement"
+* Étant donné des activités de coordination enregistrées
+* Quand je liste mes activités de coordination du "2026-05-01" au "2026-06-01"
+* Alors les types listés sont "Evenement"
 
-## Rule: La liste se pagine
+## Règle: La liste se pagine
 
-### Scenario: Deuxième page de dix lignes
+### Scénario: Deuxième page de dix lignes
 
-* Given des activités de coordination enregistrées
-* And 9 animations de coordination de plus, en janvier 2026
-* When je liste la page 2 de mes activités de coordination, 10 par page
-* Then 12 activités de coordination sont comptées sur 2 pages
-* And les types listés sont "Animation, Animation"
+* Étant donné des activités de coordination enregistrées
+* Et 9 animations de coordination de plus, en janvier 2026
+* Quand je liste la page 2 de mes activités de coordination, 10 par page
+* Alors 12 activités de coordination sont comptées sur 2 pages
+* Et les types listés sont "Animation, Animation"
 
-## Rule: Les filtres proposent les tags utilisés et la période couverte
+## Règle: Les filtres proposent les tags utilisés et la période couverte
 
-### Scenario: Options de filtre
+### Scénario: Options de filtre
 
-* Given des activités de coordination enregistrées
-* When je consulte les options de filtre de mes activités de coordination
-* Then 2 tags sont proposés
-* And la période couverte va du "2026-02-10" au "2026-06-30"
+* Étant donné des activités de coordination enregistrées
+* Quand je consulte les options de filtre de mes activités de coordination
+* Alors 2 tags sont proposés
+* Et la période couverte va du "2026-02-10" au "2026-06-30"

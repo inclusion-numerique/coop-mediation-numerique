@@ -1,47 +1,47 @@
-# Feature: Modifier un bénéficiaire
+# Fonctionnalité: Modifier un bénéficiaire
 
-## Rule: Seul le médiateur propriétaire peut modifier son bénéficiaire
+## Règle: Seul le médiateur propriétaire peut modifier son bénéficiaire
 
-### Scenario: Modifier les informations d'un bénéficiaire existant
+### Scénario: Modifier les informations d'un bénéficiaire existant
 
-* Given un bénéficiaire "Jean Dupont" de ce médiateur
-* When je modifie ce bénéficiaire avec les données suivantes
+* Étant donné un bénéficiaire "Jean Dupont" de ce médiateur
+* Quand je modifie ce bénéficiaire avec les données suivantes
   | Champ  | Valeur |
   | prenom | Jeanne |
   | nom    | Durand |
-* Then la modification réussit
-* And le bénéficiaire porte désormais les données suivantes
+* Alors la modification réussit
+* Et le bénéficiaire porte désormais les données suivantes
   | Champ  | Valeur |
   | prenom | Jeanne |
   | nom    | Durand |
 
-### Scenario: Modifier un bénéficiaire inexistant échoue
+### Scénario: Modifier un bénéficiaire inexistant échoue
 
-* When je modifie un bénéficiaire inexistant
-* Then la modification échoue avec l'erreur "BeneficiaireNotFound"
+* Quand je modifie un bénéficiaire inexistant
+* Alors la modification échoue avec l'erreur "BeneficiaireNotFound"
 
-## Rule: La tranche d'âge saisie sans année de naissance est conservée
+## Règle: La tranche d'âge saisie sans année de naissance est conservée
 
-### Scenario: Renseigner la tranche d'âge sans année de naissance
+### Scénario: Renseigner la tranche d'âge sans année de naissance
 
-* Given un bénéficiaire "Jean Dupont" de ce médiateur
-* When je modifie ce bénéficiaire avec les données suivantes
+* Étant donné un bénéficiaire "Jean Dupont" de ce médiateur
+* Quand je modifie ce bénéficiaire avec les données suivantes
   | Champ      | Valeur          |
   | prenom     | Jean            |
   | nom        | Dupont          |
   | trancheAge | SoixanteDixPlus |
-* Then la modification réussit
-* And le bénéficiaire porte désormais les données suivantes
+* Alors la modification réussit
+* Et le bénéficiaire porte désormais les données suivantes
   | Champ      | Valeur          |
   | trancheAge | SoixanteDixPlus |
 
-## Rule: La date de création est préservée à la modification
+## Règle: La date de création est préservée à la modification
 
-### Scenario: La date de création reste inchangée
+### Scénario: La date de création reste inchangée
 
-* Given un bénéficiaire "Jean Dupont" de ce médiateur
-* When je modifie ce bénéficiaire avec les données suivantes
+* Étant donné un bénéficiaire "Jean Dupont" de ce médiateur
+* Quand je modifie ce bénéficiaire avec les données suivantes
   | Champ  | Valeur |
   | prenom | Jeanne |
   | nom    | Dupont |
-* Then la date de création du bénéficiaire est inchangée
+* Alors la date de création du bénéficiaire est inchangée

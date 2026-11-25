@@ -1,4 +1,4 @@
-# Feature: Se connecter
+# Fonctionnalité: Se connecter
 
 > La connexion passe par ProConnect ; ce qui suit ne décrit que ce que la coop
 > décide autour d'elle : la page où arrive une personne, selon son profil et
@@ -8,15 +8,15 @@
 > a un profil de médiateur ou de coordinateur : sans l'un ou l'autre, elle ne
 > peut rien faire dans la coop et reprend son parcours d'inscription.
 
-## Rule: La page d'accueil dépend du profil et de l'état de l'inscription
+## Règle: La page d'accueil dépend du profil et de l'état de l'inscription
 
-### Scenario Outline: Un « <personne> » arrive sur « <page> »
+### Plan du scénario: Un « <personne> » arrive sur « <page> »
 
-* Given la personne "<personne>"
-* When il arrive sur la coop
-* Then il est conduit vers "<page>"
+* Étant donné la personne "<personne>"
+* Quand il arrive sur la coop
+* Alors il est conduit vers "<page>"
 
-#### Examples:
+#### Exemples:
 
   | personne                                                    | page            |
   | ----------------------------------------------------------- | --------------- |
@@ -27,15 +27,15 @@
   | médiateur inscrit                                           | /coop           |
   | coordinateur inscrit                                        | /coop           |
 
-## Rule: Après la connexion, chacun revient là où il travaille
+## Règle: Après la connexion, chacun revient là où il travaille
 
-### Scenario Outline: Un « <personne> » qui vient de se connecter revient sur « <page> »
+### Plan du scénario: Un « <personne> » qui vient de se connecter revient sur « <page> »
 
-* Given la personne "<personne>"
-* When il vient de se connecter
-* Then il est conduit vers "<page>"
+* Étant donné la personne "<personne>"
+* Quand il vient de se connecter
+* Alors il est conduit vers "<page>"
 
-#### Examples:
+#### Exemples:
 
   | personne                                                    | page                         |
   | ----------------------------------------------------------- | ---------------------------- |

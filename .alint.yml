@@ -570,6 +570,15 @@ rules:
       - "!src/**/index.ts"
     prefix: "'use client'"
 
+  - id: specification-en-francais
+    kind: file_content_forbidden
+    level: error
+    message: "Une spécification s'écrit avec les mots-clés Gherkin français : un mot-clé anglais n'est plus reconnu"
+    paths:
+      - "src/features/*/*.feature.md"
+      - "src/features/*/abilities/*/*.ability.md"
+    pattern: '(?m)^(#+ +(Feature|Rule|Background|Scenario|Scenario Outline|Scenario Template|Example|Examples|Scenarios) *:|\* +(Given|When|Then|And|But) )'
+
   - id: entree-sans-code
     kind: file_content_forbidden
     level: error

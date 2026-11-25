@@ -1,59 +1,59 @@
-# Feature: Lister tous les lieux d'activité
+# Fonctionnalité: Lister tous les lieux d'activité
 
 > L'annuaire complet, du point de vue de l'administration : celui où l'on
 > cherche un lieu pour le corriger ou le fusionner, et non celui de ses propres
 > lieux d'exercice.
 
-## Rule: La recherche ratisse tout ce qui désigne le lieu
+## Règle: La recherche ratisse tout ce qui désigne le lieu
 
 > Nom, SIRET, adresse, commune et code postal. Qui cherche un lieu ne sait pas
 > toujours sous quel libellé il a été enregistré, mais il connaît au moins une
 > de ces cinq choses.
 
-### Scenario: Trouver un lieu par sa dénomination
+### Scénario: Trouver un lieu par sa dénomination
 
-* Given trois lieux à administrer, dont deux à la même adresse
-* When l’administration cherche « Cyberbase du Port »
-* Then un seul lieu est trouvé
+* Étant donné trois lieux à administrer, dont deux à la même adresse
+* Quand l’administration cherche « Cyberbase du Port »
+* Alors un seul lieu est trouvé
 
-### Scenario: Trouver des lieux par leur code postal
+### Scénario: Trouver des lieux par leur code postal
 
-* Given trois lieux à administrer, dont deux à la même adresse
-* When l’administration cherche « 17300 »
-* Then deux lieux sont trouvés
+* Étant donné trois lieux à administrer, dont deux à la même adresse
+* Quand l’administration cherche « 17300 »
+* Alors deux lieux sont trouvés
 
-### Scenario: Trouver un lieu par son SIRET
+### Scénario: Trouver un lieu par son SIRET
 
-* Given trois lieux à administrer, dont deux à la même adresse
-* When l’administration cherche le SIRET du premier lieu
-* Then un seul lieu est trouvé
+* Étant donné trois lieux à administrer, dont deux à la même adresse
+* Quand l’administration cherche le SIRET du premier lieu
+* Alors un seul lieu est trouvé
 
-## Rule: Un lieu supprimé ne s'administre plus
+## Règle: Un lieu supprimé ne s'administre plus
 
-### Scenario: Le lieu retiré sort de la liste
+### Scénario: Le lieu retiré sort de la liste
 
-* Given trois lieux à administrer, dont deux à la même adresse
-* And le premier de ces lieux est supprimé
-* When l’administration cherche « 17300 »
-* Then un seul lieu est trouvé
+* Étant donné trois lieux à administrer, dont deux à la même adresse
+* Et le premier de ces lieux est supprimé
+* Quand l’administration cherche « 17300 »
+* Alors un seul lieu est trouvé
 
-## Rule: Un lieu sans adresse reconnue s'administre, pour qu'on la lui donne
+## Règle: Un lieu sans adresse reconnue s'administre, pour qu'on la lui donne
 
-### Scenario: Un lieu sans adresse reconnue par la BAN est signalé à préciser
+### Scénario: Un lieu sans adresse reconnue par la BAN est signalé à préciser
 
-* Given trois lieux à administrer, dont deux à la même adresse
-* And le premier de ces lieux n'a pas d'adresse reconnue par la BAN
-* When l’administration cherche « 17300 »
-* Then deux lieux sont trouvés
-* And seul le premier lieu est signalé avec une adresse à préciser
+* Étant donné trois lieux à administrer, dont deux à la même adresse
+* Et le premier de ces lieux n'a pas d'adresse reconnue par la BAN
+* Quand l’administration cherche « 17300 »
+* Alors deux lieux sont trouvés
+* Et seul le premier lieu est signalé avec une adresse à préciser
 
-## Rule: Le total ne dépend pas de la recherche
+## Règle: Le total ne dépend pas de la recherche
 
 > C'est le repère qui donne son sens au nombre de résultats : « 9 trouvés » ne
 > dit rien sans « sur 12 750 ».
 
-### Scenario: Le total reste celui de la coop entière
+### Scénario: Le total reste celui de la coop entière
 
-* Given trois lieux à administrer, dont deux à la même adresse
-* When l’administration cherche « Cyberbase du Port »
-* Then le total annoncé dépasse le nombre de lieux trouvés
+* Étant donné trois lieux à administrer, dont deux à la même adresse
+* Quand l’administration cherche « Cyberbase du Port »
+* Alors le total annoncé dépasse le nombre de lieux trouvés

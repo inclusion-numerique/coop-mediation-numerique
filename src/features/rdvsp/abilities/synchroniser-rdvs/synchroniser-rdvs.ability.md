@@ -1,50 +1,50 @@
-# Feature: Synchroniser les rendez-vous d'un compte RDV
+# Fonctionnalité: Synchroniser les rendez-vous d'un compte RDV
 
-## Rule: Ce que RDV Service Public renvoie fait foi
+## Règle: Ce que RDV Service Public renvoie fait foi
 
-### Scenario: Rendez-vous inconnu de La Coop
+### Scénario: Rendez-vous inconnu de La Coop
 
-* Given un compte RDV à synchroniser
-* And RDV Service Public renvoie un rendez-vous à venir
-* When je synchronise les rendez-vous
-* Then le rendez-vous est enregistré
-* And le bilan compte 1 rendez-vous créé
-* And l’usager du rendez-vous est enregistré
+* Étant donné un compte RDV à synchroniser
+* Et RDV Service Public renvoie un rendez-vous à venir
+* Quand je synchronise les rendez-vous
+* Alors le rendez-vous est enregistré
+* Et le bilan compte 1 rendez-vous créé
+* Et l’usager du rendez-vous est enregistré
 
-### Scenario: Rendez-vous déjà à jour
+### Scénario: Rendez-vous déjà à jour
 
-* Given un compte RDV à synchroniser
-* And un rendez-vous déjà enregistré au statut "unknown"
-* And RDV Service Public renvoie ce rendez-vous au statut "unknown"
-* When je synchronise les rendez-vous
-* Then le bilan compte 1 rendez-vous inchangé
-* And le bilan compte 0 rendez-vous mis à jour
+* Étant donné un compte RDV à synchroniser
+* Et un rendez-vous déjà enregistré au statut "unknown"
+* Et RDV Service Public renvoie ce rendez-vous au statut "unknown"
+* Quand je synchronise les rendez-vous
+* Alors le bilan compte 1 rendez-vous inchangé
+* Et le bilan compte 0 rendez-vous mis à jour
 
-### Scenario: Statut modifié chez RDV Service Public
+### Scénario: Statut modifié chez RDV Service Public
 
-* Given un compte RDV à synchroniser
-* And un rendez-vous déjà enregistré au statut "unknown"
-* And RDV Service Public renvoie ce rendez-vous au statut "seen"
-* When je synchronise les rendez-vous
-* Then le rendez-vous enregistré porte le statut "seen"
-* And le bilan compte 1 rendez-vous mis à jour
+* Étant donné un compte RDV à synchroniser
+* Et un rendez-vous déjà enregistré au statut "unknown"
+* Et RDV Service Public renvoie ce rendez-vous au statut "seen"
+* Quand je synchronise les rendez-vous
+* Alors le rendez-vous enregistré porte le statut "seen"
+* Et le bilan compte 1 rendez-vous mis à jour
 
-### Scenario: Rendez-vous disparu de RDV Service Public
+### Scénario: Rendez-vous disparu de RDV Service Public
 
-* Given un compte RDV à synchroniser
-* And un rendez-vous déjà enregistré au statut "unknown"
-* And RDV Service Public ne renvoie aucun rendez-vous
-* When je synchronise les rendez-vous
-* Then le rendez-vous n’est plus enregistré
-* And le bilan compte 1 rendez-vous supprimé
+* Étant donné un compte RDV à synchroniser
+* Et un rendez-vous déjà enregistré au statut "unknown"
+* Et RDV Service Public ne renvoie aucun rendez-vous
+* Quand je synchronise les rendez-vous
+* Alors le rendez-vous n’est plus enregistré
+* Et le bilan compte 1 rendez-vous supprimé
 
-## Rule: Un échec de l'API laisse la base intacte
+## Règle: Un échec de l'API laisse la base intacte
 
-### Scenario: RDV Service Public injoignable
+### Scénario: RDV Service Public injoignable
 
-* Given un compte RDV à synchroniser
-* And un rendez-vous déjà enregistré au statut "unknown"
-* And RDV Service Public refusera de lister les rendez-vous
-* When je synchronise les rendez-vous
-* Then la synchronisation des rendez-vous échoue avec l’erreur "ApiIndisponible"
-* And le rendez-vous enregistré porte le statut "unknown"
+* Étant donné un compte RDV à synchroniser
+* Et un rendez-vous déjà enregistré au statut "unknown"
+* Et RDV Service Public refusera de lister les rendez-vous
+* Quand je synchronise les rendez-vous
+* Alors la synchronisation des rendez-vous échoue avec l’erreur "ApiIndisponible"
+* Et le rendez-vous enregistré porte le statut "unknown"

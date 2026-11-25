@@ -56,7 +56,7 @@ const reecrireLesLiens = ({ corps, source, slug, slugs }) =>
   })
 
 const sansPrefixeGherkin = (titre) =>
-  titre.replace(/^(?:Feature|Fonctionnalité)\s*:\s*/, '')
+  titre.replace(/^Fonctionnalité\s*:\s*/, '')
 
 const decisions = readdirSync('docs/decisions')
   .filter((fichier) => fichier.endsWith('.md') && fichier !== 'adr-template.md')
