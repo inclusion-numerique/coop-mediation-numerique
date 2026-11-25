@@ -1704,6 +1704,99 @@ const CONFIGURATION_REGLES = zoneDeModules({
   table: IMPORTS_ADMIS_DE_LA_CONFIGURATION,
 })
 
+const IMPORTS_ADMIS_DES_JOBS = {
+  'configuration/brevo': [
+    'remove-orphan-brevo-contacts',
+    'synchroniser-les-roles-brevo',
+  ],
+  'libraries/chronometre': ['job-executors.ts'],
+  'libraries/emails': ['verifier-le-bundle.ts'],
+  uuid: ['job-executors.ts'],
+}
+
+const IMPORTS_ADMIS_DU_CLI = {
+  '@octokit/core': ['github'],
+  '@octokit/plugin-rest-endpoint-methods': ['github'],
+  axios: [
+    'commands',
+    'get-avec-nouvelles-tentatives.spec.ts',
+    'get-avec-nouvelles-tentatives.ts',
+    'secrets',
+  ],
+  'configuration/environnement': ['commands', 'fixtures', 'github', 'secrets'],
+  'configuration/prisma': ['commands', 'fixtures'],
+  'configuration/projet': ['commands', 'github'],
+  'libraries/chemins': ['commands', 'dot-env-file.ts'],
+  'libraries/fixtures': ['fixtures'],
+  nanoid: ['secrets'],
+  'node:child_process': ['commands'],
+  'node:crypto': ['branch-namespace.ts'],
+  'node:fs': ['commands'],
+  'node:fs/promises': ['commands', 'dot-env-file.ts'],
+  'node:path': ['commands', 'dot-env-file.ts'],
+  'node:util': ['commands'],
+  'p-retry': ['get-avec-nouvelles-tentatives.ts', 'secrets'],
+}
+
+const emplacementDansLEntree = (racine, segment) =>
+  segment.includes('.')
+    ? `^src/${racine}/${segment.replaceAll('.', '[.]')}$`
+    : `^src/${racine}/${segment}/`
+
+const zoneDEntree = ({ racine, nom, regle, socle, internes, table }) => {
+  const admis = parModule(table)
+  const admisDans = (segment, supplementaires) => [
+    `^src/${racine}/`,
+    ...internes(segment),
+    ...[...socle, ...OUTILS_DE_TEST, ...supplementaires].map(cible),
+  ]
+  return [
+    {
+      name: regle,
+      severity: 'error',
+      comment: `${nom} n'importe que lui-même, ce que sa règle admet et son socle ; le reste est une ligne de sa table d'imports admis`,
+      from: {
+        path: `^src/${racine}/`,
+        pathNot: cles(admis).map((segment) =>
+          emplacementDansLEntree(racine, segment),
+        ),
+      },
+      to: { pathNot: admisDans(null, []) },
+    },
+    ...Object.entries(admis).map(([segment, noms]) => ({
+      name: `${regle} (${segment})`,
+      severity: 'error',
+      comment: `Exception : ${racine}/${segment} importe en plus ${noms.join(', ')}`,
+      from: { path: emplacementDansLEntree(racine, segment) },
+      to: { pathNot: admisDans(segment, noms) },
+    })),
+  ]
+}
+
+const JOBS_REGLES = zoneDEntree({
+  racine: 'jobs',
+  nom: 'Un job',
+  regle: 'imports-d-un-job',
+  socle: [
+    'configuration/prisma',
+    'configuration/telemetry',
+    'libraries/console',
+    'zod',
+  ],
+  internes: () => DANS_UNE_FEATURE('(?:domain|implementations)/'),
+  table: IMPORTS_ADMIS_DES_JOBS,
+})
+
+const CLI_REGLES = zoneDEntree({
+  racine: 'cli',
+  nom: 'Le CLI',
+  regle: 'imports-du-cli',
+  socle: ['@commander-js/extra-typings', 'libraries/console'],
+  internes: (segment) =>
+    segment === 'fixtures' ? ['^src/features/[^/]+/fixtures/'] : [],
+  table: IMPORTS_ADMIS_DU_CLI,
+})
+
 module.exports = {
   forbidden: [
     ...GLOBAL,
@@ -1712,6 +1805,8 @@ module.exports = {
     ...COUCHES,
     ...LIBRARIES_REGLES,
     ...CONFIGURATION_REGLES,
+    ...JOBS_REGLES,
+    ...CLI_REGLES,
   ],
   options: {
     doNotFollow: { path: ['node_modules'] },
