@@ -1,4 +1,4 @@
-import { max } from 'date-fns'
+import { max } from 'date-fns/max'
 import {
   type AdresseCourriel,
   coordinateurDe,

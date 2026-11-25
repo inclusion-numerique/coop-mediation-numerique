@@ -1,4 +1,8 @@
-import { addDays, addYears, isBefore, max, subDays } from 'date-fns'
+import { addDays } from 'date-fns/addDays'
+import { addYears } from 'date-fns/addYears'
+import { isBefore } from 'date-fns/isBefore'
+import { max } from 'date-fns/max'
+import { subDays } from 'date-fns/subDays'
 import type { Jalon } from '@/features/utilisateurs/domain'
 
 export const ANNEES_AVANT_SUPPRESSION = 2
