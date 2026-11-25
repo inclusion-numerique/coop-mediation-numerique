@@ -3,8 +3,7 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import { rechercheLibre } from '@/libraries/etat-d-url'
 import { useFiltre } from '@/libraries/etat-d-url/filtres'
-import { handleSubmit } from '@/libraries/formulaire'
-import { useAppForm } from '@/libraries/formulaire/hooks'
+import { handleSubmit, useAppForm } from '@/libraries/formulaire/hooks'
 
 const CHAMP = 'recherche'
 

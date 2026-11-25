@@ -6,8 +6,11 @@ import { useSelector } from '@tanstack/react-form'
 import { useRouter } from 'next/navigation'
 import type { KeyboardEvent } from 'react'
 import { z } from 'zod'
-import { handleSubmit } from '@/libraries/formulaire'
-import { useAppForm, useHydrated } from '@/libraries/formulaire/hooks'
+import {
+  handleSubmit,
+  useAppForm,
+  useHydrated,
+} from '@/libraries/formulaire/hooks'
 import { inject } from '@/libraries/nextjs/injection'
 import { createToast } from '@/libraries/ui/toast'
 import { INVITER_DES_MEMBRES_ACTION_KEY } from '../../action/inviter-des-membres.key'

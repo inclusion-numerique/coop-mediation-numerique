@@ -2,7 +2,8 @@ import { formOptions } from '@tanstack/react-form'
 import Link from 'next/link'
 import { type CraIndividuelData } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/forms/cra-individuel.validation'
 import type { Autonomie } from '@/features/activites/ui/labels/libelles/autonomie.labels'
-import { type DefaultValues, withForm } from '@/libraries/formulaire/hooks'
+import type { DefaultValues } from '@/libraries/formulaire'
+import { withForm } from '@/libraries/formulaire/hooks'
 import type { SelectOption } from '@/libraries/ui'
 
 const valeursDuFormulaire: DefaultValues<CraIndividuelData> & {

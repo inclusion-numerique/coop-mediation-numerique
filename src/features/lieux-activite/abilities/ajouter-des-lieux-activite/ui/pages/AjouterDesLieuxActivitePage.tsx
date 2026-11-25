@@ -13,8 +13,11 @@ import {
   donneesDeCreation,
 } from '@/features/lieux-activite/ui/forms/creer-lieu-activite.form-data'
 import { geocoderPrecisement } from '@/libraries/ban'
-import { handleSubmit } from '@/libraries/formulaire'
-import { useAppForm, useHydrated } from '@/libraries/formulaire/hooks'
+import {
+  handleSubmit,
+  useAppForm,
+  useHydrated,
+} from '@/libraries/formulaire/hooks'
 import { routeConstruite } from '@/libraries/nextjs'
 import { inject } from '@/libraries/nextjs/injection'
 import { createToast } from '@/libraries/ui/toast'

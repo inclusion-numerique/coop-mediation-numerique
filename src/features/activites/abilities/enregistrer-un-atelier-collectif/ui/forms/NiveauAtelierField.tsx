@@ -1,7 +1,8 @@
 import { formOptions } from '@tanstack/react-form'
 import { CraCollectifData } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/forms/cra-collectif.validation'
 import type { NiveauAtelier } from '@/features/activites/ui/labels/libelles/niveau-atelier.labels'
-import { type DefaultValues, withForm } from '@/libraries/formulaire/hooks'
+import type { DefaultValues } from '@/libraries/formulaire'
+import { withForm } from '@/libraries/formulaire/hooks'
 import type { SelectOption } from '@/libraries/ui'
 
 const valeursDuFormulaire: DefaultValues<CraCollectifData> = {}

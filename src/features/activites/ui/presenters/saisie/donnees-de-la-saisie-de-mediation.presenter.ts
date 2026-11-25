@@ -1,4 +1,4 @@
-import type { DefaultValues } from '@/libraries/formulaire/hooks'
+import type { DefaultValues } from '@/libraries/formulaire'
 import type { CraData } from '../../forms/cra.validation'
 import type { LieuDuCra } from './lieu-du-cra.presenter'
 import { optionsDeDuree } from './options-de-duree.presenter'

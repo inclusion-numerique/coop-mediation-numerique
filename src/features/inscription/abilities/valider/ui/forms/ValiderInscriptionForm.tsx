@@ -8,9 +8,9 @@ import {
   type ValiderFormData,
   ValiderValidation,
 } from '@/features/inscription/abilities/valider/action/valider.validation'
-import { handleSubmit } from '@/libraries/formulaire'
+import type { DefaultValues } from '@/libraries/formulaire'
 import {
-  type DefaultValues,
+  handleSubmit,
   useAppForm,
   useHydrated,
 } from '@/libraries/formulaire/hooks'

@@ -5,10 +5,6 @@ import { lazy, type ReactNode } from 'react'
 import { type ComboBoxProps, SelectedItemProps } from '../fields-components'
 import { fieldContext, formContext } from '../form-context'
 
-export type DefaultValues<T> = {
-  [K in keyof T]?: DefaultValues<T[K]> | undefined
-}
-
 const Calendar = lazy(() =>
   import('../fields-components/Calendar').then((module) => ({
     default: module.Calendar,

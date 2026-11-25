@@ -1,5 +1,5 @@
 import type { EncodedState } from '@/libraries/etat-encode'
-import type { DefaultValues } from '@/libraries/formulaire/hooks'
+import type { DefaultValues } from '@/libraries/formulaire'
 import {
   type ActiviteDeCoordination,
   ActiviteDeCoordinationId,

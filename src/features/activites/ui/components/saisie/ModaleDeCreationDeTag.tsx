@@ -9,8 +9,7 @@ import {
   tagDuFormulaire,
   type VisibiliteDuTagDuCra,
 } from '@/features/activites/ui/presenters/saisie/tag-du-cra.presenter'
-import { handleSubmit } from '@/libraries/formulaire'
-import { useAppForm } from '@/libraries/formulaire/hooks'
+import { handleSubmit, useAppForm } from '@/libraries/formulaire/hooks'
 import { inject } from '@/libraries/nextjs/injection'
 import { createDynamicModal } from '@/libraries/ui/components'
 import { RedAsterisk } from '@/libraries/ui/form'

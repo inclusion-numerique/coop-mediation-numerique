@@ -10,7 +10,7 @@ import type {
   StatutSocial,
   TrancheAge,
 } from '@/features/activites/ui/labels/libelles/profil.labels'
-import type { DefaultValues } from '@/libraries/formulaire/hooks'
+import type { DefaultValues } from '@/libraries/formulaire'
 import { withForm } from '@/libraries/formulaire/hooks'
 import type { SelectOption } from '@/libraries/ui'
 import { Options } from '@/libraries/ui/primitives'

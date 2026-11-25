@@ -18,10 +18,8 @@ import {
   type LieuDuCra,
   lieuLePlusUtilise,
 } from '@/features/activites/ui/presenters/saisie/lieu-du-cra.presenter'
-import {
-  type DefaultValues,
-  withFieldGroup,
-} from '@/libraries/formulaire/hooks'
+import type { DefaultValues } from '@/libraries/formulaire'
+import { withFieldGroup } from '@/libraries/formulaire/hooks'
 import type { SelectOption } from '@/libraries/ui'
 import { RedAsterisk } from '@/libraries/ui/form'
 import { Options } from '@/libraries/ui/primitives'

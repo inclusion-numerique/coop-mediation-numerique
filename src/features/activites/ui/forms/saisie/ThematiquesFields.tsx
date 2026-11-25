@@ -3,10 +3,8 @@ import {
   AIDE_AUX_DEMARCHES_ADMINISTRATIVES,
   type Thematique,
 } from '@/features/activites/ui/labels/libelles/thematique.labels'
-import {
-  type DefaultValues,
-  withFieldGroup,
-} from '@/libraries/formulaire/hooks'
+import type { DefaultValues } from '@/libraries/formulaire'
+import { withFieldGroup } from '@/libraries/formulaire/hooks'
 import type { SelectOption } from '@/libraries/ui'
 import { RedAsterisk } from '@/libraries/ui/form'
 

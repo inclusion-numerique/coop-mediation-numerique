@@ -8,7 +8,7 @@ import type {
   Tag,
   VisibiliteDuTagDuCra,
 } from '@/features/activites/ui/presenters/saisie/tag-du-cra.presenter'
-import type { DefaultValues } from '@/libraries/formulaire/hooks'
+import type { DefaultValues } from '@/libraries/formulaire'
 import { contentId } from '@/libraries/liens-d-evitement'
 import { SkipLinksPortal } from '@/libraries/liens-d-evitement/composants'
 import type { SelectOption } from '@/libraries/ui'

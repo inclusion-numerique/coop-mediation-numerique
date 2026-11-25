@@ -1,5 +1,5 @@
 import type { ParticipantsAnonymesCraCollectifData } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/forms/participants-anonymes-du-cra-collectif.validation'
-import type { DefaultValues } from '@/libraries/formulaire/hooks'
+import type { DefaultValues } from '@/libraries/formulaire'
 
 export const participantsAnonymesDefault: ParticipantsAnonymesCraCollectifData =
   {

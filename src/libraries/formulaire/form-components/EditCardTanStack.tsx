@@ -6,8 +6,8 @@ import type { AnyFormApi } from '@tanstack/react-form'
 import { useRouter } from 'next/navigation'
 import type { ReactNode } from 'react'
 import { useState } from 'react'
-import { handleSubmit } from '@/libraries/formulaire/handle-submit'
 import { Card } from '../../ui/components'
+import { handleSubmit } from '../hooks/handle-submit'
 
 const EditCardTanStack = ({
   id,

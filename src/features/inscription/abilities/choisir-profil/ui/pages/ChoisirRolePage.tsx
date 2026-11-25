@@ -12,9 +12,9 @@ import {
   type Role,
 } from '@/features/inscription/domain'
 import { cheminDeLEtape } from '@/features/inscription/ui/presenters/chemin-de-l-etape.presenter'
-import { handleSubmit } from '@/libraries/formulaire'
+import type { DefaultValues } from '@/libraries/formulaire'
 import {
-  type DefaultValues,
+  handleSubmit,
   useAppForm,
   useHydrated,
 } from '@/libraries/formulaire/hooks'

@@ -7,10 +7,8 @@ import {
   TagSelectedItems,
 } from '@/features/activites/ui/forms/saisie/TagsComboBox'
 import type { Tag } from '@/features/activites/ui/presenters/saisie/tag-du-cra.presenter'
-import {
-  type DefaultValues,
-  withFieldGroup,
-} from '@/libraries/formulaire/hooks'
+import type { DefaultValues } from '@/libraries/formulaire'
+import { withFieldGroup } from '@/libraries/formulaire/hooks'
 import { Options } from '@/libraries/ui/primitives'
 
 const valeursDuGroupe: Pick<DefaultValues<CraData>, 'tags'> = {}

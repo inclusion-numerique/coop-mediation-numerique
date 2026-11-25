@@ -12,8 +12,7 @@ import {
   hrefDeLAnalyseDeLImport,
   hrefDeLErreurDeLImport,
 } from '@/features/beneficiaire/ui/presenters/liens.presenter'
-import { handleSubmit } from '@/libraries/formulaire'
-import { useAppForm } from '@/libraries/formulaire/hooks'
+import { handleSubmit, useAppForm } from '@/libraries/formulaire/hooks'
 import { isBrowser } from '@/libraries/navigateur'
 
 // Create zod validation so the file is required and of type File

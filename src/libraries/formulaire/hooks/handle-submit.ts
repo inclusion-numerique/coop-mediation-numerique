@@ -1,3 +1,5 @@
+'use client'
+
 import { AnyFormApi } from '@tanstack/react-form'
 import { FormEvent } from 'react'
 import { scrollToError } from '@/libraries/ui/hooks'

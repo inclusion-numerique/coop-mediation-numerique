@@ -9,7 +9,7 @@ import {
 } from '@/features/activites/ui/forms/saisie/beneficiaire-combo-box.form-options'
 import { hrefDeCreationDuBeneficiaire } from '@/features/activites/ui/presenters/liens.presenter'
 import type { BeneficiaireDuCra } from '@/features/activites/ui/presenters/saisie/beneficiaire-du-cra.presenter'
-import type { DefaultValues } from '@/libraries/formulaire/hooks'
+import type { DefaultValues } from '@/libraries/formulaire'
 import { withForm } from '@/libraries/formulaire/hooks'
 import { IconInSquare } from '@/libraries/ui/components'
 import { Options } from '@/libraries/ui/primitives'

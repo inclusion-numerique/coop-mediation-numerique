@@ -1,5 +1,5 @@
 import { dureeDepuisLesMinutes } from '@/features/activites/ui/forms/saisie/duree.form-data'
-import type { DefaultValues } from '@/libraries/formulaire/hooks'
+import type { DefaultValues } from '@/libraries/formulaire'
 import type {
   Animation,
   Choix,

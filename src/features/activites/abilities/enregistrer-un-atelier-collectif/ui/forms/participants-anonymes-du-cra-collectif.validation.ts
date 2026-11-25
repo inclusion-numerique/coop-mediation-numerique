@@ -1,5 +1,5 @@
 import z from 'zod'
-import type { DefaultValues } from '@/libraries/formulaire/hooks'
+import type { DefaultValues } from '@/libraries/formulaire'
 import { numberToString } from '@/libraries/nombre'
 
 const participantsAnonymesMax = 10_000
