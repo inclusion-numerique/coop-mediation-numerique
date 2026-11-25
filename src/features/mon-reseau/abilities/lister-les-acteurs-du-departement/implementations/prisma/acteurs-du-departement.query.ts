@@ -1,7 +1,7 @@
 import type { Search } from '@arckit/resultset'
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 import { Prisma } from '@/generated/prisma/client'
-import { orderItemsByIndexedValues } from '@/libraries/collections/order-items-by-indexed-values'
+import { orderItemsByIndexedValues } from '@/libraries/collections'
 import {
   ACTEUR,
   ACTEUR_VISIBLE,

@@ -1,9 +1,11 @@
 import { Sort } from '@arckit/resultset'
-import type { AdresseCourante } from '@/libraries/etat-d-url/definition/composition'
-import { composerLEtat } from '@/libraries/etat-d-url/definition/composition'
-import { filtreDeChoixUnique } from '@/libraries/etat-d-url/definition/filtre-de-choix'
-import { rechercheLibre } from '@/libraries/etat-d-url/definition/recherche-libre'
-import { triParmi } from '@/libraries/etat-d-url/definition/tri-parmi'
+import type { AdresseCourante } from '@/libraries/etat-d-url'
+import {
+  composerLEtat,
+  filtreDeChoixUnique,
+  rechercheLibre,
+  triParmi,
+} from '@/libraries/etat-d-url'
 import {
   filtreDesCommunesDuReseau,
   type ParametresDuReseau,

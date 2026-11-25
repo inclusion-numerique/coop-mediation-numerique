@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useState } from 'react'
 import { createPortal } from 'react-dom'
-import TooltipIcon from '@/libraries/ui/components/TooltipIcon'
+import { TooltipIcon } from '@/libraries/ui/components'
 import { SEUIL_D_INACTIVITE_EN_JOURS } from '../../domain'
 import type { StatutAffiche } from '../presenters/fiche-acteur.presenter'
 

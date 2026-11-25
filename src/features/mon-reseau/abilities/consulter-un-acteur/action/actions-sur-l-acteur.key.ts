@@ -1,5 +1,5 @@
-import type { ServerActionResult } from '@/libraries/nextjs/action/result'
-import { keyFor } from '@/libraries/nextjs/injection/client'
+import type { ServerActionResult } from '@/libraries/nextjs'
+import { keyFor } from '@/libraries/nextjs/injection'
 
 export const INVITER_L_ACTEUR_DANS_L_EQUIPE_KEY = keyFor<
   (input: { emails: string[] }) => Promise<ServerActionResult<unknown, string>>

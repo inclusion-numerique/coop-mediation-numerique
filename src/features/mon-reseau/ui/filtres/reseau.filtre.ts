@@ -1,6 +1,5 @@
-import type { AdresseCourante } from '@/libraries/etat-d-url/definition/composition'
-import { filtreDeRecherche } from '@/libraries/etat-d-url/definition/filtre-de-recherche'
-import { pagination } from '@/libraries/etat-d-url/definition/pagination'
+import type { AdresseCourante } from '@/libraries/etat-d-url'
+import { filtreDeRecherche, pagination } from '@/libraries/etat-d-url'
 import { CodeInsee } from '@/libraries/insee'
 
 export const filtreDesCommunesDuReseau = filtreDeRecherche({

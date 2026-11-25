@@ -1,8 +1,8 @@
 'use client'
 
-import { RechercheEnPopover } from '@/libraries/etat-d-url/filtres/RechercheEnPopover'
-import { inject } from '@/libraries/nextjs/injection/client'
-import type { SelectOption } from '@/libraries/ui/form/utils/options'
+import { RechercheEnPopover } from '@/libraries/etat-d-url/filtres'
+import { inject } from '@/libraries/nextjs/injection'
+import type { SelectOption } from '@/libraries/ui/form'
 import { RECHERCHER_DES_COMMUNES_DU_RESEAU_KEY } from '../../action/rechercher-des-communes-du-reseau.key'
 import { filtreDesCommunesDuReseau } from '../filtres/reseau.filtre'
 

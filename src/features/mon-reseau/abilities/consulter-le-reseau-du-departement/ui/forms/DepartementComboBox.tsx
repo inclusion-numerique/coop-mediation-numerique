@@ -4,8 +4,8 @@ import { useRouter } from 'next/navigation'
 import {
   type DepartementDuReferentiel,
   departements,
-} from '@/libraries/departement/departements'
-import { ComboBox } from '@/libraries/ui/primitives/form/ComboBox'
+} from '@/libraries/departement'
+import { ComboBox } from '@/libraries/ui/primitives'
 import { hrefDuReseau } from '../../../../ui/presenters/liens.presenter'
 
 const itemToString = (departement: DepartementDuReferentiel | null): string =>

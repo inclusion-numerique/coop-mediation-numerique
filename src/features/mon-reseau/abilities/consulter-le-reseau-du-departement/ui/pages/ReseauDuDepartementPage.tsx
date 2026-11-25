@@ -1,11 +1,13 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { CommunicationConum } from '@/features/mon-reseau/abilities/consulter-le-reseau-du-departement/ui/components/CommunicationConum'
-import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
-import { contentId } from '@/libraries/liens-d-evitement/skip-links'
-import Card from '@/libraries/ui/components/Card'
-import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
-import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
+import { contentId } from '@/libraries/liens-d-evitement'
+import { SkipLinksPortal } from '@/libraries/liens-d-evitement/composants'
+import {
+  Card,
+  CoopBreadcrumbs,
+  CoopPageContainer,
+} from '@/libraries/ui/components'
 import { libelleDuReseau } from '../../../../ui/presenters/fil-d-ariane.presenter'
 import {
   hrefDesActeurs,

@@ -1,6 +1,6 @@
 'use client'
 
-import { ChoixEnPopover } from '@/libraries/etat-d-url/filtres/ChoixEnPopover'
+import { ChoixEnPopover } from '@/libraries/etat-d-url/filtres'
 import { filtreDuRoleDeLActeur } from '../filtres/acteurs-du-reseau.filtre'
 
 export const FiltreDuRoleDeLActeur = () => (

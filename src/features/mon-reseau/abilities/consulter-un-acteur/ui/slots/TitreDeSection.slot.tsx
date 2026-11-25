@@ -1,4 +1,4 @@
-import IconInSquare from '@/libraries/ui/components/IconInSquare'
+import { IconInSquare } from '@/libraries/ui/components'
 
 export const TitreDeSection = ({
   icone,

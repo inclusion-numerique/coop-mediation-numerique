@@ -1,4 +1,4 @@
-import { dateAsDay } from '@/libraries/date/date-as-day'
+import { dateAsDay } from '@/libraries/date'
 import type { Acteur } from '../../../../domain'
 import type { RegardDuLecteur, StatutDActivitePublic } from '../../domain'
 
