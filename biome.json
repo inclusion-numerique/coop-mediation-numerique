@@ -22,6 +22,9 @@
     "enabled": true,
     "rules": {
       "preset": "none",
+      "performance": {
+        "noReExportAll": "error"
+      },
       "complexity": {
         "noExtraBooleanCast": "error",
         "noForEach": "error",

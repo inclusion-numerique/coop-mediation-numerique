@@ -459,3 +459,25 @@ rules:
     require:
       - kind: file_exists
         paths: "{path}/index.{ts,tsx}"
+
+  - id: hook-client
+    kind: file_starts_with
+    level: error
+    message: "Un hook est du code client : il commence par 'use client'"
+    paths:
+      - "src/**/use-*.{ts,tsx}"
+      - "src/**/hooks/*.{ts,tsx}"
+      - "!src/**/*.{spec,stories,cy}.{ts,tsx}"
+      - "!src/**/index.ts"
+    prefix: "'use client'"
+
+  - id: entree-sans-code
+    kind: file_content_forbidden
+    level: error
+    message: "Une entrée ne contient que des réexports : ni code, ni directive (ST-2)"
+    paths:
+      - "src/libraries/*/index.{ts,tsx}"
+      - "src/libraries/*/*/index.{ts,tsx}"
+      - "src/configuration/*/index.{ts,tsx}"
+      - "src/configuration/*/serveur.{ts,tsx}"
+    pattern: '(?m)^(''use (client|server)''|"use (client|server)"|import |const |let |var |function |async |class |enum |interface |type |declare |export (const|let|var|function|async|class|enum|interface|default|declare)\b|export type [A-Za-z_$][\w$]*\s*[<=])'
