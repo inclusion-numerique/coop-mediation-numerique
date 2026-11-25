@@ -1,1 +1,5 @@
-export * from './encode-serializable-state'
+export type { EncodedState } from './encode-serializable-state'
+export {
+  decodeSerializableState,
+  encodeSerializableState,
+} from './encode-serializable-state'
