@@ -22,6 +22,7 @@
 - **`domain-modeler`** : §2 est la checklist de conception à satisfaire **avant** d'écrire du code (rend un modèle à valider, pas du code).
 - **`feature-auditor`** : parcourt §1–§7 dimension par dimension et produit la liste des résidus.
 - **skills `/build-ability`, `/build-feature`, `/build-form`** : §4 = structure à produire ; §8 = process ; §2/§3 = qualité.
+- **Structure vérifiée par l'outil** : la place, le nom et la catégorie de chaque dossier et de chaque fichier (ST-1 à ST-7, UI-7, TS-1, l'appariement des tests) sont des règles d'alint, dans `.alint.yml`, lancées par `pnpm lint:structure` et en CI ; une règle de structure qui change se change dans `.alint.yml` et ici, dans le même commit.
 - **Détection** : chaque règle porte un signal grep-able quand c'est possible (`rg` patterns). Un signal qui matche = candidat violation à confirmer en lecture, pas une certitude.
 
 ---

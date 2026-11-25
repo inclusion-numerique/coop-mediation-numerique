@@ -16,7 +16,8 @@
     "prebuild": "react-dsfr optimize-css --silent",
     "build": "pnpm --silent with-env next build",
     "build:jobs": "pnpm --silent with-env node scripts/build-jobs.mjs",
-    "lint": "biome check . && pnpm --silent lint:api",
+    "lint": "biome check . && pnpm --silent lint:api && pnpm --silent lint:structure",
+    "lint:structure": "alint check --no-spawn",
     "lint:fix": "biome check --write .",
     "lint:api": "openapi-linter lint ./src/features/clients-api/implementations/openapi/v1.openapi.json",
     "tsc": "pnpm --silent with-env next typegen && tsc --noEmit && tsc --noEmit -p e2e",
@@ -137,6 +138,7 @@
   },
   "devDependencies": {
     "@arckit/cucumber": "^1.0.1",
+    "@asamarts/alint": "0.23.0",
     "@biomejs/biome": "^2.6.4",
     "@commitlint/cli": "^21.2.3",
     "@commitlint/config-conventional": "^21.2.3",

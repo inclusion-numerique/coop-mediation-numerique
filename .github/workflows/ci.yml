@@ -41,6 +41,8 @@ jobs:
         run: pnpm tsc
       - name: Lint - biome
         run: pnpm exec biome check .
+      - name: Lint - structure
+        run: pnpm exec alint check --no-spawn --format github
       - name: Lint - ADR
         run: pnpm --silent lint:adr --output github
       - name: Lint - Code mort

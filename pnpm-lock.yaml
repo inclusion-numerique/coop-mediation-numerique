@@ -392,6 +392,9 @@ importers:
       '@arckit/cucumber':
         specifier: ^1.0.1
         version: 1.0.1(@cucumber/cucumber@13.3.0)
+      '@asamarts/alint':
+        specifier: 0.23.0
+        version: 0.23.0
       '@biomejs/biome':
         specifier: ^2.6.4
         version: 2.6.4
@@ -638,6 +641,41 @@ packages:
         optional: true
       pino:
         optional: true
+
+  '@asamarts/alint-darwin-arm64@0.23.0':
+    resolution: {integrity: sha512-KpPB1UTbayF1aT3WCdEpBMVh3s3/OLSlk/iWOnu9SF5SXoW6fWllWoEFzaA7as6q9L3lLsAVYY82yr4IX5NTLw==}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@asamarts/alint-darwin-x64@0.23.0':
+    resolution: {integrity: sha512-mpiQCmS6BXwzjmsLtU/n76GeYSx2J0AdTc//Bpp3GCjB7YNnR2xMFbZrxPl/jbNIf+Dg7U45VPubMfZYhE6m3A==}
+    cpu: [x64]
+    os: [darwin]
+
+  '@asamarts/alint-linux-arm64@0.23.0':
+    resolution: {integrity: sha512-/hTHBLUdsMI6zYO32nRAaXmz5tCovjcFcF1H0SR6tmm/FgJU5o2rL0STpI9pCbjBVsY4BLO7KazLOiRPBia71Q==}
+    cpu: [arm64]
+    os: [linux]
+
+  '@asamarts/alint-linux-x64@0.23.0':
+    resolution: {integrity: sha512-CvXQzWXFDcsiIJQG7t/2iQRvV1J6jzi5+du4wrAf3/BBaiSGjpYA5yHPtrc9QHA+Gz2B8YA1PGDWGQg0cy6eHg==}
+    cpu: [x64]
+    os: [linux]
+
+  '@asamarts/alint-win32-arm64@0.23.0':
+    resolution: {integrity: sha512-H+Vm5+PPI8cJbWq1GqInYesOG4ED4n2bt/bUy5XmA9AzqqczxjPH1XQzuVb50SXEH3fM0nw588bP6a2kqu8Hrw==}
+    cpu: [arm64]
+    os: [win32]
+
+  '@asamarts/alint-win32-x64@0.23.0':
+    resolution: {integrity: sha512-lqUHIeuJ4OFm9VAa7ej2P/H2/j7PcosIzgIre5fjb17cXbZsZOVATy4URtTKLZ2LYRZZFaoIkUSgAZBMUKtFHw==}
+    cpu: [x64]
+    os: [win32]
+
+  '@asamarts/alint@0.23.0':
+    resolution: {integrity: sha512-nYkjWdUE8R6C+fjGXTO9pIoNALzY9LsZ/XLHIifvZqtubfhC/qkHdqpucPn7Ig7w0o19nej8eGXmnYHE1LUJdw==}
+    engines: {node: '>=18'}
+    hasBin: true
 
   '@asyncapi/specs@6.11.1':
     resolution: {integrity: sha512-A3WBLqAKGoJ2+6FWFtpjBlCQ1oFCcs4GxF7zsIGvNqp/klGUHjlA3aAcZ9XMMpLGE8zPeYDz2x9FmO6DSuKraQ==}
@@ -11730,6 +11768,33 @@ snapshots:
       '@opentelemetry/api': 1.9.1
       '@sentry/nextjs': 11.10.0(next@16.4.6(@babel/core@7.29.7(supports-color@8.1.1))(@opentelemetry/api@1.9.1)(@types/node@24.19.2)(babel-plugin-macros@3.1.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(sass@1.107.1))(react@19.3.1)(vite@8.3.5(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.107.1)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.1))(webpack@5.112.2(clean-css@5.3.3)(cssnano@7.1.9(postcss@8.5.23))(csso@5.0.5)(esbuild@0.28.2)(html-minifier-terser@7.2.0)(lightningcss@1.33.0)(postcss@8.5.23)(sharp@0.35.5(@types/node@24.19.2))(svgo@4.1.0))
       pino: 10.4.0
+
+  '@asamarts/alint-darwin-arm64@0.23.0':
+    optional: true
+
+  '@asamarts/alint-darwin-x64@0.23.0':
+    optional: true
+
+  '@asamarts/alint-linux-arm64@0.23.0':
+    optional: true
+
+  '@asamarts/alint-linux-x64@0.23.0':
+    optional: true
+
+  '@asamarts/alint-win32-arm64@0.23.0':
+    optional: true
+
+  '@asamarts/alint-win32-x64@0.23.0':
+    optional: true
+
+  '@asamarts/alint@0.23.0':
+    optionalDependencies:
+      '@asamarts/alint-darwin-arm64': 0.23.0
+      '@asamarts/alint-darwin-x64': 0.23.0
+      '@asamarts/alint-linux-arm64': 0.23.0
+      '@asamarts/alint-linux-x64': 0.23.0
+      '@asamarts/alint-win32-arm64': 0.23.0
+      '@asamarts/alint-win32-x64': 0.23.0
 
   '@asyncapi/specs@6.11.1':
     dependencies:
