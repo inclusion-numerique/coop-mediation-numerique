@@ -1,5 +1,5 @@
 import type { SortDirection } from '@arckit/resultset'
-import { subDays } from 'date-fns'
+import { subDays } from 'date-fns/subDays'
 import { Prisma } from '@/generated/prisma/client'
 import {
   type ColonneDeLEquipe,

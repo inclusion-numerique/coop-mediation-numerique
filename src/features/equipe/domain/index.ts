@@ -13,7 +13,17 @@ export {
   FiltreRole,
   FiltreStatut,
 } from './criteres-equipe'
-export * from './errors'
+export {
+  ActionNonAutorisee,
+  ConsultationNonAutorisee,
+  CoordinateurIntrouvable,
+  DejaMembre,
+  EnvoiEchoue,
+  InvitationDejaTraitee,
+  InvitationIntrouvable,
+  PasMembre,
+  RelanceTropRecente,
+} from './errors'
 export { type Gestionnaire, peutGererLEquipe } from './gestionnaire'
 export { AdhesionId } from './identifiants/adhesion-id'
 export { CoordinateurId } from './identifiants/coordinateur-id'
