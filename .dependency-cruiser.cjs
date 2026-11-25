@@ -1481,8 +1481,178 @@ const COUCHES = [
   },
 ]
 
+const LIBRARIES = require('node:fs')
+  .readdirSync('src/libraries', { withFileTypes: true })
+  .filter((entree) => entree.isDirectory())
+  .map((entree) => entree.name)
+
+const IMPORTS_ADMIS_DES_LIBRARIES = {
+  '@arckit/resultset': ['etat-d-url'],
+  '@arckit/telemetry': ['nextjs'],
+  '@codegouvfr/react-dsfr': [
+    'etat-d-url',
+    'formulaire',
+    'liens-d-evitement',
+    'proportions',
+    'ui',
+  ],
+  '@date-fns/tz': ['date'],
+  '@faire/mjml-react': ['emails'],
+  '@gouvfr-anct/lieux-de-mediation-numerique': ['telephone'],
+  '@hookform/resolvers': ['ui'],
+  '@tanstack/react-form': ['etat-d-url', 'formulaire'],
+  '@tiptap/react': ['ui'],
+  '@tiptap/starter-kit': ['ui'],
+  '@zumer/snapdom': ['ui'],
+  'change-case': ['collections'],
+  classnames: ['data-table', 'etat-d-url', 'formulaire', 'proportions', 'ui'],
+  'date-fns': ['date', 'ui'],
+  downshift: ['ui'],
+  exceljs: ['tableur'],
+  'framer-motion': ['proportions'],
+  'html-minifier-terser': ['emails'],
+  'html-to-text': ['texte'],
+  'libphonenumber-js': ['telephone'],
+  'libraries/adresse': ['ban'],
+  'libraries/chemins': ['emails'],
+  'libraries/collections': ['tableur', 'ui'],
+  'libraries/date': ['ui'],
+  'libraries/etat-encode': ['json-api'],
+  'libraries/formulaire': ['ban', 'etat-d-url'],
+  'libraries/insee': ['departement'],
+  'libraries/model': [
+    'code-postal',
+    'departement',
+    'insee',
+    'nom-affiche',
+    'telephone',
+  ],
+  'libraries/navigateur': ['ui'],
+  'libraries/nextjs': ['etat-d-url'],
+  'libraries/nombre': ['proportions'],
+  'libraries/pictograms': ['formulaire'],
+  'libraries/result': ['departement'],
+  'libraries/texte': ['etat-d-url', 'recherche-entreprises'],
+  'libraries/ui': ['ban', 'etat-d-url', 'formulaire'],
+  'lodash-es': ['formulaire', 'json-api'],
+  mjml: ['emails'],
+  next: [
+    'chemin-interne',
+    'etat-d-url',
+    'formulaire',
+    'json-api',
+    'nextjs',
+    'ui',
+  ],
+  'node:e2e/support/monter-avec-l-url.tsx': ['etat-d-url'],
+  'node:fs': ['chemins', 'emails'],
+  'node:path': ['chemins', 'emails'],
+  'node:url': ['chemins'],
+  nuqs: ['etat-d-url'],
+  'p-retry': ['recherche-entreprises'],
+  pako: ['etat-encode'],
+  piqure: ['nextjs'],
+  'radix-ui': ['ui'],
+  react: [
+    'data-table',
+    'emails',
+    'etat-d-url',
+    'formulaire',
+    'liens-d-evitement',
+    'nextjs',
+    'pictograms',
+    'proportions',
+    'ui',
+  ],
+  'react-calendar': ['ui'],
+  'react-day-picker': ['ui'],
+  'react-dom': ['liens-d-evitement', 'ui'],
+  'react-hook-form': ['adresse', 'ui'],
+  'react-hot-toast': ['ui'],
+  'sanitize-html': ['texte-riche'],
+  slugify: ['texte'],
+  superjson: ['etat-encode'],
+  tsafe: ['ui'],
+  zod: [
+    'adresse',
+    'code-postal',
+    'departement',
+    'etat-d-url',
+    'insee',
+    'json-api',
+    'model',
+    'nextjs',
+    'nom-affiche',
+    'telephone',
+    'ui',
+  ],
+  zustand: ['ui'],
+}
+
+const LIBRARIES_ADMISES = Object.entries(IMPORTS_ADMIS_DES_LIBRARIES).reduce(
+  (parLibrary, [nom, libraries]) =>
+    libraries.reduce(
+      (acc, library) => ({
+        ...acc,
+        [library]: [...(acc[library] ?? []), nom],
+      }),
+      parLibrary,
+    ),
+  {},
+)
+
+const admisDansLaLibrary = (library, supplementaires) => [
+  `^src/libraries/${library}/`,
+  ...OUTILS_DE_TEST.map(cible),
+  ...supplementaires.map(cible),
+]
+
+const LIBRARIES_REGLES = [
+  {
+    name: 'library-sans-metier',
+    severity: 'error',
+    comment:
+      "Une library n'importe ni app/, ni les features, ni la configuration, ni les jobs, ni le CLI : elle ne porte aucun concept métier ni aucun branchement",
+    from: { path: '^src/libraries/' },
+    to: { path: '^src/(?:app|features|configuration|jobs|cli)/' },
+  },
+  ...LIBRARIES.map((library) => ({
+    name: `entrees-de-la-library (${library})`,
+    severity: 'error',
+    comment: `Hors d'elle-même, la library ${library} s'importe par ses entrées : l'index.ts de sa racine ou celui d'un sujet de premier niveau`,
+    from: { pathNot: `^src/libraries/${library}/` },
+    to: {
+      path: `^src/libraries/${library}/`,
+      pathNot: [
+        `^src/libraries/${library}/index[.]tsx?$`,
+        `^src/libraries/${library}/[^/]+/index[.]tsx?$`,
+      ],
+    },
+  })),
+  {
+    name: 'imports-d-une-library',
+    severity: 'error',
+    comment:
+      "Une library n'importe qu'elle-même et ses outils de test ; une autre library, un paquet ou un module de Node est une ligne d'IMPORTS_ADMIS_DES_LIBRARIES",
+    from: {
+      path: '^src/libraries/([^/]+)/',
+      pathNot: cles(LIBRARIES_ADMISES).map(
+        (library) => `^src/libraries/${library}/`,
+      ),
+    },
+    to: { pathNot: admisDansLaLibrary('$1', []) },
+  },
+  ...Object.entries(LIBRARIES_ADMISES).map(([library, noms]) => ({
+    name: `imports-d-une-library (${library})`,
+    severity: 'error',
+    comment: `Exception des libraries : ${library} importe en plus ${noms.join(', ')}`,
+    from: { path: `^src/libraries/${library}/` },
+    to: { pathNot: admisDansLaLibrary(library, noms) },
+  })),
+]
+
 module.exports = {
-  forbidden: [...GLOBAL, ...APP, ...FEATURES, ...COUCHES],
+  forbidden: [...GLOBAL, ...APP, ...FEATURES, ...COUCHES, ...LIBRARIES_REGLES],
   options: {
     doNotFollow: { path: ['node_modules'] },
     exclude: { path: '^src/generated/' },
