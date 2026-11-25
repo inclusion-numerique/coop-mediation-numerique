@@ -1,6 +1,7 @@
 'use client'
 
-import { DataTable, type DataTableSelection } from '@/libraries/data-table'
+import { type DataTableSelection } from '@/libraries/data-table/selection'
+import { DataTable } from '@/libraries/data-table/table'
 import type { LiensDeLaListe } from '../filtres/liste-des-beneficiaires.filtre'
 import type { BeneficiaireRow } from '../presenters/ligne-du-beneficiaire.presenter'
 import { BeneficiairesTableHead } from './BeneficiairesTableHead'

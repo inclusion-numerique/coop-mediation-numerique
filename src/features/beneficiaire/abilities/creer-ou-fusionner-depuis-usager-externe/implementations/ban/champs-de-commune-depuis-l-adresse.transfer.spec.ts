@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest'
 import { communeDuResultat } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/ban/champs-de-commune-depuis-l-adresse.transfer'
-import type { Feature } from '@/libraries/ban/api-adresse'
+import type { Feature } from '@/libraries/ban'
 
 const evreuxFeature: Feature = {
   type: 'Feature',

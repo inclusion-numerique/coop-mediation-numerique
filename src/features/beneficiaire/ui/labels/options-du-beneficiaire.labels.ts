@@ -1,7 +1,7 @@
 import { genreLabels } from '@/features/beneficiaire/domain/genre'
 import { statutSocialLabels } from '@/features/beneficiaire/domain/statut-social'
 import { trancheAgeLabels } from '@/features/beneficiaire/domain/tranche-age'
-import { labelsToOptions } from '@/libraries/ui/form/utils/options'
+import { labelsToOptions } from '@/libraries/ui/form'
 
 /**
  * Options de formulaire (select/radio) dérivées des libellés du domaine. Vit

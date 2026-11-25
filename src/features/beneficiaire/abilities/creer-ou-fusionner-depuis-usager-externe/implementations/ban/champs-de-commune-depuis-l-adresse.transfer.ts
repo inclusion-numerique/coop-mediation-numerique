@@ -1,5 +1,8 @@
-import { type Feature, searchAdresse } from '@/libraries/ban/api-adresse'
-import { banFeatureToAdresseBanData } from '@/libraries/ban/ban-feature-to-adresse-ban-data'
+import {
+  banFeatureToAdresseBanData,
+  type Feature,
+  searchAdresse,
+} from '@/libraries/ban'
 
 export type CommuneFields = {
   commune: string

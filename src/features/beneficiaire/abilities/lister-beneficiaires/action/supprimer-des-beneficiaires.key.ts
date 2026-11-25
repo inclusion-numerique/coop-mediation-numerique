@@ -1,5 +1,5 @@
-import type { ServerActionResult } from '@/libraries/nextjs/action/result'
-import { keyFor } from '@/libraries/nextjs/injection/client'
+import type { ServerActionResult } from '@/libraries/nextjs'
+import { keyFor } from '@/libraries/nextjs/injection'
 
 /**
  * La suppression est injectée par clé, pas importée. Deux raisons, dans cet ordre.

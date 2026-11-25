@@ -1,4 +1,4 @@
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 import { toBeneficiaireIdentifie } from '@/features/beneficiaire/domain/beneficiaire'
 import { BeneficiaireNotFound } from '@/features/beneficiaire/domain/errors'
 import { beneficiaireFromDomain } from '@/features/beneficiaire/implementations/prisma/beneficiaire.transfer'

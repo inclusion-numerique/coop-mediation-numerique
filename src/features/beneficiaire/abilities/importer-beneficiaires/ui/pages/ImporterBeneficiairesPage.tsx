@@ -1,9 +1,8 @@
 import documentPictogram from '@codegouvfr/react-dsfr/dsfr/artwork/pictograms/document/document.svg'
 import { getAssetUrl } from '@codegouvfr/react-dsfr/tools/getAssetUrl'
-import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
-import { contentId } from '@/libraries/liens-d-evitement/skip-links'
-import BackButton from '@/libraries/ui/components/BackButton'
-import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
+import { contentId } from '@/libraries/liens-d-evitement'
+import { SkipLinksPortal } from '@/libraries/liens-d-evitement/composants'
+import { BackButton, CoopBreadcrumbs } from '@/libraries/ui/components'
 import UploadBeneficiaireFileForm from '../forms/UploadBeneficiaireFileForm'
 
 export const ImporterBeneficiairesPage = () => (

@@ -13,7 +13,7 @@ import {
   TrancheAge,
   trancheAgeLabels,
 } from '@/features/beneficiaire/domain/tranche-age'
-import type { AuteurDExport } from '@/libraries/tableur/add-export-metadata'
+import type { AuteurDExport } from '@/libraries/tableur'
 import { Telephone } from '@/libraries/telephone'
 import type { BeneficiaireExportRow } from '../../domain/exporter-beneficiaires'
 import { classeurDesBeneficiaires } from './classeur-des-beneficiaires.classeur'

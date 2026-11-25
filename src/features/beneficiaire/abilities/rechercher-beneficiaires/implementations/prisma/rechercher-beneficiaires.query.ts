@@ -1,4 +1,4 @@
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
 import { CommuneResidence } from '@/features/beneficiaire/domain/commune-residence'
 import { Nom } from '@/features/beneficiaire/domain/nom'

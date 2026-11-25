@@ -1,6 +1,6 @@
 import { After, Before, BeforeAll, setDefaultTimeout } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
 import type { Prisma } from '@/generated/prisma/client'
 

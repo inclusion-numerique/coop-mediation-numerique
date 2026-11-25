@@ -1,7 +1,7 @@
 import { v4 } from 'uuid'
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
-import { prismaClient } from '@/configuration/prisma/prisma-client'
-import { AdresseIndisponible } from '@/libraries/ban/api-adresse'
+import { prismaClient } from '@/configuration/prisma'
+import { AdresseIndisponible } from '@/libraries/ban'
 import type { UsagerExterneAFusionner } from '../../domain/creer-ou-fusionner-depuis-usager-externe'
 import { creerOuFusionnerBeneficiairesDepuisUsagersExternes } from './creer-ou-fusionner-depuis-usager-externe.mutation'
 

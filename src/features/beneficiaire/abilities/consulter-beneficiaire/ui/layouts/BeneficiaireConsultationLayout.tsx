@@ -2,11 +2,13 @@ import classNames from 'classnames'
 import Link from 'next/link'
 import type { PropsWithChildren, ReactNode } from 'react'
 import { nomAfficheDepuisLIdentite } from '@/features/beneficiaire/domain/beneficiaire'
-import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
-import { contentId } from '@/libraries/liens-d-evitement/skip-links'
-import BackButton from '@/libraries/ui/components/BackButton'
-import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
-import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
+import { contentId } from '@/libraries/liens-d-evitement'
+import { SkipLinksPortal } from '@/libraries/liens-d-evitement/composants'
+import {
+  BackButton,
+  CoopBreadcrumbs,
+  CoopPageContainer,
+} from '@/libraries/ui/components'
 
 /**
  * Shell de consultation d'un bénéficiaire. Pur affichage : il agence l'en-tête

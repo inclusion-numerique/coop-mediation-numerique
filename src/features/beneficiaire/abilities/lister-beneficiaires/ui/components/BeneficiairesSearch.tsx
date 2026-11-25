@@ -1,4 +1,4 @@
-import { ChampDeRecherche } from '@/libraries/etat-d-url/liste/ChampDeRecherche'
+import { ChampDeRecherche } from '@/libraries/etat-d-url/liste'
 
 export const BeneficiairesSearch = () => (
   <ChampDeRecherche

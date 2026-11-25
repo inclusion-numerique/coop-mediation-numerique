@@ -23,22 +23,17 @@ import {
   trancheAgeOptions,
 } from '@/features/beneficiaire/ui/labels/options-du-beneficiaire.labels'
 import { hrefDuBeneficiaire } from '@/features/beneficiaire/ui/presenters/liens.presenter'
-import type { AdresseBanData } from '@/libraries/adresse/adresse-ban-validation'
-import {
-  CommuneComboBox,
-  CommuneOptions,
-} from '@/libraries/adresse/CommuneComboBox'
+import type { AdresseBanData } from '@/libraries/adresse'
+import { CommuneComboBox, CommuneOptions } from '@/libraries/ban/composants'
 import { cheminInterne } from '@/libraries/chemin-interne'
-import { encodeSerializableState } from '@/libraries/etat-encode/encode-serializable-state'
-import { handleSubmit } from '@/libraries/formulaire/handle-submit'
-import { useAppForm } from '@/libraries/formulaire/use-app-form'
+import { encodeSerializableState } from '@/libraries/etat-encode'
+import { handleSubmit } from '@/libraries/formulaire'
+import { useAppForm } from '@/libraries/formulaire/hooks'
 import type { ServerActionResult } from '@/libraries/nextjs'
-import { adresseAvec } from '@/libraries/nextjs/route/adresse-avec'
-import { routeConstruite } from '@/libraries/nextjs/route/route-construite'
-import RedAsterisk from '@/libraries/ui/form/RedAsterisk'
-import RequiredFieldsDisclaimer from '@/libraries/ui/form/RequiredFieldsDisclaimer'
-import { Options } from '@/libraries/ui/primitives/Options'
-import { createToast } from '@/libraries/ui/toast/create-toast'
+import { adresseAvec, routeConstruite } from '@/libraries/nextjs'
+import { RedAsterisk, RequiredFieldsDisclaimer } from '@/libraries/ui/form'
+import { Options } from '@/libraries/ui/primitives'
+import { createToast } from '@/libraries/ui/toast'
 
 export type SaisieEnCours = Readonly<Record<string, unknown>> & {
   readonly participants?: readonly unknown[]

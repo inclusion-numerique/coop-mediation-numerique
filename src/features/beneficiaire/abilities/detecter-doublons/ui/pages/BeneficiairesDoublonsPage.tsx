@@ -1,11 +1,10 @@
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import { type DetecterDoublons } from '@/features/beneficiaire/abilities/detecter-doublons/domain/detecter-doublons'
-import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
-import { contentId } from '@/libraries/liens-d-evitement/skip-links'
-import { numberToString } from '@/libraries/nombre/format-number'
+import { contentId } from '@/libraries/liens-d-evitement'
+import { SkipLinksPortal } from '@/libraries/liens-d-evitement/composants'
+import { numberToString } from '@/libraries/nombre'
 import { pluriel } from '@/libraries/pluriel'
-import BackButton from '@/libraries/ui/components/BackButton'
-import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
+import { BackButton, CoopBreadcrumbs } from '@/libraries/ui/components'
 import BeneficiaireFusionDoublons from '../components/BeneficiaireFusionDoublons'
 
 type BeneficiairesDoublonsPageData = Awaited<ReturnType<DetecterDoublons>>

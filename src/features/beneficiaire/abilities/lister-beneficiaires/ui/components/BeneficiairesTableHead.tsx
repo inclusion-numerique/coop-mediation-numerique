@@ -1,5 +1,5 @@
-import { SelectAllHeaderCell } from '@/libraries/data-table'
-import { EnTeteTriable } from '@/libraries/etat-d-url/liste/EnTeteTriable'
+import { SelectAllHeaderCell } from '@/libraries/data-table/selection'
+import { EnTeteTriable } from '@/libraries/etat-d-url/liste'
 import { beneficiairesColumns } from '../columns/beneficiaires.columns'
 import type { LiensDeLaListe } from '../filtres/liste-des-beneficiaires.filtre'
 

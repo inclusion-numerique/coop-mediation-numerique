@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
 import { listerBeneficiaires } from './lister-beneficiaires.query'
 

@@ -1,5 +1,4 @@
-import BackButton from '@/libraries/ui/components/BackButton'
-import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
+import { BackButton, CoopBreadcrumbs } from '@/libraries/ui/components'
 import ImportBeneficiairesAnalyseContent, {
   type ImporterBeneficiaires,
 } from '../components/ImportBeneficiairesAnalyseContent'

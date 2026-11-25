@@ -1,4 +1,4 @@
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 import { Prisma } from '@/generated/prisma/client'
 import { garderUnSeulCodePostal } from '../../../../implementations/prisma/un-seul-code-postal.mutation'
 

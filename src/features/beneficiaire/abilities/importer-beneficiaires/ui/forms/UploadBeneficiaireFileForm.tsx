@@ -12,9 +12,9 @@ import {
   hrefDeLAnalyseDeLImport,
   hrefDeLErreurDeLImport,
 } from '@/features/beneficiaire/ui/presenters/liens.presenter'
-import { handleSubmit } from '@/libraries/formulaire/handle-submit'
-import { useAppForm } from '@/libraries/formulaire/use-app-form'
-import { isBrowser } from '@/libraries/navigateur/is-browser'
+import { handleSubmit } from '@/libraries/formulaire'
+import { useAppForm } from '@/libraries/formulaire/hooks'
+import { isBrowser } from '@/libraries/navigateur'
 
 // Create zod validation so the file is required and of type File
 // And the file must be an xlsx file

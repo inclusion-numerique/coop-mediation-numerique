@@ -1,6 +1,6 @@
 import classNames from 'classnames'
 import Link from 'next/link'
-import { SelectRowCell } from '@/libraries/data-table'
+import { SelectRowCell } from '@/libraries/data-table/selection'
 import { beneficiairesColumns } from '../columns/beneficiaires.columns'
 import type { BeneficiaireRow } from '../presenters/ligne-du-beneficiaire.presenter'
 

@@ -1,6 +1,6 @@
 import assert from 'node:assert'
 import { Then, When } from '@cucumber/cucumber'
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 import { type BeneficiaireAImporter } from '@/features/beneficiaire/abilities/importer-beneficiaires/domain/importer-beneficiaires'
 import { importerBeneficiaires } from '@/features/beneficiaire/abilities/importer-beneficiaires/implementations/prisma/importer-beneficiaires.mutation'
 import {

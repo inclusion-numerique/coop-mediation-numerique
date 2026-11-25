@@ -1,4 +1,4 @@
-import { instrument } from '@/configuration/telemetry/instrument/server'
+import { instrument } from '@/configuration/telemetry/serveur'
 import { champsDeCommuneDepuisLAdresse } from './ban/champs-de-commune-depuis-l-adresse.transfer'
 import { creerOuFusionnerBeneficiairesDepuisUsagersExternes } from './prisma/creer-ou-fusionner-depuis-usager-externe.mutation'
 

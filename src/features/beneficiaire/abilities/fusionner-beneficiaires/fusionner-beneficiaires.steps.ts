@@ -1,7 +1,7 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 import { fusionnerBeneficiaires } from '@/features/beneficiaire/abilities/fusionner-beneficiaires/implementations/prisma/index'
 import {
   seedBeneficiaire,

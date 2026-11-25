@@ -1,6 +1,6 @@
 import type { Route } from 'next'
 import type { BeneficiaireListItem } from '@/features/beneficiaire/abilities/lister-beneficiaires/domain/lister-beneficiaires'
-import { numberToString } from '@/libraries/nombre/format-number'
+import { numberToString } from '@/libraries/nombre'
 
 /**
  * Ligne d'affichage de la table : projection plate (chaînes prêtes à rendre)

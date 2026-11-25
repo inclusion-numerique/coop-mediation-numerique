@@ -2,7 +2,7 @@ import assert from 'node:assert'
 import { assertMatchesDataTable } from '@arckit/cucumber'
 import { type DataTable, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 import { ModifierBeneficiaireValidation } from '@/features/beneficiaire/abilities/modifier-beneficiaire/action/modifier-beneficiaire.validation'
 import { modifierBeneficiaire } from '@/features/beneficiaire/abilities/modifier-beneficiaire/implementations/prisma/modifier-beneficiaire.mutation'
 import {
