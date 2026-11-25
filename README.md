@@ -48,6 +48,7 @@ Chaque pull request peut aussi déployer son propre environnement de preview, vo
 
 <h2 id="documentation">📚 Documentation</h2>
 
+- [Documentation technique](https://inclusion-numerique.github.io/coop-mediation-numerique/) : les décisions d'architecture, les spécifications exécutables, les graphes et les tables d'imports, et les rapports, publiés à chaque fusion sur `main`
 - [Guide de contribution](./CONTRIBUTING.md) : installer l'environnement de développement et les pratiques du dépôt
 - [Infrastructure](./infrastructure/README.md) : les ressources Scaleway de chaque environnement, les tâches planifiées et le déploiement
 - [Décisions d'architecture (ADR)](./docs/decisions)
