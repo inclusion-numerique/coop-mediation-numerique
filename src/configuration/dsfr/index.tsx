@@ -8,12 +8,6 @@ import {
 import Link from 'next/link'
 import { defaultColorScheme } from './default-color-scheme'
 
-declare module '@codegouvfr/react-dsfr/next-app-router' {
-  interface RegisterLink {
-    Link: typeof Link
-  }
-}
-
 export const DsfrProvider = (props: DsfrProviderProps) => (
   <DsfrProviderBase
     defaultColorScheme={defaultColorScheme}
@@ -23,4 +17,5 @@ export const DsfrProvider = (props: DsfrProviderProps) => (
 )
 
 export { default as Display } from '@codegouvfr/react-dsfr/Display/Display'
+export * from './server-only-index'
 export { StartDsfrOnHydration }
