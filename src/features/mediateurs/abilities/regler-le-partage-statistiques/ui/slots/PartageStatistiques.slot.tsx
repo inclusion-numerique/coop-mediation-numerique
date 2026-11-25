@@ -9,8 +9,8 @@ import type {
   LienDuPerimetre,
   PerimetrePartage,
 } from '@/features/mediateurs/domain'
-import { inject } from '@/libraries/nextjs/injection/client'
-import { createToast } from '@/libraries/ui/toast/create-toast'
+import { inject } from '@/libraries/nextjs/injection'
+import { createToast } from '@/libraries/ui/toast'
 import { REGLER_LE_PARTAGE_STATISTIQUES_ACTION_KEY } from '../../action/regler-le-partage-statistiques.key'
 
 const PartageStatistiquesModal = createModal({

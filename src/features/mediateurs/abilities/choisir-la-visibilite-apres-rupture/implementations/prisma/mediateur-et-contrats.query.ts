@@ -1,4 +1,4 @@
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 import { MediateurId } from '@/features/mediateurs/domain'
 import { type Contrat, etatContrat } from '../../domain/rupture-en-attente'
 

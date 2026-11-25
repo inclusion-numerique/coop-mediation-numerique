@@ -1,4 +1,4 @@
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 import { failure, type Result, success } from '@/libraries/result'
 import {
   CoordinateurId,

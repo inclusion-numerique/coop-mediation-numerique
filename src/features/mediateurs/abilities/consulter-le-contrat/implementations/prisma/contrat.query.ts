@@ -1,4 +1,4 @@
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 import type { UtilisateurId } from '@/features/mediateurs/domain'
 import {
   type Contrat,

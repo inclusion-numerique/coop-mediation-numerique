@@ -1,6 +1,6 @@
 import { After, Given, setDefaultTimeout } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 import {
   CoordinateurId,
   MediateurId,
