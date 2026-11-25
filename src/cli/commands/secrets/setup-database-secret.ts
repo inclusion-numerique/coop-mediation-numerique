@@ -3,7 +3,7 @@ import { createSecret } from '@/cli/secrets/create-secret'
 import { databasePasswordSecretName } from '@/cli/secrets/database-password-secret-name'
 import { generateDatabasePassword } from '@/cli/secrets/generate-database-password'
 import { listSecrets } from '@/cli/secrets/list-secrets'
-import { output } from '@/libraries/console/output'
+import { output } from '@/libraries/console'
 
 /**
  * This command creates the database secret for the namespace argument

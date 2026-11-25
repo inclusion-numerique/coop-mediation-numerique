@@ -1,7 +1,7 @@
 import { Octokit } from '@octokit/core'
 import { restEndpointMethods } from '@octokit/plugin-rest-endpoint-methods'
-import { environnementOutillage } from '@/configuration/environnement/outillage'
-import { projectSlug } from '@/configuration/projet/config'
+import { environnementOutillage } from '@/configuration/environnement/serveur'
+import { projectSlug } from '@/configuration/projet'
 
 export const owner = 'inclusion-numerique'
 export const repo = projectSlug

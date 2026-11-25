@@ -1,6 +1,6 @@
 import { brevoActif } from '@/configuration/brevo'
 import { retirerLesContactsOrphelins } from '@/features/utilisateurs/abilities/retirer-les-contacts-orphelins/implementations/retirer-les-contacts-orphelins.binding'
-import { output } from '@/libraries/console/output'
+import { output } from '@/libraries/console'
 
 export const executeRemoveOrphanBrevoContacts = async () => {
   if (!brevoActif()) {

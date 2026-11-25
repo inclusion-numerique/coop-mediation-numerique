@@ -13,7 +13,7 @@ import { deleteDatabaseSecret } from '@/cli/commands/secrets/delete-database-sec
 import { getDatabasePasswordSecret } from '@/cli/commands/secrets/get-database-password-secret'
 import { setupDatabaseSecret } from '@/cli/commands/secrets/setup-database-secret'
 import { deleteSentryEnvironmentIssues } from '@/cli/commands/sentry/delete-sentry-environment-issues'
-import { outputError } from '@/libraries/console/output'
+import { outputError } from '@/libraries/console'
 
 const main = async () => {
   const program = new Command()

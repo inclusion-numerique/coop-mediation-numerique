@@ -12,7 +12,7 @@ export default defineConfig({
     alias: [
       {
         find: /^server-only$/,
-        replacement: depuisIci('./src/libraries/server-only-cli/index.ts'),
+        replacement: depuisIci('./src/libraries/server-only-cli'),
       },
     ],
   },

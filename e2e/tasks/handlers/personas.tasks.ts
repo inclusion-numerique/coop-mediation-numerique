@@ -1,4 +1,4 @@
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 import { semerLesCrasDeDemonstration } from '@/features/activites/fixtures/semer-les-cras-de-demonstration'
 import { referencesDesBeneficiaires } from '@/features/beneficiaire/fixtures/beneficiaires-de-demonstration'
 import { semerLesBeneficiairesDeDemonstration } from '@/features/beneficiaire/fixtures/semer-les-beneficiaires-de-demonstration'
@@ -16,7 +16,7 @@ import {
 } from '@/features/utilisateurs/fixtures/personas'
 import { seedPersonnesMain } from '@/features/utilisateurs/fixtures/personnes-main-conseiller-numerique'
 import { reinitialiserUnUtilisateur } from '@/features/utilisateurs/fixtures/reinitialiser-un-utilisateur'
-import { enSerie } from '@/libraries/fixtures/en-serie'
+import { enSerie } from '@/libraries/fixtures'
 
 const demonstration = {
   employeuse: { structureCoopId: structureEmployeuse.id },

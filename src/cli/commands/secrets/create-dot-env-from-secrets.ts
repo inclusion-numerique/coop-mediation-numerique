@@ -2,7 +2,7 @@ import { Command } from '@commander-js/extra-typings'
 import { appendEnvVariablesToDotEnvFile } from '@/cli/dot-env-file'
 import { getSecretValue } from '@/cli/secrets/get-secret-value'
 import { listSecrets } from '@/cli/secrets/list-secrets'
-import { output } from '@/libraries/console/output'
+import { output } from '@/libraries/console'
 
 /**
  * This command fetches secrets from Secret Vault using scaleway keys and put them into .env

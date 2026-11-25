@@ -5,11 +5,10 @@ import { promisify } from 'node:util'
 import { Command } from '@commander-js/extra-typings'
 import axios from 'axios'
 import { getAvecNouvellesTentatives } from '@/cli/get-avec-nouvelles-tentatives'
-import { environnementOutillage } from '@/configuration/environnement/outillage'
-import { prismaClient } from '@/configuration/prisma/prisma-client'
-import { createVarDirectory } from '@/libraries/chemins/create-var-directory'
-import { varDirectory } from '@/libraries/chemins/var-directory'
-import { output } from '@/libraries/console/output'
+import { environnementOutillage } from '@/configuration/environnement/serveur'
+import { prismaClient } from '@/configuration/prisma'
+import { createVarDirectory, varDirectory } from '@/libraries/chemins'
+import { output } from '@/libraries/console'
 
 const exec = promisify(callbackExec)
 

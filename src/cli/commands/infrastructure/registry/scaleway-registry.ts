@@ -1,6 +1,6 @@
 import axios, { type AxiosInstance } from 'axios'
-import { environnementOutillage } from '@/configuration/environnement/outillage'
-import { projectSlug } from '@/configuration/projet/config'
+import { environnementOutillage } from '@/configuration/environnement/serveur'
+import { projectSlug } from '@/configuration/projet'
 import type { RegistryImage, RegistryTag } from './registry-retention'
 
 const PAGE_SIZE = 100

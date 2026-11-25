@@ -1,7 +1,7 @@
 import { Command } from '@commander-js/extra-typings'
 import axios from 'axios'
-import { environnementOutillage } from '@/configuration/environnement/outillage'
-import { output, outputError } from '@/libraries/console/output'
+import { environnementOutillage } from '@/configuration/environnement/serveur'
+import { output, outputError } from '@/libraries/console'
 import {
   createSentryHttpClient,
   deleteIssuesByIds,

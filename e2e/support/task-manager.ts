@@ -4,7 +4,7 @@ import {
   decodeSerializableState,
   EncodedState,
   encodeSerializableState,
-} from '../../src/libraries/etat-encode/encode-serializable-state'
+} from '../../src/libraries/etat-encode'
 import { logToFile } from './log-to-file'
 
 const dossierE2e = path.resolve(import.meta.dirname, '..')

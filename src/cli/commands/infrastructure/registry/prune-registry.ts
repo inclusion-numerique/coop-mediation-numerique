@@ -1,7 +1,7 @@
 import { writeFileSync } from 'node:fs'
 import { Command } from '@commander-js/extra-typings'
 import { octokit, owner, repo } from '@/cli/github/github'
-import { output } from '@/libraries/console/output'
+import { output } from '@/libraries/console'
 import {
   imageNameForBranch,
   orphanImages,

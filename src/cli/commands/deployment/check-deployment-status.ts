@@ -1,8 +1,8 @@
 import { Command } from '@commander-js/extra-typings'
 import axios from 'axios'
 import { getAvecNouvellesTentatives } from '@/cli/get-avec-nouvelles-tentatives'
-import { projectTitle } from '@/configuration/projet/config'
-import { output } from '@/libraries/console/output'
+import { projectTitle } from '@/configuration/projet'
+import { output } from '@/libraries/console'
 
 export const checkDeploymentStatus = new Command()
   .command('deployment:check-status')

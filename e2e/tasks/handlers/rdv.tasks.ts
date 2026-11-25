@@ -1,4 +1,4 @@
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 
 /**
  * Identifiant d'agent réservé aux tests, dans la même plage que les scénarios

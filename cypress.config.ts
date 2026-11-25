@@ -1,7 +1,7 @@
 import { defineConfig } from 'cypress'
 import cypressSplit from 'cypress-split'
 import { taskManager } from './e2e/support/task-manager'
-import { cypressProjectId } from './src/configuration/projet/config'
+import { cypressProjectId } from './src/configuration/projet'
 
 const cheminLitteral = (chemin: string): string =>
   chemin.replace(/[()[\]]/g, '\\$&')

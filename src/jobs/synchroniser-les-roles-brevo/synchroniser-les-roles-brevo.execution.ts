@@ -1,7 +1,7 @@
 import { brevoActif } from '@/configuration/brevo'
-import { errorReporter } from '@/configuration/telemetry/error-reporter/server'
+import { errorReporter } from '@/configuration/telemetry/serveur'
 import { synchroniserLesRolesBrevo } from '@/features/utilisateurs/abilities/synchroniser-les-roles-brevo/implementations/synchroniser-les-roles-brevo.binding'
-import { output } from '@/libraries/console/output'
+import { output } from '@/libraries/console'
 
 export const executeSynchroniserLesRolesBrevo = async () => {
   if (!brevoActif()) {

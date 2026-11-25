@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { environnementClient } from '@/configuration/environnement/client'
+import { environnementClient } from '@/configuration/environnement'
 import { environnementServeur } from '@/configuration/environnement/serveur'
 
 const isCI = environnementServeur.CI

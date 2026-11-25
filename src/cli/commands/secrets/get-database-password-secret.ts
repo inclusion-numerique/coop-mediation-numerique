@@ -3,7 +3,7 @@ import { databasePasswordSecretName } from '@/cli/secrets/database-password-secr
 import { findSecretByName } from '@/cli/secrets/find-secret-by-name'
 import { getSecretValue as configGetSecretValue } from '@/cli/secrets/get-secret-value'
 import { listSecrets } from '@/cli/secrets/list-secrets'
-import { output } from '@/libraries/console/output'
+import { output } from '@/libraries/console'
 
 /**
  * This command outputs available secrets names

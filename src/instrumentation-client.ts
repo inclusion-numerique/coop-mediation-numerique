@@ -1,7 +1,4 @@
-import {
-  onRouterTransitionStart,
-  register,
-} from '@/configuration/telemetry/error-reporter/client'
+import { onRouterTransitionStart, register } from '@/configuration/telemetry'
 
 register()
 

@@ -1,8 +1,10 @@
 import { withSentryConfig } from '@sentry/nextjs/config'
 import type { NextConfig } from 'next'
-import './src/configuration/environnement/client'
-import { environnementOutillage } from './src/configuration/environnement/outillage'
-import { verifierEnvironnementServeurWeb } from './src/configuration/environnement/serveur'
+import './src/configuration/environnement'
+import {
+  environnementOutillage,
+  verifierEnvironnementServeurWeb,
+} from './src/configuration/environnement/serveur'
 
 verifierEnvironnementServeurWeb()
 

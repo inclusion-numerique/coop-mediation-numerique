@@ -14,7 +14,7 @@ import { lancerLesRelancesDesInscrits } from '@/features/utilisateurs/abilities/
 import type { EffacementsDesAutresFeatures } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/supprimer-compte.binding'
 import { supprimerUnInscritJamaisActifAvec } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/supprimer-compte.binding'
 import type { RapportDeRelance } from '@/features/utilisateurs/domain'
-import { output } from '@/libraries/console/output'
+import { output } from '@/libraries/console'
 
 const supprimerComptePorts: EffacementsDesAutresFeatures = {
   anonymiserPortefeuille,

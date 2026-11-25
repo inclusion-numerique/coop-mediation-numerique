@@ -4,7 +4,7 @@ import { synchroniserCompteAvec } from '@/features/rdvsp/abilities/synchroniser-
 import { synchroniserLesOrganisations } from '@/features/rdvsp/abilities/synchroniser-organisations/implementations/synchroniser-organisations.binding'
 import { synchroniserLesRdvsAvec } from '@/features/rdvsp/abilities/synchroniser-rdvs/implementations/synchroniser-rdvs.binding'
 import { synchroniserTousLesComptesRdvAvec } from '@/features/rdvsp/abilities/synchroniser-tous-les-comptes-rdv/implementations/synchroniser-tous-les-comptes-rdv.binding'
-import { output } from '@/libraries/console/output'
+import { output } from '@/libraries/console'
 import type { SyncRdvspDataJob } from './sync-rdvsp-data.job'
 
 const synchroniserTousLesComptes = synchroniserTousLesComptesRdvAvec(

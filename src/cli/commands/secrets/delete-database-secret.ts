@@ -2,7 +2,7 @@ import { Argument, Command } from '@commander-js/extra-typings'
 import { databasePasswordSecretName } from '@/cli/secrets/database-password-secret-name'
 import { deleteSecret } from '@/cli/secrets/delete-secret'
 import { listSecrets } from '@/cli/secrets/list-secrets'
-import { output } from '@/libraries/console/output'
+import { output } from '@/libraries/console'
 
 export const deleteDatabaseSecret = new Command()
   .command('secrets:database:delete')

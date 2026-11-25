@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
 import pRetry, { type Options as PRetryOptions } from 'p-retry'
-import { environnementOutillage } from '@/configuration/environnement/outillage'
+import { environnementOutillage } from '@/configuration/environnement/serveur'
 
 export const projectId = environnementOutillage.SCW_PROJECT_ID ?? ''
 
