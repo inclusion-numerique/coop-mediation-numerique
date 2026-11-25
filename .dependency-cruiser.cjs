@@ -1,6 +1,10 @@
 const FICHIER_DE_TEST =
   '[.](?:spec|integration|stories|cy|steps|cucumber|test)[.]tsx?$|/fixtures/'
 
+const TEST_UNITAIRE = '[.](?:spec|stories|cy)[.]tsx?$'
+
+const TEST_DE_COMPOSITION = '[.](?:integration|steps|cucumber)[.]ts$|/fixtures/'
+
 const FICHIERS_DE_TEST_ADMIS = {
   '^src/app/_actions/utilisateurs/reinitialiser-une-fixture[.]action[.]ts$': [
     '^src/features/utilisateurs/fixtures/personas[.]ts$',
@@ -27,6 +31,12 @@ const HORS_DE_SRC_ADMIS = {
 
 const RACINE_DU_DEPOT_ADMISE = {
   '^cypress[.]config[.]ts$': ['^e2e/support/task-manager[.]ts$'],
+}
+
+const APP_ADMISE_DANS_UNE_FEATURE = {
+  '^src/features/clients-api/abilities/[^/]+/[^/]+[.]steps[.]ts$': [
+    '^src/app/api/v1/',
+  ],
 }
 
 const MODULES_NODE_DEPRECIES = [
@@ -407,8 +417,71 @@ const APP = [
   ),
 ]
 
+const FEATURES = [
+  {
+    name: 'feature-sans-app',
+    severity: 'error',
+    comment:
+      "Une feature n'importe rien de app/ : ce sont les points d'entrée qui l'importent",
+    from: {
+      path: '^src/features/',
+      pathNot: cles(APP_ADMISE_DANS_UNE_FEATURE),
+    },
+    to: { path: '^src/app/' },
+  },
+  ...exceptions(
+    'feature-sans-app',
+    APP_ADMISE_DANS_UNE_FEATURE,
+    (de, admis) => ({
+      from: { path: de },
+      to: { path: '^src/app/', pathNot: admis },
+    }),
+  ),
+  {
+    name: 'feature-isolee',
+    severity: 'error',
+    comment:
+      "Une feature n'importe aucune autre feature, tests compris : seuls les points d'entrée composent plusieurs features",
+    from: { path: '^src/features/([^/]+)/' },
+    to: { path: '^src/features/', pathNot: '^src/features/$1/' },
+  },
+  {
+    name: 'ability-isolee',
+    severity: 'error',
+    comment:
+      "Une ability n'importe aucune autre ability ; seuls ses tests de composition (intégration, steps, hooks Cucumber, fixtures) importent les abilities de leur feature",
+    from: {
+      path: '^src/features/([^/]+)/abilities/([^/]+)/',
+      pathNot: TEST_DE_COMPOSITION,
+    },
+    to: {
+      path: '^src/features/$1/abilities/',
+      pathNot: '^src/features/$1/abilities/$2/',
+    },
+  },
+  {
+    name: 'racine-d-une-feature-sans-ses-abilities',
+    severity: 'error',
+    comment:
+      "La racine d'une feature n'importe pas ses abilities ; seuls ses tests de composition (intégration, steps, hooks Cucumber, fixtures) les importent",
+    from: {
+      path: '^src/features/([^/]+)/',
+      pathNot: ['^src/features/[^/]+/abilities/', TEST_DE_COMPOSITION],
+    },
+    to: { path: '^src/features/$1/abilities/' },
+  },
+  {
+    name: 'test-unitaire-sans-fixture',
+    severity: 'error',
+    comment:
+      "Un test unitaire, une story ou un test de composant n'importe aucune fixture : il écrit ses valeurs avec les constructeurs du domaine",
+    from: { path: `^(.+)${TEST_UNITAIRE}` },
+    to: { path: '/fixtures/', pathNot: '^$1[.]tsx?$' },
+  },
+]
+
 module.exports = {
-  forbidden: [...GLOBAL, ...APP],
+  forbidden: [...GLOBAL, ...APP, ...FEATURES],
   options: {
     doNotFollow: { path: ['node_modules'] },
     exclude: { path: '^src/generated/' },
