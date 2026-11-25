@@ -38,7 +38,7 @@ export const ProConnectProvider = () =>
     // Allow an email user to login with Inclusion Connect
     allowDangerousEmailAccountLinking: true,
     clientId: proConnectClientId,
-    clientSecret: environnementServeur.PROCONNECT_CLIENT_SECRET,
+    clientSecret: environnementServeur().PROCONNECT_CLIENT_SECRET,
     issuer,
     authorization: {
       url: `${issuer}/api/v2/authorize`,
@@ -71,7 +71,7 @@ export const ProConnectProvider = () =>
         const body = {
           grant_type: 'authorization_code',
           client_id: proConnectClientId,
-          client_secret: environnementServeur.PROCONNECT_CLIENT_SECRET,
+          client_secret: environnementServeur().PROCONNECT_CLIENT_SECRET,
           redirect_uri: getServerUrl('/api/auth/callback/proconnect'),
           code: context.params.code || 'undefined',
         }

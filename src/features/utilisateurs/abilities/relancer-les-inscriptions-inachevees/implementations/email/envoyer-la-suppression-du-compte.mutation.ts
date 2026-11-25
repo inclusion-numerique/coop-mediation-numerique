@@ -17,7 +17,7 @@ export const envoyerLaSuppressionDuCompte = async ({
   const result = await emailTransport.sendMail({
     to: email,
     from: expediteur,
-    replyTo: contactEmail,
+    replyTo: contactEmail(),
 
     subject: 'Votre compte a été supprimé',
     text: compteSupprime.text({ firstname }),

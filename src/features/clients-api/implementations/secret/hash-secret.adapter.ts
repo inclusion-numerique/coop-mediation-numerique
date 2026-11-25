@@ -8,12 +8,12 @@ import { environnementServeur } from '@/configuration/environnement/serveur'
  * @returns The hexadecimal representation of the hashed secret.
  */
 export const hashSecret = (secret: string): string => {
-  if (!environnementServeur.HMAC_SECRET_KEY) {
+  if (!environnementServeur().HMAC_SECRET_KEY) {
     throw new Error('HMAC_SECRET_KEY is not set')
   }
 
   return crypto
-    .createHmac('sha256', environnementServeur.HMAC_SECRET_KEY)
+    .createHmac('sha256', environnementServeur().HMAC_SECRET_KEY)
     .update(secret)
     .digest('hex')
 }

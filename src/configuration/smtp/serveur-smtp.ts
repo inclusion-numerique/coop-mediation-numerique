@@ -7,7 +7,7 @@ const {
   SMTP_PORT,
   EMAIL_FROM_NAME,
   EMAIL_FROM_ADDRESS,
-} = environnementServeur
+} = environnementServeur()
 
 export const serveurSmtp = `smtp://${SMTP_USERNAME}:${SMTP_PASSWORD}@${SMTP_SERVER}:${SMTP_PORT}`
 

@@ -70,7 +70,7 @@ L’équipe de La Coop de la médiation numérique
   }): string =>
     renderToMjml(
       <LayoutWithFooter
-        projectTitle={projectTitle}
+        projectTitle={projectTitle()}
         urlDeBase={getServerBaseUrl()}
         title="Votre inscription n’est pas finalisée"
         preview="Vous n’avez pas terminé votre inscription sur La Coop de la médiation numérique."

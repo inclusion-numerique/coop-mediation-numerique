@@ -59,7 +59,7 @@ L'équipe de La Coop de la médiation numérique
   }: InactiviteProlongeeAvertissementEmailProps): string =>
     renderToMjml(
       <LayoutWithFooter
-        projectTitle={projectTitle}
+        projectTitle={projectTitle()}
         urlDeBase={getServerBaseUrl()}
         title="Votre compte va bientôt être supprimé"
         preview="Votre compte La Coop va être supprimé après 2 ans d'inactivité."

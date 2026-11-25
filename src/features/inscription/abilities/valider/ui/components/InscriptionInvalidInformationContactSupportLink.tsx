@@ -14,7 +14,7 @@ const InscriptionInvalidInformationContactSupportLink = ({
   >
     <Link
       className={classNames('fr-link fr-link--sm fr-mb-0 ', linkClassName)}
-      href={`mailto:${contactEmail}`}
+      href={`mailto:${contactEmail()}`}
     >
       Ce ne sont pas vos informations&nbsp;? Contactez le support
     </Link>

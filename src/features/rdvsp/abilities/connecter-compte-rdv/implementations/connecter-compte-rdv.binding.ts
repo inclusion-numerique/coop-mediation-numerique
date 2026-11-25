@@ -19,7 +19,7 @@ export const connecterCompteRdvBinding = connecterCompteRdv({
   echangerCode: echangerCodeAutorisation({
     hostname: rdvspOAuthHostname,
     clientId: rdvServicePublicOAuthConfig.clientId,
-    clientSecret: environnementServeur.RDV_SERVICE_PUBLIC_OAUTH_CLIENT_SECRET,
+    clientSecret: environnementServeur().RDV_SERVICE_PUBLIC_OAUTH_CLIENT_SECRET,
     redirectUri: rdvServicePublicOauthCallbackUrl,
   }),
   identifierAgent: rdvServicePublicApiBinding.identifierAgent,

@@ -11,7 +11,7 @@ export const invitationAcceptee = {
   mjml: ({ mediateur }: { mediateur: string }): string =>
     renderToMjml(
       <LayoutWithFooter
-        projectTitle={projectTitle}
+        projectTitle={projectTitle()}
         urlDeBase={getServerBaseUrl()}
         title={`${mediateur} a accepté votre invitation à rejoindre votre équipe`}
         preview={`${mediateur} a accepté votre invitation à rejoindre votre équipe`}

@@ -27,7 +27,7 @@ export const envoyerLaRelance = async ({
   const result = await emailTransport.sendMail({
     to: email,
     from: expediteur,
-    replyTo: contactEmail,
+    replyTo: contactEmail(),
     subject: 'Votre compte est prêt, il ne manque que vous !',
     text: relance.text({
       firstname,

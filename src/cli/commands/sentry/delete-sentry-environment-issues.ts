@@ -38,10 +38,10 @@ export const deleteSentryEnvironmentIssues = new Command()
     }
 
     const config: SentryConfig = {
-      url: environnementOutillage.SENTRY_URL,
-      org: environnementOutillage.SENTRY_ORG ?? '',
-      project: environnementOutillage.SENTRY_PROJECT ?? '',
-      authToken: environnementOutillage.SENTRY_AUTH_TOKEN ?? '',
+      url: environnementOutillage().SENTRY_URL,
+      org: environnementOutillage().SENTRY_ORG ?? '',
+      project: environnementOutillage().SENTRY_PROJECT ?? '',
+      authToken: environnementOutillage().SENTRY_AUTH_TOKEN ?? '',
     }
     const http = createSentryHttpClient(config)
 

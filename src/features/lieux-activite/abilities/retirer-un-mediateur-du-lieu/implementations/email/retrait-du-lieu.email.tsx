@@ -51,7 +51,7 @@ L’équipe de La Coop de la médiation numérique
   }): string =>
     renderToMjml(
       <LayoutWithFooter
-        projectTitle={projectTitle}
+        projectTitle={projectTitle()}
         urlDeBase={getServerBaseUrl()}
         title="Vous avez été retiré d’un de vos lieux d'activité"
         preview={`${removedByName} vous a retiré du lieu ${structureNom}.`}

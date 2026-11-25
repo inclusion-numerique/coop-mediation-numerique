@@ -5,7 +5,7 @@ import { contactEmail, projectTitle } from '@/configuration/projet'
 import { connexionParCourriel } from '@/features/authentification/implementations/email/connexion-par-courriel.email'
 import { compileMjml } from '@/libraries/emails/rendu'
 
-const debugMagicLink = environnementServeur.NODE_ENV === 'development'
+const debugMagicLink = environnementServeur().NODE_ENV === 'development'
 
 export const sendVerificationRequest: EmailConfig['sendVerificationRequest'] =
   async ({ url, provider, identifier }) => {
@@ -19,8 +19,8 @@ export const sendVerificationRequest: EmailConfig['sendVerificationRequest'] =
     const result = await transport.sendMail({
       to: identifier,
       from: provider.from,
-      replyTo: contactEmail,
-      subject: `Connexion à ${projectTitle}`,
+      replyTo: contactEmail(),
+      subject: `Connexion à ${projectTitle()}`,
       text: connexionParCourriel.text({ url }),
       html: await compileMjml(connexionParCourriel.mjml({ url })),
     })

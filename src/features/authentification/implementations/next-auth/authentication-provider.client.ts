@@ -12,8 +12,11 @@ import { proConnectProviderId } from '../proconnect/proconnect-provider-id.clien
  * Depending on the environment we have a different provider configuration
  */
 export const authenticationViaProconnect =
-  estLocal || environnementServeur.IS_E2E || estMain || estDev
+  estLocal() || environnementServeur().IS_E2E || estMain() || estDev()
 
 export const moyenDeConnexion = authenticationViaProconnect
   ? ({ via: 'proconnect', fournisseur: proConnectProviderId } as const)
-  : ({ via: 'courriel', branchePreview: estPreview ? branche : null } as const)
+  : ({
+      via: 'courriel',
+      branchePreview: estPreview() ? branche() : null,
+    } as const)

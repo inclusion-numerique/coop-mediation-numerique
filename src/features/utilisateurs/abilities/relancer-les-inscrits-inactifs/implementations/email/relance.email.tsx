@@ -189,7 +189,7 @@ L'équipe de La Coop de la médiation numérique
 
     return renderToMjml(
       <LayoutWithFooter
-        projectTitle={projectTitle}
+        projectTitle={projectTitle()}
         urlDeBase={getServerBaseUrl()}
         title="Votre compte est prêt, il ne manque que vous !"
         preview={`Cela fait ${monthsLabel} que vous avez rejoint La Coop. Votre compte est toujours actif !`}

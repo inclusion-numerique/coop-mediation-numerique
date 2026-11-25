@@ -123,7 +123,7 @@ L'équipe de La Coop de la médiation numérique
 
     return renderToMjml(
       <LayoutWithFooter
-        projectTitle={projectTitle}
+        projectTitle={projectTitle()}
         urlDeBase={getServerBaseUrl()}
         title="Votre compte va bientôt être supprimé"
         preview="Votre compte La Coop va bientôt être supprimé pour inactivité."

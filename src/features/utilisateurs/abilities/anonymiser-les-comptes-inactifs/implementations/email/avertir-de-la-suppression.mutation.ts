@@ -26,7 +26,7 @@ export const avertirDeLaSuppression: AvertirDeLaSuppression = async ({
   const resultat = await emailTransport.sendMail({
     to: courriel,
     from: expediteur,
-    replyTo: contactEmail,
+    replyTo: contactEmail(),
     subject: 'Votre compte va bientôt être supprimé ⚠️',
     text: inactiviteProlongeeAvertissementEmail.text(contenu),
     html: await compileMjml(

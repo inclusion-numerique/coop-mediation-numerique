@@ -64,7 +64,7 @@ L'équipe de La Coop de la médiation numérique
 
     return renderToMjml(
       <LayoutWithFooter
-        projectTitle={projectTitle}
+        projectTitle={projectTitle()}
         urlDeBase={getServerBaseUrl()}
         title="Votre compte a été supprimé"
         preview="Votre compte La Coop a été supprimé pour inactivité."

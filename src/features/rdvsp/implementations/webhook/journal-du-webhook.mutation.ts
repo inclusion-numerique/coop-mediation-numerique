@@ -1,6 +1,6 @@
 import { environnementServeur } from '@/configuration/environnement/serveur'
 
-const actif = environnementServeur.RDV_SERVICE_PUBLIC_WEBHOOK_DEBUG
+const actif = environnementServeur().RDV_SERVICE_PUBLIC_WEBHOOK_DEBUG
 
 /**
  * Journal des notifications reçues, éteint par défaut.

@@ -11,7 +11,7 @@ export const invitationRefusee = {
   mjml: ({ mediateur }: { mediateur: string }): string =>
     renderToMjml(
       <LayoutWithFooter
-        projectTitle={projectTitle}
+        projectTitle={projectTitle()}
         urlDeBase={getServerBaseUrl()}
         title={`${mediateur} a refusé l‘invitation à rejoindre votre équipe`}
         preview={`${mediateur} a refusé l‘invitation à rejoindre votre équipe`}

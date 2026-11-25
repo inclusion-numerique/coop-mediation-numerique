@@ -163,7 +163,7 @@ const CoopSideMenu = ({
     {
       text: 'Contacter le support',
       linkProps: {
-        href: `mailto:${contactEmail}`,
+        href: `mailto:${contactEmail()}`,
         className:
           'fr-btn fr-btn--tertiary fr-icon-question-answer-line fr-btn--icon-left fr-width-full',
       },

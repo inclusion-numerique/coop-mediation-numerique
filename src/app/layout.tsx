@@ -15,9 +15,9 @@ import { ClientBinder } from '@/libraries/nextjs/injection'
 import { Toaster } from '@/libraries/ui/toast'
 
 export const metadata: Metadata = {
-  title: projectTitle,
-  robots: estMain ? 'index, follow' : 'noindex, nofollow',
-  description: projectTitle,
+  title: projectTitle(),
+  robots: estMain() ? 'index, follow' : 'noindex, nofollow',
+  description: projectTitle(),
 }
 
 const RootLayout = ({ children }: PropsWithChildren) => (

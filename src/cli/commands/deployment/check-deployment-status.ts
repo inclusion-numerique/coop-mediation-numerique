@@ -29,9 +29,9 @@ export const checkDeploymentStatus = new Command()
       throw new Error('Home page is not valid html')
     }
 
-    if (!homePageResponse.data.includes(projectTitle)) {
+    if (!homePageResponse.data.includes(projectTitle())) {
       throw new Error(
-        `Project title "${projectTitle}" is not present on the homepage`,
+        `Project title "${projectTitle()}" is not present on the homepage`,
       )
     }
 

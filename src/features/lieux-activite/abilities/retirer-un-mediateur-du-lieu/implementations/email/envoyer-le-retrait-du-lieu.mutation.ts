@@ -21,7 +21,7 @@ export const envoyerLeRetraitDuLieu = async ({
   const result = await emailTransport.sendMail({
     to: mediateurEmail,
     from: expediteur,
-    replyTo: contactEmail,
+    replyTo: contactEmail(),
     subject: `Vous avez été retiré du lieu ${structureNom}`,
     text: retraitDuLieu.text({
       mediateurFirstname,

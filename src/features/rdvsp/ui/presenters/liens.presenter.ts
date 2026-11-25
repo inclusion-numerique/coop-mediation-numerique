@@ -3,7 +3,7 @@ import { estMain } from '@/configuration/projet'
 export const rdvIntegrationEnSavoirPlusLink =
   'https://docs.numerique.gouv.fr/docs/49af7c6f-94c8-4160-b154-91b05ba2295a/'
 
-export const rdvWebsiteLink = estMain
+export const rdvWebsiteLink = estMain()
   ? 'https://rdv.anct.gouv.fr'
   : 'https://demo.rdv.anct.gouv.fr'
 

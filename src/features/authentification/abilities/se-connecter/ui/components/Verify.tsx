@@ -38,7 +38,10 @@ export const Verify = async () => {
         Vous pouvez fermer cet onglet de navigation.
         <br />
         En cas de problème ou de questions, merci de contacter{' '}
-        <a href={contactEmail && `mailto:${contactEmail}`}>{contactEmail}</a>.
+        <a href={contactEmail() && `mailto:${contactEmail()}`}>
+          {contactEmail()}
+        </a>
+        .
       </p>
     </AuthCard>
   )

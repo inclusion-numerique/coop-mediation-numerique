@@ -16,7 +16,7 @@ export const ErreurDeConnexionPage = ({
     />
     <AuthCard>
       <h2 style={{ textAlign: 'center' }} className="fr-mb-12v">
-        Connexion à {projectTitle}
+        Connexion à {projectTitle()}
       </h2>
       <div className="fr-alert fr-alert--error fr-alert--sm fr-mb-6v">
         <h6>Connexion impossible</h6>

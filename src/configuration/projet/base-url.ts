@@ -12,12 +12,12 @@ export const getServerBaseUrl = (options?: GetServerUrlOptions) => {
     // browser can use relative path
     return ''
   }
-  if (environnementServeur.BASE_URL) {
-    return `https://${environnementServeur.BASE_URL}`
+  if (environnementServeur().BASE_URL) {
+    return `https://${environnementServeur().BASE_URL}`
   }
 
   // assume localhost
-  return `http://localhost:${environnementServeur.PORT}`
+  return `http://localhost:${environnementServeur().PORT}`
 }
 
 export const getServerUrl = (

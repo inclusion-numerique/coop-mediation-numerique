@@ -15,7 +15,7 @@ export const MentionsLegalesPage = () => (
       <h1>Mentions légales</h1>
       <h2>Éditeur de la plateforme</h2>
       <p>
-        <strong>{projectTitle}</strong> est édité au sein de l’Incubateur des
+        <strong>{projectTitle()}</strong> est édité au sein de l’Incubateur des
         Territoires de l’Agence nationale de la cohésion des territoires (ANCT)
         située :
       </p>
@@ -63,7 +63,9 @@ export const MentionsLegalesPage = () => (
       <p>
         Si vous rencontrez un défaut d’accessibilité vous empêchant d’accéder à
         un contenu ou une fonctionnalité du site, merci de nous en faire part:{' '}
-        <a href={contactEmail && `mailto:${contactEmail}`}>{contactEmail}</a>
+        <a href={contactEmail() && `mailto:${contactEmail()}`}>
+          {contactEmail()}
+        </a>
       </p>
       <p>
         Si vous n’obtenez pas de réponse rapide de notre part, vous êtes en

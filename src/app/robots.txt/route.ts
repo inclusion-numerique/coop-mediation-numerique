@@ -4,7 +4,7 @@ export const dynamic = 'force-static'
 
 // Disallow indexing of preview environments
 export const GET = () =>
-  estMain
+  estMain()
     ? new Response(`User-agent: *
 Allow: /
 `)

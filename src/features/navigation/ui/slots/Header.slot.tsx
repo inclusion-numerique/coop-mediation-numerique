@@ -52,7 +52,7 @@ const Header = ({
                         href={accueil}
                         aria-current="page"
                         target="_self"
-                        title={projectTitle}
+                        title={projectTitle()}
                       >
                         <p className="fr-logo">
                           République
@@ -84,7 +84,7 @@ const Header = ({
                     href={accueil}
                     aria-current="page"
                     target="_self"
-                    title={`Accueil - ${projectTitle}`}
+                    title={`Accueil - ${projectTitle()}`}
                   >
                     <p
                       className={classNames(
@@ -101,7 +101,7 @@ const Header = ({
                           isNonPublic && 'en-tete__logo--non-public',
                         )}
                       />
-                      {projectTitle}
+                      {projectTitle()}
                     </p>
                   </Link>
                 </div>

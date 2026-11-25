@@ -2,13 +2,13 @@ import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
 import pRetry, { type Options as PRetryOptions } from 'p-retry'
 import { environnementOutillage } from '@/configuration/environnement/serveur'
 
-export const projectId = environnementOutillage.SCW_PROJECT_ID ?? ''
+export const projectId = environnementOutillage().SCW_PROJECT_ID ?? ''
 
-const authToken = environnementOutillage.SCW_SECRET_KEY ?? ''
+const authToken = environnementOutillage().SCW_SECRET_KEY ?? ''
 
 // https://developers.scaleway.com/en/products/secret_manager/api/v1alpha1/#introduction
 export const secretClient = axios.create({
-  baseURL: `https://api.scaleway.com/secret-manager/v1alpha1/regions/${environnementOutillage.SCW_DEFAULT_REGION}/secrets`,
+  baseURL: `https://api.scaleway.com/secret-manager/v1alpha1/regions/${environnementOutillage().SCW_DEFAULT_REGION}/secrets`,
   headers: { 'X-Auth-Token': authToken },
   params: {
     project_id: projectId,

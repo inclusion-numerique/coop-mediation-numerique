@@ -23,7 +23,7 @@ export const envoyerLAvertissementDeSuppression = async ({
   const result = await emailTransport.sendMail({
     to: email,
     from: expediteur,
-    replyTo: contactEmail,
+    replyTo: contactEmail(),
     subject: `Votre compte va bientôt être supprimé ⚠️`,
     text: avertissementDeSuppression.text({
       firstname,

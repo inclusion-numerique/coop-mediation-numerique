@@ -180,7 +180,7 @@ L'équipe de La Coop de la médiation numérique
 
     return renderToMjml(
       <LayoutWithFooter
-        projectTitle={projectTitle}
+        projectTitle={projectTitle()}
         urlDeBase={getServerBaseUrl()}
         title="Bien commencer sur La Coop"
         preview={`Voici ${actionsCount} à réaliser pour vous lancer rapidement sur La Coop de la médiation numérique.`}

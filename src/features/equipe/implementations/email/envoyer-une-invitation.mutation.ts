@@ -31,7 +31,7 @@ export const envoyerUneInvitation = async ({
   const resultat = await emailTransport.sendMail({
     to: invitation.reference.email,
     from: expediteur,
-    replyTo: contactEmail,
+    replyTo: contactEmail(),
     subject:
       'Invitation à rejoindre une équipe sur La Coop de la médiation numérique',
     text: gabarit.text({ url: lien, from: de }),

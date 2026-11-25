@@ -2,7 +2,7 @@ import type { MetadataRoute } from 'next'
 import { projectTitle } from '@/configuration/projet'
 
 const manifest = (): MetadataRoute.Manifest => ({
-  name: projectTitle,
+  name: projectTitle(),
   icons: [
     {
       src: '/icons/android-chrome-192x192.png',

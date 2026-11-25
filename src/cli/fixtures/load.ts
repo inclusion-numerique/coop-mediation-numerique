@@ -12,9 +12,9 @@ const main = async (eraseAllData: boolean, confirmProduction?: string) => {
   // Garde-fou : `fixtures:load` injecte des données de test (et TRUNCATE tout avec `-e`).
   // Il ne doit JAMAIS s'exécuter contre la production par erreur (cf. incident 2026-07-08).
   assertDatabaseIsNotProduction({
-    databaseUrl: environnementServeur.DATABASE_URL,
+    databaseUrl: environnementServeur().DATABASE_URL,
     productionDatabaseName:
-      environnementOutillage.DATASPACE_BACKUP_DATABASE_NAME,
+      environnementOutillage().DATASPACE_BACKUP_DATABASE_NAME,
     confirmProduction,
     action: 'Chargement de fixtures',
   })

@@ -43,7 +43,7 @@ const schemaServeurWeb = schemaServeur.extend({
 
 export type VariablesDuServeur = keyof z.input<typeof schemaServeurWeb>
 
-export const environnementServeur = schemaServeur.parse(process.env)
+export const environnementServeur = () => schemaServeur.parse(process.env)
 
 export const verifierEnvironnementServeurWeb = () =>
   schemaServeurWeb.parse(process.env)

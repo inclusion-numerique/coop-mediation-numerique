@@ -19,7 +19,7 @@ export const invitationDUnMediateur = {
   mjml: ({ url, from }: { url: string; from: string }): string =>
     renderToMjml(
       <LayoutWithFooter
-        projectTitle={projectTitle}
+        projectTitle={projectTitle()}
         urlDeBase={getServerBaseUrl()}
         title="Invitation à rejoindre une équipe sur La Coop de la médiation numérique"
         preview={`Vous êtes invité par ${from} à rejoindre son équipe de coordination.`}

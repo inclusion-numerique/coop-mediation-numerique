@@ -26,7 +26,7 @@ export const usurperUnUtilisateurAction = actionBuilder()
           usurpateurId: user.id,
           jetonDeSession: await getAuthenticatedSessionToken(),
           portee: PorteeUsurpation(
-            environnementServeur.SUDO_USURPATION
+            environnementServeur().SUDO_USURPATION
               ? 'TousLesComptes'
               : 'FixturesSeulement',
           ),

@@ -4,9 +4,9 @@ import { environnementOutillage } from '@/configuration/environnement/serveur'
 import { projectSlug } from '@/configuration/projet'
 
 export const owner = 'inclusion-numerique'
-export const repo = projectSlug
+export const repo = projectSlug()
 
-const token = environnementOutillage.GITHUB_TOKEN
+const token = environnementOutillage().GITHUB_TOKEN
 
 if (!token) {
   throw new Error(

@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { environnementClient } from '@/configuration/environnement'
 import { environnementServeur } from '@/configuration/environnement/serveur'
 
-const isCI = environnementServeur.CI
-const isProduction = environnementServeur.NODE_ENV === 'production'
+const isCI = environnementServeur().CI
+const isProduction = environnementServeur().NODE_ENV === 'production'
 
 const contentSecurityPolicy = `
   default-src 'self' https://matomo.incubateur.anct.gouv.fr https://sentry.incubateur.anct.gouv.fr;
@@ -13,7 +13,7 @@ const contentSecurityPolicy = `
   img-src 'self' data: *;
   frame-src https://www.youtube-nocookie.com/;
   object-src 'none';
-  connect-src 'self' https://${environnementClient.NEXT_PUBLIC_PROCONNECT_HOSTNAME} https://matomo.incubateur.anct.gouv.fr https://sentry.incubateur.anct.gouv.fr https://openmaptiles.geo.data.gouv.fr https://openmaptiles.github.io https://aides-territoires.beta.gouv.fr https://recherche-entreprises.api.gouv.fr https://data.geopf.fr https://dev.coop-mediation-numerique.incubateur.anct.gouv.fr https://coop-numerique.anct.gouv.fr;
+  connect-src 'self' https://${environnementClient().NEXT_PUBLIC_PROCONNECT_HOSTNAME} https://matomo.incubateur.anct.gouv.fr https://sentry.incubateur.anct.gouv.fr https://openmaptiles.geo.data.gouv.fr https://openmaptiles.github.io https://aides-territoires.beta.gouv.fr https://recherche-entreprises.api.gouv.fr https://data.geopf.fr https://dev.coop-mediation-numerique.incubateur.anct.gouv.fr https://coop-numerique.anct.gouv.fr;
   worker-src 'self' blob:;
   font-src 'self' https: data:;
   frame-ancestors 'self' https://matomo.incubateur.anct.gouv.fr;
@@ -78,7 +78,7 @@ const redirectToBaseDomain = ({
 const proxy = (request: NextRequest) => {
   const forwardedProto = request.headers.get('X-Forwarded-Proto')
   const requestHost = request.headers.get('host')
-  const baseUrl = environnementServeur.BASE_URL ?? ''
+  const baseUrl = environnementServeur().BASE_URL ?? ''
 
   /**
    * https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security
@@ -114,7 +114,7 @@ const proxy = (request: NextRequest) => {
 
   const response = NextResponse.next()
 
-  if (environnementServeur.NODE_ENV === 'development') {
+  if (environnementServeur().NODE_ENV === 'development') {
     response.headers.append('Access-Control-Allow-Headers', '*')
     response.headers.append('Access-Control-Allow-Origin', '*')
   }

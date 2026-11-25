@@ -507,13 +507,13 @@ export const locallyRestoreLatestMainBackup = new Command(
     // schéma coop depuis la bascule prod. L'ancienne base coop (DATABASE_INSTANCE_ID /
     // BACKUP_DATABASE_NAME), plus alimentée en prod, n'est plus utilisée ici.
     const entrepotInstanceId =
-      (environnementOutillage.DATASPACE_DATABASE_INSTANCE_ID ?? '').split(
+      (environnementOutillage().DATASPACE_DATABASE_INSTANCE_ID ?? '').split(
         '/',
       )[1] ?? ''
     const entrepotBackupDatabaseName =
-      environnementOutillage.DATASPACE_BACKUP_DATABASE_NAME ?? ''
-    const secretKey = environnementOutillage.SCW_SECRET_KEY ?? ''
-    const databaseUrl = environnementOutillage.DATABASE_URL ?? ''
+      environnementOutillage().DATASPACE_BACKUP_DATABASE_NAME ?? ''
+    const secretKey = environnementOutillage().SCW_SECRET_KEY ?? ''
+    const databaseUrl = environnementOutillage().DATABASE_URL ?? ''
     const databaseUrlObject = new URL(databaseUrl ?? '')
     const user = databaseUrlObject.username
     const database = databaseUrlObject.pathname.split('/')[1]

@@ -18,11 +18,11 @@ import { jetonsCourants } from './prisma/jetons-du-compte.query'
 export const rdvServicePublicApiBinding = rdvServicePublicApi({
   hostname: rdvspOAuthHostname,
   clientId: rdvspOAuthClientId,
-  clientSecret: environnementServeur.RDV_SERVICE_PUBLIC_OAUTH_CLIENT_SECRET,
+  clientSecret: environnementServeur().RDV_SERVICE_PUBLIC_OAUTH_CLIENT_SECRET,
   webhookUrl: getServerUrl('/api/rdv-service-public/webhook', {
     absolutePath: true,
   }),
-  webhookSecret: environnementServeur.RDV_SERVICE_PUBLIC_WEBHOOK_SECRET,
+  webhookSecret: environnementServeur().RDV_SERVICE_PUBLIC_WEBHOOK_SECRET,
   onJetonsRenouveles: enregistrerLesJetons,
   jetonsCourants,
 })
@@ -30,5 +30,5 @@ export const rdvServicePublicApiBinding = rdvServicePublicApi({
 export const revoquerJetonsBinding = revoquerJetons({
   hostname: rdvspOAuthHostname,
   clientId: rdvspOAuthClientId,
-  clientSecret: environnementServeur.RDV_SERVICE_PUBLIC_OAUTH_CLIENT_SECRET,
+  clientSecret: environnementServeur().RDV_SERVICE_PUBLIC_OAUTH_CLIENT_SECRET,
 })

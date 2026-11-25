@@ -23,7 +23,7 @@ export const envoyerBienDemarrer = async ({
   const result = await emailTransport.sendMail({
     to: email,
     from: expediteur,
-    replyTo: contactEmail,
+    replyTo: contactEmail(),
     subject: 'Bien commencer sur La Coop 🚀',
     text: bienDemarrer.text({
       firstname,

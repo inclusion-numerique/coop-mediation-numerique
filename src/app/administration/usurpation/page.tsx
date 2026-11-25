@@ -30,8 +30,8 @@ const Page = async () => {
       >
         <UsurpationPage
           comptesDeTest={await comptesDeTest()}
-          usurpationLibre={environnementServeur.SUDO_USURPATION}
-          enProduction={estMain}
+          usurpationLibre={environnementServeur().SUDO_USURPATION}
+          enProduction={estMain()}
           reinitialiser={(utilisateurId) => (
             <BoutonReinitialiser utilisateurId={utilisateurId} />
           )}

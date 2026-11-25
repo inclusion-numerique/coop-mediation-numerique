@@ -39,7 +39,7 @@ const Webinaire = () => (
           </p>
           <div className="fr-text--lg fr-text-label--blue-france">
             <span className="ri-mail-line fr-mr-1w" aria-hidden />
-            <Link href={`mailto:${contactEmail}`}>{contactEmail}</Link>
+            <Link href={`mailto:${contactEmail()}`}>{contactEmail()}</Link>
           </div>
         </div>
       </div>

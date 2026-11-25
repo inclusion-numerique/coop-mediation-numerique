@@ -286,7 +286,7 @@ const Page = async (props: {
                               user={etatDeLInscription(fiche)}
                             />
                           ),
-                          usurpation: environnementServeur.SUDO_USURPATION ? (
+                          usurpation: environnementServeur().SUDO_USURPATION ? (
                             <BoutonUsurper
                               utilisateurId={fiche.id}
                               taille="small"

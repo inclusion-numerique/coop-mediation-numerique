@@ -13,10 +13,10 @@ import { PrismaClient } from '@/generated/entrepot/client'
 // — the dev container already hosts every schema, and the typed queries are schema
 // qualified (main.*) so the coop search_path is irrelevant. Deployed environments inject
 // the entrepôt connection string (ideally a Postgres role with GRANT SELECT only).
-const configuredEntrepotUrl = environnementServeur.ENTREPOT_DATABASE_URL
+const configuredEntrepotUrl = environnementServeur().ENTREPOT_DATABASE_URL
 const entrepotDatabaseUrl = configuredEntrepotUrl?.startsWith('postgres')
   ? configuredEntrepotUrl
-  : environnementServeur.DATABASE_URL
+  : environnementServeur().DATABASE_URL
 
 const createEntrepotPrismaClient = () =>
   new PrismaClient({
@@ -35,6 +35,6 @@ const globalForEntrepot = global as unknown as {
 export const entrepotPrismaClient =
   globalForEntrepot.entrepotPrismaClient ?? createEntrepotPrismaClient()
 
-if (environnementServeur.NODE_ENV !== 'production') {
+if (environnementServeur().NODE_ENV !== 'production') {
   globalForEntrepot.entrepotPrismaClient = entrepotPrismaClient
 }

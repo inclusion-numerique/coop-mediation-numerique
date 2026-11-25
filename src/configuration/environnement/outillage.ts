@@ -26,4 +26,4 @@ const schemaOutillage = z.object({
 
 export type VariablesDeLOutillage = keyof z.input<typeof schemaOutillage>
 
-export const environnementOutillage = schemaOutillage.parse(process.env)
+export const environnementOutillage = () => schemaOutillage.parse(process.env)

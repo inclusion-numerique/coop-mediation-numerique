@@ -37,7 +37,7 @@ const envoyer = async ({
   const resultat = await emailTransport.sendMail({
     to: coordinateur,
     from: expediteur,
-    replyTo: contactEmail,
+    replyTo: contactEmail(),
     subject: sujet(invite),
     text: gabarit.text({ mediateur: invite }),
     html: await compileMjml(gabarit.mjml({ mediateur: invite })),

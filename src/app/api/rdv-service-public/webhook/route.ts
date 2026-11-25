@@ -28,7 +28,7 @@ export const POST = async (request: NextRequest) => {
       !signatureValide({
         corpsBrut,
         signature: request.headers.get(ENTETE_SIGNATURE_WEBHOOK),
-        secret: environnementServeur.RDV_SERVICE_PUBLIC_WEBHOOK_SECRET,
+        secret: environnementServeur().RDV_SERVICE_PUBLIC_WEBHOOK_SECRET,
       })
     ) {
       journaliserWebhook('signature refusée')

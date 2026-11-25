@@ -12,7 +12,7 @@ const ContactSupportLink = ({
   size?: 'sm' | 'md' | 'lg' | 'xl'
 }) => (
   <a
-    href={`mailto:${contactEmail}`}
+    href={`mailto:${contactEmail()}`}
     className={classNames(`fr-link fr-link--${size} fr-mb-0`, className)}
   >
     {children}

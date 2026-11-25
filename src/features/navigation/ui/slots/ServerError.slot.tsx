@@ -34,7 +34,7 @@ const GenericError = ({
             <li>
               <a
                 className="fr-btn fr-btn--secondary"
-                href={contactEmail && `mailto:${contactEmail}`}
+                href={contactEmail() && `mailto:${contactEmail()}`}
               >
                 Contactez-nous
               </a>

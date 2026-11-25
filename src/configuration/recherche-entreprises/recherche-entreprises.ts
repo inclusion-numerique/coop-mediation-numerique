@@ -11,6 +11,6 @@ export const rechercheApiEntreprise = async (
   queryParams: RechercheApiEntrepriseQueryParams,
   retryOptions?: RechercheApiEntrepriseRetryOptions,
 ): Promise<RechercheApiResponse> =>
-  environnementServeur.IS_E2E
+  environnementServeur().IS_E2E
     ? rechercheApiEntrepriseSimulee(queryParams)
     : rechercherSurLApi(queryParams, retryOptions)
