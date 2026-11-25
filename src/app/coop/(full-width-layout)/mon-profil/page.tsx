@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import { activerLaMediationNumeriqueAction } from '@/app/_actions/utilisateurs/activer-la-mediation-numerique.action'
 import { supprimerMonCompteAction } from '@/app/_actions/utilisateurs/supprimer-mon-compte.action'
 import { metadataTitle } from '@/configuration/projet'
+import { LierLaDeconnexion } from '@/features/authentification/abilities/se-deconnecter/ui/slots/LierLaDeconnexion.slot'
 import { authenticateUser } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
 import { consulterLeContrat } from '@/features/mediateurs/abilities/consulter-le-contrat/implementations/prisma/contrat.query'
 import { CarteContrat } from '@/features/mediateurs/abilities/consulter-le-contrat/ui/slots/CarteContrat.slot'
@@ -44,24 +45,26 @@ const MonProfil = async () => {
         bind={SUPPRIMER_MON_COMPTE_ACTION_KEY}
         to={supprimerMonCompteAction}
       >
-        <MonProfilPage
-          identite={identiteDuProfil(user)}
-          sections={{
-            contrats:
-              contrat === null ? null : (
-                <CarteContrat
-                  contrat={contrat}
-                  coordinateur={user.coordinateur !== null}
-                />
-              ),
-            mediation: visibles.mediation ? (
-              <CarteMediationNumerique active={user.mediateur !== null} />
-            ) : null,
-            suppression: visibles.suppression ? (
-              <CarteSupprimerMonCompte />
-            ) : null,
-          }}
-        />
+        <LierLaDeconnexion>
+          <MonProfilPage
+            identite={identiteDuProfil(user)}
+            sections={{
+              contrats:
+                contrat === null ? null : (
+                  <CarteContrat
+                    contrat={contrat}
+                    coordinateur={user.coordinateur !== null}
+                  />
+                ),
+              mediation: visibles.mediation ? (
+                <CarteMediationNumerique active={user.mediateur !== null} />
+              ) : null,
+              suppression: visibles.suppression ? (
+                <CarteSupprimerMonCompte />
+              ) : null,
+            }}
+          />
+        </LierLaDeconnexion>
       </ClientBinder>
     </ClientBinder>
   )

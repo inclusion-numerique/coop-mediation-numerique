@@ -2,11 +2,11 @@
 
 import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
-import { signOut } from 'next-auth/react'
 import { useState, useTransition } from 'react'
 import { inject } from '@/libraries/nextjs/injection'
 import { Card } from '@/libraries/ui/components'
 import { createToast } from '@/libraries/ui/toast'
+import { SE_DECONNECTER_KEY } from '../../action/se-deconnecter.key'
 import { SUPPRIMER_MON_COMPTE_ACTION_KEY } from '../../action/supprimer-compte.key'
 
 const SuppressionModal = createModal({
@@ -31,7 +31,7 @@ export const CarteSupprimerMonCompte = () => {
         return
       }
 
-      await signOut()
+      await inject(SE_DECONNECTER_KEY)()
     })
 
   return (

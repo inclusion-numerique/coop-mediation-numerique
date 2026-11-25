@@ -2,8 +2,9 @@
 
 import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
-import { signOut } from 'next-auth/react'
+import { inject } from '@/libraries/nextjs/injection'
 import { Card } from '@/libraries/ui/components'
+import { SE_DECONNECTER_KEY } from '../../action/se-deconnecter.key'
 import { InformationsProConnect } from './InformationsProConnect'
 
 const {
@@ -15,13 +16,10 @@ const {
   isOpenedByDefault: false,
 })
 
-const signoutAndGoToProconnectProfilePage = async () => {
-  await signOut({
-    redirect: true,
-    callbackUrl:
-      '/redirection?url=https://identite.proconnect.gouv.fr/personal-information',
-  })
-}
+const signoutAndGoToProconnectProfilePage = () =>
+  inject(SE_DECONNECTER_KEY)(
+    '/redirection?url=https://identite.proconnect.gouv.fr/personal-information',
+  )
 
 export const CarteInformationsProConnect = (informations: {
   email: string

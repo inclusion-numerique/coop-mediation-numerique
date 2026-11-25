@@ -1257,10 +1257,9 @@ const IMPORTS_ADMIS = {
   'next-auth': [
     'authentification/abilities/se-connecter/ui/components',
     'authentification/abilities/se-connecter/ui/forms',
+    'authentification/abilities/se-deconnecter/ui/slots',
     'authentification/implementations/email',
     'authentification/implementations/prisma',
-    'utilisateurs/abilities/consulter-mon-profil/ui/components',
-    'utilisateurs/abilities/supprimer-compte/ui/slots',
   ],
   'node:crypto': [
     'mediateurs/abilities/regler-le-partage-statistiques/implementations/prisma',
