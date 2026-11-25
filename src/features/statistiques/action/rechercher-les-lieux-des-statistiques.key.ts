@@ -1,6 +1,6 @@
 import type { ServerActionResult } from '@/libraries/nextjs'
 import { keyFor } from '@/libraries/nextjs/injection'
-import type { SelectOption } from '@/libraries/ui/form'
+import type { SelectOption } from '@/libraries/ui'
 
 export type GenreDuFiltreDeLieu = 'LieuDActivite' | 'Commune' | 'Departement'
 
