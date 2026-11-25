@@ -1,4 +1,4 @@
-import { errorReporter } from '@/configuration/telemetry/error-reporter/server'
+import { errorReporter } from '@/configuration/telemetry/serveur'
 import { actionBuilder as baseActionBuilder } from '@/libraries/nextjs'
 
 export const actionBuilder = (
