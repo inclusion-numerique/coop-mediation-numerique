@@ -1,6 +1,6 @@
 ---
 status: "accepted"
-date: 2026-11-24
+date: 2026-11-25
 decision-makers:
   - Marc Gavanier
 ---
@@ -64,6 +64,22 @@ sans logique n'a que son scénario.
 Les tests d'intégration restent pour ce qui traverse plusieurs abilities ou
 l'infrastructure.
 
+### Un test unitaire a les droits de son unité
+
+Un test unitaire, une story ou un test de composant isole son unité : il
+n'importe que cette unité, son outil de test, et ce que l'unité a elle-même
+le droit d'importer. Il n'utilise aucune fixture : il écrit ses valeurs avec
+les constructeurs du domaine, quitte à les répéter d'un test à l'autre. Une
+valeur partagée par fixture couplerait des tests qui n'ont rien à voir, et
+ferait dépendre une unité de ce qu'elle ne connaît pas.
+
+### Les tests de composition sont des racines limitées à leur feature
+
+Un test d'intégration, une étape de scénario, un hook de scénario et les
+fixtures qu'ils utilisent composent, comme un point d'entrée. Ils importent
+toute ability de leur feature, ses fixtures et la configuration, mais jamais
+une autre feature.
+
 ### Ni mock ni espion, des doublures écrites à la main
 
 Les tests vérifient des valeurs retournées, jamais des appels. Un module
@@ -109,6 +125,7 @@ local.
   une base restaurée depuis la production, ils l'effacent.
 - Bad, because un test qui sème une valeur calculée par la base doit semer les
   vraies lignes qui la produisent.
+- Bad, because sans fixture, des tests unitaires répètent les mêmes valeurs.
 
 ## Pros and Cons of the Options
 
@@ -152,3 +169,6 @@ normatives sur les tests sont dans la section 7 des
   l'historique git.
 - 2026-11-24, Marc Gavanier : révision, exemption des abilities de pure
   consultation et spécification d'une feature sans ability.
+- 2026-11-25, Marc Gavanier : révision, droits d'un test unitaire réduits à
+  ceux de son unité, sans fixture, et tests de composition limités à leur
+  feature.
