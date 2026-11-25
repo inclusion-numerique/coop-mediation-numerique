@@ -1,4 +1,4 @@
-import type { AdresseBanData } from '@/libraries/adresse/adresse-ban-validation'
+import type { AdresseBanData } from '@/libraries/adresse'
 import type { Feature } from '@/libraries/ban/api-adresse'
 
 export const banFeatureToAdresseBanData = ({

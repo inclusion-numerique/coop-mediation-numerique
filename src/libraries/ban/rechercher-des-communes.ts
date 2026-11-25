@@ -1,6 +1,6 @@
 'use client'
 
-import { premierCodePostal } from '@/libraries/adresse/premier-code-postal'
+import { premierCodePostal } from '@/libraries/adresse'
 import { searchAdresses, siIndisponible } from '@/libraries/ban/api-adresse'
 
 export type Commune = {

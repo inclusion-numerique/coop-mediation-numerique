@@ -1,4 +1,4 @@
-import type { AdresseBanData } from '@/libraries/adresse/adresse-ban-validation'
+import type { AdresseBanData } from '@/libraries/adresse'
 import { type Feature, searchAdresses } from '@/libraries/ban/api-adresse'
 import { banFeatureToAdresseBanData } from '@/libraries/ban/ban-feature-to-adresse-ban-data'
 
