@@ -97,7 +97,7 @@ const formatDuration = (seconds: number): string => {
 }
 
 const backupFileFor = (databaseName: string) =>
-  path.resolve(varDirectory, `${databaseName}_backup.dump.sql`)
+  path.resolve(varDirectory(), `${databaseName}_backup.dump.sql`)
 
 type ScalewayDatabaseBackup = {
   id: string
