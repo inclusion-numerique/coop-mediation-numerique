@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { compileMjml } from '@/libraries/emails/mjml'
+import { compileMjml } from '@/libraries/emails/rendu/mjml'
 
 describe('mjml', () => {
   it('Compiles mjml templates', async () => {

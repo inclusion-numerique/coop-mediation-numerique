@@ -1,11 +1,11 @@
 import { existsSync, promises as fs } from 'node:fs'
 import path from 'node:path'
-import { getDirname } from '@/libraries/chemins/dirname'
+import { getDirname } from '@/libraries/chemins'
 import { compileMjml } from './mjml'
 
 const outputDirectory = path.resolve(
   getDirname(import.meta.url),
-  '../../../var/email',
+  '../../../../var/email',
 )
 
 async function outputDirectoryIfItDoesNotExist(): Promise<void> {
