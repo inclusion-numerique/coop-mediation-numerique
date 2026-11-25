@@ -7,7 +7,7 @@ import { exporterBeneficiairesAvec } from '@/features/beneficiaire/abilities/exp
 import { listerBeneficiaires } from '@/features/beneficiaire/abilities/lister-beneficiaires/implementations/prisma/lister-beneficiaires.query'
 import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
 import { auteurDeLExport } from '@/features/utilisateurs/ui/presenters/auteur-de-l-export.presenter'
-import { dateAsIsoDay } from '@/libraries/date/date-as-iso-day'
+import { dateAsIsoDay } from '@/libraries/date'
 
 export const GET = async (request: NextRequest) => {
   const sessionToken = jetonDeSessionDesCookies(request.cookies)

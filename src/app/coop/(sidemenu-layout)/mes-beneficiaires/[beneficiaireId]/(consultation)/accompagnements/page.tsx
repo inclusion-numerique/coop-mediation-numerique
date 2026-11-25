@@ -26,7 +26,7 @@ import { CREER_ACTIVITE_DEPUIS_RDV_ACTION_KEY } from '@/features/rdvsp/abilities
 import { METTRE_A_JOUR_STATUT_RDV_ACTION_KEY } from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/action/mettre-a-jour-statut-rdv.key'
 import { RenseignerLeStatut } from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/ui/slots/RenseignerLeStatut.slot'
 import SaisieDuStatutDuRdv from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/ui/slots/SaisieDuStatutDuRdv.slot'
-import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
+import { ClientBinder } from '@/libraries/nextjs/injection'
 
 type Parametres = Record<string, string | string[] | undefined>
 

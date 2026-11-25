@@ -72,7 +72,7 @@ import {
   sectionBeneficiaires,
   sectionGenerale,
 } from '@/features/statistiques/ui/slots/SectionsDesStatistiques.slot'
-import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
+import { ClientBinder } from '@/libraries/nextjs/injection'
 
 const statistiquesDesActivites = statistiquesAvec({
   totalCounts: source(compterLesAccompagnements, totauxPresentes),

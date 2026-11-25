@@ -1,13 +1,13 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { fusionnerBeneficiairesAction } from '@/app/_actions/beneficiaire/fusionner-beneficiaires.action'
-import { metadataTitle } from '@/configuration/projet/metadata-title'
+import { metadataTitle } from '@/configuration/projet'
 import { getSessionUser } from '@/features/authentification/implementations/session/session-user.query'
 import { FUSIONNER_DES_BENEFICIAIRES_KEY } from '@/features/beneficiaire/abilities/detecter-doublons/action/fusionner-des-beneficiaires.key'
 import { detecterDoublons } from '@/features/beneficiaire/abilities/detecter-doublons/implementations/prisma/index'
 import BeneficiairesDoublonsPage from '@/features/beneficiaire/abilities/detecter-doublons/ui/pages/BeneficiairesDoublonsPage'
 import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
-import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
+import { ClientBinder } from '@/libraries/nextjs/injection'
 
 export const metadata: Metadata = {
   title: metadataTitle('Mes bénéficiaires - Doublons'),

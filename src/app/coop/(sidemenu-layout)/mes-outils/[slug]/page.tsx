@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { declencherSynchronisationAction } from '@/app/_actions/rdvsp/declencher-synchronisation.action'
 import { deconnecterCompteRdvAction } from '@/app/_actions/rdvsp/deconnecter-compte-rdv.action'
-import { metadataTitle } from '@/configuration/projet/metadata-title'
+import { metadataTitle } from '@/configuration/projet'
 import {
   getAuthenticatedSessionUser,
   getSessionUser,
@@ -27,7 +27,7 @@ import { rdvWebsiteLink } from '@/features/rdvsp/ui/presenters/liens.presenter'
 import RdvServicePublicAccessCard from '@/features/rdvsp/ui/slots/RdvServicePublicAccess.slot'
 import RdvServicePublicMigrationNotice from '@/features/rdvsp/ui/slots/RdvServicePublicMigrationNotice.slot'
 import { CodeInsee } from '@/libraries/insee'
-import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
+import { ClientBinder } from '@/libraries/nextjs/injection'
 
 type Props = { params: Promise<{ slug: string }> }
 

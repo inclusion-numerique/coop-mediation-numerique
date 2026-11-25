@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation'
 import type { ReactNode } from 'react'
 import { supprimerUneActiviteDeMediationAction } from '@/app/_actions/activites/supprimer-une-activite-de-mediation.action'
 import { rafraichirAccueilRdvAction } from '@/app/_actions/rdvsp/rafraichir-accueil-rdv.action'
-import { metadataTitle } from '@/configuration/projet/metadata-title'
+import { metadataTitle } from '@/configuration/projet'
 import {
   consulterLAccueil,
   selonLeProfil,
@@ -29,7 +29,7 @@ import RdvsAccueil from '@/features/rdvsp/abilities/consulter-rdvs-accueil/ui/sl
 import { rendezVousLies } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/rdvs-des-activites.query'
 import { UtilisateurCoopId } from '@/features/rdvsp/domain/identifiants/utilisateur-coop-id'
 import { lienDeConnexionARdvServicePublic } from '@/features/rdvsp/implementations/oauth/rdvsp-oauth-callback.client'
-import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
+import { ClientBinder } from '@/libraries/nextjs/injection'
 
 export const metadata: Metadata = {
   title: metadataTitle('Accueil'),

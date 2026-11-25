@@ -45,7 +45,7 @@ import { classeurDesStatistiques } from '@/features/statistiques/implementations
 import { entreeDuClasseur } from '@/features/statistiques/ui/presenters/entree-du-classeur.presenter'
 import { UtilisateurId } from '@/features/utilisateurs/domain'
 import { auteurDeLExport } from '@/features/utilisateurs/ui/presenters/auteur-de-l-export.presenter'
-import { dateAsIsoDay } from '@/libraries/date/date-as-iso-day'
+import { dateAsIsoDay } from '@/libraries/date'
 
 const statistiquesDesActivites = statistiquesAvec({
   totalCounts: source(compterLesAccompagnements, totauxPresentes),

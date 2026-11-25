@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 import { validerAction } from '@/app/_actions/inscription/valider.action'
 import { rechercherUnLieuActiviteAction } from '@/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
-import { metadataTitle } from '@/configuration/projet/metadata-title'
+import { metadataTitle } from '@/configuration/projet'
 import { aTermineSonInscription } from '@/features/authentification/domain/page-d-accueil'
 import { authenticateUser } from '@/features/authentification/implementations/session/authenticate-user.middleware'
 import { consulterEmployeuseActuelle } from '@/features/employeuse/abilities/consulter-employeuse-actuelle/implementations/prisma/consulter-employeuse-actuelle.query'
@@ -16,7 +16,7 @@ import { listerLesLieuxPourLInscription } from '@/features/lieux-activite/abilit
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
 import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
 import { SaisieDuLieuCard } from '@/features/lieux-activite/ui/components/SaisieDuLieuCard'
-import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
+import { ClientBinder } from '@/libraries/nextjs/injection'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0

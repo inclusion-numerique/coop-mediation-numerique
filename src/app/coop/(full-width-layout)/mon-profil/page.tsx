@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { activerLaMediationNumeriqueAction } from '@/app/_actions/utilisateurs/activer-la-mediation-numerique.action'
 import { supprimerMonCompteAction } from '@/app/_actions/utilisateurs/supprimer-mon-compte.action'
-import { metadataTitle } from '@/configuration/projet/metadata-title'
+import { metadataTitle } from '@/configuration/projet'
 import { authenticateUser } from '@/features/authentification/implementations/session/authenticate-user.middleware'
 import { consulterLeContrat } from '@/features/mediateurs/abilities/consulter-le-contrat/implementations/prisma/contrat.query'
 import { CarteContrat } from '@/features/mediateurs/abilities/consulter-le-contrat/ui/slots/CarteContrat.slot'
@@ -16,7 +16,7 @@ import {
   identiteDuProfil,
   sectionsDuProfil,
 } from '@/features/utilisateurs/ui/presenters/mon-profil.presenter'
-import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
+import { ClientBinder } from '@/libraries/nextjs/injection'
 
 export const metadata: Metadata = {
   title: metadataTitle('Mon profil'),

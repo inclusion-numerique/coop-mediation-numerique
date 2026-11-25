@@ -21,7 +21,7 @@ import {
   LieuDuReseauPage,
 } from '@/features/mon-reseau/ui/pages/LieuDuReseauPage'
 import { departementDuCode } from '@/libraries/departement'
-import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
+import { ClientBinder } from '@/libraries/nextjs/injection'
 
 const LieuActiviteDetailPage = async (props: {
   params: Promise<{ id: string; departement: string }>

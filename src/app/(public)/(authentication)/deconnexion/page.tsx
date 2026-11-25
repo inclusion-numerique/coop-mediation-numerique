@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
-import { metadataTitle } from '@/configuration/projet/metadata-title'
+import { metadataTitle } from '@/configuration/projet'
 import { DeconnexionPage } from '@/features/authentification/abilities/se-deconnecter/ui/pages/DeconnexionPage'
 import { getSessionUser } from '@/features/authentification/implementations/session/session-user.query'
 

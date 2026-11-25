@@ -1,5 +1,5 @@
 import type { MetadataRoute } from 'next'
-import { projectTitle } from '@/configuration/projet/config'
+import { projectTitle } from '@/configuration/projet'
 
 const manifest = (): MetadataRoute.Manifest => ({
   name: projectTitle,

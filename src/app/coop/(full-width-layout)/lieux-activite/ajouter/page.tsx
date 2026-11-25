@@ -8,7 +8,7 @@ import { CREER_UN_LIEU_KEY } from '@/features/lieux-activite/abilities/ajouter-d
 import { RECHERCHER_DES_LIEUX_KEY } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/action/rechercher-des-lieux.key'
 import { AjouterDesLieuxPage } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/ui/pages/AjouterDesLieuxPage'
 import { rdvWebsiteLink } from '@/features/rdvsp/ui/presenters/liens.presenter'
-import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
+import { ClientBinder } from '@/libraries/nextjs/injection'
 
 const AjouterLieuPage = async () => {
   const user = await authenticateUser()

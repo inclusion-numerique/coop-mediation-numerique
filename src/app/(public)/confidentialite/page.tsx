@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { metadataTitle } from '@/configuration/projet/metadata-title'
+import { metadataTitle } from '@/configuration/projet'
 import { ConfidentialitePage } from '@/features/legal/ui/pages/ConfidentialitePage'
 
 export const metadata: Metadata = {

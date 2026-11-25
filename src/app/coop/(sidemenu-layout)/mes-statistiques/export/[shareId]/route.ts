@@ -41,7 +41,7 @@ import { utilisateurDuPartage } from '@/features/statistiques/domain/utilisateur
 import { classeurDesStatistiques } from '@/features/statistiques/implementations/excel/classeur-des-statistiques.classeur'
 import { entreeDuClasseur } from '@/features/statistiques/ui/presenters/entree-du-classeur.presenter'
 import { auteurDeLExport } from '@/features/utilisateurs/ui/presenters/auteur-de-l-export.presenter'
-import { dateAsIsoDay } from '@/libraries/date/date-as-iso-day'
+import { dateAsIsoDay } from '@/libraries/date'
 
 const statistiquesDesActivites = statistiquesAvec({
   totalCounts: source(compterLesAccompagnements, totauxPresentes),

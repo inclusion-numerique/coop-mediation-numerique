@@ -15,8 +15,8 @@ import {
 } from '@/features/utilisateurs/ui/filtres/utilisateurs.filtre'
 import { auteurDeLExport } from '@/features/utilisateurs/ui/presenters/auteur-de-l-export.presenter'
 import { barreDesUtilisateurs } from '@/features/utilisateurs/ui/presenters/barre-des-utilisateurs.presenter'
-import { dateAsIsoDay } from '@/libraries/date/date-as-iso-day'
-import { motsDe } from '@/libraries/texte/mots'
+import { dateAsIsoDay } from '@/libraries/date'
+import { motsDe } from '@/libraries/texte'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0

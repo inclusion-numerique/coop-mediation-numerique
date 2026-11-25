@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
-import { metadataTitle } from '@/configuration/projet/metadata-title'
-import { errorReporter } from '@/configuration/telemetry/error-reporter/server'
+import { metadataTitle } from '@/configuration/projet'
+import { errorReporter } from '@/configuration/telemetry/serveur'
 import { aTermineSonInscription } from '@/features/authentification/domain/page-d-accueil'
 import { authenticateUser } from '@/features/authentification/implementations/session/authenticate-user.middleware'
 import { rattacherAUneEmployeuseDepuisSiretBinding } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/rattacher-a-une-employeuse.binding'

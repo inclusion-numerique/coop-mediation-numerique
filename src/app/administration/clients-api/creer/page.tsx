@@ -1,10 +1,10 @@
 import { creerUnClientApiAction } from '@/app/_actions/clients-api/creer-un-client-api.action'
-import { metadataTitle } from '@/configuration/projet/metadata-title'
+import { metadataTitle } from '@/configuration/projet'
 import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticate-user.middleware'
 import { CREER_UN_CLIENT_API_ACTION_KEY } from '@/features/clients-api/abilities/creer-un-client-api/action/creer-un-client-api.key'
 import { CreerUnClientApiPage } from '@/features/clients-api/abilities/creer-un-client-api/ui/pages/CreerUnClientApiPage'
-import { dateAsIsoDay } from '@/libraries/date/date-as-iso-day'
-import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
+import { dateAsIsoDay } from '@/libraries/date'
+import { ClientBinder } from '@/libraries/nextjs/injection'
 
 export const metadata = {
   title: metadataTitle('Clients API - Créer'),

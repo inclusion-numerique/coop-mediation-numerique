@@ -1,7 +1,7 @@
 import { reglerLaMaintenanceAction } from '@/app/_actions/maintenance-mode/regler-la-maintenance.action'
 import { relancerLesInscriptionsInacheveesAction } from '@/app/_actions/utilisateurs/relancer-les-inscriptions-inachevees.action'
 import { relancerLesInscritsInactifsAction } from '@/app/_actions/utilisateurs/relancer-les-inscrits-inactifs.action'
-import { metadataTitle } from '@/configuration/projet/metadata-title'
+import { metadataTitle } from '@/configuration/projet'
 import { ExportDesAccompagnementsParDepartement } from '@/features/activites/abilities/exporter-les-accompagnements-par-departement/ui/slots/ExportDesAccompagnementsParDepartement.slot'
 import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticate-user.middleware'
 import { consulterLHistoriqueDesMaintenances } from '@/features/maintenance-mode/abilities/consulter-la-maintenance/implementations/prisma/historique-des-maintenances.query'
@@ -13,7 +13,7 @@ import { LancerLesRelancesDInscription } from '@/features/utilisateurs/abilities
 import { RELANCER_LES_INSCRITS_INACTIFS_ACTION_KEY } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/action/relancer-les-inscrits-inactifs.key'
 import { LancerLesRelancesDesInscrits } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/ui/slots/LancerLesRelancesDesInscrits.slot'
 import { OutilsAdministrateurPage } from '@/features/utilisateurs/ui/pages/OutilsAdministrateurPage'
-import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
+import { ClientBinder } from '@/libraries/nextjs/injection'
 
 export const metadata = {
   title: metadataTitle('Outils administrateur'),

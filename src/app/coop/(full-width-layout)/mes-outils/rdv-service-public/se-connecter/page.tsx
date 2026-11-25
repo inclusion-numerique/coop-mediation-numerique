@@ -1,4 +1,4 @@
-import { metadataTitle } from '@/configuration/projet/metadata-title'
+import { metadataTitle } from '@/configuration/projet'
 import SeConnecterPage from '@/features/rdvsp/abilities/connecter-compte-rdv/ui/pages/SeConnecterPage'
 import { lienDeConnexionARdvServicePublic } from '@/features/rdvsp/implementations/oauth/rdvsp-oauth-callback.client'
 

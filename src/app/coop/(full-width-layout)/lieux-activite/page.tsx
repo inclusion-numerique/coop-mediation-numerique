@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import { rechercherUnLieuActiviteAction } from '@/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
 import { retirerUnMediateurDuLieuAction } from '@/app/_actions/lieux-activite/retirer-un-mediateur-du-lieu.action'
 import { reglerMaVisibiliteCartoAction } from '@/app/_actions/mediateurs/regler-ma-visibilite-carto.action'
-import { metadataTitle } from '@/configuration/projet/metadata-title'
+import { metadataTitle } from '@/configuration/projet'
 import { authenticateUser } from '@/features/authentification/implementations/session/authenticate-user.middleware'
 import { listerLesLieuxDuMediateur } from '@/features/lieux-activite/abilities/lister-les-lieux-du-mediateur/implementations/prisma/lister-les-lieux-du-mediateur.query'
 import { MesLieuxActivitePage } from '@/features/lieux-activite/abilities/lister-les-lieux-du-mediateur/ui/pages/MesLieuxActivitePage'
@@ -18,7 +18,7 @@ import { triDesLieuxLu } from '@/features/lieux-activite/ui/filtres/tri-des-lieu
 import { hrefDuLieuEnListe } from '@/features/lieux-activite/ui/presenters/href-du-lieu.presenter'
 import { REGLER_MA_VISIBILITE_CARTO_ACTION_KEY } from '@/features/mediateurs/abilities/regler-la-visibilite-carto/action/regler-la-visibilite-carto.key'
 import { MaVisibiliteCarto } from '@/features/mediateurs/abilities/regler-la-visibilite-carto/ui/slots/MaVisibiliteCarto.slot'
-import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
+import { ClientBinder } from '@/libraries/nextjs/injection'
 
 export const metadata: Metadata = {
   title: metadataTitle('Mes lieux d’activités'),

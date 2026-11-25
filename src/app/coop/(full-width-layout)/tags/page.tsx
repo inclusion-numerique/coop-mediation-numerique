@@ -25,7 +25,7 @@ import { ModaleDeSuppression } from '@/features/tags/abilities/supprimer-un-tag/
 import { BoutonSupprimer } from '@/features/tags/abilities/supprimer-un-tag/ui/slots/BoutonSupprimer.slot'
 import { acteurDe } from '@/features/tags/domain'
 import { MenuDActionsDuTag } from '@/features/tags/ui/slots/MenuDActionsDuTag.slot'
-import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
+import { ClientBinder } from '@/libraries/nextjs/injection'
 
 const CHEMIN_DES_TAGS = '/coop/tags'
 

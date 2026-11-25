@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { metadataTitle } from '@/configuration/projet/metadata-title'
+import { metadataTitle } from '@/configuration/projet'
 import { default as InvitationRefuseePage } from '@/features/equipe/abilities/refuser-une-invitation/ui/pages/InvitationRefuseePage'
 
 export const metadata: Metadata = {

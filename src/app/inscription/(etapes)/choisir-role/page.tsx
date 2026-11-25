@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 import { choisirProfilAction } from '@/app/_actions/inscription/choisir-profil.action'
-import { metadataTitle } from '@/configuration/projet/metadata-title'
+import { metadataTitle } from '@/configuration/projet'
 import { aTermineSonInscription } from '@/features/authentification/domain/page-d-accueil'
 import { authenticateUser } from '@/features/authentification/implementations/session/authenticate-user.middleware'
 import ChoisirRolePage from '@/features/inscription/abilities/choisir-profil/ui/pages/ChoisirRolePage'

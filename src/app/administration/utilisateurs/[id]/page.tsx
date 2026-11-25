@@ -11,7 +11,7 @@ import { deconnecterUnUtilisateurAction } from '@/app/_actions/utilisateurs/deco
 import { supprimerCompteAction } from '@/app/_actions/utilisateurs/supprimer-compte.action'
 import { usurperUnUtilisateurAction } from '@/app/_actions/utilisateurs/usurper-un-utilisateur.action'
 import { environnementServeur } from '@/configuration/environnement/serveur'
-import { metadataTitle } from '@/configuration/projet/metadata-title'
+import { metadataTitle } from '@/configuration/projet'
 import { compterLesAccompagnements } from '@/features/activites/abilities/compter-les-accompagnements/implementations/prisma/totaux-des-accompagnements.query'
 import { totauxPresentes } from '@/features/activites/abilities/compter-les-accompagnements/ui/presenters/totaux.presenter'
 import { compterLesAccompagnementsParLieu } from '@/features/activites/abilities/compter-les-accompagnements-par-lieu/implementations/prisma/accompagnements-par-lieu.query'
@@ -77,7 +77,7 @@ import { BoutonSupprimerLeCompte } from '@/features/utilisateurs/abilities/suppr
 import { USURPER_UN_UTILISATEUR_ACTION_KEY } from '@/features/utilisateurs/abilities/usurper-un-utilisateur/action/usurper-un-utilisateur.key'
 import { BoutonUsurper } from '@/features/utilisateurs/abilities/usurper-un-utilisateur/ui/components/BoutonUsurper'
 import { coordinateurDe, mediateurDe } from '@/features/utilisateurs/domain'
-import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
+import { ClientBinder } from '@/libraries/nextjs/injection'
 
 export const metadata = {
   title: metadataTitle('Utilisateurs - Détails'),

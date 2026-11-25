@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { quitterUneEquipeAction } from '@/app/_actions/equipe/quitter-une-equipe.action'
-import { metadataTitle } from '@/configuration/projet/metadata-title'
+import { metadataTitle } from '@/configuration/projet'
 import { authenticateUser } from '@/features/authentification/implementations/session/authenticate-user.middleware'
 import { default as BoutonExporter } from '@/features/equipe/abilities/exporter-les-membres/ui/slots/BoutonExporter.slot'
 import {
@@ -17,7 +17,7 @@ import { QUITTER_UNE_EQUIPE_ACTION_KEY } from '@/features/equipe/abilities/quitt
 import { default as BoutonQuitterLEquipe } from '@/features/equipe/abilities/quitter-une-equipe/ui/slots/BoutonQuitterLEquipe.slot'
 import { CoordinateurId, MediateurId } from '@/features/equipe/domain'
 import { gestionnaireDe } from '@/features/equipe/implementations/session'
-import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
+import { ClientBinder } from '@/libraries/nextjs/injection'
 
 export const metadata: Metadata = {
   title: metadataTitle('Mon équipe'),

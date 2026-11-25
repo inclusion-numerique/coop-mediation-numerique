@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { metadataTitle } from '@/configuration/projet/metadata-title'
+import { metadataTitle } from '@/configuration/projet'
 import { getSessionUser } from '@/features/authentification/implementations/session/session-user.query'
 import ConnexionReussiePage from '@/features/rdvsp/abilities/connecter-compte-rdv/ui/pages/ConnexionReussiePage'
 

@@ -5,7 +5,7 @@ import { inviterDesMembresAction } from '@/app/_actions/equipe/inviter-des-membr
 import { retirerUnMembreAction } from '@/app/_actions/equipe/retirer-un-membre.action'
 import { supprimerUnAncienMembreAction } from '@/app/_actions/equipe/supprimer-un-ancien-membre.action'
 import { rechercherUnLieuActiviteAction } from '@/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
-import { metadataTitle } from '@/configuration/projet/metadata-title'
+import { metadataTitle } from '@/configuration/projet'
 import { compterLesAccompagnements } from '@/features/activites/abilities/compter-les-accompagnements/implementations/prisma/totaux-des-accompagnements.query'
 import {
   CoordinateurId as CoordinateurIdDesActivites,
@@ -42,7 +42,7 @@ import { TitreDeSection } from '@/features/mon-reseau/abilities/consulter-un-act
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/rdvs-des-activites.query'
 import { derniereActiviteDeLUtilisateur } from '@/features/utilisateurs/implementations/prisma/derniere-activite.query'
 import { departementDuCode } from '@/libraries/departement'
-import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
+import { ClientBinder } from '@/libraries/nextjs/injection'
 
 type Parametres = { params: Promise<{ userId: string; departement: string }> }
 

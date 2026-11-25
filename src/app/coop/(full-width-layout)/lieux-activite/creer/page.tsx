@@ -3,7 +3,7 @@ import { authenticateMediateur } from '@/features/authentification/implementatio
 import { CREER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@/features/lieux-activite/abilities/creer-lieu-activite/action/creer-lieu-activite.key'
 import CreerLieuActivitePage from '@/features/lieux-activite/abilities/creer-lieu-activite/ui/pages/CreerLieuActivitePage'
 import { rdvWebsiteLink } from '@/features/rdvsp/ui/presenters/liens.presenter'
-import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
+import { ClientBinder } from '@/libraries/nextjs/injection'
 
 const LieuActiviteCreerPage = async () => {
   await authenticateMediateur(`/connexion?suivant=/lieux-activite/`)

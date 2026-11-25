@@ -1,15 +1,14 @@
 import { reinitialiserUneFixtureAction } from '@/app/_actions/utilisateurs/reinitialiser-une-fixture.action'
 import { usurperUnUtilisateurAction } from '@/app/_actions/utilisateurs/usurper-un-utilisateur.action'
 import { environnementServeur } from '@/configuration/environnement/serveur'
-import { estMain } from '@/configuration/projet/deploiement'
-import { metadataTitle } from '@/configuration/projet/metadata-title'
+import { estMain, metadataTitle } from '@/configuration/projet'
 import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticate-user.middleware'
 import { REINITIALISER_UNE_FIXTURE_ACTION_KEY } from '@/features/utilisateurs/abilities/reinitialiser-une-fixture/action/reinitialiser-une-fixture.key'
 import { BoutonReinitialiser } from '@/features/utilisateurs/abilities/reinitialiser-une-fixture/ui/slots/BoutonReinitialiser.slot'
 import { USURPER_UN_UTILISATEUR_ACTION_KEY } from '@/features/utilisateurs/abilities/usurper-un-utilisateur/action/usurper-un-utilisateur.key'
 import { comptesDeTest } from '@/features/utilisateurs/abilities/usurper-un-utilisateur/implementations/prisma/cible-usurpation.query'
 import { UsurpationPage } from '@/features/utilisateurs/abilities/usurper-un-utilisateur/ui/pages/UsurpationPage'
-import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
+import { ClientBinder } from '@/libraries/nextjs/injection'
 
 export const metadata = {
   title: metadataTitle('Usurpation'),

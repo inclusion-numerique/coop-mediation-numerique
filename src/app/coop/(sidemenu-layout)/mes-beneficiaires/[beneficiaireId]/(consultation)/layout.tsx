@@ -18,7 +18,7 @@ import { PRENDRE_RENDEZ_VOUS_ACTION_KEY } from '@/features/rdvsp/abilities/prend
 import PrendreRendezVousAvecBeneficiaireButton from '@/features/rdvsp/abilities/prendre-rendez-vous/ui/slots/PrendreRendezVousAvecBeneficiaireButton.slot'
 import { RATTRAPER_RDVS_SANS_WEBHOOK_ACTION_KEY } from '@/features/rdvsp/action/rattraper-rdvs-sans-webhook.key'
 import RefreshRdvDataOnLoad from '@/features/rdvsp/ui/slots/RefreshRdvDataOnLoad.slot'
-import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
+import { ClientBinder } from '@/libraries/nextjs/injection'
 
 // Route hub : lit le bénéficiaire (ability consulter-beneficiaire) et ses doublons
 // (ability detecter-doublons), puis compose les concerns croisés (activité, RDV,

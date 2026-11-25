@@ -8,7 +8,7 @@ import {
   synchroniserPersonne,
 } from '@/features/registre-des-personnes/implementations/prisma/registre-personne.mutation'
 import { garantirLeRoleCoordinateurDuDispositif } from '@/features/utilisateurs/abilities/garantir-le-role-coordinateur-du-dispositif/implementations/prisma/garantir-le-role-coordinateur.mutation'
-import { isFirewallUserAgent } from '@/libraries/nextjs/is-firewall-user-agent'
+import { isFirewallUserAgent } from '@/libraries/nextjs'
 
 const registreDesPersonnes = {
   garantirLaPersonne: ensurePersonneMain,

@@ -30,7 +30,7 @@ import {
   rendezVousLies,
   rendezVousParIds,
 } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/rdvs-des-activites.query'
-import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
+import { ClientBinder } from '@/libraries/nextjs/injection'
 
 type Parametres = Record<string, string | string[] | undefined>
 

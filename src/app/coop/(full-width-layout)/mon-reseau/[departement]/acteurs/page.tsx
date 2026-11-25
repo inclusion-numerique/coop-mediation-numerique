@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { rechercherDesCommunesDuReseauAction } from '@/app/_actions/mon-reseau/rechercher-des-communes-du-reseau.action'
-import { metadataTitle } from '@/configuration/projet/metadata-title'
+import { metadataTitle } from '@/configuration/projet'
 import { authenticateMediateurOrCoordinateur } from '@/features/authentification/implementations/session/authenticate-user.middleware'
 import { communesDesLieux } from '@/features/lieux-activite/abilities/lister-les-lieux-du-departement/implementations/prisma/communes-des-lieux.query'
 import { listerLesActeursDuDepartement } from '@/features/mon-reseau/abilities/lister-les-acteurs-du-departement/implementations/prisma/acteurs-listes.query'
@@ -16,7 +16,7 @@ import { RECHERCHER_DES_COMMUNES_DU_RESEAU_KEY } from '@/features/mon-reseau/act
 import type { ParametresDuReseau } from '@/features/mon-reseau/ui/filtres/reseau.filtre'
 import { barreDuReseau } from '@/features/mon-reseau/ui/presenters/barre-du-reseau.presenter'
 import { hrefDesActeurs } from '@/features/mon-reseau/ui/presenters/liens.presenter'
-import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
+import { ClientBinder } from '@/libraries/nextjs/injection'
 
 export const metadata: Metadata = {
   title: metadataTitle('Annuaire des acteurs'),

@@ -2,7 +2,7 @@
 
 import NextError from 'next/error'
 import { useEffect } from 'react'
-import { signaler } from '@/configuration/telemetry/error-reporter/client/signaler'
+import { signaler } from '@/configuration/telemetry'
 
 const GlobalError = ({ error }: { error: Error & { digest?: string } }) => {
   useEffect(() => {

@@ -18,7 +18,7 @@ import { accesALaCoop } from '@/features/navigation/domain'
 import { CoopShellLayout } from '@/features/navigation/ui/layouts/CoopShellLayout'
 import { AccesReserveAuxUtilisateurs } from '@/features/navigation/ui/slots/AccesReserveAuxUtilisateurs.slot'
 import TerminerUsurpationHeaderUserMenuItem from '@/features/utilisateurs/abilities/terminer-l-usurpation/ui/slots/TerminerUsurpationHeaderUserMenuItem.slot'
-import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
+import { ClientBinder } from '@/libraries/nextjs/injection'
 
 const Layout = async ({ children }: PropsWithChildren) => {
   const user = await authenticateUser()

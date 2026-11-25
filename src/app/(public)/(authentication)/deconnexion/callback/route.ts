@@ -1,5 +1,5 @@
 import type { NextRequest } from 'next/server'
-import { getServerBaseUrl, getServerUrl } from '@/configuration/projet/base-url'
+import { getServerBaseUrl, getServerUrl } from '@/configuration/projet/serveur'
 import { supprimerSession } from '@/features/authentification/abilities/se-deconnecter/implementations/prisma/index'
 import { utilisateurDuJetonDeSession } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
 import type { ProconnectSignoutState } from '@/features/authentification/implementations/proconnect/proconnect-signout.transfer'
@@ -11,7 +11,7 @@ import {
 import {
   decodeSerializableState,
   type EncodedState,
-} from '@/libraries/etat-encode/encode-serializable-state'
+} from '@/libraries/etat-encode'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0

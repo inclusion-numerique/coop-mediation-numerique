@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import { fusionnerDesComptesAction } from '@/app/_actions/utilisateurs/fusionner-des-comptes.action'
 import { rechercherDesComptesAFusionnerAction } from '@/app/_actions/utilisateurs/rechercher-des-comptes-a-fusionner.action'
-import { metadataTitle } from '@/configuration/projet/metadata-title'
+import { metadataTitle } from '@/configuration/projet'
 import { authenticateAdmin } from '@/features/authentification/implementations/session/authenticate-user.middleware'
 import { ficheUtilisateur } from '@/features/utilisateurs/abilities/consulter-un-utilisateur/implementations/prisma/fiche-utilisateur.query'
 import {
@@ -9,7 +9,7 @@ import {
   RECHERCHER_DES_COMPTES_A_FUSIONNER_ACTION_KEY,
 } from '@/features/utilisateurs/abilities/fusionner-des-comptes/action/fusionner-des-comptes.key'
 import { FusionPage } from '@/features/utilisateurs/abilities/fusionner-des-comptes/ui/pages/FusionPage'
-import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
+import { ClientBinder } from '@/libraries/nextjs/injection'
 
 export const metadata = {
   title: metadataTitle('Utilisateurs - Fusion'),

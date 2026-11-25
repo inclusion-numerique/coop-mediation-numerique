@@ -1,6 +1,6 @@
 import type { NextRequest } from 'next/server'
 import { v4 } from 'uuid'
-import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
+import { signaler } from '@/configuration/telemetry/serveur'
 import { utilisateurDuJetonDeSession } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
 import { jetonDeSessionDesCookies } from '@/features/authentification/implementations/session/session-token-from-cookies.query'
 import type { AnalyseResponse } from '@/features/beneficiaire/abilities/importer-beneficiaires/domain/analyse-de-l-import'

@@ -13,8 +13,7 @@ import { reponseDesUtilisateurs } from '@/features/clients-api/abilities/lire-le
 import { criteresDExposition } from '@/features/utilisateurs/abilities/exposer-les-utilisateurs/implementations/api/criteres-d-exposition.transfer'
 import { utilisateurExpose } from '@/features/utilisateurs/abilities/exposer-les-utilisateurs/implementations/api/utilisateur-expose.transfer'
 import { utilisateursExposes } from '@/features/utilisateurs/abilities/exposer-les-utilisateurs/implementations/prisma/utilisateurs-exposes.query'
-import { prismaCursorPagination } from '@/libraries/json-api/cursor-pagination'
-import { curseurLu } from '@/libraries/json-api/page-par-curseur'
+import { curseurLu, prismaCursorPagination } from '@/libraries/json-api'
 
 /**
  * @openapi

@@ -1,6 +1,6 @@
 import type { NextRequest } from 'next/server'
 import { v4 } from 'uuid'
-import { getServerUrl } from '@/configuration/projet/base-url'
+import { getServerUrl } from '@/configuration/projet/serveur'
 import { idTokenPourDeconnexion } from '@/features/authentification/abilities/se-deconnecter/implementations/proconnect/se-deconnecter.query'
 import { utilisateurDuJetonDeSession } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
 import type { ProconnectSignoutState } from '@/features/authentification/implementations/proconnect/proconnect-signout.transfer'
@@ -10,7 +10,7 @@ import { cheminInterne } from '@/libraries/chemin-interne'
 import {
   type EncodedState,
   encodeSerializableState,
-} from '@/libraries/etat-encode/encode-serializable-state'
+} from '@/libraries/etat-encode'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0

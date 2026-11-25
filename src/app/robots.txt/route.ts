@@ -1,4 +1,4 @@
-import { estMain } from '@/configuration/projet/deploiement'
+import { estMain } from '@/configuration/projet'
 
 export const dynamic = 'force-static'
 

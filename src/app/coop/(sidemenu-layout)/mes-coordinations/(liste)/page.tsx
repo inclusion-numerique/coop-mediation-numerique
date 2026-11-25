@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { supprimerUneActiviteDeCoordinationAction } from '@/app/_actions/activites/supprimer-une-activite-de-coordination.action'
 import { rechercherDesTagsAction } from '@/app/_actions/tags/rechercher-des-tags.action'
-import { metadataTitle } from '@/configuration/projet/metadata-title'
+import { metadataTitle } from '@/configuration/projet'
 import { BoutonExporter } from '@/features/activites/abilities/exporter-les-activites-de-coordination/ui/slots/BoutonExporter.slot'
 import { SUPPRIMER_LA_COORDINATION_KEY } from '@/features/activites/abilities/lister-les-activites-de-coordination/action/supprimer-la-coordination.key'
 import { listerLesActivitesDeCoordination } from '@/features/activites/abilities/lister-les-activites-de-coordination/implementations/prisma/activites-de-coordination.query'
@@ -18,7 +18,7 @@ import {
 } from '@/features/activites/ui/filtres/coordinations.filtre'
 import { estMediateur } from '@/features/authentification/domain/profils-d-utilisateur'
 import { authenticateCoordinateur } from '@/features/authentification/implementations/session/authenticate-user.middleware'
-import { ClientBinder } from '@/libraries/nextjs/injection/client-binder'
+import { ClientBinder } from '@/libraries/nextjs/injection'
 
 export const metadata: Metadata = {
   title: metadataTitle('Mes activités de coordination'),

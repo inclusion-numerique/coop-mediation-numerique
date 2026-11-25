@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from 'next/server'
-import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
+import { signaler } from '@/configuration/telemetry/serveur'
 import { utilisateurDuJetonDeSession } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
 import { jetonDeSessionDesCookies } from '@/features/authentification/implementations/session/session-token-from-cookies.query'
 import { creerOuFusionnerBeneficiairesDepuisUsagersExternesBinding } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/creer-ou-fusionner-depuis-usager-externe.binding'
@@ -24,7 +24,7 @@ import { EmailExterne } from '@/features/rdvsp/domain/identite'
 import {
   decodeSerializableState,
   type EncodedState,
-} from '@/libraries/etat-encode/encode-serializable-state'
+} from '@/libraries/etat-encode'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
