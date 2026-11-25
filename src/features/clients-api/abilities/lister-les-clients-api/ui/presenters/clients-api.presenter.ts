@@ -2,7 +2,7 @@ import {
   type ClientApi,
   libellesDesPortees,
 } from '@/features/clients-api/domain'
-import { dateAsDayAndTime } from '@/libraries/date/date-as-day-and-time'
+import { dateAsDayAndTime } from '@/libraries/date'
 import { hrefDuClientApi } from '../../../../ui/presenters/liens.presenter'
 
 export type LigneDeClientApi = {

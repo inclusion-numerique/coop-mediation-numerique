@@ -1,4 +1,4 @@
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 import type { ClientApi } from '@/features/clients-api/domain'
 import {
   clientApiSelect,

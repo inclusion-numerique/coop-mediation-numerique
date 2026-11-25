@@ -1,16 +1,11 @@
-import { getServerBaseUrl } from '@/configuration/projet/base-url'
+import { getServerBaseUrl } from '@/configuration/projet/serveur'
+import type { JsonApiListResponse, JsonApiResource } from '@/libraries/json-api'
 import {
   createCompositeCursor,
   cursorPageHref,
-} from '@/libraries/json-api/cursor-pagination'
-import type {
-  JsonApiListResponse,
-  JsonApiResource,
-} from '@/libraries/json-api/json-api-types'
-import {
   type PaginationParCurseur,
   pageParCurseur,
-} from '@/libraries/json-api/page-par-curseur'
+} from '@/libraries/json-api'
 
 type StructureResource<TAttributes extends object> = JsonApiResource<
   'structure',

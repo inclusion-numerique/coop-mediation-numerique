@@ -1,4 +1,4 @@
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 import type { NomDuClientApi } from '@/features/clients-api/domain'
 
 export const nomDejaPris = async (

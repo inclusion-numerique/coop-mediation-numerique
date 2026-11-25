@@ -3,14 +3,14 @@ import { After, Given, setDefaultTimeout, Then } from '@cucumber/cucumber'
 import type { NextRequest } from 'next/server'
 import { v4 } from 'uuid'
 import { z } from 'zod'
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 import {
   type ClientApiId,
   NomDuClientApi,
   PorteeApi,
 } from '@/features/clients-api/domain'
 import { verifySecret } from '@/features/clients-api/implementations/secret/hash-secret.adapter'
-import { createTestApiV1Request } from '@/libraries/json-api/create-test-api-v1-request'
+import { createTestApiV1Request } from '@/libraries/json-api'
 import { creerUnClientApi } from './abilities/creer-un-client-api/implementations/prisma/creer-un-client-api.mutation'
 
 setDefaultTimeout(60_000)

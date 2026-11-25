@@ -2,7 +2,7 @@
 
 import type { ClientApi } from '@/features/clients-api/domain'
 import { ClientApiForm } from '@/features/clients-api/ui/forms/ClientApiForm'
-import { inject } from '@/libraries/nextjs/injection/client'
+import { inject } from '@/libraries/nextjs/injection'
 import { MODIFIER_UN_CLIENT_API_ACTION_KEY } from '../../action/modifier-un-client-api.key'
 import { valeursDuClientApi } from '../presenters/valeurs-du-client-api.presenter'
 

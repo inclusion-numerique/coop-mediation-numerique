@@ -1,20 +1,15 @@
-import { getServerBaseUrl } from '@/configuration/projet/base-url'
+import { getServerBaseUrl } from '@/configuration/projet/serveur'
 import type { FiltreDeDates } from '@/features/clients-api/implementations/api-v1'
-import { encodeSerializableState } from '@/libraries/etat-encode/encode-serializable-state'
-import { apiV1Url } from '@/libraries/json-api/api-v1-url'
+import { encodeSerializableState } from '@/libraries/etat-encode'
+import type { JsonApiListResponse, JsonApiResource } from '@/libraries/json-api'
 import {
+  apiV1Url,
+  type CurseurDePage,
   createCompositeCursor,
   defaultJsonApiCursorPaginationSize,
-} from '@/libraries/json-api/cursor-pagination'
-import type {
-  JsonApiListResponse,
-  JsonApiResource,
-} from '@/libraries/json-api/json-api-types'
-import {
-  type CurseurDePage,
   type PaginationParCurseur,
   pageParCurseur,
-} from '@/libraries/json-api/page-par-curseur'
+} from '@/libraries/json-api'
 
 type ActiviteRelationships = 'mediateur'
 

@@ -1,11 +1,11 @@
 import { type NextRequest, NextResponse } from 'next/server'
-import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
+import { signaler } from '@/configuration/telemetry/serveur'
 import { isAuthenticatedApiClientRequest } from '@/features/clients-api/abilities/authentifier-un-client-api/implementations/api-v1/is-authenticated-api-client-request.middleware'
 import type {
   IssueDAuthentification,
   PorteeApi,
 } from '@/features/clients-api/domain'
-import { apiV1AuthorizationScheme } from '@/libraries/json-api/api-v1-headers'
+import { apiV1AuthorizationScheme } from '@/libraries/json-api'
 
 const issueDeLaRequete = (
   request: NextRequest,
