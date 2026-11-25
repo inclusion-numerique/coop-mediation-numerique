@@ -19,7 +19,8 @@ import {
   AdresseBanOptions,
 } from '@/libraries/ban/composants'
 import { withForm } from '@/libraries/formulaire/hooks'
-import { optionsWithEmptyValue, RedAsterisk } from '@/libraries/ui/form'
+import { optionsWithEmptyValue } from '@/libraries/ui'
+import { RedAsterisk } from '@/libraries/ui/form'
 import { Options } from '@/libraries/ui/primitives'
 import { informationsGeneralesFormOptions } from './informations-generales.form-data'
 import { SiretSearchComboBox, SiretSearchOptions } from './SiretSearchComboBox'

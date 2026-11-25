@@ -1,3 +1,5 @@
+'use client'
+
 import { createDynamicModal } from '@/libraries/ui/components'
 
 export type EtatDeLaModaleDeRetrait = {
