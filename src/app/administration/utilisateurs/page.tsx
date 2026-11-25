@@ -14,11 +14,11 @@ import { RECHERCHER_DES_EMPLOYEUSES_ACTION_KEY } from '@/features/utilisateurs/a
 import { RECHERCHER_DES_LIEUX_ACTION_KEY } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/action/rechercher-des-lieux.key'
 import { optionsDesFiltres } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/implementations/prisma/options-des-filtres.query'
 import { rechercherDesUtilisateurs } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/implementations/prisma/rechercher-des-utilisateurs.query'
-import { BarreDesUtilisateurs } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui/components/BarreDesUtilisateurs'
 import { listeDesUtilisateurs } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui/filtres/liste-des-utilisateurs.filtre'
 import { UtilisateursPage } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui/pages/UtilisateursPage'
 import { optionDuCoordinateur } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui/presenters/coordinateur-a-choisir.presenter'
 import { liensDeLaListe } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui/presenters/liste-des-utilisateurs.presenter'
+import { BarreDesUtilisateurs } from '@/features/utilisateurs/abilities/lister-les-utilisateurs/ui/slots/BarreDesUtilisateurs.slot'
 import {
   filtresDesUtilisateurs,
   filtresUtilisateursDesFiltres,

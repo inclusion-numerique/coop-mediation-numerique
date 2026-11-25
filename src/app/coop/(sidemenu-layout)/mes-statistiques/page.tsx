@@ -61,10 +61,10 @@ import {
   statistiquesAvec,
 } from '@/features/activites/implementations/prisma/statistiques/statistiques-en-cours.query'
 import { perimetreDeLUtilisateur } from '@/features/activites/implementations/session/perimetre.query'
-import { BarreDesStatistiques } from '@/features/activites/ui/components/filtres/BarreDesStatistiques'
 import { criteresDesStatistiquesDesFiltres } from '@/features/activites/ui/filtres/activites.filtre'
 import { filtresDesStatistiques } from '@/features/activites/ui/filtres/statistiques.filtre'
 import { barreDesStatistiquesAvec } from '@/features/activites/ui/presenters/barre-des-statistiques.presenter'
+import { BarreDesStatistiques } from '@/features/activites/ui/slots/BarreDesStatistiques.slot'
 import { authenticateMediateurOrCoordinateur } from '@/features/authentification/implementations/session/authenticate-user.middleware'
 import { membresAFiltrerDuDemandeur } from '@/features/equipe/abilities/lister-les-membres-a-filtrer/implementations/prisma/membres-a-filtrer-du-demandeur.query'
 import { optionDeMembre } from '@/features/equipe/abilities/lister-les-membres-a-filtrer/ui/presenters/options-de-membres.presenter'

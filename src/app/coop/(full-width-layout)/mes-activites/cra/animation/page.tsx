@@ -2,8 +2,8 @@ import { enregistrerUneActiviteDeCoordinationAction } from '@/app/_actions/activ
 import { creerUnTagAction } from '@/app/_actions/tags/creer-un-tag.action'
 import { rechercherDesTagsAction } from '@/app/_actions/tags/rechercher-des-tags.action'
 import { ENREGISTRER_UNE_ACTIVITE_DE_COORDINATION_ACTION_KEY } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/action/enregistrer-une-activite-de-coordination.key'
-import type { CraAnimationData } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/forms/cra-animation.validation'
 import CraAnimationPage from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/pages/CraAnimationPage'
+import type { SaisieDAnimationEncodee } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/presenters/page-de-saisie.presenter'
 import {
   nouvelleSaisieDeCoordination,
   saisieDAnimation,
@@ -16,15 +16,13 @@ import { visibilitesProposees } from '@/features/tags/abilities/creer-un-tag/ui/
 import { tagsInitiauxAvec } from '@/features/tags/abilities/rechercher-des-tags/implementations/session/tags-initiaux-par.query'
 import { acteurDe } from '@/features/tags/domain'
 import { tagAffiche } from '@/features/tags/ui/presenters/tag-affiche.presenter'
-import type { EncodedState } from '@/libraries/etat-encode'
-import type { DefaultValues } from '@/libraries/formulaire/hooks'
 import { ClientBinder } from '@/libraries/nextjs/injection'
 
 const CreateCraAnimationPage = async ({
   searchParams,
 }: {
   searchParams: Promise<{
-    v?: EncodedState<DefaultValues<CraAnimationData>>
+    v?: SaisieDAnimationEncodee
     retour?: string
   }>
 }) => {

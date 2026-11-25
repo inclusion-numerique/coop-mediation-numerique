@@ -8,8 +8,8 @@ import {
   CoopPageContainer,
 } from '@/libraries/ui/components'
 import type { CompteDeTest } from '../../domain'
-import { BoutonUsurper } from '../components/BoutonUsurper'
 import { UsurpationLibre } from '../components/UsurpationLibre'
+import { BoutonUsurper } from '../slots/BoutonUsurper.slot'
 
 export const UsurpationPage = ({
   comptesDeTest,

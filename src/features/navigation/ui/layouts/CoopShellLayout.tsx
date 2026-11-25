@@ -1,8 +1,8 @@
 import type { Route } from 'next'
 import type { PropsWithChildren, ReactNode } from 'react'
 import type { UtilisateurDeLaNavigation } from '../components/en-tete/HeaderUserMenu'
-import PublicFooter from '../components/PublicFooter'
 import Header from '../slots/Header.slot'
+import PublicFooter from '../slots/PublicFooter.slot'
 
 type Cadre =
   | {

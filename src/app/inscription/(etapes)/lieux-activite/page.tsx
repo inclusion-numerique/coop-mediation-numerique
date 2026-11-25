@@ -10,7 +10,7 @@ import LieuxActivitePage from '@/features/inscription/abilities/renseigner-lieux
 import { CREER_UN_LIEU_KEY } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/action/creer-un-lieu.key'
 import { ENREGISTRER_LA_SELECTION_DE_LIEUX_KEY } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/action/enregistrer-la-selection.key'
 import { RECHERCHER_DES_LIEUX_KEY } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/action/rechercher-des-lieux.key'
-import { AjouterDesLieuxActivitePage } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/ui/components/AjouterDesLieuxActivitePage'
+import { AjouterDesLieuxActivitePage } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/ui/pages/AjouterDesLieuxActivitePage'
 import { listerLesLieuxPourLInscription } from '@/features/lieux-activite/abilities/lister-les-lieux-pour-l-inscription/implementations/prisma/lister-les-lieux-pour-l-inscription.query'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
 import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'

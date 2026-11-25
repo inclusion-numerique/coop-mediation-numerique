@@ -7,8 +7,8 @@ import { authenticateMediateurOrCoordinateur } from '@/features/authentification
 import { communesDesLieux } from '@/features/lieux-activite/abilities/lister-les-lieux-du-departement/implementations/prisma/communes-des-lieux.query'
 import { lieuxDuDepartement } from '@/features/lieux-activite/abilities/lister-les-lieux-du-departement/implementations/prisma/lieux-du-departement.query'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
-import { default as LieuActiviteCard } from '@/features/lieux-activite/ui/components/LieuActiviteCard'
 import { hrefDuLieuEnListe } from '@/features/lieux-activite/ui/presenters/href-du-lieu.presenter'
+import { default as LieuActiviteCard } from '@/features/lieux-activite/ui/slots/LieuActiviteCard.slot'
 import { consulterLesLieuxDuDepartement } from '@/features/mon-reseau/abilities/consulter-les-lieux-du-departement/domain/consulter-les-lieux-du-departement'
 import {
   criteresDesLieuxDuReseau,

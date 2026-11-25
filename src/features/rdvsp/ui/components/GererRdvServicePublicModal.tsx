@@ -18,7 +18,7 @@ import {
   type StatutIntegration,
   statutDuCompteDeLaSession,
 } from '../../domain/compte/sante-compte'
-import RdvServicePublicStatusTag from './RdvServicePublicStatusTag'
+import RdvServicePublicStatusTag from '../slots/RdvServicePublicStatusTag.slot'
 
 export const GererRdvServicePublicModalInstance = createModal({
   id: 'gerer-rdv-service-public',

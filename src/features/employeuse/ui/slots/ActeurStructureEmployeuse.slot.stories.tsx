@@ -3,7 +3,7 @@ import {
   adresseCompleteAffichage,
   type EmploiEmployeuseAffichage,
 } from '../presenters/employeuse-emploi.presenter'
-import ActeurStructureEmployeuse from './ActeurStructureEmployeuse'
+import ActeurStructureEmployeuse from './ActeurStructureEmployeuse.slot'
 
 const structure = (
   valeurs: Omit<EmploiEmployeuseAffichage, 'adresseComplete'>,

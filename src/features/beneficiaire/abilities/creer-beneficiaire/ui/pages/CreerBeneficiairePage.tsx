@@ -3,6 +3,7 @@ import Link from 'next/link'
 import BeneficiaireForm, {
   type EnregistrerBeneficiaire,
 } from '@/features/beneficiaire/ui/forms/BeneficiaireForm'
+import type { EncodedState } from '@/libraries/etat-encode'
 import { contentId } from '@/libraries/liens-d-evitement'
 import { SkipLinksPortal } from '@/libraries/liens-d-evitement/composants'
 import {
@@ -17,6 +18,8 @@ import type { SaisieEnCours } from '../../../../ui/forms/BeneficiaireForm'
  * L'orchestration (auth, décodage du CRA en cours, liaison de l'action) vit
  * dans la route Next. L'action `save` est injectée — l'ability reste découplée.
  */
+export type SaisieDuCraEncodee = EncodedState<SaisieEnCours>
+
 export const CreerBeneficiairePage = ({
   mediateurId,
   save,

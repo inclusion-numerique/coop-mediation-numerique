@@ -2,7 +2,7 @@
 
 import { ElementDuMenu } from '../../../../ui/components/ElementDuMenu'
 import { type TagAffiche } from '../../../../ui/presenters/tag-affiche.presenter'
-import { ModificationDUnTag } from '../components/ModaleDeModification'
+import { ModificationDUnTag } from './ModaleDeModification.slot'
 
 export const BoutonModifier = ({ tag }: { tag: TagAffiche }) => {
   const ouvrir = ModificationDUnTag.useOpen()

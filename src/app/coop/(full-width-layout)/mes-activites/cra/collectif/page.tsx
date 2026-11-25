@@ -4,8 +4,8 @@ import { rechercherUnLieuActiviteAction } from '@/app/_actions/lieux-activite/re
 import { creerUnTagAction } from '@/app/_actions/tags/creer-un-tag.action'
 import { rechercherDesTagsAction } from '@/app/_actions/tags/rechercher-des-tags.action'
 import { ENREGISTRER_UN_ATELIER_COLLECTIF_ACTION_KEY } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/action/enregistrer-un-atelier-collectif.key'
-import type { CraCollectifData } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/forms/cra-collectif.validation'
 import CraCollectifPage from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/pages/CraCollectifPage'
+import type { SaisieCollectiveEncodee } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/presenters/page-de-saisie.presenter'
 import { nouvelleSaisieCollective } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/presenters/page-de-saisie.presenter'
 import { CREER_UN_TAG_DU_CRA_KEY } from '@/features/activites/action/creer-un-tag.key'
 import { RECHERCHER_DES_BENEFICIAIRES_DU_CRA_KEY } from '@/features/activites/action/rechercher-des-beneficiaires.key'
@@ -22,15 +22,13 @@ import { visibilitesProposees } from '@/features/tags/abilities/creer-un-tag/ui/
 import { tagsInitiauxAvec } from '@/features/tags/abilities/rechercher-des-tags/implementations/session/tags-initiaux-par.query'
 import { acteurDe } from '@/features/tags/domain'
 import { tagAffiche } from '@/features/tags/ui/presenters/tag-affiche.presenter'
-import type { EncodedState } from '@/libraries/etat-encode'
-import type { DefaultValues } from '@/libraries/formulaire/hooks'
 import { ClientBinder } from '@/libraries/nextjs/injection'
 
 const CreateCraCollectifPage = async ({
   searchParams,
 }: {
   searchParams: Promise<{
-    v?: EncodedState<DefaultValues<CraCollectifData>>
+    v?: SaisieCollectiveEncodee
     retour?: string
   }>
 }) => {

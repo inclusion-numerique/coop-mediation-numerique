@@ -35,11 +35,11 @@ import { consulterHistoriqueEmployeuses } from '@/features/employeuse/abilities/
 import { historiqueEmployeusesAffichage } from '@/features/employeuse/abilities/consulter-historique-employeuses/ui/presenters/historique-employeuses.presenter'
 import { HistoriqueDesEmployeuses } from '@/features/employeuse/abilities/consulter-historique-employeuses/ui/slots/HistoriqueDesEmployeuses.slot'
 import { listerLesMembres } from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/lister-les-membres.query'
-import { ListeDeLEquipe } from '@/features/equipe/abilities/lister-les-membres/ui/components/ListeDeLEquipe'
 import {
   type ParametresDeLaListe,
   requeteDeLaListe,
 } from '@/features/equipe/abilities/lister-les-membres/ui/filtres/liste-de-l-equipe.filtre'
+import { ListeDeLEquipe } from '@/features/equipe/abilities/lister-les-membres/ui/slots/ListeDeLEquipe.slot'
 import { RETIRER_UN_MEMBRE_ACTION_KEY } from '@/features/equipe/abilities/retirer-un-membre/action/retirer-un-membre.key'
 import { default as BoutonRetirerUnMembre } from '@/features/equipe/abilities/retirer-un-membre/ui/slots/BoutonRetirerUnMembre.slot'
 import { SUPPRIMER_UN_ANCIEN_MEMBRE_ACTION_KEY } from '@/features/equipe/abilities/supprimer-un-ancien-membre/action/supprimer-un-ancien-membre.key'
@@ -75,7 +75,7 @@ import { BoutonDeconnecter } from '@/features/utilisateurs/abilities/deconnecter
 import { SUPPRIMER_LE_COMPTE_ACTION_KEY } from '@/features/utilisateurs/abilities/supprimer-compte/action/supprimer-compte.key'
 import { BoutonSupprimerLeCompte } from '@/features/utilisateurs/abilities/supprimer-compte/ui/slots/BoutonSupprimerLeCompte.slot'
 import { USURPER_UN_UTILISATEUR_ACTION_KEY } from '@/features/utilisateurs/abilities/usurper-un-utilisateur/action/usurper-un-utilisateur.key'
-import { BoutonUsurper } from '@/features/utilisateurs/abilities/usurper-un-utilisateur/ui/components/BoutonUsurper'
+import { BoutonUsurper } from '@/features/utilisateurs/abilities/usurper-un-utilisateur/ui/slots/BoutonUsurper.slot'
 import { coordinateurDe, mediateurDe } from '@/features/utilisateurs/domain'
 import { ClientBinder } from '@/libraries/nextjs/injection'
 

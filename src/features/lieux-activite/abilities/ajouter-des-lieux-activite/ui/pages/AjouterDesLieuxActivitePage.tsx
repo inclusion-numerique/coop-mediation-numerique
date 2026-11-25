@@ -21,6 +21,8 @@ import { createToast } from '@/libraries/ui/toast'
 import { AJOUTER_DES_LIEUX_ACTIVITE_ACTION_KEY } from '../../action/ajouter-des-lieux-activite.key'
 import { CREER_UN_LIEU_KEY } from '../../action/creer-un-lieu.key'
 import { ENREGISTRER_LA_SELECTION_DE_LIEUX_KEY } from '../../action/enregistrer-la-selection.key'
+import { PanierDeLieux } from '../components/PanierDeLieux'
+import { RechercheDeLieu } from '../components/RechercheDeLieu'
 import { LieuAAjouterComboBox } from '../forms/LieuAAjouterComboBox'
 import {
   type LieuAuPanier,
@@ -28,8 +30,6 @@ import {
   selectionner,
 } from '../forms/panier.form-data'
 import { destination } from '../presenters/destination.presenter'
-import { PanierDeLieux } from './PanierDeLieux'
-import { RechercheDeLieu } from './RechercheDeLieu'
 
 type FormValues = {
   lieux: LieuAuPanier[]

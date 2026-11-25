@@ -1,5 +1,5 @@
 import { Button } from '@codegouvfr/react-dsfr/Button'
-import { ModaleDeSaisie } from '@/features/activites/ui/components/saisie/ModaleDeSaisie'
+import { ModaleDeSaisie } from '@/features/activites/ui/slots/ModaleDeSaisie.slot'
 
 export const CoordinationEmptyState = ({
   isFiltered = false,

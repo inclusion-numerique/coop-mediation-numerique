@@ -14,6 +14,10 @@ import { craCollectifDefaultValues } from '../forms/valeurs-par-defaut-du-cra-co
 import { copieDeLAtelier } from './copie-de-l-atelier.presenter'
 import { formulaireDeLAtelierCollectif } from './formulaire-de-l-atelier-collectif.presenter'
 
+export type SaisieCollectiveEncodee = EncodedState<
+  DefaultValues<CraCollectifData>
+>
+
 type ActiviteDemandee = {
   readonly id: string
   readonly mediateurId: string
@@ -36,7 +40,7 @@ export const nouvelleSaisieCollective = ({
   fournisseurs,
 }: {
   readonly mediateurId: string
-  readonly v: EncodedState<DefaultValues<CraCollectifData>> | undefined
+  readonly v: SaisieCollectiveEncodee | undefined
   readonly fournisseurs: FournisseursDeLaSaisieDeMediation
 }) =>
   pageDeSaisieDeMediation<CraCollectifData>(craCollectifDefaultValues)({

@@ -1,8 +1,8 @@
 'use server'
 
-import { z } from 'zod'
 import { actionBuilder } from '@/configuration/nextjs'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
+import { RechercherDesLieuxAAjouterValidation } from '@/features/lieux-activite/abilities/rechercher-des-lieux-a-ajouter/action/rechercher-des-lieux-a-ajouter.validation'
 import { RechercheDeLieu } from '@/features/lieux-activite/abilities/rechercher-des-lieux-a-ajouter/domain/recherche-de-lieu'
 import { rechercherDesLieuxAAjouter as rechercher } from '@/features/lieux-activite/abilities/rechercher-des-lieux-a-ajouter/domain/rechercher'
 import { chercherDansLAnnuaireDesEntreprises } from '@/features/lieux-activite/abilities/rechercher-des-lieux-a-ajouter/implementations/api-entreprise/annuaire-des-entreprises.query'
@@ -27,7 +27,7 @@ const rechercherDesLieuxAAjouter = rechercher({
  */
 export const rechercherDesLieuxAAjouterAction = actionBuilder()
   .use(withAuth())
-  .use(withInput(z.object({ recherche: z.string() })))
+  .use(withInput(RechercherDesLieuxAAjouterValidation))
   .execute(async ({ input }) =>
     rechercherDesLieuxAAjouter(RechercheDeLieu(input.recherche)),
   )

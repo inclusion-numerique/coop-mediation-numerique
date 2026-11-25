@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { AdministrationInfoCard } from '@/libraries/ui/components'
-import { BoutonUsurper } from './BoutonUsurper'
+import { BoutonUsurper } from '../slots/BoutonUsurper.slot'
 
 export const UsurpationLibre = () => {
   const [utilisateurId, setUtilisateurId] = useState('')

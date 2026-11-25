@@ -3,11 +3,11 @@ import {
   BarreDeFiltres,
   PeriodeEnPopover,
 } from '@/libraries/etat-d-url/filtres'
-import type { BarreDesStatistiquesPresentee } from '../../presenters/barre-des-statistiques.presenter'
-import { FiltreDesMediateurs } from './FiltreDesMediateurs'
-import { FiltreDuLieuDesActivites } from './FiltreDuLieuDesActivites'
-import { FiltreDuTypeDActivite } from './FiltreDuTypeDActivite'
-import { PlusDeFiltresDesActivites } from './PlusDeFiltresDesActivites'
+import { FiltreDesMediateurs } from '../components/filtres/FiltreDesMediateurs'
+import { FiltreDuLieuDesActivites } from '../components/filtres/FiltreDuLieuDesActivites'
+import { FiltreDuTypeDActivite } from '../components/filtres/FiltreDuTypeDActivite'
+import { PlusDeFiltresDesActivites } from '../components/filtres/PlusDeFiltresDesActivites'
+import type { BarreDesStatistiquesPresentee } from '../presenters/barre-des-statistiques.presenter'
 
 export const BarreDesStatistiques = ({
   barre,

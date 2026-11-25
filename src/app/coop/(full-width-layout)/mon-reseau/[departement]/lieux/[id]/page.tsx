@@ -9,7 +9,7 @@ import { MediateursDuLieu } from '@/features/lieux-activite/abilities/lister-les
 import { APPLIQUER_LES_DIFFERENCES_ACTION_KEY } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/action/appliquer-les-differences.key'
 import { RECHERCHER_UN_ETABLISSEMENT_KEY } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/action/rechercher-un-etablissement.key'
 import { consulterLaFicheDuLieu } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/implementations/prisma/consulter-la-fiche-du-lieu.query'
-import { FicheDuLieuPage } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/ui/components/FicheDuLieuPage'
+import { FicheDuLieuPage } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/ui/pages/FicheDuLieuPage'
 import { ficheAffichee } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/ui/presenters/fiche-du-lieu.presenter'
 import { RETIRER_UN_MEDIATEUR_DU_LIEU_ACTION_KEY } from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/action/retirer-un-mediateur-du-lieu.key'
 import { default as ModaleDeRetrait } from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/ui/slots/ModaleDeRetrait.slot'

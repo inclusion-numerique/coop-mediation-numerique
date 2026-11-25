@@ -4,8 +4,8 @@ import { rechercherUnLieuActiviteAction } from '@/app/_actions/lieux-activite/re
 import { creerUnTagAction } from '@/app/_actions/tags/creer-un-tag.action'
 import { rechercherDesTagsAction } from '@/app/_actions/tags/rechercher-des-tags.action'
 import { ENREGISTRER_UN_ACCOMPAGNEMENT_INDIVIDUEL_ACTION_KEY } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/action/enregistrer-un-accompagnement-individuel.key'
-import type { CraIndividuelData } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/forms/cra-individuel.validation'
 import CraIndividuelPage from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/pages/CraIndividuelPage'
+import type { SaisieIndividuelleEncodee } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/presenters/page-de-saisie.presenter'
 import { nouvelleSaisieIndividuelle } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/presenters/page-de-saisie.presenter'
 import { CREER_UN_TAG_DU_CRA_KEY } from '@/features/activites/action/creer-un-tag.key'
 import { RECHERCHER_DES_BENEFICIAIRES_DU_CRA_KEY } from '@/features/activites/action/rechercher-des-beneficiaires.key'
@@ -22,15 +22,13 @@ import { visibilitesProposees } from '@/features/tags/abilities/creer-un-tag/ui/
 import { tagsInitiauxAvec } from '@/features/tags/abilities/rechercher-des-tags/implementations/session/tags-initiaux-par.query'
 import { acteurDe } from '@/features/tags/domain'
 import { tagAffiche } from '@/features/tags/ui/presenters/tag-affiche.presenter'
-import type { EncodedState } from '@/libraries/etat-encode'
-import type { DefaultValues } from '@/libraries/formulaire/hooks'
 import { ClientBinder } from '@/libraries/nextjs/injection'
 
 const CreateCraIndividuelPage = async ({
   searchParams,
 }: {
   searchParams: Promise<{
-    v?: EncodedState<DefaultValues<CraIndividuelData>>
+    v?: SaisieIndividuelleEncodee
     retour?: string
   }>
 }) => {

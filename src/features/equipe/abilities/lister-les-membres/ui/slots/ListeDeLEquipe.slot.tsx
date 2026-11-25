@@ -4,15 +4,15 @@ import { ChampDeRecherche, PiedDeListe } from '@/libraries/etat-d-url/liste'
 import type { LigneEquipe } from '../../../../domain'
 import { filtresDeLEquipe } from '../../../../ui/filtres/equipe.filtre'
 import type { MembresDeLEquipe } from '../../domain'
+import { EquipeTable } from '../components/EquipeTable'
+import EquipeVide from '../components/EquipeVide'
+import { FiltresDeLEquipe } from '../components/FiltresDeLEquipe'
 import {
   liensDeLaListe,
   type ParametresDeLaListe,
   paginationDeLEquipe,
 } from '../filtres/liste-de-l-equipe.filtre'
 import { lignesAffichees } from '../presenters/lister-les-membres.presenter'
-import { EquipeTable } from './EquipeTable'
-import EquipeVide from './EquipeVide'
-import { FiltresDeLEquipe } from './FiltresDeLEquipe'
 
 export const ListeDeLEquipe = ({
   membres,

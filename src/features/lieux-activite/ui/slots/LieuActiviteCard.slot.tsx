@@ -6,8 +6,8 @@ import type { Route } from 'next'
 import Link from 'next/link'
 import type { ReactNode } from 'react'
 import type { LieuEnListe } from '../../domain/lieu-en-liste'
+import CartographyIndicator from '../components/CartographyIndicator'
 import { carteDuLieu } from '../presenters/lieu-activite-card.presenter'
-import CartographyIndicator from './CartographyIndicator'
 
 const LieuActiviteCard = <T extends string>({
   lieu,

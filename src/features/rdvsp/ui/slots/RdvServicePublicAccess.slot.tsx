@@ -9,7 +9,7 @@ import {
 import { RDVServicePublicCoopConnexion } from '@/libraries/pictograms/services'
 import { statutDuCompteDeLaSession } from '../../domain/compte/sante-compte'
 import GererRdvServicePublicModal from '../components/GererRdvServicePublicModal'
-import RdvServicePublicStatusTag from '../components/RdvServicePublicStatusTag'
+import RdvServicePublicStatusTag from './RdvServicePublicStatusTag.slot'
 
 const RdvServicePublicAccess = ({
   user,

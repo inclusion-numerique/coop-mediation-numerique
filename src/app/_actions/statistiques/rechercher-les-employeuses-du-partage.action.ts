@@ -1,8 +1,10 @@
 'use server'
 
-import { z } from 'zod'
 import { actionBuilder } from '@/configuration/nextjs'
-import { RechercherLesEmployeusesDesActivitesValidation } from '@/features/activites/abilities/rechercher-les-employeuses-des-activites/action/rechercher-les-employeuses-des-activites.validation'
+import {
+  type RechercheDEmployeusesDesActivites,
+  RechercherLesEmployeusesDuPartageValidation,
+} from '@/features/activites/abilities/rechercher-les-employeuses-des-activites/action/rechercher-les-employeuses-des-activites.validation'
 import { rechercherLesEmployeusesDesActivites } from '@/features/activites/abilities/rechercher-les-employeuses-des-activites/implementations/prisma/rechercher-les-employeuses-des-activites.query'
 import { optionsDEmployeuses } from '@/features/activites/abilities/rechercher-les-employeuses-des-activites/ui/presenters/options-d-employeuses.presenter'
 import { EmployeuseId } from '@/features/activites/domain/index'
@@ -13,13 +15,7 @@ import { utilisateurDuPartage } from '@/features/statistiques/domain/utilisateur
 import { withInput } from '@/libraries/nextjs'
 
 const rechercherDansLePartage = actionBuilder()
-  .use(
-    withInput(
-      RechercherLesEmployeusesDesActivitesValidation.extend({
-        partage: z.string(),
-      }),
-    ),
-  )
+  .use(withInput(RechercherLesEmployeusesDuPartageValidation))
   .execute(async ({ input: { partage, recherche, exclues } }) => {
     const lien = await resoudreUnLienDePartage(partage)
     if (!lien.success) return []
@@ -42,5 +38,5 @@ const rechercherDansLePartage = actionBuilder()
 
 export const rechercherLesEmployeusesDuPartageAction = async (
   partage: string,
-  input: z.input<typeof RechercherLesEmployeusesDesActivitesValidation>,
+  input: RechercheDEmployeusesDesActivites,
 ) => rechercherDansLePartage({ ...input, partage })

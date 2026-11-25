@@ -3,7 +3,6 @@ import type { PropsWithChildren } from 'react'
 import { supprimerBeneficiairesAction } from '@/app/_actions/beneficiaire/supprimer-beneficiaires.action'
 import { prendreRendezVousAction } from '@/app/_actions/rdvsp/prendre-rendez-vous.action'
 import { rattraperRdvsSansWebhookAction } from '@/app/_actions/rdvsp/rattraper-rdvs-sans-webhook.action'
-import type { BeneficiaireCraData } from '@/features/activites/ui/forms/beneficiaire-du-cra.validation'
 import BeneficiaireEnregistrerUneActivite from '@/features/activites/ui/slots/BeneficiaireEnregistrerUneActivite.slot'
 import { authenticateMediateur } from '@/features/authentification/implementations/session/authenticate-user.middleware'
 import { consulterBeneficiaire } from '@/features/beneficiaire/abilities/consulter-beneficiaire/implementations/prisma/consulter-beneficiaire.query'
@@ -53,7 +52,7 @@ const BeneficiaireLayout = async (
     id: beneficiaire.id,
     prenom: beneficiaire.prenom ?? '',
     nom: beneficiaire.nom ?? '',
-  } satisfies BeneficiaireCraData
+  }
 
   const hasRdvIntegration = !!user.rdvAccount?.hasOauthTokens
 

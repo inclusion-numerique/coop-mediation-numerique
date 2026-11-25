@@ -1,8 +1,10 @@
 'use server'
 
-import { z } from 'zod'
 import { actionBuilder } from '@/configuration/nextjs'
-import { RechercherLesLieuxDesStatistiquesValidation } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/action/rechercher-les-lieux-des-statistiques.validation'
+import {
+  type RechercheDeLieuxDesStatistiques,
+  RechercherLesLieuxDuPartageValidation,
+} from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/action/rechercher-les-lieux-des-statistiques.validation'
 import { GenreDeLieu } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/domain/index'
 import { rechercherLesLieuxDesStatistiques } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/implementations/prisma/lieux-des-statistiques.query'
 import { optionDeLieu } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/ui/presenters/options-de-lieux.presenter'
@@ -13,13 +15,7 @@ import { utilisateurDuPartage } from '@/features/statistiques/domain/utilisateur
 import { withInput } from '@/libraries/nextjs'
 
 const rechercherDansLePartage = actionBuilder()
-  .use(
-    withInput(
-      RechercherLesLieuxDesStatistiquesValidation.extend({
-        partage: z.string(),
-      }),
-    ),
-  )
+  .use(withInput(RechercherLesLieuxDuPartageValidation))
   .execute(async ({ input: { partage, genre, recherche } }) => {
     const lien = await resoudreUnLienDePartage(partage)
     if (!lien.success) return []
@@ -42,5 +38,5 @@ const rechercherDansLePartage = actionBuilder()
 
 export const rechercherLesLieuxDuPartageAction = async (
   partage: string,
-  input: z.input<typeof RechercherLesLieuxDesStatistiquesValidation>,
+  input: RechercheDeLieuxDesStatistiques,
 ) => rechercherDansLePartage({ ...input, partage })

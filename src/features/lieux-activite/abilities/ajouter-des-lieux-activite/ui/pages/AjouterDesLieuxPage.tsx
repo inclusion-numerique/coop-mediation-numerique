@@ -5,7 +5,7 @@ import {
   CoopBreadcrumbs,
   IconInSquare,
 } from '@/libraries/ui/components'
-import { AjouterDesLieuxActivitePage } from '../components/AjouterDesLieuxActivitePage'
+import { AjouterDesLieuxActivitePage } from './AjouterDesLieuxActivitePage'
 
 export const AjouterDesLieuxPage = ({
   retourHref,

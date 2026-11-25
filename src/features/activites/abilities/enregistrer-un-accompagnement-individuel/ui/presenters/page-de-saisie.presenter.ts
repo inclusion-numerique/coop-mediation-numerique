@@ -14,6 +14,10 @@ import { craIndividuelDefaultValues } from '../forms/valeurs-par-defaut-du-cra-i
 import { copieDeLAccompagnement } from './copie-de-l-accompagnement.presenter'
 import { formulaireDeLAccompagnementIndividuel } from './formulaire-de-l-accompagnement-individuel.presenter'
 
+export type SaisieIndividuelleEncodee = EncodedState<
+  DefaultValues<CraIndividuelData>
+>
+
 type ActiviteDemandee = {
   readonly id: string
   readonly mediateurId: string
@@ -36,7 +40,7 @@ export const nouvelleSaisieIndividuelle = ({
   fournisseurs,
 }: {
   readonly mediateurId: string
-  readonly v: EncodedState<DefaultValues<CraIndividuelData>> | undefined
+  readonly v: SaisieIndividuelleEncodee | undefined
   readonly fournisseurs: FournisseursDeLaSaisieDeMediation
 }) =>
   pageDeSaisieDeMediation<CraIndividuelData>(craIndividuelDefaultValues)({

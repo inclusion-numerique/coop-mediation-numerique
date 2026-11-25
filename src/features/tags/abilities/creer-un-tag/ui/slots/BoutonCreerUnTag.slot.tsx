@@ -1,7 +1,7 @@
 'use client'
 
 import Button from '@codegouvfr/react-dsfr/Button'
-import { CreationDUnTag } from '../components/ModaleDeCreation'
+import { CreationDUnTag } from './ModaleDeCreation.slot'
 
 export const BoutonCreerUnTag = () => {
   const ouvrir = CreationDUnTag.useOpen()

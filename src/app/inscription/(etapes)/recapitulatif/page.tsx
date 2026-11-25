@@ -6,7 +6,7 @@ import { aTermineSonInscription } from '@/features/authentification/domain/page-
 import { authenticateUser } from '@/features/authentification/implementations/session/authenticate-user.middleware'
 import { consulterEmployeuseActuelle } from '@/features/employeuse/abilities/consulter-employeuse-actuelle/implementations/prisma/consulter-employeuse-actuelle.query'
 import { employeuseActuelleAffichage } from '@/features/employeuse/abilities/consulter-employeuse-actuelle/ui/presenters/employeuse-actuelle.presenter'
-import StructureAdministrativeCard from '@/features/employeuse/ui/components/StructureAdministrativeCard'
+import StructureAdministrativeCard from '@/features/employeuse/ui/slots/StructureAdministrativeCard.slot'
 import { VALIDER_ACTION_KEY } from '@/features/inscription/abilities/valider/action/valider.key'
 import { lireLeRecapitulatif } from '@/features/inscription/abilities/valider/implementations/prisma/recapitulatif.query'
 import RecapitulatifPage from '@/features/inscription/abilities/valider/ui/pages/RecapitulatifPage'
@@ -15,7 +15,7 @@ import { employeuseAffichee } from '@/features/inscription/ui/presenters/employe
 import { listerLesLieuxPourLInscription } from '@/features/lieux-activite/abilities/lister-les-lieux-pour-l-inscription/implementations/prisma/lister-les-lieux-pour-l-inscription.query'
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
 import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
-import { SaisieDuLieuCard } from '@/features/lieux-activite/ui/components/SaisieDuLieuCard'
+import { SaisieDuLieuCard } from '@/features/lieux-activite/ui/slots/SaisieDuLieuCard.slot'
 import { ClientBinder } from '@/libraries/nextjs/injection'
 
 export const dynamic = 'force-dynamic'

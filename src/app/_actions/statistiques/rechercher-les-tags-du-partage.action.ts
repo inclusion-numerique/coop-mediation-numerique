@@ -1,19 +1,18 @@
 'use server'
 
-import { z } from 'zod'
 import { actionBuilder } from '@/configuration/nextjs'
 import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
 import { utilisateurDeLaSessionParId } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
 import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage/implementations/prisma/resoudre-un-lien-de-partage.query'
 import { utilisateurDuPartage } from '@/features/statistiques/domain/utilisateur-du-partage'
-import { RechercherDesTagsValidation } from '@/features/tags/abilities/rechercher-des-tags/action/rechercher-des-tags.validation'
+import { RechercherDesTagsDuPartageValidation } from '@/features/tags/abilities/rechercher-des-tags/action/rechercher-des-tags.validation'
 import { rechercherDesTags } from '@/features/tags/abilities/rechercher-des-tags/implementations/prisma/rechercher-des-tags.query'
 import { acteurDe, TagId } from '@/features/tags/domain'
 import { tagAffiche } from '@/features/tags/ui/presenters/tag-affiche.presenter'
 import { withInput } from '@/libraries/nextjs'
 
 const rechercherDansLePartage = actionBuilder()
-  .use(withInput(RechercherDesTagsValidation.extend({ partage: z.string() })))
+  .use(withInput(RechercherDesTagsDuPartageValidation))
   .execute(async ({ input: { partage, recherche, exclus } }) => {
     const lien = await resoudreUnLienDePartage(partage)
     if (!lien.success) return []

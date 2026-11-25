@@ -7,7 +7,7 @@ import type { Route } from 'next'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import SiretInputInfo from '@/features/employeuse/abilities/rattacher-a-une-employeuse/ui/components/SiretInputInfo'
-import StructureAdministrativeCard from '@/features/employeuse/ui/components/StructureAdministrativeCard'
+import StructureAdministrativeCard from '@/features/employeuse/ui/slots/StructureAdministrativeCard.slot'
 import { handleSubmit } from '@/libraries/formulaire'
 import { useAppForm } from '@/libraries/formulaire/hooks'
 import { inject } from '@/libraries/nextjs/injection'
@@ -21,7 +21,7 @@ import {
 import {
   StructureEmployeuseComboBox,
   StructureEmployeuseOptions,
-} from './StructureEmployeuseComboBox'
+} from '../forms/StructureEmployeuseComboBox'
 
 /**
  * Choix d'une structure employeuse, puis rattachement.

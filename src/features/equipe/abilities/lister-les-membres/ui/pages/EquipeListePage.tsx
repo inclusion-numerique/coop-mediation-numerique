@@ -5,8 +5,8 @@ import { telephoneDisplayString } from '@/libraries/telephone'
 import { CoopBreadcrumbs } from '@/libraries/ui/components'
 import { type LigneEquipe } from '../../../../domain'
 import type { MembresDeLEquipe } from '../../domain'
-import { ListeDeLEquipe } from '../components/ListeDeLEquipe'
 import type { ParametresDeLaListe } from '../filtres/liste-de-l-equipe.filtre'
+import { ListeDeLEquipe } from '../slots/ListeDeLEquipe.slot'
 
 const EquipeListePage = ({
   membres,

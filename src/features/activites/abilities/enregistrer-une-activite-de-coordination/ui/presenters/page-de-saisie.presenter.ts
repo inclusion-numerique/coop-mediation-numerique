@@ -29,6 +29,18 @@ import {
   formulaireDuPartenariat,
 } from './formulaire-de-la-coordination.presenter'
 
+export type SaisieDAnimationEncodee = EncodedState<
+  DefaultValues<CraAnimationData>
+>
+
+export type SaisieDEvenementEncodee = EncodedState<
+  DefaultValues<CraEvenementData>
+>
+
+export type SaisieDePartenariatEncodee = EncodedState<
+  DefaultValues<CraPartenariatData>
+>
+
 type ValeursDeLaCoordination = DefaultValues<
   CraAnimationData | CraEvenementData | CraPartenariatData
 >

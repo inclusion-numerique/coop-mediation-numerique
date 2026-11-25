@@ -4,9 +4,9 @@ import { contentId } from '@/libraries/liens-d-evitement'
 import { SkipLinksPortal } from '@/libraries/liens-d-evitement/composants'
 import type { LieuId } from '../../../../domain/identifiants/lieu-id'
 import { EnteteDeLaFicheEnAdministration } from '../components/EnteteDeLaFicheEnAdministration'
-import { FicheDuLieuPage } from '../components/FicheDuLieuPage'
 import type { EnregistrerUneSection } from '../hooks/use-enregistrement-de-section'
 import type { FicheAffichee } from '../presenters/fiche-du-lieu.presenter'
+import { FicheDuLieuPage } from './FicheDuLieuPage'
 
 export const FicheDuLieuEnAdministrationPage = ({
   lieuId,
