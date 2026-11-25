@@ -1,10 +1,52 @@
 import { describe, expect, it } from 'vitest'
-import { Dispositif } from '../../../../domain'
+import { CodeDepartement } from '@/libraries/insee'
+import { NomAffiche } from '@/libraries/nom-affiche'
 import {
-  coordinateurConseillerNumerique,
-  mediateurHorsDispositif,
-} from '../../../../fixtures/domaine'
+  type Acteur,
+  ActeurId,
+  CoordinateurId,
+  Courriel,
+  Dispositif,
+  Effectif,
+  MediateurId,
+  type Mediation,
+} from '../../../../domain'
 import { groupesDActeurs, libelleDesResultats } from './acteurs.presenter'
+
+const mediation: Mediation = {
+  mediateurId: MediateurId('a1b2c3d4-0000-4000-8000-000000000001'),
+  nombreDeLieux: Effectif(2),
+  coordinateurs: [
+    {
+      acteurId: ActeurId('a1b2c3d4-0000-4000-8000-000000000002'),
+      nomAffiche: NomAffiche('Alex Durand'),
+      departement: CodeDepartement('15'),
+    },
+  ],
+}
+
+const mediateurHorsDispositif: Acteur = {
+  acteurId: ActeurId('a1b2c3d4-0000-4000-8000-000000000003'),
+  nomAffiche: NomAffiche('Camille Martin'),
+  courriel: Courriel('camille.martin@example.org'),
+  profil: {
+    _tag: 'Mediateur',
+    dispositif: Dispositif('HorsDispositif'),
+    mediation,
+  },
+}
+
+const coordinateurConseillerNumerique: Acteur = {
+  acteurId: ActeurId('a1b2c3d4-0000-4000-8000-000000000004'),
+  nomAffiche: NomAffiche('Sacha Bernard'),
+  courriel: Courriel('sacha.bernard@example.org'),
+  profil: {
+    _tag: 'Coordinateur',
+    dispositif: Dispositif('ConseillerNumerique'),
+    coordinateurId: CoordinateurId('a1b2c3d4-0000-4000-8000-000000000005'),
+    mediation: null,
+  },
+}
 
 const coordinateurHorsDispositif = {
   ...coordinateurConseillerNumerique,

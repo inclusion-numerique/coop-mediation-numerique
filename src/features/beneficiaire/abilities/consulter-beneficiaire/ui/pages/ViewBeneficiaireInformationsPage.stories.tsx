@@ -1,19 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { expect, within } from 'storybook/test'
 import BeneficiaireConsultationLayout from '@/features/beneficiaire/abilities/consulter-beneficiaire/ui/layouts/BeneficiaireConsultationLayout'
-import { beneficiairesDeDemonstration } from '@/features/beneficiaire/fixtures/beneficiaires-de-demonstration'
 import ViewBeneficiaireInformationsPage, {
   type BeneficiaireInformationsPageData,
 } from './ViewBeneficiaireInformationsPage'
-
-const {
-  beneficiaireMaximaleMediateurAvecActivite,
-  beneficiaireMinimaleMediateurAvecActivite,
-} = beneficiairesDeDemonstration({
-  mediateurAvecActivite: '303381cc-3da7-433d-a553-1a5f76465989',
-  conseillerNumerique: '1ae07d95-316c-489f-893a-d17052c883b7',
-  coordinateurInscritAvecTout: '379a0d7e-54ac-4db6-95c4-3752cdd05d32',
-})
 
 const Template = ({
   data,
@@ -41,7 +31,25 @@ export default meta
 type Story = StoryObj<typeof ViewBeneficiaireInformationsPage>
 
 const beneficiaireSansInformations = {
-  ...beneficiaireMinimaleMediateurAvecActivite,
+  id: 'f4dbca97-6fe8-4be1-97be-bdf5e66b9ea8',
+  mediateurId: '303381cc-3da7-433d-a553-1a5f76465989',
+  rdvUserId: null,
+  rdvServicePublicId: null,
+  prenom: 'Jeanne',
+  nom: 'Minimale',
+  email: null,
+  anneeNaissance: null,
+  notes: null,
+  genre: null,
+  trancheAge: null,
+  creation: new Date('2024-01-01'),
+  adresse: null,
+  telephone: null,
+  pasDeTelephone: null,
+  statutSocial: null,
+  commune: null,
+  communeCodePostal: null,
+  communeCodeInsee: null,
   accompagnementsCount: 0,
 } satisfies BeneficiaireInformationsPageData['beneficiaire']
 
@@ -60,9 +68,25 @@ export const SansInformations: Story = {
 }
 
 const beneficiaireAvecInformations = {
-  ...beneficiaireMaximaleMediateurAvecActivite,
-  anneeNaissance: 1987,
+  id: '36929ed7-3b6f-4ed3-9924-b5e1a6c27096',
+  mediateurId: '303381cc-3da7-433d-a553-1a5f76465989',
+  rdvUserId: null,
   rdvServicePublicId: 42,
+  prenom: 'Jean',
+  nom: 'Maximal',
+  email: 'jean.maximal@coop-numerique.incubateur.anct.gouv.fr',
+  anneeNaissance: 1987,
+  notes: 'Notes de Jean Maximal',
+  genre: 'Masculin',
+  trancheAge: 'QuaranteCinquanteNeuf',
+  creation: new Date('2024-01-01'),
+  adresse: '1 rue de la Paix',
+  telephone: '0123456789',
+  pasDeTelephone: false,
+  statutSocial: 'EnEmploi',
+  commune: 'Paris',
+  communeCodePostal: '75001',
+  communeCodeInsee: '75101',
   accompagnementsCount: 6,
 } satisfies BeneficiaireInformationsPageData['beneficiaire']
 

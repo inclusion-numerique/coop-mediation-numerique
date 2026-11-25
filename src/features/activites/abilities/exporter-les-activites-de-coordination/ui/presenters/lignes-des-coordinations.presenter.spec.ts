@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { criteresDesCoordinationsDepuisLURL } from '@/features/activites/fixtures/criteres-depuis-l-url'
 import {
   type ActiviteDeCoordination,
   ActiviteDeCoordinationId,
   CoordinateurId,
+  type CriteresDesCoordinations,
   DateDActivite,
   DureeEnMinutes,
   Effectif,
@@ -13,6 +13,7 @@ import {
   Precision,
   TagId,
   ThematiqueDAnimation,
+  TypeDActiviteDeCoordination,
   TypeDAnimation,
   TypeDeStructurePartenaire,
 } from '../../../../domain'
@@ -63,11 +64,11 @@ const animation: ActiviteDeCoordination = {
 
 const lignesDuTableau = (
   activites: readonly ActiviteDeCoordination[],
-  parametres = {},
+  criteres: CriteresDesCoordinations = { periode: null, types: [], tags: [] },
 ) => {
   const { lignes, filtres } = lignesDesCoordinations({
     activites,
-    criteres: criteresDesCoordinationsDepuisLURL(parametres),
+    criteres,
     tags: [TAG],
     fuseau: 'Europe/Paris',
   })
@@ -111,8 +112,12 @@ describe('lignes des activités de coordination', () => {
 
   it('résume les filtres appliqués', () => {
     const { valeurs } = lignesDuTableau([], {
-      types: 'Animation,Evenement',
-      tags: TAG.id,
+      periode: null,
+      types: [
+        TypeDActiviteDeCoordination('Animation'),
+        TypeDActiviteDeCoordination('Evenement'),
+      ],
+      tags: [TAG.id],
     })
 
     expect(valeurs).toEqual(

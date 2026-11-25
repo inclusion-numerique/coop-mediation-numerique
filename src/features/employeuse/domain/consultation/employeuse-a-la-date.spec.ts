@@ -1,6 +1,52 @@
 import { describe, expect, it } from 'vitest'
-import { contrat, employeuse as employeuseDeTest } from '../../fixtures/domaine'
+import { Siret } from '@/libraries/insee'
+import { AdresseEmployeuse } from '../adresse-employeuse'
+import { type Contrat } from '../affectation/contrat'
+import { PeriodeEmploi } from '../affectation/periode-emploi'
+import { DenominationEmployeuse } from '../denomination-employeuse'
+import { type Employeuse } from '../employeuse'
+import { EmployeuseId } from '../employeuse-id'
 import { employeuseALaDate } from './employeuse-a-la-date'
+
+const employeuseDeTest = (
+  id: number,
+  overrides: Partial<Employeuse> = {},
+): Employeuse => ({
+  id: EmployeuseId(id),
+  denomination: DenominationEmployeuse(`Structure ${id}`),
+  denominationSirene: DenominationEmployeuse(`Structure ${id}`),
+  siret: Siret(`${id}`.padStart(14, '9')),
+  rna: null,
+  adresse: AdresseEmployeuse({
+    voie: '12 rue des Tests',
+    codePostal: '44000',
+    codeInsee: '44109',
+    commune: 'Nantes',
+  }),
+  contactReferent: { _tag: 'nonRenseigne' },
+  creation: null,
+  modification: null,
+  suppression: null,
+  ...overrides,
+})
+
+const contrat = (
+  employeuseId: number,
+  dates: {
+    debut?: Date | null
+    fin?: Date | null
+    rupture?: Date | null
+    maintenant?: Date
+  } = {},
+): Contrat => ({
+  employeuse: employeuseDeTest(employeuseId),
+  periode: PeriodeEmploi({
+    debut: dates.debut ?? null,
+    fin: dates.fin ?? null,
+    rupture: dates.rupture ?? null,
+    maintenant: dates.maintenant ?? new Date('2100-01-01'),
+  }),
+})
 
 const juin2026 = new Date('2026-06-01')
 

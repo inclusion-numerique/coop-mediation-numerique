@@ -1,6 +1,16 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { repartition } from '@/features/activites/fixtures/repartition-de-demonstration'
+import {
+  typeLieuLabels,
+  typeLieuValues,
+} from '@/features/activites/ui/labels/libelles/type-lieu.labels'
+import { partsFixees } from '@/libraries/proportions'
 import { CanauxDesAccompagnements } from './CanauxDesAccompagnements'
+
+const typeLieu = partsFixees(
+  typeLieuValues,
+  typeLieuLabels,
+  [250, 450, 50, 250],
+)
 
 export default {
   title:
@@ -12,5 +22,5 @@ type Story = StoryObj<typeof CanauxDesAccompagnements>
 
 export const Ecran: Story = {
   name: 'Écran',
-  render: () => <CanauxDesAccompagnements typeLieu={repartition.typeLieu} />,
+  render: () => <CanauxDesAccompagnements typeLieu={typeLieu} />,
 }

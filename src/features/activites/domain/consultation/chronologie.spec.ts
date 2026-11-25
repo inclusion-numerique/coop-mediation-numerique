@@ -1,10 +1,20 @@
 import { describe, expect, it } from 'vitest'
-import { criteresDesActivitesDepuisLURL } from '@/features/activites/fixtures/criteres-depuis-l-url'
+import { TypeDActivite } from '../mediation/type-d-activite'
+import { StatutDeRendezVous } from '../rendez-vous/statut-de-rendez-vous'
 import { contenuDeLaChronologie } from './chronologie'
+import type { CriteresDesActivites } from './criteres-des-activites'
+import { CRITERES_VIDES } from './criteres-vides'
 
 const connecte = { _tag: 'Connecte', affichesDansLaListe: true } as const
 const masques = { _tag: 'Connecte', affichesDansLaListe: false } as const
 const nonConnecte = { _tag: 'NonConnecte' } as const
+
+const statutPasse: Partial<CriteresDesActivites> = {
+  statutsDeRendezVous: [StatutDeRendezVous('Passe')],
+}
+const typeIndividuel: Partial<CriteresDesActivites> = {
+  types: [TypeDActivite('Individuel')],
+}
 
 describe('contenu de la chronologie', () => {
   it.each([
@@ -13,29 +23,21 @@ describe('contenu de la chronologie', () => {
     ['sans filtre, compte non connecté', {}, nonConnecte, 'ActivitesSeules'],
     [
       'statut filtré, rendez-vous masqués',
-      { rdvs: 'past' },
+      statutPasse,
       masques,
       'RendezVousSeuls',
     ],
-    [
-      'statut filtré, compte non connecté',
-      { rdvs: 'past' },
-      nonConnecte,
-      'Rien',
-    ],
-    ['type filtré', { types: 'individuel' }, connecte, 'ActivitesSeules'],
+    ['statut filtré, compte non connecté', statutPasse, nonConnecte, 'Rien'],
+    ['type filtré', typeIndividuel, connecte, 'ActivitesSeules'],
     [
       'type et statut filtrés',
-      { types: 'individuel', rdvs: 'past' },
+      { ...typeIndividuel, ...statutPasse },
       connecte,
       'ActivitesSeules',
     ],
-  ] as const)('%s', (_, parametres, compte, attendu) => {
+  ] as const)('%s', (_, criteres, compte, attendu) => {
     expect(
-      contenuDeLaChronologie(
-        criteresDesActivitesDepuisLURL(parametres),
-        compte,
-      ),
+      contenuDeLaChronologie({ ...CRITERES_VIDES, ...criteres }, compte),
     ).toBe(attendu)
   })
 })

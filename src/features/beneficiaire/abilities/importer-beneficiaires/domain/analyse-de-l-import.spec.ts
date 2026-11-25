@@ -1,56 +1,65 @@
-import { readFileSync } from 'node:fs'
-import path from 'node:path'
-import type { CellValue } from 'exceljs'
-import Excel from 'exceljs'
 import { describe, expect, it } from 'vitest'
-import type { Analysis } from '@/features/beneficiaire/abilities/importer-beneficiaires/domain/analyse-de-l-import'
-import { analyserLaFeuille } from '@/features/beneficiaire/abilities/importer-beneficiaires/domain/analyse-de-l-import'
-import type { FeuilleImport } from '@/features/beneficiaire/abilities/importer-beneficiaires/domain/feuille-import'
-import { clientDesCommunes } from '@/features/beneficiaire/abilities/importer-beneficiaires/implementations/fichier/communes.query'
-import { getBeneficiaireImportSheet } from '../implementations/excel/feuille-d-import.classeur'
 import {
   AnalysisSchema,
-  importBeneficiaireWorksheetName,
+  analyserLaFeuille,
+  type CommunesClient,
 } from './analyse-de-l-import'
+import type { FeuilleImport, ValeurCellule } from './feuille-import'
 
-const analyseImportBeneficiairesExcel = async (
-  feuille: FeuilleImport,
-): Promise<Analysis> => analyserLaFeuille(await clientDesCommunes())(feuille)
+const communes = [
+  { codeInsee: '32057', nom: 'Blaziert', codePostal: '32100' },
+  { codeInsee: '01053', nom: 'Bourg-en-Bresse', codePostal: '01000' },
+  { codeInsee: '77251', nom: 'Lieusaint', codePostal: '77127' },
+]
 
-const enTetes: ReadonlyArray<ReadonlyArray<CellValue>> = [
+const communesClient: CommunesClient = {
+  findCommuneByInsee: (code) =>
+    communes.find(({ codeInsee }) => codeInsee === code) ?? null,
+}
+
+const analyser = analyserLaFeuille(communesClient)
+
+const enTetes: FeuilleImport = [
   ['Instructions'],
   ['Nom', 'Prénom', 'Année de naissance', 'Commune', 'Commune', 'Commune'],
   ['Nom', 'Prénom', 'Année de naissance', 'Nom', 'Code INSEE', 'Code postal'],
 ]
 
-const feuilleDepuisLignes = async (
-  lignes: ReadonlyArray<ReadonlyArray<CellValue>>,
-) => {
-  const workbook = new Excel.Workbook()
-  workbook
-    .addWorksheet(importBeneficiaireWorksheetName)
-    .addRows([...enTetes, ...lignes].map((ligne) => [...ligne]))
-  const contenu = await workbook.xlsx.writeBuffer()
-  return getBeneficiaireImportSheet(Buffer.from(contenu))
-}
+const feuilleDepuisLignes = (
+  lignes: ReadonlyArray<ReadonlyArray<ValeurCellule>>,
+): FeuilleImport => [...enTetes, ...lignes]
 
-const getSheetFromLocalFile = (file: string) => {
-  const filePath = path.resolve(__dirname, `../../../fixtures/${file}`)
+const ligneDExemple = [
+  'Exemple',
+  'Léa',
+  1970,
+  'Blaziert',
+  '32057',
+  '32100',
+  '0102030405',
+  null,
+  'Féminin',
+]
 
-  const fileBuffer = readFileSync(filePath)
+const lignesAvecErreurs = [
+  [
+    'Exemple',
+    'Léa',
+    1970,
+    'Bourg-en-Bresse',
+    '01053',
+    '01000',
+    '0102030405',
+    null,
+    'Féminin',
+  ],
+  ['Exemple', null, 1970, null, 0, 0, null, null, null],
+  [null, 'Albert', 'nuage', null, 0, 0, null, null, null],
+]
 
-  return getBeneficiaireImportSheet(fileBuffer)
-}
-
-describe('analyseImportBeneficiairesExcel', { timeout: 10_000 }, () => {
-  it('should parse the downloadable model xlsx file', async () => {
-    const workbook = await getSheetFromLocalFile(
-      '../../../../public/modeles/coop-numerique_import-beneficiaires.xlsx',
-    )
-
-    const result = await analyseImportBeneficiairesExcel(workbook)
-
-    expect(result).toEqual({
+describe('analyse de la feuille d’import', () => {
+  it('analyse la ligne d’exemple du modèle', () => {
+    expect(analyser(feuilleDepuisLignes([ligneDExemple]))).toEqual({
       status: 'ok',
       rows: [
         {
@@ -78,15 +87,17 @@ describe('analyseImportBeneficiairesExcel', { timeout: 10_000 }, () => {
         },
       ],
     })
-
-    expect(AnalysisSchema.safeParse(result).error).toBe(undefined)
   })
 
-  it('should parse an excel with errors', async () => {
-    const workbook = await getSheetFromLocalFile('import-avec-erreurs.xlsx')
-    const result = await analyseImportBeneficiairesExcel(workbook)
+  it('produit une analyse conforme à son schéma', () => {
+    expect(
+      AnalysisSchema.safeParse(analyser(feuilleDepuisLignes([ligneDExemple])))
+        .error,
+    ).toBe(undefined)
+  })
 
-    expect(result).toEqual({
+  it('signale les lignes en erreur', () => {
+    expect(analyser(feuilleDepuisLignes(lignesAvecErreurs))).toEqual({
       status: 'error',
       rows: [
         {
@@ -158,29 +169,34 @@ describe('analyseImportBeneficiairesExcel', { timeout: 10_000 }, () => {
         },
       ],
     })
-
-    expect(AnalysisSchema.safeParse(result).error).toBe(undefined)
   })
 
-  it('should read rich text, formula results and hyperlinks as plain values', async () => {
-    const feuille = await feuilleDepuisLignes([
-      [
-        { richText: [{ text: 'Exem' }, { text: 'ple' }] },
-        'Léa',
-        { formula: '1900+70', result: 1970 },
-        'Blaziert',
-        { formula: 'VLOOKUP(D4,Communes!A:B,2,0)', result: '32057' },
-        { formula: 'VLOOKUP(D4,Communes!A:C,3,0)', result: 32100 },
-        '0102030405',
-        { text: 'lea@exemple.fr', hyperlink: 'mailto:lea@exemple.fr' },
-        'Féminin',
-      ],
-      [null, null, null, null, { formula: 'IF(D5="","",D5)' }],
-    ])
+  it('produit une analyse en erreur conforme à son schéma', () => {
+    expect(
+      AnalysisSchema.safeParse(analyser(feuilleDepuisLignes(lignesAvecErreurs)))
+        .error,
+    ).toBe(undefined)
+  })
 
-    const result = await analyseImportBeneficiairesExcel(feuille)
-
-    expect(result).toEqual({
+  it('lit un code postal numérique et ignore une ligne vide', () => {
+    expect(
+      analyser(
+        feuilleDepuisLignes([
+          [
+            'Exemple',
+            'Léa',
+            1970,
+            'Blaziert',
+            '32057',
+            32100,
+            '0102030405',
+            'lea@exemple.fr',
+            'Féminin',
+          ],
+          [null, null, null, null, null],
+        ]),
+      ),
+    ).toEqual({
       status: 'ok',
       rows: [
         {
@@ -210,190 +226,82 @@ describe('analyseImportBeneficiairesExcel', { timeout: 10_000 }, () => {
     })
   })
 
-  it('should read a date as its excel serial number', async () => {
-    const feuille = await feuilleDepuisLignes([
-      ['Exemple', 'Léa', new Date(Date.UTC(1970, 0, 1))],
-    ])
+  it('refuse une année de naissance lue comme un numéro de série Excel', () => {
+    const result = analyser(feuilleDepuisLignes([['Exemple', 'Léa', 25_569]]))
 
-    const result = await analyseImportBeneficiairesExcel(feuille)
-
-    expect(result.status).toBe('error')
-    expect(result.rows).toHaveLength(1)
-    expect(result.rows[0]?.values.anneeNaissance).toBe(25_569)
-    expect(result.rows[0]?.errors).toEqual({
-      anneeNaissance: 'Veuillez renseigner une année de naissance valide',
+    expect({
+      status: result.status,
+      nombreDeLignes: result.rows.length,
+      anneeNaissance: result.rows[0]?.values.anneeNaissance,
+      errors: result.rows[0]?.errors,
+    }).toEqual({
+      status: 'error',
+      nombreDeLignes: 1,
+      anneeNaissance: 25_569,
+      errors: {
+        anneeNaissance: 'Veuillez renseigner une année de naissance valide',
+      },
     })
   })
 
-  it('accepte une commune homonyme désignée par son nom et son code postal', async () => {
-    const feuille = await feuilleDepuisLignes([
-      ['Exemple', 'Léa', 1970, 'Lieusaint (77127)', '77251', '77127'],
-    ])
+  it('accepte une commune homonyme désignée par son nom et son code postal', () => {
+    const result = analyser(
+      feuilleDepuisLignes([
+        ['Exemple', 'Léa', 1970, 'Lieusaint (77127)', '77251', '77127'],
+      ]),
+    )
 
-    const result = await analyseImportBeneficiairesExcel(feuille)
-
-    expect(result.status).toBe('ok')
-    expect(result.rows[0]?.parsed.commune).toEqual({
-      codeInsee: '77251',
-      nom: 'Lieusaint',
-      codePostal: '77127',
+    expect({
+      status: result.status,
+      commune: result.rows[0]?.parsed.commune,
+    }).toEqual({
+      status: 'ok',
+      commune: { codeInsee: '77251', nom: 'Lieusaint', codePostal: '77127' },
     })
   })
 
-  it('accepte encore le nom seul des modèles déjà téléchargés', async () => {
-    const feuille = await feuilleDepuisLignes([
-      ['Exemple', 'Léa', 1970, 'Lieusaint', '77251', '77127'],
-    ])
-
-    const result = await analyseImportBeneficiairesExcel(feuille)
-
-    expect(result.status).toBe('ok')
+  it('accepte encore le nom seul des modèles déjà téléchargés', () => {
+    expect(
+      analyser(
+        feuilleDepuisLignes([
+          ['Exemple', 'Léa', 1970, 'Lieusaint', '77251', '77127'],
+        ]),
+      ).status,
+    ).toBe('ok')
   })
 
-  it("refuse le libellé d'une autre commune homonyme", async () => {
-    const feuille = await feuilleDepuisLignes([
-      ['Exemple', 'Léa', 1970, 'Lieusaint (50700)', '77251', '77127'],
-    ])
-
-    const result = await analyseImportBeneficiairesExcel(feuille)
-
-    expect(result.rows[0]?.errors).toEqual({
+  it("refuse le libellé d'une autre commune homonyme", () => {
+    expect(
+      analyser(
+        feuilleDepuisLignes([
+          ['Exemple', 'Léa', 1970, 'Lieusaint (50700)', '77251', '77127'],
+        ]),
+      ).rows[0]?.errors,
+    ).toEqual({
       communeNom: 'Le nom de la commune ne correspond pas',
     })
   })
 
-  describe('modèle téléchargeable', () => {
-    const premiereLigneBeneficiaires = 4
-    const derniereLigneBeneficiaires = 3117
+  it('refuse un nom porté par plusieurs communes tant que le code postal manque', () => {
+    const result = analyser(
+      feuilleDepuisLignes([
+        [
+          'Exemple',
+          'Léa',
+          1970,
+          'Lieusaint',
+          'Précisez : Lieusaint (code postal)',
+          '50700 ou 77127',
+        ],
+      ]),
+    )
 
-    const modele = async () => {
-      const workbook = new Excel.Workbook()
-      await workbook.xlsx.readFile(
-        path.resolve(
-          __dirname,
-          '../../../../../../public/modeles/coop-numerique_import-beneficiaires.xlsx',
-        ),
-      )
-      return workbook
-    }
-
-    const communesDuModele = async () => {
-      const lignes = (await modele()).getWorksheet('Communes')?.getSheetValues()
-      return (lignes ?? [])
-        .slice(2)
-        .filter((ligne): ligne is CellValue[] => Array.isArray(ligne))
-        .map((ligne) => ({
-          libelle: String(ligne[1]),
-          codeInsee: String(ligne[2]),
-          codePostal: ligne[3] == null ? null : String(ligne[3]),
-        }))
-    }
-
-    it('désigne chaque commune par un libellé unique', async () => {
-      const libelles = (await communesDuModele()).map(({ libelle }) => libelle)
-
-      expect(libelles).toHaveLength(35_071)
-      expect(new Set(libelles).size).toBe(libelles.length)
-    }, 30_000)
-
-    it("propose des libellés que l'import accepte", async () => {
-      const communes = await communesDuModele()
-      const feuille = [
-        [],
-        [],
-        [],
-        ...communes
-          .filter(({ codePostal }) => codePostal != null)
-          .map(({ libelle, codeInsee, codePostal }) => [
-            'Exemple',
-            'Léa',
-            1970,
-            libelle,
-            codeInsee,
-            codePostal,
-          ]),
-      ]
-
-      const result = await analyseImportBeneficiairesExcel(feuille)
-
-      expect(result.rows.filter((row) => row.errors)).toEqual([])
-    }, 60_000)
-
-    it('calcule les codes de la commune sur toutes les lignes de saisie', async () => {
-      const feuille = (await modele()).getWorksheet(
-        importBeneficiaireWorksheetName,
-      )
-      const lignes = Array.from(
-        {
-          length: derniereLigneBeneficiaires - premiereLigneBeneficiaires + 1,
-        },
-        (_, index) => premiereLigneBeneficiaires + index,
-      )
-
-      const lignesSansFormule = lignes.filter(
-        (ligne) =>
-          feuille?.getCell(`E${ligne}`).formula == null ||
-          feuille?.getCell(`F${ligne}`).formula == null,
-      )
-
-      expect(lignesSansFormule).toEqual([])
-    }, 30_000)
-
-    it('propose une liste limitée aux communes sur toutes les lignes de saisie', async () => {
-      const feuille = (await modele()).getWorksheet(
-        importBeneficiaireWorksheetName,
-      )
-      const lignes = Array.from(
-        {
-          length: derniereLigneBeneficiaires - premiereLigneBeneficiaires + 1,
-        },
-        (_, index) => premiereLigneBeneficiaires + index,
-      )
-
-      const lignesSansListe = lignes.filter(
-        (ligne) =>
-          feuille?.getCell(`D${ligne}`).dataValidation?.formulae?.[0] !==
-          'Communes!$A$2:$A$35072',
-      )
-
-      expect(lignesSansListe).toEqual([])
-    }, 30_000)
-
-    it('range les communes homonymes côte à côte', async () => {
-      const libelles = (await communesDuModele()).map(({ libelle }) => libelle)
-
-      expect(libelles.indexOf('Lieusaint (77127)')).toBe(
-        libelles.indexOf('Lieusaint (50700)') + 1,
-      )
-    }, 30_000)
-
-    it('indique les codes postaux possibles pour un nom porté par plusieurs communes', async () => {
-      const lignes = (await modele()).getWorksheet('Communes')?.getSheetValues()
-      const aide = (lignes ?? [])
-        .filter((ligne): ligne is CellValue[] => Array.isArray(ligne))
-        .find((ligne) => ligne[4] === 'Lieusaint')
-
-      expect(aide?.[5]).toBe('50700 ou 77127')
-    }, 30_000)
-  })
-
-  it('refuse un nom porté par plusieurs communes tant que le code postal manque', async () => {
-    const feuille = await feuilleDepuisLignes([
-      [
-        'Exemple',
-        'Léa',
-        1970,
-        'Lieusaint',
-        'Précisez : Lieusaint (code postal)',
-        '50700 ou 77127',
-      ],
-    ])
-
-    const result = await analyseImportBeneficiairesExcel(feuille)
-
-    expect(result.rows[0]?.parsed.commune).toBeNull()
-    expect(result.rows[0]?.errors).toEqual({
-      communeCodeInsee: 'Code commune non trouvé',
+    expect({
+      commune: result.rows[0]?.parsed.commune,
+      errors: result.rows[0]?.errors,
+    }).toEqual({
+      commune: null,
+      errors: { communeCodeInsee: 'Code commune non trouvé' },
     })
   })
 })

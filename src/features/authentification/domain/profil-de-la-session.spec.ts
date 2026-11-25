@@ -1,7 +1,34 @@
 import { describe, expect, it } from 'vitest'
-import { utilisateurDeLaSession } from '../fixtures/utilisateur-de-la-session'
 import { profilDeLaSession } from './profil-de-la-session'
 import type { UtilisateurDeLaSession } from './utilisateur-de-la-session'
+
+const utilisateurDeLaSession = {
+  id: 'test',
+  email: 'jean.biche@example.com',
+  phone: '0123456789',
+  firstName: 'Jean',
+  lastName: 'Biche',
+  name: 'Jean Biche',
+  role: 'User',
+  siret: '13002603200016',
+  updated: new Date('2023-05-05').toISOString(),
+  created: new Date('2023-01-01').toISOString(),
+  hasSeenOnboarding: new Date('2023-01-01').toISOString(),
+  emailVerified: null,
+  isFixture: false,
+  usurper: null,
+  isConseillerNumerique: false,
+  coordinateur: null,
+  emplois: [],
+  inscriptionValidee: null,
+  lieuxActiviteRenseignes: null,
+  mediateur: null,
+  profilInscription: null,
+  acceptationCgu: null,
+  structureEmployeuseRenseignee: null,
+  rdvAccount: null,
+  timezone: 'Europe/Paris',
+} satisfies UtilisateurDeLaSession
 
 const coordination = (coordinateurId: string, nom: string | null) => ({
   coordinateur: {

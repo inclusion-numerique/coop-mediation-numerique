@@ -1,6 +1,16 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { repartition } from '@/features/activites/fixtures/repartition-de-demonstration'
+import {
+  typeActiviteLabels,
+  typeActiviteValues,
+} from '@/features/activites/ui/labels/libelles/type-activite.labels'
+import { partsFixees } from '@/libraries/proportions'
 import { TypesDActivite } from './TypesDActivite'
+
+const typeActivites = partsFixees(
+  typeActiviteValues,
+  typeActiviteLabels,
+  [400, 350, 250],
+)
 
 export default {
   title:
@@ -12,7 +22,5 @@ type Story = StoryObj<typeof TypesDActivite>
 
 export const Ecran: Story = {
   name: 'Écran',
-  render: () => (
-    <TypesDActivite typeActivites={repartition.typeActivites} ateliers={400} />
-  ),
+  render: () => <TypesDActivite typeActivites={typeActivites} ateliers={400} />,
 }

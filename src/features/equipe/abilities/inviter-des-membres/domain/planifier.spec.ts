@@ -1,12 +1,43 @@
 import { describe, expect, it } from 'vitest'
 import { Courriel, MediateurId } from '../../../domain'
+import { CoordinateurId } from '../../../domain/identifiants/coordinateur-id'
 import {
-  coordinateurId,
-  invitationAcceptee,
-  invitationEnAttente,
-  invitationRefusee,
-} from '../../../fixtures/domaine'
+  type InvitationAcceptee,
+  type InvitationEnAttente,
+  type InvitationRefusee,
+} from '../../../domain/invitation/invitation'
+import { ReferenceInvitation } from '../../../domain/invitation/reference-invitation'
 import { planifier } from './planifier'
+
+const coordinateurId = CoordinateurId('550e8400-e29b-41d4-a716-446655440001')
+
+const mediateurId = MediateurId('550e8400-e29b-41d4-a716-446655440011')
+
+const email = Courriel('invite@example.com')
+
+const reference = ReferenceInvitation({ email, coordinateurId })
+
+const invitationEnAttente: InvitationEnAttente = {
+  reference,
+  invite: { type: 'SansCompte' },
+  envoyeeLe: new Date('2026-01-01T09:00:00Z'),
+  renvoyeeLe: null,
+  statut: 'EnAttente',
+}
+
+const invitationAcceptee: InvitationAcceptee = {
+  ...invitationEnAttente,
+  invite: { type: 'MediateurInscrit', mediateurId },
+  renvoyeeLe: new Date('2026-01-05T09:00:00Z'),
+  statut: 'Acceptee',
+  accepteeLe: new Date('2026-01-06T09:00:00Z'),
+}
+
+const invitationRefusee: InvitationRefusee = {
+  ...invitationEnAttente,
+  statut: 'Refusee',
+  refuseeLe: new Date('2026-01-03T09:00:00Z'),
+}
 
 const maintenant = new Date('2026-10-14T09:00:00Z')
 const nouveau = Courriel('nouveau@example.com')

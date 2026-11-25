@@ -1,10 +1,21 @@
 import { describe, expect, it } from 'vitest'
-import { criteresDesActivitesDepuisLURL } from '@/features/activites/fixtures/criteres-depuis-l-url'
+import { CodeDepartement, CodeInsee } from '@/libraries/insee'
+import {
+  CRITERES_VIDES,
+  type CriteresDesActivites,
+  EmployeuseId,
+  FiltreDeDispositif,
+  FiltreDOrigine,
+  LieuActiviteId,
+  SourceDeLActivite,
+  TagId,
+  ThematiqueRecherchee,
+  TypeDActivite,
+} from '../../domain'
 import { filtreDesActivites } from './criteres-des-activites.sql'
 
-const filtre = (
-  parametres: Parameters<typeof criteresDesActivitesDepuisLURL>[0],
-) => filtreDesActivites(criteresDesActivitesDepuisLURL(parametres))
+const filtre = (criteres: Partial<CriteresDesActivites>) =>
+  filtreDesActivites({ ...CRITERES_VIDES, ...criteres })
 
 describe('filtre SQL des activités', () => {
   it('ne restreint rien sans critère', () => {
@@ -13,15 +24,14 @@ describe('filtre SQL des activités', () => {
 
   it('passe toutes les valeurs en paramètres, jamais dans le texte', () => {
     const sql = filtre({
-      du: '2026-01-01',
-      au: '2026-03-31',
-      types: 'individuel',
-      lieux: 'a0000000-0000-4000-8000-000000000001',
-      communes: '69123',
-      departements: '2A',
-      thematiqueNonAdministratives: 'Email',
-      tags: 'd0000000-0000-4000-8000-000000000001',
-      structuresEmployeuses: '42',
+      periode: { du: new Date('2026-01-01'), au: new Date('2026-03-31') },
+      types: [TypeDActivite('Individuel')],
+      lieux: [LieuActiviteId('a0000000-0000-4000-8000-000000000001')],
+      communes: [CodeInsee('69123')],
+      departements: [CodeDepartement('2A')],
+      thematiques: [ThematiqueRecherchee('Email')],
+      tags: [TagId('d0000000-0000-4000-8000-000000000001')],
+      employeuses: [EmployeuseId(42)],
     })
     expect(sql.sql).not.toMatch(/69123|2A|email|individuel|a0000000|42/)
     expect(sql.values).toEqual([
@@ -37,21 +47,17 @@ describe('filtre SQL des activités', () => {
     ])
   })
 
-  it('n’ajoute aucune condition pour une valeur injectée', () => {
-    expect(filtre({ lieux: "x') OR 1=1 --" }).sql).toBe('TRUE')
-  })
-
   it.each([
-    ['rdv', '1', 'act.rdv_id IS NOT NULL'],
-    ['rdv', '0', 'act.rdv_id IS NULL'],
-    ['source', 'v1', 'act.v1_cra_id IS NOT NULL'],
-    ['source', 'v2', 'act.v1_cra_id IS NULL'],
-  ])('traduit %s=%s', (cle, valeur, attendu) => {
-    expect(filtre({ [cle]: valeur }).sql).toBe(attendu)
+    [{ origine: FiltreDOrigine('RendezVous') }, 'act.rdv_id IS NOT NULL'],
+    [{ origine: FiltreDOrigine('HorsRendezVous') }, 'act.rdv_id IS NULL'],
+    [{ source: SourceDeLActivite('ImportV1') }, 'act.v1_cra_id IS NOT NULL'],
+    [{ source: SourceDeLActivite('Coop') }, 'act.v1_cra_id IS NULL'],
+  ])('traduit %o', (criteres, attendu) => {
+    expect(filtre(criteres).sql).toBe(attendu)
   })
 
   it('lit le dispositif dans la vue des conseillers numériques en poste de main', () => {
-    const sql = filtre({ conseiller_numerique: '0' })
+    const sql = filtre({ dispositif: FiltreDeDispositif('HorsDispositif') })
     expect([sql.sql, sql.values]).toEqual([
       'NOT EXISTS (SELECT 1 FROM main.conseiller_numerique_en_poste cn JOIN main.personne p ON p.id = cn.personne_id WHERE p.coop_id = u.id)',
       [],

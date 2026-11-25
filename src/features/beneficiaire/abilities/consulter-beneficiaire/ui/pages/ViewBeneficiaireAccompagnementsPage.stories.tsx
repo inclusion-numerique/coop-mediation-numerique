@@ -2,16 +2,20 @@ import type { Meta, StoryObj } from '@storybook/react'
 import type { ComponentProps } from 'react'
 import BeneficiaireConsultationLayout from '@/features/beneficiaire/abilities/consulter-beneficiaire/ui/layouts/BeneficiaireConsultationLayout'
 import ViewBeneficiaireAccompagnementsPage from '@/features/beneficiaire/abilities/consulter-beneficiaire/ui/pages/ViewBeneficiaireAccompagnementsPage'
-import { beneficiairesDeDemonstration } from '@/features/beneficiaire/fixtures/beneficiaires-de-demonstration'
 
-const {
-  beneficiaireMaximaleMediateurAvecActivite,
-  beneficiaireMinimaleMediateurAvecActivite,
-} = beneficiairesDeDemonstration({
-  mediateurAvecActivite: '303381cc-3da7-433d-a553-1a5f76465989',
-  conseillerNumerique: '1ae07d95-316c-489f-893a-d17052c883b7',
-  coordinateurInscritAvecTout: '379a0d7e-54ac-4db6-95c4-3752cdd05d32',
-})
+const beneficiaireMinimaleMediateurAvecActivite = {
+  id: 'f4dbca97-6fe8-4be1-97be-bdf5e66b9ea8',
+  prenom: 'Jeanne',
+  nom: 'Minimale',
+  anneeNaissance: null,
+}
+
+const beneficiaireMaximaleMediateurAvecActivite = {
+  id: '36929ed7-3b6f-4ed3-9924-b5e1a6c27096',
+  prenom: 'Jean',
+  nom: 'Maximal',
+  anneeNaissance: 1980,
+}
 
 type Accompagnements = ComponentProps<
   typeof ViewBeneficiaireAccompagnementsPage

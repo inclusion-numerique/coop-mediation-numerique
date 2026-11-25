@@ -1,6 +1,16 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { repartition } from '@/features/activites/fixtures/repartition-de-demonstration'
+import {
+  thematiquesAdministrativesLabels,
+  thematiquesAdministrativesValues,
+} from '@/features/activites/ui/labels/libelles/thematique.labels'
+import { partsFixees } from '@/libraries/proportions'
 import { DemarchesDesAccompagnements } from './DemarchesDesAccompagnements'
+
+const thematiquesDemarches = partsFixees(
+  thematiquesAdministrativesValues,
+  thematiquesAdministrativesLabels,
+  [100, 90, 80, 60, 50, 40, 30, 20, 10, 10],
+)
 
 export default {
   title:
@@ -13,9 +23,7 @@ type Story = StoryObj<typeof DemarchesDesAccompagnements>
 export const Ecran: Story = {
   name: 'Écran',
   render: () => (
-    <DemarchesDesAccompagnements
-      thematiquesDemarches={repartition.thematiquesDemarches}
-    />
+    <DemarchesDesAccompagnements thematiquesDemarches={thematiquesDemarches} />
   ),
 }
 
@@ -23,7 +31,7 @@ export const Imprime: Story = {
   name: 'Imprimé',
   render: () => (
     <DemarchesDesAccompagnements
-      thematiquesDemarches={repartition.thematiquesDemarches}
+      thematiquesDemarches={thematiquesDemarches}
       pourImpression
     />
   ),

@@ -1,9 +1,64 @@
 import { describe, expect, it } from 'vitest'
+import { Siret } from '@/libraries/insee'
+import { AdresseEmployeuse } from '../adresse-employeuse'
+import { type Contrat } from '../affectation/contrat'
+import { PeriodeEmploi } from '../affectation/periode-emploi'
+import { SourceAffectation } from '../affectation/source-affectation'
+import { DenominationEmployeuse } from '../denomination-employeuse'
+import { type Employeuse } from '../employeuse'
+import { EmployeuseId } from '../employeuse-id'
 import {
-  actuelle as affectationActuelle,
-  contrat,
-} from '../../fixtures/domaine'
-import { employeuseActuelle } from './employeuse-actuelle'
+  type AffectationActuelle,
+  employeuseActuelle,
+} from './employeuse-actuelle'
+
+const employeuse = (
+  id: number,
+  overrides: Partial<Employeuse> = {},
+): Employeuse => ({
+  id: EmployeuseId(id),
+  denomination: DenominationEmployeuse(`Structure ${id}`),
+  denominationSirene: DenominationEmployeuse(`Structure ${id}`),
+  siret: Siret(`${id}`.padStart(14, '9')),
+  rna: null,
+  adresse: AdresseEmployeuse({
+    voie: '12 rue des Tests',
+    codePostal: '44000',
+    codeInsee: '44109',
+    commune: 'Nantes',
+  }),
+  contactReferent: { _tag: 'nonRenseigne' },
+  creation: null,
+  modification: null,
+  suppression: null,
+  ...overrides,
+})
+
+const affectationActuelle = (
+  source: string,
+  employeuseId: number,
+): AffectationActuelle => ({
+  employeuse: employeuse(employeuseId),
+  source: SourceAffectation(source),
+})
+
+const contrat = (
+  employeuseId: number,
+  dates: {
+    debut?: Date | null
+    fin?: Date | null
+    rupture?: Date | null
+    maintenant?: Date
+  } = {},
+): Contrat => ({
+  employeuse: employeuse(employeuseId),
+  periode: PeriodeEmploi({
+    debut: dates.debut ?? null,
+    fin: dates.fin ?? null,
+    rupture: dates.rupture ?? null,
+    maintenant: dates.maintenant ?? new Date('2100-01-01'),
+  }),
+})
 
 describe('employeuseActuelle', () => {
   it('retient la période du contrat de l’employeuse actuelle', () => {

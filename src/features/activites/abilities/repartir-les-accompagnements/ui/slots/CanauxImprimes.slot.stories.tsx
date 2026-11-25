@@ -1,6 +1,16 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { repartition } from '@/features/activites/fixtures/repartition-de-demonstration'
+import {
+  typeLieuLabels,
+  typeLieuValues,
+} from '@/features/activites/ui/labels/libelles/type-lieu.labels'
+import { partsFixees } from '@/libraries/proportions'
 import { CanauxImprimes } from './CanauxImprimes.slot'
+
+const typeLieu = partsFixees(
+  typeLieuValues,
+  typeLieuLabels,
+  [250, 450, 50, 250],
+)
 
 export default {
   title:
@@ -12,5 +22,5 @@ type Story = StoryObj<typeof CanauxImprimes>
 
 export const Imprime: Story = {
   name: 'Imprimé',
-  render: () => <CanauxImprimes typeLieu={repartition.typeLieu} />,
+  render: () => <CanauxImprimes typeLieu={typeLieu} />,
 }

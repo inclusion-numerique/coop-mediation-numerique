@@ -1,6 +1,24 @@
 import { describe, expect, it } from 'vitest'
-import { filtresDesActeursDuReseau } from '../../abilities/lister-les-acteurs-du-departement/ui/filtres/acteurs-du-reseau.filtre'
+import {
+  composerLEtat,
+  filtreDeChoixUnique,
+  rechercheLibre,
+} from '@/libraries/etat-d-url'
+import { filtreDesCommunesDuReseau } from '../filtres/reseau.filtre'
 import { barreDuReseau } from './barre-du-reseau.presenter'
+
+const filtresDesActeursDuReseau = composerLEtat(
+  rechercheLibre,
+  filtreDesCommunesDuReseau,
+  filtreDeChoixUnique({
+    titre: 'Rôle',
+    cle: 'role',
+    choix: {
+      mediateur_numerique: 'Médiateur numérique',
+      coordinateur: 'Coordinateur',
+    },
+  }),
+)
 
 const AURILLAC = { value: '15014', label: 'Aurillac · 15000' }
 const SAINT_FLOUR = { value: '15187', label: 'Saint-Flour · 15100' }
