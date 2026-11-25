@@ -1,7 +1,7 @@
 'use client'
 
 import { type ReactNode, useRef } from 'react'
-import { CaptureButton } from '@/libraries/ui/components/CaptureButton'
+import { CaptureButton } from '@/libraries/ui/components'
 
 export const SectionGenerale = ({
   wording = 'personnel',

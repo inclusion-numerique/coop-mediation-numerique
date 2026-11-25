@@ -1,7 +1,9 @@
 import Button from '@codegouvfr/react-dsfr/Button'
-import { PeriodeEnPopover } from '@/libraries/etat-d-url/filtres/PeriodeEnPopover'
-import AdministrationInfoCard from '@/libraries/ui/components/administration/AdministrationInfoCard'
-import AdministrationInlineLabelsValues from '@/libraries/ui/components/administration/AdministrationInlineLabelsValues'
+import { PeriodeEnPopover } from '@/libraries/etat-d-url/filtres'
+import {
+  AdministrationInfoCard,
+  AdministrationInlineLabelsValues,
+} from '@/libraries/ui/components'
 import {
   adresseDExport,
   adressesDesExports,

@@ -1,7 +1,7 @@
 import {
   type ChangeObjectKeysCaseRecursive,
   changeObjectKeysCaseRecursive,
-} from '@/libraries/collections/change-object-keys-case-recursive'
+} from '@/libraries/collections'
 
 type NombreDuJour = { label: string; count: number }
 

@@ -1,4 +1,4 @@
-import type { AuteurDExport } from '@/libraries/tableur/add-export-metadata'
+import type { AuteurDExport } from '@/libraries/tableur'
 
 type EtiquetteDuFiltre = { readonly titre: string; readonly libelle: string }
 

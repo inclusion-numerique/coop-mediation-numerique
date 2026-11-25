@@ -3,7 +3,7 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import { SegmentedControl } from '@codegouvfr/react-dsfr/SegmentedControl'
 import { Fragment, type ReactNode, useRef, useState } from 'react'
-import { CaptureButton } from '@/libraries/ui/components/CaptureButton'
+import { CaptureButton } from '@/libraries/ui/components'
 
 type AccompagnementCategory = 'thematiques' | 'demarches' | 'tags'
 type StructuresCategory = 'lieux' | 'communes'

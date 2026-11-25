@@ -6,8 +6,8 @@ import {
   sectionBeneficiaires,
   sectionGenerale,
 } from '@/features/statistiques/ui/slots/SectionsDesStatistiques.slot'
-import { ServerActionSuccess } from '@/libraries/nextjs/action/result'
-import { provide } from '@/libraries/nextjs/injection/client'
+import { ServerActionSuccess } from '@/libraries/nextjs'
+import { provide } from '@/libraries/nextjs/injection'
 import { MesStatistiquesPage } from './MesStatistiquesPage'
 
 const Emplacement = ({ nom }: { nom: string }) => (
