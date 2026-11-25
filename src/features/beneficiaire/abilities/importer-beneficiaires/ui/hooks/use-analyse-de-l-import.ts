@@ -1,3 +1,5 @@
+'use client'
+
 import { useCallback, useMemo } from 'react'
 import type { AnalyseResponse } from '../../domain/analyse-de-l-import'
 
