@@ -3,7 +3,7 @@ import {
   getTypologieFromApiEntreprise,
   type TypologieAnnuaire,
 } from '@/libraries/recherche-entreprises/typologie-from-api-entreprise'
-import { toTitleCase } from '@/libraries/texte/to-title-case'
+import { toTitleCase } from '@/libraries/texte'
 
 /**
  * SIRENE masque les données des établissements non diffusibles en rendant la
