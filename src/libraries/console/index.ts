@@ -1,1 +1,1 @@
-export * from './output'
+export { output, outputError } from './output'
