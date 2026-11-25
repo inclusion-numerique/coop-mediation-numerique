@@ -1,4 +1,4 @@
-import { CartographieLogo } from '@/libraries/pictograms/services/CartographieLogo'
+import { CartographieLogo } from '@/libraries/pictograms/services'
 import type { FicheOutil } from '../../presenters/fiche-de-l-outil.presenter'
 
 export default {

@@ -1,4 +1,4 @@
-import { AbcDiagLogo } from '@/libraries/pictograms/services/AbcDiagLogo'
+import { AbcDiagLogo } from '@/libraries/pictograms/services'
 import type { FicheOutil } from '../../presenters/fiche-de-l-outil.presenter'
 
 export default {

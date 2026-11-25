@@ -1,11 +1,13 @@
 import type { Model } from '@/libraries/model'
-import { Pictogram } from '@/libraries/pictograms/pictogram'
-import { AidantsConnectLogo } from '@/libraries/pictograms/services/AidantsConnectLogo'
-import { CartographieLogo } from '@/libraries/pictograms/services/CartographieLogo'
-import { CentreAideConseillerNumeriqueLogo } from '@/libraries/pictograms/services/CentreAideConseillerNumeriqueLogo'
-import { LesBasesLogo } from '@/libraries/pictograms/services/LesBasesLogo'
-import { MattermostLogo } from '@/libraries/pictograms/services/MattermostLogo'
-import { MonInclusionNumeriqueLogo } from '@/libraries/pictograms/services/MonInclusionNumeriqueLogo'
+import { Pictogram } from '@/libraries/pictograms'
+import {
+  AidantsConnectLogo,
+  CartographieLogo,
+  CentreAideConseillerNumeriqueLogo,
+  LesBasesLogo,
+  MattermostLogo,
+  MonInclusionNumeriqueLogo,
+} from '@/libraries/pictograms/services'
 import {
   type OutilDAccompagnement,
   outilsDAccompagnementVisibles,

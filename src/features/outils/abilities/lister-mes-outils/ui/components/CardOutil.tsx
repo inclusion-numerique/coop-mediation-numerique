@@ -4,7 +4,7 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'
 import { ReactNode } from 'react'
 import { hrefDeLOutil } from '@/features/outils/ui/presenters/liens.presenter'
-import { Pictogram } from '@/libraries/pictograms/pictogram'
+import { Pictogram } from '@/libraries/pictograms'
 
 export const CardOutil = ({
   pictogram: Pictogram,

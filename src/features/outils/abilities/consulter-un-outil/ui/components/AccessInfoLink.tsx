@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { routeConstruite } from '@/libraries/nextjs/route/route-construite'
+import { routeConstruite } from '@/libraries/nextjs'
 import type {
   FicheOutil,
   InformationDAcces,

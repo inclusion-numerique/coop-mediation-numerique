@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { Pictogram } from '@/libraries/pictograms/pictogram'
+import { Pictogram } from '@/libraries/pictograms'
 import type { ValeurDeSlugOutil } from '../../domain/index'
 import abcDiag from '../labels/fiches/abc-diag.labels'
 import aidantsConnect from '../labels/fiches/aidants-connect.labels'

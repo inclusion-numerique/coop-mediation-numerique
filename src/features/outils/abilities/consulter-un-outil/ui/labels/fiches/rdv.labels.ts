@@ -1,4 +1,4 @@
-import { RDVServicePublicLogo } from '@/libraries/pictograms/services/RDVServicePublicLogo'
+import { RDVServicePublicLogo } from '@/libraries/pictograms/services'
 import type { FicheOutil } from '../../presenters/fiche-de-l-outil.presenter'
 
 export default (website: string): FicheOutil => ({

@@ -1,10 +1,12 @@
 import classNames from 'classnames'
 import type { ReactNode } from 'react'
-import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
-import { contentId } from '@/libraries/liens-d-evitement/skip-links'
-import BackButton from '@/libraries/ui/components/BackButton'
-import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
-import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
+import { contentId } from '@/libraries/liens-d-evitement'
+import { SkipLinksPortal } from '@/libraries/liens-d-evitement/composants'
+import {
+  BackButton,
+  CoopBreadcrumbs,
+  CoopPageContainer,
+} from '@/libraries/ui/components'
 import { Access } from '../components/Access'
 import { ComingSoon } from '../components/ComingSoon'
 import { Features } from '../components/Features'

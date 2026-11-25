@@ -1,4 +1,4 @@
-import { LesBasesLogo } from '@/libraries/pictograms/services/LesBasesLogo'
+import { LesBasesLogo } from '@/libraries/pictograms/services'
 import type { FicheOutil } from '../../presenters/fiche-de-l-outil.presenter'
 
 export default {

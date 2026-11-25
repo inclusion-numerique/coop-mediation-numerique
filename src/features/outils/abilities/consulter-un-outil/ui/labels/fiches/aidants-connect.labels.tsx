@@ -1,4 +1,4 @@
-import { AidantsConnectLogo } from '@/libraries/pictograms/services/AidantsConnectLogo'
+import { AidantsConnectLogo } from '@/libraries/pictograms/services'
 import type { FicheOutil } from '../../presenters/fiche-de-l-outil.presenter'
 
 export default {

@@ -1,4 +1,4 @@
-import { MonInclusionNumeriqueLogo } from '@/libraries/pictograms/services/MonInclusionNumeriqueLogo'
+import { MonInclusionNumeriqueLogo } from '@/libraries/pictograms/services'
 import type { FicheOutil } from '../../presenters/fiche-de-l-outil.presenter'
 
 export default {
