@@ -1,7 +1,7 @@
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 import { Prisma } from '@/generated/prisma/client'
-import { cumulsSuccessifs } from '@/libraries/collections/cumuls-successifs'
-import { libelleCourtDuMois } from '@/libraries/date/month-short-labels'
+import { cumulsSuccessifs } from '@/libraries/collections'
+import { libelleCourtDuMois } from '@/libraries/date'
 
 type AccompagnementPerMonth = {
   byMediateurs: number

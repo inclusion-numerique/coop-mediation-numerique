@@ -1,7 +1,7 @@
-import { contactEmail, projectTitle } from '@/configuration/projet/config'
-import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
-import { contentId } from '@/libraries/liens-d-evitement/skip-links'
-import Breadcrumbs from '@/libraries/ui/components/Breadcrumbs'
+import { contactEmail, projectTitle } from '@/configuration/projet'
+import { contentId } from '@/libraries/liens-d-evitement'
+import { SkipLinksPortal } from '@/libraries/liens-d-evitement/composants'
+import { Breadcrumbs } from '@/libraries/ui/components'
 
 export const ConfidentialitePage = () => (
   <div className="fr-container">

@@ -1,4 +1,4 @@
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 import { computeProportion } from '@/libraries/proportions'
 
 const countBeneficiaires = async (anonyme: boolean) =>

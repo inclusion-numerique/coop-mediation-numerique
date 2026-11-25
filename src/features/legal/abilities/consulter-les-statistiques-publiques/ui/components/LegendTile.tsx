@@ -1,8 +1,5 @@
 import classNames from 'classnames'
-import {
-  numberToPercentage,
-  numberToString,
-} from '@/libraries/nombre/format-number'
+import { numberToPercentage, numberToString } from '@/libraries/nombre'
 
 export const LegendTile = ({
   value,

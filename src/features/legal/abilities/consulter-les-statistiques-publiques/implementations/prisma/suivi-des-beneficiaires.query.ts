@@ -1,4 +1,4 @@
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 
 const getTotalAccompagnements = async () =>
   await prismaClient.accompagnement.count({
