@@ -1,3 +1,5 @@
+'use client'
+
 import classNames from 'classnames'
 import { ReactNode, RefObject, useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'

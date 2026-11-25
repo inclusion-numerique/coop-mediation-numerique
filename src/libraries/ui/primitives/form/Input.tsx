@@ -1,3 +1,5 @@
+'use client'
+
 import { FrIconClassName, fr, RiIconClassName } from '@codegouvfr/react-dsfr'
 import { cx } from '@codegouvfr/react-dsfr/tools/cx'
 import {

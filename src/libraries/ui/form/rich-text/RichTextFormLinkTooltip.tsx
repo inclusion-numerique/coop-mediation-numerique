@@ -1,3 +1,5 @@
+'use client'
+
 import { useState } from 'react'
 import { useOnDiff } from '@/libraries/ui/hooks'
 

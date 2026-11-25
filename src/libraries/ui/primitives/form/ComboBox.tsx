@@ -1,3 +1,5 @@
+'use client'
+
 import {
   type Overwrite,
   type UseComboboxGetItemPropsOptions,
@@ -16,7 +18,7 @@ import {
   type EtatDesSuggestions,
   reponseRecue,
   saisieEnCours,
-} from './suggestions'
+} from '../../suggestions'
 
 const CHANGEMENTS_PAR_SELECTION: ReadonlySet<UseComboboxStateChangeTypes> =
   new Set([

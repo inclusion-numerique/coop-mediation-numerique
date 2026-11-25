@@ -1,3 +1,5 @@
+'use client'
+
 import classNames from 'classnames'
 import type {
   ChangeEventHandler,
@@ -6,8 +8,8 @@ import type {
   ReactNode,
 } from 'react'
 import { Control, Controller, FieldPath, FieldValues } from 'react-hook-form'
+import { UiComponentProps } from '@/libraries/ui'
 import RedAsterisk from '@/libraries/ui/form/RedAsterisk'
-import { UiComponentProps } from '@/libraries/ui/utils'
 
 type CommonProps<T extends FieldValues> = {
   control: Control<T>

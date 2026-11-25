@@ -1,3 +1,5 @@
+'use client'
+
 import { Editor } from '@tiptap/react'
 import classNames from 'classnames'
 import { MouseEventHandler, useState } from 'react'

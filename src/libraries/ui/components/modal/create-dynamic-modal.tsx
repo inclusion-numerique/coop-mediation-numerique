@@ -1,3 +1,5 @@
+'use client'
+
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import { create } from 'zustand'
 

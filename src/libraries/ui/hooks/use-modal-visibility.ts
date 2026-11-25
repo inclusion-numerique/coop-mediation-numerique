@@ -1,3 +1,5 @@
+'use client'
+
 import { useEffect, useRef } from 'react'
 import { useDsfrModalIsBound } from '@/libraries/ui/hooks/use-dsfr-modal-is-bound'
 

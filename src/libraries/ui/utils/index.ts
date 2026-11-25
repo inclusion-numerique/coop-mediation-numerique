@@ -1,2 +1,1 @@
-export * from './button-loading-classname'
-export * from './ui-component-props'
+export { buttonLoadingClassname } from './button-loading-classname'
