@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { contactEmail } from '@/configuration/projet/config'
+import { contactEmail } from '@/configuration/projet'
 
 export const Support = () => (
   <>
