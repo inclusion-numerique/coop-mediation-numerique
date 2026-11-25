@@ -44,3 +44,5 @@ node_modules
 !/.claude/agents
 !/.claude/skills
 !/.claude/workflows
+!/.claude/settings.json
+!/.claude/hooks

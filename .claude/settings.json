@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "ask": [
+      "Edit(**/biome.json)",
+      "Edit(**/biome.jsonc)",
+      "Edit(**/.alint.yml)",
+      "Edit(**/.dependency-cruiser.cjs)",
+      "Edit(**/.dependency-cruiser/**)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/regles-protegees.sh"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -24,6 +24,31 @@ env:
   ENV: ephemeral
 
 jobs:
+  regles-modifiees:
+    name: Règles modifiées
+    if: github.ref != 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - name: Résumer les changements de règles
+        run: |
+          regles=(biome.json .alint.yml .dependency-cruiser.cjs .dependency-cruiser .claude/settings.json .claude/hooks)
+          if git diff --quiet origin/main...HEAD -- "${regles[@]}"; then
+            echo "Aucune règle d'architecture modifiée" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "::warning title=Règles modifiées::Cette branche change des règles d'architecture : relire le résumé du job avant de fusionner"
+            {
+              echo "## Règles d'architecture modifiées"
+              echo
+              echo '```diff'
+              git diff origin/main...HEAD -- "${regles[@]}"
+              echo '```'
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
+
   lint:
     name: Lint
     runs-on: ubuntu-latest
