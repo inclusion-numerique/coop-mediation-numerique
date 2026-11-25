@@ -32,8 +32,9 @@ pnpm fixtures:load          # Load test data
 
 ```bash
 pnpm lint:fix && pnpm tsc   # Lint fix + type check (preferred)
-pnpm lint                   # Check formatting and linting, then the OpenAPI spec, then the structure
+pnpm lint                   # Check formatting and linting, then the OpenAPI spec, the structure and the imports
 pnpm lint:structure         # Structure of src and e2e (folders, file names, categories), checked by alint against .alint.yml
+pnpm lint:imports           # What each zone may import (cycles, app, features, libraries…), checked by dependency-cruiser against .dependency-cruiser.cjs
 pnpm tsc                    # TypeScript check only (src, e2e, Storybook)
 ```
 

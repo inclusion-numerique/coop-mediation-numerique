@@ -23,6 +23,7 @@
 - **`feature-auditor`** : parcourt §1–§7 dimension par dimension et produit la liste des résidus.
 - **skills `/build-ability`, `/build-feature`, `/build-form`** : §4 = structure à produire ; §8 = process ; §2/§3 = qualité.
 - **Structure vérifiée par l'outil** : la place, le nom et la catégorie de chaque dossier et de chaque fichier (ST-1 à ST-7, UI-7, TS-1, l'appariement des tests) sont des règles d'alint, dans `.alint.yml`, lancées par `pnpm lint:structure` et en CI ; une règle de structure qui change se change dans `.alint.yml` et ici, dans le même commit.
+- **Imports vérifiés par l'outil** : ce que chaque zone peut importer est une règle de dependency-cruiser, dans `.dependency-cruiser.cjs`, lancée par `pnpm lint:imports` et en CI. Chaque règle part du plus restrictif ; un import admis en plus est une ligne de la table d'exceptions de la règle, qui n'accorde à un fichier précis que les cibles listées. Une règle d'import qui change se change dans `.dependency-cruiser.cjs` et ici, dans le même commit.
 - **Détection** : chaque règle porte un signal grep-able quand c'est possible (`rg` patterns). Un signal qui matche = candidat violation à confirmer en lecture, pas une certitude.
 
 ---

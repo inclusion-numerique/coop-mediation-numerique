@@ -51,6 +51,209 @@ const MODULES_NODE_DEPRECIES = [
   '^_stream_wrap$',
 ]
 
+const PAQUET = (noms) => `node_modules/(?:${noms.join('|')})/`
+
+const DANS_UNE_FEATURE = (suite) => [
+  `^src/features/[^/]+/${suite}`,
+  `^src/features/[^/]+/abilities/[^/]+/${suite}`,
+]
+
+const ROUTES_ADMISES = {
+  '^src/app/[(]public[)]/[(]authentication[)]/deconnexion/callback/route[.]ts$':
+    ['^src/libraries/etat-encode/'],
+  '^src/app/[(]public[)]/[(]authentication[)]/deconnexion/start/route[.]ts$': [
+    '^src/libraries/chemin-interne/',
+    '^src/libraries/etat-encode/',
+    PAQUET(['uuid']),
+  ],
+  '^src/app/administration/clients-api/creer/page[.]tsx$': [
+    '^src/libraries/date/',
+  ],
+  '^src/app/administration/utilisateurs/[[]id\\]/export/accompagnements/route[.]ts$':
+    ['^src/libraries/date/'],
+  '^src/app/administration/utilisateurs/[[]id\\]/export/statistiques/route[.]ts$':
+    ['^src/libraries/date/'],
+  '^src/app/administration/utilisateurs/[[]id\\]/page[.]tsx$': [
+    PAQUET(['@arckit/resultset']),
+  ],
+  '^src/app/administration/utilisateurs/export/route[.]ts$': [
+    '^src/libraries/date/',
+    '^src/libraries/texte/',
+  ],
+  '^src/app/administration/utilisateurs/page[.]tsx$': ['^src/libraries/texte/'],
+  '^src/app/api/auth/[[][.][.][.]nextauth\\]/route[.]ts$': [
+    '^src/configuration/ban/index[.]ts$',
+    PAQUET(['next-auth']),
+  ],
+  '^src/app/api/ppg/accompagnements-departements[.]csv/route[.]ts$': [
+    PAQUET(['zod']),
+  ],
+  '^src/app/api/rdv-service-public/auth/callback/route[.]ts$': [
+    '^src/features/rdvsp/abilities/connecter-compte-rdv/action/connecter-compte-rdv[.]errors[.]ts$',
+    '^src/libraries/etat-encode/',
+  ],
+  '^src/app/api/v1/activites/route[.]ts$': ['^src/libraries/json-api/'],
+  '^src/app/api/v1/archives-v1/cras/route[.]ts$': ['^src/libraries/json-api/'],
+  '^src/app/api/v1/health/route[.]ts$': ['^src/libraries/json-api/'],
+  '^src/app/api/v1/structures/route[.]ts$': ['^src/libraries/json-api/'],
+  '^src/app/api/v1/utilisateurs/route[.]ts$': ['^src/libraries/json-api/'],
+  '^src/app/coop/[(]full-width-layout[)]/mes-beneficiaires/importer/analyse/route[.]ts$':
+    [PAQUET(['uuid'])],
+  '^src/app/coop/[(]full-width-layout[)]/mes-beneficiaires/nouveau/page[.]tsx$':
+    ['^src/libraries/etat-encode/'],
+  '^src/app/coop/[(]full-width-layout[)]/mes-equipes/[[]coordinateurId\\]/export/route[.]ts$':
+    ['^src/libraries/date/'],
+  '^src/app/coop/[(]full-width-layout[)]/mon-reseau/[[]departement\\]/acteurs/[[]userId\\]/page[.]tsx$':
+    ['^src/libraries/departement/', PAQUET(['@arckit/resultset'])],
+  '^src/app/coop/[(]full-width-layout[)]/mon-reseau/[[]departement\\]/lieux/[[]id\\]/page[.]tsx$':
+    ['^src/libraries/departement/'],
+  '^src/app/coop/[(]sidemenu-layout[)]/mes-activites/export/route[.]ts$': [
+    '^src/libraries/date/',
+  ],
+  '^src/app/coop/[(]sidemenu-layout[)]/mes-beneficiaires/[(]liste[)]/export/route[.]ts$':
+    [
+      '^src/features/beneficiaire/abilities/exporter-beneficiaires/action/filtres-de-l-export[.]validation[.]ts$',
+      '^src/libraries/date/',
+    ],
+  '^src/app/coop/[(]sidemenu-layout[)]/mes-beneficiaires/[[]beneficiaireId\\]/[(]consultation[)]/[(]informations[)]/page[.]tsx$':
+    [PAQUET(['@arckit/resultset'])],
+  '^src/app/coop/[(]sidemenu-layout[)]/mes-coordinations/export/route[.]ts$': [
+    '^src/libraries/date/',
+  ],
+  '^src/app/coop/[(]sidemenu-layout[)]/mes-outils/[[]slug\\]/page[.]tsx$': [
+    '^src/libraries/insee/',
+  ],
+  '^src/app/coop/[(]sidemenu-layout[)]/mes-statistiques/export/[[]shareId\\]/route[.]ts$':
+    ['^src/libraries/date/'],
+  '^src/app/coop/[(]sidemenu-layout[)]/mes-statistiques/export/route[.]ts$': [
+    '^src/libraries/date/',
+  ],
+  '^src/app/coop/[(]sidemenu-layout[)]/mon-reseau/[[]departement\\]/page[.]tsx$':
+    ['^src/libraries/departement/'],
+  '^src/app/coop/[(]sidemenu-layout[)]/mon-reseau/page[.]tsx$': [
+    '^src/libraries/departement/',
+  ],
+  '^src/app/global-error[.]tsx$': ['^src/configuration/telemetry/index[.]ts$'],
+  '^src/app/inscription/[(]etapes[)]/initialiser/page[.]tsx$': [
+    '^src/configuration/ban/index[.]ts$',
+  ],
+  '^src/app/invitations/[[]data\\]/page[.]tsx$': [
+    '^src/libraries/etat-encode/',
+  ],
+  '^src/app/layout[.]tsx$': [
+    '^src/configuration/dsfr/index[.]ts$',
+    '^src/configuration/dsfr/serveur[.]ts$',
+    '^src/configuration/telemetry/index[.]ts$',
+    '^src/libraries/ui/',
+    '^src/styles/app[.]css$',
+    PAQUET(['@codegouvfr/react-dsfr']),
+    PAQUET(['nuqs']),
+  ],
+  '^src/app/template[.]tsx$': ['^src/configuration/dsfr/index[.]ts$'],
+}
+
+const SERVER_ACTIONS_ADMISES = {
+  '^src/app/_actions/activites/rechercher-employeuses-des-activites[.]action[.]ts$':
+    [
+      '^src/features/activites/abilities/rechercher-les-employeuses-des-activites/ui/presenters/options-d-employeuses[.]presenter[.]ts$',
+    ],
+  '^src/app/_actions/activites/rechercher-les-lieux-de-mes-activites[.]action[.]ts$':
+    [
+      '^src/features/activites/abilities/rechercher-les-lieux-des-statistiques/ui/presenters/options-de-lieux[.]presenter[.]ts$',
+    ],
+  '^src/app/_actions/employeuse/rechercher-structure-employeuse[.]action[.]ts$':
+    [
+      '^src/features/employeuse/ui/presenters/employeuse-recherchee[.]presenter[.]ts$',
+    ],
+  '^src/app/_actions/employeuse/renseigner-structure-employeuse[.]action[.]ts$':
+    ['^src/configuration/ban/index[.]ts$'],
+  '^src/app/_actions/equipe/rechercher-des-membres[.]action[.]ts$': [
+    '^src/features/equipe/abilities/lister-les-membres-a-filtrer/ui/presenters/options-de-membres[.]presenter[.]ts$',
+  ],
+  '^src/app/_actions/inscription/renseigner-structure-employeuse[.]action[.]ts$':
+    ['^src/configuration/ban/index[.]ts$'],
+  '^src/app/_actions/mon-reseau/rechercher-des-communes-du-reseau[.]action[.]ts$':
+    ['^src/libraries/etat-d-url/'],
+  '^src/app/_actions/rdvsp/creer-activite-depuis-rdv[.]action[.]ts$': [
+    '^src/features/activites/ui/presenters/saisie/url-de-saisie-depuis-un-rendez-vous[.]presenter[.]ts$',
+  ],
+  '^src/app/_actions/rdvsp/prendre-rendez-vous[.]action[.]ts$': [
+    '^src/configuration/projet/serveur[.]ts$',
+  ],
+  '^src/app/_actions/statistiques/rechercher-les-employeuses-du-partage[.]action[.]ts$':
+    [
+      '^src/features/activites/abilities/rechercher-les-employeuses-des-activites/ui/presenters/options-d-employeuses[.]presenter[.]ts$',
+    ],
+  '^src/app/_actions/statistiques/rechercher-les-lieux-de-mes-statistiques[.]action[.]ts$':
+    [
+      '^src/features/activites/abilities/rechercher-les-lieux-des-statistiques/ui/presenters/options-de-lieux[.]presenter[.]ts$',
+    ],
+  '^src/app/_actions/statistiques/rechercher-les-lieux-du-partage[.]action[.]ts$':
+    [
+      '^src/features/activites/abilities/rechercher-les-lieux-des-statistiques/ui/presenters/options-de-lieux[.]presenter[.]ts$',
+    ],
+  '^src/app/_actions/statistiques/rechercher-les-lieux-nationaux[.]action[.]ts$':
+    [
+      '^src/features/activites/abilities/rechercher-les-lieux-des-statistiques/ui/presenters/options-de-lieux[.]presenter[.]ts$',
+    ],
+  '^src/app/_actions/statistiques/rechercher-les-tags-collectifs[.]action[.]ts$':
+    [
+      '^src/features/tags/abilities/lire-les-tags-visibles/ui/presenters/tag-collectif[.]presenter[.]ts$',
+    ],
+  '^src/app/_actions/statistiques/rechercher-les-tags-du-partage[.]action[.]ts$':
+    ['^src/features/tags/ui/presenters/tag-affiche[.]presenter[.]ts$'],
+  '^src/app/_actions/tags/creer-un-tag[.]action[.]ts$': [
+    '^src/features/tags/ui/presenters/tag-affiche[.]presenter[.]ts$',
+  ],
+  '^src/app/_actions/tags/rechercher-des-destinations[.]action[.]ts$': [
+    '^src/features/tags/abilities/fusionner-un-tag/ui/presenters/destinations[.]presenter[.]ts$',
+  ],
+  '^src/app/_actions/tags/rechercher-des-tags[.]action[.]ts$': [
+    '^src/features/tags/ui/presenters/tag-affiche[.]presenter[.]ts$',
+  ],
+  '^src/app/_actions/utilisateurs/rechercher-des-coordinateurs[.]action[.]ts$':
+    [
+      '^src/features/utilisateurs/abilities/lister-les-utilisateurs/ui/presenters/coordinateur-a-choisir[.]presenter[.]ts$',
+    ],
+  '^src/app/_actions/utilisateurs/rechercher-des-employeuses[.]action[.]ts$': [
+    '^src/features/employeuse/ui/presenters/employeuse[.]presenter[.]ts$',
+  ],
+  '^src/app/_actions/utilisateurs/reinitialiser-une-fixture[.]action[.]ts$': [
+    '^src/features/activites/fixtures/semer-les-cras-de-demonstration[.]ts$',
+    '^src/features/beneficiaire/fixtures/beneficiaires-de-demonstration[.]ts$',
+    '^src/features/beneficiaire/fixtures/semer-les-beneficiaires-de-demonstration[.]ts$',
+    '^src/features/equipe/fixtures/semer-les-coordinations-de-demonstration[.]ts$',
+    '^src/features/lieux-activite/fixtures/activites-dans-les-lieux-de-demonstration[.]ts$',
+    '^src/features/lieux-activite/fixtures/lieux-de-demonstration[.]ts$',
+    '^src/features/utilisateurs/fixtures/personas[.]ts$',
+  ],
+  '^src/app/_actions/utilisateurs/usurper-un-utilisateur[.]action[.]ts$': [
+    '^src/configuration/environnement/serveur[.]ts$',
+  ],
+}
+
+const IMPORTS_D_UNE_ROUTE = [
+  ...DANS_UNE_FEATURE('ui/(?:pages|layouts|slots|presenters|filtres)/'),
+  ...DANS_UNE_FEATURE('action/[^/]+[.]key[.]ts$'),
+  ...DANS_UNE_FEATURE('(?:domain|implementations)/'),
+  '^src/features/[^/]+/middlewares/',
+  '^src/app/_actions/',
+  '^src/configuration/projet/(?:index|serveur)[.]ts$',
+  '^src/configuration/telemetry/serveur[.]ts$',
+  '^src/configuration/environnement/serveur[.]ts$',
+  '^src/libraries/nextjs/',
+  PAQUET(['next', 'react', '@arckit/nextjs']),
+]
+
+const IMPORTS_D_UNE_SERVER_ACTION = [
+  '^src/features/[^/]+/middlewares/',
+  ...DANS_UNE_FEATURE('(?:domain|implementations)/'),
+  ...DANS_UNE_FEATURE('action/[^/]+[.](?:validation|errors|transfer)[.]ts$'),
+  '^src/configuration/nextjs/',
+  '^src/configuration/telemetry/serveur[.]ts$',
+  '^src/libraries/(?:nextjs|result)/',
+]
+
 const cles = (table) => Object.keys(table)
 
 const exceptions = (nom, table, regle) =>
@@ -167,8 +370,45 @@ const GLOBAL = [
   })),
 ]
 
+const APP = [
+  {
+    name: 'imports-d-une-route',
+    severity: 'error',
+    comment:
+      "Une route compose : elle n'importe que les pages, layouts, slots, présentateurs, filtres, clés d'action, domaines, implémentations et middlewares des features, les server actions, et le strict nécessaire de la configuration et des libraries (UI-1, AR-5)",
+    from: {
+      path: '^src/app/',
+      pathNot: ['^src/app/_actions/', FICHIER_DE_TEST, ...cles(ROUTES_ADMISES)],
+    },
+    to: { pathNot: IMPORTS_D_UNE_ROUTE },
+  },
+  ...exceptions('imports-d-une-route', ROUTES_ADMISES, (de, admis) => ({
+    from: { path: de },
+    to: { pathNot: [...IMPORTS_D_UNE_ROUTE, ...admis] },
+  })),
+  {
+    name: 'imports-d-une-server-action',
+    severity: 'error',
+    comment:
+      "Une server action compose : elle n'importe que les middlewares, domaines, implémentations et contrats d'action des features, le constructeur d'actions et le rapporteur d'erreurs de la configuration, et les libraries nextjs et result",
+    from: {
+      path: '^src/app/_actions/',
+      pathNot: [FICHIER_DE_TEST, ...cles(SERVER_ACTIONS_ADMISES)],
+    },
+    to: { pathNot: IMPORTS_D_UNE_SERVER_ACTION },
+  },
+  ...exceptions(
+    'imports-d-une-server-action',
+    SERVER_ACTIONS_ADMISES,
+    (de, admis) => ({
+      from: { path: de },
+      to: { pathNot: [...IMPORTS_D_UNE_SERVER_ACTION, ...admis] },
+    }),
+  ),
+]
+
 module.exports = {
-  forbidden: [...GLOBAL],
+  forbidden: [...GLOBAL, ...APP],
   options: {
     doNotFollow: { path: ['node_modules'] },
     exclude: { path: '^src/generated/' },
