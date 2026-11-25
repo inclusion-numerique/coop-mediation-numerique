@@ -1,7 +1,7 @@
 import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 import { reglerLaMaintenance } from '@/features/maintenance-mode/abilities/regler-la-maintenance/implementations/prisma/regler-la-maintenance.mutation'
 import {
   type EtatDeMaintenance,
