@@ -88,12 +88,18 @@ rules:
     select: "{src/features/*/fixtures,src/features/*/fixtures/*}"
     allow: ["*.ts", "*.xlsx"]
 
-  - id: racine-des-implementations
+  - id: dossiers-sans-fichier
     kind: file_absent
     level: error
-    message: "Aucun fichier directement dans implementations/ : un dossier par technique (ST-4)"
+    message: "Ce dossier ne contient que des dossiers"
     paths:
-      - "src/features/**/implementations/*.*"
+      - "src/features/*"
+      - "src/features/*/abilities/*"
+      - "src/features/**/implementations/*"
+      - "src/features/**/ui/*"
+      - "src/app/_actions/*"
+      - "src/libraries/*"
+      - "src/configuration/*"
 
   - id: implementations-par-categorie
     kind: dir_only_contains
