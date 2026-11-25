@@ -1,5 +1,5 @@
 import { rechercheApiEntreprise } from '@/configuration/recherche-entreprises'
-import { etablissementsDepuisUniteLegale } from '@/libraries/recherche-entreprises/etablissements-depuis-unite-legale'
+import { etablissementsDepuisUniteLegale } from '@/libraries/recherche-entreprises'
 import type { Employeuse } from '../../../../domain/employeuse'
 // Modules visés directement plutôt que le barrel `../../../server` : celui-ci réexporte cette
 // implémentation, et l'atteindre depuis ici fermerait un cycle d'imports.

@@ -1,5 +1,5 @@
-import { prismaClient } from '@/configuration/prisma/prisma-client'
-import { type Feature, siIndisponible } from '@/libraries/ban/api-adresse'
+import { prismaClient } from '@/configuration/prisma'
+import { type Feature, siIndisponible } from '@/libraries/ban'
 import {
   type AdresseSource,
   adresseMainDepuis,

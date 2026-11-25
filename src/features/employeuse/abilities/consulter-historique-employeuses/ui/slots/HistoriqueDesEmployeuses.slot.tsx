@@ -3,11 +3,12 @@ import Badge from '@codegouvfr/react-dsfr/Badge'
 import Notice from '@codegouvfr/react-dsfr/Notice'
 import Link from 'next/link'
 import { hrefDeLaStructureEmployeuse } from '@/features/employeuse/ui/presenters/liens.presenter'
-import { dateAsDay } from '@/libraries/date/date-as-day'
-import AdministrationInfoCard from '@/libraries/ui/components/administration/AdministrationInfoCard'
-import AdministrationInlineLabelsValues, {
+import { dateAsDay } from '@/libraries/date'
+import {
+  AdministrationInfoCard,
+  AdministrationInlineLabelsValues,
   type LabelAndValue,
-} from '@/libraries/ui/components/administration/AdministrationInlineLabelsValues'
+} from '@/libraries/ui/components'
 import type { EmployeuseHistoriqueAffichage } from '../presenters/historique-employeuses.presenter'
 
 const informationsDeLaStructure = ({

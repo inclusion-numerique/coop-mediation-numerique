@@ -1,6 +1,6 @@
-import { prismaClient } from '@/configuration/prisma/prisma-client'
-import type { Feature } from '@/libraries/ban/api-adresse'
-import { banFeatureToAdresseBanData } from '@/libraries/ban/ban-feature-to-adresse-ban-data'
+import { prismaClient } from '@/configuration/prisma'
+import type { Feature } from '@/libraries/ban'
+import { banFeatureToAdresseBanData } from '@/libraries/ban'
 import { CodePostal } from '@/libraries/code-postal'
 import { CodeInsee } from '@/libraries/insee'
 

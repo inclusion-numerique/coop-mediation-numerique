@@ -1,7 +1,7 @@
 import Badge from '@codegouvfr/react-dsfr/Badge'
 import Link from 'next/link'
 import { ReactNode } from 'react'
-import Card from '@/libraries/ui/components/Card'
+import { Card } from '@/libraries/ui/components'
 import { type EmploiEmployeuseAffichage } from '../presenters/employeuse-emploi.presenter'
 import { ReferentStructure } from './ReferentStructure'
 

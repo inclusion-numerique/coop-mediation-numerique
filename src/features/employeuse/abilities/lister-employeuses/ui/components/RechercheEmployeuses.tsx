@@ -3,8 +3,8 @@
 import Button from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'
 import type { FormEventHandler } from 'react'
-import { rechercheLibre } from '@/libraries/etat-d-url/definition/recherche-libre'
-import { useFiltre } from '@/libraries/etat-d-url/filtres/use-filtre'
+import { rechercheLibre } from '@/libraries/etat-d-url'
+import { useFiltre } from '@/libraries/etat-d-url/filtres'
 
 const RechercheEmployeuses = () => {
   const [{ recherche }, ecrire] = useFiltre(rechercheLibre.parametres)

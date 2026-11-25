@@ -1,4 +1,4 @@
-import { toTitleCase } from '@/libraries/texte/to-title-case'
+import { toTitleCase } from '@/libraries/texte'
 import type { Employeuse } from '../../domain/employeuse'
 import { employeuseAffichage } from './employeuse.presenter'
 
