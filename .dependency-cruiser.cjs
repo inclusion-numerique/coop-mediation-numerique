@@ -99,13 +99,20 @@ const IMPORTS_D_UNE_ROUTE = [
   '^src/configuration/telemetry/serveur[.]ts$',
   '^src/configuration/environnement/serveur[.]ts$',
   '^src/libraries/nextjs/',
+  '^src/libraries/etat-encode/',
   PAQUET(['next', 'react', '@arckit/nextjs']),
+]
+
+const IMPORTS_D_UNE_ROUTE_D_API = [
+  ...IMPORTS_D_UNE_ROUTE,
+  '^src/libraries/json-api/',
 ]
 
 const IMPORTS_D_UNE_SERVER_ACTION = [
   '^src/features/[^/]+/middlewares/',
   ...DANS_UNE_FEATURE('(?:domain|implementations)/'),
   ...DANS_UNE_FEATURE('action/[^/]+[.](?:validation|errors|transfer)[.]ts$'),
+  ...DANS_UNE_FEATURE('ui/presenters/'),
   '^src/configuration/nextjs/',
   '^src/configuration/telemetry/serveur[.]ts$',
   '^src/libraries/(?:nextjs|result)/',
@@ -246,6 +253,7 @@ const APP = [
       path: '^src/app/',
       pathNot: [
         '^src/app/_actions/',
+        '^src/app/api/v1/',
         FICHIER_DE_TEST,
         ...cles(FICHIERS_DES_ROUTES_ADMISES).map((fichier) =>
           cheminExact(`src/${fichier}`),
@@ -254,10 +262,38 @@ const APP = [
     },
     to: { pathNot: IMPORTS_D_UNE_ROUTE },
   },
+  {
+    name: 'imports-d-une-route-d-api',
+    severity: 'error',
+    comment:
+      "Une route de l'API v1 importe ce qu'importe une route, et la library json-api",
+    from: {
+      path: '^src/app/api/v1/',
+      pathNot: [
+        FICHIER_DE_TEST,
+        ...cles(FICHIERS_DES_ROUTES_ADMISES).map((fichier) =>
+          cheminExact(`src/${fichier}`),
+        ),
+      ],
+    },
+    to: { pathNot: IMPORTS_D_UNE_ROUTE_D_API },
+  },
   ...exceptionsDeApp(
     'imports-d-une-route',
     FICHIERS_DES_ROUTES_ADMISES,
     IMPORTS_D_UNE_ROUTE,
+  ).map((regle) =>
+    regle.from.path.startsWith('^src/app/api/v1/')
+      ? {
+          ...regle,
+          to: {
+            pathNot: [
+              ...regle.to.pathNot,
+              ...IMPORTS_D_UNE_ROUTE_D_API.slice(IMPORTS_D_UNE_ROUTE.length),
+            ],
+          },
+        }
+      : regle,
   ),
   {
     name: 'imports-d-une-server-action',
@@ -346,7 +382,7 @@ const FEATURES = [
 ]
 
 const SOCLES = {
-  domain: ['zod', 'libraries/model', 'libraries/result'],
+  domain: ['zod', 'libraries/model', 'libraries/result', '@arckit/resultset'],
   action: ['zod', 'libraries/nextjs'],
   middlewares: ['libraries/nextjs', 'next'],
   'implementations/api': ['axios', 'zod', 'libraries/result'],
@@ -375,6 +411,7 @@ const SOCLES = {
     'configuration/prisma',
     'generated/prisma',
     'libraries/result',
+    '@arckit/resultset',
   ],
   'implementations/proconnect': ['next-auth', '@auth/core'],
   'implementations/recherche-entreprises': [
@@ -407,6 +444,7 @@ const SOCLES = {
     'libraries/ui',
     'libraries/nextjs',
     'classnames',
+    '@arckit/resultset',
   ],
   'ui/slots': [
     'react',
@@ -431,11 +469,49 @@ const SOCLES = {
   'ui/filtres': ['libraries/etat-d-url', '@arckit/resultset'],
   'ui/hooks': ['react', 'libraries/nextjs'],
   'ui/columns': ['react', 'libraries/ui', '@codegouvfr/react-dsfr'],
-  'ui/presenters': [],
+  'ui/presenters': ['@arckit/resultset'],
   'ui/search-params': [],
 }
 
 const OUTILS_DE_TEST = ['vitest', '@storybook/react', 'storybook']
+
+const VALEURS = [
+  'libraries/insee',
+  'libraries/telephone',
+  'libraries/nom-affiche',
+  'libraries/departement',
+  'libraries/code-postal',
+  'libraries/adresse',
+  'libraries/texte-riche',
+]
+
+const OUTILS_GENERIQUES = ['libraries/collections', 'libraries/texte']
+
+const AFFICHAGE = [
+  'libraries/date',
+  'libraries/pluriel',
+  'libraries/nombre',
+  'libraries/proportions',
+  'libraries/pictograms',
+  'libraries/ui',
+  'libraries/data-table',
+  'libraries/navigateur',
+  'libraries/chemin-interne',
+  'libraries/liens-d-evitement',
+  'libraries/nextjs',
+  'libraries/model',
+  'libraries/etat-d-url',
+  'libraries/formulaire',
+  '@tanstack/react-form',
+]
+
+const SOCLES_DES_COUCHES = {
+  domain: [],
+  action: OUTILS_GENERIQUES,
+  middlewares: OUTILS_GENERIQUES,
+  implementations: [...VALEURS, ...OUTILS_GENERIQUES, 'libraries/date'],
+  ui: [...VALEURS, ...OUTILS_GENERIQUES, ...AFFICHAGE],
+}
 
 const TECHNIQUES = cles(SOCLES)
   .filter((couche) => couche.startsWith('implementations/'))
@@ -472,6 +548,7 @@ const internes = ({ feature, ability, couche, sous }) => {
 
 const admisDans = (emplacement, supplementaires) => [
   ...internes(emplacement),
+  ...SOCLES_DES_COUCHES[emplacement.couche].map(cible),
   ...(
     SOCLES[
       emplacement.sous
