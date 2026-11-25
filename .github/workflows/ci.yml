@@ -25,21 +25,25 @@ env:
 
 jobs:
   regles-modifiees:
-    name: Règles modifiées
+    name: Architecture rules changes
     if: github.ref != 'refs/heads/main'
     runs-on: ubuntu-latest
+    outputs:
+      changes: ${{ steps.changes.outputs.changes }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
-      - name: Résumer les changements de règles
+      - name: Detect architecture rules changes
+        id: changes
         run: |
           regles=(biome.json .alint.yml .dependency-cruiser.cjs .dependency-cruiser .claude/settings.json .claude/hooks)
           if git diff --quiet origin/main...HEAD -- "${regles[@]}"; then
+            echo "changes=false" >> "$GITHUB_OUTPUT"
             echo "Aucune règle d'architecture modifiée" >> "$GITHUB_STEP_SUMMARY"
           else
-            echo "::warning title=Règles modifiées::Cette branche change des règles d'architecture : relire le résumé du job avant de fusionner"
+            echo "changes=true" >> "$GITHUB_OUTPUT"
             {
               echo "## Règles d'architecture modifiées"
               echo
@@ -48,6 +52,16 @@ jobs:
               echo '```'
             } >> "$GITHUB_STEP_SUMMARY"
           fi
+
+  approve-regles:
+    name: Approve architecture rules
+    needs: regles-modifiees
+    if: needs.regles-modifiees.outputs.changes == 'true'
+    runs-on: ubuntu-latest
+    environment: regles-d-architecture
+    steps:
+      - name: Architecture rules approved
+        run: echo "Changements de règles d'architecture approuvés"
 
   lint:
     name: Lint
