@@ -432,3 +432,30 @@ rules:
     level: error
     message: "Deux chemins ne diffèrent pas que par la casse (macOS et Windows ne les distinguent pas)"
     paths: ["src/**", "e2e/**"]
+
+  - id: entree-d-une-library
+    kind: for_each_file
+    level: error
+    message: "Une library qui porte des fichiers à sa racine a un index.ts, son entrée en TypeScript pur"
+    select: "src/libraries/*/*.{ts,tsx}"
+    require:
+      - kind: file_exists
+        paths: "{dir}/index.ts"
+
+  - id: entree-d-un-sujet-de-library
+    kind: for_each_dir
+    level: error
+    message: "Chaque sujet d'une library a son entrée, un index"
+    select: "src/libraries/*/*"
+    require:
+      - kind: file_exists
+        paths: "{path}/index.{ts,tsx}"
+
+  - id: entree-d-un-module-de-configuration
+    kind: for_each_dir
+    level: error
+    message: "Chaque module de configuration a son entrée, un index"
+    select: "src/configuration/*"
+    require:
+      - kind: file_exists
+        paths: "{path}/index.{ts,tsx}"
