@@ -22,7 +22,7 @@ import {
   rechercherParmi,
 } from '@/libraries/etat-d-url/filtres'
 import { inject } from '@/libraries/nextjs/injection'
-import type { SelectOption } from '@/libraries/ui/form'
+import type { SelectOption } from '@/libraries/ui'
 import { RECHERCHER_DES_COMMUNES_ACTION_KEY } from '../../action/rechercher-des-communes.key'
 import { RECHERCHER_DES_COORDINATEURS_ACTION_KEY } from '../../action/rechercher-des-coordinateurs.key'
 import { RECHERCHER_DES_EMPLOYEUSES_ACTION_KEY } from '../../action/rechercher-des-employeuses.key'
