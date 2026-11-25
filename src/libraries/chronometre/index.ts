@@ -1,1 +1,1 @@
-export * from './stopwatch'
+export { createStopwatch } from './stopwatch'
