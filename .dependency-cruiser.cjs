@@ -512,13 +512,17 @@ const SOCLES = {
     'configuration/smtp',
     'configuration/projet',
   ],
-  'implementations/entrepot': ['configuration/prisma'],
+  'implementations/entrepot': ['configuration/prisma', 'generated/entrepot'],
   'implementations/excel': ['exceljs', 'libraries/tableur'],
   'implementations/fichier': ['node:fs', 'node:readline'],
   'implementations/next': ['next'],
   'implementations/next-auth': ['next-auth'],
   'implementations/oauth': [],
-  'implementations/prisma': ['configuration/prisma', 'libraries/result'],
+  'implementations/prisma': [
+    'configuration/prisma',
+    'generated/prisma',
+    'libraries/result',
+  ],
   'implementations/proconnect': ['next-auth', '@auth/core'],
   'implementations/recherche-entreprises': [
     'configuration/recherche-entreprises',
@@ -1330,13 +1334,15 @@ const IMPORTS_ADMIS = {
 }
 
 const cible = (nom) =>
-  nom.startsWith('features/')
-    ? `^src/${nom.replaceAll('.', '[.]')}$`
-    : nom.startsWith('libraries/') || nom.startsWith('configuration/')
-      ? `^src/${nom}/`
-      : nom.startsWith('node:')
-        ? `^(?:node:)?${nom.slice(5)}$`
-        : `node_modules/${nom}/`
+  nom.startsWith('generated/')
+    ? `^src/${nom}/`
+    : nom.startsWith('features/')
+      ? `^src/${nom.replaceAll('.', '[.]')}$`
+      : nom.startsWith('libraries/') || nom.startsWith('configuration/')
+        ? `^src/${nom}/`
+        : nom.startsWith('node:')
+          ? `^(?:node:)?${nom.slice(5)}$`
+          : `node_modules/${nom}/`
 
 const TECHNIQUES = cles(SOCLES)
   .filter((couche) => couche.startsWith('implementations/'))
@@ -1615,6 +1621,8 @@ const IMPORTS_ADMIS_DE_LA_CONFIGURATION = {
   'postgres-array': ['prisma'],
   react: ['telemetry'],
   zod: ['environnement'],
+  'generated/prisma': ['prisma'],
+  'generated/entrepot': ['prisma'],
 }
 
 const parModule = (table) =>
@@ -1735,6 +1743,7 @@ const IMPORTS_ADMIS_DU_CLI = {
   'node:path': ['commands', 'dot-env-file.ts'],
   'node:util': ['commands'],
   'p-retry': ['get-avec-nouvelles-tentatives.ts', 'secrets'],
+  'generated/prisma': ['fixtures'],
 }
 
 const emplacementDansLEntree = (racine, segment) =>
@@ -1796,6 +1805,67 @@ const CLI_REGLES = zoneDEntree({
   table: IMPORTS_ADMIS_DU_CLI,
 })
 
+const CONFINEMENT = {
+  'generated/prisma': [
+    '/implementations/prisma/',
+    '^src/configuration/prisma/',
+    '^src/cli/fixtures/',
+    TEST_DE_COMPOSITION,
+  ],
+  'generated/entrepot': [
+    '/implementations/entrepot/',
+    '^src/configuration/prisma/',
+  ],
+  '@sentry/nextjs': ['^src/configuration/telemetry/', '^next[.]config[.]ts$'],
+  '@sentry/node': ['^src/configuration/telemetry/'],
+  '@arckit/telemetry': [
+    '^src/configuration/telemetry/',
+    '^src/libraries/nextjs/',
+  ],
+  '@prisma/adapter-pg': ['^src/configuration/prisma/'],
+  '@auth/prisma-adapter': [
+    '^src/features/authentification/implementations/prisma/',
+  ],
+  '@auth/core': ['^src/features/authentification/'],
+  'next-auth': ['^src/features/authentification/', '^src/app/api/auth/'],
+  jsonwebtoken: ['^src/features/authentification/implementations/proconnect/'],
+  nodemailer: [
+    '^src/configuration/smtp/',
+    '^src/features/authentification/implementations/email/',
+  ],
+  axios: ['/implementations/(?:api|brevo|proconnect)/', '^src/cli/'],
+  exceljs: [
+    '/implementations/excel/',
+    '^src/libraries/tableur/',
+    TEST_DE_COMPOSITION,
+  ],
+  'react-hook-form': [
+    '^src/features/authentification/abilities/se-connecter/ui/forms/',
+    '^src/libraries/ui/',
+    '^src/libraries/adresse/',
+    '^src/features/beneficiaire/ui/forms/',
+  ],
+  '@hookform/resolvers': [
+    '^src/features/authentification/abilities/se-connecter/ui/forms/',
+    '^src/libraries/ui/',
+    '^src/features/beneficiaire/ui/forms/',
+  ],
+  nuqs: ['^src/libraries/etat-d-url/', '^src/app/layout[.]tsx$', '^e2e/'],
+  piqure: ['^src/libraries/nextjs/'],
+  mjml: ['^src/libraries/emails/'],
+  '@faire/mjml-react': ['^src/libraries/emails/', '/implementations/email/'],
+}
+
+const CONFINEMENT_REGLES = Object.entries(CONFINEMENT).map(
+  ([paquet, lieux]) => ({
+    name: `confinement (${paquet})`,
+    severity: 'error',
+    comment: `${paquet} n'est importé que là où sa ligne de CONFINEMENT l'admet, tests, e2e et fichiers racine compris`,
+    from: { pathNot: lieux },
+    to: { path: cible(paquet) },
+  }),
+)
+
 module.exports = {
   forbidden: [
     ...GLOBAL,
@@ -1806,10 +1876,10 @@ module.exports = {
     ...CONFIGURATION_REGLES,
     ...JOBS_REGLES,
     ...CLI_REGLES,
+    ...CONFINEMENT_REGLES,
   ],
   options: {
-    doNotFollow: { path: ['node_modules'] },
-    exclude: { path: '^src/generated/' },
+    doNotFollow: { path: ['node_modules', '^src/generated/'] },
     tsPreCompilationDeps: true,
     tsConfig: { fileName: 'tsconfig.json' },
     enhancedResolveOptions: {
