@@ -1,7 +1,8 @@
 'use client'
 
-import { format, startOfMonth } from 'date-fns'
+import { format } from 'date-fns/format'
 import { fr } from 'date-fns/locale/fr'
+import { startOfMonth } from 'date-fns/startOfMonth'
 import { type DateRange, DayPicker, useDayPicker } from 'react-day-picker'
 
 export type { DateRange }
