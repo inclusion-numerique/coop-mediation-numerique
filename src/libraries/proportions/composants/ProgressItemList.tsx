@@ -2,10 +2,7 @@
 
 import classNames from 'classnames'
 import type { CSSProperties } from 'react'
-import {
-  numberToPercentage,
-  numberToString,
-} from '@/libraries/nombre/format-number'
+import { numberToPercentage, numberToString } from '@/libraries/nombre'
 import type { QuantifiedShare } from '@/libraries/proportions/quantified-share'
 import ProgressBar from './ProgressBar'
 

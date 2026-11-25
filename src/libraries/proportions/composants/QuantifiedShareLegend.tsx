@@ -1,10 +1,7 @@
 'use client'
 
 import classNames from 'classnames'
-import {
-  numberToPercentage,
-  numberToString,
-} from '@/libraries/nombre/format-number'
+import { numberToPercentage, numberToString } from '@/libraries/nombre'
 import type { QuantifiedShare } from '@/libraries/proportions/quantified-share'
 
 export const QuantifiedShareLegend = ({
