@@ -1,5 +1,5 @@
-import { prismaClient } from '@/configuration/prisma/prisma-client'
-import { errorReporter } from '@/configuration/telemetry/error-reporter/server'
+import { prismaClient } from '@/configuration/prisma'
+import { errorReporter } from '@/configuration/telemetry/serveur'
 import type { Prisma } from '@/generated/prisma/client'
 import { alignementDe, aUneAutreSource } from './alignement.transfer'
 

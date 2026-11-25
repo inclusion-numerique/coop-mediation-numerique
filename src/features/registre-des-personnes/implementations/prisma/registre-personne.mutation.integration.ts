@@ -1,6 +1,6 @@
 import { v4 } from 'uuid'
 import { afterAll, describe, expect, it } from 'vitest'
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 import {
   ensurePersonneMain,
   retirerDuRegistre,
