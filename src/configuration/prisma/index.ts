@@ -1,3 +1,3 @@
-export * from './add-mutation-log'
-export * from './entrepot-prisma-client'
-export * from './prisma-client'
+export { addMutationLog } from './add-mutation-log'
+export { entrepotPrismaClient } from './entrepot-prisma-client'
+export { extendedPrismaClient, prismaClient } from './prisma-client'
