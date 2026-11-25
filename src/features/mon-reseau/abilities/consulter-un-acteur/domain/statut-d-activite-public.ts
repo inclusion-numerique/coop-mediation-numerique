@@ -1,4 +1,4 @@
-import { subDays } from 'date-fns'
+import { subDays } from 'date-fns/subDays'
 
 export const SEUIL_D_INACTIVITE_EN_JOURS = 30
 
