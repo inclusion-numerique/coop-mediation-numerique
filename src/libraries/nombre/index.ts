@@ -1,1 +1,5 @@
-export * from './format-number'
+export {
+  numberToPercentage,
+  numberToString,
+  optionalNumberToString,
+} from './format-number'
