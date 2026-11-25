@@ -1,3 +1,3 @@
-export * from './email-transport'
-export * from './serveur'
-export * from './throw-on-send-mail-failure'
+export { emailTransport } from './email-transport'
+export { expediteur, serveurSmtp } from './serveur'
+export { throwOnSendMailFailure } from './throw-on-send-mail-failure'
