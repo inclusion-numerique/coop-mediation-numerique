@@ -17,5 +17,4 @@ export const DsfrProvider = (props: DsfrProviderProps) => (
 )
 
 export { default as Display } from '@codegouvfr/react-dsfr/Display/Display'
-export * from './server-only-index'
 export { StartDsfrOnHydration }
