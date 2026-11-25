@@ -4,9 +4,9 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import { signOut } from 'next-auth/react'
 import { useState, useTransition } from 'react'
-import { inject } from '@/libraries/nextjs/injection/client'
-import Card from '@/libraries/ui/components/Card'
-import { createToast } from '@/libraries/ui/toast/create-toast'
+import { inject } from '@/libraries/nextjs/injection'
+import { Card } from '@/libraries/ui/components'
+import { createToast } from '@/libraries/ui/toast'
 import { SUPPRIMER_MON_COMPTE_ACTION_KEY } from '../../action/supprimer-compte.key'
 
 const SuppressionModal = createModal({

@@ -5,9 +5,9 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import { useRouter } from 'next/navigation'
 import { useTransition } from 'react'
-import { inject } from '@/libraries/nextjs/injection/client'
-import Card from '@/libraries/ui/components/Card'
-import { createToast } from '@/libraries/ui/toast/create-toast'
+import { inject } from '@/libraries/nextjs/injection'
+import { Card } from '@/libraries/ui/components'
+import { createToast } from '@/libraries/ui/toast'
 import { ACTIVER_LA_MEDIATION_NUMERIQUE_ACTION_KEY } from '../../action/activer-la-mediation-numerique.key'
 
 const ActivationModal = createModal({

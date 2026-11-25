@@ -4,9 +4,9 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import { createModal } from '@codegouvfr/react-dsfr/Modal'
 import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
-import { inject } from '@/libraries/nextjs/injection/client'
-import { createToast } from '@/libraries/ui/toast/create-toast'
-import { buttonLoadingClassname } from '@/libraries/ui/utils/button-loading-classname'
+import { inject } from '@/libraries/nextjs/injection'
+import { createToast } from '@/libraries/ui/toast'
+import { buttonLoadingClassname } from '@/libraries/ui/utils'
 import { CHANGER_LES_ROLES_ACTION_KEY } from '../../action/changer-les-roles.key'
 
 const RolesModal = createModal({

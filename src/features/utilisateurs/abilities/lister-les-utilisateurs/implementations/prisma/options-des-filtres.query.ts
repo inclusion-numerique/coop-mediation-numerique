@@ -1,6 +1,6 @@
 import type { FiltresUtilisateurs } from '@/features/utilisateurs/domain'
-import { departementsByCode } from '@/libraries/departement/departements'
-import type { SelectOption } from '@/libraries/ui/form/utils/options'
+import { departementsByCode } from '@/libraries/departement'
+import type { SelectOption } from '@/libraries/ui/form'
 import { coordinateursChoisis } from '.'
 
 export type SourcesDesOptions = {

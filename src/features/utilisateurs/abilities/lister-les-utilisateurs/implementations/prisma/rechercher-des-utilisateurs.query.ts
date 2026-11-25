@@ -1,5 +1,5 @@
 import type { Page, PageSize, Sort } from '@arckit/resultset'
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 import type { FiltresUtilisateurs } from '@/features/utilisateurs/domain'
 import {
   ligneUtilisateurSelect,

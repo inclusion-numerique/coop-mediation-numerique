@@ -1,10 +1,12 @@
 import { formatInTimeZone } from 'date-fns-tz'
-import { contactEmail } from '@/configuration/projet/config'
-import { emailTransport } from '@/configuration/smtp/email-transport'
-import { expediteur } from '@/configuration/smtp/serveur'
-import { throwOnSendMailFailure } from '@/configuration/smtp/throw-on-send-mail-failure'
+import { contactEmail } from '@/configuration/projet'
+import {
+  emailTransport,
+  expediteur,
+  throwOnSendMailFailure,
+} from '@/configuration/smtp'
 import { inactiviteProlongeeAvertissementEmail } from '@/features/utilisateurs/abilities/anonymiser-les-comptes-inactifs/implementations/email/avertissement-d-inactivite-prolongee.email'
-import { compileMjml } from '@/libraries/emails/mjml'
+import { compileMjml } from '@/libraries/emails/rendu'
 import type { AvertirDeLaSuppression } from '../../domain'
 
 export const avertirDeLaSuppression: AvertirDeLaSuppression = async ({

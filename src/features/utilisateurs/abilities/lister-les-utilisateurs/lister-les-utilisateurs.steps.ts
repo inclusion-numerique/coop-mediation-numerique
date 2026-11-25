@@ -2,7 +2,7 @@ import assert from 'node:assert'
 import { Page, PageSize, Sort } from '@arckit/resultset'
 import { type DataTable, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 import {
   AUCUN_FILTRE,
   type FiltresUtilisateurs,
@@ -15,7 +15,7 @@ import {
   semerUneEmployeuse,
   semerUnLieu,
 } from '@/features/utilisateurs/utilisateurs.cucumber'
-import { motsDe } from '@/libraries/texte/mots'
+import { motsDe } from '@/libraries/texte'
 import type { CoordinateurAChoisir, UtilisateursTrouves } from './domain'
 import { rechercherDesCoordinateurs } from './implementations/prisma/coordinateurs-a-choisir.query'
 import { rechercherDesUtilisateurs } from './implementations/prisma/rechercher-des-utilisateurs.query'

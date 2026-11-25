@@ -1,4 +1,4 @@
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 import { CoordinateurId, nomAffiche } from '@/features/utilisateurs/domain'
 import { identiteToDomain } from '@/features/utilisateurs/implementations/prisma/identite.transfer'
 import type { Prisma } from '@/generated/prisma/client'

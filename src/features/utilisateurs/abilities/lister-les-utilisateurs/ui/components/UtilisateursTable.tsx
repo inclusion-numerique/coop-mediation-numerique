@@ -1,5 +1,5 @@
 import type { LigneUtilisateur } from '@/features/utilisateurs/domain'
-import { DataTable } from '@/libraries/data-table'
+import { DataTable } from '@/libraries/data-table/table'
 import { colonnesDesUtilisateurs } from '../columns/utilisateurs.columns'
 import type { LiensDeLaListe } from '../presenters/liste-des-utilisateurs.presenter'
 import { UtilisateursTableHead } from './UtilisateursTableHead'

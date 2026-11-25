@@ -3,9 +3,9 @@
 import { useRouter } from 'next/navigation'
 import { useTransition } from 'react'
 import { TERMINER_L_USURPATION_ACTION_KEY } from '@/features/utilisateurs/abilities/terminer-l-usurpation/action/terminer-l-usurpation.key'
-import { inject } from '@/libraries/nextjs/injection/client'
-import { createToast } from '@/libraries/ui/toast/create-toast'
-import { buttonLoadingClassname } from '@/libraries/ui/utils/button-loading-classname'
+import { inject } from '@/libraries/nextjs/injection'
+import { createToast } from '@/libraries/ui/toast'
+import { buttonLoadingClassname } from '@/libraries/ui/utils'
 
 const TerminerUsurpationHeaderUserMenuItem = () => {
   const router = useRouter()

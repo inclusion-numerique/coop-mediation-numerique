@@ -5,7 +5,7 @@ import { coordinateurInscription } from '@/features/utilisateurs/fixtures/coordi
 import type { UtilisateurAEnregistrer } from '@/features/utilisateurs/fixtures/enregistrer-les-utilisateurs'
 import { personas } from '@/features/utilisateurs/fixtures/personas'
 import type { Prisma } from '@/generated/prisma/client'
-import { enSerie } from '@/libraries/fixtures/en-serie'
+import { enSerie } from '@/libraries/fixtures'
 
 export type EmployeuseDeDemonstration = {
   readonly structureCoopId: string

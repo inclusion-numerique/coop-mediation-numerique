@@ -1,10 +1,10 @@
 'use client'
 
 import Button from '@codegouvfr/react-dsfr/Button'
-import { rechercheLibre } from '@/libraries/etat-d-url/definition/recherche-libre'
-import { useFiltre } from '@/libraries/etat-d-url/filtres/use-filtre'
-import { handleSubmit } from '@/libraries/formulaire/handle-submit'
-import { useAppForm } from '@/libraries/formulaire/use-app-form'
+import { rechercheLibre } from '@/libraries/etat-d-url'
+import { useFiltre } from '@/libraries/etat-d-url/filtres'
+import { handleSubmit } from '@/libraries/formulaire'
+import { useAppForm } from '@/libraries/formulaire/hooks'
 
 const CHAMP = 'recherche'
 

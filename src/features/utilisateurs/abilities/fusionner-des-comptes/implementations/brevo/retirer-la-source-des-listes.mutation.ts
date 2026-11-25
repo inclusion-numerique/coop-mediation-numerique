@@ -1,4 +1,4 @@
-import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
+import { signaler } from '@/configuration/telemetry/serveur'
 import type { AdresseCourriel } from '@/features/utilisateurs/domain'
 import { removeBrevoUserContact } from '@/features/utilisateurs/implementations/brevo/remove-brevo-user-contact.mutation'
 

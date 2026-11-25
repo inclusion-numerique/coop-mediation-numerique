@@ -13,14 +13,16 @@ import {
   filtreDuStatut,
 } from '@/features/utilisateurs/ui/filtres/utilisateurs.filtre'
 import type { BarreDesUtilisateursPresentee } from '@/features/utilisateurs/ui/presenters/barre-des-utilisateurs.presenter'
-import { departements } from '@/libraries/departement/departements'
-import { BarreDeFiltres } from '@/libraries/etat-d-url/filtres/BarreDeFiltres'
-import { CaseACocher } from '@/libraries/etat-d-url/filtres/CaseACocher'
-import { ChoixEnPopover } from '@/libraries/etat-d-url/filtres/ChoixEnPopover'
-import { rechercherParmi } from '@/libraries/etat-d-url/filtres/combo-box-de-recherche'
-import { RechercheEnPopover } from '@/libraries/etat-d-url/filtres/RechercheEnPopover'
-import { inject } from '@/libraries/nextjs/injection/client'
-import type { SelectOption } from '@/libraries/ui/form/utils/options'
+import { departements } from '@/libraries/departement'
+import {
+  BarreDeFiltres,
+  CaseACocher,
+  ChoixEnPopover,
+  RechercheEnPopover,
+  rechercherParmi,
+} from '@/libraries/etat-d-url/filtres'
+import { inject } from '@/libraries/nextjs/injection'
+import type { SelectOption } from '@/libraries/ui/form'
 import { RECHERCHER_DES_COMMUNES_ACTION_KEY } from '../../action/rechercher-des-communes.key'
 import { RECHERCHER_DES_COORDINATEURS_ACTION_KEY } from '../../action/rechercher-des-coordinateurs.key'
 import { RECHERCHER_DES_EMPLOYEUSES_ACTION_KEY } from '../../action/rechercher-des-employeuses.key'

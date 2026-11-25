@@ -1,5 +1,5 @@
 import type { Paginated } from '@arckit/resultset'
-import type { AdresseCourante } from '@/libraries/etat-d-url/definition/composition'
+import type { AdresseCourante } from '@/libraries/etat-d-url'
 import {
   CHEMIN_DES_UTILISATEURS,
   listeDesUtilisateurs,

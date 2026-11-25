@@ -1,4 +1,4 @@
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 import { UtilisateurId } from '@/features/utilisateurs/domain'
 import {
   inscritDeLaListeSelect,

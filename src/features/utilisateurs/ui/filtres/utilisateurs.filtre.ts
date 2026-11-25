@@ -10,13 +10,13 @@ import {
   RoleFiltre,
   statutDuFiltre,
 } from '@/features/utilisateurs/domain'
-import { composerLEtat } from '@/libraries/etat-d-url/definition/composition'
 import {
+  composerLEtat,
   filtreDeChoix,
   filtreDeChoixUnique,
-} from '@/libraries/etat-d-url/definition/filtre-de-choix'
-import { filtreDeRecherche } from '@/libraries/etat-d-url/definition/filtre-de-recherche'
-import { rechercheLibre } from '@/libraries/etat-d-url/definition/recherche-libre'
+  filtreDeRecherche,
+  rechercheLibre,
+} from '@/libraries/etat-d-url'
 import { CodeDepartement, CodeInsee } from '@/libraries/insee'
 import { libelleDuStatut } from '../presenters/statut-compte.presenter'
 

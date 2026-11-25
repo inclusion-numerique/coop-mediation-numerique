@@ -1,4 +1,4 @@
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 import { sansDrapeauDispositif } from '@/features/utilisateurs/fixtures/enregistrer-les-utilisateurs'
 import {
   coordinations,

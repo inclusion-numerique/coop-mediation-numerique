@@ -2,9 +2,9 @@
 
 import Button from '@codegouvfr/react-dsfr/Button'
 import { useTransition } from 'react'
-import { inject } from '@/libraries/nextjs/injection/client'
-import { createToast } from '@/libraries/ui/toast/create-toast'
-import { buttonLoadingClassname } from '@/libraries/ui/utils/button-loading-classname'
+import { inject } from '@/libraries/nextjs/injection'
+import { createToast } from '@/libraries/ui/toast'
+import { buttonLoadingClassname } from '@/libraries/ui/utils'
 import { RELANCER_LES_INSCRITS_INACTIFS_ACTION_KEY } from '../../action/relancer-les-inscrits-inactifs.key'
 
 export const LancerLesRelancesDesInscrits = () => {

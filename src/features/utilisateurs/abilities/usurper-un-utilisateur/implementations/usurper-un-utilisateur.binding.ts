@@ -1,4 +1,4 @@
-import { createStopwatch } from '@/libraries/chronometre/stopwatch'
+import { createStopwatch } from '@/libraries/chronometre'
 import { usurperUnUtilisateur as usurper } from '../domain/usurper-un-utilisateur'
 import { cibleUsurpation } from './prisma/cible-usurpation.query'
 import { ouvrirLUsurpation } from './prisma/ouvrir-l-usurpation.mutation'

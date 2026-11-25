@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { errorReporter } from '@/configuration/telemetry/error-reporter/server'
+import { errorReporter } from '@/configuration/telemetry/serveur'
 import { cleApiBrevo } from '@/features/utilisateurs/implementations/brevo/brevo-api.client'
 import { brevoApiThrottle } from './brevo-api-throttle.client'
 

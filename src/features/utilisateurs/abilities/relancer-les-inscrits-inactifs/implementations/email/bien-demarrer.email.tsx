@@ -5,10 +5,10 @@ import {
   MjmlText,
 } from '@faire/mjml-react'
 import { renderToMjml } from '@faire/mjml-react/utils/renderToMjml'
-import { getServerBaseUrl } from '@/configuration/projet/base-url'
-import { projectTitle } from '@/configuration/projet/config'
-import LayoutWithFooter from '@/libraries/emails/components/LayoutWithFooter'
-import { emailAssetUrl } from '@/libraries/emails/email-asset-url'
+import { projectTitle } from '@/configuration/projet'
+import { getServerBaseUrl } from '@/configuration/projet/serveur'
+import { emailAssetUrl } from '@/libraries/emails'
+import { LayoutWithFooter } from '@/libraries/emails/components'
 
 const STANDARD_TEXT = {
   fontWeight: '400',

@@ -1,9 +1,11 @@
-import { contactEmail } from '@/configuration/projet/config'
-import { emailTransport } from '@/configuration/smtp/email-transport'
-import { expediteur } from '@/configuration/smtp/serveur'
-import { throwOnSendMailFailure } from '@/configuration/smtp/throw-on-send-mail-failure'
+import { contactEmail } from '@/configuration/projet'
+import {
+  emailTransport,
+  expediteur,
+  throwOnSendMailFailure,
+} from '@/configuration/smtp'
 import { avertissementDeSuppression } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/implementations/email/avertissement-de-suppression.email'
-import { compileMjml } from '@/libraries/emails/mjml'
+import { compileMjml } from '@/libraries/emails/rendu'
 
 export const envoyerLAvertissementDeSuppression = async ({
   email,

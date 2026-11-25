@@ -7,12 +7,9 @@ import {
   mediateurDe,
 } from '@/features/utilisateurs/domain'
 import { BadgeStatutCompte } from '@/features/utilisateurs/ui/components/BadgeStatutCompte'
-import {
-  dateAsDayAndTime,
-  dateAsDayAndTimeInTimeZone,
-} from '@/libraries/date/date-as-day-and-time'
-import { optionalNumberToString } from '@/libraries/nombre/format-number'
-import CopyToClipboardButton from '@/libraries/ui/components/CopyToClipboardButton'
+import { dateAsDayAndTime, dateAsDayAndTimeInTimeZone } from '@/libraries/date'
+import { optionalNumberToString } from '@/libraries/nombre'
+import { CopyToClipboardButton } from '@/libraries/ui/components'
 import type { ColonneTriable } from '../../domain/index'
 
 export type ColonneDesUtilisateurs = {

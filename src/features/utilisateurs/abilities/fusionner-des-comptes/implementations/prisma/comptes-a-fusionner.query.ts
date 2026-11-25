@@ -1,4 +1,4 @@
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 import { AdresseCourriel } from '@/features/utilisateurs/domain'
 import { roleLu } from '../../../../implementations/prisma/role.transfer'
 import {

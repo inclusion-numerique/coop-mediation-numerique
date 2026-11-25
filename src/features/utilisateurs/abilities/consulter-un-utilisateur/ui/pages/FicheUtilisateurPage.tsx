@@ -15,20 +15,22 @@ import {
   hrefDeLaFusion,
   hrefDeLUtilisateur,
 } from '@/features/utilisateurs/ui/presenters/liens.presenter'
-import { dateAsDay } from '@/libraries/date/date-as-day'
 import {
+  dateAsDay,
   dateAsDayAndTime,
   dateAsDayAndTimeInTimeZone,
-} from '@/libraries/date/date-as-day-and-time'
-import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
-import { contentId } from '@/libraries/liens-d-evitement/skip-links'
-import { numberToString } from '@/libraries/nombre/format-number'
-import AdministrationBreadcrumbs from '@/libraries/ui/components/administration/AdministrationBreadcrumbs'
-import AdministrationInfoCard from '@/libraries/ui/components/administration/AdministrationInfoCard'
-import AdministrationInlineLabelsValues from '@/libraries/ui/components/administration/AdministrationInlineLabelsValues'
-import AdministrationMailtoLink from '@/libraries/ui/components/administration/AdministrationMailtoLink'
-import AdministrationTitle from '@/libraries/ui/components/administration/AdministrationTitle'
-import CoopPageContainer from '@/libraries/ui/components/CoopPageContainer'
+} from '@/libraries/date'
+import { contentId } from '@/libraries/liens-d-evitement'
+import { SkipLinksPortal } from '@/libraries/liens-d-evitement/composants'
+import { numberToString } from '@/libraries/nombre'
+import {
+  AdministrationBreadcrumbs,
+  AdministrationInfoCard,
+  AdministrationInlineLabelsValues,
+  AdministrationMailtoLink,
+  AdministrationTitle,
+  CoopPageContainer,
+} from '@/libraries/ui/components'
 import type { Evenement, FicheUtilisateur } from '../../domain'
 import {
   compteSupprime,

@@ -1,4 +1,4 @@
-import type { AuteurDExport } from '@/libraries/tableur/add-export-metadata'
+import type { AuteurDExport } from '@/libraries/tableur'
 import { libelleDuRole } from '../labels/role-utilisateur.labels'
 
 export const auteurDeLExport = (utilisateur: {

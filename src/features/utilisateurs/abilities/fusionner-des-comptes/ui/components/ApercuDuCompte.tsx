@@ -1,4 +1,4 @@
-import { MergeDiff } from '@/libraries/ui/components/administration/MergeDiff'
+import { MergeDiff } from '@/libraries/ui/components'
 import {
   type CategorieDeFusion,
   type CompteApercu,
