@@ -1,4 +1,4 @@
-import { addMutationLog } from '@/configuration/prisma/add-mutation-log'
+import { addMutationLog } from '@/configuration/prisma'
 import type { Result } from '@/libraries/result'
 import { success } from '@/libraries/result'
 import {

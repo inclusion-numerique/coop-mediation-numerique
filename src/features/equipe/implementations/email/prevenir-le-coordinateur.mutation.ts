@@ -1,11 +1,13 @@
-import { contactEmail } from '@/configuration/projet/config'
-import { emailTransport } from '@/configuration/smtp/email-transport'
-import { expediteur } from '@/configuration/smtp/serveur'
-import { throwOnSendMailFailure } from '@/configuration/smtp/throw-on-send-mail-failure'
-import { signaler } from '@/configuration/telemetry/error-reporter/server/signaler'
+import { contactEmail } from '@/configuration/projet'
+import {
+  emailTransport,
+  expediteur,
+  throwOnSendMailFailure,
+} from '@/configuration/smtp'
+import { signaler } from '@/configuration/telemetry/serveur'
 import { invitationAcceptee } from '@/features/equipe/implementations/email/invitation-acceptee.email'
 import { invitationRefusee } from '@/features/equipe/implementations/email/invitation-refusee.email'
-import { compileMjml } from '@/libraries/emails/mjml'
+import { compileMjml } from '@/libraries/emails/rendu'
 import type { Courriel } from '../../domain'
 
 const reponses = {

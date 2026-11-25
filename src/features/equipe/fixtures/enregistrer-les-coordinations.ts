@@ -1,6 +1,5 @@
 import type { Prisma } from '@/generated/prisma/client'
-import { enSerie } from '@/libraries/fixtures/en-serie'
-import { mergeUuids } from '@/libraries/fixtures/merge-uuids'
+import { enSerie, mergeUuids } from '@/libraries/fixtures'
 
 export type Coordination = {
   coordinateurId: string

@@ -7,10 +7,10 @@ import {
   hrefDeConnexion,
   hrefDeLEquipe,
 } from '@/features/equipe/ui/presenters/liens.presenter'
-import { inject } from '@/libraries/nextjs/injection/client'
-import { routeConstruite } from '@/libraries/nextjs/route/route-construite'
-import { createToast } from '@/libraries/ui/toast/create-toast'
-import { buttonLoadingClassname } from '@/libraries/ui/utils/button-loading-classname'
+import { routeConstruite } from '@/libraries/nextjs'
+import { inject } from '@/libraries/nextjs/injection'
+import { createToast } from '@/libraries/ui/toast'
+import { buttonLoadingClassname } from '@/libraries/ui/utils'
 import { ACCEPTER_UNE_INVITATION_ACTION_KEY } from '../../action/accepter-une-invitation.key'
 import { REFUSER_UNE_INVITATION_ACTION_KEY } from '../../action/refuser-une-invitation.key'
 

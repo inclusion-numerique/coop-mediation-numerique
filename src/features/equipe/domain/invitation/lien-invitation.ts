@@ -3,7 +3,7 @@ import {
   decodeSerializableState,
   type EncodedState,
   encodeSerializableState,
-} from '@/libraries/etat-encode/encode-serializable-state'
+} from '@/libraries/etat-encode'
 import { defineModel, type Model } from '@/libraries/model'
 import { ReferenceInvitation } from './reference-invitation'
 

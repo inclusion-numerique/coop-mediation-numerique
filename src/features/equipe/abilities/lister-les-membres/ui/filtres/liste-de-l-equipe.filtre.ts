@@ -6,8 +6,8 @@ import {
 import {
   type AdresseCourante,
   composerLEtat,
-} from '@/libraries/etat-d-url/definition/composition'
-import { pagination } from '@/libraries/etat-d-url/definition/pagination'
+  pagination,
+} from '@/libraries/etat-d-url'
 
 export type ParametresDeLaListe = AdresseCourante['parametres']
 

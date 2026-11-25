@@ -2,10 +2,10 @@ import Excel from 'exceljs'
 import {
   type AuteurDExport,
   addExportMetadata,
-} from '@/libraries/tableur/add-export-metadata'
-import { addTitleRow } from '@/libraries/tableur/add-title-row'
-import { autosizeColumns } from '@/libraries/tableur/autosize-columns'
-import { setWorkbookMetadata } from '@/libraries/tableur/set-workbook-metadata'
+  addTitleRow,
+  autosizeColumns,
+  setWorkbookMetadata,
+} from '@/libraries/tableur'
 import { telephoneDisplayString } from '@/libraries/telephone'
 import type { CriteresEquipe, LigneEquipe } from '../../../../domain'
 import type { ContratMembre, MembreAExporter } from '../../domain'

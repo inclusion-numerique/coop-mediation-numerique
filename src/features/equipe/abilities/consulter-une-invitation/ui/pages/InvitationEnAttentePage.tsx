@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import type { ReactNode } from 'react'
 import { telephoneDisplayString } from '@/libraries/telephone'
-import LogoCoop from '@/libraries/ui/components/LogoCoop'
+import { LogoCoop } from '@/libraries/ui/components'
 import type { CoordinateurDeLEquipe } from '../../../../domain'
 
 const InvitationEnAttentePage = ({

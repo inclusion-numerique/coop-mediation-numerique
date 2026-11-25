@@ -1,10 +1,12 @@
-import { contactEmail } from '@/configuration/projet/config'
-import { emailTransport } from '@/configuration/smtp/email-transport'
-import { expediteur } from '@/configuration/smtp/serveur'
-import { throwOnSendMailFailure } from '@/configuration/smtp/throw-on-send-mail-failure'
+import { contactEmail } from '@/configuration/projet'
+import {
+  emailTransport,
+  expediteur,
+  throwOnSendMailFailure,
+} from '@/configuration/smtp'
 import { invitationDUnMediateur } from '@/features/equipe/implementations/email/invitation-d-un-mediateur.email'
 import { invitationDUnNouveauMediateur } from '@/features/equipe/implementations/email/invitation-d-un-nouveau-mediateur.email'
-import { compileMjml } from '@/libraries/emails/mjml'
+import { compileMjml } from '@/libraries/emails/rendu'
 import {
   type InvitationEnAttente,
   lienInvitation,

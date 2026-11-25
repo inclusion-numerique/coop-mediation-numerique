@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { DataTable } from '@/libraries/data-table'
+import { DataTable } from '@/libraries/data-table/table'
 import type { LigneEquipe } from '../../../../domain'
 import type { LiensDeLaListe } from '../filtres/liste-de-l-equipe.filtre'
 import type { LigneAffichee } from '../presenters/lister-les-membres.presenter'

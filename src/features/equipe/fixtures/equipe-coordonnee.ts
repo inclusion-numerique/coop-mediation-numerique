@@ -1,4 +1,4 @@
-import { mergeUuids } from '@/libraries/fixtures/merge-uuids'
+import { mergeUuids } from '@/libraries/fixtures'
 
 type MembresDeLEquipe = {
   readonly inviteEnAttente: string

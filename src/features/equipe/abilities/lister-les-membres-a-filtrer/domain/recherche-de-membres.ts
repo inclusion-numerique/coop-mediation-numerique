@@ -1,4 +1,4 @@
-import { contientSansAccent } from '@/libraries/texte/sans-accent'
+import { contientSansAccent } from '@/libraries/texte'
 import type { MembreAFiltrer } from './membre-a-filtrer'
 
 const MEMBRES_TROUVES = 10

@@ -7,13 +7,12 @@ import {
   MjmlText,
 } from '@faire/mjml-react'
 import { renderToMjml } from '@faire/mjml-react/utils/renderToMjml'
-import { getServerBaseUrl } from '@/configuration/projet/base-url'
-import { projectTitle } from '@/configuration/projet/config'
+import { projectTitle } from '@/configuration/projet'
+import { getServerBaseUrl } from '@/configuration/projet/serveur'
 import Explanations from '@/features/equipe/implementations/email/explanations.email-fragment'
 import Invitation from '@/features/equipe/implementations/email/invitation.email-fragment'
-import LayoutWithFooter from '@/libraries/emails/components/LayoutWithFooter'
-import { emailAssetUrl } from '@/libraries/emails/email-asset-url'
-import { backgroundColor } from '@/libraries/emails/styles'
+import { backgroundColor, emailAssetUrl } from '@/libraries/emails'
+import { LayoutWithFooter } from '@/libraries/emails/components'
 
 export const invitationDUnNouveauMediateur = {
   text: ({ url, from }: { url: string; from: string }): string =>

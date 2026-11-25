@@ -1,5 +1,5 @@
-import { prismaClient } from '@/configuration/prisma/prisma-client'
-import type { EncodedState } from '@/libraries/etat-encode/encode-serializable-state'
+import { prismaClient } from '@/configuration/prisma'
+import type { EncodedState } from '@/libraries/etat-encode'
 import { type Courriel, referenceDuCode } from '../../../../domain'
 import { lireLeCoordinateur } from '../../../../implementations/prisma/coordinateur.query'
 import { lireUneInvitation } from '../../../../implementations/prisma/invitation.query'

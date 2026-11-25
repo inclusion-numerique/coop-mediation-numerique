@@ -1,4 +1,4 @@
-import { prismaClient } from '@/configuration/prisma/prisma-client'
+import { prismaClient } from '@/configuration/prisma'
 import type { Invitation, ReferenceInvitation } from '../../domain'
 import { invitationSelect, toInvitation } from './invitation.transfer'
 

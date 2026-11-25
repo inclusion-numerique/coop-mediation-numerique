@@ -1,4 +1,4 @@
-import { addMutationLog } from '@/configuration/prisma/add-mutation-log'
+import { addMutationLog } from '@/configuration/prisma'
 import { failure, type Result, success } from '@/libraries/result'
 import {
   ActionNonAutorisee,

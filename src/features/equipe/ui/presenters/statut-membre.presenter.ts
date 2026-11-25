@@ -1,4 +1,4 @@
-import { dateAsDay } from '@/libraries/date/date-as-day'
+import { dateAsDay } from '@/libraries/date'
 import type { StatutMembre } from '../../domain'
 
 export const libelleStatutMembre = (statut: StatutMembre): string => {

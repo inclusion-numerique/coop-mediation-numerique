@@ -1,5 +1,5 @@
 import type { Prisma } from '@/generated/prisma/client'
-import { enSerie } from '@/libraries/fixtures/en-serie'
+import { enSerie } from '@/libraries/fixtures'
 
 export type MediateurCoordonneFixture = {
   id: string

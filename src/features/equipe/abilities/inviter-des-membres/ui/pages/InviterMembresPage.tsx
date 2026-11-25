@@ -1,8 +1,6 @@
-import SkipLinksPortal from '@/libraries/liens-d-evitement/SkipLinksPortal'
-import { contentId } from '@/libraries/liens-d-evitement/skip-links'
-import BackButton from '@/libraries/ui/components/BackButton'
-import Card from '@/libraries/ui/components/Card'
-import CoopBreadcrumbs from '@/libraries/ui/components/CoopBreadcrumbs'
+import { contentId } from '@/libraries/liens-d-evitement'
+import { SkipLinksPortal } from '@/libraries/liens-d-evitement/composants'
+import { BackButton, Card, CoopBreadcrumbs } from '@/libraries/ui/components'
 import InviterMembreForm from '../forms/InviterMembreForm'
 
 const CarteDInvitation = () => (

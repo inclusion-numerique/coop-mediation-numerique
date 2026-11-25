@@ -1,5 +1,5 @@
 import Button from '@codegouvfr/react-dsfr/Button'
-import type { AdresseCourante } from '@/libraries/etat-d-url/definition/composition'
+import type { AdresseCourante } from '@/libraries/etat-d-url'
 import { lienDExport } from '../search-params/requete-de-l-export.search-params'
 
 const BoutonExporter = ({

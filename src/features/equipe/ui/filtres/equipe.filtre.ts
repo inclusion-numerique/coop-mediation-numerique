@@ -5,13 +5,13 @@ import {
   FiltreRole,
   FiltreStatut,
 } from '@/features/equipe/domain'
-import { composerLEtat } from '@/libraries/etat-d-url/definition/composition'
 import {
+  composerLEtat,
   filtreDeChoix,
   filtreDeChoixUnique,
-} from '@/libraries/etat-d-url/definition/filtre-de-choix'
-import { rechercheLibre } from '@/libraries/etat-d-url/definition/recherche-libre'
-import { triParmi } from '@/libraries/etat-d-url/definition/tri-parmi'
+  rechercheLibre,
+  triParmi,
+} from '@/libraries/etat-d-url'
 
 export const filtreDuStatutDuMembre = filtreDeChoix({
   titre: 'Statut',
