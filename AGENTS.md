@@ -61,7 +61,18 @@ pnpm docs:dev               # Same collection, then the Starlight dev server
 pnpm docs:collect           # Only regenerate the site content (git-ignored) from the repository
 ```
 
-The site is published on GitHub Pages by the release workflow on every push to `main`; import graphs need Graphviz (`dot`).
+The site is published on GitHub Pages by the CI workflow on every push to `main`, once unit, integration and Cucumber tests passed; import graphs need Graphviz (`dot`).
+
+### Coverage
+
+```bash
+pnpm test:cucumber:coverage   # Cucumber under the Node inspector: raw V8 coverage with the executed code in coverage-cucumber/v8
+pnpm coverage:cucumber        # Convert it with ast-v8-to-istanbul, the remapping Vitest uses, to coverage-cucumber/lcov.info
+pnpm coverage:merge <lcov…>   # Merge lcov files (lcov) and build the per-file HTML report (genhtml) in coverage-total/rapport
+pnpm coverage:badge           # Write the badge into the report and print the totals as Markdown
+```
+
+Coverage is measured the same way by Vitest and Cucumber, so their line counts can be added; the CI merges the three lcov files and publishes the report and the README badge with the documentation.
 
 ### Database
 

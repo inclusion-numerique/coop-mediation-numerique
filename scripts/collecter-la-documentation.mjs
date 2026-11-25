@@ -276,8 +276,9 @@ const RAPPORTS = [
   {
     nom: 'Couverture',
     dossier: 'couverture',
-    description: 'Couverture des tests unitaires',
-    source: 'coverage/lcov-report',
+    description:
+      'Couverture agrégée des tests unitaires, d’intégration et Cucumber, fichier par fichier',
+    source: 'coverage-total/rapport',
   },
 ]
 

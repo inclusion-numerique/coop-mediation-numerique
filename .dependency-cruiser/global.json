@@ -19,7 +19,8 @@
     "^src/.+[.]cy[.]tsx$": ["^e2e/support/monter-avec-l-url[.]tsx$"]
   },
   "racine-du-depot-admise": {
-    "^cypress[.]config[.]ts$": ["^e2e/support/task-manager[.]ts$"]
+    "^cypress[.]config[.]ts$": ["^e2e/support/task-manager[.]ts$"],
+    "^vitest[.]config[.]ts$": ["^scripts/couverture/perimetre[.]mjs$"]
   },
   "app-admise-dans-une-feature": {
     "^src/features/clients-api/abilities/[^/]+/[^/]+[.]steps[.]ts$": [

@@ -167,7 +167,7 @@ Le planning des tâches qui tournent seules est décrit dans [l'infrastructure](
 
 Les workflows GitHub Actions sont dans `.github/workflows/` :
 
-- **CI** : lint, tests unitaires, d'intégration, Cucumber, Cypress, Chromatic, contrôle du bundle des tâches, revue des dépendances et, quand `infrastructure/` change, plan d'infrastructure, sur les branches préfixées et sur `main`. Sur `main`, ils tiennent à jour la couverture de référence (Coveralls) et les captures de référence de Chromatic.
+- **CI** : lint, tests unitaires, d'intégration, Cucumber, Cypress, Chromatic, contrôle du bundle des tâches, revue des dépendances et, quand `infrastructure/` change, plan d'infrastructure, sur les branches préfixées et sur `main`. Sur `main`, ils publient la documentation technique, avec la couverture agrégée des tests, et tiennent à jour les captures de référence de Chromatic.
 - **PR title** : vérifie que le titre d'une PR suit les Commits Conventionnels, puisqu'il devient le message du commit de fusion.
 - **Preview** : poser le label `preview` sur une PR déploie l'environnement de sa branche, et chaque push le redéploie. Retirer le label, fermer ou fusionner la PR le détruit.
 - **Release** : à chaque fusion dans `main`, construit les images et déploie `dev` puis la production.

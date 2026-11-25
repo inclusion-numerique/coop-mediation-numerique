@@ -1,6 +1,6 @@
 # La Coop de la médiation numérique
 
-[![Coverage Status](https://coveralls.io/repos/github/inclusion-numerique/coop-mediation-numerique/badge.svg?branch=main)](https://coveralls.io/github/inclusion-numerique/coop-mediation-numerique?branch=main)
+[![Couverture](https://inclusion-numerique.github.io/coop-mediation-numerique/annexes/couverture/badge.svg)](https://inclusion-numerique.github.io/coop-mediation-numerique/annexes/couverture/index.html)
 
 <h2 id="a-propos">🪧 À propos</h2>
 

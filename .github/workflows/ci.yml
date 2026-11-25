@@ -130,13 +130,13 @@ jobs:
         run: cp .env.example .env
       - name: Test application with coverage
         run: pnpm --silent exec vitest run --project unit --coverage
-      - name: Upload coverage to Coveralls
-        uses: coverallsapp/github-action@8d6379e14d29928660c4ba802d8e85393440b329 # v2.3.8
+      - name: Upload coverage
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          files: coverage/lcov.info
-          flag-name: web-unit
-          parallel: true
-          fail-on-error: false
+          name: couverture-unitaire
+          path: coverage/lcov.info
+          if-no-files-found: error
+          retention-days: 7
       - name: Publish test summary
         if: ${{ !cancelled() }}
         uses: mikepenz/action-junit-report@a16be3a69023e9bd7e748ede768b3282ea7b30ce # v6.7.1
@@ -210,13 +210,13 @@ jobs:
           source .env
           set +a
           pnpm --silent exec vitest run --project integration --coverage
-      - name: Upload coverage to Coveralls
-        uses: coverallsapp/github-action@8d6379e14d29928660c4ba802d8e85393440b329 # v2.3.8
+      - name: Upload coverage
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          files: coverage/lcov.info
-          flag-name: web-integration
-          parallel: true
-          fail-on-error: false
+          name: couverture-integration
+          path: coverage/lcov.info
+          if-no-files-found: error
+          retention-days: 7
       - name: Publish test summary
         if: ${{ !cancelled() }}
         uses: mikepenz/action-junit-report@a16be3a69023e9bd7e748ede768b3282ea7b30ce # v6.7.1
@@ -268,13 +268,15 @@ jobs:
           scw-secret-key: ${{ secrets.SCW_SECRET_KEY }}
       - name: Run cucumber with coverage
         run: pnpm test:cucumber:coverage --format progress --format junit:junit/cucumber.xml
-      - name: Upload coverage to Coveralls
-        uses: coverallsapp/github-action@8d6379e14d29928660c4ba802d8e85393440b329 # v2.3.8
+      - name: Convert coverage
+        run: pnpm --silent coverage:cucumber
+      - name: Upload coverage
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          files: coverage-cucumber/lcov.info
-          flag-name: cucumber
-          parallel: true
-          fail-on-error: false
+          name: couverture-cucumber
+          path: coverage-cucumber/lcov.info
+          if-no-files-found: error
+          retention-days: 7
       - name: Publish test summary
         if: ${{ !cancelled() }}
         uses: mikepenz/action-junit-report@a16be3a69023e9bd7e748ede768b3282ea7b30ce # v6.7.1
@@ -468,18 +470,84 @@ jobs:
       - test-web
       - integration-tests
       - cucumber
-    if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-coverage
       cancel-in-progress: true
     steps:
-      - name: Close parallel Coveralls build
-        uses: coverallsapp/github-action@8d6379e14d29928660c4ba802d8e85393440b329 # v2.3.8
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Setup
+        uses: ./.github/actions/setup
+      - name: Install lcov
+        run: sudo apt-get update && sudo apt-get install --yes lcov
+      - name: Download coverages
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
-          parallel-finished: true
-          carryforward: "web-unit,web-integration,cucumber"
-          fail-on-error: false
+          pattern: couverture-*
+          path: couvertures
+      - name: Merge coverages
+        run: |
+          pnpm --silent coverage:merge couvertures/*/lcov.info
+          pnpm --silent coverage:badge >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload coverage report
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: rapport-de-couverture
+          path: coverage-total/rapport
+          if-no-files-found: error
+          retention-days: 7
+
+  build-documentation:
+    name: Build documentation
+    needs: coverage
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Setup
+        uses: ./.github/actions/setup
+      - name: Install Graphviz
+        run: sudo apt-get update && sudo apt-get install --yes graphviz
+      - name: Create env file
+        run: cp .env.example .env
+      - name: Download coverage report
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: rapport-de-couverture
+          path: coverage-total/rapport
+      - name: Configure GitHub Pages
+        id: pages
+        uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
+      - name: Collect documentation
+        run: pnpm --silent docs:collect
+      - name: Build documentation
+        env:
+          ORIGINE: ${{ steps.pages.outputs.origin }}
+          BASE: ${{ steps.pages.outputs.base_path }}
+        run: pnpm exec astro build --root docs/site --config ../astro.config.mjs --site "$ORIGINE" --base "$BASE/"
+      - name: Add reports
+        run: cp -r docs/site/annexes docs/site/dist/annexes
+      - name: Upload documentation
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: docs/site/dist
+
+  deploy-documentation:
+    name: Deploy documentation
+    needs: build-documentation
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
 
   dependency-review:
     name: Dependency review
