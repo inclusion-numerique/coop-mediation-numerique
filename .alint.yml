@@ -378,3 +378,57 @@ rules:
     paths:
       - "e2e/**"
       - "!e2e/{support,tasks,tasks/handlers,fixtures,proconnect-simule,screenshots}"
+
+  - id: dossiers-en-kebab-case
+    kind: dir_absent
+    level: error
+    message: "Dossier en kebab-case (ST-1)"
+    paths:
+      - "src/**/*[A-Z_.]*"
+      - "e2e/**/*[A-Z_.]*"
+      - "!src/app/**"
+      - "!src/generated/**"
+
+  - id: segments-de-route
+    kind: dir_absent
+    level: error
+    message: "Un segment de route est en kebab-case, ou une convention de Next : (groupe), [paramètre], _actions, .well-known"
+    paths:
+      - "src/app/**/*[A-Z]*"
+      - "src/app/**/_*"
+      - "!src/app/**/[[]*]"
+      - "!src/app/_actions"
+
+  - id: categorie-hors-de-son-dossier
+    kind: file_absent
+    level: error
+    message: "Une catégorie ne vit que dans le dossier de son rôle (ST-5, TS-1, ST-7)"
+    paths:
+      - "src/**/*.{validation,errors}.ts"
+      - "src/**/*.transfer.ts"
+      - "src/**/*.{query,mutation,sql,where,select,order-by,payload,params,response,client,middleware,classeur,adapter}.ts"
+      - "src/**/*.{email,email-fragment}.tsx"
+      - "src/**/*.{ability,feature}.md"
+      - "src/**/*.{steps,cucumber}.ts"
+      - "src/**/*.e2e.ts"
+      - "e2e/*/**/*.e2e.ts"
+      - "src/**/*.openapi*.json"
+      - "!src/features/**/action/*.{validation,errors,transfer}.ts"
+      - "!src/features/**/ui/forms/**/*.validation.ts"
+      - "!src/features/**/implementations/*/**/*.{transfer,query,mutation,sql,where,select,order-by,payload,params,response,client,middleware,classeur,adapter}.ts"
+      - "!src/features/**/implementations/email/*.{email,email-fragment}.tsx"
+      - "!src/features/*/abilities/*/*.{ability.md,steps.ts}"
+      - "!src/features/*/*.{cucumber.ts,steps.ts,feature.md}"
+      - "!src/features/**/implementations/openapi/*.openapi*.json"
+
+  - id: pas-de-fichier-vide
+    kind: no_empty_files
+    level: error
+    message: "Un fichier vide n'a rien à faire dans le dépôt"
+    paths: ["src/**", "e2e/**", "!src/generated/**"]
+
+  - id: pas-de-collision-de-casse
+    kind: no_case_conflicts
+    level: error
+    message: "Deux chemins ne diffèrent pas que par la casse (macOS et Windows ne les distinguent pas)"
+    paths: ["src/**", "e2e/**"]
