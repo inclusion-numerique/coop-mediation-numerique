@@ -57,7 +57,7 @@ const dependancesQuiReussissent = (
   lireLesComptesAExaminer: async () => comptes,
   avertirDeLaSuppression: async () => success(undefined),
   noterLAvertissement: async () => success(undefined),
-  supprimerLeCompte: async () => success(undefined),
+  supprimerLeCompte: async () => success({ id: utilisateurId }),
 })
 
 const simuler = (comptes: readonly CompteAExaminer[]) =>

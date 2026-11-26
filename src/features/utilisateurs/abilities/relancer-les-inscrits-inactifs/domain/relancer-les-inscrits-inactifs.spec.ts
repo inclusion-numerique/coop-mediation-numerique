@@ -53,7 +53,7 @@ const ports = (
   envoyerLaRelance: async () => success(undefined),
   envoyerLAvertissement: async () => success(undefined),
   envoyerLAvisDEffacement: async () => success(undefined),
-  supprimerLeCompte: async () => success(undefined),
+  supprimerLeCompte: async () => success({ id: utilisateurId }),
   noterLaRelance: async () => success(undefined),
 })
 

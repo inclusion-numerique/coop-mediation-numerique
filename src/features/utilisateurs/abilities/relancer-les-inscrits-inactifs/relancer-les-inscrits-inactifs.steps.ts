@@ -61,8 +61,10 @@ When('les inscrits inactifs sont relancés', async () => {
       consigner(id, 'avertissement'),
     envoyerLAvisDEffacement: async ({ utilisateurId: id }) =>
       consigner(id, 'avis de suppression'),
-    supprimerLeCompte: async ({ utilisateurId: id }) =>
-      consigner(id, 'suppression'),
+    supprimerLeCompte: async ({ utilisateurId: id }) => {
+      consigner(id, 'suppression')
+      return success({ id })
+    },
   })({ maintenant: new Date() })
 })
 

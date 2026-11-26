@@ -47,7 +47,7 @@ const examiner = async (simuler: boolean) => {
     },
     supprimerLeCompte: async ({ utilisateurId }) => {
       etat.suppressions = [...etat.suppressions, utilisateurId]
-      return success(undefined)
+      return success({ id: utilisateurId })
     },
   })({ maintenant, simuler })
   etat.examines = resultat.data
