@@ -2,35 +2,18 @@ import { failure, type Result, success } from '@/libraries/result'
 import {
   ActionNonAutorisee,
   CoordinateurIntrouvable,
-  type EnvoiEchoue,
-  type EnvoyerUneInvitation,
+  type EnvoiDInvitation,
   exigerEnAttente,
   exigerUneRelancePossible,
   type Gestionnaire,
-  type InvitationDejaTraitee,
   InvitationIntrouvable,
-  type LireLeCoordinateur,
-  type LireUneInvitation,
   peutGererLEquipe,
   type ReferenceInvitation,
-  type RelanceTropRecente,
   type UtilisateurId,
 } from '../../../domain'
-
-export type EchecDeRelance =
-  | ActionNonAutorisee
-  | InvitationIntrouvable
-  | InvitationDejaTraitee
-  | RelanceTropRecente
-  | CoordinateurIntrouvable
-  | EnvoiEchoue
-
-export type EnregistrerLaRelance<Cle> = (relance: {
-  readonly cle: Cle
-  readonly reference: ReferenceInvitation
-  readonly auteurId: UtilisateurId
-  readonly maintenant: Date
-}) => Promise<void>
+import type { EchecDeRelance } from './errors'
+import type { RelancerUneInvitationPorts } from './ports'
+import type { Relance, RelanceEnvoyee } from './relance'
 
 export const relancerUneInvitation =
   <Cle>({
@@ -38,12 +21,7 @@ export const relancerUneInvitation =
     lireLeCoordinateur,
     envoyerUneInvitation,
     enregistrerLaRelance,
-  }: {
-    readonly lireUneInvitation: LireUneInvitation<Cle>
-    readonly lireLeCoordinateur: LireLeCoordinateur
-    readonly envoyerUneInvitation: EnvoyerUneInvitation
-    readonly enregistrerLaRelance: EnregistrerLaRelance<Cle>
-  }) =>
+  }: RelancerUneInvitationPorts<Cle>) =>
   async ({
     reference,
     gestionnaire,
@@ -54,7 +32,7 @@ export const relancerUneInvitation =
     readonly gestionnaire: Gestionnaire
     readonly auteurId: UtilisateurId
     readonly maintenant: Date
-  }): Promise<Result<void, EchecDeRelance>> => {
+  }): Promise<Result<RelanceEnvoyee, EchecDeRelance>> => {
     if (!peutGererLEquipe(gestionnaire)(reference.coordinateurId))
       return failure(ActionNonAutorisee())
 
@@ -70,18 +48,16 @@ export const relancerUneInvitation =
     const coordinateur = await lireLeCoordinateur(reference.coordinateurId)
     if (coordinateur === null) return failure(CoordinateurIntrouvable())
 
-    const envoi = await envoyerUneInvitation({
+    const envoi: EnvoiDInvitation = {
       invitation: relancable.data,
       de: coordinateur.nom,
-    })
-    if (!envoi.success) return envoi
+    }
+    const envoye = await envoyerUneInvitation(envoi)
+    if (!envoye.success) return envoye
 
-    await enregistrerLaRelance({
-      cle: lue.cle,
-      reference,
-      auteurId,
-      maintenant,
-    })
+    const relance: Relance = { reference, auteurId, renvoyeeLe: maintenant }
 
-    return success(undefined)
+    await enregistrerLaRelance({ cle: lue.cle, ...relance })
+
+    return success({ envoi, relance })
   }

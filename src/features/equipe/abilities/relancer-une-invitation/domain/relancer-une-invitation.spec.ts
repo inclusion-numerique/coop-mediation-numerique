@@ -63,7 +63,13 @@ describe('relancer une invitation', () => {
 
     expect(
       await relancer({ reference, gestionnaire, auteurId, maintenant }),
-    ).toEqual({ success: true, data: undefined })
+    ).toEqual({
+      success: true,
+      data: {
+        envoi: { invitation: invitationEnAttente, de: coordinateur.nom },
+        relance: { reference, auteurId, renvoyeeLe: maintenant },
+      },
+    })
   })
 
   it('est refusée à qui ne gère pas l’équipe', async () => {

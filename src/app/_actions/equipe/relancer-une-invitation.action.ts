@@ -18,6 +18,7 @@ import { lireUneInvitation } from '@/features/equipe/implementations/prisma/invi
 import { gestionnaireDe } from '@/features/equipe/implementations/session'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { fromResult, withInput } from '@/libraries/nextjs'
+import { success } from '@/libraries/result'
 
 export const relancerUneInvitationAction = actionBuilder()
   .use(withAuth())
@@ -25,8 +26,8 @@ export const relancerUneInvitationAction = actionBuilder()
   .use(withInput(RelancerUneInvitationValidation))
   .execute(
     fromResult(
-      async ({ user, input }) =>
-        relancerUneInvitation({
+      async ({ user, input }) => {
+        const relance = await relancerUneInvitation({
           lireUneInvitation,
           lireLeCoordinateur,
           envoyerUneInvitation,
@@ -39,7 +40,9 @@ export const relancerUneInvitationAction = actionBuilder()
           gestionnaire: gestionnaireDe(user),
           auteurId: UtilisateurId(user.id),
           maintenant: new Date(),
-        }),
+        })
+        return relance.success ? success(undefined) : relance
+      },
       { onError: RELANCER_UNE_INVITATION_ERRORS },
     ),
   )

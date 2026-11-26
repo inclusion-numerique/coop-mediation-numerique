@@ -34,6 +34,7 @@ export { Courriel } from './identite/courriel'
 export { Nom } from './identite/nom'
 export { NomAffiche, nomAffiche } from './identite/nom-affiche'
 export { Prenom } from './identite/prenom'
+export type { EnvoiDInvitation } from './invitation/envoi-d-invitation'
 export {
   exigerEnAttente,
   exigerUneRelancePossible,

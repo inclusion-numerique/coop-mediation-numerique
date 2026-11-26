@@ -1,13 +1,13 @@
 import { addMutationLog, prismaClient } from '@/configuration/prisma'
 import type { CleDInvitation } from '../../../../implementations/prisma/invitation.query'
-import type { EnregistrerLaRelance } from '../../domain/relancer-une-invitation'
+import type { EnregistrerLaRelance } from '../../domain/ports'
 
 export const enregistrerLaRelance: EnregistrerLaRelance<
   CleDInvitation
-> = async ({ cle, reference, auteurId, maintenant }) => {
+> = async ({ cle, reference, auteurId, renvoyeeLe }) => {
   await prismaClient.invitationEquipe.update({
     where: cle,
-    data: { renvoyee: maintenant },
+    data: { renvoyee: renvoyeeLe },
   })
 
   addMutationLog({
