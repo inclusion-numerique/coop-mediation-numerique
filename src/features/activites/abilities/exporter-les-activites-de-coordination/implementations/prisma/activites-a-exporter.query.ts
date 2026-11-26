@@ -1,22 +1,15 @@
 import { prismaClient } from '@/configuration/prisma'
 import {
-  type ActiviteDeCoordination,
-  type CoordinateurId,
-  type CriteresDesCoordinations,
-} from '../../../../domain'
-import {
   activiteDeCoordinationDe,
   activiteDeCoordinationSelect,
   filtreDesCoordinations,
 } from '../../../../implementations/prisma/activite-de-coordination.transfer'
+import type { ActivitesAExporter } from '../../domain/ports'
 
-export const exporterLesActivitesDeCoordination = async ({
+export const activitesAExporter: ActivitesAExporter = async ({
   coordinateurId,
   criteres,
-}: {
-  coordinateurId: CoordinateurId
-  criteres: CriteresDesCoordinations
-}): Promise<readonly ActiviteDeCoordination[]> =>
+}) =>
   (
     await prismaClient.activiteCoordination.findMany({
       where: filtreDesCoordinations({ coordinateurId, criteres }),

@@ -1,7 +1,7 @@
 import type { NextRequest } from 'next/server'
-import { tagsRappeles } from '@/features/activites/abilities/exporter-les-activites-de-coordination/domain/tags-rappeles'
+import { exporterLesActivitesDeCoordination } from '@/features/activites/abilities/exporter-les-activites-de-coordination/domain/exporter-les-activites-de-coordination'
 import { classeurDeMesCoordinations } from '@/features/activites/abilities/exporter-les-activites-de-coordination/implementations/excel/classeur-de-mes-coordinations.classeur'
-import { exporterLesActivitesDeCoordination } from '@/features/activites/abilities/exporter-les-activites-de-coordination/implementations/prisma/activites-a-exporter.query'
+import { activitesAExporter } from '@/features/activites/abilities/exporter-les-activites-de-coordination/implementations/prisma/activites-a-exporter.query'
 import { lignesDesCoordinations } from '@/features/activites/abilities/exporter-les-activites-de-coordination/ui/presenters/lignes-des-coordinations.presenter'
 import { nomDuFichierDesCoordinations } from '@/features/activites/abilities/exporter-les-activites-de-coordination/ui/presenters/nom-du-fichier.presenter'
 import { CoordinateurId } from '@/features/activites/domain'
@@ -29,18 +29,14 @@ export const GET = async (request: NextRequest) => {
   const criteres = criteresDesFiltresDeCoordination(
     filtresDesCoordinations.charger(request.nextUrl.searchParams),
   )
-  const [activites, tags] = await Promise.all([
-    exporterLesActivitesDeCoordination({
-      coordinateurId: CoordinateurId(user.coordinateur.id),
-      criteres,
-    }),
-    tagsRappeles({
-      criteres,
-      tagsUtilisables: tagsUtilisablesDepuis(
-        tagsVisiblesPar(acteurDe(profilDeLaSession(user))),
-      ),
-    }),
-  ])
+  const exportees = await exporterLesActivitesDeCoordination({
+    activitesAExporter,
+    tagsUtilisables: tagsUtilisablesDepuis(
+      tagsVisiblesPar(acteurDe(profilDeLaSession(user))),
+    ),
+  })({ coordinateurId: CoordinateurId(user.coordinateur.id), criteres })
+  if (!exportees.success) return new Response(null, { status: 500 })
+  const { activites, tags } = exportees.data
   const classeur = classeurDeMesCoordinations({
     activites,
     tags,

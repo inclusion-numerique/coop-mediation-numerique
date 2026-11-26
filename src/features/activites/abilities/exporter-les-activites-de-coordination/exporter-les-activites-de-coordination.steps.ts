@@ -1,8 +1,8 @@
 import assert from 'node:assert'
 import { Then, When } from '@cucumber/cucumber'
 import { prismaClient } from '@/configuration/prisma'
-import { tagsRappeles } from '@/features/activites/abilities/exporter-les-activites-de-coordination/domain/tags-rappeles'
-import { exporterLesActivitesDeCoordination } from '@/features/activites/abilities/exporter-les-activites-de-coordination/implementations/prisma/activites-a-exporter.query'
+import { exporterLesActivitesDeCoordination } from '@/features/activites/abilities/exporter-les-activites-de-coordination/domain/exporter-les-activites-de-coordination'
+import { activitesAExporter } from '@/features/activites/abilities/exporter-les-activites-de-coordination/implementations/prisma/activites-a-exporter.query'
 import { coordinationsSemees } from '@/features/activites/activites.cucumber'
 import {
   type ActiviteDeCoordination,
@@ -29,13 +29,15 @@ const exporter = async (
   parametres: Parameters<typeof criteresDesCoordinationsDepuisLURL>[0],
 ) => {
   const criteres = criteresDesCoordinationsDepuisLURL(parametres)
-  const [activites, tags] = await Promise.all([
-    exporterLesActivitesDeCoordination({
-      coordinateurId: CoordinateurId(coordinationsSemees().coordinateurId),
-      criteres,
-    }),
-    tagsRappeles({ criteres, tagsUtilisables: tagsEnBase }),
-  ])
+  const exportation = await exporterLesActivitesDeCoordination({
+    activitesAExporter,
+    tagsUtilisables: tagsEnBase,
+  })({
+    coordinateurId: CoordinateurId(coordinationsSemees().coordinateurId),
+    criteres,
+  })
+  assert.ok(exportation.success)
+  const { activites, tags } = exportation.data
   exportees = activites
   rappeles = tags
 }
