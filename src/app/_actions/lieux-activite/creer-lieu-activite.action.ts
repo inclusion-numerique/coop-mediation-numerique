@@ -12,6 +12,7 @@ import { MediateurId } from '@/features/lieux-activite/domain/identifiants/media
 import { UtilisateurId } from '@/features/lieux-activite/domain/identifiants/utilisateur-id'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { fromResult, withInput } from '@/libraries/nextjs'
+import { success } from '@/libraries/result'
 
 export const creerUnLieuActiviteAction = actionBuilder()
   .use(withAuth())
@@ -19,8 +20,10 @@ export const creerUnLieuActiviteAction = actionBuilder()
   .use(withInput(CreerLieuActiviteValidation))
   .execute(
     fromResult(
-      async ({ user, input }) =>
-        creerLieuActivite({ enregistrer: enregistrerLieuActivite })({
+      async ({ user, input }) => {
+        const creation = await creerLieuActivite({
+          enregistrer: enregistrerLieuActivite,
+        })({
           lieu: nouveauLieu(
             input,
             UtilisateurId(user.id),
@@ -29,7 +32,10 @@ export const creerUnLieuActiviteAction = actionBuilder()
           ),
           mediateurId:
             user.mediateur == null ? null : MediateurId(user.mediateur.id),
-        }),
+        })
+
+        return creation.success ? success({ id: creation.data.id }) : creation
+      },
       { onError: CREER_LIEU_ACTIVITE_ERRORS },
     ),
   )

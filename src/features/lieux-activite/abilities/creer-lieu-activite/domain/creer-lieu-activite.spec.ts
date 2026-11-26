@@ -57,6 +57,8 @@ const lieu: Lieu = {
   },
 }
 
+const mediateurId = MediateurId('9b2d5a3e-1f4c-4e8a-9d6b-3c7e2f1a8b40')
+
 const lieuEnregistre = LieuId('7c9e6679-7425-40de-944b-e07fc1f90ae7')
 
 const creer = creerLieuActivite({ enregistrer: async () => lieuEnregistre })
@@ -69,12 +71,10 @@ describe('créer un lieu d’activité', () => {
     })
   })
 
-  it('rend l’identifiant du lieu enregistré pour un médiateur', async () => {
-    expect(
-      await creer({
-        lieu,
-        mediateurId: MediateurId('9b2d5a3e-1f4c-4e8a-9d6b-3c7e2f1a8b40'),
-      }),
-    ).toEqual({ success: true, data: { id: lieuEnregistre } })
+  it('enregistre le lieu d’un médiateur', async () => {
+    expect(await creer({ lieu, mediateurId })).toEqual({
+      success: true,
+      data: { id: lieuEnregistre, lieu, mediateurId },
+    })
   })
 })

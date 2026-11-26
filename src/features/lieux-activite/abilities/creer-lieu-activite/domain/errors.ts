@@ -1,5 +1,3 @@
-export type MediateurRequis = { readonly _tag: 'MediateurRequis' }
+import type { MediateurRequis } from '../../../domain/errors'
 
-export const MediateurRequis: MediateurRequis = { _tag: 'MediateurRequis' }
-
-export type EchecDeCreation = MediateurRequis
+export type EchecDeCreerLieuActivite = MediateurRequis

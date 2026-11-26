@@ -1,23 +1,23 @@
 import { failure, type Result, success } from '@/libraries/result'
-import type { LieuId } from '../../../domain/identifiants/lieu-id'
+import { MediateurRequis } from '../../../domain/errors'
 import type { MediateurId } from '../../../domain/identifiants/mediateur-id'
 import type { Lieu } from '../../../domain/lieu'
-import { type EchecDeCreation, MediateurRequis } from './errors'
-
-export type EnregistrerLieuActivite = (entree: {
-  readonly lieu: Lieu
-  readonly mediateurId: MediateurId
-}) => Promise<LieuId>
+import type { EchecDeCreerLieuActivite } from './errors'
+import type { LieuCree } from './lieu-cree'
+import type { CreerLieuActivitePorts } from './ports'
 
 export const creerLieuActivite =
-  ({ enregistrer }: { readonly enregistrer: EnregistrerLieuActivite }) =>
+  ({ enregistrer }: CreerLieuActivitePorts) =>
   async ({
     lieu,
     mediateurId,
   }: {
     readonly lieu: Lieu
     readonly mediateurId: MediateurId | null
-  }): Promise<Result<{ readonly id: LieuId }, EchecDeCreation>> =>
-    mediateurId == null
-      ? failure(MediateurRequis)
-      : success({ id: await enregistrer({ lieu, mediateurId }) })
+  }): Promise<Result<LieuCree, EchecDeCreerLieuActivite>> => {
+    if (mediateurId == null) return failure(MediateurRequis())
+
+    const id = await enregistrer({ lieu, mediateurId })
+
+    return success({ id, lieu, mediateurId })
+  }

@@ -15,7 +15,7 @@ import {
   toutesLesColonnes,
 } from '../../../../implementations/prisma/registre/colonnes-a-ecrire.select'
 import { ecrireAuRegistre } from '../../../../implementations/prisma/registre/ecrire-au-registre.mutation'
-import type { EnregistrerLieuActivite } from '../../domain/creer-lieu-activite'
+import type { EnregistrerLieuActivite } from '../../domain/ports'
 
 const rattacher = async (
   transaction: Prisma.TransactionClient,
