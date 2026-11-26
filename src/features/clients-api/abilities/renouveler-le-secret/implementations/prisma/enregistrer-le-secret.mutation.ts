@@ -1,5 +1,5 @@
 import { prismaClient } from '@/configuration/prisma'
-import type { EnregistrerLeSecret } from '../../domain/renouveler-le-secret'
+import type { EnregistrerLeSecret } from '../../domain/ports'
 
 export const enregistrerLeSecret: EnregistrerLeSecret = async ({
   id,

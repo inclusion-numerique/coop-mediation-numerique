@@ -1,40 +1,24 @@
 import {
-  type ClientApi,
   type DefinitionDuClientApi,
-  type GenererUnSecret,
-  type LeNomEstPris,
   NomDejaPris,
 } from '@/features/clients-api/domain'
 import { failure, type Result, success } from '@/libraries/result'
-
-export type ClientApiCree = {
-  readonly client: ClientApi
-  readonly secret: string
-}
-
-export type EnregistrerLeClientApi = (nouveau: {
-  readonly definition: DefinitionDuClientApi
-  readonly secretHash: string
-}) => Promise<ClientApi>
+import type { ClientApiCree } from './client-api-cree'
+import type { EchecDeCreerUnClientApi } from './errors'
+import type { CreerUnClientApiPorts } from './ports'
 
 export const creerUnClientApi =
-  ({
-    leNomEstPris,
-    genererUnSecret,
-    enregistrer,
+  ({ leNomEstPris, genererUnSecret, enregistrer }: CreerUnClientApiPorts) =>
+  async ({
+    definition,
   }: {
-    readonly leNomEstPris: LeNomEstPris
-    readonly genererUnSecret: GenererUnSecret
-    readonly enregistrer: EnregistrerLeClientApi
-  }) =>
-  async (
-    definition: DefinitionDuClientApi,
-  ): Promise<Result<ClientApiCree, NomDejaPris>> => {
-    if (await leNomEstPris(definition.nom))
+    readonly definition: DefinitionDuClientApi
+  }): Promise<Result<ClientApiCree, EchecDeCreerUnClientApi>> => {
+    if (await leNomEstPris({ nom: definition.nom, saufClientApiId: null }))
       return failure(NomDejaPris(definition.nom))
 
     const { secret, secretHash } = genererUnSecret()
     const client = await enregistrer({ definition, secretHash })
 
-    return success({ client, secret })
+    return success({ client, secret, secretHash })
   }

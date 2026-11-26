@@ -6,12 +6,13 @@ import {
   curseurDActivite,
 } from '@/features/activites/abilities/exposer-les-activites/implementations/api/criteres-d-exposition.transfer'
 import { activitesExposees } from '@/features/activites/abilities/exposer-les-activites/implementations/prisma/activites-exposees.query'
+import { authentifierUnClientApi } from '@/features/clients-api/abilities/authentifier-un-client-api/domain/authentifier-un-client-api'
 import {
   withApiV1Errors,
   withClientApi,
   withQueryParams,
 } from '@/features/clients-api/abilities/authentifier-un-client-api/implementations/api-v1'
-import { authentifierUnClientApi } from '@/features/clients-api/abilities/authentifier-un-client-api/implementations/prisma/authentifier-un-client-api.query'
+import { lireLeClientApiAAuthentifier } from '@/features/clients-api/abilities/authentifier-un-client-api/implementations/prisma/client-api-a-authentifier.query'
 import { ActivitesQueryParamsValidation } from '@/features/clients-api/abilities/lire-les-activites/implementations/api-v1/activites.params'
 import { reponseDesActivites } from '@/features/clients-api/abilities/lire-les-activites/implementations/api-v1/activites.response'
 import { verifySecret } from '@/features/clients-api/implementations/secret/hash-secret.adapter'
@@ -322,7 +323,14 @@ import { curseurLu, prismaCursorPagination } from '@/libraries/json-api'
  */
 
 export const GET = routeBuilder()
-  .use(withClientApi(authentifierUnClientApi(verifySecret))(['Activites']))
+  .use(
+    withClientApi(
+      authentifierUnClientApi({
+        lireLeClientApiAAuthentifier,
+        verifierUnSecret: verifySecret,
+      }),
+    )(['Activites']),
+  )
   .use(withQueryParams(ActivitesQueryParamsValidation))
   .handle(
     withApiV1Errors(async ({ queryParams }) => {

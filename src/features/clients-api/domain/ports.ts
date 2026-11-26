@@ -3,7 +3,14 @@ import type { NomDuClientApi } from './nom-du-client-api'
 
 export type ClientApiExiste = (id: ClientApiId) => Promise<boolean>
 
-export type LeNomEstPris = (
-  nom: NomDuClientApi,
-  saufClientApiId?: ClientApiId,
-) => Promise<boolean>
+export type LeNomEstPris = (critere: {
+  readonly nom: NomDuClientApi
+  readonly saufClientApiId: ClientApiId | null
+}) => Promise<boolean>
+
+export type SecretGenere = {
+  readonly secret: string
+  readonly secretHash: string
+}
+
+export type GenererUnSecret = () => SecretGenere

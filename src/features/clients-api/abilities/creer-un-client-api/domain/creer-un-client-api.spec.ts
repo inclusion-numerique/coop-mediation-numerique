@@ -26,13 +26,13 @@ const creer = (nomPris: boolean) =>
     leNomEstPris: async () => nomPris,
     genererUnSecret: () => ({ secret: 'secret', secretHash: 'empreinte' }),
     enregistrer: async () => client,
-  })(definition)
+  })({ definition })
 
 describe('créer un client API', () => {
   it('rend le client créé et son secret', async () => {
     expect(await creer(false)).toEqual({
       success: true,
-      data: { client, secret: 'secret' },
+      data: { client, secret: 'secret', secretHash: 'empreinte' },
     })
   })
 

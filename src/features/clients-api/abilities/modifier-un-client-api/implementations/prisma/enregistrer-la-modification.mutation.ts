@@ -4,7 +4,7 @@ import {
   depuisDefinition,
   versClientApi,
 } from '@/features/clients-api/implementations/prisma/client-api.transfer'
-import type { EnregistrerLaModification } from '../../domain/modifier-un-client-api'
+import type { EnregistrerLaModification } from '../../domain/ports'
 
 export const enregistrerLaModification: EnregistrerLaModification = async ({
   id,

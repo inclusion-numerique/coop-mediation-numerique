@@ -10,9 +10,11 @@ export const createApiClient = async ({ nom }: { nom: string }) => {
     genererUnSecret: nouveauSecret,
     enregistrer: enregistrerLeClientApi,
   })({
-    nom: NomDuClientApi(nom),
-    portees: [],
-    validite: { debut: new Date(), fin: null },
+    definition: {
+      nom: NomDuClientApi(nom),
+      portees: [],
+      validite: { debut: new Date(), fin: null },
+    },
   })
 
   if (!creation.success) throw new Error('Client API de test non créé')

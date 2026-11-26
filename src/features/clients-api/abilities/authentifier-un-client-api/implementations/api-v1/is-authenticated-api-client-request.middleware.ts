@@ -1,45 +1,51 @@
 import { NextRequest } from 'next/server'
-import type {
-  AuthentifierUnClientApi,
-  IssueDAuthentification,
-  PorteeApi,
-} from '@/features/clients-api/domain'
+import type { PorteeApi } from '@/features/clients-api/domain'
 import {
   apiV1AuthorizationHeader,
   apiV1AuthorizationScheme,
 } from '@/libraries/json-api'
+import { failure, type Result } from '@/libraries/result'
+import type { authentifierUnClientApi } from '../../domain/authentifier-un-client-api'
+import type { ClientApiAuthentifie } from '../../domain/client-api-authentifie'
+import {
+  type EchecDAuthentifierUnClientApi,
+  NonAuthentifie,
+} from '../../domain/errors'
+
+export type AuthentifierLaRequete = ReturnType<typeof authentifierUnClientApi>
 
 export const isAuthenticatedApiClientRequest =
-  (authentifierUnClientApi: AuthentifierUnClientApi) =>
+  (authentifier: AuthentifierLaRequete) =>
   async (
     request: NextRequest,
     scopes: PorteeApi[],
-  ): Promise<IssueDAuthentification> => {
+  ): Promise<Result<ClientApiAuthentifie, EchecDAuthentifierUnClientApi>> => {
     const authorizationString = request.headers.get(apiV1AuthorizationHeader)
 
     if (!authorizationString) {
-      return 'NonAuthentifie'
+      return failure(NonAuthentifie())
     }
 
     const [scheme, value] = authorizationString.split(' ')
 
     if (scheme !== apiV1AuthorizationScheme) {
-      return 'NonAuthentifie'
+      return failure(NonAuthentifie())
     }
 
     if (!value) {
-      return 'NonAuthentifie'
+      return failure(NonAuthentifie())
     }
 
     const [clientId, clientSecret] = value.split(':')
 
     if (!clientId || !clientSecret) {
-      return 'NonAuthentifie'
+      return failure(NonAuthentifie())
     }
 
-    return authentifierUnClientApi({
+    return authentifier({
       clientApiId: clientId,
       secret: clientSecret,
       portees: scopes,
+      maintenant: new Date(),
     })
   }

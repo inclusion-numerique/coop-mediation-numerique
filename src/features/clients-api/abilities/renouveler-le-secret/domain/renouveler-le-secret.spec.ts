@@ -18,7 +18,11 @@ describe('renouveler le secret d’un client API', () => {
   it('rend le nouveau secret du client API', async () => {
     expect(await renouveler(true, clientApiId)).toEqual({
       success: true,
-      data: { clientApiId: ClientApiId(clientApiId), secret: 'nouveau-secret' },
+      data: {
+        clientApiId: ClientApiId(clientApiId),
+        secret: 'nouveau-secret',
+        secretHash: 'empreinte',
+      },
     })
   })
 

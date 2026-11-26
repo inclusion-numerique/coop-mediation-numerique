@@ -1,11 +1,12 @@
 import { routeBuilder } from '@arckit/nextjs/route'
 import { NextResponse } from 'next/server'
+import { authentifierUnClientApi } from '@/features/clients-api/abilities/authentifier-un-client-api/domain/authentifier-un-client-api'
 import {
   withApiV1Errors,
   withClientApi,
   withQueryParams,
 } from '@/features/clients-api/abilities/authentifier-un-client-api/implementations/api-v1'
-import { authentifierUnClientApi } from '@/features/clients-api/abilities/authentifier-un-client-api/implementations/prisma/authentifier-un-client-api.query'
+import { lireLeClientApiAAuthentifier } from '@/features/clients-api/abilities/authentifier-un-client-api/implementations/prisma/client-api-a-authentifier.query'
 import { apiDisponible } from '@/features/clients-api/abilities/verifier-l-etat-de-l-api/implementations/api-v1/etat-de-l-api.response'
 import { verifySecret } from '@/features/clients-api/implementations/secret/hash-secret.adapter'
 import { NoQueryParamsValidation } from '@/libraries/json-api'
@@ -33,6 +34,13 @@ import { NoQueryParamsValidation } from '@/libraries/json-api'
  *                   example: ok
  */
 export const GET = routeBuilder()
-  .use(withClientApi(authentifierUnClientApi(verifySecret))([]))
+  .use(
+    withClientApi(
+      authentifierUnClientApi({
+        lireLeClientApiAAuthentifier,
+        verifierUnSecret: verifySecret,
+      }),
+    )([]),
+  )
   .use(withQueryParams(NoQueryParamsValidation))
   .handle(withApiV1Errors(async () => NextResponse.json(apiDisponible())))

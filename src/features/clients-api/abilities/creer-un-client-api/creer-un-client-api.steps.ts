@@ -25,9 +25,11 @@ When(
       genererUnSecret: nouveauSecret,
       enregistrer: enregistrerLeClientApi,
     })({
-      nom: nomUnique(nom),
-      portees: portees(liste),
-      validite: { debut: jour(debut), fin: null },
+      definition: {
+        nom: nomUnique(nom),
+        portees: portees(liste),
+        validite: { debut: jour(debut), fin: null },
+      },
     })
     if (creation.resultat.success)
       retenirLeClient(nom, {

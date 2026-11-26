@@ -1,16 +1,19 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
-import { authentifierUnClientApi } from '@/features/clients-api/abilities/authentifier-un-client-api/implementations/prisma/authentifier-un-client-api.query'
+import { authentifierUnClientApi } from '@/features/clients-api/abilities/authentifier-un-client-api/domain/authentifier-un-client-api'
+import type { EchecDAuthentifierUnClientApi } from '@/features/clients-api/abilities/authentifier-un-client-api/domain/errors'
+import { lireLeClientApiAAuthentifier } from '@/features/clients-api/abilities/authentifier-un-client-api/implementations/prisma/client-api-a-authentifier.query'
 import {
   clientSeme,
   jour,
   portees,
   semerUnClientApi,
 } from '@/features/clients-api/clients-api.cucumber'
-import type { IssueDAuthentification } from '@/features/clients-api/domain'
 import { verifySecret } from '@/features/clients-api/implementations/secret/hash-secret.adapter'
 
-const appel: { issue?: IssueDAuthentification } = {}
+type IssueDeLAppel = 'Authentifie' | EchecDAuthentifierUnClientApi['_tag']
+
+const appel: { issue?: IssueDeLAppel } = {}
 
 Given(
   'un client API {string} valable du {word} sans fin',
@@ -30,12 +33,16 @@ When(
   /^le client API "([^"]+)" appelle une route "([^"]+)" le (\S+) avec (son secret|un autre secret)$/,
   async (nom: string, liste: string, date: string, secret: string) => {
     const seme = clientSeme(nom)
-    appel.issue = await authentifierUnClientApi(verifySecret)({
+    const resultat = await authentifierUnClientApi({
+      lireLeClientApiAAuthentifier,
+      verifierUnSecret: verifySecret,
+    })({
       clientApiId: seme.id,
       secret: secret === 'son secret' ? seme.secret : 'f'.repeat(64),
       portees: portees(liste),
       maintenant: jour(date),
     })
+    appel.issue = resultat.success ? 'Authentifie' : resultat.error._tag
   },
 )
 

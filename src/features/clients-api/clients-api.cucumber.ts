@@ -61,9 +61,11 @@ export const semerUnClientApi = async ({
     genererUnSecret: nouveauSecret,
     enregistrer: enregistrerLeClientApi,
   })({
-    nom: nomUnique(nom),
-    portees: portees(liste),
-    validite: { debut: jour(debut), fin: fin === null ? null : jour(fin) },
+    definition: {
+      nom: nomUnique(nom),
+      portees: portees(liste),
+      validite: { debut: jour(debut), fin: fin === null ? null : jour(fin) },
+    },
   })
   if (!creation.success) throw new Error(`Client API non semé : ${nom}`)
   const seme = { id: creation.data.client.id, secret: creation.data.secret }

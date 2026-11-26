@@ -1,11 +1,12 @@
 import { routeBuilder } from '@arckit/nextjs/route'
 import { NextResponse } from 'next/server'
+import { authentifierUnClientApi } from '@/features/clients-api/abilities/authentifier-un-client-api/domain/authentifier-un-client-api'
 import {
   withApiV1Errors,
   withClientApi,
   withQueryParams,
 } from '@/features/clients-api/abilities/authentifier-un-client-api/implementations/api-v1'
-import { authentifierUnClientApi } from '@/features/clients-api/abilities/authentifier-un-client-api/implementations/prisma/authentifier-un-client-api.query'
+import { lireLeClientApiAAuthentifier } from '@/features/clients-api/abilities/authentifier-un-client-api/implementations/prisma/client-api-a-authentifier.query'
 import {
   criteresDesStructures,
   StructuresQueryParamsValidation,
@@ -322,7 +323,14 @@ import { curseurLu, prismaCursorPagination } from '@/libraries/json-api'
  */
 
 export const GET = routeBuilder()
-  .use(withClientApi(authentifierUnClientApi(verifySecret))(['Structures']))
+  .use(
+    withClientApi(
+      authentifierUnClientApi({
+        lireLeClientApiAAuthentifier,
+        verifierUnSecret: verifySecret,
+      }),
+    )(['Structures']),
+  )
   .use(withQueryParams(StructuresQueryParamsValidation))
   .handle(
     withApiV1Errors(async ({ queryParams }) => {

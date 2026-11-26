@@ -1,36 +1,23 @@
 import {
-  type ClientApiExiste,
   ClientApiId,
   ClientApiIntrouvable,
-  type GenererUnSecret,
 } from '@/features/clients-api/domain'
 import { failure, type Result, success } from '@/libraries/result'
-
-export type EnregistrerLeSecret = (renouvellement: {
-  readonly id: ClientApiId
-  readonly secretHash: string
-}) => Promise<void>
+import type { EchecDeRenouvelerLeSecret } from './errors'
+import type { RenouvelerLeSecretPorts } from './ports'
+import type { SecretRenouvele } from './secret-renouvele'
 
 export const renouvelerLeSecret =
   ({
     clientApiExiste,
     genererUnSecret,
     enregistrer,
-  }: {
-    readonly clientApiExiste: ClientApiExiste
-    readonly genererUnSecret: GenererUnSecret
-    readonly enregistrer: EnregistrerLeSecret
-  }) =>
+  }: RenouvelerLeSecretPorts) =>
   async ({
     clientApiId,
   }: {
     readonly clientApiId: string
-  }): Promise<
-    Result<
-      { readonly clientApiId: ClientApiId; readonly secret: string },
-      ClientApiIntrouvable
-    >
-  > => {
+  }): Promise<Result<SecretRenouvele, EchecDeRenouvelerLeSecret>> => {
     const id = ClientApiId.safe(clientApiId)
 
     if (id === null || !(await clientApiExiste(id)))
@@ -39,5 +26,5 @@ export const renouvelerLeSecret =
     const { secret, secretHash } = genererUnSecret()
     await enregistrer({ id, secretHash })
 
-    return success({ clientApiId: id, secret })
+    return success({ clientApiId: id, secret, secretHash })
   }

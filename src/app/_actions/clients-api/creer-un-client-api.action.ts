@@ -26,7 +26,7 @@ export const creerUnClientApiAction = actionBuilder()
           leNomEstPris: nomDejaPris,
           genererUnSecret: nouveauSecret,
           enregistrer: enregistrerLeClientApi,
-        })(definitionDepuis(input))
+        })({ definition: definitionDepuis(input) })
         return resultat.success
           ? success({ clientApiId: resultat.data.client.id })
           : resultat

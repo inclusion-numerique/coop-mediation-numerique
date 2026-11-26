@@ -27,12 +27,13 @@ import {
 import { statistiquesNationalesEnCours } from '@/features/activites/implementations/prisma/statistiques/statistiques-nationales.query'
 import { criteresDesStatistiquesDesFiltres } from '@/features/activites/ui/filtres/activites.filtre'
 import { filtresDeToutesLesActivites } from '@/features/activites/ui/filtres/toutes-les-activites.filtre'
+import { authentifierUnClientApi } from '@/features/clients-api/abilities/authentifier-un-client-api/domain/authentifier-un-client-api'
 import {
   withApiV1Errors,
   withClientApi,
   withQueryParams,
 } from '@/features/clients-api/abilities/authentifier-un-client-api/implementations/api-v1'
-import { authentifierUnClientApi } from '@/features/clients-api/abilities/authentifier-un-client-api/implementations/prisma/authentifier-un-client-api.query'
+import { lireLeClientApiAAuthentifier } from '@/features/clients-api/abilities/authentifier-un-client-api/implementations/prisma/client-api-a-authentifier.query'
 import { statistiquesQueryParamsValidation } from '@/features/clients-api/abilities/lire-les-statistiques/implementations/api-v1/statistiques.params'
 import { reponseDesStatistiques } from '@/features/clients-api/abilities/lire-les-statistiques/implementations/api-v1/statistiques.response'
 import { verifySecret } from '@/features/clients-api/implementations/secret/hash-secret.adapter'
@@ -413,7 +414,14 @@ const statistiquesDesActivites = statistiquesAvec({
  */
 
 export const GET = routeBuilder()
-  .use(withClientApi(authentifierUnClientApi(verifySecret))(['Statistiques']))
+  .use(
+    withClientApi(
+      authentifierUnClientApi({
+        lireLeClientApiAAuthentifier,
+        verifierUnSecret: verifySecret,
+      }),
+    )(['Statistiques']),
+  )
   .use(
     withQueryParams(
       statistiquesQueryParamsValidation(FiltresDesStatistiquesValidation),

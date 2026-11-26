@@ -3,12 +3,13 @@ import { NextResponse } from 'next/server'
 import { craV1Expose } from '@/features/activites/abilities/exposer-les-cras-v1/implementations/api/cra-v1-expose.transfer'
 import { curseurDeCraV1 } from '@/features/activites/abilities/exposer-les-cras-v1/implementations/api/curseur-de-cra-v1.params'
 import { crasV1Exposes } from '@/features/activites/abilities/exposer-les-cras-v1/implementations/prisma/cras-v1-exposes.query'
+import { authentifierUnClientApi } from '@/features/clients-api/abilities/authentifier-un-client-api/domain/authentifier-un-client-api'
 import {
   withApiV1Errors,
   withClientApi,
   withQueryParams,
 } from '@/features/clients-api/abilities/authentifier-un-client-api/implementations/api-v1'
-import { authentifierUnClientApi } from '@/features/clients-api/abilities/authentifier-un-client-api/implementations/prisma/authentifier-un-client-api.query'
+import { lireLeClientApiAAuthentifier } from '@/features/clients-api/abilities/authentifier-un-client-api/implementations/prisma/client-api-a-authentifier.query'
 import { reponseDesCrasV1 } from '@/features/clients-api/abilities/lire-les-cras-v1/implementations/api-v1/cras-v1.response'
 import { verifySecret } from '@/features/clients-api/implementations/secret/hash-secret.adapter'
 import {
@@ -296,7 +297,14 @@ import {
  */
 
 export const GET = routeBuilder()
-  .use(withClientApi(authentifierUnClientApi(verifySecret))(['Activites']))
+  .use(
+    withClientApi(
+      authentifierUnClientApi({
+        lireLeClientApiAAuthentifier,
+        verifierUnSecret: verifySecret,
+      }),
+    )(['Activites']),
+  )
   .use(withQueryParams(JsonApiCursorPaginationQueryParamsValidation))
   .handle(
     withApiV1Errors(async ({ queryParams }) => {
