@@ -1,27 +1,16 @@
 import { prismaClient } from '@/configuration/prisma'
+import type { RetirerDesEquipes } from '../../domain/ports'
 
-type Bilan = {
-  readonly invitationsSupprimees: number
-  readonly appartenancesRetirees: number
-}
-
-export const detacherDesEquipes = ({
+export const retirerDesEquipes: RetirerDesEquipes = ({
   mediateurId,
   coordinateurId,
-  maintenant = new Date(),
-}: {
-  readonly mediateurId: string | null
-  readonly coordinateurId: string | null
-  readonly maintenant?: Date
-}): Promise<Bilan> =>
+  retireesLe,
+}) =>
   prismaClient.$transaction(async (transaction) => {
     const proprietaires = [
       ...(mediateurId === null ? [] : [{ mediateurId }]),
       ...(coordinateurId === null ? [] : [{ coordinateurId }]),
     ]
-
-    if (proprietaires.length === 0)
-      return { invitationsSupprimees: 0, appartenancesRetirees: 0 }
 
     const invitations = await transaction.invitationEquipe.deleteMany({
       where: { OR: proprietaires },
@@ -29,7 +18,7 @@ export const detacherDesEquipes = ({
 
     const appartenances = await transaction.mediateurCoordonne.updateMany({
       where: { OR: proprietaires, suppression: null },
-      data: { suppression: maintenant },
+      data: { suppression: retireesLe },
     })
 
     return {

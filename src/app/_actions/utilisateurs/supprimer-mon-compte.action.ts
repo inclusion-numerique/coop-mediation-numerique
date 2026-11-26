@@ -4,7 +4,8 @@ import { actionBuilder } from '@/configuration/nextjs'
 import { effacerNotes } from '@/features/activites/abilities/effacer-notes/implementations/prisma/effacer-notes.mutation'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { anonymiserPortefeuille } from '@/features/beneficiaire/abilities/anonymiser-portefeuille/implementations/prisma/anonymiser-portefeuille.mutation'
-import { detacherDesEquipes } from '@/features/equipe/abilities/detacher-des-equipes/implementations/prisma/detacher-des-equipes.mutation'
+import { detacherDesEquipes as detacherDesEquipesAvec } from '@/features/equipe/abilities/detacher-des-equipes/domain/detacher-des-equipes'
+import { retirerDesEquipes } from '@/features/equipe/abilities/detacher-des-equipes/implementations/prisma/retirer-des-equipes.mutation'
 import { retirerDesLieux } from '@/features/lieux-activite/abilities/retirer-des-lieux/implementations/prisma/retirer-des-lieux.mutation'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { revoquerPartageStatistiques } from '@/features/mediateurs/abilities/revoquer-partage-statistiques/implementations/prisma/revoquer-partage-statistiques.mutation'
@@ -48,6 +49,15 @@ const supprimerCompteAvec = (
 const effacerEmpreinteRdv = effacerEmpreinteRdvAvec(
   revoquerJetons(configurationOAuthRdvsp()),
 )
+
+const detacherDesEquipes: EffacementsDesAutresFeatures['detacherDesEquipes'] =
+  async (identifiants) => {
+    const detachement = await detacherDesEquipesAvec({ retirerDesEquipes })({
+      ...identifiants,
+      maintenant: new Date(),
+    })
+    return detachement.success ? detachement.data.bilan : detachement.error
+  }
 
 const supprimerComptePorts: EffacementsDesAutresFeatures = {
   anonymiserPortefeuille,
