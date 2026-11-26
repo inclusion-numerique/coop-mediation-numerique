@@ -1,39 +1,21 @@
 import { failure, type Result, success } from '@/libraries/result'
 import {
   ActionNonAutorisee,
-  type CoordinateurId,
   CoordinateurIntrouvable,
   type Courriel,
   type EnvoyerUneInvitation,
   type InvitationEnAttente,
-  type LireLeCoordinateur,
   type NomAffiche,
   type UtilisateurId,
 } from '../../../domain'
-import type { AucuneInvitationAEnvoyer } from './errors'
-import type { InvitationsEnvoyees } from './invitations-envoyees'
-import { type Existant, planifier } from './planifier'
-
-export type Inviteur =
-  | { readonly type: 'Coordinateur'; readonly coordinateurId: CoordinateurId }
-  | { readonly type: 'NonCoordinateur' }
-
-export type EchecDInvitation =
-  | ActionNonAutorisee
-  | AucuneInvitationAEnvoyer
-  | CoordinateurIntrouvable
-
-export type LireLExistant<Cles> = (lecture: {
-  readonly coordinateurId: CoordinateurId
-  readonly candidats: readonly Courriel[]
-}) => Promise<{ readonly existant: Existant; readonly cles: Cles }>
-
-export type EnregistrerLesInvitations<Cles> = (enregistrement: {
-  readonly invitations: readonly InvitationEnAttente[]
-  readonly cles: Cles
-  readonly coordinateurId: CoordinateurId
-  readonly auteurId: UtilisateurId
-}) => Promise<void>
+import type { EchecDInvitation } from './errors'
+import type {
+  EnregistrementDesInvitations,
+  InvitationsDecidees,
+} from './invitations-envoyees'
+import type { Inviteur } from './inviteur'
+import { planifier } from './planifier'
+import type { InviterDesMembresPorts } from './ports'
 
 const envoyerAvec =
   ({
@@ -54,12 +36,7 @@ export const inviterDesMembres =
     lireLExistant,
     enregistrerLesInvitations,
     envoyerUneInvitation,
-  }: {
-    readonly lireLeCoordinateur: LireLeCoordinateur
-    readonly lireLExistant: LireLExistant<Cles>
-    readonly enregistrerLesInvitations: EnregistrerLesInvitations<Cles>
-    readonly envoyerUneInvitation: EnvoyerUneInvitation
-  }) =>
+  }: InviterDesMembresPorts<Cles>) =>
   async ({
     inviteur,
     candidats,
@@ -70,7 +47,7 @@ export const inviterDesMembres =
     readonly candidats: readonly Courriel[]
     readonly auteurId: UtilisateurId
     readonly maintenant: Date
-  }): Promise<Result<InvitationsEnvoyees, EchecDInvitation>> => {
+  }): Promise<Result<InvitationsDecidees, EchecDInvitation>> => {
     if (inviteur.type === 'NonCoordinateur')
       return failure(ActionNonAutorisee())
 
@@ -94,22 +71,23 @@ export const inviterDesMembres =
 
     const { aEnvoyer, ecartes } = planification.data
 
-    await enregistrerLesInvitations({
+    const enregistrement: EnregistrementDesInvitations = {
       invitations: aEnvoyer,
-      cles,
       coordinateurId,
       auteurId,
-    })
+    }
+
+    await enregistrerLesInvitations({ ...enregistrement, cles })
+
+    const de = coordinateur.nom
 
     const echecs = (
-      await Promise.all(
-        aEnvoyer.map(
-          envoyerAvec({ envoyerUneInvitation, de: coordinateur.nom }),
-        ),
-      )
+      await Promise.all(aEnvoyer.map(envoyerAvec({ envoyerUneInvitation, de })))
     ).filter((email): email is Courriel => email !== null)
 
     return success({
+      enregistrement,
+      de,
       envoyees: aEnvoyer
         .map(({ reference }) => reference.email)
         .filter((email) => !echecs.includes(email)),

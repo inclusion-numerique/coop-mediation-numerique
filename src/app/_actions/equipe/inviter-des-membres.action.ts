@@ -13,6 +13,7 @@ import { envoyerUneInvitation } from '@/features/equipe/implementations/email'
 import { lireLeCoordinateur } from '@/features/equipe/implementations/prisma/coordinateur.query'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { fromResult, withInput } from '@/libraries/nextjs'
+import { success } from '@/libraries/result'
 
 export const inviterDesMembresAction = actionBuilder()
   .use(withAuth())
@@ -20,8 +21,8 @@ export const inviterDesMembresAction = actionBuilder()
   .use(withInput(InviterDesMembresValidation))
   .execute(
     fromResult(
-      async ({ user, input }) =>
-        inviterDesMembres({
+      async ({ user, input }) => {
+        const invitations = await inviterDesMembres({
           lireLeCoordinateur,
           lireLExistant,
           enregistrerLesInvitations,
@@ -31,7 +32,15 @@ export const inviterDesMembresAction = actionBuilder()
           candidats: input.emails.map(Courriel),
           auteurId: UtilisateurId(user.id),
           maintenant: new Date(),
-        }),
+        })
+        return invitations.success
+          ? success({
+              envoyees: invitations.data.envoyees,
+              ecartees: invitations.data.ecartees,
+              echecs: invitations.data.echecs,
+            })
+          : invitations
+      },
       { onError: INVITER_DES_MEMBRES_ERRORS },
     ),
   )

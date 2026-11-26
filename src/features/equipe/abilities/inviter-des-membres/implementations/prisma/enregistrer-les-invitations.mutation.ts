@@ -1,6 +1,6 @@
 import { addMutationLog, prismaClient } from '@/configuration/prisma'
 import { fromInvitation } from '../../../../implementations/prisma/invitation.transfer'
-import type { EnregistrerLesInvitations } from '../../domain/inviter-des-membres'
+import type { EnregistrerLesInvitations } from '../../domain/ports'
 import type { EmailsStockes } from './existant.query'
 
 export const enregistrerLesInvitations: EnregistrerLesInvitations<

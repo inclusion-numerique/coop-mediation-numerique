@@ -12,15 +12,18 @@ import {
   UtilisateurId,
 } from '../../../domain'
 import type { InvitationEnAttente } from '../../../domain/invitation/invitation'
-import { type Inviteur, inviterDesMembres } from './inviter-des-membres'
+import { inviterDesMembres } from './inviter-des-membres'
+import type { Inviteur } from './inviteur'
 import type { Existant } from './planifier'
 
 const coordinateurId = CoordinateurId('550e8400-e29b-41d4-a716-446655440001')
 
 const inviteur: Inviteur = { type: 'Coordinateur', coordinateurId }
 
+const de = NomAffiche('Camille Martin')
+
 const coordinateur: CoordinateurDeLEquipe = {
-  nom: NomAffiche('Camille Martin'),
+  nom: de,
   email: Courriel('camille.martin@example.com'),
   telephone: null,
 }
@@ -35,15 +38,22 @@ const membre = Courriel('membre@example.com')
 
 const invite = Courriel('invite@example.com')
 
-const invitationEnAttente: InvitationEnAttente = {
-  reference: ReferenceInvitation({ email: invite, coordinateurId }),
+const mediateurInscrit = MediateurId('550e8400-e29b-41d4-a716-446655440042')
+
+const invitationDe = (email: Courriel): InvitationEnAttente => ({
+  reference: ReferenceInvitation({ email, coordinateurId }),
   invite: { type: 'SansCompte' },
-  envoyeeLe: new Date('2026-01-01T09:00:00Z'),
+  envoyeeLe: maintenant,
   renvoyeeLe: null,
   statut: 'EnAttente',
+})
+
+const invitationEnAttente: InvitationEnAttente = {
+  ...invitationDe(invite),
+  envoyeeLe: new Date('2026-01-01T09:00:00Z'),
 }
 
-const personne = {
+const personne: Existant = {
   invitations: [],
   membresActifs: new Set<Courriel>(),
   mediateursConnus: new Map<Courriel, MediateurId>(),
@@ -67,7 +77,57 @@ describe('inviter des membres', () => {
       }),
     ).toEqual({
       success: true,
-      data: { envoyees: [nouveau], ecartees: [], echecs: [] },
+      data: {
+        enregistrement: {
+          invitations: [invitationDe(nouveau)],
+          coordinateurId,
+          auteurId,
+        },
+        de,
+        envoyees: [nouveau],
+        ecartees: [],
+        echecs: [],
+      },
+    })
+  })
+
+  it('reconnaît un médiateur inscrit d’après son email', async () => {
+    const inviter = inviterDesMembres({
+      lireLeCoordinateur: async () => coordinateur,
+      lireLExistant: async () => ({
+        existant: {
+          ...personne,
+          mediateursConnus: new Map([[nouveau, mediateurInscrit]]),
+        },
+        cles: 1,
+      }),
+      enregistrerLesInvitations: async () => undefined,
+      envoyerUneInvitation: async () => success(undefined),
+    })
+
+    expect(
+      await inviter({ inviteur, candidats: [nouveau], auteurId, maintenant }),
+    ).toEqual({
+      success: true,
+      data: {
+        enregistrement: {
+          invitations: [
+            {
+              ...invitationDe(nouveau),
+              invite: {
+                type: 'MediateurInscrit',
+                mediateurId: mediateurInscrit,
+              },
+            },
+          ],
+          coordinateurId,
+          auteurId,
+        },
+        de,
+        envoyees: [nouveau],
+        ecartees: [],
+        echecs: [],
+      },
     })
   })
 
@@ -92,6 +152,12 @@ describe('inviter des membres', () => {
     ).toEqual({
       success: true,
       data: {
+        enregistrement: {
+          invitations: [invitationDe(nouveau)],
+          coordinateurId,
+          auteurId,
+        },
+        de,
         envoyees: [nouveau],
         ecartees: [{ email: membre, raison: 'DejaMembre' }],
         echecs: [],
@@ -143,10 +209,12 @@ describe('inviter des membres', () => {
       },
     },
   ])('invite de nouveau une personne $cas', async ({ invitation }) => {
-    const existant: Existant = { ...personne, invitations: [invitation] }
     const inviter = inviterDesMembres({
       lireLeCoordinateur: async () => coordinateur,
-      lireLExistant: async () => ({ existant, cles: 1 }),
+      lireLExistant: async () => ({
+        existant: { ...personne, invitations: [invitation] },
+        cles: 1,
+      }),
       enregistrerLesInvitations: async () => undefined,
       envoyerUneInvitation: async () => success(undefined),
     })
@@ -155,7 +223,17 @@ describe('inviter des membres', () => {
       await inviter({ inviteur, candidats: [invite], auteurId, maintenant }),
     ).toEqual({
       success: true,
-      data: { envoyees: [invite], ecartees: [], echecs: [] },
+      data: {
+        enregistrement: {
+          invitations: [invitationDe(invite)],
+          coordinateurId,
+          auteurId,
+        },
+        de,
+        envoyees: [invite],
+        ecartees: [],
+        echecs: [],
+      },
     })
   })
 
@@ -171,7 +249,17 @@ describe('inviter des membres', () => {
       await inviter({ inviteur, candidats: [nouveau], auteurId, maintenant }),
     ).toEqual({
       success: true,
-      data: { envoyees: [], ecartees: [], echecs: [nouveau] },
+      data: {
+        enregistrement: {
+          invitations: [invitationDe(nouveau)],
+          coordinateurId,
+          auteurId,
+        },
+        de,
+        envoyees: [],
+        ecartees: [],
+        echecs: [nouveau],
+      },
     })
   })
 

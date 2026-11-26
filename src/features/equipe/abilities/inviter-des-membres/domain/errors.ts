@@ -1,3 +1,7 @@
+import type {
+  ActionNonAutorisee,
+  CoordinateurIntrouvable,
+} from '../../../domain'
 import type { Ecart } from './ecart'
 
 export type AucuneInvitationAEnvoyer = {
@@ -8,3 +12,8 @@ export type AucuneInvitationAEnvoyer = {
 export const AucuneInvitationAEnvoyer = (
   ecartes: readonly Ecart[],
 ): AucuneInvitationAEnvoyer => ({ _tag: 'AucuneInvitationAEnvoyer', ecartes })
+
+export type EchecDInvitation =
+  | ActionNonAutorisee
+  | AucuneInvitationAEnvoyer
+  | CoordinateurIntrouvable

@@ -1,5 +1,5 @@
 import { CoordinateurId } from '../../../../domain'
-import type { Inviteur } from '../../domain/inviter-des-membres'
+import type { Inviteur } from '../../domain/inviteur'
 
 export const inviteurDe = (user: {
   readonly coordinateur: { readonly id: string } | null

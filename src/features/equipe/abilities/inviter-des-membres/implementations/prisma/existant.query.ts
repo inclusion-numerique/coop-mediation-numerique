@@ -4,8 +4,8 @@ import {
   invitationSelect,
   toInvitation,
 } from '../../../../implementations/prisma/invitation.transfer'
-import type { LireLExistant } from '../../domain/inviter-des-membres'
 import type { Existant } from '../../domain/planifier'
+import type { LireLExistant } from '../../domain/ports'
 
 export type EmailsStockes = ReadonlyMap<Courriel, string>
 
