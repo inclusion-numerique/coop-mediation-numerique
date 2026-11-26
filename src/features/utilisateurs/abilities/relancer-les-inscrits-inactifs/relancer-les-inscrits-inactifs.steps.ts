@@ -55,7 +55,7 @@ When('les inscrits inactifs sont relancés', async () => {
   await relancerLesInscritsInactifs({
     lireLesComptesARelancer: inscritsSansProduction,
     noterLaRelance: noterLaRelance('Nouveau'),
-    envoyerLaRelance: async ({ utilisateurId: id }, palier) =>
+    envoyerLaRelance: async ({ utilisateurId: id }, { palier }) =>
       consigner(id, `relance J+${palier}`),
     envoyerLAvertissement: async ({ utilisateurId: id }) =>
       consigner(id, 'avertissement'),

@@ -31,13 +31,13 @@ export const relancesDesInscritsParCourriel = (
   RelancerLesInscritsInactifsPorts,
   'envoyerLaRelance' | 'envoyerLAvertissement' | 'envoyerLAvisDEffacement'
 > => ({
-  envoyerLaRelance: (destinataire, palier) =>
+  envoyerLaRelance: (destinataire, relance) =>
     attraper(() =>
-      palier === 7
+      relance._tag === 'BienDemarrer'
         ? envoyerBienDemarrer({
             email: destinataire.courriel,
             firstname: destinataire.prenom,
-            matomoCampaignId: 'nouveau_j7',
+            matomoCampaignId: `nouveau_j${relance.palier}`,
             isMediateur: mediateurDe(destinataire.rattachements) !== null,
             isCoordinateur: coordinateurDe(destinataire.rattachements) !== null,
           })
@@ -45,10 +45,10 @@ export const relancesDesInscritsParCourriel = (
             email: destinataire.courriel,
             firstname: destinataire.prenom,
             totalUsers: totalInscrits,
-            matomoCampaignId: `nouveau_j${palier}`,
+            matomoCampaignId: `nouveau_j${relance.palier}`,
             isMediateur: mediateurDe(destinataire.rattachements) !== null,
             isCoordinateur: coordinateurDe(destinataire.rattachements) !== null,
-            monthsCount: palier === 30 ? 1 : 2,
+            monthsCount: relance.moisDepuisLInscription,
           }),
     ),
   envoyerLAvertissement: (destinataire, echeance) =>

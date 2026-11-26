@@ -5,6 +5,7 @@ import {
 } from '@/features/utilisateurs/domain'
 import { failure, type Result, success } from '@/libraries/result'
 import type { RelancerLesInscritsInactifsPorts } from './ports'
+import { relanceDuNouvelInscrit } from './relance-du-nouvel-inscrit'
 
 export const relancerLesInscritsInactifs =
   ({
@@ -22,7 +23,8 @@ export const relancerLesInscritsInactifs =
   }): Promise<Result<RelancesDeroulees, never>> =>
     success(
       await deroulerLesRelances({
-        relancer: envoyerLaRelance,
+        relancer: (destinataire, palier) =>
+          envoyerLaRelance(destinataire, relanceDuNouvelInscrit(palier)),
         avertir: envoyerLAvertissement,
         effacer: async (destinataire) => {
           const suppression = await supprimerLeCompte({
