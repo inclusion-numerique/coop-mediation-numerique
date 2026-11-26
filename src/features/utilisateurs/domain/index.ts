@@ -14,7 +14,12 @@ export {
   situationDansLeDispositif,
 } from './contact-brevo'
 export { Dispositif, dispositifDe, estEnPoste } from './dispositif'
-export { CompteSupprime, RoleProtege, UtilisateurIntrouvable } from './errors'
+export {
+  CompteSupprime,
+  EchecTechnique,
+  RoleProtege,
+  UtilisateurIntrouvable,
+} from './errors'
 export { AuteurId } from './identifiants/auteur-id'
 export { CoordinateurId } from './identifiants/coordinateur-id'
 export { MediateurId } from './identifiants/mediateur-id'

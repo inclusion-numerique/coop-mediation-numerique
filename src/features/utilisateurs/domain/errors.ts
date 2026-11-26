@@ -32,3 +32,13 @@ export const RoleProtege = (
   utilisateurId: UtilisateurId,
   role: RoleUtilisateur,
 ): RoleProtege => ({ _tag: 'RoleProtege', utilisateurId, role })
+
+export type EchecTechnique = {
+  readonly _tag: 'EchecTechnique'
+  readonly cause: string
+}
+
+export const EchecTechnique = (cause: string): EchecTechnique => ({
+  _tag: 'EchecTechnique',
+  cause,
+})

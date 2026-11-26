@@ -5,12 +5,14 @@ import { prismaClient } from '@/configuration/prisma'
 import {
   AdresseCourriel,
   type ContactAImporter,
+  EchecTechnique,
 } from '@/features/utilisateurs/domain'
 import { versContactBrevo } from '@/features/utilisateurs/implementations/brevo/liste-de-diffusion.mutation'
 import {
   type CompteDeListe,
   semerUnCompteDeListe,
 } from '@/features/utilisateurs/utilisateurs.cucumber'
+import { failure, success } from '@/libraries/result'
 import {
   type BilanDeSynchronisation,
   IdentifiantDImport,
@@ -205,29 +207,29 @@ When('les rôles Brevo sont synchronisés', async () => {
   synchro.refuses = []
   const [premier] = synchro.semes
 
-  synchro.bilan = await synchroniserLesRolesBrevo({
+  const resultat = await synchroniserLesRolesBrevo({
     lireLesInscrits: inscritsDeLaListe,
-    importer: {
-      tailleMax: TailleDeLot(synchro.tailleMax),
-      envoyer: async (lot) => {
-        if (
-          synchro.refuserLePremier &&
-          lot.some(({ utilisateurId }) => utilisateurId === premier)
-        ) {
-          synchro.refuses = lot.map(({ utilisateurId }) => utilisateurId)
-          throw new Error('Lot refusé')
-        }
-        synchro.lots = [...synchro.lots, lot]
-        return IdentifiantDImport(synchro.lots.length)
-      },
+    importerUnLot: async (lot) => {
+      if (
+        synchro.refuserLePremier &&
+        lot.some(({ utilisateurId }) => utilisateurId === premier)
+      ) {
+        synchro.refuses = lot.map(({ utilisateurId }) => utilisateurId)
+        return failure(EchecTechnique('Lot refusé'))
+      }
+      synchro.lots = [...synchro.lots, lot]
+      return success(IdentifiantDImport(synchro.lots.length))
     },
-    retirer: {
-      tailleMax: TailleDeLot(150),
-      envoyer: async (lot) => {
-        synchro.retraits = [...synchro.retraits, ...lot]
-      },
+    retirerUnLot: async (lot) => {
+      synchro.retraits = [...synchro.retraits, ...lot]
+      return success(undefined)
     },
-  })()
+  })({
+    tailleDesImports: TailleDeLot(synchro.tailleMax),
+    tailleDesRetraits: TailleDeLot(150),
+  })
+  assert.ok(resultat.success)
+  synchro.bilan = resultat.data
 
   synchro.tailleMax = 1000
   synchro.refuserLePremier = false

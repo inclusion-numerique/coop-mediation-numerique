@@ -5,5 +5,6 @@ export {
   contactsASynchroniser,
   type EchecDeLot,
   type LectureDesInscrits,
+  type LotImporte,
 } from './synchronisation'
 export { enLots, TailleDeLot } from './taille-de-lot'

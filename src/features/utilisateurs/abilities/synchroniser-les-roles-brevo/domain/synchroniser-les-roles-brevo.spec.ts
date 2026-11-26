@@ -1,20 +1,22 @@
 import { describe, expect, it } from 'vitest'
 import {
   AdresseCourriel,
+  type ContactAImporter,
   type CoordinateurId,
   Dispositif,
+  EchecTechnique,
   type InscritDeLaListe,
   MediateurId,
+  RoleBrevo,
   rattachements,
   SANS_CONTRAT,
   situationDansLeDispositif,
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
+import { failure, success } from '@/libraries/result'
 import { IdentifiantDImport } from './identifiant-d-import'
-import {
-  type SynchroniserLesRolesBrevoDependances,
-  synchroniserLesRolesBrevo,
-} from './synchroniser-les-roles-brevo'
+import type { SynchroniserLesRolesBrevoPorts } from './ports'
+import { synchroniserLesRolesBrevo } from './synchroniser-les-roles-brevo'
 import { TailleDeLot } from './taille-de-lot'
 
 const utilisateurId = UtilisateurId('3c4d5e6f-7a8b-4c9d-8e0f-1a2b3c4d5e6f')
@@ -44,7 +46,12 @@ const sansRole = AdresseCourriel('sans-role@example.com')
 
 const identifiantDImport = IdentifiantDImport(42)
 
-const dependances: SynchroniserLesRolesBrevoDependances = {
+const tailles = {
+  tailleDesImports: TailleDeLot(2),
+  tailleDesRetraits: TailleDeLot(150),
+}
+
+const ports: SynchroniserLesRolesBrevoPorts = {
   lireLesInscrits: async () => ({
     inscrits: [
       inscrit(premier, mediateurId),
@@ -54,68 +61,79 @@ const dependances: SynchroniserLesRolesBrevoDependances = {
     ],
     illisibles: [illisible],
   }),
-  importer: {
-    tailleMax: TailleDeLot(2),
-    envoyer: async () => identifiantDImport,
-  },
-  retirer: {
-    tailleMax: TailleDeLot(150),
-    envoyer: async () => undefined,
-  },
+  importerUnLot: async () => success(identifiantDImport),
+  retirerUnLot: async () => success(undefined),
 }
+
+const contact = (courriel: AdresseCourriel): ContactAImporter => ({
+  utilisateurId,
+  courriel,
+  prenom: null,
+  nom: null,
+  telephone: null,
+  roles: [RoleBrevo('Mediateur')],
+  contrat: SANS_CONTRAT,
+})
 
 describe('synchroniser les rôles Brevo', () => {
   it('importe par lots les inscrits qui tiennent un rôle et retire les autres', async () => {
-    expect(await synchroniserLesRolesBrevo(dependances)()).toEqual({
-      inscrits: 4,
-      importes: 3,
-      retires: 1,
-      illisibles: [illisible],
-      imports: [identifiantDImport, identifiantDImport],
-      echecs: [],
+    expect(await synchroniserLesRolesBrevo(ports)(tailles)).toEqual({
+      success: true,
+      data: {
+        inscrits: 4,
+        illisibles: [illisible],
+        importes: [
+          {
+            contacts: [contact(premier), contact(deuxieme)],
+            identifiant: identifiantDImport,
+          },
+          { contacts: [contact(troisieme)], identifiant: identifiantDImport },
+        ],
+        retires: [[sansRole]],
+        echecs: [],
+      },
     })
   })
 
   it('rapporte les courriels de chaque lot en échec sans interrompre les suivants', async () => {
     expect(
       await synchroniserLesRolesBrevo({
-        ...dependances,
-        importer: {
-          tailleMax: TailleDeLot(2),
-          envoyer: async () => Promise.reject(new Error('Brevo indisponible')),
-        },
-        retirer: {
-          tailleMax: TailleDeLot(150),
-          envoyer: async () => Promise.reject(new Error('Brevo indisponible')),
-        },
-      })(),
+        ...ports,
+        importerUnLot: async () =>
+          failure(EchecTechnique('Brevo indisponible')),
+        retirerUnLot: async () => failure(EchecTechnique('Brevo indisponible')),
+      })(tailles),
     ).toEqual({
-      inscrits: 4,
-      importes: 0,
-      retires: 0,
-      illisibles: [illisible],
-      imports: [],
-      echecs: [
-        { _tag: 'ImportEchoue', courriels: [premier, deuxieme] },
-        { _tag: 'ImportEchoue', courriels: [troisieme] },
-        { _tag: 'RetraitEchoue', courriels: [sansRole] },
-      ],
+      success: true,
+      data: {
+        inscrits: 4,
+        illisibles: [illisible],
+        importes: [],
+        retires: [],
+        echecs: [
+          { _tag: 'ImportEchoue', courriels: [premier, deuxieme] },
+          { _tag: 'ImportEchoue', courriels: [troisieme] },
+          { _tag: 'RetraitEchoue', courriels: [sansRole] },
+        ],
+      },
     })
   })
 
   it('n’envoie aucun lot sans inscrit', async () => {
     expect(
       await synchroniserLesRolesBrevo({
-        ...dependances,
+        ...ports,
         lireLesInscrits: async () => ({ inscrits: [], illisibles: [] }),
-      })(),
+      })(tailles),
     ).toEqual({
-      inscrits: 0,
-      importes: 0,
-      retires: 0,
-      illisibles: [],
-      imports: [],
-      echecs: [],
+      success: true,
+      data: {
+        inscrits: 0,
+        illisibles: [],
+        importes: [],
+        retires: [],
+        echecs: [],
+      },
     })
   })
 })

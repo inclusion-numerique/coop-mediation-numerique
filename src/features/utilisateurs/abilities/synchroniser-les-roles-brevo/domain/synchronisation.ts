@@ -44,11 +44,15 @@ export type EchecDeLot =
       readonly courriels: readonly AdresseCourriel[]
     }
 
+export type LotImporte = {
+  readonly contacts: readonly ContactAImporter[]
+  readonly identifiant: IdentifiantDImport
+}
+
 export type BilanDeSynchronisation = {
   readonly inscrits: number
-  readonly importes: number
-  readonly retires: number
   readonly illisibles: readonly UtilisateurId[]
-  readonly imports: readonly IdentifiantDImport[]
+  readonly importes: readonly LotImporte[]
+  readonly retires: readonly (readonly AdresseCourriel[])[]
   readonly echecs: readonly EchecDeLot[]
 }

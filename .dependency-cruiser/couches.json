@@ -225,7 +225,8 @@
     "equipe/implementations/email",
     "lieux-activite/abilities/ajouter-des-lieux-activite/action",
     "lieux-activite/abilities/ajouter-des-lieux-activite/ui/forms",
-    "rdvsp/abilities/consulter-rdvs-accueil/ui/slots"
+    "rdvsp/abilities/consulter-rdvs-accueil/ui/slots",
+    "utilisateurs/abilities/synchroniser-les-roles-brevo/implementations/brevo"
   ],
   "libraries/tableur": [
     "statistiques/ui/presenters",
