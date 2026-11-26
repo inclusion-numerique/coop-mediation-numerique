@@ -29,6 +29,23 @@ l'ordre dans lequel la base les rend.
 * Quand je consulte son employeuse au "2026-06-01"
 * Alors l'employeuse à cette date est "Employeuse de 2026"
 
+### Plan du scénario: Le premier et le dernier jour d'un contrat sont couverts
+
+Une activité est rattachée à son jour, consulté à minuit UTC : le jour où un
+contrat commence et celui où il finit appartiennent tous deux au contrat.
+
+* Étant donné un utilisateur employé par "Employeuse sortante" du "2025-01-01" au "2025-12-31"
+* Et ce même utilisateur employé par "Employeuse entrante" depuis le "2026-01-01"
+* Quand je consulte son employeuse au "<jour>"
+* Alors l'employeuse à cette date est "<employeuse>"
+
+#### Exemples:
+
+  | jour       | employeuse          |
+  | ---------- | ------------------- |
+  | 2025-12-31 | Employeuse sortante |
+  | 2026-01-01 | Employeuse entrante |
+
 ## Règle: Sans contrat couvrant la date, l'employeuse courante fait foi
 
 ### Scénario: Un utilisateur sans aucun contrat
