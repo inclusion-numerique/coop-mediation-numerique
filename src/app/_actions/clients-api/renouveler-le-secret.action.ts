@@ -25,6 +25,7 @@ export const renouvelerLeSecretAction = actionBuilder()
           enregistrer: enregistrerLeSecret,
         })({
           clientApiId: input.clientApiId,
+          maintenant: new Date(),
         })
         return resultat.success
           ? success({ secret: resultat.data.secret })

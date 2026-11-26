@@ -1,5 +1,4 @@
 import {
-  type ClientApi,
   type ClientApiId,
   ClientApiIntrouvable,
   type DefinitionDuClientApi,
@@ -7,6 +6,7 @@ import {
 } from '@/features/clients-api/domain'
 import { failure, type Result, success } from '@/libraries/result'
 import type { EchecDeModifierUnClientApi } from './errors'
+import type { ModificationDuClientApi } from './modification-du-client-api'
 import type { ModifierUnClientApiPorts } from './ports'
 
 export const modifierUnClientApi =
@@ -14,10 +14,12 @@ export const modifierUnClientApi =
   async ({
     clientApiId,
     definition,
+    maintenant,
   }: {
     readonly clientApiId: ClientApiId | null
     readonly definition: DefinitionDuClientApi
-  }): Promise<Result<ClientApi, EchecDeModifierUnClientApi>> => {
+    readonly maintenant: Date
+  }): Promise<Result<ModificationDuClientApi, EchecDeModifierUnClientApi>> => {
     if (clientApiId === null || !(await clientApiExiste(clientApiId)))
       return failure(ClientApiIntrouvable())
     if (
@@ -25,5 +27,8 @@ export const modifierUnClientApi =
     )
       return failure(NomDejaPris(definition.nom))
 
-    return success(await enregistrer({ id: clientApiId, definition }))
+    const modification = { id: clientApiId, definition, maintenant }
+    await enregistrer(modification)
+
+    return success(modification)
   }

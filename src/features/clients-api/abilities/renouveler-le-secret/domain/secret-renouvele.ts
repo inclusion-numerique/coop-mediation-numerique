@@ -4,4 +4,5 @@ export type SecretRenouvele = {
   readonly clientApiId: ClientApiId
   readonly secret: string
   readonly secretHash: string
+  readonly maintenant: Date
 }

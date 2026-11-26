@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest'
 import {
-  type ClientApi,
   ClientApiId,
   type DefinitionDuClientApi,
   NomDuClientApi,
@@ -10,17 +9,12 @@ import { modifierUnClientApi } from './modifier-un-client-api'
 
 const clientApiId = ClientApiId('a1b2c3d4-0000-4000-8000-000000000001')
 
+const maintenant = new Date('2026-11-26T10:00:00.000Z')
+
 const definition: DefinitionDuClientApi = {
   nom: NomDuClientApi('Tableau de bord'),
   portees: [PorteeApi('Activites'), PorteeApi('Statistiques')],
   validite: { debut: new Date('2026-01-01T00:00:00.000Z'), fin: null },
-}
-
-const client: ClientApi = {
-  ...definition,
-  id: clientApiId,
-  creeLe: new Date('2026-01-01T00:00:00.000Z'),
-  modifieLe: new Date('2026-02-01T00:00:00.000Z'),
 }
 
 const modifier = ({
@@ -35,18 +29,21 @@ const modifier = ({
   modifierUnClientApi({
     clientApiExiste: async () => existe,
     leNomEstPris: async () => nomPris,
-    enregistrer: async () => client,
-  })({ clientApiId: identifiant, definition })
+    enregistrer: async () => undefined,
+  })({ clientApiId: identifiant, definition, maintenant })
 
 describe('modifier un client API', () => {
-  it('rend le client modifié', async () => {
+  it('enregistre la nouvelle définition du client à l’instant de la modification', async () => {
     expect(
       await modifier({
         existe: true,
         nomPris: false,
         identifiant: clientApiId,
       }),
-    ).toEqual({ success: true, data: client })
+    ).toEqual({
+      success: true,
+      data: { id: clientApiId, definition, maintenant },
+    })
   })
 
   it('refuse un nom déjà pris par un autre client', async () => {

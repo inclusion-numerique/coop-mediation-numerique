@@ -27,6 +27,7 @@ export const modifierUnClientApiAction = actionBuilder()
         })({
           clientApiId: input.clientApiId,
           definition: definitionDepuis(input),
+          maintenant: new Date(),
         })
         return resultat.success
           ? success({ clientApiId: resultat.data.id })

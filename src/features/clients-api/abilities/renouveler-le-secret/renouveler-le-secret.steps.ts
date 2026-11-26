@@ -24,6 +24,7 @@ When(
       enregistrer: enregistrerLeSecret,
     })({
       clientApiId: clientSeme(nom).id,
+      maintenant: new Date(),
     })
   },
 )
@@ -37,6 +38,7 @@ When(
       enregistrer: enregistrerLeSecret,
     })({
       clientApiId: ClientApiId(v4()),
+      maintenant: new Date(),
     })
   },
 )

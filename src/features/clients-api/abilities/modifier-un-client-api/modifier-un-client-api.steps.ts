@@ -31,6 +31,7 @@ When(
         portees: portees(liste),
         validite: { debut: jour(debut), fin: jour(fin) },
       },
+      maintenant: new Date(),
     })
   },
 )
@@ -49,6 +50,7 @@ When(
         portees: portees('Activites'),
         validite: { debut: jour('01/01/2026'), fin: null },
       },
+      maintenant: new Date(),
     })
   },
 )
@@ -65,6 +67,7 @@ When("l'administration modifie un client API qui n'existe pas", async () => {
       portees: portees('Activites'),
       validite: { debut: jour('01/01/2026'), fin: null },
     },
+    maintenant: new Date(),
   })
 })
 

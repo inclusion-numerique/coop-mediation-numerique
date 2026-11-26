@@ -7,6 +7,7 @@ import type {
 export type EnregistrerLeSecret = (renouvellement: {
   readonly id: ClientApiId
   readonly secretHash: string
+  readonly maintenant: Date
 }) => Promise<void>
 
 export type RenouvelerLeSecretPorts = {

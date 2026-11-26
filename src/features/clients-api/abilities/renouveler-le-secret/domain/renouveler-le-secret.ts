@@ -15,14 +15,16 @@ export const renouvelerLeSecret =
   }: RenouvelerLeSecretPorts) =>
   async ({
     clientApiId,
+    maintenant,
   }: {
     readonly clientApiId: ClientApiId | null
+    readonly maintenant: Date
   }): Promise<Result<SecretRenouvele, EchecDeRenouvelerLeSecret>> => {
     if (clientApiId === null || !(await clientApiExiste(clientApiId)))
       return failure(ClientApiIntrouvable())
 
     const { secret, secretHash } = genererUnSecret()
-    await enregistrer({ id: clientApiId, secretHash })
+    await enregistrer({ id: clientApiId, secretHash, maintenant })
 
-    return success({ clientApiId, secret, secretHash })
+    return success({ clientApiId, secret, secretHash, maintenant })
   }

@@ -1,15 +1,12 @@
 import type {
-  ClientApi,
   ClientApiExiste,
-  ClientApiId,
-  DefinitionDuClientApi,
   LeNomEstPris,
 } from '@/features/clients-api/domain'
+import type { ModificationDuClientApi } from './modification-du-client-api'
 
-export type EnregistrerLaModification = (modification: {
-  readonly id: ClientApiId
-  readonly definition: DefinitionDuClientApi
-}) => Promise<ClientApi>
+export type EnregistrerLaModification = (
+  modification: ModificationDuClientApi,
+) => Promise<void>
 
 export type ModifierUnClientApiPorts = {
   readonly clientApiExiste: ClientApiExiste
