@@ -6,8 +6,10 @@ describe('Genre', () => {
     expect(Genre('Feminin')).toBe('Feminin')
   })
 
-  it('defaults to NonCommunique when absent', () => {
-    expect(Genre(null)).toBe('NonCommunique')
-    expect(Genre(undefined)).toBe('NonCommunique')
+  it.each<{ cas: string; valeur: null | undefined }>([
+    { cas: 'null', valeur: null },
+    { cas: 'undefined', valeur: undefined },
+  ])('defaults to NonCommunique when $cas', ({ valeur }) => {
+    expect(Genre(valeur)).toBe('NonCommunique')
   })
 })
