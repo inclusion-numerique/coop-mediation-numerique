@@ -1,3 +1,4 @@
+import type { ErreurRdvApi } from '../../../domain/errors'
 import type { RdvId } from '../../../domain/identifiants/rdv-id'
 
 /**
@@ -14,3 +15,5 @@ export const RdvNonAutorise = (rdvId: RdvId): RdvNonAutorise => ({
   _tag: 'RdvNonAutorise',
   rdvId,
 })
+
+export type EchecDeCreerActiviteDepuisRdv = RdvNonAutorise | ErreurRdvApi

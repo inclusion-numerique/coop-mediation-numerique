@@ -1,5 +1,4 @@
 import assert from 'node:assert'
-import type { CreerActiviteDepuisRdv } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/domain/creer-activite-depuis-rdv'
 import { MediateurRedacteurId } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/domain/rdv-pour-activite'
 
 const confies: { usagers: number[] } = { usagers: [] }
@@ -11,8 +10,7 @@ const creerActiviteDepuisRdvAvec = (
   creerActiviteDepuisRdv({
     lireRdv: lireRdvPourActivite,
     compteDuRedacteur,
-    creerOuFusionnerBeneficiaires:
-      creerOuFusionnerBeneficiaires(creerOuFusionner),
+    creerOuFusionnerBeneficiaires: creerOuFusionner,
     preparerUrlCreationCra,
   })
 
@@ -45,9 +43,8 @@ const creerActiviteDepuisUnRdv = creerActiviteDepuisRdvAvec(
 
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import type { PreparerUrlCreationCra } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/domain/creer-activite-depuis-rdv'
 import { creerActiviteDepuisRdv } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/domain/creer-activite-depuis-rdv'
-import { creerOuFusionnerBeneficiaires } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/domain/creer-ou-fusionner-beneficiaires'
+import type { PreparerUrlCreationCra } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/domain/ports'
 import type { BeneficiaireFusionne } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/domain/rdv-pour-activite'
 import { compteDuRedacteur } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/implementations/prisma/compte-du-redacteur.query'
 import { lireRdvPourActivite } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/implementations/prisma/lire-rdv-pour-activite.query'
@@ -72,7 +69,7 @@ const RDV_ID_INEXISTANT = ID_TEST.rdv + 199
 const USAGER_ID = ID_TEST.usager + 101
 const USAGER_ID_SECOND = ID_TEST.usager + 102
 
-let resultat: Awaited<ReturnType<CreerActiviteDepuisRdv>> | undefined
+let resultat: Awaited<ReturnType<typeof creerActiviteDepuisUnRdv>> | undefined
 
 Given(
   'un rendez-vous à convertir avec un participant {string}',

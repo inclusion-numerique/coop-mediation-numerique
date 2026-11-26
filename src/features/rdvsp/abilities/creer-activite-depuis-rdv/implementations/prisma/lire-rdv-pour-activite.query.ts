@@ -3,7 +3,7 @@ import { RdvAgentId } from '../../../../domain/identifiants/rdv-agent-id'
 import { RdvId } from '../../../../domain/identifiants/rdv-id'
 import { UsagerId } from '../../../../domain/identifiants/usager-id'
 import { StatutPresence } from '../../../../domain/rdv/statut-presence'
-import type { LireRdvPourActivite } from '../../domain/creer-activite-depuis-rdv'
+import type { LireRdvPourActivite } from '../../domain/ports'
 
 /**
  * Lit le rendez-vous et ses participants sans filtre de propriétaire : c'est
