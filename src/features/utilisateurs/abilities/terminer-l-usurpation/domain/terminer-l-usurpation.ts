@@ -1,33 +1,26 @@
-import type { NomAffiche, UtilisateurId } from '@/features/utilisateurs/domain'
 import { failure, type Result, success } from '@/libraries/result'
 import {
-  type SessionCourante,
-  type TerminerLUsurpationError,
-  usurpateurARetrouver,
-} from './session-courante'
-
-export type TerminerLUsurpationPorts = {
-  readonly lireLaSession: (jeton: string) => Promise<SessionCourante | null>
-  readonly rendreLaSession: (session: {
-    readonly jeton: string
-    readonly usurpateurId: UtilisateurId
-  }) => Promise<NomAffiche>
-}
+  AucuneUsurpationEnCours,
+  type EchecDeTerminerLUsurpation,
+} from './errors'
+import type { TerminerLUsurpationPorts } from './ports'
+import { type SessionRendue, usurpateurARetrouver } from './session-courante'
 
 export const terminerLUsurpation =
   ({ lireLaSession, rendreLaSession }: TerminerLUsurpationPorts) =>
-  async (
-    jeton: string,
-  ): Promise<
-    Result<{ readonly nom: NomAffiche }, TerminerLUsurpationError>
-  > => {
+  async ({
+    jeton,
+  }: {
+    readonly jeton: string
+  }): Promise<Result<SessionRendue, EchecDeTerminerLUsurpation>> => {
     const session = await lireLaSession(jeton)
-    if (session === null) return failure({ _tag: 'AucuneUsurpationEnCours' })
+    if (session === null) return failure(AucuneUsurpationEnCours())
 
     const usurpateur = usurpateurARetrouver(session)
     if (!usurpateur.success) return usurpateur
 
-    return success({
-      nom: await rendreLaSession({ jeton, usurpateurId: usurpateur.data }),
-    })
+    const usurpateurId = usurpateur.data
+    const nom = await rendreLaSession({ jeton, usurpateurId })
+
+    return success({ jeton, usurpateurId, nom })
   }

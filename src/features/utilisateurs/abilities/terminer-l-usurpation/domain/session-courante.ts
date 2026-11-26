@@ -1,5 +1,10 @@
-import type { UtilisateurId } from '@/features/utilisateurs/domain'
+import type { NomAffiche, UtilisateurId } from '@/features/utilisateurs/domain'
 import { failure, type Result, success } from '@/libraries/result'
+import {
+  AucuneUsurpationEnCours,
+  type EchecDeTerminerLUsurpation,
+  UsurpateurNonAdministrateur,
+} from './errors'
 
 export type SessionCourante = {
   readonly jeton: string
@@ -12,24 +17,17 @@ export type SessionCourante = {
       }
 }
 
-type AucuneUsurpationEnCours = {
-  readonly _tag: 'AucuneUsurpationEnCours'
+export type SessionRendue = {
+  readonly jeton: string
+  readonly usurpateurId: UtilisateurId
+  readonly nom: NomAffiche
 }
-
-type UsurpateurNonAdministrateur = {
-  readonly _tag: 'UsurpateurNonAdministrateur'
-}
-
-export type TerminerLUsurpationError =
-  | AucuneUsurpationEnCours
-  | UsurpateurNonAdministrateur
 
 export const usurpateurARetrouver = ({
   usurpation,
-}: SessionCourante): Result<UtilisateurId, TerminerLUsurpationError> => {
-  if (usurpation._tag === 'Aucune')
-    return failure({ _tag: 'AucuneUsurpationEnCours' })
+}: SessionCourante): Result<UtilisateurId, EchecDeTerminerLUsurpation> => {
+  if (usurpation._tag === 'Aucune') return failure(AucuneUsurpationEnCours())
   if (!usurpation.usurpateurEstAdministrateur)
-    return failure({ _tag: 'UsurpateurNonAdministrateur' })
+    return failure(UsurpateurNonAdministrateur())
   return success(usurpation.usurpateurId)
 }

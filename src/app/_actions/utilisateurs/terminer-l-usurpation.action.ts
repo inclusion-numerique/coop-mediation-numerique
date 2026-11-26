@@ -9,6 +9,7 @@ import {
   sessionCourante,
 } from '@/features/utilisateurs/abilities/terminer-l-usurpation/implementations/prisma/session-courante.mutation'
 import { fromResult } from '@/libraries/nextjs'
+import { success } from '@/libraries/result'
 
 const terminerLUsurpation = terminer({
   lireLaSession: sessionCourante,
@@ -19,7 +20,12 @@ export const terminerLUsurpationAction = actionBuilder()
   .use(withAuth())
   .execute(
     fromResult(
-      async () => terminerLUsurpation(await getAuthenticatedSessionToken()),
+      async () => {
+        const resultat = await terminerLUsurpation({
+          jeton: await getAuthenticatedSessionToken(),
+        })
+        return resultat.success ? success({ nom: resultat.data.nom }) : resultat
+      },
       {
         onError: {
           AucuneUsurpationEnCours: 'Aucune usurpation en cours',

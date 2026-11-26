@@ -11,7 +11,7 @@ const terminerAvec = (session: SessionCourante | null) =>
   terminerLUsurpation({
     lireLaSession: async () => session,
     rendreLaSession: async () => nom,
-  })('jeton')
+  })({ jeton: 'jeton' })
 
 describe('terminer une usurpation', () => {
   it('rend la session à l’administrateur usurpateur', async () => {
@@ -24,7 +24,10 @@ describe('terminer une usurpation', () => {
           usurpateurEstAdministrateur: true,
         },
       }),
-    ).toEqual({ success: true, data: { nom } })
+    ).toEqual({
+      success: true,
+      data: { jeton: 'jeton', usurpateurId: administrateur, nom },
+    })
   })
 
   it.each<{ cas: string; session: SessionCourante | null; erreur: string }>([

@@ -72,7 +72,7 @@ Given('une session sans usurpation', async () => {
 })
 
 When("l'usurpation de cette session est terminée", async () => {
-  fin.resultat = await terminerLUsurpation(exiger(fin.jeton))
+  fin.resultat = await terminerLUsurpation({ jeton: exiger(fin.jeton) })
 })
 
 Then("la fin de l'usurpation aboutit", () => {
