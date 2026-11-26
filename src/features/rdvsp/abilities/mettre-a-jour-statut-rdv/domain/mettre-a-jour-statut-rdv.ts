@@ -3,7 +3,11 @@ import {
   type CompteRdvUtilisable,
   estUtilisable,
 } from '@/features/rdvsp/domain/compte/compte-rdv'
-import { CompteNonLie, RdvIntrouvable } from '@/features/rdvsp/domain/errors'
+import {
+  CompteNonLie,
+  RdvIntrouvable,
+  RdvNonAutorise,
+} from '@/features/rdvsp/domain/errors'
 import type { RdvAgentId } from '@/features/rdvsp/domain/identifiants/rdv-agent-id'
 import type { RdvId } from '@/features/rdvsp/domain/identifiants/rdv-id'
 import type { UtilisateurCoopId } from '@/features/rdvsp/domain/identifiants/utilisateur-coop-id'
@@ -12,7 +16,7 @@ import type {
   StatutPresenceModifiable,
 } from '@/features/rdvsp/domain/rdv/statut-presence'
 import { failure, type Result, success } from '@/libraries/result'
-import { type EchecDeMettreAJourStatutRdv, RdvNonAutorise } from './errors'
+import type { EchecDeMettreAJourStatutRdv } from './errors'
 import type { MettreAJourStatutRdvPorts } from './ports'
 import type {
   StatutRdvEnregistre,

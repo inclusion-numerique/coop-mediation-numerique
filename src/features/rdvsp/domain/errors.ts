@@ -106,6 +106,16 @@ export const CompteRdvIntrouvable = (
   utilisateurId: UtilisateurCoopId,
 ): CompteRdvIntrouvable => ({ _tag: 'CompteRdvIntrouvable', utilisateurId })
 
+export type RdvNonAutorise = {
+  readonly _tag: 'RdvNonAutorise'
+  readonly rdvId: RdvId
+}
+
+export const RdvNonAutorise = (rdvId: RdvId): RdvNonAutorise => ({
+  _tag: 'RdvNonAutorise',
+  rdvId,
+})
+
 export type PayloadInexploitable = { readonly _tag: 'PayloadInexploitable' }
 
 export const PayloadInexploitable = (): PayloadInexploitable => ({
