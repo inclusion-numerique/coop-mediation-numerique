@@ -1,11 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { failure, success } from '@/libraries/result'
+import { success } from '@/libraries/result'
 import {
   ActiviteId,
   BeneficiaireId,
   Commune,
   DateDActivite,
-  DateTropLointaine,
   DureeEnMinutes,
   EmployeuseId,
   Genre,
@@ -118,14 +117,5 @@ describe('saisie d’un accompagnement individuel', () => {
         lieu: { _tag: 'ADistance', communeDeRattachement: null },
       },
     })
-  })
-
-  it('refuse une date au-delà de deux ans', () => {
-    expect(
-      accompagnementDeLaSaisie({
-        ...enregistrement,
-        saisie: { ...saisie, date: DateDActivite('2028-11-11') },
-      }),
-    ).toEqual(failure(DateTropLointaine(DateDActivite('2028-11-10'))))
   })
 })

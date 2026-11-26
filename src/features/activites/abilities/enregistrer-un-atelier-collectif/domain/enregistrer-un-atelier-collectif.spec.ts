@@ -9,6 +9,7 @@ import {
   BeneficiaireId,
   BeneficiaireIntrouvable,
   DateDActivite,
+  DateTropLointaine,
   DureeEnMinutes,
   Effectif,
   LieuActiviteId,
@@ -193,6 +194,15 @@ describe('enregistrer un atelier collectif', () => {
       dependances: { ...dependances, rendezVousDejaSaisi: async () => true },
       entree: { saisie: avecRendezVous, mediateurId },
       attendu: failure(RendezVousIndisponible()),
+    },
+    {
+      cas: 'refuse une date au-delà de deux ans',
+      dependances,
+      entree: {
+        saisie: { ...saisie, date: DateDActivite('2029-01-01') },
+        mediateurId,
+      },
+      attendu: failure(DateTropLointaine(DateDActivite('2028-11-10'))),
     },
     {
       cas: 'crée l’atelier sous un nouvel identifiant',

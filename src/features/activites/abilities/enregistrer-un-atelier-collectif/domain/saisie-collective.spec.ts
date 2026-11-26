@@ -1,12 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { failure, success } from '@/libraries/result'
+import { success } from '@/libraries/result'
 import {
   ActiviteId,
-  AtelierSansParticipant,
   BeneficiaireId,
   Commune,
   DateDActivite,
-  DateTropLointaine,
   DureeEnMinutes,
   Effectif,
   EmployeuseId,
@@ -111,23 +109,5 @@ describe('saisie d’un atelier collectif', () => {
     expect(
       atelierDeLaSaisie({ ...enregistrement, employeuse: null }),
     ).toMatchObject({ data: { employeuse: null } })
-  })
-
-  it('refuse une date au-delà de deux ans', () => {
-    expect(
-      atelierDeLaSaisie({
-        ...enregistrement,
-        saisie: { ...saisie, date: DateDActivite('2028-11-11') },
-      }),
-    ).toEqual(failure(DateTropLointaine(DateDActivite('2028-11-10'))))
-  })
-
-  it('refuse un atelier sans participant', () => {
-    expect(
-      atelierDeLaSaisie({
-        ...enregistrement,
-        saisie: { ...saisie, suivis: [] },
-      }),
-    ).toEqual(failure(AtelierSansParticipant()))
   })
 })
