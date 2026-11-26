@@ -96,9 +96,11 @@ résultat, et un test fixe l'instant sans artifice.
 ### Ni exception, ni classe dans le domaine
 
 Le domaine ne lève ni n'attrape d'exception, et n'a pas de classe. Un port
-qui peut échouer techniquement rend un échec tagué ; son implémentation
-attrape l'exception du service et la traduit. Chaque issue d'un cas d'usage
-est alors une valeur que le test observe.
+dont l'échec est une issue prévue par le domaine rend un échec tagué ; son
+implémentation attrape l'exception du service et la traduit. Une panne
+imprévue, comme une base indisponible, peut lever : le domaine ne l'attrape
+jamais, et elle remonte au point d'entrée, puis à la télémétrie. Chaque issue
+prévue d'un cas d'usage est alors une valeur que le test observe.
 
 ### Un résultat qui porte la décision
 
@@ -166,8 +168,8 @@ d'écriture est dans son résultat, et le test unitaire le vérifie.
 - Bad, because les orchestrateurs qui ne rendaient rien doivent nommer le
   type de leur décision, et leur server action doit la convertir.
 - Bad, because l'heure lue au point d'entrée se répète dans chacun d'eux.
-- Bad, because chaque port qui appelle un service capable de lever doit
-  attraper et traduire l'exception.
+- Bad, because chaque port dont l'échec est une issue prévue doit attraper et
+  traduire l'exception du service qu'il appelle.
 - Bad, because une couverture de 100 % impose d'écrire un test pour chaque
   branche défensive, ou de la supprimer.
 - Bad, because tout le code existant doit être mis dans cette forme avant
