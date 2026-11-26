@@ -41,7 +41,7 @@ export const usurperUnUtilisateurAction = actionBuilder()
 
         if (!resultat.success) return resultat
 
-        const cible = resultat.data
+        const { cible } = resultat.data
         const { mediateurId, coordinateurId } = identifiantsDe(
           cible.rattachements,
         )

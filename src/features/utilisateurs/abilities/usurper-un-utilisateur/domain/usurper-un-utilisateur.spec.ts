@@ -13,6 +13,7 @@ import { type CibleUsurpation, PorteeUsurpation } from './usurpation'
 import { usurperUnUtilisateur } from './usurper-un-utilisateur'
 
 const utilisateurId = '0d1a1e7e-1f2b-4c3d-8e4f-5a6b7c8d9e0f'
+const usurpateurId = '1c2d3e4f-5a6b-4c7d-8e9f-0a1b2c3d4e5f'
 
 const cible = (origine: OrigineCompte): CibleUsurpation => ({
   id: UtilisateurId(utilisateurId),
@@ -32,22 +33,25 @@ const usurper = (cibleLue: CibleUsurpation | null, portee: PorteeUsurpation) =>
     ouvrirLUsurpation: async () => undefined,
   })({
     utilisateurId,
-    usurpateurId: '1c2d3e4f-5a6b-4c7d-8e9f-0a1b2c3d4e5f',
+    usurpateurId,
     jetonDeSession: 'jeton',
     portee,
   })
 
 describe('usurper un utilisateur', () => {
-  it('autorise toujours un compte de test', async () => {
+  it('ouvre toujours l’usurpation d’un compte de test', async () => {
     expect(
       await usurper(fixture, PorteeUsurpation('FixturesSeulement')),
-    ).toEqual({ success: true, data: fixture })
+    ).toEqual({
+      success: true,
+      data: { jetonDeSession: 'jeton', cible: fixture, usurpateurId },
+    })
   })
 
-  it('autorise un compte réel quand la portée couvre tous les comptes', async () => {
+  it('ouvre l’usurpation d’un compte réel quand la portée couvre tous les comptes', async () => {
     expect(await usurper(reel, PorteeUsurpation('TousLesComptes'))).toEqual({
       success: true,
-      data: reel,
+      data: { jetonDeSession: 'jeton', cible: reel, usurpateurId },
     })
   })
 
