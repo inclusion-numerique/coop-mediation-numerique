@@ -94,4 +94,18 @@ describe('employeuseALaDate', () => {
   it('n’a pas d’employeuse sans affectation ni contrat', () => {
     expect(employeuseALaDate(null, [], juin2026)).toBeNull()
   })
+
+  it('retient le contrat le plus récemment commencé quand plusieurs couvrent la date', () => {
+    expect(
+      employeuseALaDate(
+        employeuseDeTest(1),
+        [
+          contrat(10, { debut: new Date('2024-01-01') }),
+          contrat(12, { debut: new Date('2026-03-01') }),
+          contrat(11, { debut: new Date('2025-01-01') }),
+        ],
+        juin2026,
+      ),
+    ).toMatchObject({ id: EmployeuseId(12) })
+  })
 })

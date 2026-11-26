@@ -113,4 +113,36 @@ describe('employeusesHistorique', () => {
   it('est vide sans aucun rattachement', () => {
     expect(employeusesHistorique([], [])).toEqual([])
   })
+
+  it('ne date pas l’entrée chez une employeuse dont aucun rattachement n’est daté', () => {
+    expect(
+      employeusesHistorique([affectation('coop', 1, null)], []),
+    ).toMatchObject([{ depuis: null }])
+  })
+
+  it('retient la période du contrat le plus récemment commencé chez l’employeuse', () => {
+    expect(
+      employeusesHistorique(
+        [affectation('coop', 1)],
+        [
+          contrat(1),
+          contrat(1, {
+            debut: new Date('2020-01-01'),
+            fin: new Date('2021-12-31'),
+          }),
+          contrat(1, { debut: new Date('2024-01-01') }),
+          contrat(1),
+          contrat(2, { debut: new Date('2026-01-01') }),
+        ],
+      ),
+    ).toMatchObject([
+      {
+        periode: {
+          _tag: 'enCours',
+          debut: new Date('2024-01-01'),
+          finPrevue: null,
+        },
+      },
+    ])
+  })
 })
