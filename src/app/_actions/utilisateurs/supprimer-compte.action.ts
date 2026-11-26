@@ -35,19 +35,21 @@ import {
 import { role } from '@/features/tags/domain'
 import { SUPPRIMER_COMPTE_ERRORS } from '@/features/utilisateurs/abilities/supprimer-compte/action/supprimer-compte.errors'
 import { SupprimerCompteValidation } from '@/features/utilisateurs/abilities/supprimer-compte/action/supprimer-compte.validation'
+import type { EffacementsDuCompte } from '@/features/utilisateurs/abilities/supprimer-compte/domain/ports'
 import { supprimerCompte } from '@/features/utilisateurs/abilities/supprimer-compte/domain/supprimer-compte'
 import { retirerDesListesDeDiffusion } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/brevo/retirer-des-listes-de-diffusion.mutation'
 import { hash } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/crypto/hash.adapter'
 import { compteASupprimer } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/prisma/compte-a-supprimer.query'
 import { couperAcces } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/prisma/couper-acces.mutation'
-import {
-  type EffacementsDesAutresFeatures,
-  effacementsAttrapes,
-} from '@/features/utilisateurs/abilities/supprimer-compte/implementations/prisma/effacements-des-autres-features.adapter'
 import { logEffacementReport } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/prisma/log-effacement-report.mutation'
-import { AuteurId, UtilisateurId } from '@/features/utilisateurs/domain'
+import {
+  AuteurId,
+  type IdentifiantsRattaches,
+  UtilisateurId,
+} from '@/features/utilisateurs/domain'
 import type { SynchroniserLaPersonne } from '@/features/utilisateurs/implementations/prisma/registre-des-personnes.mutation'
 import { fromResult, withInput } from '@/libraries/nextjs'
+import { attraperEnEchecTechnique } from '@/libraries/result'
 
 const revoquerLePartage = revoquerPartageStatistiques({ revoquerLesPartages })
 
@@ -58,11 +60,10 @@ const retirerLesTags = retirerLesTagsDUnCompte({
 })
 
 const portsDeSuppression = (
-  effacements: EffacementsDesAutresFeatures,
+  effacements: EffacementsDuCompte,
   synchroniserLaPersonne: SynchroniserLaPersonne,
 ) => ({
-  ...effacementsAttrapes(effacements),
-  retirerDesListesDeDiffusion,
+  ...effacements,
   hash,
   lireLeCompteASupprimer: compteASupprimer,
   couperLAcces: couperAcces(synchroniserLaPersonne),
@@ -70,7 +71,7 @@ const portsDeSuppression = (
 })
 
 const supprimerCompteAvec = (
-  effacements: EffacementsDesAutresFeatures,
+  effacements: EffacementsDuCompte,
   synchroniserLaPersonne: SynchroniserLaPersonne,
 ) => supprimerCompte(portsDeSuppression(effacements, synchroniserLaPersonne))
 
@@ -85,35 +86,39 @@ const effacerLEmpreinteRdv = effacementPourLaSuppressionDeCompte(
   }),
 )
 
-const detacherDesEquipes: EffacementsDesAutresFeatures['detacherDesEquipes'] =
-  async (identifiants) => {
-    const detachement = await detacherDesEquipesAvec({ retirerDesEquipes })({
-      compte: compteADetacher(identifiants),
-      maintenant: new Date(),
-    })
-    return detachement.data.bilan
-  }
+const detacherDesEquipes = async (identifiants: IdentifiantsRattaches) => {
+  const detachement = await detacherDesEquipesAvec({ retirerDesEquipes })({
+    compte: compteADetacher(identifiants),
+    maintenant: new Date(),
+  })
+  return detachement.data.bilan
+}
 
-const supprimerComptePorts: EffacementsDesAutresFeatures = {
-  anonymiserPortefeuille,
-  effacerNotes,
-  effacerEmpreinteRdv: effacerLEmpreinteRdv,
-  retirerLesTagsDUnCompte: async (identifiants) => {
-    const retrait = await retirerLesTags({
-      compte: role(identifiants.mediateurId, identifiants.coordinateurId),
-      maintenant: new Date(),
-    })
-    return bilanDuRetrait(retrait.data)
-  },
-  detacherDesEquipes,
-  retirerDesLieux,
-  revoquerPartageStatistiques: async (identifiants) => {
-    const revocation = await revoquerLePartage({
-      ...identifiants,
-      maintenant: new Date(),
-    })
-    return { partagesRevoques: revocation.data.partagesRevoques }
-  },
+const supprimerComptePorts: EffacementsDuCompte = {
+  anonymiserPortefeuille: attraperEnEchecTechnique(anonymiserPortefeuille),
+  effacerNotes: attraperEnEchecTechnique(effacerNotes),
+  effacerEmpreinteRdv: attraperEnEchecTechnique(effacerLEmpreinteRdv),
+  retirerLesTagsDUnCompte: attraperEnEchecTechnique(
+    async (identifiants: IdentifiantsRattaches) => {
+      const retrait = await retirerLesTags({
+        compte: role(identifiants.mediateurId, identifiants.coordinateurId),
+        maintenant: new Date(),
+      })
+      return bilanDuRetrait(retrait.data)
+    },
+  ),
+  detacherDesEquipes: attraperEnEchecTechnique(detacherDesEquipes),
+  retirerDesLieux: attraperEnEchecTechnique(retirerDesLieux),
+  revoquerPartageStatistiques: attraperEnEchecTechnique(
+    async (identifiants: IdentifiantsRattaches) => {
+      const revocation = await revoquerLePartage({
+        ...identifiants,
+        maintenant: new Date(),
+      })
+      return { partagesRevoques: revocation.data.partagesRevoques }
+    },
+  ),
+  retirerDesListesDeDiffusion,
 }
 
 export const supprimerCompteAction = actionBuilder()
