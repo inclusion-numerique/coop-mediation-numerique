@@ -36,7 +36,6 @@ export const enregistrerLesCras = async ({
     ).map(({ id, structureCoopId }) => [structureCoopId, id]),
   )
 
-  // First we upsert all the activites
   await enSerie(allCras, ({ activite, employeuseCoopId }) => {
     const donnees = {
       ...activite,
@@ -49,7 +48,6 @@ export const enregistrerLesCras = async ({
     })
   })
 
-  // Then we delete and recreate the accompagnements
   const activiteIds = allCras.map(({ activite }) => activite.id)
 
   await transaction.accompagnement.deleteMany({
@@ -60,8 +58,6 @@ export const enregistrerLesCras = async ({
     },
   })
 
-  // Delete the anonymous beneficiaires created for the participants anonymes
-  // of the cra collectifs
   await transaction.beneficiaire.deleteMany({
     where: {
       anonyme: true,
@@ -75,8 +71,6 @@ export const enregistrerLesCras = async ({
       },
     },
   })
-
-  // Recreate the anonymous beneficiaires created for the participants anonymes
 
   const beneficiairesAnonymesData = crasCollectifs.flatMap(
     ({ beneficiairesAnonymes }) => beneficiairesAnonymes,
@@ -92,7 +86,6 @@ export const enregistrerLesCras = async ({
     ({ accompagnements }) => accompagnements,
   )
 
-  // Recreate the accompagnements
   await transaction.accompagnement.createMany({
     data: accompagnementsData,
   })

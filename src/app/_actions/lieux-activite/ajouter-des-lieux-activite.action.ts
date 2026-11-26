@@ -21,11 +21,6 @@ import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-ma
 import { fromResult, withInput } from '@/libraries/nextjs'
 import { success } from '@/libraries/result'
 
-/**
- * L'ajout du panier. C'est ici que se fait la jonction entre l'ability et ses
- * besoins d'implémentation : la lecture des lieux déjà rattachés et celle de
- * l'Entrepôt, que le domaine ne connaît que par ses ports.
- */
 export const ajouterDesLieuxActiviteAction = actionBuilder()
   .use(withAuth())
   .use(withMaintenance())

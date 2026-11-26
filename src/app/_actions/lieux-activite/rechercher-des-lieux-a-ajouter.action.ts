@@ -19,15 +19,6 @@ const rechercherDesLieuxAAjouter = rechercher({
   chercherDansLAnnuaireDesEntreprises,
 })
 
-/**
- * Les suggestions du champ d'ajout : la coop, la cartographie nationale et,
- * en dernier recours, l'annuaire des entreprises.
- *
- * Elle sert les deux parcours qui ajoutent un lieu : le panier des lieux
- * d'activité et l'étape d'inscription. C'est une action et non une procédure
- * tRPC pour qu'elle ne franchisse pas la frontière du navigateur — elle tire le
- * client Prisma.
- */
 export const rechercherDesLieuxAAjouterAction = actionBuilder()
   .use(withAuth())
   .use(withInput(RechercherDesLieuxAAjouterValidation))

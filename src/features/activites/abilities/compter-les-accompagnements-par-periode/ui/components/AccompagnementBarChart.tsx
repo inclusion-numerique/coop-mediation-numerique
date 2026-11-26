@@ -12,13 +12,7 @@ import {
   YAxis,
 } from 'recharts'
 
-const CustomTooltip = ({
-  active,
-  payload,
-  label,
-  // Génériques laissés par défaut : <Tooltip> les instancie en ValueType/NameType, et les
-  // restreindre ici rendrait le composant incompatible avec la propriété `content`.
-}: TooltipContentProps) =>
+const CustomTooltip = ({ active, payload, label }: TooltipContentProps) =>
   active &&
   payload &&
   payload.length > 0 && (
@@ -106,8 +100,6 @@ export const AccompagnementBarChart = ({
                 fontSize: displayData.length > 12 ? 10 : 12,
                 fontWeight: 'bold',
               }}
-              // recharts 3 type le formateur de LabelList en `RenderableText`
-              // (`string | number`) et non plus en `number` : on restreint ici.
               formatter={(label) => {
                 const count = typeof label === 'number' ? label : Number(label)
                 if (!count) return ''

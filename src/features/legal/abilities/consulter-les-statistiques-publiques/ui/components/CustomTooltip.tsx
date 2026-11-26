@@ -1,7 +1,4 @@
 import { ReactNode } from 'react'
-// recharts 3 sépare les deux contrats : `TooltipProps` décrit ce que l'on passe au composant
-// <Tooltip>, tandis que `TooltipContentProps` y ajoute ce que le contenu reçoit du contexte
-// (`payload`, `label`, `active`). Un rendu de tooltip personnalisé relève du second.
 import type { TooltipContentProps } from 'recharts'
 import {
   NameType,
@@ -14,7 +11,6 @@ const CustomTooltip = <TValue extends ValueType, TName extends NameType>({
   active,
   payload,
   label,
-  // Formatter is a function that takes the value, name, and the payload and returns a string
   formatter,
   labelFormatter,
 }: TooltipContentProps<TValue, TName>) => {

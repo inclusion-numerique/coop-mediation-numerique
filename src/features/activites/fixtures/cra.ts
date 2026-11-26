@@ -4,9 +4,6 @@ import { beneficiairesDesParticipantsAnonymes } from '@/features/activites/fixtu
 import type { Prisma, TypeLieu } from '@/generated/prisma/client'
 import { mergeUuids } from '@/libraries/fixtures'
 
-/**
- * Create a CRA individuel prisma data with associated entities
- */
 export const craIndividuel = <
   T extends Partial<Prisma.ActiviteUncheckedCreateInput> & {
     mediateurId: string
@@ -63,9 +60,6 @@ export const craIndividuel = <
   }
 }
 
-/**
- * Create a CRA demarche prisma data with associated entities
- */
 export const craDeDemarcheAdministrative = <
   T extends Partial<Prisma.ActiviteUncheckedCreateInput> & {
     mediateurId: string
@@ -122,9 +116,6 @@ export const craDeDemarcheAdministrative = <
   }
 }
 
-/**
- * Create a CRA collectif prisma data with associated entities
- */
 export const craCollectif = <
   T extends Partial<Prisma.ActiviteUncheckedCreateInput> & {
     mediateurId: string
@@ -172,7 +163,6 @@ export const craCollectif = <
       }) satisfies Prisma.AccompagnementUncheckedCreateInput,
   )
 
-  // Create beneficiaires anonymes based on participantsAnonymes counters
   const beneficiairesAnonymes = beneficiairesDesParticipantsAnonymes({
     participantsAnonymes,
     rootUuid: givenId,

@@ -1,4 +1,3 @@
-/** sources found in dataset as of 01/02/2026 */
 const cartographieNationaleSourcesLabels = {
   fredo: 'Fredo',
   'Conseil Départemental de la Charente-Maritime':

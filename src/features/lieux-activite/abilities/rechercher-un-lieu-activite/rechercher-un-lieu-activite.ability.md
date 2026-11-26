@@ -1,7 +1,9 @@
 # Fonctionnalité: Rechercher un de ses lieux d'activité
 
 > La recherche ne porte que sur les lieux où le médiateur exerce : c'est un
-> choix parmi les siens, pas une exploration de l'annuaire.
+> choix parmi les siens, pas une exploration de l'annuaire. Qui n'est pas
+> médiateur n'exerce nulle part : l'action rend une liste vide plutôt qu'une
+> erreur, parce qu'un champ de saisie n'a rien à faire d'un refus.
 
 ## Règle: Seuls les lieux où l'on exerce sont proposés
 

@@ -497,7 +497,6 @@ describe('statistiques du périmètre d’un médiateur', () => {
         title: 'should compute all data without filters',
         activitesFilters: {},
         expected: createExpectedData((data) => {
-          // Should have 13 beneficiaires
           const totalBeneficiaires = 13
 
           const totalAccompagnements = 22
@@ -557,7 +556,6 @@ describe('statistiques du périmètre d’un médiateur', () => {
           expectEnum(data.activites.materiels, 'Telephone', 2, 13)
           expectEnum(data.activites.materiels, 'Tablette', 3, 13)
           expectEnum(data.activites.materiels, 'Autre', 4, 13)
-          // before
 
           expectEnum(data.activites.thematiques, 'Email', 4, 39)
           expectEnum(data.activites.thematiques, 'ReseauxSociaux', 14, 39)
@@ -599,7 +597,6 @@ describe('statistiques du périmètre d’un médiateur', () => {
             8,
           )
 
-          // after
           expectEnum(
             data.activites.typeActivites,
             'Collectif',

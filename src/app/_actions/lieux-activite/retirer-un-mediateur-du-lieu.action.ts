@@ -15,7 +15,6 @@ import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-ma
 import { fromResult, withInput } from '@/libraries/nextjs'
 import { success } from '@/libraries/result'
 
-/** Le nom sous lequel l'auteur du retrait apparaît dans l'e-mail envoyé. */
 const nomAffiche = (user: {
   name: string | null
   firstName: string | null
