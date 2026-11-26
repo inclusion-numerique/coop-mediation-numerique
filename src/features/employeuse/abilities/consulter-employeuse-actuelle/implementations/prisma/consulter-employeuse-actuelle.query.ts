@@ -3,7 +3,7 @@ import {
   personneEmployeuseActuelleSelect,
   personneToEmployeuseActuelle,
 } from '../../../../implementations/prisma/employeuse.transfer'
-import type { ConsulterEmployeuseActuelle } from '../../domain/consulter-employeuse-actuelle'
+import type { ConsulterEmployeuseActuelle } from '../../domain/ports'
 
 export const consulterEmployeuseActuelle: ConsulterEmployeuseActuelle = async ({
   userId,
