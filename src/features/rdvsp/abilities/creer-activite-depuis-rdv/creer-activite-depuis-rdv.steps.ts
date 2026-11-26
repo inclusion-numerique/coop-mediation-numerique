@@ -1,5 +1,5 @@
 import assert from 'node:assert'
-import { After, Given, Then, When } from '@cucumber/cucumber'
+import { After, Given, Then, When, type World } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { creerActiviteDepuisRdv } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/domain/creer-activite-depuis-rdv'
 import type {
@@ -69,7 +69,9 @@ const RDV_ID_INEXISTANT = ID_TEST.rdv + 199
 const USAGER_ID = ID_TEST.usager + 101
 const USAGER_ID_SECOND = ID_TEST.usager + 102
 
-let resultat: Awaited<ReturnType<typeof creerActiviteDepuisUnRdv>> | undefined
+type Monde = World & {
+  resultat?: Awaited<ReturnType<typeof creerActiviteDepuisUnRdv>>
+}
 
 Given(
   'un rendez-vous à convertir avec un participant {string}',
@@ -136,8 +138,8 @@ Given('un compte RDV lié sans rendez-vous à convertir', async () => {
 
 Given('aucun compte RDV pour convertir', () => undefined)
 
-When('je prépare un CRA depuis ce rendez-vous', async () => {
-  resultat = await creerActiviteDepuisUnRdv({
+When('je prépare un CRA depuis ce rendez-vous', async function (this: Monde) {
+  this.resultat = await creerActiviteDepuisUnRdv({
     utilisateurId: testUtilisateurId,
     mediateurId: MediateurId(testMediateurId),
     maintenant: new Date(),
@@ -145,18 +147,24 @@ When('je prépare un CRA depuis ce rendez-vous', async () => {
   })
 })
 
-When('je prépare un CRA depuis un rendez-vous inexistant', async () => {
-  resultat = await creerActiviteDepuisUnRdv({
-    utilisateurId: testUtilisateurId,
-    mediateurId: MediateurId(testMediateurId),
-    maintenant: new Date(),
-    rdvId: RdvId(RDV_ID_INEXISTANT),
-  })
-})
+When(
+  'je prépare un CRA depuis un rendez-vous inexistant',
+  async function (this: Monde) {
+    this.resultat = await creerActiviteDepuisUnRdv({
+      utilisateurId: testUtilisateurId,
+      mediateurId: MediateurId(testMediateurId),
+      maintenant: new Date(),
+      rdvId: RdvId(RDV_ID_INEXISTANT),
+    })
+  },
+)
 
-Then('le CRA est prêt à être rédigé', () => {
-  assert.ok(resultat?.success, 'La préparation a échoué')
-  assert.match(resultat.data.urlCreationCra, /\/coop\/mes-activites\/cra\//)
+Then('le CRA est prêt à être rédigé', function (this: Monde) {
+  assert.ok(this.resultat?.success, 'La préparation a échoué')
+  assert.match(
+    this.resultat.data.urlCreationCra,
+    /\/coop\/mes-activites\/cra\//,
+  )
 })
 
 Then(
@@ -170,10 +178,16 @@ Then('aucun participant n’est confié à la création des bénéficiaires', ()
   assert.deepStrictEqual(confies.usagers, [])
 })
 
-Then('la préparation échoue avec l’erreur {string}', (tag: string) => {
-  assert.ok(resultat && !resultat.success, 'La préparation aurait dû échouer')
-  assert.strictEqual(resultat.error._tag, tag)
-})
+Then(
+  'la préparation échoue avec l’erreur {string}',
+  function (this: Monde, tag: string) {
+    assert.ok(
+      this.resultat && !this.resultat.success,
+      'La préparation aurait dû échouer',
+    )
+    assert.strictEqual(this.resultat.error._tag, tag)
+  },
+)
 
 After(() => {
   confies.usagers = []

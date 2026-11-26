@@ -1,5 +1,5 @@
 import assert from 'node:assert'
-import { Given, Then, When } from '@cucumber/cucumber'
+import { Given, Then, When, type World } from '@cucumber/cucumber'
 import { prismaClient } from '@/configuration/prisma'
 import {
   ID_TEST,
@@ -22,22 +22,26 @@ const SECOND = ID_TEST.rdv + 211
 const USAGER = ID_TEST.usager + 210
 const PARTICIPATION = ID_TEST.participation + 210
 
-let selectionnes: readonly number[] = []
+type Monde = World & {
+  selectionnes?: readonly number[]
+}
 
-Given('un compte RDV ayant 2 rendez-vous en mars 2026', async () => {
-  selectionnes = []
-  await seedCompteRdv({ id: COMPTE, accessToken: 'jeton-acces' })
-  await seedRdv({
-    id: PREMIER,
-    rdvAccountId: COMPTE,
-    debut: new Date('2026-03-03T09:00:00.000Z'),
-  })
-  await seedRdv({
-    id: SECOND,
-    rdvAccountId: COMPTE,
-    debut: new Date('2026-03-05T09:00:00.000Z'),
-  })
-})
+Given(
+  'un compte RDV ayant 2 rendez-vous en mars 2026',
+  async function (this: Monde) {
+    await seedCompteRdv({ id: COMPTE, accessToken: 'jeton-acces' })
+    await seedRdv({
+      id: PREMIER,
+      rdvAccountId: COMPTE,
+      debut: new Date('2026-03-03T09:00:00.000Z'),
+    })
+    await seedRdv({
+      id: SECOND,
+      rdvAccountId: COMPTE,
+      debut: new Date('2026-03-05T09:00:00.000Z'),
+    })
+  },
+)
 
 Given('le compte rendu de son premier rendez-vous a été décliné', async () => {
   await prismaClient.rdv.update({
@@ -67,39 +71,60 @@ const selectionner = async (
 ) => {
   const lignes = await prismaClient.$queryRaw<{ id: number }[]>`
     SELECT id FROM (${selection({ comptes: [COMPTE], periode: null, statuts })}) r`
-  selectionnes = lignes.map(({ id }) => id)
+  return lignes.map(({ id }) => id)
 }
 
-When('je sélectionne les rendez-vous de cet usager', async () => {
-  await selectionner([], rendezVousDesUsagersAListerSql([USAGER]))
+When(
+  'je sélectionne les rendez-vous de cet usager',
+  async function (this: Monde) {
+    this.selectionnes = await selectionner(
+      [],
+      rendezVousDesUsagersAListerSql([USAGER]),
+    )
+  },
+)
+
+When(
+  "je sélectionne les rendez-vous d'aucun usager",
+  async function (this: Monde) {
+    this.selectionnes = await selectionner(
+      [],
+      rendezVousDesUsagersAListerSql([]),
+    )
+  },
+)
+
+When('je sélectionne les rendez-vous du compte', async function (this: Monde) {
+  this.selectionnes = await selectionner([])
 })
 
-When("je sélectionne les rendez-vous d'aucun usager", async () => {
-  await selectionner([], rendezVousDesUsagersAListerSql([]))
-})
+When(
+  'je sélectionne les rendez-vous passés du compte',
+  async function (this: Monde) {
+    this.selectionnes = await selectionner([StatutRdv('passe')])
+  },
+)
 
-When('je sélectionne les rendez-vous du compte', async () => {
-  await selectionner([])
-})
-
-When('je sélectionne les rendez-vous passés du compte', async () => {
-  await selectionner([StatutRdv('passe')])
-})
-
-When('je retrouve les rendez-vous honorés pour les statistiques', async () => {
-  const lignes = await prismaClient.$queryRaw<{ id: number }[]>`
+When(
+  'je retrouve les rendez-vous honorés pour les statistiques',
+  async function (this: Monde) {
+    const lignes = await prismaClient.$queryRaw<{ id: number }[]>`
     SELECT id FROM (${rendezVousAuxStatutsSql(['seen'])}) r
     WHERE id = ANY(${[PREMIER, SECOND]}::int[])`
-  selectionnes = lignes.map(({ id }) => id)
+    this.selectionnes = lignes.map(({ id }) => id)
+  },
+)
+
+Then('seul son second rendez-vous est retrouvé', function (this: Monde) {
+  assert.deepStrictEqual(this.selectionnes, [SECOND])
 })
 
-Then('seul son second rendez-vous est retrouvé', () => {
-  assert.deepStrictEqual(selectionnes, [SECOND])
-})
-
-Then('{int} rendez-vous est sélectionné', (attendu: number) => {
-  assert.strictEqual(selectionnes.length, attendu)
-})
+Then(
+  '{int} rendez-vous est sélectionné',
+  function (this: Monde, attendu: number) {
+    assert.strictEqual(this.selectionnes?.length, attendu)
+  },
+)
 
 const RANGS: Readonly<Record<string, number>> = {
   premier: PREMIER,

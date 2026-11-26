@@ -1,5 +1,5 @@
 import assert from 'node:assert'
-import { Given, Then, When } from '@cucumber/cucumber'
+import { Given, Then, When, type World } from '@cucumber/cucumber'
 import { consulterRdvsAccueil } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/domain/consulter-rdvs-accueil'
 import type { WidgetRdvAccueil } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/domain/widget-rdv'
 import { compteDuMediateur } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/implementations/prisma/compte-du-mediateur.query'
@@ -17,24 +17,29 @@ const MAINTENANT = new Date('2026-08-17T12:00:00.000Z')
 
 const JOUR_EN_MS = 24 * 60 * 60 * 1000
 
-let rdvsCrees = 0
-let resultat: WidgetRdvAccueil | undefined
+type Monde = World & {
+  rdvsCrees?: number
+  resultat?: WidgetRdvAccueil
+}
 
 const dans = (jours: number) =>
   new Date(MAINTENANT.getTime() + jours * JOUR_EN_MS)
 
-const creerRdv = async ({
-  statut,
-  debut,
-  compteRenduRegle = false,
-}: {
-  statut: string
-  debut: Date
-  compteRenduRegle?: boolean
-}) => {
-  rdvsCrees += 1
+const creerRdv = async (
+  monde: Monde,
+  {
+    statut,
+    debut,
+    compteRenduRegle = false,
+  }: {
+    statut: string
+    debut: Date
+    compteRenduRegle?: boolean
+  },
+) => {
+  monde.rdvsCrees = (monde.rdvsCrees ?? 0) + 1
   await seedRdv({
-    id: ID_TEST.rdv + 200 + rdvsCrees,
+    id: ID_TEST.rdv + 200 + monde.rdvsCrees,
     rdvAccountId: AGENT_ID,
     organisationId: ID_TEST.organisation + 200,
     status: StatutPresence.schema.parse(statut),
@@ -49,12 +54,10 @@ const consulter = consulterRdvsAccueil({
 })
 
 Given('un compte RDV consultable', async () => {
-  rdvsCrees = 0
   await seedCompteRdv({ id: AGENT_ID, accessToken: 'jeton-acces' })
 })
 
 Given('un compte RDV en erreur à consulter', async () => {
-  rdvsCrees = 0
   await seedCompteRdv({
     id: AGENT_ID,
     accessToken: 'jeton-acces',
@@ -63,48 +66,49 @@ Given('un compte RDV en erreur à consulter', async () => {
 })
 
 Given('un compte RDV délié à consulter', async () => {
-  rdvsCrees = 0
   await seedCompteRdv({
     id: AGENT_ID,
     deleted: new Date('2026-07-08T00:00:00.000Z'),
   })
 })
 
-Given('aucun compte RDV à consulter', () => {
-  rdvsCrees = 0
-})
+Given('aucun compte RDV à consulter', () => undefined)
 
 Given(
   'un rendez-vous {string} dans {int} jours',
-  async (statut: string, jours: number) => {
-    await creerRdv({ statut, debut: dans(jours) })
+  async function (this: Monde, statut: string, jours: number) {
+    await creerRdv(this, { statut, debut: dans(jours) })
   },
 )
 
 Given(
   'un rendez-vous {string} il y a {int} jours',
-  async (statut: string, jours: number) => {
-    await creerRdv({ statut, debut: dans(-jours) })
+  async function (this: Monde, statut: string, jours: number) {
+    await creerRdv(this, { statut, debut: dans(-jours) })
   },
 )
 
 Given(
   'un rendez-vous {string} il y a {int} jours dont le CRA a été écarté',
-  async (statut: string, jours: number) => {
-    await creerRdv({ statut, debut: dans(-jours), compteRenduRegle: true })
+  async function (this: Monde, statut: string, jours: number) {
+    await creerRdv(this, {
+      statut,
+      debut: dans(-jours),
+      compteRenduRegle: true,
+    })
   },
 )
 
-When('je consulte l’accueil', async () => {
+When('je consulte l’accueil', async function (this: Monde) {
   const consultation = await consulter({
     utilisateurId: testUtilisateurId,
     maintenant: MAINTENANT,
   })
 
-  resultat = consultation.data.widget
+  this.resultat = consultation.data.widget
 })
 
-const donnees = () => {
+const donnees = ({ resultat }: Monde) => {
   assert.ok(resultat, 'Aucune consultation effectuée')
   assert.strictEqual(
     resultat._tag,
@@ -114,26 +118,32 @@ const donnees = () => {
   return resultat._tag === 'donnees' ? resultat.donnees : undefined
 }
 
-Then('l’accueil annonce {int} rendez-vous à venir', (nombre: number) => {
-  assert.strictEqual(donnees()?.aVenir, nombre)
-})
-
-Then('l’accueil annonce {int} rendez-vous passé', (nombre: number) => {
-  const accueil = donnees()
-  assert.strictEqual((accueil?.passes ?? 0) + (accueil?.honores ?? 0), nombre)
-})
-
 Then(
-  'le prochain rendez-vous mis en avant commence dans {int} jours',
-  (jours: number) => {
-    assert.deepStrictEqual(donnees()?.prochain?.debut, dans(jours))
+  'l’accueil annonce {int} rendez-vous à venir',
+  function (this: Monde, nombre: number) {
+    assert.strictEqual(donnees(this)?.aVenir, nombre)
   },
 )
 
-Then('l’accueil affiche une alerte', () => {
-  assert.strictEqual(resultat?._tag, 'alerte')
+Then(
+  'l’accueil annonce {int} rendez-vous passé',
+  function (this: Monde, nombre: number) {
+    const accueil = donnees(this)
+    assert.strictEqual((accueil?.passes ?? 0) + (accueil?.honores ?? 0), nombre)
+  },
+)
+
+Then(
+  'le prochain rendez-vous mis en avant commence dans {int} jours',
+  function (this: Monde, jours: number) {
+    assert.deepStrictEqual(donnees(this)?.prochain?.debut, dans(jours))
+  },
+)
+
+Then('l’accueil affiche une alerte', function (this: Monde) {
+  assert.strictEqual(this.resultat?._tag, 'alerte')
 })
 
-Then('l’accueil masque le bloc rendez-vous', () => {
-  assert.strictEqual(resultat?._tag, 'masque')
+Then('l’accueil masque le bloc rendez-vous', function (this: Monde) {
+  assert.strictEqual(this.resultat?._tag, 'masque')
 })

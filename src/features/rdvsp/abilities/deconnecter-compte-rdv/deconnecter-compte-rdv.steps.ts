@@ -1,5 +1,5 @@
 import assert from 'node:assert'
-import { Given, Then, When } from '@cucumber/cucumber'
+import { Given, Then, When, type World } from '@cucumber/cucumber'
 import { deconnecterCompteRdv } from '@/features/rdvsp/abilities/deconnecter-compte-rdv/domain/deconnecter-compte-rdv'
 import { compteRdvDeLUtilisateur } from '@/features/rdvsp/abilities/deconnecter-compte-rdv/implementations/prisma/compte-rdv-de-l-utilisateur.query'
 import { enregistrerLeCompteDeconnecte } from '@/features/rdvsp/abilities/deconnecter-compte-rdv/implementations/prisma/enregistrer-le-compte-deconnecte.mutation'
@@ -13,7 +13,9 @@ import {
 const AGENT_ID = ID_TEST.compte + 2
 const MAINTENANT = new Date('2026-08-17T16:00:00.000Z')
 
-let resultat: Awaited<ReturnType<typeof deconnecter>> | undefined
+type Monde = World & {
+  resultat?: Awaited<ReturnType<typeof deconnecter>>
+}
 
 const deconnecter = deconnecterCompteRdv({
   compteDeLUtilisateur: compteRdvDeLUtilisateur,
@@ -72,16 +74,19 @@ Given('un compte RDV déjà déconnecté le {string}', async (jour: string) => {
 
 Given('aucun compte RDV pour ce médiateur', () => undefined)
 
-When('je déconnecte mon compte RDV Service Public', async () => {
-  resultat = await deconnecter({
-    utilisateurId: testUtilisateurId,
-    maintenant: MAINTENANT,
-  })
-})
+When(
+  'je déconnecte mon compte RDV Service Public',
+  async function (this: Monde) {
+    this.resultat = await deconnecter({
+      utilisateurId: testUtilisateurId,
+      maintenant: MAINTENANT,
+    })
+  },
+)
 
-Then('le compte est marqué déconnecté', async () => {
-  assert.ok(resultat?.success, 'La déconnexion a échoué')
-  assert.strictEqual(resultat.data._tag, 'deconnecte')
+Then('le compte est marqué déconnecté', async function (this: Monde) {
+  assert.ok(this.resultat?.success, 'La déconnexion a échoué')
+  assert.strictEqual(this.resultat.data._tag, 'deconnecte')
 
   const row = await compteRdvEnBase(AGENT_ID)
   assert.deepStrictEqual(row?.deleted, MAINTENANT)
@@ -121,7 +126,13 @@ Then('la date de déconnexion reste le {string}', async (jour: string) => {
   assert.deepStrictEqual(row?.deleted, new Date(`${jour}T00:00:00.000Z`))
 })
 
-Then('la déconnexion échoue avec l’erreur {string}', (tag: string) => {
-  assert.ok(resultat && !resultat.success, 'La déconnexion aurait dû échouer')
-  assert.strictEqual(resultat.error._tag, tag)
-})
+Then(
+  'la déconnexion échoue avec l’erreur {string}',
+  function (this: Monde, tag: string) {
+    assert.ok(
+      this.resultat && !this.resultat.success,
+      'La déconnexion aurait dû échouer',
+    )
+    assert.strictEqual(this.resultat.error._tag, tag)
+  },
+)

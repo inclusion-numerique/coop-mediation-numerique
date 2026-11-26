@@ -1,5 +1,5 @@
 import assert from 'node:assert'
-import { Given, Then, When } from '@cucumber/cucumber'
+import { Given, Then, When, type World } from '@cucumber/cucumber'
 import { prismaClient } from '@/configuration/prisma'
 import {
   type BilanDeLEffacement,
@@ -50,7 +50,9 @@ const effacer = effacerEmpreinteRdv({
   supprimerLesUsagers,
 })
 
-let bilan: BilanDeLEffacement | undefined
+type Monde = World & {
+  bilan?: BilanDeLEffacement
+}
 
 Given('un compte RDV avec un rendez-vous et un usager', async () => {
   await seedCompteRdv({ id: ID_TEST.compte })
@@ -96,12 +98,12 @@ Then(
   },
 )
 
-Then('les jetons RDV sont révoqués', () => {
-  assert.strictEqual(bilan?.jetonsRevoques, true)
+Then('les jetons RDV sont révoqués', function (this: Monde) {
+  assert.strictEqual(this.bilan?.jetonsRevoques, true)
 })
 
-Then('les jetons RDV ne sont pas révoqués', () => {
-  assert.strictEqual(bilan?.jetonsRevoques, false)
+Then('les jetons RDV ne sont pas révoqués', function (this: Monde) {
+  assert.strictEqual(this.bilan?.jetonsRevoques, false)
 })
 
 Given(
@@ -114,33 +116,42 @@ Given(
   },
 )
 
-When("j'efface l'empreinte RDV de ce compte", async () => {
-  bilan = bilanDeLEffacement(
+When("j'efface l'empreinte RDV de ce compte", async function (this: Monde) {
+  this.bilan = bilanDeLEffacement(
     (await effacer({ utilisateurId: testUtilisateurId })).data,
   )
 })
 
-When("j'efface à nouveau l'empreinte RDV de ce compte", async () => {
-  bilan = bilanDeLEffacement(
-    (await effacer({ utilisateurId: testUtilisateurId })).data,
-  )
+When(
+  "j'efface à nouveau l'empreinte RDV de ce compte",
+  async function (this: Monde) {
+    this.bilan = bilanDeLEffacement(
+      (await effacer({ utilisateurId: testUtilisateurId })).data,
+    )
+  },
+)
+
+Then('le compte RDV est délié', function (this: Monde) {
+  assert.strictEqual(this.bilan?.compteDelie, true)
 })
 
-Then('le compte RDV est délié', () => {
-  assert.strictEqual(bilan?.compteDelie, true)
+Then("le compte RDV n'est pas délié", function (this: Monde) {
+  assert.strictEqual(this.bilan?.compteDelie, false)
 })
 
-Then("le compte RDV n'est pas délié", () => {
-  assert.strictEqual(bilan?.compteDelie, false)
-})
+Then(
+  "l'effacement RDV porte sur {int} rendez-vous",
+  function (this: Monde, attendu: number) {
+    assert.strictEqual(this.bilan?.rdvsExpurges, attendu)
+  },
+)
 
-Then("l'effacement RDV porte sur {int} rendez-vous", (attendu: number) => {
-  assert.strictEqual(bilan?.rdvsExpurges, attendu)
-})
-
-Then("l'effacement RDV supprime {int} usager", (attendu: number) => {
-  assert.strictEqual(bilan?.usagersSupprimes, attendu)
-})
+Then(
+  "l'effacement RDV supprime {int} usager",
+  function (this: Monde, attendu: number) {
+    assert.strictEqual(this.bilan?.usagersSupprimes, attendu)
+  },
+)
 
 Then("le compte RDV n'est plus en base", async () => {
   assert.strictEqual(

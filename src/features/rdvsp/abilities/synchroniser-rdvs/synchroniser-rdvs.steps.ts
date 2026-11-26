@@ -1,5 +1,5 @@
 import assert from 'node:assert'
-import { Given, Then, When } from '@cucumber/cucumber'
+import { Given, Then, When, type World } from '@cucumber/cucumber'
 import { synchroniserRdvs } from '@/features/rdvsp/abilities/synchroniser-rdvs/domain/synchroniser-rdvs'
 import {
   appliquerPlanLot,
@@ -23,7 +23,6 @@ import { RdvId } from '@/features/rdvsp/domain/identifiants/rdv-id'
 import { RdvUuid } from '@/features/rdvsp/domain/identifiants/rdv-uuid'
 import { UsagerId } from '@/features/rdvsp/domain/identifiants/usager-id'
 import { NomExterne, PrenomExterne } from '@/features/rdvsp/domain/identite'
-import type { RdvServicePublicApi } from '@/features/rdvsp/domain/ports'
 import { AdresseRdv } from '@/features/rdvsp/domain/rdv/adresse-rdv'
 import { DureeEnMinutes } from '@/features/rdvsp/domain/rdv/duree-en-minutes'
 import type { Rdv, RdvSynchronise } from '@/features/rdvsp/domain/rdv/rdv'
@@ -50,9 +49,11 @@ const ORGANISATION_ID = ID_TEST.organisation + 300
 const USAGER_ID = ID_TEST.usager + 300
 const PARTICIPATION_ID = ID_TEST.participation + 300
 
-let recus: RdvSynchronise[] = []
-let apiRefuse = false
-let resultat: Awaited<ReturnType<typeof synchroniser>> | undefined
+type Monde = World & {
+  recus?: RdvSynchronise[]
+  apiRefuse?: boolean
+  resultat?: Awaited<ReturnType<ReturnType<typeof synchroniserPour>>>
+}
 
 const usager: Usager = {
   id: UsagerId(USAGER_ID),
@@ -107,21 +108,20 @@ const rdvRecu = (statut: string): Rdv => ({
   ],
 })
 
-const listerRdvsDouble: RdvServicePublicApi['listerRdvs'] = async () =>
-  apiRefuse
-    ? failure(ApiIndisponible(503, 'service indisponible'))
-    : success(recus)
-
-const synchroniser = synchroniserRdvs({
-  listerRdvs: listerRdvsDouble,
-  rdvsDejaImportes,
-  etatConnuDuLot,
-  appliquerPlan: appliquerPlanLot,
-  supprimerRdvs,
-  supprimerMotifsOrphelins,
-  lireLesUsagersARapprocher: async () => success([]),
-  rapprocherLesBeneficiaires: async () => success({ skipped: [] }),
-})
+const synchroniserPour = (monde: Monde) =>
+  synchroniserRdvs({
+    listerRdvs: async () =>
+      monde.apiRefuse
+        ? failure(ApiIndisponible(503, 'service indisponible'))
+        : success(monde.recus ?? []),
+    rdvsDejaImportes,
+    etatConnuDuLot,
+    appliquerPlan: appliquerPlanLot,
+    supprimerRdvs,
+    supprimerMotifsOrphelins,
+    lireLesUsagersARapprocher: async () => success([]),
+    rapprocherLesBeneficiaires: async () => success({ skipped: [] }),
+  })
 
 const compteUtilisable = async (): Promise<CompteRdvUtilisable> => {
   const row = await compteRdvEnBase(AGENT_ID)
@@ -132,16 +132,17 @@ const compteUtilisable = async (): Promise<CompteRdvUtilisable> => {
 }
 
 Given('un compte RDV à synchroniser', async () => {
-  recus = []
-  apiRefuse = false
   await seedCompteRdv({ id: AGENT_ID, accessToken: 'jeton-acces' })
   await seedOrganisation({ id: ORGANISATION_ID })
   suivreUsagerRdv(USAGER_ID)
 })
 
-Given('RDV Service Public renvoie un rendez-vous à venir', () => {
-  recus = [{ rdv: rdvRecu('unknown'), brut: { id: RDV_ID } }]
-})
+Given(
+  'RDV Service Public renvoie un rendez-vous à venir',
+  function (this: Monde) {
+    this.recus = [{ rdv: rdvRecu('unknown'), brut: { id: RDV_ID } }]
+  },
+)
 
 Given(
   'un rendez-vous déjà enregistré au statut {string}',
@@ -164,21 +165,27 @@ Given(
 
 Given(
   'RDV Service Public renvoie ce rendez-vous au statut {string}',
-  (statut: string) => {
-    recus = [{ rdv: rdvRecu(statut), brut: { id: RDV_ID } }]
+  function (this: Monde, statut: string) {
+    this.recus = [{ rdv: rdvRecu(statut), brut: { id: RDV_ID } }]
   },
 )
 
-Given('RDV Service Public ne renvoie aucun rendez-vous', () => {
-  recus = []
-})
+Given(
+  'RDV Service Public ne renvoie aucun rendez-vous',
+  function (this: Monde) {
+    this.recus = []
+  },
+)
 
-Given('RDV Service Public refusera de lister les rendez-vous', () => {
-  apiRefuse = true
-})
+Given(
+  'RDV Service Public refusera de lister les rendez-vous',
+  function (this: Monde) {
+    this.apiRefuse = true
+  },
+)
 
-When('je synchronise les rendez-vous', async () => {
-  resultat = await synchroniser({
+When('je synchronise les rendez-vous', async function (this: Monde) {
+  this.resultat = await synchroniserPour(this)({
     compte: await compteUtilisable(),
     mediateurId: MediateurId('b6f1a6a2-3c4d-4e5f-8a9b-0c1d2e3f4a5b'),
     tailleLot: TAILLE_DES_LOTS_DE_RDVS,
@@ -186,7 +193,7 @@ When('je synchronise les rendez-vous', async () => {
   })
 })
 
-const bilan = () => {
+const bilan = ({ resultat }: Monde) => {
   assert.ok(resultat?.success, 'La synchronisation a échoué')
   return resultat.success ? resultat.data : undefined
 }
@@ -211,29 +218,41 @@ Then('l’usager du rendez-vous est enregistré', async () => {
   assert.ok(rdv, 'Le rendez-vous devrait être en base')
 })
 
-Then('le bilan compte {int} rendez-vous créé', (nombre: number) => {
-  assert.strictEqual(bilan()?.rdvs.created, nombre)
-})
+Then(
+  'le bilan compte {int} rendez-vous créé',
+  function (this: Monde, nombre: number) {
+    assert.strictEqual(bilan(this)?.rdvs.created, nombre)
+  },
+)
 
-Then('le bilan compte {int} rendez-vous inchangé', (nombre: number) => {
-  assert.strictEqual(bilan()?.rdvs.noop, nombre)
-})
+Then(
+  'le bilan compte {int} rendez-vous inchangé',
+  function (this: Monde, nombre: number) {
+    assert.strictEqual(bilan(this)?.rdvs.noop, nombre)
+  },
+)
 
-Then('le bilan compte {int} rendez-vous mis à jour', (nombre: number) => {
-  assert.strictEqual(bilan()?.rdvs.updated, nombre)
-})
+Then(
+  'le bilan compte {int} rendez-vous mis à jour',
+  function (this: Monde, nombre: number) {
+    assert.strictEqual(bilan(this)?.rdvs.updated, nombre)
+  },
+)
 
-Then('le bilan compte {int} rendez-vous supprimé', (nombre: number) => {
-  assert.strictEqual(bilan()?.rdvs.deleted, nombre)
-})
+Then(
+  'le bilan compte {int} rendez-vous supprimé',
+  function (this: Monde, nombre: number) {
+    assert.strictEqual(bilan(this)?.rdvs.deleted, nombre)
+  },
+)
 
 Then(
   'la synchronisation des rendez-vous échoue avec l’erreur {string}',
-  (tag: string) => {
+  function (this: Monde, tag: string) {
     assert.ok(
-      resultat && !resultat.success,
+      this.resultat && !this.resultat.success,
       'La synchronisation aurait dû échouer',
     )
-    assert.strictEqual(resultat.error._tag, tag)
+    assert.strictEqual(this.resultat.error._tag, tag)
   },
 )
