@@ -6,8 +6,10 @@ import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { SUPPRIMER_UN_TAG_ERRORS } from '@/features/tags/abilities/supprimer-un-tag/action/supprimer-un-tag.errors'
 import { SupprimerUnTagValidation } from '@/features/tags/abilities/supprimer-un-tag/action/supprimer-un-tag.validation'
-import { supprimerUnTag } from '@/features/tags/abilities/supprimer-un-tag/implementations/prisma/supprimer-un-tag.mutation'
+import { supprimerUnTag } from '@/features/tags/abilities/supprimer-un-tag/domain/supprimer-un-tag'
+import { effacerUnTag } from '@/features/tags/abilities/supprimer-un-tag/implementations/prisma/effacer-un-tag.mutation'
 import { acteurDe, TagId } from '@/features/tags/domain'
+import { lireUnTagActif } from '@/features/tags/implementations/prisma/tag-actif.query'
 import { fromResult, withInput } from '@/libraries/nextjs'
 
 export const supprimerUnTagAction = actionBuilder()
@@ -17,7 +19,7 @@ export const supprimerUnTagAction = actionBuilder()
   .execute(
     fromResult(
       async ({ user, input }) =>
-        supprimerUnTag({
+        supprimerUnTag({ lireUnTagActif, effacer: effacerUnTag })({
           tagId: TagId(input.tagId),
           acteur: acteurDe(profilDeLaSession(user)),
         }),
