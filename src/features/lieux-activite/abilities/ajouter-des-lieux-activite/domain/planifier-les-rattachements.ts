@@ -1,19 +1,19 @@
 import { failure, type Result, success } from '@/libraries/result'
-import { LieuIntrouvable } from '../../../domain/errors'
-import type { LieuId } from '../../../domain/identifiants/lieu-id'
 import type {
-  CreationDemandee,
   DestinationDuLieu,
   LieuCandidatCoop,
-} from './destination-du-lieu'
-import { type LieuCarto, lieuDepuisCarto } from './lieu-carto'
-import { estExistant, type LieuACreer, type LieuDemande } from './lieu-demande'
-import type { PlanifierLesRattachementsPorts } from './ports'
+} from '../../../domain/destination-du-lieu'
+import { LieuIntrouvable } from '../../../domain/errors'
+import type { LieuId } from '../../../domain/identifiants/lieu-id'
 import {
   AUCUN_LIEU_PREVU,
   type LieuxPrevus,
   reconnaitreLeLieu,
-} from './reconnaitre-le-lieu'
+} from '../../../domain/reconnaitre-le-lieu'
+import type { CreationDemandee } from './destination-du-lieu'
+import { type LieuCarto, lieuDepuisCarto } from './lieu-carto'
+import { estExistant, type LieuACreer, type LieuDemande } from './lieu-demande'
+import type { PlanifierLesRattachementsPorts } from './ports'
 
 type Plan = {
   readonly destinations: readonly DestinationDuLieu<CreationDemandee>[]

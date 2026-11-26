@@ -2,6 +2,10 @@ import { prismaClient } from '@/configuration/prisma'
 import type { Prisma } from '@/generated/prisma/client'
 import type { LieuId } from '../../../../domain/identifiants/lieu-id'
 import {
+  lieuDisparu,
+  preparerLeLieu,
+} from '../../../../implementations/prisma/destination-du-lieu.mutation'
+import {
   fromAdresse,
   lieuFromDomain,
 } from '../../../../implementations/prisma/lieu.transfer'
@@ -14,11 +18,7 @@ import type {
   RattachementAuxLieux,
   RattacherAuxLieux,
 } from '../../domain'
-import {
-  lieuDisparu,
-  preparerLeLieu,
-  rattacherSiAbsent,
-} from './destinations.mutation'
+import { rattacherSiAbsent } from './destinations.mutation'
 
 const adresseValidee = ({ adresse, localisation, banId }: AdresseValidee) => ({
   ...fromAdresse(adresse),

@@ -22,6 +22,10 @@ import {
   IdsCartographieNationale,
 } from '../../../domain/cartographie-nationale/ids-cartographie-nationale'
 import { VisibiliteCartographie } from '../../../domain/cartographie-nationale/visibilite-cartographie'
+import type {
+  DestinationDuLieu,
+  LieuCandidatCoop,
+} from '../../../domain/destination-du-lieu'
 import type { Fiche } from '../../../domain/fiche'
 import { BanId } from '../../../domain/identifiants/ban-id'
 import { LieuId } from '../../../domain/identifiants/lieu-id'
@@ -29,11 +33,7 @@ import { MediateurId } from '../../../domain/identifiants/mediateur-id'
 import { UtilisateurId } from '../../../domain/identifiants/utilisateur-id'
 import { SourceCartographie } from '../../../domain/registre/tracabilite'
 import { ajouterDesLieuxActivite } from './ajouter-des-lieux-activite'
-import type {
-  CreationDemandee,
-  DestinationDuLieu,
-  LieuCandidatCoop,
-} from './destination-du-lieu'
+import type { CreationDemandee } from './destination-du-lieu'
 import type { LieuCarto } from './lieu-carto'
 import type {
   LieuACreer,

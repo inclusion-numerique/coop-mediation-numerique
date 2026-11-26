@@ -6,6 +6,7 @@ import {
   Typologie,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { prismaClient } from '@/configuration/prisma'
+import { lieuxAuMemeEndroit } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/situation-du-lieu.query'
 import { nouveauLieu } from '@/features/lieux-activite/abilities/creer-lieu-activite/action/saisie-du-lieu.transfer'
 import { creerLieuActivite } from '@/features/lieux-activite/abilities/creer-lieu-activite/domain/creer-lieu-activite'
 import { enregistrerLieuActivite } from '@/features/lieux-activite/abilities/creer-lieu-activite/implementations/prisma/enregistrer-lieu-activite.mutation'
@@ -61,6 +62,7 @@ const creer = async (
   quoi: CreerLieuActiviteData = saisie,
 ) => {
   dernier.creation = await creerLieuActivite({
+    lieuxAuMemeEndroit,
     enregistrer: enregistrerLieuActivite,
   })({
     lieu: nouveauLieu(
@@ -73,7 +75,10 @@ const creer = async (
   })
 
   if (dernier.creation.success)
-    dernier.lieuxCreesIds = [...dernier.lieuxCreesIds, dernier.creation.data.id]
+    dernier.lieuxCreesIds = [
+      ...dernier.lieuxCreesIds,
+      dernier.creation.data.destination.id,
+    ]
 }
 
 const lieuCree = (rang: number): string => dernier.lieuxCreesIds[rang - 1] ?? ''

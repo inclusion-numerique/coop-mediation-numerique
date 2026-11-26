@@ -1,3 +1,3 @@
-import type { MediateurRequis } from '../../../domain/errors'
+import type { LieuIntrouvable, MediateurRequis } from '../../../domain/errors'
 
-export type EchecDeCreerLieuActivite = MediateurRequis
+export type EchecDeCreerLieuActivite = MediateurRequis | LieuIntrouvable

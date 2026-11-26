@@ -2,15 +2,15 @@ import { addMutationLog, prismaClient } from '@/configuration/prisma'
 import type { Prisma } from '@/generated/prisma/client'
 import type { LieuId } from '../../../../domain/identifiants/lieu-id'
 import type { LieuAMaterialiser } from '../../../../domain/lieu-identite'
+import {
+  lieuDisparu,
+  preparerLeLieu,
+} from '../../../../implementations/prisma/destination-du-lieu.mutation'
 import { identiteDuLieu } from '../../../../implementations/prisma/registre/colonnes-a-ecrire.select'
 import { ecrireLeLieuAuRegistre } from '../../../../implementations/prisma/registre/ecrire-au-registre.mutation'
 import { inscriptionPourLIdentifiantCarto } from '../../../../implementations/prisma/registre/identifiants-carto.query'
 import type { DestinationDuLieu, RattachementAuxLieux } from '../../domain'
-import {
-  lieuDisparu,
-  preparerLeLieu,
-  rattacherSiAbsent,
-} from './destinations.mutation'
+import { rattacherSiAbsent } from './destinations.mutation'
 
 export type LieuDecrit = LieuAMaterialiser &
   Omit<Prisma.LieuInclusionCreateManyInput, 'id'>

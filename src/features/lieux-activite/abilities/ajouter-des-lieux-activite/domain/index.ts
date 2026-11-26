@@ -1,12 +1,13 @@
-export type { AjoutDeLieux, LieuxAjoutes } from './ajout-de-lieux'
 export type {
-  CreationDemandee,
   DestinationDuLieu,
   Endroit,
   LieuCandidatCoop,
   LieuConnu,
   LieuNouveau,
-} from './destination-du-lieu'
+} from '../../../domain/destination-du-lieu'
+export type { LieuxAuMemeEndroit } from '../../../domain/ports'
+export type { AjoutDeLieux, LieuxAjoutes } from './ajout-de-lieux'
+export type { CreationDemandee } from './destination-du-lieu'
 export {
   AdresseNonValidee,
   type EchecDeAjouterDesLieuxActivite,
@@ -26,7 +27,6 @@ export type {
   EstUnLieuActif,
   LieuCorreleAuLieuDecritPorts,
   LieuPorteurDeLaCarto,
-  LieuxAuMemeEndroit,
   LireLieuxDejaRattaches,
   NouvelIdentifiantDeLieu,
   PlanifierLesRattachementsPorts,

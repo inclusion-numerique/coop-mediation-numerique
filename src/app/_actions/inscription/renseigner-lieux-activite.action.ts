@@ -13,7 +13,6 @@ import { planifierLesRattachements } from '@/features/lieux-activite/abilities/a
 import { structuresCartoParIds } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/entrepot/structures-carto.query'
 import { activitesEnCoursDeLUtilisateur } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/activites-en-cours.query'
 import { appliquerLesDestinations } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/ajouter-des-lieux-activite.mutation'
-import { lieuDisparu } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/destinations.mutation'
 import { lieuDemandeDepuisLeLieuDesire } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/lieu-desire.transfer'
 import {
   estUnLieuActif,
@@ -21,6 +20,7 @@ import {
   lieuxAuMemeEndroit,
   nouvelIdentifiantDeLieu,
 } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/situation-du-lieu.query'
+import { lieuDisparu } from '@/features/lieux-activite/implementations/prisma/destination-du-lieu.mutation'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { fromResult, withInput } from '@/libraries/nextjs'
 import { type Result, success } from '@/libraries/result'

@@ -2,6 +2,7 @@
 
 import { actionBuilder } from '@/configuration/nextjs'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
+import { lieuxAuMemeEndroit } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/situation-du-lieu.query'
 import { CREER_LIEU_ACTIVITE_ERRORS } from '@/features/lieux-activite/abilities/creer-lieu-activite/action/creer-lieu-activite.errors'
 import { nouveauLieu } from '@/features/lieux-activite/abilities/creer-lieu-activite/action/saisie-du-lieu.transfer'
 import { creerLieuActivite } from '@/features/lieux-activite/abilities/creer-lieu-activite/domain/creer-lieu-activite'
@@ -22,6 +23,7 @@ export const creerUnLieuActiviteAction = actionBuilder()
     fromResult(
       async ({ user, input }) => {
         const creation = await creerLieuActivite({
+          lieuxAuMemeEndroit,
           enregistrer: enregistrerLieuActivite,
         })({
           lieu: nouveauLieu(
@@ -34,7 +36,9 @@ export const creerUnLieuActiviteAction = actionBuilder()
             user.mediateur == null ? null : MediateurId(user.mediateur.id),
         })
 
-        return creation.success ? success({ id: creation.data.id }) : creation
+        return creation.success
+          ? success({ id: creation.data.destination.id })
+          : creation
       },
       { onError: CREER_LIEU_ACTIVITE_ERRORS },
     ),

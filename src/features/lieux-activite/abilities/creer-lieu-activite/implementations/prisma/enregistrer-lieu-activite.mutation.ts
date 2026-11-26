@@ -2,20 +2,23 @@ import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
 import type { Prisma } from '@/generated/prisma/client'
 import { estPublie } from '../../../../domain/cartographie-nationale/visibilite-cartographie'
-import { LieuId } from '../../../../domain/identifiants/lieu-id'
+import type { LieuId } from '../../../../domain/identifiants/lieu-id'
 import type { MediateurId } from '../../../../domain/identifiants/mediateur-id'
 import type { Lieu } from '../../../../domain/lieu'
-import { lieuFromDomain } from '../../../../implementations/prisma/lieu.transfer'
 import {
-  lieuCorrele,
-  preparerCorrele,
-} from '../../../../implementations/prisma/lieu-correle.mutation'
+  lieuDisparu,
+  preparerLeLieu,
+} from '../../../../implementations/prisma/destination-du-lieu.mutation'
+import { lieuFromDomain } from '../../../../implementations/prisma/lieu.transfer'
 import {
   identiteDuLieu,
   toutesLesColonnes,
 } from '../../../../implementations/prisma/registre/colonnes-a-ecrire.select'
 import { ecrireAuRegistre } from '../../../../implementations/prisma/registre/ecrire-au-registre.mutation'
-import type { EnregistrerLieuActivite } from '../../domain/ports'
+import type {
+  EnregistrementDuLieu,
+  EnregistrerLieuActivite,
+} from '../../domain/ports'
 
 const rattacher = async (
   transaction: Prisma.TransactionClient,
@@ -26,7 +29,7 @@ const rattacher = async (
     creationParId,
   }: {
     readonly mediateurId: MediateurId
-    readonly structureId: string
+    readonly structureId: LieuId
     readonly debut: Date
     readonly creationParId: string | null
   },
@@ -46,52 +49,47 @@ const rattacher = async (
 const colonnesDuFormulaire = (lieu: Lieu) =>
   estPublie(lieu.visibilite) ? toutesLesColonnes : identiteDuLieu
 
-const creerLaFiche = async (
-  transaction: Prisma.TransactionClient,
-  lieu: Lieu,
-  donnees: ReturnType<typeof lieuFromDomain>,
-): Promise<{ readonly id: string }> => {
-  const cree = await transaction.lieuInclusion.create({
-    data: donnees,
-    select: { id: true },
-  })
-
-  await ecrireAuRegistre(transaction, {
-    lieu,
-    colonnes: colonnesDuFormulaire(lieu),
-    maintenant: lieu.tracabilite.creation.date,
-  })
-
-  return cree
-}
-
-export const enregistrerLieuActivite: EnregistrerLieuActivite = async ({
-  lieu,
-  mediateurId,
-}) => {
-  const donnees = lieuFromDomain(lieu)
-
-  const structureId = await prismaClient.$transaction(async (transaction) => {
-    const correle = await lieuCorrele(transaction, donnees)
-    const prepare =
-      correle &&
-      (await preparerCorrele(
-        transaction,
-        correle,
-        lieu.tracabilite.creation.date,
-      ))
-
-    const { id } = prepare ?? (await creerLaFiche(transaction, lieu, donnees))
-
-    await rattacher(transaction, {
-      mediateurId,
-      structureId: id,
-      debut: lieu.tracabilite.creation.date,
-      creationParId: lieu.tracabilite.creation.par,
+const creerLaFiche =
+  (transaction: Prisma.TransactionClient) =>
+  async (id: LieuId, lieu: Lieu): Promise<{ readonly id: string }> => {
+    const cree = await transaction.lieuInclusion.create({
+      data: { ...lieuFromDomain(lieu), id },
+      select: { id: true },
     })
 
-    return id
-  })
+    await ecrireAuRegistre(transaction, {
+      lieu,
+      colonnes: colonnesDuFormulaire(lieu),
+      maintenant: lieu.tracabilite.creation.date,
+    })
 
-  return LieuId(structureId)
-}
+    return cree
+  }
+
+export const enregistrerLieuActivite: EnregistrerLieuActivite = async ({
+  destination,
+  mediateurId,
+  debut,
+  par,
+}) =>
+  prismaClient.$transaction(
+    async (transaction): Promise<EnregistrementDuLieu> => {
+      const disparu = await lieuDisparu(transaction, [destination])
+
+      if (disparu !== null) return { _tag: 'LieuDisparu', lieuId: disparu }
+
+      await preparerLeLieu(transaction, destination, {
+        maintenant: debut,
+        creer: creerLaFiche(transaction),
+      })
+
+      await rattacher(transaction, {
+        mediateurId,
+        structureId: destination.id,
+        debut,
+        creationParId: par,
+      })
+
+      return { _tag: 'Enregistre' }
+    },
+  )

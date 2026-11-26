@@ -1,8 +1,8 @@
 import { type Result, success } from '@/libraries/result'
 import type { LieuId } from '../../../domain/identifiants/lieu-id'
 import { correler, type LieuAMaterialiser } from '../../../domain/lieu-identite'
+import { endroitDe } from '../../../domain/reconnaitre-le-lieu'
 import type { LieuCorreleAuLieuDecritPorts } from './ports'
-import { endroitDe } from './reconnaitre-le-lieu'
 
 export const lieuCorreleAuLieuDecrit =
   ({ lieuxAuMemeEndroit }: LieuCorreleAuLieuDecritPorts) =>

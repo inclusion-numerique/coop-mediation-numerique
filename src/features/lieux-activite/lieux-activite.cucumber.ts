@@ -406,7 +406,10 @@ const renseigner = async (lieux: readonly LieuDesire[]) => {
 }
 
 const creerUnLieuDActivite = (saisie: CreerLieuActiviteData) =>
-  creerLieuActivite({ enregistrer: enregistrerLieuActivite })({
+  creerLieuActivite({
+    lieuxAuMemeEndroit,
+    enregistrer: enregistrerLieuActivite,
+  })({
     lieu: nouveauLieu(
       saisie,
       UtilisateurId(utilisateurCourant()),
@@ -480,8 +483,8 @@ const siretDeTest = () => v4().replace(/\D/g, '').padEnd(14, '0').slice(0, 14)
 const creerEtRattacher = async (saisie: CreerLieuActiviteData) => {
   const resultat = await creerUnLieuDActivite(saisie)
   assert.ok(resultat.success, 'La création du lieu aurait dû réussir')
-  suivreLeLieu(resultat.data.id)
-  return resultat.data.id
+  suivreLeLieu(resultat.data.destination.id)
+  return resultat.data.destination.id
 }
 
 const activitesActivesPour = (structureId: string) =>
@@ -736,7 +739,7 @@ When(
       }),
     )
     assert.ok(resultat.success, 'La création du lieu aurait dû réussir')
-    lieuCreeId = resultat.data.id
+    lieuCreeId = resultat.data.destination.id
     suivreLeLieu(lieuCreeId)
   },
 )
@@ -862,7 +865,7 @@ When('je crée un lieu d’activité que la coop ignore', async () => {
     saisieDeCreation(nomDuNouveauLieu),
   )
   assert.ok(resultat.success, 'La création du lieu aurait dû réussir')
-  lieuCreeId = resultat.data.id
+  lieuCreeId = resultat.data.destination.id
   suivreLeLieu(lieuCreeId)
 })
 
@@ -871,7 +874,7 @@ When('je crée un lieu d’activité identique à ce lieu retiré', async () => 
     saisieDeCreation(nomDuNouveauLieu),
   )
   assert.ok(resultat.success, 'La création du lieu aurait dû réussir')
-  lieuCreeId = resultat.data.id
+  lieuCreeId = resultat.data.destination.id
   suivreLeLieu(lieuCreeId)
 })
 
@@ -885,7 +888,7 @@ When(
       }),
     )
     assert.ok(resultat.success, 'La création du lieu aurait dû réussir')
-    lieuCreeId = resultat.data.id
+    lieuCreeId = resultat.data.destination.id
     suivreLeLieu(lieuCreeId)
   },
 )
@@ -897,7 +900,7 @@ When(
       saisieDeCreation(`COMMUNE DE ${communeDuLieuDisponible}`.toUpperCase()),
     )
     assert.ok(resultat.success, 'La création du lieu aurait dû réussir')
-    lieuCreeId = resultat.data.id
+    lieuCreeId = resultat.data.destination.id
     suivreLeLieu(lieuCreeId)
   },
 )

@@ -1,10 +1,10 @@
-import type { LieuId } from '../../../domain/identifiants/lieu-id'
-import { correler, type LieuAMaterialiser } from '../../../domain/lieu-identite'
 import type {
   Endroit,
   LieuCandidatCoop,
   LieuConnu,
 } from './destination-du-lieu'
+import type { LieuId } from './identifiants/lieu-id'
+import { correler, type LieuAMaterialiser } from './lieu-identite'
 import type { LieuxAuMemeEndroit } from './ports'
 
 export type LieuxPrevus = {
