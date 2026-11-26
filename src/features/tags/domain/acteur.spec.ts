@@ -78,4 +78,10 @@ describe('acteur', () => {
   it('n’a pas de département quand celui du profil est invalide', () => {
     expect(acteurDe({ ...profil, departement: 'ZZ' }).departement).toBeNull()
   })
+
+  it('reprend le rôle de coordinateur d’un profil qui ne fait pas de médiation', () => {
+    expect(
+      acteurDe({ ...profil, mediateurId: null, coordinateurId }),
+    ).toMatchObject({ _tag: 'Coordinateur', coordinateurId })
+  })
 })

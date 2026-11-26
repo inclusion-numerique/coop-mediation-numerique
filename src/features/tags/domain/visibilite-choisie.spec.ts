@@ -67,4 +67,13 @@ describe('porteeChoisie', () => {
       porteeChoisie(mediateurCoordonne, { _tag: 'Departemental' }),
     ).toBeNull()
   })
+
+  it('refuse un tag personnel à un compte sans rôle', () => {
+    expect(
+      porteeChoisie(
+        { ...role(null, null), equipes: [], departement: null },
+        { _tag: 'Personnel' },
+      ),
+    ).toBeNull()
+  })
 })

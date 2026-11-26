@@ -90,6 +90,26 @@ describe('peutGerer', () => {
   ])('%s', (_, acteur, portee, attendu) => {
     expect(peutGerer(acteur)(portee)).toBe(attendu)
   })
+
+  it.each<{ cas: string; proprietaire: CoordinateurId; attendu: boolean }>([
+    {
+      cas: 'gère le tag personnel de sa coordination',
+      proprietaire: monCoordinateur,
+      attendu: true,
+    },
+    {
+      cas: 'ne gère pas le tag personnel d’un autre coordinateur',
+      proprietaire: autreCoordinateur,
+      attendu: false,
+    },
+  ])('en coordinateur, $cas', ({ proprietaire, attendu }) => {
+    expect(
+      peutGerer(coordinateur)({
+        _tag: 'Personnel',
+        proprietaire: { _tag: 'Coordinateur', coordinateurId: proprietaire },
+      }),
+    ).toBe(attendu)
+  })
 })
 
 describe('peutVoir', () => {
