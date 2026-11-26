@@ -46,8 +46,6 @@ export const prendreRendezVousAction = actionBuilder()
           beneficiaireId: input.beneficiaireId,
         })
 
-        // Seule l'URL de prise de rendez-vous intéresse le navigateur, qui n'a
-        // qu'à s'y rendre.
         return resultat.success
           ? { success: true as const, data: { url: resultat.data.creee.url } }
           : resultat

@@ -23,11 +23,6 @@ export const mettreAJourUsager: MettreAJourUsager = async (usager) => {
   })
 }
 
-/**
- * L'anonymisation efface l'identité et marque la suppression, sans détruire la
- * fiche : les statistiques du médiateur reposent sur des données anonymes —
- * tranche d'âge, genre — qui doivent survivre au départ de la personne.
- */
 export const anonymiserEtSupprimerUsager: AnonymiserEtSupprimerUsager = async ({
   usagerId,
   beneficiaires,
@@ -56,8 +51,6 @@ export const anonymiserEtSupprimerUsager: AnonymiserEtSupprimerUsager = async ({
       )
     }
 
-    // Les fiches déjà supprimées gardent le rattachement : il faut le rompre
-    // avant que l'usager ne disparaisse.
     await transaction.beneficiaire.updateMany({
       where: { rdvUserId: usagerId },
       data: { rdvUserId: null },

@@ -20,7 +20,6 @@ import {
 
 const AGENT_ID = ID_TEST.compte + 8
 
-/** Ordre d'appel observé, seule façon de constater l'enchaînement du dehors. */
 const appels: string[] = []
 
 const echecs = new Set<string>()
@@ -51,19 +50,10 @@ const reinitialiser = () => {
   echoue = false
 }
 
-/**
- * Chaque réconciliation rend une opération, pour que la dérive attendue soit
- * lisible : trois modèles à 1, donc une dérive de 3.
- */
 const unChangement = { ...bilanVide, updated: 1 }
 
 const MEDIATEUR_ID = MediateurId('b6f1a6a2-3c4d-4e5f-8a9b-0c1d2e3f4a5b')
 
-/**
- * Organisations auxquelles le compte est rattaché, et que RDV Service Public
- * renvoie sauf scénario contraire : sans elles, la passe n'a aucun webhook à
- * poser, et l'étape ne se constate pas.
- */
 const ORGANISATIONS_DU_COMPTE = [101, 102]
 
 const synchroniser = synchroniserCompteRdv({
@@ -318,11 +308,6 @@ Then('le journal de la passe est clôturé sans erreur', async () => {
   assert.equal(journaux[0]?.error, null)
 })
 
-/**
- * La portée est une écriture que personne ne relit dans le code : sans cette
- * assertion, elle peut cesser d'être consignée sans qu'aucun test ne bronche —
- * c'est exactement ce qui s'était produit.
- */
 Then(
   'le journal de la passe consigne la portée {string}',
   async (ids: string) => {
@@ -335,8 +320,6 @@ Then(
 Then('le journal de la passe consigne une portée complète', async () => {
   const [journal] = await journauxDuCompte()
 
-  // Liste vide = toutes les organisations. `passePour` a déjà écarté le cas
-  // d'une portée explicitement vide, qui n'ouvre aucun journal.
   assert.deepEqual(journal?.organisationIds, [])
 })
 

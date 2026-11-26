@@ -70,9 +70,7 @@ Given('un compte RDV déjà déconnecté le {string}', async (jour: string) => {
   })
 })
 
-Given('aucun compte RDV pour ce médiateur', () => {
-  // Le hook Before de la feature a déjà retiré tout compte de l'utilisateur.
-})
+Given('aucun compte RDV pour ce médiateur', () => undefined)
 
 When('je déconnecte mon compte RDV Service Public', async () => {
   resultat = await deconnecter({

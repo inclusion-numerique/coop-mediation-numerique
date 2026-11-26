@@ -126,10 +126,6 @@ export const ParticipantInconnu: Story = {
   },
 }
 
-/**
- * Les deux états que le bloc pouvait déjà porter, mais que le composant ne
- * savait pas rendre : le rendu initial les traitait dans la page.
- */
 export const Alerte: Story = {
   args: {
     user,

@@ -52,34 +52,13 @@ export type RdvServicePublicApiConfig = {
   readonly hostname: string
   readonly clientId: string
   readonly clientSecret: string
-  /**
-   * URL que RDV Service Public appellera, et secret dont il signe ses envois.
-   * Ils identifient La Coop comme destination des notifications : le port n'a
-   * pas à les porter, c'est cette implémentation qui est cette destination.
-   */
   readonly webhookUrl: string
   readonly webhookSecret: string
-  /**
-   * Notifié après un renouvellement réussi. L'adaptateur ne connaît pas la base :
-   * c'est à l'appelant d'enregistrer les nouveaux jetons, et lui seul sait s'il
-   * doit le faire dans la transaction en cours.
-   */
   readonly onJetonsRenouveles?: (
     agentId: RdvAgentId,
     jetons: JetonsOAuth,
   ) => Promise<void>
-  /**
-   * Jetons que porte l'enregistrement du compte, à l'instant de l'appel.
-   *
-   * Sans elle, l'adaptateur repart des jetons figés dans le compte qu'on lui
-   * passe. Or une passe de synchronisation lit ce compte une fois et le promène
-   * d'une étape à l'autre, pendant que chaque renouvellement en écrit de
-   * nouveaux : le deuxième appel rejouait donc un échange avec un jeton de
-   * rafraîchissement que RDV Service Public venait de faire tourner, se le
-   * faisait refuser, et emportait la passe entière.
-   */
   readonly jetonsCourants?: (agentId: RdvAgentId) => Promise<JetonsOAuth | null>
-  /** Injectable pour les tests ; par défaut l'horloge système. */
   readonly maintenant?: () => Date
 }
 
@@ -100,10 +79,6 @@ const messageDe = (erreur: unknown): string =>
       ? erreur.message
       : 'Erreur inconnue'
 
-/**
- * Un 401 ne devient `JetonRevoque` qu'après l'unique nouvelle tentative : tant
- * qu'un renouvellement reste possible, l'échec est réputé transitoire.
- */
 const erreurDe = (
   agentId: RdvAgentId | null,
   { chemin, organisationId }: Requete,
@@ -155,10 +130,6 @@ export const rdvServicePublicApi = ({
   jetonsCourants,
   maintenant = () => new Date(),
 }: RdvServicePublicApiConfig): RdvServicePublicApi => {
-  /**
-   * Jetons à utiliser pour le prochain appel. Ceux de la base font foi ; ceux du
-   * compte reçu ne servent que de repli, quand aucune lecture n'est branchée.
-   */
   const jetonsAJour = async (
     compte: CompteRdvUtilisable,
   ): Promise<JetonsOAuth> =>
@@ -198,22 +169,10 @@ export const rdvServicePublicApi = ({
 
       return success(jetons)
     } catch {
-      // Un refresh_token refusé est définitif : il faut une reconnexion OAuth.
       return failure(JetonRevoque(compte.agentId))
     }
   }
 
-  /**
-   * Renouvelle, et rattrape la course.
-   *
-   * Deux appels partis en parallèle avec le même jeton de rafraîchissement ne
-   * peuvent pas réussir tous les deux : le premier le consomme, le second se
-   * fait refuser. Le perdant relit alors les jetons du compte — s'ils ont changé,
-   * c'est que l'autre a fait le travail, et son refus n'est pas une révocation.
-   *
-   * C'est ce qui remplace un verrou : rien à partager, rien à mutualiser, la base
-   * arbitre.
-   */
   const renouveler = async (
     compte: CompteRdvUtilisable,
     jetons: JetonsOAuth,
@@ -281,10 +240,6 @@ export const rdvServicePublicApi = ({
     return await appeler(compte, requete, schema, renouveles.data, false)
   }
 
-  /**
-   * Renouvelle par anticipation quand l'expiration est connue et proche, pour
-   * éviter un aller-retour 401 systématique en fin de validité.
-   */
   const executer = async <T>(
     compte: CompteRdvUtilisable,
     requete: Requete,
@@ -303,11 +258,6 @@ export const rdvServicePublicApi = ({
       : renouveles
   }
 
-  /**
-   * Parcourt les pages jusqu'à épuisement. La récursion porte l'accumulateur :
-   * une boucle demanderait une variable mutable, et le nombre de pages reste de
-   * l'ordre de la dizaine.
-   */
   const collecter = async <
     Page extends { readonly meta: { readonly next_page: number | null } },
     Element,
@@ -348,8 +298,6 @@ export const rdvServicePublicApi = ({
 
   return {
     identifierAgent: async (jetons) => {
-      // Appel direct : sans agent connu, ni renouvellement ni nouvelle tentative
-      // n'auraient de sens — les jetons viennent d'être échangés.
       const reponse = await requeteHttp(
         jetons,
         { chemin: '/agents/me', methode: 'GET' },
@@ -394,8 +342,6 @@ export const rdvServicePublicApi = ({
       const organisations: readonly OrganisationId[] =
         filtres.organisationIds ?? []
 
-      // Sans organisation ciblée, l'API rend les rendez-vous de l'agent ; sinon
-      // il faut une collecte par organisation, l'API n'acceptant qu'un id.
       const requetes: readonly Requete[] =
         organisations.length === 0
           ? [{ chemin: '/rdvs', methode: 'GET', params }]
@@ -552,8 +498,6 @@ export const rdvServicePublicApi = ({
         return reponse
       }
 
-      // Le filtre `target_url` est passé à l'API, mais on le revérifie : une
-      // pose sur le webhook d'un tiers serait irréparable.
       return success(
         reponse.data
           .filter((webhook) => webhook.target_url === webhookUrl)

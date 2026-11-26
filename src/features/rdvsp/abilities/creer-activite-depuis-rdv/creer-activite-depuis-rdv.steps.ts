@@ -134,9 +134,7 @@ Given('un compte RDV lié sans rendez-vous à convertir', async () => {
   await seedCompteRdv({ id: AGENT_ID, accessToken: 'jeton-acces' })
 })
 
-Given('aucun compte RDV pour convertir', () => {
-  // Le hook Before a déjà retiré tout compte de l'utilisateur de test.
-})
+Given('aucun compte RDV pour convertir', () => undefined)
 
 When('je prépare un CRA depuis ce rendez-vous', async () => {
   resultat = await creerActiviteDepuisUnRdv({

@@ -51,14 +51,6 @@ import type {
   WebhookPayload,
 } from './rdv-service-public.payload'
 
-/**
- * Les données d'identité que RDV Service Public transmet sont saisies par des
- * agents : `Model.safe` les ramène à l'absence plutôt que de faire échouer tout
- * un lot sur un téléphone ou un e-mail mal formé. Les invariants structurels —
- * identifiants, dates, URL — restent stricts : leur violation signale une
- * évolution d'API, pas une coquille de saisie.
- */
-
 export const agentToDomain = (payload: AgentPayload): Agent => ({
   id: RdvAgentId(payload.id),
   email: EmailExterne(payload.email),
@@ -198,11 +190,6 @@ export const demandeRdvToDomain = (
   rdvId: payload.rdv_plan.rdv === null ? null : RdvId(payload.rdv_plan.rdv.id),
 })
 
-/**
- * RDV Service Public ne renvoie pas systématiquement un nouveau jeton de
- * rafraîchissement ni la portée : on conserve alors ceux du compte, sans quoi un
- * renouvellement réussi dégraderait silencieusement le compte.
- */
 export const jetonsToDomain = (
   payload: JetonsPayload,
   precedents: JetonsOAuth,
@@ -218,11 +205,6 @@ export const jetonsToDomain = (
     payload.scope === null ? precedents.portee : PorteeOAuth(payload.scope),
 })
 
-/**
- * Les abonnements inconnus de La Coop sont écartés plutôt que de faire échouer
- * la lecture : RDV Service Public peut en ajouter, et un webhook posé reste
- * exploitable pour ceux qu'on sait traiter.
- */
 export const webhookToDomain = (payload: WebhookPayload): WebhookInstalle => ({
   id: WebhookId(payload.id),
   organisationId: OrganisationId(payload.organisation_id),

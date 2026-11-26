@@ -6,11 +6,6 @@ import { StatutPresence } from '../../../../domain/rdv/statut-presence'
 import { identiteExterneToDomain } from '../../../../implementations/prisma/usager-externe.transfer'
 import type { LireRdvPourActivite } from '../../domain/ports'
 
-/**
- * Lit le rendez-vous et ses participants sans filtre de propriétaire : c'est
- * `verifierRdv` qui tranche, et c'est ce qui permet de distinguer un rendez-vous
- * inconnu de celui d'un collègue.
- */
 export const lireRdvPourActivite: LireRdvPourActivite = async (rdvId) => {
   const row = await prismaClient.rdv.findUnique({
     where: { id: rdvId },

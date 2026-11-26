@@ -30,13 +30,6 @@ export type EchangerCodeAutorisationConfig = {
   readonly maintenant?: () => Date
 }
 
-/**
- * Échange le code d'autorisation contre le premier jeu de jetons.
- *
- * Cet appel ne passe pas par le port `RdvServicePublicApi` : il ne s'authentifie
- * pas avec un compte — il en crée les conditions — et vise l'endpoint OAuth, non
- * l'API métier. Seule cette ability en a l'usage, il vit donc chez elle.
- */
 export const echangerCodeAutorisation =
   ({
     hostname,

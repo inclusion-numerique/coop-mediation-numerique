@@ -11,11 +11,6 @@ import type {
   OuvrirJournal,
 } from '../../domain/ports'
 
-/**
- * `rdv_sync_logs` porte six jeux de cinq colonnes, un par modèle. Les noms s'en
- * déduisent mécaniquement : les écrire un à un — trente lignes — invitait à en
- * oublier une au premier modèle ajouté.
- */
 const colonnesDuModele = (
   modele: ModeleSynchronise,
   bilan: BilanSynchronisation,
@@ -33,8 +28,6 @@ export const ouvrirJournal: OuvrirJournal = tenter(
       data: {
         rdvAccountId: compte.agentId,
         started: new Date(),
-        // Liste vide = passe complète : la colonne ne distingue pas l'absence de
-        // portée d'une portée vide, mais `passePour` a déjà écarté ce second cas.
         organisationIds:
           organisationIds === undefined ? [] : [...organisationIds],
       },

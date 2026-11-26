@@ -38,9 +38,7 @@ Given(
   },
 )
 
-Given('aucun compte RDV pour régler l’affichage', () => {
-  // Le hook Before de la feature a déjà retiré tout compte de l'utilisateur.
-})
+Given('aucun compte RDV pour régler l’affichage', () => undefined)
 
 When('je demande à voir les rendez-vous dans mes activités', async () => {
   reglage = await regler({

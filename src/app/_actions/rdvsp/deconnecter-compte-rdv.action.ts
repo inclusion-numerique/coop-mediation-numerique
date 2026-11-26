@@ -15,10 +15,6 @@ const deconnecter = deconnecterCompteRdv({
   enregistrer: enregistrerLeCompteDeconnecte,
 })
 
-/**
- * Aucune donnée n'est rendue au client : le compte délié ne porte plus rien
- * d'exploitable côté navigateur, qui se contente de rafraîchir la page.
- */
 export const deconnecterCompteRdvAction = actionBuilder()
   .use(withAuth())
   .use(withMaintenance())

@@ -9,12 +9,6 @@ export const statutsPresence = [
   'noshow',
 ] as const
 
-/**
- * Statut de présence tel que RDV Service Public le définit, repris tel quel :
- * les valeurs sont celles de leur API et de notre enum Postgres
- * `rdv_attendance_status`. `unknown` ne signifie pas « inconnu » mais « pas
- * encore renseigné » — voir `StatutRdv` pour le statut réellement affiché.
- */
 export const StatutPresence = defineModel(
   z.enum(statutsPresence).brand('StatutPresence'),
 )
@@ -28,10 +22,6 @@ const statutsPresenceModifiables = [
   'noshow',
 ] as const
 
-/**
- * Sous-ensemble des statuts qu'un agent peut poser lui-même : on ne peut pas
- * repasser un rendez-vous à `unknown` via l'API.
- */
 export const StatutPresenceModifiable = defineModel(
   z.enum(statutsPresenceModifiables).brand('StatutPresenceModifiable'),
 )

@@ -1,14 +1,6 @@
 import type { ErreurRdvApi } from '../../../domain/errors'
 import type { EmailExterne } from '../../../domain/identite'
 
-/**
- * L'agent identifié ne porte pas l'adresse du compte La Coop.
- *
- * C'est la garde qui rend l'écart d'e-mail invisible depuis La Coop : aucune
- * liaison ne survit à une divergence, donc 100 % de nos comptes liés ont des
- * adresses identiques des deux côtés. Les écarts que cherche RDV Service Public
- * se trouvent chez les médiateurs dont la liaison a justement échoué ici.
- */
 export type EmailAgentDifferent = {
   readonly _tag: 'EmailAgentDifferent'
   readonly emailCoop: EmailExterne
@@ -24,7 +16,6 @@ export const EmailAgentDifferent = (
   emailAgent,
 })
 
-/** RDV Service Public a refusé le code : expiré, déjà consommé ou falsifié. */
 export type CodeAutorisationRefuse = {
   readonly _tag: 'CodeAutorisationRefuse'
   readonly detail: string

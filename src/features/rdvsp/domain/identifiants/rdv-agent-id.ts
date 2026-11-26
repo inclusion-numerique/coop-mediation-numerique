@@ -1,11 +1,6 @@
 import { z } from 'zod'
 import { defineModel, type Model } from '@/libraries/model'
 
-/**
- * Identifiant de l'agent côté RDV Service Public. C'est également la clé
- * primaire de `rdv_accounts` : un compte RDV n'existe dans La Coop que parce
- * qu'un agent existe en face.
- */
 export const RdvAgentId = defineModel(
   z.number().int().positive().brand('RdvAgentId'),
 )

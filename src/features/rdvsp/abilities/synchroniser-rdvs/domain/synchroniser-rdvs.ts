@@ -137,17 +137,6 @@ const cumuler = (
   rapprochements: [...acquis.rapprochements, rapprochement],
 })
 
-/**
- * Réconcilie les rendez-vous d'un compte avec ce que RDV Service Public renvoie.
- *
- * Le travail se fait par lots : l'état connu n'est lu que pour les rendez-vous du
- * lot en cours, et la mémoire des modèles déjà écrits évite de repasser sur un
- * motif ou un usager partagé avec un lot précédent.
- *
- * Rien n'est écrit avant que la liste complète soit reçue : la suppression des
- * rendez-vous disparus se décide sur l'ensemble, et une réponse partielle en
- * effacerait à tort.
- */
 export const synchroniserRdvs =
   ({
     listerRdvs,

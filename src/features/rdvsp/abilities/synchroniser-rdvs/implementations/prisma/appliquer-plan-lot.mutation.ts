@@ -16,16 +16,6 @@ import type {
   SupprimerRdvs,
 } from '../../domain/ports'
 
-/**
- * Un rendez-vous et ses participations forment un tout : les participations sont
- * remplacées, non fusionnées, parce que RDV Service Public fait autorité sur la
- * liste — un participant retiré chez eux doit disparaître ici.
- */
-/**
- * `raw_data` n'accepte que du JSON. Le passage par une sérialisation le garantit
- * plutôt que de l'affirmer par un transtypage : ce qui n'est pas sérialisable ne
- * sera pas écrit, et rien ne fera échouer la synchronisation à cause d'une trace.
- */
 const traceJson = (brut: unknown) => JSON.parse(JSON.stringify(brut ?? {}))
 
 const ecrireRdv = async (rdv: Rdv, brut: unknown) =>
@@ -48,10 +38,6 @@ const ecrireRdv = async (rdv: Rdv, brut: unknown) =>
     })
   })
 
-/**
- * L'ordre est imposé par les clés étrangères : usagers, lieux et motifs
- * existent avant les rendez-vous qui les désignent.
- */
 export const appliquerPlanLot: AppliquerPlanLot = tenter(
   async ({ plan, bruts }) => {
     await prismaClient.rdvUser.createMany({
@@ -96,8 +82,6 @@ export const appliquerPlanLot: AppliquerPlanLot = tenter(
       ),
     )
 
-    // Séquentiel : deux rendez-vous d'un même lot peuvent partager un lieu ou un
-    // motif tout juste créés, et leurs transactions se disputeraient les lignes.
     await [...plan.rdvs.aCreer, ...plan.rdvs.aMettreAJour].reduce(
       async (precedent, rdv) => {
         await precedent
@@ -108,21 +92,10 @@ export const appliquerPlanLot: AppliquerPlanLot = tenter(
   },
 )
 
-/** La suppression d'un rendez-vous emporte ses participations, en cascade. */
 export const supprimerRdvs: SupprimerRdvs = tenter(async (rdvIds) => {
   await prismaClient.rdv.deleteMany({ where: { id: { in: [...rdvIds] } } })
 })
 
-/**
- * Ramasse les motifs qu'aucun rendez-vous ne référence plus.
- *
- * Le filtre par organisation borne le geste à ce que la passe a parcouru, et il
- * n'est pas facultatif : sans lui, `deleteMany` balaie toute la table et une
- * passe ramasse les motifs des comptes qu'elle ne synchronise pas.
- *
- * Une liste vide ne supprime donc rien, ce qui est le comportement voulu — une
- * passe sans organisation n'a rien parcouru et n'a rien à ramasser.
- */
 export const supprimerMotifsOrphelins: SupprimerMotifsOrphelins = tenter(
   async (organisationIds) => {
     const { count } = await prismaClient.rdvMotif.deleteMany({

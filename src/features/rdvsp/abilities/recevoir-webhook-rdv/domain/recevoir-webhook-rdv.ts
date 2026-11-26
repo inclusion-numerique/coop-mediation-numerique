@@ -22,13 +22,6 @@ export type WebhookRdvTraite =
       readonly rapprochement: Rapprochement
     }
 
-/**
- * Traite une notification de rendez-vous.
- *
- * Tout ce qui n'est pas traitable est ignoré et nommé : une notification pour un
- * compte que La Coop ne suit pas, ou dont le payload a changé de forme, n'est pas
- * une erreur à renvoyer au service — ce serait l'inviter à réessayer sans fin.
- */
 export const recevoirWebhookRdv =
   ({
     lireNotification,

@@ -38,16 +38,6 @@ type PasseDeSynchronisation =
       readonly organisationIds: readonly OrganisationId[] | undefined
     }
 
-/**
- * Une portée vide n'est pas une portée totale.
- *
- * La distinction tient à un tableau vide contre une absence de tableau, et
- * l'inverser ferait resynchroniser l'intégralité d'un compte là où il n'y avait
- * rien à faire. Elle méritait d'être nommée.
- *
- * Les organisations ne sont réconciliées que lors d'une passe complète : sur une
- * portée restreinte, l'appelant sait déjà de quelles organisations il parle.
- */
 const passePour = (
   organisationIds: readonly OrganisationId[] | undefined,
 ): PasseDeSynchronisation =>
@@ -112,16 +102,6 @@ const organisationsDeLaPasse = (
         }),
       )
 
-/**
- * Réconcilie un compte avec RDV Service Public.
- *
- * L'ordre n'est pas indifférent : les organisations d'abord, dont les rendez-vous
- * dépendent ; les rendez-vous ensuite, qui amènent motifs, lieux et usagers ; les
- * webhooks en dernier, pour que les notifications reprennent sur un état à jour.
- *
- * Un échec est consigné puis rendu. La trace vaut mieux que le silence : c'est
- * elle que l'administration lit quand un compte cesse de se synchroniser.
- */
 export const synchroniserCompteRdv =
   ({
     reconcilierOrganisations,

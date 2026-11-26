@@ -41,7 +41,6 @@ let resultat:
   | Awaited<ReturnType<ReturnType<typeof prendreRendezVous>>>
   | undefined
 
-/** Retient l'usager transmis : c'est lui que les scénarios interrogent. */
 const creerDemandeRdvDouble: RdvServicePublicApi['creerDemandeRdv'] = async (
   _compte,
   demande,

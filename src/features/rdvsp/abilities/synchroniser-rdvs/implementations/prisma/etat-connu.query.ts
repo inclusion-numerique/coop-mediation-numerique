@@ -22,12 +22,6 @@ export const rdvsDejaImportes: RdvsDejaImportes = tenter(
     ).map(({ id }) => RdvId(id)),
 )
 
-/**
- * Lit le lot de rendez-vous déjà connus, avec leur entourage. Motifs, lieux et
- * usagers en sont extraits plutôt que relus séparément : ils n'existent en base
- * que portés par un rendez-vous, et une seule requête suffit donc à savoir ce que
- * La Coop détient.
- */
 export const etatConnuDuLot: EtatConnuDuLot = tenter(
   async ({ rdvIds, organisationIds }) => {
     const rows = await prismaClient.rdv.findMany({

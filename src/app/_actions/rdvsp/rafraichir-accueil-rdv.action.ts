@@ -98,16 +98,6 @@ const declencher = declencherSynchronisation({
   signaler,
 })
 
-/**
- * Rattrape les rendez-vous des organisations sans webhook, puis relit la
- * projection de l'accueil.
- *
- * Deux abilities sont composées ici, et non l'une dans l'autre : c'est l'écran
- * qui a besoin des deux, pas la synchronisation qui a besoin du widget (IS-1).
- * La projection est celle du rendu initial — une seule forme de part et d'autre,
- * l'union des trois états comprise : la passe peut faire basculer le compte en
- * alerte, et l'écran doit pouvoir le montrer.
- */
 const consulter = consulterRdvsAccueil({
   compteDuMediateur,
   lireDonnees: lireDonneesAccueilRdv,
@@ -132,8 +122,6 @@ export const rafraichirAccueilRdvAction = actionBuilder()
           return synchronisation
         }
 
-        // Rien n'a bougé : l'écran garde ce qu'il affiche déjà, et la lecture
-        // de la projection est épargnée.
         if (synchronisation.data.derive === 0) {
           return success<RafraichissementAccueil>({ _tag: 'inchange' })
         }

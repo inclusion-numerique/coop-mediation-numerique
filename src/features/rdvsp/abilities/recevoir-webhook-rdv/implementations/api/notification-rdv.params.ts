@@ -7,14 +7,6 @@ import { rdvToDomain } from '../../../../implementations/api/rdv-service-public.
 import { AucunAgent } from '../../domain/errors'
 import type { LireNotificationRdv } from '../../domain/ports'
 
-/**
- * La notification reprend la forme d'un rendez-vous de l'API, à deux écarts près.
- *
- * Elle porte la liste des agents concernés — c'est le seul lien avec un compte
- * de La Coop. Et sa catégorie de motif est une chaîne là où l'API rend un objet ;
- * on la ramène à l'absence plutôt que d'inventer un identifiant, comme le faisait
- * déjà le code d'origine.
- */
 const sansCategorieDeMotif = (payload: unknown): unknown => {
   if (typeof payload !== 'object' || payload === null) {
     return payload

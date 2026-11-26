@@ -132,17 +132,6 @@ const Compteurs = ({
   )
 }
 
-/**
- * Bloc RDV de l'accueil, dans ses trois états.
- *
- * Le composant tient l'union entière et non la seule branche `donnees` : le
- * rattrapage au chargement peut faire basculer le compte en alerte — des jetons
- * révoqués pendant la passe — et l'écran doit alors montrer la reconnexion, non
- * garder des compteurs périmés.
- *
- * L'alerte arrive en slot depuis le serveur : elle construit l'URL du parcours
- * OAuth avec `BASE_URL`, qui n'existe pas dans le bundle du navigateur.
- */
 const RdvsAccueil = ({
   widget: widgetInitial,
   user: { timezone },
@@ -160,8 +149,6 @@ const RdvsAccueil = ({
   const [synchronisationEnCours, setSynchronisationEnCours] = useState(false)
 
   useEffect(() => {
-    // Un compte masqué ou déjà en alerte n'a rien à rattraper : la reconnexion
-    // passe par le bouton de l'alerte, pas par une passe de plus.
     if (!synchroniserAuChargement || widgetInitial._tag !== 'donnees') {
       return
     }

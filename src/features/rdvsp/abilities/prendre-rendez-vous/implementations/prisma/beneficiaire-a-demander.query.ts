@@ -13,12 +13,6 @@ import {
 } from '../../domain/beneficiaire-cible'
 import type { BeneficiaireADemander } from '../../domain/ports'
 
-/**
- * Adaptateur vers la table des bénéficiaires. Les identités passent par
- * `Model.safe` : un téléphone ou un e-mail hérité mal formé ne doit pas empêcher
- * de prendre un rendez-vous, il vaut mieux transmettre un pré-remplissage
- * incomplet que rien du tout.
- */
 export const beneficiaireADemander: BeneficiaireADemander = async (id) => {
   const row = await prismaClient.beneficiaire.findUnique({
     where: { id },

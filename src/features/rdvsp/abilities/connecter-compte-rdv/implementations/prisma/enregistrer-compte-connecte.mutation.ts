@@ -2,15 +2,6 @@ import { prismaClient } from '@/configuration/prisma'
 import { compteRdvFromDomain } from '../../../../implementations/prisma/compte-rdv.transfer'
 import type { EnregistrerCompteConnecte } from '../../domain/ports'
 
-/**
- * `rdv_accounts` a pour clé primaire l'identifiant de l'agent : reconnecter un
- * médiateur sur un autre agent déplace donc la ligne d'une clé à l'autre, ce que
- * l'upsert exprime en ciblant `agentIdPrecedent` tout en écrivant le nouvel id.
- *
- * Les organisations ne sont pas réécrites ici : elles proviennent de la
- * synchronisation, qui suit la connexion. Les recopier depuis un domaine encore
- * vide effacerait le cache d'un compte qui se reconnecte.
- */
 export const enregistrerCompteConnecte: EnregistrerCompteConnecte = async ({
   compte,
   agentIdPrecedent,

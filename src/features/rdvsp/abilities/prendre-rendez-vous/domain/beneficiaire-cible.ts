@@ -8,15 +8,6 @@ import type {
   TelephoneExterne,
 } from '../../../domain/identite'
 
-/**
- * Le bénéficiaire vu depuis RDV Service Public.
- *
- * Type local et non import du domaine bénéficiaire : une feature ne dépend pas
- * du domaine d'une autre (IS-2). L'ability ne connaît du bénéficiaire que ce
- * qu'une demande de rendez-vous exige — son propriétaire, l'usager RDV déjà lié,
- * et de quoi pré-remplir un formulaire. Un port va le chercher, un adaptateur le
- * traduit.
- */
 export const BeneficiaireCibleId = defineModel(
   z.guid().brand('BeneficiaireCibleId'),
 )
@@ -32,7 +23,6 @@ export type MediateurProprietaireId = Model.TypeOf<
 export type BeneficiaireCible = {
   readonly id: BeneficiaireCibleId
   readonly mediateurId: MediateurProprietaireId
-  /** Usager RDV Service Public déjà rattaché, s'il y en a un. */
   readonly usagerId: UsagerId | null
   readonly prenom: PrenomExterne | null
   readonly nom: NomExterne | null

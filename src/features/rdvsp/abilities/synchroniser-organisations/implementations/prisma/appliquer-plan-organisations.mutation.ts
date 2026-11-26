@@ -11,11 +11,6 @@ const colonnes = (organisation: Organisation) => ({
   verticale: organisation.verticale,
 })
 
-/**
- * Applique le plan d'un seul tenant : les organisations doivent exister avant
- * qu'on y rattache le compte, et un plan à moitié appliqué laisserait des liens
- * pointant vers des organisations absentes.
- */
 export const appliquerPlanOrganisations: AppliquerPlanOrganisations = tenter(
   async ({ compte, plan }) => {
     await prismaClient.$transaction(async (transaction) => {

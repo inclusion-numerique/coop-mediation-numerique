@@ -51,16 +51,6 @@ const verifierAcces = ({
   return success(compte)
 }
 
-/**
- * État à enregistrer une fois le statut confirmé par RDV Service Public.
- *
- * `compteRenduRegle` dit que le compte rendu n'est plus attendu, quelle qu'en
- * soit la raison : le médiateur en a rédigé un, ou il a explicitement décliné
- * l'invitation depuis la modale. Les deux chemins mènent ici et le drapeau
- * empêche l'invitation de revenir — c'est lui que lisent la liste d'activités
- * et le compteur de l'accueil. Les autres statuts le lèvent : un rendez-vous
- * annulé n'appelle aucun compte rendu.
- */
 const statutRdvMisAJour = (
   statutConfirme: StatutPresence,
 ): StatutRdvMisAJour => ({
@@ -68,12 +58,6 @@ const statutRdvMisAJour = (
   compteRenduRegle: statutConfirme === 'seen',
 })
 
-/**
- * RDV Service Public est prévenu avant que La Coop n'écrive quoi que ce soit, et
- * c'est le statut qu'il renvoie qui est enregistré, jamais celui demandé : lui
- * seul fait autorité sur ses rendez-vous. Un échec de son côté laisse donc la
- * base intacte plutôt que d'y inscrire une valeur qu'il ignore.
- */
 export const mettreAJourStatutRdv =
   ({ contexte, changerStatutRdv, enregistrer }: MettreAJourStatutRdvPorts) =>
   async ({

@@ -6,13 +6,6 @@ import type { Organisation } from '../../../../domain/organisation'
 import { tenter } from '../../../../implementations/prisma/tenter.adapter'
 import type { EtatOrganisations } from '../../domain/ports'
 
-/**
- * Les organisations connues sont lues sur les seuls identifiants reçus — c'est
- * tout ce qu'il faut pour décider d'une création ou d'une mise à jour. Les
- * rattachements, eux, sont lus **en entier** : c'est en confrontant la totalité
- * des liens du compte à la réponse de l'API qu'on peut voir qu'il en reste un de
- * trop.
- */
 export const etatOrganisations: EtatOrganisations = tenter(
   async ({ compte, idsRecus }) => {
     const [connues, rattachements] = await Promise.all([

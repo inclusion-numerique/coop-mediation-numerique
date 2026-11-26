@@ -1,10 +1,6 @@
 import { z } from 'zod'
 import { defineModel, type Model } from '@/libraries/model'
 
-/**
- * Identifiant public d'un rendez-vous, distinct de son `RdvId` numérique.
- * C'est cette valeur que porte l'URL partagée au bénéficiaire.
- */
 export const RdvUuid = defineModel(z.guid().brand('RdvUuid'))
 
 export type RdvUuid = Model.TypeOf<typeof RdvUuid>

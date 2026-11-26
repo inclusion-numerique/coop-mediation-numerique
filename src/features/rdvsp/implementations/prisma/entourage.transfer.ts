@@ -2,12 +2,6 @@ import type { Lieu } from '../../domain/rdv/lieu'
 import type { Motif } from '../../domain/rdv/motif'
 import type { Usager } from '../../domain/usager'
 
-/**
- * Écriture des modèles qui entourent un rendez-vous. Ils n'ont pas de lecture
- * réciproque ici : la synchronisation les reçoit de RDV Service Public et les
- * recopie, elle ne les relit que par le rendez-vous qui les désigne.
- */
-
 export const motifFromDomain = (motif: Motif) => ({
   id: motif.id,
   name: motif.nom,
@@ -28,12 +22,6 @@ export const lieuFromDomain = (lieu: Lieu) => ({
   singleUse: lieu.usageUnique,
 })
 
-/**
- * `responsibleId` n'est délibérément pas enregistré : la relation est
- * auto-référente et l'usager responsable n'est pas toujours présent dans La Coop,
- * ce qui violerait la clé étrangère. La donnée reste disponible dans le domaine
- * pour qui saurait la traiter.
- */
 export const usagerFromDomain = (usager: Usager) => ({
   id: usager.id,
   firstName: usager.prenom,

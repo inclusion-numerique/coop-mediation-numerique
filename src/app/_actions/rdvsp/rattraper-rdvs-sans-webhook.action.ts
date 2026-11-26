@@ -93,14 +93,6 @@ const declencher = declencherSynchronisation({
   signaler,
 })
 
-/**
- * Rattrapage au chargement d'un écran, pour son propre compte : seules les
- * organisations dont le webhook n'a pas pu être posé sont parcourues, les autres
- * arrivant par notification.
- *
- * `derive` vaut zéro quand rien n'a bougé — c'est ce qui dispense l'écran de se
- * rafraîchir.
- */
 export const rattraperRdvsSansWebhookAction = actionBuilder()
   .use(withAuth())
   .use(withMaintenance())

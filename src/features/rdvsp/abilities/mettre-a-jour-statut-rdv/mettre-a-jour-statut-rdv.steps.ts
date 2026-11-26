@@ -30,12 +30,6 @@ let apiRefuse = false
 let apiSollicitee = false
 let resultat: Awaited<ReturnType<typeof mettreAJour>> | undefined
 
-/**
- * Double de l'API : il enregistre au passage s'il a été appelé, ce qui permet
- * d'affirmer qu'un refus d'accès s'arrête avant de sortir de La Coop — un
- * contrôle d'autorisation qui préviendrait quand même le tiers serait un contrôle
- * raté.
- */
 const changerStatutRdvDouble: RdvServicePublicApi['changerStatutRdv'] = async (
   _compte,
   _rdvId,

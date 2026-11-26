@@ -4,11 +4,7 @@ import { rdvSupportEmail } from '@/features/rdvsp/ui/presenters/liens.presenter'
 import { IconInSquare } from '@/libraries/ui/components'
 import RdvServicePublicConnexionCard from '../components/RdvServicePublicConnexionCard'
 
-// add params error_description and error from next query
 const ConnexionErreurPage = () => (
-  //   {}: {
-  //   searchParams: { error?: string; error_description?: string }
-  // }
   <div className="fr-mb-32v fr-mt-10v">
     <RdvServicePublicConnexionCard
       header={false}

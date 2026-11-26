@@ -20,17 +20,6 @@ const debutDuJour = (maintenant: Date): Date =>
     maintenant.getDate(),
   )
 
-/**
- * État du compte au terme d'une connexion réussie.
- *
- * Trois règles y sont fixées. Une connexion rend toujours un compte `lie` :
- * elle efface l'erreur comme la déconnexion, une reconnexion OAuth n'ayant rien
- * de destructif. La fenêtre de synchronisation n'est posée qu'à la première
- * connexion — la reprendre à chaque fois ferait glisser l'historique importé, et
- * un médiateur qui se reconnecte perdrait ses rendez-vous antérieurs. Enfin les
- * réglages de l'utilisateur (affichage des rendez-vous dans les activités,
- * organisations connues) survivent, puisqu'il ne les a pas remis en cause.
- */
 const compteApresConnexion = ({
   existant,
   agentId,
@@ -55,26 +44,11 @@ const compteApresConnexion = ({
   inclureRdvsDansActivites: existant?.inclureRdvsDansActivites ?? true,
 })
 
-/**
- * Les deux adresses sont normalisées par `EmailExterne` (trim + minuscules) :
- * la comparaison stricte suffit, et la casse ne peut plus faire échouer une
- * liaison légitime.
- */
 const emailsCorrespondent = (
   emailUtilisateur: EmailExterne,
   emailAgent: EmailExterne,
 ): boolean => emailUtilisateur === emailAgent
 
-/**
- * Enchaîne les quatre temps de la liaison : échanger le code, identifier
- * l'agent, vérifier qu'il s'agit bien du même e-mail que le compte La Coop, puis
- * enregistrer. Chaque étape peut échouer et son échec remonte tel quel : c'est
- * ce qui permettra à la route de callback de nommer précisément ce qui n'a pas
- * marché, au lieu du `server_error` générique d'aujourd'hui.
- *
- * La synchronisation des rendez-vous n'en fait pas partie : elle est déclenchée
- * après coup, sans bloquer la redirection de l'utilisateur.
- */
 export const connecterCompteRdv =
   ({
     echangerCode,

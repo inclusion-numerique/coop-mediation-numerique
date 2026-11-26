@@ -7,12 +7,6 @@ import { success } from '@/libraries/result'
 import type { EchecDeSynchroniserOrganisations } from './errors'
 import type { SynchroniserOrganisationsPorts } from './ports'
 
-/**
- * Bilan d'une synchronisation, dans la forme qu'attend le journal de synchro.
- * `deleted` compte des rattachements retirés, non des organisations supprimées :
- * une organisation quittée continue d'exister chez RDV Service Public comme dans
- * La Coop, seul le lien avec le compte disparaît.
- */
 type BilanSynchronisation = {
   readonly noop: number
   readonly created: number
@@ -27,12 +21,6 @@ type OrganisationsSynchronisees = {
   readonly organisationIdsRecues: readonly OrganisationId[]
 }
 
-/**
- * Les rattachements créés ou retirés comptent comme des mises à jour du compte,
- * pas comme des créations d'organisations. L'ancien code additionnait les
- * détachements à la fois dans `updated` et dans `deleted` ; ils ne sont plus
- * comptés qu'une fois.
- */
 const bilanDuPlan = (
   plan: PlanSynchronisation,
   recues: number,
@@ -44,11 +32,6 @@ const bilanDuPlan = (
   count: recues,
 })
 
-/**
- * Lire, décider, appliquer. Un échec de l'API laisse la base intacte : rien
- * n'est écrit avant que la réponse soit complète, la liste des organisations
- * étant paginée et n'ayant de sens qu'entière.
- */
 export const synchroniserOrganisations =
   ({
     listerOrganisations,

@@ -31,11 +31,6 @@ import { UrlAgent } from '../../domain/url-agent'
 import type { Usager } from '../../domain/usager'
 import { absentSiVide } from './vide.transfer'
 
-/**
- * Le rendez-vous et son entourage : motif, lieu et participants sont des
- * relations que la lecture doit inclure, la synchronisation les persistant
- * ensemble.
- */
 export type RdvRow = PrismaRdv & {
   motif: PrismaRdvMotif | null
   lieu: PrismaRdvLieu | null
@@ -90,11 +85,6 @@ const toLieu = (lieu: RdvRow['lieu']): Lieu | null => {
   }
 }
 
-/**
- * Les usagers viennent de `rdv_users`, alimentée par RDV Service Public : les
- * identités passent par `Model.safe`, une donnée héritée mal formée ne devant pas
- * empêcher de lire un rendez-vous.
- */
 const usagerToDomain = (row: PrismaRdvUser): Usager => ({
   id: UsagerId(row.id),
   prenom: PrenomExterne(row.firstName),
@@ -147,10 +137,6 @@ const toBase = (row: RdvRow) => {
   }
 }
 
-/**
- * Le drapeau `collectif` de la ligne choisit la branche : c'est lui que porte la
- * table `rdvs`, et non celui du motif, qui peut être absent.
- */
 export const rdvToDomain = (row: RdvRow): Rdv => {
   const base = toBase(row)
 
@@ -179,12 +165,6 @@ export const participationFromDomain = (participation: Participation) => ({
   sendLifecycleNotifications: participation.notificationsCycleDeVie,
 })
 
-/**
- * Rend les colonnes scalaires de `rdvs`. `raw_data` en est absent
- * volontairement : le payload brut de RDV Service Public reste stocké tel quel
- * et n'entre jamais dans le domaine — l'appelant le conserve ou le remplace
- * séparément, selon qu'il rejoue une synchronisation ou une simple mise à jour.
- */
 export const rdvFromDomain = (rdv: Rdv) => ({
   id: rdv.id,
   uuid: rdv.uuid,

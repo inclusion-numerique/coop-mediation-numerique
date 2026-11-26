@@ -153,8 +153,6 @@ Given(
       status: StatutPresence.schema.parse(statut),
       debut: new Date('2026-09-01T09:00:00.000Z'),
     })
-    // Même participation que celle du rendez-vous reçu : sans elle, les deux
-    // diffèrent par leur liste de participants et rien n'est jamais « inchangé ».
     await seedParticipation({
       id: PARTICIPATION_ID,
       rdvId: RDV_ID,

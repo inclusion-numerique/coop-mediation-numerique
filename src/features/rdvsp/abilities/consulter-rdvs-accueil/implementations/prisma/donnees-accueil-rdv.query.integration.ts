@@ -7,15 +7,6 @@ import {
 import { compteRdvToDomain } from '@/features/rdvsp/implementations/prisma/compte-rdv.transfer'
 import { lireDonneesAccueilRdv } from './donnees-accueil-rdv.query'
 
-/**
- * Les compteurs de l'accueil sont du SQL, pas du domaine : aucun scénario BDD ne
- * les traverse. C'est ce qui a permis à un rendez-vous annulé de rester compté
- * « à venir » pendant des mois — sa date ne l'était pas encore.
- *
- * Les jeux de données mêlent donc volontairement statut et chronologie, seule
- * combinaison qui distingue un filtre correct d'un filtre sur la seule date.
- */
-
 const UTILISATEUR = 'ffc0f896-5192-41d7-863f-7a17d21c67de'
 const COMPTE = 9_960_000
 const ORGANISATION = 9_961_000
@@ -143,7 +134,6 @@ describe('lireDonneesAccueilRdv', () => {
       const { aVenir, prochain } = await lire()
 
       expect(aVenir).toBe(2)
-      // Le plus proche dans le temps est annulé : il ne doit pas être choisi.
       expect(prochain?.id).toBe(RDV + 6)
     })
 

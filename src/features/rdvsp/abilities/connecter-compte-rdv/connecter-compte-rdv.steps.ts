@@ -43,11 +43,6 @@ let agentAttendu: Agent | undefined
 let echangeRefuse = false
 let resultat: Awaited<ReturnType<typeof connecter>> | undefined
 
-/**
- * L'API RDV Service Public est doublée — la base, elle, est bien réelle (DV-2) :
- * ces scénarios valident le comportement Prisma de l'ability, pas le transport
- * HTTP, qui appartient à l'adaptateur.
- */
 const echangerCodeDouble: EchangerCodeAutorisation = async () =>
   echangeRefuse
     ? failure(CodeAutorisationRefuse('invalid_grant'))

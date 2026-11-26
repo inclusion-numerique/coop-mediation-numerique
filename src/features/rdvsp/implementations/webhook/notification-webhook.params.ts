@@ -13,13 +13,6 @@ const enveloppePayload = z.object({
   }),
 })
 
-/**
- * Lit l'enveloppe d'une notification, sans rien affirmer de son contenu :
- * chaque ability valide la forme de `data` qu'elle attend.
- *
- * Rend `null` quand l'enveloppe elle-même est illisible — c'est le seul cas qui
- * justifie de refuser l'envoi.
- */
 export const lireNotificationWebhook = (
   corps: unknown,
 ): NotificationWebhook | null => {

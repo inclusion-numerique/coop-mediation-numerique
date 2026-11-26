@@ -14,14 +14,6 @@ import { RdvAgentId } from '../../domain/identifiants/rdv-agent-id'
 import { UtilisateurCoopId } from '../../domain/identifiants/utilisateur-coop-id'
 import { absentSiVide } from './vide.transfer'
 
-/**
- * Les organisations d'un compte vivent dans une table de jointure : la lecture
- * doit les inclure, l'écriture les traite à part (voir `compteRdvFromDomain`).
- *
- * Les colonnes sont énumérées plutôt que reprises en bloc : la lecture déclare
- * ainsi ce dont elle a besoin, et une sélection partielle — celle de la session,
- * qui ne charge pas tout `rdv_accounts` — la satisfait.
- */
 export type CompteRdvRow = Pick<
   RdvAccount,
   | 'id'
@@ -54,11 +46,6 @@ const toBase = (row: CompteRdvRow) => ({
   inclureRdvsDansActivites: row.includeRdvsInActivitesList,
 })
 
-/**
- * Jetons portés par une ligne de compte. Exposé à part du compte entier : les
- * appels à l'API n'ont besoin que de ceux-là, et les relire à chaque requête est
- * ce qui évite de repartir d'un jeton de rafraîchissement déjà consommé.
- */
 export const jetonsCompteToDomain = (
   row: Pick<
     CompteRdvRow,
@@ -82,11 +69,6 @@ export const jetonsCompteToDomain = (
       }
 }
 
-/**
- * Ordre de lecture des quatre états : la déconnexion prime — elle purge les
- * jetons et rend toute erreur antérieure sans objet — puis l'absence de jeton,
- * puis l'erreur. Un compte qui porte des jetons et aucune erreur est lié.
- */
 export const compteRdvToDomain = (row: CompteRdvRow): CompteRdv => {
   const base = toBase(row)
 
@@ -117,12 +99,6 @@ const jetonsFromDomain = (compte: CompteRdv) =>
       }
     : { accessToken: null, refreshToken: null, expiresAt: null, scope: null }
 
-/**
- * Rend les seules colonnes scalaires de `rdv_accounts`. Les organisations sont
- * une relation : l'appelant les écrit par un `connect`/`set` imbriqué à partir
- * de `compte.organisationIds`. `metadata` n'est pas géré ici — c'est un cache
- * brut du payload agent, conservé tel quel en base et hors du domaine.
- */
 export const compteRdvFromDomain = (compte: CompteRdv) => ({
   id: compte.agentId,
   userId: compte.utilisateurId,

@@ -31,26 +31,11 @@ export type SynchronisationDeclenchee = {
   readonly synchroniseeLe: Date | null
 }
 
-/**
- * Qui peut déclencher une synchronisation pour qui.
- *
- * Chacun pour soi, l'assistance pour tous : la synchronisation est aussi un
- * geste de dépannage, et l'écran d'administration existe pour cela. La règle
- * vivait dans le routeur, mêlée à la résolution de l'utilisateur.
- */
 const peutDeclencherPour = (
   demandeur: Demandeur,
   cible: UtilisateurCoopId,
 ): boolean => demandeur.id === cible || demandeur.role === 'Admin'
 
-/**
- * Ce que la passe a effectivement à parcourir.
- *
- * `sansObjet` couvre les deux cas où il n'y a rien à faire — compte sans jetons,
- * ou rattrapage demandé alors que tous les webhooks sont posés — et les sépare de
- * `organisations`, qui restreint la passe. Une liste vide ne doit jamais valoir
- * « tout resynchroniser » : c'est la confusion qu'évite ce type (DM-5).
- */
 type PorteeDeclenchement =
   | { readonly _tag: 'sansObjet' }
   | { readonly _tag: 'toutesOrganisations' }
@@ -77,11 +62,6 @@ const porteePour = (
       }
 }
 
-/**
- * Message consigné sur le compte, repris tel quel par l'écran d'administration.
- * Il reste volontairement générique : l'erreur technique part vers Sentry, pas
- * vers un médiateur.
- */
 export const MESSAGE_ECHEC =
   'Impossible de récupérer les données du compte RDV Service Public'
 
@@ -98,16 +78,6 @@ const causeASignaler = (echec: EchecDeSynchronisation): unknown =>
         `Impossible de synchroniser le compte RDV (${diagnosticErreur(echec)})`,
       )
 
-/**
- * Déclenche une passe de synchronisation à la demande.
- *
- * Le contrôle d'accès précède la lecture du compte : refuser avant de regarder
- * évite de révéler par le message d'erreur qu'un compte existe.
- *
- * Un échec de la passe est signalé, puis consigné sur le compte quand un nouvel
- * essai ne le résoudra pas : le drapeau déclenche l'alerte de reconnexion chez le
- * médiateur, et une API momentanément injoignable ne doit pas la lui adresser.
- */
 export const declencherSynchronisation =
   ({
     compteACible,

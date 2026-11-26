@@ -1,15 +1,6 @@
 import { prismaClient } from '@/configuration/prisma'
 import type { LierUsagerAuBeneficiaire } from '../../domain/ports'
 
-/**
- * L'usager rendu par RDV Service Public vient d'être créé chez eux et n'est
- * rattaché à aucune organisation : son profil n'est pas encore consultable par
- * l'API. On l'enregistre donc avec ce que La Coop sait déjà, le webhook le
- * complétera. D'où les valeurs de repli sur les noms, obligatoires en base.
- *
- * L'ensemble est transactionnel : un usager créé sans que le bénéficiaire lui
- * soit rattaché conduirait à en recréer un au rendez-vous suivant.
- */
 export const lierUsagerAuBeneficiaire: LierUsagerAuBeneficiaire = async ({
   beneficiaire,
   usagerId,

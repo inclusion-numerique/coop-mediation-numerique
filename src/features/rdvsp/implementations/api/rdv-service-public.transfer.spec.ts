@@ -5,12 +5,6 @@ import { rdvToDomain } from './rdv-service-public.transfer'
 
 const agentId = RdvAgentId(4242)
 
-/**
- * Payload complet tel que RDV Service Public le renvoie sur `/rdvs`. Il traverse
- * le schéma Zod avant le mapping : ce que ce test prouve, c'est que le contrat du
- * port porte tout ce que la synchronisation doit persister — motif, lieu et
- * usagers — et non seulement de quoi afficher un rendez-vous.
- */
 const payloadComplet = {
   id: 1,
   uuid: '0e1f2a3b-4c5d-6e7f-8a9b-0c1d2e3f4a5b',

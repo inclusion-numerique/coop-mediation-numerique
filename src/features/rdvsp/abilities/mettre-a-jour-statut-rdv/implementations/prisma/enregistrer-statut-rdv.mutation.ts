@@ -1,10 +1,6 @@
 import { prismaClient } from '@/configuration/prisma'
 import type { EnregistrerStatutRdv } from '../../domain/ports'
 
-/**
- * L'autorisation a déjà été établie par `verifierAcces` : la mutation cible le
- * rendez-vous par son seul identifiant, comme un ordre déjà validé.
- */
 export const enregistrerStatutRdv: EnregistrerStatutRdv = async ({
   rdvId,
   statut,

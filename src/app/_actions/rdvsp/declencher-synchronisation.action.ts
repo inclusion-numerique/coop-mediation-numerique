@@ -94,14 +94,6 @@ const declencher = declencherSynchronisation({
   signaler,
 })
 
-/**
- * Synchronisation complète, déclenchée à la main : le bouton de la modale de
- * gestion, et celui de l'écran d'administration pour un tiers.
- *
- * Ne rend que la date de la passe : l'ancienne procédure tRPC renvoyait
- * l'utilisateur de session entier, jetons OAuth compris, jusque dans le
- * navigateur.
- */
 export const declencherSynchronisationAction = actionBuilder()
   .use(withAuth())
   .use(withMaintenance())

@@ -2,11 +2,6 @@ import type { OrganisationId } from '../../../domain/identifiants/organisation-i
 import type { RdvId } from '../../../domain/identifiants/rdv-id'
 import type { StatutPresence } from '../../../domain/rdv/statut-presence'
 
-/**
- * Rendez-vous tel que l'accueil l'affiche : de quoi écrire une phrase, pas
- * davantage. Les identités sont des chaînes brutes — l'accueil les concatène
- * pour l'affichage sans rien en déduire.
- */
 export type RdvEnUneLigne = {
   readonly id: RdvId
   readonly debut: Date
@@ -20,13 +15,6 @@ export type RdvEnUneLigne = {
   readonly statutPresence: StatutPresence
 }
 
-/**
- * Projection de lecture pour l'accueil.
- *
- * `passes` compte les rendez-vous échus sans présence saisie, `honores` ceux
- * déclarés honorés qui attendent encore un compte rendu : deux chiffres que
- * l'écran additionne, et dont la somme n'a de sens qu'ici.
- */
 export type DonneesAccueilRdv = {
   readonly aVenir: number
   readonly prochain: RdvEnUneLigne | null
@@ -39,6 +27,5 @@ export type DonneesAccueilRdv = {
   } | null
 }
 
-/** Total affiché en regard du badge « passés ». */
 export const rdvsPassesTotal = (donnees: DonneesAccueilRdv): number =>
   donnees.passes + donnees.honores

@@ -60,15 +60,6 @@ export const rdvConnuParId: RdvConnuParId = async (rdvId) => {
 
 const traceJson = (brut: unknown) => JSON.parse(JSON.stringify(brut ?? {}))
 
-/**
- * Le rendez-vous et son entourage sont écrits d'un seul tenant, dans l'ordre des
- * clés étrangères. Les participations sont remplacées : RDV Service Public fait
- * autorité sur la liste des participants.
- *
- * `compteRenduRegle` n'est pas touché — la colonne appartient au médiateur, pas au
- * service. C'est ce qui permet à `decisionPourWebhookRdv` de la protéger en
- * amont sans que l'écriture la contredise.
- */
 export const enregistrerRdvDeLaNotification: EnregistrerRdvDeLaNotification =
   async ({ rdv, brut }) => {
     await prismaClient.$transaction(async (transaction) => {

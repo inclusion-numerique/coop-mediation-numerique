@@ -42,7 +42,6 @@ const recevoir = recevoirWebhookRdv({
   rapprocherLesBeneficiaires: async () => success({ skipped: [] }),
 })
 
-/** Payload tel que RDV Service Public l'émet, catégorie de motif en chaîne comprise. */
 const notification = ({
   debut = '2026-09-01T09:00:00.000Z',
   statut = 'unknown',
@@ -133,16 +132,12 @@ Given(
   },
 )
 
-// Seule la synchronisation crée les organisations : une notification peut donc
-// arriver avant elle, et ne doit pas faire échouer la route.
 Given('un compte notifié sans son organisation', async () => {
   await seedCompteRdv({ id: AGENT_ID, accessToken: 'jeton-acces' })
   suivreUsagerRdv(USAGER_ID)
 })
 
-Given('aucun compte notifié', () => {
-  // Le hook Before a déjà retiré tout compte de l'utilisateur de test.
-})
+Given('aucun compte notifié', () => undefined)
 
 Given('le rendez-vous notifié est déjà enregistré', async () => {
   await seedRdv({
@@ -156,8 +151,6 @@ Given('le rendez-vous notifié est déjà enregistré', async () => {
 Given(
   'le rendez-vous notifié est déjà enregistré avec un CRA écarté',
   async () => {
-    // Le motif doit exister et être rattaché : sans lui, le rendez-vous en base
-    // diffère de la notification et rien n'est jamais « sans changement ».
     await seedMotif({ id: MOTIF_ID, organisationId: ORGANISATION_ID })
     await seedRdv({
       id: RDV_ID,

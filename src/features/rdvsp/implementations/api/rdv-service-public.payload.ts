@@ -1,17 +1,6 @@
 import { z } from 'zod'
 import { statutsPresence } from '../../domain/rdv/statut-presence'
 
-/**
- * Forme filaire des réponses de RDV Service Public.
- *
- * Ces schémas ne sont pas décoratifs : ils sont la sonde qui transforme une
- * évolution d'API en `ReponseInattendue` explicite, là où un typage `axios<T>`
- * laisse passer un champ disparu sous forme d'`undefined` propagé jusqu'en base.
- * Ils sont volontairement non stricts — Zod ignore les clés inconnues — pour que
- * l'ajout d'un champ côté RDV SP (`city_code`, `notification_email`…) ne casse
- * rien.
- */
-
 const dateExterne = z
   .string()
   .refine((valeur) => !Number.isNaN(Date.parse(valeur)), 'date invalide')
@@ -119,11 +108,6 @@ export const rdvPayload = z.object({
   ends_at: dateExterne,
   duration_in_min: z.number().int(),
   status: statutPresencePayload,
-  /**
-   * Absent du schéma publié — il n'apparaît que dans les exemples de réponse —
-   * mais servi et stocké comme obligatoire de notre côté. Le valider ici rend le
-   * jour où il disparaîtra immédiatement visible.
-   */
   url_for_agents: z.string(),
   users_count: z
     .number()
@@ -171,11 +155,6 @@ export const jetonsPayload = z.object({
   scope: texteOptionnel,
 })
 
-/**
- * La pagination est déclarée `string | null` dans la spécification alors que le
- * service renvoie un entier. On accepte les deux plutôt que de parier sur l'un
- * des deux.
- */
 const pageSuivante = z
   .union([z.number().int(), z.string()])
   .nullish()

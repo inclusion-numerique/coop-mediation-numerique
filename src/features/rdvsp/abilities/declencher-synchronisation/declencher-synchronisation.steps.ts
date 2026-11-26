@@ -21,7 +21,6 @@ const MAINTENANT = new Date('2026-08-17T16:00:00.000Z')
 const AUTRUI = UtilisateurCoopId('9c858901-8a57-4791-81fe-4c455b099bc9')
 const ADMINISTRATEUR = UtilisateurCoopId('d0f9a5b2-1d2f-4d0f-9a7c-6b0f2a1c4e88')
 
-/** Ce que la passe doublée a reçu — `undefined` tant qu'elle n'a pas été lancée. */
 let portee: { organisationIds?: readonly OrganisationId[] } | undefined
 let echoue = false
 let resultat: Awaited<ReturnType<typeof declencher>> | undefined
@@ -79,9 +78,7 @@ Given('un compte RDV déconnecté à synchroniser', async () => {
   })
 })
 
-Given('aucun compte RDV à synchroniser', () => {
-  // Le hook Before de la feature a déjà retiré tout compte de l'utilisateur.
-})
+Given('aucun compte RDV à synchroniser', () => undefined)
 
 Given('la synchronisation échoue', () => {
   echoue = true

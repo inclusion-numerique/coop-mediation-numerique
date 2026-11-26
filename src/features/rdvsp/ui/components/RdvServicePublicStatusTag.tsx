@@ -2,15 +2,6 @@ import type { FrIconClassName, RiIconClassName } from '@codegouvfr/react-dsfr'
 import { Tag } from '@codegouvfr/react-dsfr/Tag'
 import type { StatutIntegration } from '../../domain/compte/sante-compte'
 
-/**
- * Une déconnexion voulue et un compte jamais relié portent le même libellé : dans
- * les deux cas, rien n'est branché et il n'y a rien à réparer.
- *
- * La panne, elle, a son propre mot. L'appeler « déconnecté » disait faux — les
- * jetons sont là, le compte est relié, c'est le dernier échange qui a échoué — et
- * cela envoyait chercher une reconnexion là où il n'y avait qu'une synchro à
- * rejouer.
- */
 const apparences: Record<
   StatutIntegration,
   {

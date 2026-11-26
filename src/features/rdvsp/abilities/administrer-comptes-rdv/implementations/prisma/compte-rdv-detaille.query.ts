@@ -100,7 +100,6 @@ export const compteRdvDetaille = async ({
     return null
   }
 
-  // Valid and invalid webhook organisations
   const validWebhookOrganisations = rdvAccount.organisations.filter(
     (organisation) =>
       !rdvAccount.invalidWebhookOrganisationIds.includes(

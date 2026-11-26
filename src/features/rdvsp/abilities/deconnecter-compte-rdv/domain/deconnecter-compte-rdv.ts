@@ -8,18 +8,6 @@ import type { UtilisateurCoopId } from '../../../domain/identifiants/utilisateur
 import type { EchecDeDeconnecterCompteRdv } from './errors'
 import type { DeconnecterCompteRdvPorts } from './ports'
 
-/**
- * État du compte après que le médiateur l'a délié.
- *
- * La déconnexion ne détruit que les jetons — c'est ce que l'union exprime, la
- * branche `deconnecte` n'en portant aucun. Tout le reste survit : la fenêtre de
- * synchronisation, les organisations connues et les réglages d'affichage, de
- * sorte qu'une reconnexion reprenne exactement où le médiateur s'était arrêté.
- * C'est le pendant de `compteApresConnexion`, qui préserve ces mêmes champs.
- *
- * Redéliér un compte déjà délié ne réécrit pas la date : c'est la première
- * déconnexion qui fait foi, la seconde n'étant qu'un clic sans objet.
- */
 const compteApresDeconnexion = (
   compte: CompteRdv,
   maintenant: Date,

@@ -49,8 +49,6 @@ describe('signature d’une notification RDV Service Public', () => {
     ).toBe(false)
   })
 
-  // Une comparaison à temps constant lève sur des longueurs inégales : le cas
-  // doit être écarté avant, pas propagé en exception.
   it('refuse une signature tronquée sans lever', () => {
     expect(
       signatureValide({
@@ -61,8 +59,6 @@ describe('signature d’une notification RDV Service Public', () => {
     ).toBe(false)
   })
 
-  // Sans secret configuré, aucune signature ne peut être vérifiée : refuser est
-  // la seule réponse sûre — accepter reviendrait à rouvrir la route.
   it('refuse tout quand aucun secret n’est configuré', () => {
     expect(
       signatureValide({
