@@ -1,12 +1,15 @@
 import assert from 'node:assert'
 import { Then, When } from '@cucumber/cucumber'
+import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
-import { type BeneficiaireAImporter } from '@/features/beneficiaire/abilities/importer-beneficiaires/domain/importer-beneficiaires'
-import { importerBeneficiaires } from '@/features/beneficiaire/abilities/importer-beneficiaires/implementations/prisma/importer-beneficiaires.mutation'
+import type { BeneficiaireAImporter } from '@/features/beneficiaire/abilities/importer-beneficiaires/domain/beneficiaire-a-importer'
+import { importerBeneficiaires } from '@/features/beneficiaire/abilities/importer-beneficiaires/domain/importer-beneficiaires'
+import { enregistrerLesBeneficiairesImportes } from '@/features/beneficiaire/abilities/importer-beneficiaires/implementations/prisma/importer-beneficiaires.mutation'
 import {
   suivreLeBeneficiaire,
   testMediateurId,
 } from '@/features/beneficiaire/beneficiaire.cucumber'
+import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
 import { Genre } from '@/features/beneficiaire/domain/genre'
 import { Nom } from '@/features/beneficiaire/domain/nom'
 import { Prenom } from '@/features/beneficiaire/domain/prenom'
@@ -32,12 +35,18 @@ const beneficiaireAImporter = (
 })
 
 When("j'importe {int} bénéficiaires", async (count: number) => {
-  result = await importerBeneficiaires({
-    beneficiaires: Array.from({ length: count }, (_, index) =>
-      beneficiaireAImporter(`Prenom${index}`, `Nom${index}`),
-    ),
+  const importation = await importerBeneficiaires({
+    enregistrerLesBeneficiairesImportes,
+  })({
+    lignes: Array.from({ length: count }, (_, index) => ({
+      id: BeneficiaireId(v4()),
+      beneficiaire: beneficiaireAImporter(`Prenom${index}`, `Nom${index}`),
+    })),
     mediateurId: testMediateurId,
+    maintenant: new Date(),
   })
+  assert.ok(importation.success, "L'import a échoué")
+  result = { importes: importation.data.beneficiaires.length }
 
   const created = await prismaClient.beneficiaire.findMany({
     where: {
