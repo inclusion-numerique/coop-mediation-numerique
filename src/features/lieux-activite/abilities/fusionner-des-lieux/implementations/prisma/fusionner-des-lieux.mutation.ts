@@ -1,11 +1,12 @@
 import { prismaClient } from '@/configuration/prisma'
-import type { LieuInclusion, Prisma } from '@/generated/prisma/client'
-import { unionArrays } from '@/libraries/collections'
+import type { Prisma } from '@/generated/prisma/client'
 import { toutesLesColonnes } from '../../../../implementations/prisma/registre/colonnes-a-ecrire.select'
 import { ecrireLeLieuAuRegistre } from '../../../../implementations/prisma/registre/ecrire-au-registre.mutation'
 import { inscriptionPourLIdentifiantCarto } from '../../../../implementations/prisma/registre/identifiants-carto.query'
 import { retirerDuRegistre } from '../../../../implementations/prisma/registre/retirer-du-registre.mutation'
+import type { FicheFusionnable } from '../../domain'
 import type { FusionnerLesLieux } from '../../domain/ports'
+import { colonnesDeLaFicheFusionnee } from './fiche-fusionnable.transfer'
 
 type PrismaTransaction = Prisma.TransactionClient
 
@@ -45,72 +46,23 @@ const mergeActivitesLieu =
     })
   }
 
-const legs = <Champ extends keyof LieuInclusion>(
-  source: LieuInclusion,
-  target: LieuInclusion,
-  champ: Champ,
-): LieuInclusion[Champ] => target[champ] ?? source[champ]
-
-const fusionnerLesChamps =
-  (prisma: PrismaTransaction, maintenant: Date) =>
-  async (sourceStructureId: string, targetStructureId: string) => {
-    const [source, target] = await Promise.all([
-      prisma.lieuInclusion.findUnique({ where: { id: sourceStructureId } }),
-      prisma.lieuInclusion.findUnique({ where: { id: targetStructureId } }),
-    ])
-
-    if (!source || !target) return
-
-    await prisma.lieuInclusion.update({
-      where: { id: targetStructureId },
-      data: {
-        typologies: unionArrays(target.typologies, source.typologies),
-        services: unionArrays(target.services, source.services),
-        publicsSpecifiquementAdresses: unionArrays(
-          target.publicsSpecifiquementAdresses,
-          source.publicsSpecifiquementAdresses,
-        ),
-        priseEnChargeSpecifique: unionArrays(
-          target.priseEnChargeSpecifique,
-          source.priseEnChargeSpecifique,
-        ),
-        fraisACharge: unionArrays(target.fraisACharge, source.fraisACharge),
-        dispositifProgrammesNationaux: unionArrays(
-          target.dispositifProgrammesNationaux,
-          source.dispositifProgrammesNationaux,
-        ),
-        formationsLabels: unionArrays(
-          target.formationsLabels,
-          source.formationsLabels,
-        ),
-        autresFormationsLabels: unionArrays(
-          target.autresFormationsLabels,
-          source.autresFormationsLabels,
-        ),
-        itinerance: unionArrays(target.itinerance, source.itinerance),
-        modalitesAcces: unionArrays(
-          target.modalitesAcces,
-          source.modalitesAcces,
-        ),
-        modalitesAccompagnement: unionArrays(
-          target.modalitesAccompagnement,
-          source.modalitesAccompagnement,
-        ),
-        courriels: unionArrays(target.courriels, source.courriels),
-        visiblePourCartographieNationale:
-          target.visiblePourCartographieNationale &&
-          source.visiblePourCartographieNationale,
-        nomReferent: legs(source, target, 'nomReferent'),
-        courrielReferent: legs(source, target, 'courrielReferent'),
-        telephoneReferent: legs(source, target, 'telephoneReferent'),
-        v1Imported: legs(source, target, 'v1Imported'),
-        v1StructureId: legs(source, target, 'v1StructureId'),
-        v1StructureIdPg: legs(source, target, 'v1StructureIdPg'),
-        v1PermanenceId: legs(source, target, 'v1PermanenceId'),
-        modification: maintenant,
-      },
-    })
-  }
+const ecrireLaFicheFusionnee = async (
+  prisma: PrismaTransaction,
+  {
+    cible,
+    fiche,
+    maintenant,
+  }: {
+    readonly cible: string
+    readonly fiche: FicheFusionnable
+    readonly maintenant: Date
+  },
+) => {
+  await prisma.lieuInclusion.update({
+    where: { id: cible },
+    data: { ...colonnesDeLaFicheFusionnee(fiche), modification: maintenant },
+  })
+}
 
 const deleteStructure =
   (prisma: PrismaTransaction) => async (structureId: string) => {
@@ -149,6 +101,7 @@ export const fusionnerLesLieux: FusionnerLesLieux = async ({
   source,
   cible,
   fusionneLe,
+  fiche,
 }) =>
   prismaClient.$transaction(async (prisma) => {
     if (!(await tousExistent(prisma, [source, cible])))
@@ -156,7 +109,11 @@ export const fusionnerLesLieux: FusionnerLesLieux = async ({
 
     await mergeMediateursEnActivite(prisma)(source, cible)
     await mergeActivitesLieu(prisma)(source, cible)
-    await fusionnerLesChamps(prisma, fusionneLe)(source, cible)
+    await ecrireLaFicheFusionnee(prisma, {
+      cible,
+      fiche,
+      maintenant: fusionneLe,
+    })
     await fusionnerAuRegistre(prisma, fusionneLe)(source, cible)
     await deleteStructure(prisma)(source)
 

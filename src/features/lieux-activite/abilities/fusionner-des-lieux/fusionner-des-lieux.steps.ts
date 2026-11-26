@@ -3,8 +3,8 @@ import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
 import { fusionnerDesLieux } from '@/features/lieux-activite/abilities/fusionner-des-lieux/domain'
+import { fichesAFusionner } from '@/features/lieux-activite/abilities/fusionner-des-lieux/implementations/prisma/fiches-a-fusionner.query'
 import { fusionnerLesLieux } from '@/features/lieux-activite/abilities/fusionner-des-lieux/implementations/prisma/fusionner-des-lieux.mutation'
-import { lieuxExistants } from '@/features/lieux-activite/abilities/fusionner-des-lieux/implementations/prisma/lieux-existants.query'
 import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
 
 const semis: {
@@ -135,7 +135,7 @@ Given(
 
 When("l'administration fusionne le premier dans le second", async () => {
   fusion.issue = await fusionnerDesLieux({
-    lieuxExistants,
+    fichesAFusionner,
     fusionner: fusionnerLesLieux,
   })({
     source: LieuId(semis.absorbeId ?? ''),
@@ -303,7 +303,7 @@ When(
   "l'administration fusionne le premier dans un lieu introuvable",
   async () => {
     fusion.issue = await fusionnerDesLieux({
-      lieuxExistants,
+      fichesAFusionner,
       fusionner: fusionnerLesLieux,
     })({
       source: LieuId(semis.absorbeId ?? ''),

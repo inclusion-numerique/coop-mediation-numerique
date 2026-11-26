@@ -2,11 +2,18 @@ import { failure, type Result, success } from '@/libraries/result'
 import { LieuIntrouvable } from '../../../domain/errors'
 import type { LieuId } from '../../../domain/identifiants/lieu-id'
 import type { EchecDeFusionnerDesLieux } from './errors'
+import type { FicheFusionnable } from './fiche-fusionnable'
+import { ficheFusionnee } from './fiche-fusionnee'
 import type { FusionDeLieux } from './fusion-de-lieux'
 import type { FusionnerDesLieuxPorts } from './ports'
 
+const ficheDe = (
+  fiches: readonly FicheFusionnable[],
+  id: LieuId,
+): FicheFusionnable | undefined => fiches.find(({ lieu }) => lieu.id === id)
+
 export const fusionnerDesLieux =
-  ({ lieuxExistants, fusionner }: FusionnerDesLieuxPorts) =>
+  ({ fichesAFusionner, fusionner }: FusionnerDesLieuxPorts) =>
   async ({
     source,
     cible,
@@ -16,14 +23,21 @@ export const fusionnerDesLieux =
     readonly cible: LieuId
     readonly maintenant: Date
   }): Promise<Result<FusionDeLieux, EchecDeFusionnerDesLieux>> => {
-    const existants = await lieuxExistants([source, cible])
-    const introuvable = [source, cible].find(
-      (lieu) => !existants.includes(lieu),
-    )
+    const fiches = await fichesAFusionner([source, cible])
+    const deLaSource = ficheDe(fiches, source)
 
-    if (introuvable !== undefined) return failure(LieuIntrouvable(introuvable))
+    if (deLaSource === undefined) return failure(LieuIntrouvable(source))
 
-    const fusion: FusionDeLieux = { source, cible, fusionneLe: maintenant }
+    const deLaCible = ficheDe(fiches, cible)
+
+    if (deLaCible === undefined) return failure(LieuIntrouvable(cible))
+
+    const fusion: FusionDeLieux = {
+      source,
+      cible,
+      fusionneLe: maintenant,
+      fiche: ficheFusionnee(deLaSource, deLaCible),
+    }
     const { fusionne } = await fusionner(fusion)
 
     return fusionne ? success(fusion) : failure(LieuIntrouvable(source))
