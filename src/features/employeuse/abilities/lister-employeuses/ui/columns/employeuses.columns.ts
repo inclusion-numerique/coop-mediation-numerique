@@ -1,4 +1,4 @@
-import type { ColonneDesEmployeuses } from '../../domain/lister-employeuses'
+import type { ColonneDesEmployeuses } from '../../domain/employeuse-listee'
 
 export type EmployeuseColumn = {
   readonly label: string

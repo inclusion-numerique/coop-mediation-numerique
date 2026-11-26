@@ -1,6 +1,6 @@
 import { toTitleCase } from '@/libraries/texte'
 import { employeuseAffichage } from '../../../../ui/presenters/employeuse.presenter'
-import type { EmployeuseListee } from '../../domain/lister-employeuses'
+import type { EmployeuseListee } from '../../domain/employeuse-listee'
 
 const INCONNUE = new Date(0)
 

@@ -1,7 +1,7 @@
 import assert from 'node:assert'
 import { Page, PageSize, Search, Sort } from '@arckit/resultset'
 import { Given, Then, When } from '@cucumber/cucumber'
-import type { EmployeuseListee } from '@/features/employeuse/abilities/lister-employeuses/domain/lister-employeuses'
+import type { EmployeuseListee } from '@/features/employeuse/abilities/lister-employeuses/domain/employeuse-listee'
 import { listerEmployeuses } from '@/features/employeuse/abilities/lister-employeuses/implementations/prisma/lister-employeuses.query'
 import {
   seedAffectation,

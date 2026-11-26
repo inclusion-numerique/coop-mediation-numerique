@@ -5,7 +5,7 @@ import {
   rechercheLibre,
   triParmi,
 } from '@/libraries/etat-d-url'
-import type { ColonneDesEmployeuses } from '../../domain/lister-employeuses'
+import type { ColonneDesEmployeuses } from '../../domain/employeuse-listee'
 
 const triDesEmployeuses = triParmi({
   colonnes: [
