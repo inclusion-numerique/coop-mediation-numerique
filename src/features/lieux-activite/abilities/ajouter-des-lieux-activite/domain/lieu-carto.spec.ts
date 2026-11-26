@@ -53,18 +53,26 @@ const lieuCarto = {
 }
 
 describe('le lieu matérialisé depuis la cartographie', () => {
-  it('est publié, et porte les identifiants sous lesquels la carto le connaît', () => {
-    const lieu = lieuDepuisCarto(lieuCarto, maintenant, LIEU_ID)
-
-    expect(lieu.visibilite).toBe('Publie')
-    expect(lieu.idsCartographieNationale).toEqual(['dora', 'abc'])
+  it('est publié', () => {
+    expect(lieuDepuisCarto(lieuCarto, maintenant, LIEU_ID).visibilite).toBe(
+      'Publie',
+    )
   })
 
-  it('n’a ni identifiant BAN ni identité SIRENE', () => {
-    const lieu = lieuDepuisCarto(lieuCarto, maintenant, LIEU_ID)
+  it('porte les identifiants sous lesquels la carto le connaît', () => {
+    expect(
+      lieuDepuisCarto(lieuCarto, maintenant, LIEU_ID).idsCartographieNationale,
+    ).toEqual(['dora', 'abc'])
+  })
 
-    expect(lieu.banId).toBeNull()
-    expect(lieu.identiteSirene).toEqual({
+  it('n’a pas d’identifiant BAN', () => {
+    expect(lieuDepuisCarto(lieuCarto, maintenant, LIEU_ID).banId).toBeNull()
+  })
+
+  it('n’a pas d’identité SIRENE', () => {
+    expect(
+      lieuDepuisCarto(lieuCarto, maintenant, LIEU_ID).identiteSirene,
+    ).toEqual({
       nomUsage: null,
       synchronisation: null,
     })

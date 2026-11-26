@@ -4,8 +4,8 @@ import { MediateurId } from '../../../domain/identifiants/mediateur-id'
 import { champsCommuns } from './champs-communs'
 import type { ChampsPartageables } from './lieu-a-fusionner'
 
-describe('champsCommuns', () => {
-  const emptyMergeData: ChampsPartageables = {
+describe('les champs communs à deux lieux à fusionner', () => {
+  const aucunChamp: ChampsPartageables = {
     employesIds: [],
     mediateursEnActiviteIds: [],
     activitesEmployeurIds: [],
@@ -24,61 +24,56 @@ describe('champsCommuns', () => {
     courriels: [],
   }
 
-  it('returns empty data when both sources are empty', () => {
-    expect(champsCommuns(emptyMergeData, emptyMergeData)).toEqual(
-      emptyMergeData,
-    )
+  it('sont vides quand les deux lieux n’ont aucun champ', () => {
+    expect(champsCommuns(aucunChamp, aucunChamp)).toEqual(aucunChamp)
   })
 
-  it('returns intersection of employesIds', () => {
+  it('ne gardent que les employés présents dans les deux lieux', () => {
     const source: ChampsPartageables = {
-      ...emptyMergeData,
+      ...aucunChamp,
       employesIds: ['user-1', 'user-2', 'user-3'],
     }
     const target: ChampsPartageables = {
-      ...emptyMergeData,
+      ...aucunChamp,
       employesIds: ['user-2', 'user-3', 'user-4'],
     }
 
-    const result = champsCommuns(source, target)
+    const communs = champsCommuns(source, target)
 
-    expect(result.employesIds).toEqual(['user-2', 'user-3'])
+    expect(communs.employesIds).toEqual(['user-2', 'user-3'])
   })
 
-  it('returns intersection of typologies', () => {
+  it('ne gardent que les typologies présentes dans les deux lieux', () => {
     const source: ChampsPartageables = {
-      ...emptyMergeData,
+      ...aucunChamp,
       typologies: ['ASSO', 'CCAS'],
     }
     const target: ChampsPartageables = {
-      ...emptyMergeData,
+      ...aucunChamp,
       typologies: ['CCAS', 'MAIRIE'],
     }
 
-    const result = champsCommuns(source, target)
+    const communs = champsCommuns(source, target)
 
-    expect(result.typologies).toEqual(['CCAS'])
+    expect(communs.typologies).toEqual(['CCAS'])
   })
 
-  it('returns empty arrays when no common elements exist', () => {
+  it('sont vides quand les deux lieux n’ont aucune valeur en commun', () => {
     const source: ChampsPartageables = {
-      ...emptyMergeData,
+      ...aucunChamp,
       employesIds: ['user-1'],
       services: ['service-a'],
     }
     const target: ChampsPartageables = {
-      ...emptyMergeData,
+      ...aucunChamp,
       employesIds: ['user-2'],
       services: ['service-b'],
     }
 
-    const result = champsCommuns(source, target)
-
-    expect(result.employesIds).toEqual([])
-    expect(result.services).toEqual([])
+    expect(champsCommuns(source, target)).toEqual(aucunChamp)
   })
 
-  it('computes intersection for all fields', () => {
+  it('ne gardent, champ par champ, que les valeurs présentes dans les deux lieux', () => {
     const source: ChampsPartageables = {
       employesIds: ['e1', 'e2'],
       mediateursEnActiviteIds: [
@@ -122,9 +117,9 @@ describe('champsCommuns', () => {
       courriels: [Courriel('c2@test.fr')],
     }
 
-    const result = champsCommuns(source, target)
+    const communs = champsCommuns(source, target)
 
-    expect(result).toEqual({
+    expect(communs).toEqual({
       employesIds: ['e2'],
       mediateursEnActiviteIds: [
         MediateurId('f98724ab-93d2-46cd-bff6-1821dd6a6da7'),

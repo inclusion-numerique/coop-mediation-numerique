@@ -6,17 +6,27 @@ import {
   lieuxVisibles,
 } from './visibilite-sur-la-cartographie'
 
-const lieu = (codeInsee: string | null, visible: boolean) => ({
-  codeInsee: codeInsee === null ? null : CodeInsee(codeInsee),
-  visibilite: VisibiliteDuLieu(visible ? 'Visible' : 'Masque'),
-})
+const lieuVisibleARochefort = {
+  codeInsee: CodeInsee('17299'),
+  visibilite: VisibiliteDuLieu('Visible'),
+}
+
+const lieuMasqueARochefort = {
+  codeInsee: CodeInsee('17299'),
+  visibilite: VisibiliteDuLieu('Masque'),
+}
+
+const lieuVisibleSansCommune = {
+  codeInsee: null,
+  visibilite: VisibiliteDuLieu('Visible'),
+}
 
 describe('departementDeReference', () => {
   it('prend le département de l’employeuse avant celui des lieux', () => {
     expect(
       departementDeReference({
         employeuse: CodeInsee('69123'),
-        lieux: [lieu('17299', true)],
+        lieux: [lieuVisibleARochefort],
       }),
     ).toBe('69')
   })
@@ -25,7 +35,7 @@ describe('departementDeReference', () => {
     expect(
       departementDeReference({
         employeuse: null,
-        lieux: [lieu(null, true), lieu('17299', false)],
+        lieux: [lieuVisibleSansCommune, lieuMasqueARochefort],
       }),
     ).toBe('17')
   })
@@ -37,6 +47,6 @@ describe('departementDeReference', () => {
 
 describe('lieuxVisibles', () => {
   it('ne compte que les lieux visibles', () => {
-    expect(lieuxVisibles([lieu('17299', true), lieu('17299', false)])).toBe(1)
+    expect(lieuxVisibles([lieuVisibleARochefort, lieuMasqueARochefort])).toBe(1)
   })
 })

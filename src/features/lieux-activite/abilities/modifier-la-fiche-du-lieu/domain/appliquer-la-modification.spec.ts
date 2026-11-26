@@ -35,6 +35,7 @@ import { NomUsage } from '../../../domain/identite-sirene'
 import type { Lieu } from '../../../domain/lieu'
 import { ModificationInconnue } from '../../../domain/registre/tracabilite'
 import { appliquerModification } from './appliquer-la-modification'
+import type { Modification } from './modification-lieu'
 
 const maintenant = new Date('2026-09-02T11:00:00Z')
 const auteur = UtilisateurId('550e8400-e29b-41d4-a716-446655440001')
@@ -114,8 +115,10 @@ describe('appliquer une modification à la fiche du lieu', () => {
       maintenant,
     )
 
-    expect(modifie.visibilite).toBe(VisibiliteCartographie('Publie'))
-    expect(modifie.fiche).toEqual(lieu.fiche)
+    expect({ visibilite: modifie.visibilite, fiche: modifie.fiche }).toEqual({
+      visibilite: VisibiliteCartographie('Publie'),
+      fiche: lieu.fiche,
+    })
   })
 
   it('n’ajoute aucun service par défaut à un lieu retiré de la carte', () => {
@@ -163,11 +166,11 @@ describe('appliquer une modification à la fiche du lieu', () => {
       maintenant,
     )
 
-    expect(modifie.fiche.contact.telephone).toBe('+33180059880')
-    expect(modifie.fiche.contact.courriels).toEqual(['contact@example.fr'])
-    expect(modifie.fiche.contact.site_web).toEqual([
-      'https://nouveau.example.fr',
-    ])
+    expect(modifie.fiche.contact).toEqual({
+      telephone: '+33180059880',
+      courriels: ['contact@example.fr'],
+      site_web: ['https://nouveau.example.fr'],
+    })
   })
 
   it('préserve les sites web quand on édite les modalités d’accès', () => {
@@ -184,9 +187,11 @@ describe('appliquer une modification à la fiche du lieu', () => {
       maintenant,
     )
 
-    expect(modifie.fiche.contact.site_web).toEqual(['https://www.example.fr'])
-    expect(modifie.fiche.contact.telephone).toBe('+33180059881')
-    expect(modifie.fiche.contact.courriels).toBeUndefined()
+    expect(modifie.fiche.contact).toEqual({
+      telephone: '+33180059881',
+      courriels: undefined,
+      site_web: ['https://www.example.fr'],
+    })
   })
 
   it('laisse vider un site web, ce que la projection legacy ne permettait pas', () => {
@@ -203,8 +208,10 @@ describe('appliquer une modification à la fiche du lieu', () => {
       maintenant,
     )
 
-    expect(modifie.fiche.contact.site_web).toBeUndefined()
-    expect(modifie.fiche.horaires).toBeNull()
+    expect({
+      siteWeb: modifie.fiche.contact.site_web,
+      horaires: modifie.fiche.horaires,
+    }).toStrictEqual({ siteWeb: undefined, horaires: null })
   })
 
   it('enregistre la description sans toucher au reste', () => {
@@ -221,11 +228,11 @@ describe('appliquer une modification à la fiche du lieu', () => {
       maintenant,
     )
 
-    expect(modifie.fiche.presentation).toEqual({ resume: 'Un nouveau résumé' })
-    expect(modifie.fiche.formationsLabels).toEqual([
-      FormationLabel.FabriquesDeTerritoire,
-    ])
-    expect(modifie.fiche.services).toEqual(lieu.fiche.services)
+    expect(modifie.fiche).toEqual({
+      ...lieu.fiche,
+      presentation: { resume: 'Un nouveau résumé' },
+      formationsLabels: [FormationLabel.FabriquesDeTerritoire],
+    })
   })
 
   it('enregistre les publics accueillis sans toucher au reste', () => {
@@ -244,13 +251,11 @@ describe('appliquer une modification à la fiche du lieu', () => {
       maintenant,
     )
 
-    expect(modifie.fiche.publicsSpecifiquementAdresses).toEqual([
-      PublicSpecifiquementAdresse.Jeunes,
-    ])
-    expect(modifie.fiche.priseEnChargeSpecifique).toEqual([
-      PriseEnChargeSpecifique.Surdite,
-    ])
-    expect(modifie.fiche.contact).toEqual(lieu.fiche.contact)
+    expect(modifie.fiche).toEqual({
+      ...lieu.fiche,
+      publicsSpecifiquementAdresses: [PublicSpecifiquementAdresse.Jeunes],
+      priseEnChargeSpecifique: [PriseEnChargeSpecifique.Surdite],
+    })
   })
 
   it('ne déborde pas d’une section sur les autres', () => {
@@ -265,12 +270,11 @@ describe('appliquer une modification à la fiche du lieu', () => {
       maintenant,
     )
 
-    expect(modifie.fiche.services).toEqual([
-      Service.LoisirsEtCreationsNumeriques,
-    ])
-    expect(modifie.fiche.modalitesAcces).toEqual(lieu.fiche.modalitesAcces)
-    expect(modifie.fiche.presentation).toEqual(lieu.fiche.presentation)
-    expect(modifie.fiche.typologies).toEqual(lieu.fiche.typologies)
+    expect(modifie.fiche).toEqual({
+      ...lieu.fiche,
+      services: [Service.LoisirsEtCreationsNumeriques],
+      modalitesAccompagnement: [],
+    })
   })
 })
 
@@ -338,18 +342,19 @@ describe('ce que la coop sait de l’établissement au répertoire SIRENE', () =
     },
   }
 
-  const informationsGenerales = (pivot: Pivot | null) =>
-    ({
-      section: 'InformationsGenerales',
-      nom: immatricule.fiche.nom,
-      adresse: immatricule.fiche.adresse,
-      localisation: null,
-      banId: null,
-      itinerance: immatricule.fiche.itinerance,
-      typologies: immatricule.fiche.typologies,
-      pivot,
-      nomUsage: NomUsage('La Maison du Port'),
-    }) as const
+  const informationsGenerales = (
+    pivot: Pivot | null,
+  ): Modification<'InformationsGenerales'> => ({
+    section: 'InformationsGenerales',
+    nom: immatricule.fiche.nom,
+    adresse: immatricule.fiche.adresse,
+    localisation: null,
+    banId: null,
+    itinerance: immatricule.fiche.itinerance,
+    typologies: immatricule.fiche.typologies,
+    pivot,
+    nomUsage: NomUsage('La Maison du Port'),
+  })
 
   it('garde la date de vérification tant que le pivot ne bouge pas', () => {
     const modifie = appliquerModification(

@@ -43,9 +43,6 @@ describe('correler', () => {
   })
 
   describe('le SIRET ne participe pas à la reconnaissance', () => {
-    // Une association dont le siège est à Paris déclare légitimement ce SIRET
-    // pour son antenne de Nantes. Le type d'entrée ne le porte donc même plus :
-    // ces cas se jouent entièrement sur l'endroit.
     it('deux implantations d’une même structure restent deux lieux', () => {
       const antenneNantaise = lieu({
         commune: 'Nantes',
@@ -99,7 +96,6 @@ describe('correler', () => {
     })
 
     it('rapproche deux libellés d’adresse différents à moins de 50 mètres', () => {
-      // « PL DU HUIT MAI 1945 » et « Place du 8 Mai 1945 » : mêmes coordonnées.
       const memeEndroitAutreLibelle = lieu({
         adresse: 'PL DU HUIT MAI 1945',
         latitude: 48.8692,

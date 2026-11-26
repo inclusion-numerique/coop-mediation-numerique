@@ -50,9 +50,6 @@ const fiche: Fiche = {
   priseRdv: null,
 }
 
-const champs = (unes: Fiche, autres: Fiche) =>
-  differences(unes, autres).map(({ champ }) => champ)
-
 describe('différences entre la fiche de la coop et celle du registre', () => {
   it('ne signale rien entre deux fiches identiques', () => {
     expect(differences(fiche, { ...fiche })).toEqual([])
@@ -61,13 +58,15 @@ describe('différences entre la fiche de la coop et celle du registre', () => {
   it('signale un champ dont la valeur a changé', () => {
     const repris = { ...fiche, nom: Nom('Tiers-lieu du Port') }
 
-    expect(champs(fiche, repris)).toEqual(['nom'])
+    expect(differences(fiche, repris)).toMatchObject([{ champ: 'nom' }])
   })
 
   it('signale une information EFFACÉE par l’autre source', () => {
     const sansHoraires = { ...fiche, horaires: null }
 
-    expect(champs(fiche, sansHoraires)).toEqual(['horaires'])
+    expect(differences(fiche, sansHoraires)).toMatchObject([
+      { champ: 'horaires' },
+    ])
   })
 
   it('ne voit pas de différence dans un ordre de liste différent', () => {

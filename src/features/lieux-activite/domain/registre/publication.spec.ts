@@ -17,7 +17,7 @@ describe('la publication sur la cartographie nationale', () => {
     expect(publicationSansService(false, [])).toBe(false)
   })
 
-  it.each([[null], [undefined]])(
+  it.each<[null | undefined]>([[null], [undefined]])(
     'traite %s comme aucun service',
     (services) => {
       expect(publicationSansService(true, services)).toBe(true)
