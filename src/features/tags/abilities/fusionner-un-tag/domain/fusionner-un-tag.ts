@@ -5,36 +5,15 @@ import {
   DestinationNonAutorisee,
   peutFusionnerVers,
   peutGerer,
-  type Tag,
   type TagId,
   TagIntrouvable,
 } from '../../../domain'
-
-export type EchecDeFusion =
-  | TagIntrouvable
-  | ActionNonAutorisee
-  | DestinationNonAutorisee
-
-type TagsDeLaFusion = {
-  readonly sourceId: TagId
-  readonly destinationId: TagId
-}
-
-export type LireLesTagsDeLaFusion = (tags: TagsDeLaFusion) => Promise<{
-  readonly source: Tag | null
-  readonly destination: Tag | null
-}>
-
-export type ReporterLeTag = (fusion: TagsDeLaFusion) => Promise<void>
+import type { EchecDeFusionnerUnTag } from './errors'
+import type { FusionDeTags } from './fusion-de-tags'
+import type { FusionnerUnTagPorts } from './ports'
 
 export const fusionnerUnTag =
-  ({
-    lireLesTags,
-    reporter,
-  }: {
-    readonly lireLesTags: LireLesTagsDeLaFusion
-    readonly reporter: ReporterLeTag
-  }) =>
+  ({ lireLesTags, reporter }: FusionnerUnTagPorts) =>
   async ({
     acteur,
     sourceId,
@@ -43,7 +22,7 @@ export const fusionnerUnTag =
     readonly acteur: Acteur
     readonly sourceId: TagId
     readonly destinationId: TagId
-  }): Promise<Result<Tag, EchecDeFusion>> => {
+  }): Promise<Result<FusionDeTags, EchecDeFusionnerUnTag>> => {
     const { source, destination } = await lireLesTags({
       sourceId,
       destinationId,
@@ -55,7 +34,7 @@ export const fusionnerUnTag =
     if (!peutFusionnerVers(acteur)(source, destination))
       return failure(DestinationNonAutorisee())
 
-    await reporter({ sourceId, destinationId })
+    await reporter({ sourceId: source.id, destinationId: destination.id })
 
-    return success(source)
+    return success({ source, destination })
   }

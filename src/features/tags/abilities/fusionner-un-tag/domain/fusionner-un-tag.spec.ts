@@ -59,10 +59,10 @@ const fusionner = (source: Tag | null, destination: Tag | null) =>
   })
 
 describe('fusionner un tag', () => {
-  it('fusionne un tag qu’il gère vers un tag au moins aussi large et rend la source', async () => {
+  it('reporte un tag qu’il gère sur un tag au moins aussi large', async () => {
     expect(await fusionner(tagPersonnel, tagDEquipe)).toEqual({
       success: true,
-      data: tagPersonnel,
+      data: { source: tagPersonnel, destination: tagDEquipe },
     })
   })
 

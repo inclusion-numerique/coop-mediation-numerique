@@ -1,13 +1,19 @@
-import { lireUnTagActif } from '../../../../implementations/prisma/tag-actif.query'
-import type { LireLesTagsDeLaFusion } from '../../domain/fusionner-un-tag'
+import { prismaClient } from '@/configuration/prisma'
+import { tagToDomain } from '../../../../implementations/prisma/tag.transfer'
+import type { LireLesTagsDeLaFusion } from '../../domain/ports'
 
 export const lireLesTagsDeLaFusion: LireLesTagsDeLaFusion = async ({
   sourceId,
   destinationId,
 }) => {
   const [source, destination] = await Promise.all([
-    lireUnTagActif(sourceId),
-    lireUnTagActif(destinationId),
+    prismaClient.tag.findFirst({ where: { id: sourceId, suppression: null } }),
+    prismaClient.tag.findFirst({
+      where: { id: destinationId, suppression: null },
+    }),
   ])
-  return { source, destination }
+  return {
+    source: source === null ? null : tagToDomain(source),
+    destination: destination === null ? null : tagToDomain(destination),
+  }
 }

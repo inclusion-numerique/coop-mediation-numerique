@@ -1,5 +1,5 @@
 import { prismaClient } from '@/configuration/prisma'
-import type { ReporterLeTag } from '../../domain/fusionner-un-tag'
+import type { ReporterLeTag } from '../../domain/ports'
 
 export const reporterLeTag: ReporterLeTag = async ({
   sourceId,

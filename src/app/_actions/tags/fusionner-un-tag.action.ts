@@ -29,7 +29,9 @@ export const fusionnerUnTagAction = actionBuilder()
           destinationId: TagId(input.destinationId),
         })
 
-        return fusion.success ? success({ nom: fusion.data.nom }) : fusion
+        return fusion.success
+          ? success({ nom: fusion.data.source.nom })
+          : fusion
       },
       { onError: FUSIONNER_UN_TAG_ERRORS },
     ),
