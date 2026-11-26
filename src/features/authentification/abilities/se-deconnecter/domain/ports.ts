@@ -1,5 +1,6 @@
 import type { Result } from '@/libraries/result'
 import type { RafraichissementImpossible } from './errors'
+import type { UtilisateurId } from './utilisateur-id'
 
 export type IdToken = {
   readonly valeur: string
@@ -12,7 +13,7 @@ export type JetonsProconnect = {
 }
 
 export type LireLesJetonsProconnect = (
-  utilisateurId: string,
+  utilisateurId: UtilisateurId,
 ) => Promise<JetonsProconnect>
 
 export type RafraichirLIdToken = (

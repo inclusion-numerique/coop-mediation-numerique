@@ -3,10 +3,11 @@ import { failure, success } from '@/libraries/result'
 import { RafraichissementImpossible } from './errors'
 import type { JetonsProconnect } from './ports'
 import { seDeconnecter } from './se-deconnecter'
+import { UtilisateurId } from './utilisateur-id'
 
 const maintenant = new Date('2027-01-15T08:00:00.000Z')
 
-const utilisateurId = 'a3c1c0d2-5b7e-4f7a-9d1e-2f8b6c4d0e11'
+const utilisateurId = UtilisateurId('a3c1c0d2-5b7e-4f7a-9d1e-2f8b6c4d0e11')
 
 const sansJeton: JetonsProconnect = { idToken: null, refreshToken: null }
 

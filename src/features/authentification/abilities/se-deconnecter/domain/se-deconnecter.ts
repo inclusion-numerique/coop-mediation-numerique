@@ -2,6 +2,7 @@ import { type Result, success } from '@/libraries/result'
 import type { Deconnexion } from './deconnexion'
 import type { EchecDeSeDeconnecter } from './errors'
 import type { IdToken, SeDeconnecterPorts } from './ports'
+import type { UtilisateurId } from './utilisateur-id'
 
 const MARGE_DE_DECALAGE_D_HORLOGE_EN_MILLISECONDES = 3000
 
@@ -23,7 +24,7 @@ export const seDeconnecter =
     utilisateurId,
     maintenant,
   }: {
-    readonly utilisateurId: string
+    readonly utilisateurId: UtilisateurId
     readonly maintenant: Date
   }): Promise<Result<Deconnexion, EchecDeSeDeconnecter>> => {
     const { idToken, refreshToken } =

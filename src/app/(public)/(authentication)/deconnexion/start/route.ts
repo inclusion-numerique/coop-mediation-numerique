@@ -5,6 +5,7 @@ import {
   getServerUrl,
 } from '@/configuration/projet/serveur'
 import { seDeconnecter } from '@/features/authentification/abilities/se-deconnecter/domain/se-deconnecter'
+import { UtilisateurId } from '@/features/authentification/abilities/se-deconnecter/domain/utilisateur-id'
 import { lireLesJetonsDuFournisseur } from '@/features/authentification/abilities/se-deconnecter/implementations/prisma'
 import { rafraichirLIdTokenProConnect } from '@/features/authentification/abilities/se-deconnecter/implementations/proconnect/id-token-rafraichi.query'
 import { utilisateurDuJetonDeSession } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
@@ -30,7 +31,7 @@ const idTokenHintDeProConnect = async (
   const deconnexion = await seDeconnecter({
     lireLesJetonsProconnect: lireLesJetonsDuFournisseur(proConnectProviderId),
     rafraichirLIdToken: rafraichirLIdTokenProConnect,
-  })({ utilisateurId, maintenant: new Date() })
+  })({ utilisateurId: UtilisateurId(utilisateurId), maintenant: new Date() })
   return deconnexion.data._tag === 'AupresDeProConnect'
     ? deconnexion.data.idTokenHint
     : null
