@@ -1,16 +1,11 @@
 import { prismaClient } from '@/configuration/prisma'
 import { MediateurId } from '@/features/mediateurs/domain'
-import { type Contrat, etatContrat } from '../../domain/rupture-en-attente'
+import type { LireMediateurEtContrats } from '../../domain/choisir-la-visibilite-apres-rupture'
+import { etatContrat } from '../../domain/rupture-en-attente'
 
-export type MediateurEtContrats = {
-  readonly id: MediateurId
-  readonly visibiliteChoisieLe: Date | null
-  readonly contrats: readonly Contrat[]
-}
-
-export const lireMediateurEtContrats = async (
-  mediateurId: MediateurId,
-): Promise<MediateurEtContrats | null> => {
+export const lireMediateurEtContrats: LireMediateurEtContrats = async (
+  mediateurId,
+) => {
   const mediateur = await prismaClient.mediateur.findFirst({
     where: { id: mediateurId, user: { deleted: null } },
     select: {

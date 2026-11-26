@@ -2,7 +2,9 @@ import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { prismaClient } from '@/configuration/prisma'
 import { ReponseApresRupture } from '@/features/mediateurs/abilities/choisir-la-visibilite-apres-rupture/domain'
-import { choisirLaVisibiliteApresRupture } from '@/features/mediateurs/abilities/choisir-la-visibilite-apres-rupture/implementations/prisma/choisir-la-visibilite-apres-rupture.mutation'
+import { choisirLaVisibiliteApresRupture } from '@/features/mediateurs/abilities/choisir-la-visibilite-apres-rupture/domain/choisir-la-visibilite-apres-rupture'
+import { enregistrerLeChoix } from '@/features/mediateurs/abilities/choisir-la-visibilite-apres-rupture/implementations/prisma/enregistrer-le-choix.mutation'
+import { lireMediateurEtContrats } from '@/features/mediateurs/abilities/choisir-la-visibilite-apres-rupture/implementations/prisma/mediateur-et-contrats.query'
 import { lireLaRuptureEnAttente } from '@/features/mediateurs/abilities/choisir-la-visibilite-apres-rupture/implementations/prisma/rupture-en-attente.query'
 import { AuteurId, MediateurId } from '@/features/mediateurs/domain'
 import {
@@ -26,9 +28,10 @@ const date = (jour: string): Date => {
 
 const repondre = async (reponse: ReponseApresRupture) => {
   const seme = exConseillerSeme()
-  derniere.reponse = await choisirLaVisibiliteApresRupture(
-    async () => undefined,
-  )({
+  derniere.reponse = await choisirLaVisibiliteApresRupture({
+    lireMediateurEtContrats,
+    enregistrer: enregistrerLeChoix(async () => undefined),
+  })({
     mediateurId: MediateurId(seme.mediateurId),
     reponse,
     auteurId: AuteurId(seme.userId),
