@@ -3,7 +3,8 @@ import { anonymiserPortefeuille } from '@/features/beneficiaire/abilities/anonym
 import { detacherDesEquipes as detacherDesEquipesAvec } from '@/features/equipe/abilities/detacher-des-equipes/domain/detacher-des-equipes'
 import { retirerDesEquipes } from '@/features/equipe/abilities/detacher-des-equipes/implementations/prisma/retirer-des-equipes.mutation'
 import { retirerDesLieux } from '@/features/lieux-activite/abilities/retirer-des-lieux/implementations/prisma/retirer-des-lieux.mutation'
-import { revoquerPartageStatistiques } from '@/features/mediateurs/abilities/revoquer-partage-statistiques/implementations/prisma/revoquer-partage-statistiques.mutation'
+import { revoquerPartageStatistiques } from '@/features/mediateurs/abilities/revoquer-partage-statistiques/domain/revoquer-partage-statistiques'
+import { revoquerLesPartages } from '@/features/mediateurs/abilities/revoquer-partage-statistiques/implementations/prisma/revoquer-partage-statistiques.mutation'
 import { effacerEmpreinteRdvAvec } from '@/features/rdvsp/abilities/effacer-empreinte-rdv/implementations/prisma/effacer-empreinte-rdv.mutation'
 import { configurationOAuthRdvsp } from '@/features/rdvsp/implementations/api/rdv-service-public-configuration.client'
 import { revoquerJetons } from '@/features/rdvsp/implementations/api/revoquer-jetons.mutation'
@@ -49,6 +50,8 @@ import type {
   SynchroniserLaPersonne,
 } from '@/features/utilisateurs/implementations/prisma/registre-des-personnes.mutation'
 import { output } from '@/libraries/console'
+
+const revoquerLePartage = revoquerPartageStatistiques({ revoquerLesPartages })
 
 const retirerLesTags = retirerLesTagsDUnCompte({
   lireLesTagsDuCompte,
@@ -142,7 +145,15 @@ const supprimerComptePorts: EffacementsDesAutresFeatures = {
   },
   detacherDesEquipes,
   retirerDesLieux,
-  revoquerPartageStatistiques,
+  revoquerPartageStatistiques: async (identifiants) => {
+    const revocation = await revoquerLePartage({
+      ...identifiants,
+      maintenant: new Date(),
+    })
+    return revocation.success
+      ? { partagesRevoques: revocation.data.partagesRevoques }
+      : revocation.error
+  },
 }
 
 const resume = (rapports: readonly RapportDeRelance[]) => ({
