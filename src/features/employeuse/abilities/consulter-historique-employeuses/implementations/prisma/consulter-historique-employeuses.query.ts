@@ -3,7 +3,7 @@ import {
   personneEmployeuseSelect,
   personneToEmployeusesHistorique,
 } from '../../../../implementations/prisma/employeuse.transfer'
-import type { ConsulterHistoriqueEmployeuses } from '../../domain/consulter-historique-employeuses'
+import type { ConsulterHistoriqueEmployeuses } from '../../domain/ports'
 
 export const consulterHistoriqueEmployeuses: ConsulterHistoriqueEmployeuses =
   async ({ userId }) => {
