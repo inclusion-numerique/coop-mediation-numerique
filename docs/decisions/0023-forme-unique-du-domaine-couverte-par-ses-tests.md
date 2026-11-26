@@ -177,15 +177,20 @@ d'écriture est dans son résultat, et le test unitaire le vérifie.
 
 ### Confirmation
 
-Le seuil de couverture du lanceur de tests vérifie la couverture du domaine.
-Le linter vérifie, sur le seul domaine, l'absence de lecture de l'horloge,
-de classe, d'exception levée ou attrapée et de valeur par défaut, ainsi que
-le nom du type des ports ; sur les tests du domaine, l'absence de mock, de
-logique et d'assertion de type. Le contrôle de structure vérifie qu'un
-orchestrateur a ses ports et ses erreurs à côté de lui, et qu'aucune donnée
-de test ne vit dans le domaine. La forme des signatures, le contenu du
-résultat, l'emplacement des décisions métier et le nombre d'assertions par
-test restent à la relecture.
+Le seuil de couverture du lanceur de tests vérifie, à l'étape des tests
+unitaires de l'intégration continue, que chaque fichier du domaine est
+couvert entièrement. Le linter vérifie, sur le seul domaine, l'absence de
+lecture de l'horloge, de classe, d'exception levée ou attrapée et de valeur
+par défaut, dans tout le domaine et pas seulement dans l'orchestrateur,
+ainsi que le nom du type des ports ; sur les tests du domaine, l'absence de
+mock ou d'espion, de logique et d'assertion de type, et que chaque test a au
+moins une assertion, jamais sous condition, sans test isolé ni sauté. Le
+contrôle de structure vérifie qu'un orchestrateur, seul à porter le nom de
+son cas d'usage, a ses ports à côté de lui, et qu'aucune donnée de test ne
+vit dans le domaine ; il n'exige pas de fichier d'erreurs, qu'un
+orchestrateur qui ne peut pas échouer n'a pas. La forme des signatures, le
+contenu du résultat, la forme et la place des erreurs, l'emplacement des
+décisions métier et le nombre d'assertions par test restent à la relecture.
 
 ## Pros and Cons of the Options
 
