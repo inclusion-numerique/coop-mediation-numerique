@@ -1,28 +1,20 @@
 import { prismaClient } from '@/configuration/prisma'
 
-const getTotalAccompagnements = async () =>
-  await prismaClient.accompagnement.count({
+const getAccompagnementsDesBeneficiairesSuivis = async () => {
+  const { _count, _sum } = await prismaClient.beneficiaire.aggregate({
     where: {
-      beneficiaire: {
-        AND: {
-          suppression: null,
-          anonyme: false,
-          v1Imported: null,
-        },
-      },
+      anonyme: false,
+      v1Imported: null,
+      accompagnementsCount: { gt: 0 },
     },
+    _count: true,
+    _sum: { accompagnementsCount: true },
   })
-
-const getTotalBeneficiairesSuivis = async () =>
-  await prismaClient.beneficiaire.count({
-    where: {
-      AND: {
-        suppression: null,
-        anonyme: false,
-        v1Imported: null,
-      },
-    },
-  })
+  return {
+    totalBeneficiairesSuivis: _count,
+    totalAccompagnements: _sum.accompagnementsCount ?? 0,
+  }
+}
 
 const getMediateursAvecBeneficiairesCount = async () =>
   (
@@ -65,13 +57,11 @@ const getPercentage = (
 
 export const suiviDesBeneficiaires = async () => {
   const [
-    totalAccompagnements,
-    totalBeneficiairesSuivis,
+    { totalAccompagnements, totalBeneficiairesSuivis },
     totalMediateurs,
     mediateursAvecBeneficiairesCount,
   ] = await Promise.all([
-    getTotalAccompagnements(),
-    getTotalBeneficiairesSuivis(),
+    getAccompagnementsDesBeneficiairesSuivis(),
     getTotalMediateurs(),
     getMediateursAvecBeneficiairesCount(),
   ])

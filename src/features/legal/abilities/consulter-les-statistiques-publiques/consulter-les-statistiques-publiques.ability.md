@@ -89,3 +89,18 @@
 * Et une activité supprimée qui accompagne un bénéficiaire suivi
 * Quand les statistiques publiques sont relevées à nouveau
 * Alors les médiateurs suivant des bénéficiaires ont augmenté de 0
+
+### Scénario: Un médiateur qui accompagne les bénéficiaires suivis de deux collègues compte les deux collègues
+
+* Étant donné les statistiques publiques relevées
+* Et une activité saisie par un médiateur qui accompagne les bénéficiaires suivis de deux autres médiateurs
+* Quand les statistiques publiques sont relevées à nouveau
+* Alors les médiateurs suivant des bénéficiaires ont augmenté de 2
+
+## Règle: La moyenne des accompagnements porte sur les bénéficiaires suivis comptés dans le total
+
+### Scénario: Un bénéficiaire suivi jamais accompagné n'entre pas dans la moyenne
+
+* Étant donné un bénéficiaire suivi qui n'a jamais été accompagné
+* Quand les statistiques publiques sont relevées
+* Alors les bénéficiaires suivis de la moyenne égalent les bénéficiaires suivis du total

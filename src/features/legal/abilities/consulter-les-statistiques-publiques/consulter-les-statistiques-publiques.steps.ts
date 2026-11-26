@@ -5,6 +5,7 @@ import {
   type EtatDeLActivite,
   semerUnBeneficiaireSansAccompagnement,
   semerUneActivite,
+  semerUneActiviteSurLesBeneficiairesDeCollegues,
 } from '@/features/legal/legal.cucumber'
 import { lireLesAccompagnements } from './implementations/prisma/accompagnements.query'
 import { lireLesBeneficiaires } from './implementations/prisma/beneficiaires.query'
@@ -95,6 +96,13 @@ Given(
 Given("un bénéficiaire suivi qui n'a jamais été accompagné", async () => {
   await semerUnBeneficiaireSansAccompagnement({ accompagne: 'suivi' })
 })
+
+Given(
+  'une activité saisie par un médiateur qui accompagne les bénéficiaires suivis de deux autres médiateurs',
+  async () => {
+    await semerUneActiviteSurLesBeneficiairesDeCollegues(2)
+  },
+)
 
 When('les statistiques publiques sont relevées à nouveau', async () => {
   releves.apres = await relever()
@@ -191,6 +199,17 @@ Then(
       releve('apres').suivi.mediateursAvecBeneficiaires.value -
         releve('avant').suivi.mediateursAvecBeneficiaires.value,
       attendu,
+    )
+  },
+)
+
+Then(
+  'les bénéficiaires suivis de la moyenne égalent les bénéficiaires suivis du total',
+  () => {
+    const { beneficiaires, suivi } = releve('apres')
+    assert.strictEqual(
+      suivi.moyenneAccompagnements.total,
+      valeurDeLaSerie(beneficiaires.series, 'byBeneficiairesSuivis'),
     )
   },
 )
