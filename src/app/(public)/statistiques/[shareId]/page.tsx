@@ -66,6 +66,7 @@ import { BarreDesStatistiques } from '@/features/activites/ui/slots/BarreDesStat
 import { utilisateurDeLaSessionParId } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
 import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage/domain'
 import { lireLePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage/implementations/prisma/partage.query'
+import { LienDePartageId } from '@/features/mediateurs/domain'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/rdvs-des-activites.query'
 import { StatistiquesPartageesPage } from '@/features/statistiques/abilities/consulter-des-statistiques-partagees/ui/pages/StatistiquesPartageesPage'
 import { utilisateurDuPartage } from '@/features/statistiques/domain/utilisateur-du-partage'
@@ -113,7 +114,7 @@ const Page = async ({ params, searchParams }: PageProps) => {
   const parametres = await searchParams
 
   const partage = await resoudreUnLienDePartage({ lirePartage: lireLePartage })(
-    { lien: shareId },
+    { lien: LienDePartageId.safe(shareId) },
   )
   if (!partage.success) return notFound()
 

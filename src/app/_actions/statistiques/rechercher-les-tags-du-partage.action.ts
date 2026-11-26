@@ -5,6 +5,7 @@ import { profilDeLaSession } from '@/features/authentification/domain/profil-de-
 import { utilisateurDeLaSessionParId } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
 import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage/domain'
 import { lireLePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage/implementations/prisma/partage.query'
+import { LienDePartageId } from '@/features/mediateurs/domain'
 import { utilisateurDuPartage } from '@/features/statistiques/domain/utilisateur-du-partage'
 import { RechercherDesTagsDuPartageValidation } from '@/features/tags/abilities/rechercher-des-tags/action/rechercher-des-tags.validation'
 import { rechercherDesTags } from '@/features/tags/abilities/rechercher-des-tags/implementations/prisma/rechercher-des-tags.query'
@@ -16,7 +17,7 @@ const rechercherDansLePartage = actionBuilder()
   .use(withInput(RechercherDesTagsDuPartageValidation))
   .execute(async ({ input: { partage, recherche, exclus } }) => {
     const lien = await resoudreUnLienDePartage({ lirePartage: lireLePartage })({
-      lien: partage,
+      lien: LienDePartageId.safe(partage),
     })
     if (!lien.success) return []
     const acteur = acteurDe(

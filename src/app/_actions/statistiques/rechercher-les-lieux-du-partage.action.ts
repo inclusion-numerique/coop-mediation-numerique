@@ -12,6 +12,7 @@ import { perimetreDeLUtilisateur } from '@/features/activites/implementations/se
 import { utilisateurDeLaSessionParId } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
 import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage/domain'
 import { lireLePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage/implementations/prisma/partage.query'
+import { LienDePartageId } from '@/features/mediateurs/domain'
 import { utilisateurDuPartage } from '@/features/statistiques/domain/utilisateur-du-partage'
 import { withInput } from '@/libraries/nextjs'
 
@@ -19,7 +20,7 @@ const rechercherDansLePartage = actionBuilder()
   .use(withInput(RechercherLesLieuxDuPartageValidation))
   .execute(async ({ input: { partage, genre, recherche } }) => {
     const lien = await resoudreUnLienDePartage({ lirePartage: lireLePartage })({
-      lien: partage,
+      lien: LienDePartageId.safe(partage),
     })
     if (!lien.success) return []
     const perimetre = perimetreDeLUtilisateur(

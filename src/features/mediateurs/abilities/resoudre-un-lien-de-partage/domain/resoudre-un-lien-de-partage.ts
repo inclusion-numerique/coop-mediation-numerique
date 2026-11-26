@@ -1,4 +1,4 @@
-import { LienDePartageId } from '@/features/mediateurs/domain'
+import type { LienDePartageId } from '@/features/mediateurs/domain'
 import { failure, type Result, success } from '@/libraries/result'
 import { type EchecDeResoudreUnLienDePartage, LienIntrouvable } from './errors'
 import type { PartageResolu } from './partage-resolu'
@@ -29,12 +29,11 @@ export const resoudreUnLienDePartage =
   async ({
     lien,
   }: {
-    readonly lien: string
+    readonly lien: LienDePartageId | null
   }): Promise<Result<PartageResolu, EchecDeResoudreUnLienDePartage>> => {
-    const id = LienDePartageId.safe(lien)
-    if (id === null) return failure(LienIntrouvable())
+    if (lien === null) return failure(LienIntrouvable())
 
-    const partage = await lirePartage(id)
+    const partage = await lirePartage(lien)
     const resolu = partage === null ? null : partageResolu(partage)
 
     return resolu === null ? failure(LienIntrouvable()) : success(resolu)

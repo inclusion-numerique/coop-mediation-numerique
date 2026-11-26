@@ -1,13 +1,14 @@
 import { describe, expect, it } from 'vitest'
 import {
   CoordinateurId,
+  LienDePartageId,
   MediateurId,
   UtilisateurId,
 } from '@/features/mediateurs/domain'
 import type { PartageLu } from './ports'
 import { resoudreUnLienDePartage } from './resoudre-un-lien-de-partage'
 
-const lien = 'a1b2c3d4-0000-4000-8000-000000000001'
+const lien = LienDePartageId('a1b2c3d4-0000-4000-8000-000000000001')
 const mediateurId = MediateurId('a1b2c3d4-0000-4000-8000-000000000002')
 const coordinateurId = CoordinateurId('a1b2c3d4-0000-4000-8000-000000000003')
 const utilisateurDuMediateur = UtilisateurId(
@@ -17,7 +18,10 @@ const utilisateurDuCoordinateur = UtilisateurId(
   'a1b2c3d4-0000-4000-8000-000000000005',
 )
 
-const resoudre = (partage: PartageLu | null, lienPartage: string) =>
+const resoudre = (
+  partage: PartageLu | null,
+  lienPartage: LienDePartageId | null,
+) =>
   resoudreUnLienDePartage({ lirePartage: async () => partage })({
     lien: lienPartage,
   })
@@ -65,8 +69,12 @@ describe('résoudre un lien de partage', () => {
     })
   })
 
-  it.each<{ cas: string; partage: PartageLu | null; lienPartage: string }>([
-    { cas: 'le lien est mal formé', partage: null, lienPartage: 'pas-un-lien' },
+  it.each<{
+    cas: string
+    partage: PartageLu | null
+    lienPartage: LienDePartageId | null
+  }>([
+    { cas: 'aucun lien valide n’est donné', partage: null, lienPartage: null },
     {
       cas: 'aucun partage actif ne porte ce lien',
       partage: null,
