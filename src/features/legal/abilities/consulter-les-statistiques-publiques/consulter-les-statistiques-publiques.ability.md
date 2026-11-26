@@ -66,3 +66,41 @@
 
 * Quand les statistiques publiques sont relevées
 * Alors chaque mois du cumul des bénéficiaires ajoute ceux du mois au cumul précédent
+
+### Scénario: Le cumul des bénéficiaires finit sur leur total
+
+* Étant donné un bénéficiaire suivi qui n'a jamais été accompagné
+* Et une activité supprimée qui accompagne un bénéficiaire suivi
+* Quand les statistiques publiques sont relevées
+* Alors le dernier mois du cumul des bénéficiaires égale leur total
+
+## Règle: Un médiateur suit des bénéficiaires dès qu'un de ses bénéficiaires suivis a été accompagné lors d'une activité non supprimée
+
+### Scénario: Le médiateur qui accompagne un bénéficiaire suivi le suit
+
+* Étant donné les statistiques publiques relevées
+* Et une activité saisie qui accompagne un bénéficiaire suivi
+* Quand les statistiques publiques sont relevées à nouveau
+* Alors les médiateurs suivant des bénéficiaires ont augmenté de 1
+
+### Scénario: Un bénéficiaire suivi accompagné seulement lors d'une activité supprimée n'est pas suivi
+
+* Étant donné les statistiques publiques relevées
+* Et une activité supprimée qui accompagne un bénéficiaire suivi
+* Quand les statistiques publiques sont relevées à nouveau
+* Alors les médiateurs suivant des bénéficiaires ont augmenté de 0
+
+### Scénario: Un médiateur qui accompagne les bénéficiaires suivis de deux collègues compte les deux collègues
+
+* Étant donné les statistiques publiques relevées
+* Et une activité saisie par un médiateur qui accompagne les bénéficiaires suivis de deux autres médiateurs
+* Quand les statistiques publiques sont relevées à nouveau
+* Alors les médiateurs suivant des bénéficiaires ont augmenté de 2
+
+## Règle: La moyenne des accompagnements porte sur les bénéficiaires suivis comptés dans le total
+
+### Scénario: Un bénéficiaire suivi jamais accompagné n'entre pas dans la moyenne
+
+* Étant donné un bénéficiaire suivi qui n'a jamais été accompagné
+* Quand les statistiques publiques sont relevées
+* Alors les bénéficiaires suivis de la moyenne égalent les bénéficiaires suivis du total

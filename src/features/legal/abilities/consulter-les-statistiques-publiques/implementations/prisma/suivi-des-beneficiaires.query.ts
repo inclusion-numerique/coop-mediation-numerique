@@ -1,50 +1,32 @@
 import { prismaClient } from '@/configuration/prisma'
 
-const getTotalAccompagnements = async () =>
-  await prismaClient.accompagnement.count({
+const getAccompagnementsDesBeneficiairesSuivis = async () => {
+  const { _count, _sum } = await prismaClient.beneficiaire.aggregate({
     where: {
-      beneficiaire: {
-        AND: {
-          suppression: null,
-          anonyme: false,
-          v1Imported: null,
-        },
-      },
+      anonyme: false,
+      v1Imported: null,
+      accompagnementsCount: { gt: 0 },
     },
+    _count: true,
+    _sum: { accompagnementsCount: true },
   })
+  return {
+    totalBeneficiairesSuivis: _count,
+    totalAccompagnements: _sum.accompagnementsCount ?? 0,
+  }
+}
 
-const getTotalBeneficiairesSuivis = async () =>
-  await prismaClient.beneficiaire.count({
-    where: {
-      AND: {
-        suppression: null,
+const getMediateursAvecBeneficiairesCount = async () =>
+  (
+    await prismaClient.beneficiaire.groupBy({
+      by: ['mediateurId'],
+      where: {
         anonyme: false,
         v1Imported: null,
+        accompagnementsCount: { gt: 0 },
       },
-    },
-  })
-
-const getMediateursAvecBeneficiairesCount = async () => {
-  const activitesAvecBeneficiaires = await prismaClient.activite.findMany({
-    where: {
-      accompagnements: {
-        some: {
-          beneficiaire: {
-            anonyme: false,
-            v1Imported: null,
-          },
-        },
-      },
-    },
-    select: {
-      mediateurId: true,
-    },
-  })
-
-  return new Set(
-    activitesAvecBeneficiaires.map(({ mediateurId }) => mediateurId),
-  ).size
-}
+    })
+  ).length
 
 const getTotalMediateurs = async () =>
   await prismaClient.mediateur.count({
@@ -75,13 +57,11 @@ const getPercentage = (
 
 export const suiviDesBeneficiaires = async () => {
   const [
-    totalAccompagnements,
-    totalBeneficiairesSuivis,
+    { totalAccompagnements, totalBeneficiairesSuivis },
     totalMediateurs,
     mediateursAvecBeneficiairesCount,
   ] = await Promise.all([
-    getTotalAccompagnements(),
-    getTotalBeneficiairesSuivis(),
+    getAccompagnementsDesBeneficiairesSuivis(),
     getTotalMediateurs(),
     getMediateursAvecBeneficiairesCount(),
   ])

@@ -32,6 +32,45 @@ const beneficiaires: Readonly<
   'importé de la v1': { anonyme: true, v1Imported: new Date('2024-01-01') },
 }
 
+const semerUnMediateur = async (): Promise<string> =>
+  (
+    await prismaClient.mediateur.create({
+      data: {
+        user: { create: { email: `${v4()}${domaineDesComptesSemes}` } },
+      },
+      select: { id: true },
+    })
+  ).id
+
+export const semerUneActiviteSurLesBeneficiairesDeCollegues = async (
+  collegues: number,
+): Promise<void> => {
+  const mediateurId = await semerUnMediateur()
+  const beneficiairesDesCollegues = await Promise.all(
+    Array.from({ length: collegues }, async () => ({
+      beneficiaireId: (
+        await prismaClient.beneficiaire.create({
+          data: {
+            mediateurId: await semerUnMediateur(),
+            ...beneficiaires.suivi,
+          },
+          select: { id: true },
+        })
+      ).id,
+    })),
+  )
+  await prismaClient.activite.create({
+    data: {
+      mediateurId,
+      type: 'Individuel',
+      typeLieu: 'Autre',
+      date: new Date(),
+      duree: 60,
+      accompagnements: { create: beneficiairesDesCollegues },
+    },
+  })
+}
+
 export const semerUneActivite = async ({
   etat,
   accompagnes,
@@ -39,12 +78,7 @@ export const semerUneActivite = async ({
   readonly etat: EtatDeLActivite
   readonly accompagnes: readonly BeneficiaireAccompagne[]
 }): Promise<void> => {
-  const { id: mediateurId } = await prismaClient.mediateur.create({
-    data: {
-      user: { create: { email: `${v4()}${domaineDesComptesSemes}` } },
-    },
-    select: { id: true },
-  })
+  const mediateurId = await semerUnMediateur()
   await prismaClient.activite.create({
     data: {
       mediateurId,
@@ -62,6 +96,17 @@ export const semerUneActivite = async ({
         })),
       },
     },
+  })
+}
+
+export const semerUnBeneficiaireSansAccompagnement = async ({
+  accompagne,
+}: {
+  readonly accompagne: BeneficiaireAccompagne
+}): Promise<void> => {
+  const mediateurId = await semerUnMediateur()
+  await prismaClient.beneficiaire.create({
+    data: { mediateurId, ...beneficiaires[accompagne] },
   })
 }
 

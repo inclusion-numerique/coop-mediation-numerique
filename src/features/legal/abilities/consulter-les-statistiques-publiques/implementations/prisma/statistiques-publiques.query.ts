@@ -7,6 +7,8 @@ import { lireLesUtilisateursActifs } from './utilisateurs-actifs.query'
 export const statistiquesPubliques = async (
   mesure: MesureDesUtilisateursActifs,
 ) => {
+  const mesureDuJour = mesure.mesurerLesUtilisateursActifs(new Date())
+
   const [
     chiffresCles,
     accompagnements,
@@ -14,11 +16,14 @@ export const statistiquesPubliques = async (
     suiviBeneficiaires,
     utilisateursActifs,
   ] = await Promise.all([
-    mesure.mesurerLesUtilisateursActifs(new Date()),
+    mesureDuJour,
     lireLesAccompagnements(),
     lireLesBeneficiaires(),
     suiviDesBeneficiaires(),
-    lireLesUtilisateursActifs(mesure),
+    lireLesUtilisateursActifs({
+      ...mesure,
+      mesurerLesUtilisateursActifs: () => mesureDuJour,
+    }),
   ])
 
   return {

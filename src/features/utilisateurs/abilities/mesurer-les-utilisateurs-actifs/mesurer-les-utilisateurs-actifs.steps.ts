@@ -4,11 +4,45 @@ import { v4 } from 'uuid'
 import { semerUnCompteDeListe } from '@/features/utilisateurs/utilisateurs.cucumber'
 import type { UtilisateursActifs } from './domain'
 import { mesurerLesUtilisateursActifs } from './implementations/prisma/utilisateurs-actifs.query'
+import { utilisateursActifsParMois } from './implementations/prisma/utilisateurs-actifs-par-mois.query'
 
 const mesure: {
   avant?: UtilisateursActifs
   apres?: UtilisateursActifs
 } = {}
+
+type ActifsParMois = Awaited<ReturnType<typeof utilisateursActifsParMois>>
+
+const mesureParMois: { avant?: ActifsParMois; apres?: ActifsParMois } = {}
+
+const ilYaTreizeMois = (): Date => {
+  const maintenant = new Date()
+  return new Date(maintenant.getFullYear(), maintenant.getMonth() - 13, 15)
+}
+
+const activites: Readonly<
+  Record<string, { readonly date: () => Date; readonly supprimee: boolean }>
+> = {
+  'qui a saisi une activité ce mois-ci': {
+    date: () => new Date(),
+    supprimee: false,
+  },
+  'dont la seule activité de ce mois-ci est supprimée': {
+    date: () => new Date(),
+    supprimee: true,
+  },
+  'qui a saisi une activité il y a treize mois': {
+    date: ilYaTreizeMois,
+    supprimee: false,
+  },
+}
+
+const mediateursActifsParMois = (
+  mesure: ActifsParMois | undefined,
+): readonly number[] => {
+  assert.ok(mesure, 'Les utilisateurs actifs par mois ne sont pas mesurés')
+  return mesure.map(({ mediateursActifs }) => mediateursActifs)
+}
 
 const semer = (
   compte: Omit<
@@ -57,6 +91,34 @@ Given(
   },
 )
 
+Given('les utilisateurs actifs par mois déjà mesurés', async () => {
+  mesureParMois.avant = await utilisateursActifsParMois()
+})
+
+Given(
+  /^un médiateur (hors dispositif|coordinateur) (qui a saisi une activité ce mois-ci|dont la seule activité de ce mois-ci est supprimée|qui a saisi une activité il y a treize mois)$/,
+  async (profil: string, activite: string) => {
+    const semee = activites[activite]
+    assert.ok(semee, `Activité inconnue : ${activite}`)
+    await semer({
+      mediateur: { derniereActivite: null, dernierBeneficiaire: null },
+      activites: [
+        {
+          date: semee.date(),
+          supprimeeLe: semee.supprimee ? new Date() : null,
+        },
+      ],
+      ...(profil === 'coordinateur'
+        ? { coordinateur: { aUneEquipe: false, aCoordonne: false } }
+        : {}),
+    })
+  },
+)
+
+When('les utilisateurs actifs par mois sont mesurés de nouveau', async () => {
+  mesureParMois.apres = await utilisateursActifsParMois()
+})
+
 When('les utilisateurs actifs sont mesurés de nouveau', async () => {
   mesure.apres = await mesurerLesUtilisateursActifs(new Date())
 })
@@ -76,3 +138,21 @@ Then(
     )
   },
 )
+
+Then(
+  'les médiateurs actifs du mois en cours ont augmenté de {int}',
+  (attendu: number) => {
+    assert.strictEqual(
+      (mediateursActifsParMois(mesureParMois.apres).at(-1) ?? 0) -
+        (mediateursActifsParMois(mesureParMois.avant).at(-1) ?? 0),
+      attendu,
+    )
+  },
+)
+
+Then('aucun mois affiché ne compte de médiateur actif de plus', () => {
+  assert.deepStrictEqual(
+    mediateursActifsParMois(mesureParMois.apres),
+    mediateursActifsParMois(mesureParMois.avant),
+  )
+})

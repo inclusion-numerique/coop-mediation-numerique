@@ -3,17 +3,21 @@ import { Given, Then, When } from '@cucumber/cucumber'
 import {
   type BeneficiaireAccompagne,
   type EtatDeLActivite,
+  semerUnBeneficiaireSansAccompagnement,
   semerUneActivite,
+  semerUneActiviteSurLesBeneficiairesDeCollegues,
 } from '@/features/legal/legal.cucumber'
 import { lireLesAccompagnements } from './implementations/prisma/accompagnements.query'
 import { lireLesBeneficiaires } from './implementations/prisma/beneficiaires.query'
+import { suiviDesBeneficiaires } from './implementations/prisma/suivi-des-beneficiaires.query'
 
 const relever = async () => {
-  const [beneficiaires, accompagnements] = await Promise.all([
+  const [beneficiaires, accompagnements, suivi] = await Promise.all([
     lireLesBeneficiaires(),
     lireLesAccompagnements(),
+    suiviDesBeneficiaires(),
   ])
-  return { beneficiaires, accompagnements }
+  return { beneficiaires, accompagnements, suivi }
 }
 
 type Releve = Awaited<ReturnType<typeof relever>>
@@ -89,6 +93,17 @@ Given(
   },
 )
 
+Given("un bénéficiaire suivi qui n'a jamais été accompagné", async () => {
+  await semerUnBeneficiaireSansAccompagnement({ accompagne: 'suivi' })
+})
+
+Given(
+  'une activité saisie par un médiateur qui accompagne les bénéficiaires suivis de deux autres médiateurs',
+  async () => {
+    await semerUneActiviteSurLesBeneficiairesDeCollegues(2)
+  },
+)
+
 When('les statistiques publiques sont relevées à nouveau', async () => {
   releves.apres = await relever()
 })
@@ -155,6 +170,46 @@ Then(
         byBeneficiairesAnonymes:
           cumul.byBeneficiairesAnonymes + mois.byBeneficiairesAnonymes,
       })),
+    )
+  },
+)
+
+Then('le dernier mois du cumul des bénéficiaires égale leur total', () => {
+  const { series, runningTotalPerMonth } = releve('apres').beneficiaires
+  const dernierMois = runningTotalPerMonth.at(-1)
+  assert.deepStrictEqual(
+    {
+      byBeneficiairesSuivis: dernierMois?.byBeneficiairesSuivis,
+      byBeneficiairesAnonymes: dernierMois?.byBeneficiairesAnonymes,
+    },
+    {
+      byBeneficiairesSuivis: valeurDeLaSerie(series, 'byBeneficiairesSuivis'),
+      byBeneficiairesAnonymes: valeurDeLaSerie(
+        series,
+        'byBeneficiairesAnonymes',
+      ),
+    },
+  )
+})
+
+Then(
+  'les médiateurs suivant des bénéficiaires ont augmenté de {int}',
+  (attendu: number) => {
+    assert.strictEqual(
+      releve('apres').suivi.mediateursAvecBeneficiaires.value -
+        releve('avant').suivi.mediateursAvecBeneficiaires.value,
+      attendu,
+    )
+  },
+)
+
+Then(
+  'les bénéficiaires suivis de la moyenne égalent les bénéficiaires suivis du total',
+  () => {
+    const { beneficiaires, suivi } = releve('apres')
+    assert.strictEqual(
+      suivi.moyenneAccompagnements.total,
+      valeurDeLaSerie(beneficiaires.series, 'byBeneficiairesSuivis'),
     )
   },
 )

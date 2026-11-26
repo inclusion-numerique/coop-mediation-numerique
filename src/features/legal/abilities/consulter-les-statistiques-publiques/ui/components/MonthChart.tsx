@@ -81,7 +81,6 @@ export const MonthChart = ({
   series,
   counts,
   runningTotal,
-  showCumulativeToggle = true,
 }: {
   title: string
   nextForTitleAs: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'div'
@@ -89,7 +88,6 @@ export const MonthChart = ({
   series: ChartSerie[]
   counts: DonneesDuGraphique[]
   runningTotal?: DonneesDuGraphique[] | undefined
-  showCumulativeToggle?: boolean
 }) => {
   const [isCumulative, setIsCumulative] = useState(false)
 
@@ -112,7 +110,7 @@ export const MonthChart = ({
         <ChartTitle className="fr-h6 fr-col-12 fr-col-lg fr-mb-4v fr-mb-md-0">
           {title}
         </ChartTitle>
-        {showCumulativeToggle && runningTotal != null && (
+        {runningTotal != null && (
           <SegmentedControl
             className="fr-col-12 fr-col-lg-auto"
             hideLegend
