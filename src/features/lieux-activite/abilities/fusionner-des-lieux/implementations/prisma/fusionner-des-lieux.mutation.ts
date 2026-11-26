@@ -1,13 +1,11 @@
 import { prismaClient } from '@/configuration/prisma'
 import type { LieuInclusion, Prisma } from '@/generated/prisma/client'
 import { unionArrays } from '@/libraries/collections'
-import { failure, type Result, success } from '@/libraries/result'
-import type { LieuId } from '../../../../domain/identifiants/lieu-id'
 import { toutesLesColonnes } from '../../../../implementations/prisma/registre/colonnes-a-ecrire.select'
 import { ecrireLeLieuAuRegistre } from '../../../../implementations/prisma/registre/ecrire-au-registre.mutation'
 import { inscriptionPourLIdentifiantCarto } from '../../../../implementations/prisma/registre/identifiants-carto.query'
 import { retirerDuRegistre } from '../../../../implementations/prisma/registre/retirer-du-registre.mutation'
-import { type EchecDeFusion, LieuIntrouvable } from '../../domain'
+import type { FusionnerLesLieux } from '../../domain'
 
 type PrismaTransaction = Prisma.TransactionClient
 
@@ -142,33 +140,11 @@ const fusionnerAuRegistre =
     })
   }
 
-export const fusionnerDesLieux = async (
-  { source, cible }: { readonly source: LieuId; readonly cible: LieuId },
-  options?: { timeout?: number },
-): Promise<Result<void, EchecDeFusion>> =>
-  prismaClient.$transaction(
-    async (prisma): Promise<Result<void, EchecDeFusion>> => {
-      const [lieuSource, lieuCible] = await Promise.all([
-        prisma.lieuInclusion.findUnique({
-          where: { id: source },
-          select: { id: true },
-        }),
-        prisma.lieuInclusion.findUnique({
-          where: { id: cible },
-          select: { id: true },
-        }),
-      ])
-
-      if (lieuSource == null) return failure(LieuIntrouvable(source))
-      if (lieuCible == null) return failure(LieuIntrouvable(cible))
-
-      await mergeMediateursEnActivite(prisma)(source, cible)
-      await mergeActivitesLieu(prisma)(source, cible)
-      await fusionnerLesChamps(prisma)(source, cible)
-      await fusionnerAuRegistre(prisma)(source, cible)
-      await deleteStructure(prisma)(source)
-
-      return success(undefined)
-    },
-    options?.timeout === undefined ? {} : { timeout: options.timeout },
-  )
+export const fusionnerLesLieux: FusionnerLesLieux = async ({ source, cible }) =>
+  prismaClient.$transaction(async (prisma) => {
+    await mergeMediateursEnActivite(prisma)(source, cible)
+    await mergeActivitesLieu(prisma)(source, cible)
+    await fusionnerLesChamps(prisma)(source, cible)
+    await fusionnerAuRegistre(prisma)(source, cible)
+    await deleteStructure(prisma)(source)
+  })

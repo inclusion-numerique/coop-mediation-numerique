@@ -5,7 +5,9 @@ import { withAdmin } from '@/features/authentification/middlewares/with-admin'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { FUSIONNER_DES_LIEUX_ERRORS } from '@/features/lieux-activite/abilities/fusionner-des-lieux/action/fusionner-des-lieux.errors'
 import { FusionnerDesLieuxValidation } from '@/features/lieux-activite/abilities/fusionner-des-lieux/action/fusionner-des-lieux.validation'
-import { fusionnerDesLieux } from '@/features/lieux-activite/abilities/fusionner-des-lieux/implementations/prisma/fusionner-des-lieux.mutation'
+import { fusionnerDesLieux } from '@/features/lieux-activite/abilities/fusionner-des-lieux/domain'
+import { fusionnerLesLieux } from '@/features/lieux-activite/abilities/fusionner-des-lieux/implementations/prisma/fusionner-des-lieux.mutation'
+import { lieuxExistants } from '@/features/lieux-activite/abilities/fusionner-des-lieux/implementations/prisma/lieux-existants.query'
 import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
 import { fromResult, withInput } from '@/libraries/nextjs'
 
@@ -21,7 +23,7 @@ export const fusionnerDesLieuxAction = actionBuilder()
   .execute(
     fromResult(
       async ({ input }) =>
-        fusionnerDesLieux({
+        fusionnerDesLieux({ lieuxExistants, fusionner: fusionnerLesLieux })({
           source: LieuId(input.sourceStructureId),
           cible: LieuId(input.targetStructureId),
         }),
