@@ -1,6 +1,7 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
-import { quitterUneEquipe } from '@/features/equipe/abilities/quitter-une-equipe/implementations/prisma/quitter-une-equipe.mutation'
+import { quitterUneEquipe as quitterUneEquipeAvec } from '@/features/equipe/abilities/quitter-une-equipe/domain/quitter-une-equipe'
+import { enregistrerLeDepart } from '@/features/equipe/abilities/quitter-une-equipe/implementations/prisma/enregistrer-le-depart.mutation'
 import {
   CoordinateurId,
   MediateurId,
@@ -14,6 +15,12 @@ import {
   semerUneAdhesion,
   semerUnMediateurDEquipe,
 } from '@/features/equipe/equipe.cucumber'
+import { lireLesAdhesionsDeLaPaire } from '@/features/equipe/implementations/prisma/adhesion.query'
+
+const quitterUneEquipe = quitterUneEquipeAvec({
+  lireLesAdhesionsDeLaPaire,
+  enregistrerLeDepart,
+})
 
 const contexte: {
   coordinateur?: CoordinateurSeme
@@ -58,6 +65,7 @@ When("ce médiateur quitte l'équipe", async () => {
     mediateurId: MediateurId(paire().mediateurId),
     coordinateurId: CoordinateurId(paire().coordinateurId),
     auteurId: UtilisateurId(contexte.mediateur.userId),
+    maintenant: new Date(),
   })
 })
 

@@ -1,5 +1,5 @@
 import { prismaClient } from '@/configuration/prisma'
-import type { AdhesionArchivee, LireLesAdhesionsDeLaPaire } from '../../domain'
+import type { LireLesAdhesionsDeLaPaire } from '../../domain'
 import { adhesionSelect, toAdhesion } from './adhesion.transfer'
 
 export const lireLesAdhesionsDeLaPaire: LireLesAdhesionsDeLaPaire = async ({
@@ -12,16 +12,4 @@ export const lireLesAdhesionsDeLaPaire: LireLesAdhesionsDeLaPaire = async ({
   })
 
   return lignes.map(toAdhesion)
-}
-
-export const enregistrerLArchivage = async (
-  adhesion: AdhesionArchivee,
-): Promise<void> => {
-  await prismaClient.mediateurCoordonne.update({
-    where: { id: adhesion.id },
-    data: {
-      suppression: adhesion.archiveeLe,
-      modification: adhesion.archiveeLe,
-    },
-  })
 }
