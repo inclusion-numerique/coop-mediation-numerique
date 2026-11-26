@@ -1,7 +1,6 @@
 'use server'
 
 import { actionBuilder } from '@/configuration/nextjs'
-import { signaler } from '@/configuration/telemetry/serveur'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { RELANCER_UNE_INVITATION_ERRORS } from '@/features/equipe/abilities/relancer-une-invitation/action/relancer-une-invitation.errors'
 import { RelancerUneInvitationValidation } from '@/features/equipe/abilities/relancer-une-invitation/action/relancer-une-invitation.validation'
@@ -31,7 +30,6 @@ export const relancerUneInvitationAction = actionBuilder()
           lireUneInvitation,
           lireLeCoordinateur,
           envoyerUneInvitation,
-          signaler,
           enregistrerLaRelance,
         })({
           reference: ReferenceInvitation({

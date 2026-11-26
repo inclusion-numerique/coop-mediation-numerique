@@ -1,6 +1,5 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
-import { signaler } from '@/configuration/telemetry/serveur'
 import { relancerUneInvitation as relancerUneInvitationAvec } from '@/features/equipe/abilities/relancer-une-invitation/domain/relancer-une-invitation'
 import { enregistrerLaRelance } from '@/features/equipe/abilities/relancer-une-invitation/implementations/prisma/enregistrer-la-relance.mutation'
 import {
@@ -23,7 +22,6 @@ const relancerUneInvitation = relancerUneInvitationAvec({
   lireUneInvitation,
   lireLeCoordinateur,
   envoyerUneInvitation,
-  signaler,
   enregistrerLaRelance,
 })
 

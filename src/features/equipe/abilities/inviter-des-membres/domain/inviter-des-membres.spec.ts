@@ -1,8 +1,10 @@
 import { describe, expect, it } from 'vitest'
+import { failure, success } from '@/libraries/result'
 import {
   type CoordinateurDeLEquipe,
   CoordinateurId,
   Courriel,
+  EnvoiEchoue,
   type Invitation,
   MediateurId,
   NomAffiche,
@@ -53,8 +55,7 @@ describe('inviter des membres', () => {
       lireLeCoordinateur: async () => coordinateur,
       lireLExistant: async () => ({ existant: personne, cles: 1 }),
       enregistrerLesInvitations: async () => undefined,
-      envoyerUneInvitation: async () => undefined,
-      signaler: () => undefined,
+      envoyerUneInvitation: async () => success(undefined),
     })
 
     expect(
@@ -78,8 +79,7 @@ describe('inviter des membres', () => {
         cles: 1,
       }),
       enregistrerLesInvitations: async () => undefined,
-      envoyerUneInvitation: async () => undefined,
-      signaler: () => undefined,
+      envoyerUneInvitation: async () => success(undefined),
     })
 
     expect(
@@ -107,8 +107,7 @@ describe('inviter des membres', () => {
         cles: 1,
       }),
       enregistrerLesInvitations: async () => undefined,
-      envoyerUneInvitation: async () => undefined,
-      signaler: () => undefined,
+      envoyerUneInvitation: async () => success(undefined),
     })
 
     expect(
@@ -149,8 +148,7 @@ describe('inviter des membres', () => {
       lireLeCoordinateur: async () => coordinateur,
       lireLExistant: async () => ({ existant, cles: 1 }),
       enregistrerLesInvitations: async () => undefined,
-      envoyerUneInvitation: async () => undefined,
-      signaler: () => undefined,
+      envoyerUneInvitation: async () => success(undefined),
     })
 
     expect(
@@ -166,9 +164,7 @@ describe('inviter des membres', () => {
       lireLeCoordinateur: async () => coordinateur,
       lireLExistant: async () => ({ existant: personne, cles: 1 }),
       enregistrerLesInvitations: async () => undefined,
-      envoyerUneInvitation: () =>
-        Promise.reject(new Error('SMTP indisponible')),
-      signaler: () => undefined,
+      envoyerUneInvitation: async () => failure(EnvoiEchoue()),
     })
 
     expect(
@@ -184,8 +180,7 @@ describe('inviter des membres', () => {
       lireLeCoordinateur: async () => coordinateur,
       lireLExistant: async () => ({ existant: personne, cles: 1 }),
       enregistrerLesInvitations: async () => undefined,
-      envoyerUneInvitation: async () => undefined,
-      signaler: () => undefined,
+      envoyerUneInvitation: async () => success(undefined),
     })
 
     expect(
@@ -203,8 +198,7 @@ describe('inviter des membres', () => {
       lireLeCoordinateur: async () => null,
       lireLExistant: async () => ({ existant: personne, cles: 1 }),
       enregistrerLesInvitations: async () => undefined,
-      envoyerUneInvitation: async () => undefined,
-      signaler: () => undefined,
+      envoyerUneInvitation: async () => success(undefined),
     })
 
     expect(

@@ -2,7 +2,7 @@ import { failure, type Result, success } from '@/libraries/result'
 import {
   ActionNonAutorisee,
   CoordinateurIntrouvable,
-  EnvoiEchoue,
+  type EnvoiEchoue,
   type EnvoyerUneInvitation,
   exigerEnAttente,
   exigerUneRelancePossible,
@@ -14,7 +14,6 @@ import {
   peutGererLEquipe,
   type ReferenceInvitation,
   type RelanceTropRecente,
-  type Signaler,
   type UtilisateurId,
 } from '../../../domain'
 
@@ -38,13 +37,11 @@ export const relancerUneInvitation =
     lireUneInvitation,
     lireLeCoordinateur,
     envoyerUneInvitation,
-    signaler,
     enregistrerLaRelance,
   }: {
     readonly lireUneInvitation: LireUneInvitation<Cle>
     readonly lireLeCoordinateur: LireLeCoordinateur
     readonly envoyerUneInvitation: EnvoyerUneInvitation
-    readonly signaler: Signaler
     readonly enregistrerLaRelance: EnregistrerLaRelance<Cle>
   }) =>
   async ({
@@ -73,17 +70,11 @@ export const relancerUneInvitation =
     const coordinateur = await lireLeCoordinateur(reference.coordinateurId)
     if (coordinateur === null) return failure(CoordinateurIntrouvable())
 
-    const envoyee = await envoyerUneInvitation({
+    const envoi = await envoyerUneInvitation({
       invitation: relancable.data,
       de: coordinateur.nom,
-    }).then(
-      () => true,
-      (erreur: unknown) => {
-        signaler(erreur)
-        return false
-      },
-    )
-    if (!envoyee) return failure(EnvoiEchoue())
+    })
+    if (!envoi.success) return envoi
 
     await enregistrerLaRelance({
       cle: lue.cle,

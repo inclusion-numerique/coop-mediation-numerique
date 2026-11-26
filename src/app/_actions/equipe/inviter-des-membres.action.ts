@@ -1,7 +1,6 @@
 'use server'
 
 import { actionBuilder } from '@/configuration/nextjs'
-import { signaler } from '@/configuration/telemetry/serveur'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { INVITER_DES_MEMBRES_ERRORS } from '@/features/equipe/abilities/inviter-des-membres/action/inviter-des-membres.errors'
 import { InviterDesMembresValidation } from '@/features/equipe/abilities/inviter-des-membres/action/inviter-des-membres.validation'
@@ -27,7 +26,6 @@ export const inviterDesMembresAction = actionBuilder()
           lireLExistant,
           enregistrerLesInvitations,
           envoyerUneInvitation,
-          signaler,
         })({
           inviteur: inviteurDe(user),
           candidats: input.emails.map(Courriel),

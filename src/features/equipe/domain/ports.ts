@@ -1,8 +1,12 @@
+import type { Result } from '@/libraries/result'
 import type { Adhesion } from './adhesion'
 import type { CoordinateurDeLEquipe } from './coordinateur-de-l-equipe'
+import type { EnvoiEchoue } from './errors'
 import type { CoordinateurId } from './identifiants/coordinateur-id'
 import type { MediateurId } from './identifiants/mediateur-id'
-import type { Invitation } from './invitation/invitation'
+import type { NomAffiche } from './identite/nom-affiche'
+import type { Invitation, InvitationEnAttente } from './invitation/invitation'
+import type { Prevenance } from './invitation/prevenance'
 import type { ReferenceInvitation } from './invitation/reference-invitation'
 
 export type InvitationLue<Cle> = {
@@ -23,4 +27,9 @@ export type LireLesAdhesionsDeLaPaire = (paire: {
   readonly coordinateurId: CoordinateurId
 }) => Promise<readonly Adhesion[]>
 
-export type Signaler = (erreur: unknown) => void
+export type EnvoyerUneInvitation = (envoi: {
+  readonly invitation: InvitationEnAttente
+  readonly de: NomAffiche
+}) => Promise<Result<void, EnvoiEchoue>>
+
+export type PrevenirLeCoordinateur = (prevenance: Prevenance) => Promise<void>

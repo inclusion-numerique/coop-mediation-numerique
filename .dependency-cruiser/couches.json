@@ -222,6 +222,7 @@
   ],
   "libraries/result": [
     "employeuse/abilities/rattacher-a-une-employeuse/implementations/api-entreprise",
+    "equipe/implementations/email",
     "lieux-activite/abilities/ajouter-des-lieux-activite/action",
     "lieux-activite/abilities/ajouter-des-lieux-activite/ui/forms",
     "rdvsp/abilities/consulter-rdvs-accueil/ui/slots"

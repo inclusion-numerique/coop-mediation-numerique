@@ -8,7 +8,7 @@ import { signaler } from '@/configuration/telemetry/serveur'
 import { invitationAcceptee } from '@/features/equipe/implementations/email/invitation-acceptee.email'
 import { invitationRefusee } from '@/features/equipe/implementations/email/invitation-refusee.email'
 import { compileMjml } from '@/libraries/emails/rendu'
-import type { Courriel } from '../../domain'
+import type { Prevenance, PrevenirLeCoordinateur } from '../../domain'
 
 const reponses = {
   Acceptee: {
@@ -27,11 +27,7 @@ const envoyer = async ({
   coordinateur,
   invite,
   reponse,
-}: {
-  coordinateur: string
-  invite: Courriel
-  reponse: keyof typeof reponses
-}): Promise<void> => {
+}: Prevenance): Promise<void> => {
   const { gabarit, sujet } = reponses[reponse]
 
   const resultat = await emailTransport.sendMail({
@@ -46,9 +42,9 @@ const envoyer = async ({
   throwOnSendMailFailure(resultat)
 }
 
-export const prevenirLeCoordinateur = async (
-  prevenir: Parameters<typeof envoyer>[0],
-): Promise<void> => {
+export const prevenirLeCoordinateur: PrevenirLeCoordinateur = async (
+  prevenir,
+) => {
   try {
     await envoyer(prevenir)
   } catch (erreur) {

@@ -1,8 +1,10 @@
 import { describe, expect, it } from 'vitest'
+import { failure, success } from '@/libraries/result'
 import {
   type CoordinateurDeLEquipe,
   CoordinateurId,
   Courriel,
+  EnvoiEchoue,
   type Gestionnaire,
   NomAffiche,
   ReferenceInvitation,
@@ -55,8 +57,7 @@ describe('relancer une invitation', () => {
         cle: 1,
       }),
       lireLeCoordinateur: async () => coordinateur,
-      envoyerUneInvitation: async () => undefined,
-      signaler: () => undefined,
+      envoyerUneInvitation: async () => success(undefined),
       enregistrerLaRelance: async () => undefined,
     })
 
@@ -72,8 +73,7 @@ describe('relancer une invitation', () => {
         cle: 1,
       }),
       lireLeCoordinateur: async () => coordinateur,
-      envoyerUneInvitation: async () => undefined,
-      signaler: () => undefined,
+      envoyerUneInvitation: async () => success(undefined),
       enregistrerLaRelance: async () => undefined,
     })
 
@@ -91,8 +91,7 @@ describe('relancer une invitation', () => {
     const relancer = relancerUneInvitation({
       lireUneInvitation: async () => null,
       lireLeCoordinateur: async () => coordinateur,
-      envoyerUneInvitation: async () => undefined,
-      signaler: () => undefined,
+      envoyerUneInvitation: async () => success(undefined),
       enregistrerLaRelance: async () => undefined,
     })
 
@@ -108,8 +107,7 @@ describe('relancer une invitation', () => {
         cle: 1,
       }),
       lireLeCoordinateur: async () => coordinateur,
-      envoyerUneInvitation: async () => undefined,
-      signaler: () => undefined,
+      envoyerUneInvitation: async () => success(undefined),
       enregistrerLaRelance: async () => undefined,
     })
 
@@ -128,8 +126,7 @@ describe('relancer une invitation', () => {
         cle: 1,
       }),
       lireLeCoordinateur: async () => coordinateur,
-      envoyerUneInvitation: async () => undefined,
-      signaler: () => undefined,
+      envoyerUneInvitation: async () => success(undefined),
       enregistrerLaRelance: async () => undefined,
     })
 
@@ -150,8 +147,7 @@ describe('relancer une invitation', () => {
         cle: 1,
       }),
       lireLeCoordinateur: async () => null,
-      envoyerUneInvitation: async () => undefined,
-      signaler: () => undefined,
+      envoyerUneInvitation: async () => success(undefined),
       enregistrerLaRelance: async () => undefined,
     })
 
@@ -167,9 +163,7 @@ describe('relancer une invitation', () => {
         cle: 1,
       }),
       lireLeCoordinateur: async () => coordinateur,
-      envoyerUneInvitation: () =>
-        Promise.reject(new Error('SMTP indisponible')),
-      signaler: () => undefined,
+      envoyerUneInvitation: async () => failure(EnvoiEchoue()),
       enregistrerLaRelance: async () => undefined,
     })
 

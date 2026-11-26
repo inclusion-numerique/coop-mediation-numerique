@@ -8,7 +8,6 @@ import {
   type InvitationEnAttente,
   type LireLeCoordinateur,
   type NomAffiche,
-  type Signaler,
   type UtilisateurId,
 } from '../../../domain'
 import type { AucuneInvitationAEnvoyer } from './errors'
@@ -39,21 +38,15 @@ export type EnregistrerLesInvitations<Cles> = (enregistrement: {
 const envoyerAvec =
   ({
     envoyerUneInvitation,
-    signaler,
     de,
   }: {
     readonly envoyerUneInvitation: EnvoyerUneInvitation
-    readonly signaler: Signaler
     readonly de: NomAffiche
   }) =>
-  (invitation: InvitationEnAttente): Promise<Courriel | null> =>
-    envoyerUneInvitation({ invitation, de }).then(
-      () => null,
-      (erreur: unknown) => {
-        signaler(erreur)
-        return invitation.reference.email
-      },
-    )
+  async (invitation: InvitationEnAttente): Promise<Courriel | null> =>
+    (await envoyerUneInvitation({ invitation, de })).success
+      ? null
+      : invitation.reference.email
 
 export const inviterDesMembres =
   <Cles>({
@@ -61,13 +54,11 @@ export const inviterDesMembres =
     lireLExistant,
     enregistrerLesInvitations,
     envoyerUneInvitation,
-    signaler,
   }: {
     readonly lireLeCoordinateur: LireLeCoordinateur
     readonly lireLExistant: LireLExistant<Cles>
     readonly enregistrerLesInvitations: EnregistrerLesInvitations<Cles>
     readonly envoyerUneInvitation: EnvoyerUneInvitation
-    readonly signaler: Signaler
   }) =>
   async ({
     inviteur,
@@ -113,7 +104,7 @@ export const inviterDesMembres =
     const echecs = (
       await Promise.all(
         aEnvoyer.map(
-          envoyerAvec({ envoyerUneInvitation, signaler, de: coordinateur.nom }),
+          envoyerAvec({ envoyerUneInvitation, de: coordinateur.nom }),
         ),
       )
     ).filter((email): email is Courriel => email !== null)

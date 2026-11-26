@@ -33,10 +33,6 @@ export { Courriel } from './identite/courriel'
 export { Nom } from './identite/nom'
 export { NomAffiche, nomAffiche } from './identite/nom-affiche'
 export { Prenom } from './identite/prenom'
-export type {
-  EnvoyerUneInvitation,
-  PrevenirLeCoordinateur,
-} from './invitation/envois'
 export {
   exigerEnAttente,
   exigerUneRelancePossible,
@@ -48,6 +44,7 @@ export {
   LienInvitation,
   PREFIXE_DU_LIEN_D_INVITATION,
 } from './invitation/lien-invitation'
+export type { Prevenance } from './invitation/prevenance'
 export { ReferenceInvitation } from './invitation/reference-invitation'
 export { type Lecteur, peutConsulterLEquipe } from './lecteur'
 export {
@@ -59,11 +56,12 @@ export {
 } from './ligne-equipe'
 export { NomStructure } from './nom-structure'
 export type {
+  EnvoyerUneInvitation,
   InvitationLue,
   LireLeCoordinateur,
   LireLesAdhesionsDeLaPaire,
   LireUneInvitation,
-  Signaler,
+  PrevenirLeCoordinateur,
 } from './ports'
 export { RoleMembre, roleMembre } from './role-membre'
 export {

@@ -1,7 +1,6 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { prismaClient } from '@/configuration/prisma'
-import { signaler } from '@/configuration/telemetry/serveur'
 import { type MediateursAInviter } from '@/features/equipe/abilities/inviter-des-membres/domain/index'
 import { inviterDesMembres as inviterDesMembresAvec } from '@/features/equipe/abilities/inviter-des-membres/domain/inviter-des-membres'
 import { enregistrerLesInvitations } from '@/features/equipe/abilities/inviter-des-membres/implementations/prisma/enregistrer-les-invitations.mutation'
@@ -29,7 +28,6 @@ const inviterDesMembres = inviterDesMembresAvec({
   lireLExistant,
   enregistrerLesInvitations,
   envoyerUneInvitation,
-  signaler,
 })
 
 const contexte: {
