@@ -5,8 +5,10 @@ import type { SupprimerLActiviteDeMediation } from '../../domain'
 
 export const supprimerLActiviteDeMediation =
   (auteurId: UtilisateurId): SupprimerLActiviteDeMediation =>
-  async ({ id, type, suivis, anonymesOrphelins }) => {
-    const maintenant = new Date()
+  async ({
+    activite: { id, type, suivis, anonymesOrphelins },
+    suppression,
+  }) => {
     await prismaClient.$transaction(async (transaction) => {
       await transaction.accompagnement.deleteMany({ where: { activiteId: id } })
       await transaction.activitesTags.deleteMany({ where: { activiteId: id } })
@@ -16,8 +18,8 @@ export const supprimerLActiviteDeMediation =
       await transaction.activite.update({
         where: { id },
         data: {
-          suppression: maintenant,
-          modification: maintenant,
+          suppression,
+          modification: suppression,
           rdvId: null,
         },
       })

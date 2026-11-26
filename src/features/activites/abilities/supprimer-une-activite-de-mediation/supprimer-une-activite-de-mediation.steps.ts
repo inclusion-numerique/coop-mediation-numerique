@@ -2,12 +2,15 @@ import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
-import { supprimerUneActiviteDeMediation } from '@/features/activites/abilities/supprimer-une-activite-de-mediation/domain/index'
+import {
+  type EchecDeSupprimerUneActiviteDeMediation,
+  type SuppressionDeLActiviteDeMediation,
+  supprimerUneActiviteDeMediation,
+} from '@/features/activites/abilities/supprimer-une-activite-de-mediation/domain/index'
 import { activiteDeMediationDuMediateur } from '@/features/activites/abilities/supprimer-une-activite-de-mediation/implementations/prisma/activite-de-mediation-du-mediateur.query'
 import { supprimerLActiviteDeMediation } from '@/features/activites/abilities/supprimer-une-activite-de-mediation/implementations/prisma/supprimer-une-activite-de-mediation.mutation'
 import {
   ActiviteId,
-  type ActiviteIntrouvable,
   MediateurId,
   UtilisateurId,
 } from '@/features/activites/domain'
@@ -26,7 +29,12 @@ type Semis = {
 }
 
 let semis: Semis | undefined
-let resultat: Result<void, ActiviteIntrouvable> | undefined
+let resultat:
+  | Result<
+      SuppressionDeLActiviteDeMediation,
+      EchecDeSupprimerUneActiviteDeMediation
+    >
+  | undefined
 
 const semerUnMediateur = async (): Promise<Mediateur> => {
   const userId = v4()
@@ -105,6 +113,7 @@ const supprimerPar = async (mediateur: Mediateur, activiteId: string) => {
   })({
     activiteId: ActiviteId(activiteId),
     mediateurId: MediateurId(mediateur.mediateurId),
+    maintenant: new Date(),
   })
 }
 

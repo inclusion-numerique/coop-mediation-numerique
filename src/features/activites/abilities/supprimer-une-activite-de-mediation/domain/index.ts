@@ -1,6 +1,9 @@
-export {
-  type ActiviteDeMediationASupprimer,
-  type ActiviteDeMediationDuMediateur,
-  type SupprimerLActiviteDeMediation,
-  supprimerUneActiviteDeMediation,
-} from './supprimer-une-activite-de-mediation'
+export type { EchecDeSupprimerUneActiviteDeMediation } from './errors'
+export type {
+  ActiviteDeMediationASupprimer,
+  ActiviteDeMediationDuMediateur,
+  SuppressionDeLActiviteDeMediation,
+  SupprimerLActiviteDeMediation,
+  SupprimerUneActiviteDeMediationPorts,
+} from './ports'
+export { supprimerUneActiviteDeMediation } from './supprimer-une-activite-de-mediation'

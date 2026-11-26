@@ -14,6 +14,7 @@ import {
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { fromResult, withInput } from '@/libraries/nextjs'
+import { success } from '@/libraries/result'
 
 export const supprimerUneActiviteDeMediationAction = actionBuilder()
   .use(withAuth())
@@ -21,15 +22,18 @@ export const supprimerUneActiviteDeMediationAction = actionBuilder()
   .use(withInput(SupprimerUneActiviteDeMediationValidation))
   .execute(
     fromResult(
-      async ({ user, input }) =>
-        supprimerUneActiviteDeMediation({
+      async ({ user, input }) => {
+        const supprimee = await supprimerUneActiviteDeMediation({
           activiteDuMediateur: activiteDeMediationDuMediateur,
           supprimer: supprimerLActiviteDeMediation(UtilisateurId(user.id)),
         })({
           activiteId: ActiviteId(input.activiteId),
           mediateurId:
             user.mediateur == null ? null : MediateurId(user.mediateur.id),
-        }),
+          maintenant: new Date(),
+        })
+        return supprimee.success ? success(undefined) : supprimee
+      },
       { onError: SUPPRIMER_UNE_ACTIVITE_DE_MEDIATION_ERRORS },
     ),
   )
