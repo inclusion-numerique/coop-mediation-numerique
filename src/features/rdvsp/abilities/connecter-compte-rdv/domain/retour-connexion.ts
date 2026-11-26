@@ -1,4 +1,4 @@
-import type { ErreurConnexionCompte } from './connecter-compte-rdv'
+import type { EchecDeConnecterCompteRdv } from './errors'
 
 export type DestinationsDeRetour = {
   readonly redirectToSuccess?: string
@@ -19,7 +19,7 @@ export const issuesDuRetour = (
   echec: destinations.redirectToError ?? DESTINATION_PAR_DEFAUT,
 })
 
-export const motifDiagnostic = (erreur: ErreurConnexionCompte): string =>
+export const motifDiagnostic = (erreur: EchecDeConnecterCompteRdv): string =>
   erreur._tag === 'CodeAutorisationRefuse'
     ? `${erreur._tag} (${erreur.detail})`
     : erreur._tag

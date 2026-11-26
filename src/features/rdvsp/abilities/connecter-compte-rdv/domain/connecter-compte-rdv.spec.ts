@@ -17,11 +17,9 @@ import {
   PrenomExterne,
 } from '../../../domain/identite'
 import { CodeAutorisation } from './code-autorisation'
-import {
-  connecterCompteRdv,
-  type DependancesConnecterCompteRdv,
-} from './connecter-compte-rdv'
+import { connecterCompteRdv } from './connecter-compte-rdv'
 import { CodeAutorisationRefuse } from './errors'
+import type { ConnecterCompteRdvPorts } from './ports'
 
 const utilisateurId = UtilisateurCoopId('d10844c6-b6de-402a-a68d-f8328b1d1b0c')
 const agentId = RdvAgentId(4242)
@@ -76,24 +74,24 @@ const compteRelie: CompteRdvLie = {
   jetons,
 }
 
-const dependances: DependancesConnecterCompteRdv = {
+const ports: ConnecterCompteRdvPorts = {
   echangerCode: async () => success(jetons),
   identifierAgent: async () => success(agent),
   compteExistant: async () => null,
-  enregistrer: async ({ compte }) => compte,
-  maintenant: () => maintenant,
+  enregistrer: async () => undefined,
 }
 
 const demande = {
   utilisateurId,
   emailUtilisateur: EmailExterne('agent@coop-numerique.anct.gouv.fr'),
   code: CodeAutorisation('code-a-usage-unique'),
+  maintenant,
 }
 
-describe('connecterCompteRdv', () => {
+describe('connecter un compte RDV', () => {
   it('lie un premier compte : fenêtre ouverte au début du jour, sans organisation, rendez-vous affichés', async () => {
-    expect(await connecterCompteRdv(dependances)(demande)).toEqual(
-      success(premierCompte),
+    expect(await connecterCompteRdv(ports)(demande)).toEqual(
+      success({ compte: premierCompte, agentIdPrecedent: null }),
     )
   })
 
@@ -122,25 +120,25 @@ describe('connecterCompteRdv', () => {
   ])('$cas', async ({ existant }) => {
     expect(
       await connecterCompteRdv({
-        ...dependances,
+        ...ports,
         compteExistant: async () => existant,
       })(demande),
-    ).toEqual(success(compteRelie))
+    ).toEqual(success({ compte: compteRelie, agentIdPrecedent: agentId }))
   })
 
   it('lie un agent dont l’adresse ne diffère que par la casse et les espaces', async () => {
     expect(
-      await connecterCompteRdv(dependances)({
+      await connecterCompteRdv(ports)({
         ...demande,
         emailUtilisateur: EmailExterne('  Agent@Coop-Numerique.anct.gouv.fr  '),
       }),
-    ).toEqual(success(premierCompte))
+    ).toEqual(success({ compte: premierCompte, agentIdPrecedent: null }))
   })
 
   it('remonte le refus du code d’autorisation sans identifier l’agent', async () => {
     expect(
       await connecterCompteRdv({
-        ...dependances,
+        ...ports,
         echangerCode: async () =>
           failure(CodeAutorisationRefuse('invalid_grant')),
       })(demande),
@@ -152,7 +150,7 @@ describe('connecterCompteRdv', () => {
   it('remonte l’échec de l’identification de l’agent', async () => {
     expect(
       await connecterCompteRdv({
-        ...dependances,
+        ...ports,
         identifierAgent: async () => failure(JetonRevoque(null)),
       })(demande),
     ).toEqual(failure({ _tag: 'JetonRevoque', agentId: null }))
@@ -161,7 +159,7 @@ describe('connecterCompteRdv', () => {
   it('remonte une indisponibilité de l’API pendant l’identification', async () => {
     expect(
       await connecterCompteRdv({
-        ...dependances,
+        ...ports,
         identifierAgent: async () =>
           failure(ApiIndisponible(503, 'maintenance')),
       })(demande),
@@ -176,7 +174,7 @@ describe('connecterCompteRdv', () => {
 
   it('refuse de lier un agent qui ne porte pas l’adresse du compte La Coop', async () => {
     expect(
-      await connecterCompteRdv(dependances)({
+      await connecterCompteRdv(ports)({
         ...demande,
         emailUtilisateur: EmailExterne('autre@coop-numerique.anct.gouv.fr'),
       }),

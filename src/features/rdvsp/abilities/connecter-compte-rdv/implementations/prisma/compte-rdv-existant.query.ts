@@ -1,6 +1,6 @@
 import { prismaClient } from '@/configuration/prisma'
 import { compteRdvToDomain } from '../../../../implementations/prisma/compte-rdv.transfer'
-import type { CompteRdvExistant } from '../../domain/connecter-compte-rdv'
+import type { CompteRdvExistant } from '../../domain/ports'
 
 /**
  * Deux clés peuvent désigner le compte à reprendre : l'agent qui vient de

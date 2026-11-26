@@ -6,8 +6,8 @@ import {
   JetonRafraichissement,
   PorteeOAuth,
 } from '../../../../domain/compte/jetons-oauth'
-import type { EchangerCodeAutorisation } from '../../domain/connecter-compte-rdv'
 import { CodeAutorisationRefuse } from '../../domain/errors'
+import type { EchangerCodeAutorisation } from '../../domain/ports'
 
 const reponseJetons = z.object({
   access_token: z.string().min(1),

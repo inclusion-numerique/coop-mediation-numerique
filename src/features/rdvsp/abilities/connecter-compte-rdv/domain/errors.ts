@@ -1,3 +1,4 @@
+import type { ErreurRdvApi } from '../../../domain/errors'
 import type { EmailExterne } from '../../../domain/identite'
 
 /**
@@ -32,3 +33,8 @@ export type CodeAutorisationRefuse = {
 export const CodeAutorisationRefuse = (
   detail: string,
 ): CodeAutorisationRefuse => ({ _tag: 'CodeAutorisationRefuse', detail })
+
+export type EchecDeConnecterCompteRdv =
+  | CodeAutorisationRefuse
+  | EmailAgentDifferent
+  | ErreurRdvApi

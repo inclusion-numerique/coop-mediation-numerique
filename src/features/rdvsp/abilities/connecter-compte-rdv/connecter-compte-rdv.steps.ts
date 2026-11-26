@@ -1,12 +1,9 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { CodeAutorisation } from '@/features/rdvsp/abilities/connecter-compte-rdv/domain/code-autorisation'
-import type {
-  ConnecterCompteRdv,
-  EchangerCodeAutorisation,
-} from '@/features/rdvsp/abilities/connecter-compte-rdv/domain/connecter-compte-rdv'
 import { connecterCompteRdv } from '@/features/rdvsp/abilities/connecter-compte-rdv/domain/connecter-compte-rdv'
 import { CodeAutorisationRefuse } from '@/features/rdvsp/abilities/connecter-compte-rdv/domain/errors'
+import type { EchangerCodeAutorisation } from '@/features/rdvsp/abilities/connecter-compte-rdv/domain/ports'
 import { compteRdvExistant } from '@/features/rdvsp/abilities/connecter-compte-rdv/implementations/prisma/compte-rdv-existant.query'
 import { enregistrerCompteConnecte } from '@/features/rdvsp/abilities/connecter-compte-rdv/implementations/prisma/enregistrer-compte-connecte.mutation'
 import type { Agent } from '@/features/rdvsp/domain/agent'
@@ -44,7 +41,7 @@ const jetonsEchanges: JetonsOAuth = {
 
 let agentAttendu: Agent | undefined
 let echangeRefuse = false
-let resultat: Awaited<ReturnType<ConnecterCompteRdv>> | undefined
+let resultat: Awaited<ReturnType<typeof connecter>> | undefined
 
 /**
  * L'API RDV Service Public est doublée — la base, elle, est bien réelle (DV-2) :
@@ -67,7 +64,6 @@ const connecter = connecterCompteRdv({
   identifierAgent: identifierAgentDouble,
   compteExistant: compteRdvExistant,
   enregistrer: enregistrerCompteConnecte,
-  maintenant: () => MAINTENANT,
 })
 
 const agentAvecEmail = (email: string): Agent => ({
@@ -149,12 +145,13 @@ When('je connecte mon compte RDV Service Public', async () => {
     utilisateurId: testUtilisateurId,
     emailUtilisateur: await emailUtilisateurDeTest(),
     code: CodeAutorisation('code-oauth'),
+    maintenant: MAINTENANT,
   })
 })
 
 Then('le compte est lié', () => {
   assert.ok(resultat?.success, 'La connexion a échoué')
-  assert.strictEqual(resultat.data._tag, 'lie')
+  assert.strictEqual(resultat.data.compte._tag, 'lie')
 })
 
 Then('le compte est enregistré avec les jetons reçus', async () => {

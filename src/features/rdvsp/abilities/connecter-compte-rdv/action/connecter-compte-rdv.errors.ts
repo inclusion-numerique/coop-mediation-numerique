@@ -1,4 +1,4 @@
-import type { ErreurConnexionCompte } from '../domain/connecter-compte-rdv'
+import type { EchecDeConnecterCompteRdv } from '../domain/errors'
 
 export type MotifEchecConnexion = {
   readonly error: string
@@ -14,7 +14,7 @@ export type MotifEchecConnexion = {
  * l'utilisateur sache s'il devait recommencer, changer de compte ou attendre.
  */
 export const CONNECTER_COMPTE_RDV_ERRORS: Record<
-  ErreurConnexionCompte['_tag'],
+  EchecDeConnecterCompteRdv['_tag'],
   MotifEchecConnexion
 > = {
   CodeAutorisationRefuse: {

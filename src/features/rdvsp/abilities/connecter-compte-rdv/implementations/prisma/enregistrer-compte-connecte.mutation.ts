@@ -1,6 +1,6 @@
 import { prismaClient } from '@/configuration/prisma'
 import { compteRdvFromDomain } from '../../../../implementations/prisma/compte-rdv.transfer'
-import type { EnregistrerCompteConnecte } from '../../domain/connecter-compte-rdv'
+import type { EnregistrerCompteConnecte } from '../../domain/ports'
 
 /**
  * `rdv_accounts` a pour clé primaire l'identifiant de l'agent : reconnecter un
@@ -22,9 +22,4 @@ export const enregistrerCompteConnecte: EnregistrerCompteConnecte = async ({
     create: colonnes,
     update: colonnes,
   })
-
-  // Le compte écrit est rendu tel quel plutôt que relu : la relecture donnerait
-  // un `CompteRdv` qu'il faudrait re-restreindre à sa branche `lie`, et la
-  // fidélité de l'aller-retour est déjà l'objet de `compte-rdv.transfer.spec`.
-  return compte
 }

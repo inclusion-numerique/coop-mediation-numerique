@@ -194,11 +194,11 @@ export const GET = async (request: NextRequest) => {
     identifierAgent: rdvServicePublic.identifierAgent,
     compteExistant: compteRdvExistant,
     enregistrer: enregistrerCompteConnecte,
-    maintenant: () => new Date(),
   })({
     utilisateurId,
     emailUtilisateur: EmailExterne(user.email),
     code: CodeAutorisation(code),
+    maintenant: new Date(),
   })
 
   if (!connexion.success) {
