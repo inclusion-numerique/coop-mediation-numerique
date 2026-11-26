@@ -1,22 +1,13 @@
 import type { UtilisateurId } from '@/features/inscription/domain'
-import type { LireLEtatDeLInscription } from '@/features/inscription/domain/ports'
 import { failure, type Result, success } from '@/libraries/result'
+import { deciderLaStructureEmployeuse } from './decider-la-structure-employeuse'
 import {
-  deciderLaStructureEmployeuse,
-  type RenseignerStructureEmployeuseError,
-} from './decider-la-structure-employeuse'
-import { EmployeuseIndisponible } from './errors'
-import type { ProjeterEtapeFranchie, RattacherEmployeuse } from './ports'
-import {
-  type StructureEmployeuseInput,
-  saisieEmployeuse,
-} from './structure-employeuse-input'
-
-export type RenseignerStructureEmployeusePorts = {
-  readonly lireLEtat: LireLEtatDeLInscription
-  readonly rattacherEmployeuse: RattacherEmployeuse
-  readonly projeterEtapeFranchie: ProjeterEtapeFranchie
-}
+  type EchecDeRenseignerStructureEmployeuse,
+  EmployeuseIndisponible,
+} from './errors'
+import type { RenseignerStructureEmployeusePorts } from './ports'
+import type { SaisieEmployeuse } from './saisie-employeuse'
+import type { StructureEmployeuseRenseignee } from './structure-employeuse-renseignee'
 
 export const renseignerStructureEmployeuse =
   ({
@@ -25,33 +16,30 @@ export const renseignerStructureEmployeuse =
     projeterEtapeFranchie,
   }: RenseignerStructureEmployeusePorts) =>
   async ({
-    command: { userId, structureEmployeuse },
+    command: { userId, saisie },
     maintenant,
   }: {
     readonly command: {
       readonly userId: UtilisateurId
-      readonly structureEmployeuse: StructureEmployeuseInput
+      readonly saisie: SaisieEmployeuse
     }
     readonly maintenant: Date
-  }): Promise<Result<void, RenseignerStructureEmployeuseError>> => {
-    const decision = deciderLaStructureEmployeuse(
-      await lireLEtat(userId),
+  }): Promise<
+    Result<StructureEmployeuseRenseignee, EchecDeRenseignerStructureEmployeuse>
+  > => {
+    const etatFranchi = deciderLaStructureEmployeuse({
+      etat: await lireLEtat(userId),
       userId,
       maintenant,
-    )
-
-    if (!decision.success) return decision
-
-    const rattachement = await rattacherEmployeuse({
-      userId,
-      saisie: saisieEmployeuse(structureEmployeuse),
     })
 
-    if (rattachement._tag !== 'rattachee') {
-      return failure(EmployeuseIndisponible(userId))
-    }
+    if (!etatFranchi.success) return etatFranchi
 
-    await projeterEtapeFranchie(decision.data.etatFranchi)
+    const rattachement = await rattacherEmployeuse({ userId, saisie })
 
-    return success(undefined)
+    if (!rattachement.success) return failure(EmployeuseIndisponible(userId))
+
+    await projeterEtapeFranchie(etatFranchi.data)
+
+    return success({ saisie, etatFranchi: etatFranchi.data })
   }

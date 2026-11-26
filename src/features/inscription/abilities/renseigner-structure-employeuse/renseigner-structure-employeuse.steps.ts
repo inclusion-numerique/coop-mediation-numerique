@@ -1,10 +1,11 @@
 import assert from 'node:assert'
 import { Before, Given, Then, When } from '@cucumber/cucumber'
 import { prismaClient } from '@/configuration/prisma'
-import { type RenseignerStructureEmployeuseError } from '@/features/inscription/abilities/renseigner-structure-employeuse/domain/decider-la-structure-employeuse'
-import { type RattacherEmployeuse } from '@/features/inscription/abilities/renseigner-structure-employeuse/domain/ports'
+import type { EchecDeRenseignerStructureEmployeuse } from '@/features/inscription/abilities/renseigner-structure-employeuse/domain/errors'
+import type { RattacherEmployeuse } from '@/features/inscription/abilities/renseigner-structure-employeuse/domain/ports'
 import { renseignerStructureEmployeuse } from '@/features/inscription/abilities/renseigner-structure-employeuse/domain/renseigner-structure-employeuse'
-import { type StructureEmployeuseInput } from '@/features/inscription/abilities/renseigner-structure-employeuse/domain/structure-employeuse-input'
+import type { SaisieEmployeuse } from '@/features/inscription/abilities/renseigner-structure-employeuse/domain/saisie-employeuse'
+import type { StructureEmployeuseRenseignee } from '@/features/inscription/abilities/renseigner-structure-employeuse/domain/structure-employeuse-renseignee'
 import { projeterEtapeFranchie } from '@/features/inscription/abilities/renseigner-structure-employeuse/implementations/prisma/projeter-etape-franchie.mutation'
 import { ProfilInscription } from '@/features/inscription/domain'
 import { getInscriptionEtat } from '@/features/inscription/implementations/prisma/get-inscription-etat.query'
@@ -25,7 +26,10 @@ const renseignerStructureEmployeuseAvec = (
 
 let rattachable = true
 let rattachementsDemandes = 0
-let resultat: Result<void, RenseignerStructureEmployeuseError>
+let resultat: Result<
+  StructureEmployeuseRenseignee,
+  EchecDeRenseignerStructureEmployeuse
+>
 
 Before(() => {
   rattachable = true
@@ -38,16 +42,18 @@ Before(() => {
  */
 const rattacherEmployeuse: RattacherEmployeuse = async () => {
   rattachementsDemandes += 1
-  return { _tag: rattachable ? 'rattachee' : 'employeuseIndisponible' }
+  return { success: rattachable }
 }
 
-const structureEmployeuseInput: StructureEmployeuseInput = {
-  nom: 'Structure de test',
+const saisie: SaisieEmployeuse = {
   siret: '35600000000048',
-  adresse: '1 rue de la Paix',
-  commune: 'Paris',
-  codeInsee: '75101',
-  codePostal: '75001',
+  denomination: 'Structure de test',
+  adresse: {
+    voie: '1 rue de la Paix',
+    commune: 'Paris',
+    codePostal: '75001',
+    codeInsee: '75101',
+  },
 }
 
 Given('j’ai choisi le profil {string}', async (profil: string) => {
@@ -62,7 +68,7 @@ When('je renseigne ma structure employeuse', async () => {
   resultat = await renseignerStructureEmployeuseAvec(rattacherEmployeuse)({
     command: {
       userId: utilisateurDeLInscriptionEnCours(),
-      structureEmployeuse: structureEmployeuseInput,
+      saisie,
     },
     maintenant: new Date(),
   })

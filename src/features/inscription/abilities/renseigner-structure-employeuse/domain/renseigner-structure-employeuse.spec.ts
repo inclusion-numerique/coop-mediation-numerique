@@ -5,11 +5,15 @@ import {
   Role,
   UtilisateurId,
 } from '@/features/inscription/domain'
+import { failure, success } from '@/libraries/result'
+import type { RenseignerStructureEmployeusePorts } from './ports'
 import { renseignerStructureEmployeuse } from './renseigner-structure-employeuse'
-import type { StructureEmployeuseInput } from './structure-employeuse-input'
+import type { SaisieEmployeuse } from './saisie-employeuse'
 
 const userId = UtilisateurId('550e8400-e29b-41d4-a716-446655440000')
+
 const acceptationCgu = new Date('2026-01-01T10:00:00.000Z')
+
 const maintenant = new Date('2026-02-02T09:00:00.000Z')
 
 const enCours: InscriptionEtat = {
@@ -37,69 +41,79 @@ const validee: InscriptionEtat = {
   inscriptionValidee: acceptationCgu,
 }
 
-const structureEmployeuse: StructureEmployeuseInput = {
+const saisie: SaisieEmployeuse = {
   siret: '13002526500013',
-  nom: 'Association du numérique',
-  adresse: '4 rue de la Rue',
-  commune: 'Lyon',
-  codePostal: '69001',
-  codeInsee: '69381',
+  denomination: 'Association du numérique',
+  adresse: {
+    voie: '4 rue de la Rue',
+    commune: 'Lyon',
+    codePostal: '69001',
+    codeInsee: '69381',
+  },
 }
 
-const renseigner = ({
-  etat,
-  rattachement,
-}: {
-  readonly etat: InscriptionEtat | null
-  readonly rattachement: string
-}) =>
-  renseignerStructureEmployeuse({
-    lireLEtat: async () => etat,
-    rattacherEmployeuse: async () => ({ _tag: rattachement }),
-    projeterEtapeFranchie: async () => undefined,
-  })({ command: { userId, structureEmployeuse }, maintenant })
+const ports: RenseignerStructureEmployeusePorts = {
+  lireLEtat: async () => enCours,
+  rattacherEmployeuse: async () => ({ success: true }),
+  projeterEtapeFranchie: async () => undefined,
+}
 
-describe('renseignerStructureEmployeuse', () => {
-  it('franchit l’étape quand l’employeuse est rattachée', async () => {
+describe('renseigner la structure employeuse', () => {
+  it('rattache l’employeuse saisie et franchit l’étape à l’instant du renseignement', async () => {
     expect(
-      await renseigner({ etat: enCours, rattachement: 'rattachee' }),
-    ).toEqual({ success: true, data: undefined })
+      await renseignerStructureEmployeuse(ports)({
+        command: { userId, saisie },
+        maintenant,
+      }),
+    ).toEqual(
+      success({
+        saisie,
+        etatFranchi: {
+          _tag: 'EnCours',
+          userId,
+          role: Role('Mediateur'),
+          conseillerNumerique: false,
+          acceptationCgu,
+          progression: {
+            structureEmployeuse: Franchissement(maintenant),
+            lieuxActivite: Franchissement(null),
+          },
+        },
+      }),
+    )
   })
 
-  it.each<{
-    cas: string
-    etat: InscriptionEtat | null
-    rattachement: string
-    erreur: string
-  }>([
+  it.each<{ cas: string; etat: InscriptionEtat | null; erreur: string }>([
     {
       cas: 'refuse un utilisateur inconnu',
       etat: null,
-      rattachement: 'rattachee',
       erreur: 'InscriptionIntrouvable',
     },
     {
       cas: 'refuse tant que le profil n’est pas choisi',
       etat: { _tag: 'NonDemarree', userId },
-      rattachement: 'rattachee',
       erreur: 'ProfilNonChoisi',
     },
     {
       cas: 'refuse une inscription déjà validée',
       etat: validee,
-      rattachement: 'rattachee',
       erreur: 'InscriptionDejaValidee',
     },
-    {
-      cas: 'refuse quand l’employeuse n’a pas pu être rattachée',
-      etat: enCours,
-      rattachement: 'indisponible',
-      erreur: 'EmployeuseIndisponible',
-    },
-  ])('$cas', async ({ etat, rattachement, erreur }) => {
-    expect(await renseigner({ etat, rattachement })).toEqual({
-      success: false,
-      error: { _tag: erreur, userId },
-    })
+  ])('$cas', async ({ etat, erreur }) => {
+    expect(
+      await renseignerStructureEmployeuse({
+        ...ports,
+        lireLEtat: async () => etat,
+      })({ command: { userId, saisie }, maintenant }),
+    ).toEqual(failure({ _tag: erreur, userId }))
+  })
+
+  it('refuse quand l’employeuse n’a pas pu être rattachée', async () => {
+    expect(
+      await renseignerStructureEmployeuse({
+        ...ports,
+        rattacherEmployeuse: async () => ({ success: false }),
+      })({ command: { userId, saisie }, maintenant }),
+    ).toEqual(failure({ _tag: 'EmployeuseIndisponible', userId }))
   })
 })

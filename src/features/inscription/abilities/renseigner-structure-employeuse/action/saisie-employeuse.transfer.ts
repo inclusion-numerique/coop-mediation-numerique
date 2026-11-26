@@ -1,3 +1,5 @@
+import type { SaisieEmployeuse } from '../domain/saisie-employeuse'
+
 export type StructureEmployeuseInput = {
   readonly siret: string
   readonly nom: string
@@ -5,17 +7,6 @@ export type StructureEmployeuseInput = {
   readonly commune: string
   readonly codePostal: string
   readonly codeInsee: string
-}
-
-export type SaisieEmployeuse = {
-  readonly siret: string
-  readonly denomination: string | null
-  readonly adresse: {
-    readonly voie: string
-    readonly commune: string
-    readonly codePostal: string | null
-    readonly codeInsee: string | null
-  }
 }
 
 export const saisieEmployeuse = ({
