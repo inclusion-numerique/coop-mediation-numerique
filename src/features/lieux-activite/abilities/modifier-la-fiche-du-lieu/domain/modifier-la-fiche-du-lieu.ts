@@ -4,7 +4,7 @@ import type { UtilisateurId } from '../../../domain/identifiants/utilisateur-id'
 import type { Lieu } from '../../../domain/lieu'
 import { appliquerModification } from './appliquer-la-modification'
 import {
-  type EchecDeModification,
+  type EchecDeModifierLaFicheDuLieu,
   FicheIntrouvable,
   PublicationSansAdresse,
   PublicationSansService,
@@ -18,7 +18,7 @@ const verifierLaPublication = (
   id: LieuId,
   modifie: Lieu,
   modification: ModificationLieu,
-): Result<Lieu, EchecDeModification> => {
+): Result<Lieu, EchecDeModifierLaFicheDuLieu> => {
   if (laisseUnePublicationSansService(modifie, modification))
     return failure(PublicationSansService(id))
 
@@ -40,7 +40,7 @@ export const modifierLaFicheDuLieu =
     readonly modification: ModificationLieu
     readonly par: UtilisateurId
     readonly maintenant: Date
-  }): Promise<Result<Lieu, EchecDeModification>> => {
+  }): Promise<Result<Lieu, EchecDeModifierLaFicheDuLieu>> => {
     const fiche = await consulter(id)
 
     if (fiche == null) return failure(FicheIntrouvable(id))

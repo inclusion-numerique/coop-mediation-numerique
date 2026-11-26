@@ -35,7 +35,7 @@ import {
 } from '../../../domain/registre/tracabilite'
 import { appliquerLesDifferences } from './appliquer-les-differences'
 import type { ChoixDesDifferences } from './differences'
-import type { EchecDeModification } from './errors'
+import type { EchecDeModifierLaFicheDuLieu } from './errors'
 import type { FicheDuLieu } from './fiche-du-lieu'
 
 const id = LieuId('550e8400-e29b-41d4-a716-446655440000')
@@ -126,7 +126,7 @@ describe('appliquer les différences entre la fiche coop et celle du registre', 
     cas: string
     consultee: FicheDuLieu
     choix: ChoixDesDifferences
-    attendu: Result<Lieu, EchecDeModification>
+    attendu: Result<Lieu, EchecDeModifierLaFicheDuLieu>
   }>([
     {
       cas: 'rend le lieu tel quel quand les deux fiches disent pareil',

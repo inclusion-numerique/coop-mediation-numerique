@@ -7,7 +7,7 @@ import {
   differences,
   sectionsConcernees,
 } from './differences'
-import { type EchecDeModification, FicheIntrouvable } from './errors'
+import { type EchecDeModifierLaFicheDuLieu, FicheIntrouvable } from './errors'
 import type { ModifierLaFicheDuLieuPorts } from './ports'
 import { resoudreLesDifferences } from './resoudre-les-differences'
 
@@ -23,7 +23,7 @@ export const appliquerLesDifferences =
     readonly choix: ChoixDesDifferences
     readonly par: UtilisateurId
     readonly maintenant: Date
-  }): Promise<Result<Lieu, EchecDeModification>> => {
+  }): Promise<Result<Lieu, EchecDeModifierLaFicheDuLieu>> => {
     const fiche = await consulter(id)
 
     if (fiche == null) return failure(FicheIntrouvable(id))

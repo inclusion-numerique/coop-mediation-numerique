@@ -5,12 +5,12 @@ import {
   Service,
   Services,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import type { Schedule } from '@gouvfr-anct/timetable-to-osm-opening-hours'
-import { describe, expect, it } from 'vitest'
 import {
-  horairesVides,
-  safeToTimetableOpeningHours,
-} from '@/features/lieux-activite/domain/saisie/horaires-d-ouverture'
+  type Schedule,
+  toTimetableOpeningHours,
+} from '@gouvfr-anct/timetable-to-osm-opening-hours'
+import { describe, expect, it } from 'vitest'
+import { horairesVides } from '@/features/lieux-activite/domain/saisie/horaires-d-ouverture'
 import {
   adresseSaisie,
   courrielsSaisis,
@@ -127,8 +127,8 @@ describe('les horaires', () => {
       Sa: journeeContinue,
     }
 
-    const relue = safeToTimetableOpeningHours(new Date('2026-10-14'))(
-      horairesSaisis(grille, null),
+    const relue = toTimetableOpeningHours(new Date('2026-10-14'))(
+      horairesSaisis(grille, null) ?? undefined,
     )
 
     expect(relue).toStrictEqual(grille)

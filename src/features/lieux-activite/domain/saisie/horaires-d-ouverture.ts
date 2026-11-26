@@ -1,9 +1,4 @@
-import {
-  CLOSED_SCHEDULE,
-  OsmDaysOfWeek,
-  Schedule,
-  toTimetableOpeningHours,
-} from '@gouvfr-anct/timetable-to-osm-opening-hours'
+import type { OsmDaysOfWeek } from '@gouvfr-anct/timetable-to-osm-opening-hours'
 
 export type Period = 'am' | 'pm'
 
@@ -36,18 +31,6 @@ export const horairesVides = {
   Sa: defaultOpeningHours,
   Su: defaultOpeningHours,
 }
-
-// The OSM parser throws on malformed `horaires` (e.g. an unquoted comment
-// stored from imports). Fall back to an empty week instead of crashing render.
-export const safeToTimetableOpeningHours =
-  (date: Date) =>
-  (horairesOSM: string | null): Schedule => {
-    try {
-      return toTimetableOpeningHours(date)(horairesOSM ?? undefined)
-    } catch {
-      return CLOSED_SCHEDULE
-    }
-  }
 
 export const appendComment = (
   osmOpeningHours: string,

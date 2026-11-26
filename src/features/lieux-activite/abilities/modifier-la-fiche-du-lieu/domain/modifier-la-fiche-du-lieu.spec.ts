@@ -26,7 +26,7 @@ import {
   ModificationInconnue,
   ModifieParUtilisateur,
 } from '../../../domain/registre/tracabilite'
-import type { EchecDeModification } from './errors'
+import type { EchecDeModifierLaFicheDuLieu } from './errors'
 import type { FicheDuLieu } from './fiche-du-lieu'
 import type { ModificationLieu } from './modification-lieu'
 import { modifierLaFicheDuLieu } from './modifier-la-fiche-du-lieu'
@@ -152,7 +152,7 @@ describe('modifier la fiche d’un lieu', () => {
     cas: string
     lieu: Lieu
     modification: ModificationLieu
-    attendu: Result<Lieu, EchecDeModification>
+    attendu: Result<Lieu, EchecDeModifierLaFicheDuLieu>
   }>([
     {
       cas: 'refuse de publier un lieu dont l’adresse n’a pas été choisie',

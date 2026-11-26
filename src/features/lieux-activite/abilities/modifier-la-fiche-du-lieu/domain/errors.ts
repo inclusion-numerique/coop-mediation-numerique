@@ -30,7 +30,7 @@ export const PublicationSansAdresse = (id: LieuId): PublicationSansAdresse => ({
   id,
 })
 
-export type EchecDeModification =
+export type EchecDeModifierLaFicheDuLieu =
   | FicheIntrouvable
   | PublicationSansService
   | PublicationSansAdresse
