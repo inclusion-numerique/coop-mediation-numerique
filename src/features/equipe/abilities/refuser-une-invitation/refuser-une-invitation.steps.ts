@@ -1,6 +1,7 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
-import { refuserUneInvitation } from '@/features/equipe/abilities/refuser-une-invitation/implementations/prisma/refuser-une-invitation.mutation'
+import { refuserUneInvitation as refuserUneInvitationAvec } from '@/features/equipe/abilities/refuser-une-invitation/domain/refuser-une-invitation'
+import { enregistrerLeRefus } from '@/features/equipe/abilities/refuser-une-invitation/implementations/prisma/enregistrer-le-refus.mutation'
 import {
   CoordinateurId,
   Courriel,
@@ -13,11 +14,20 @@ import {
   semerUneInvitation,
 } from '@/features/equipe/equipe.cucumber'
 import { prevenirLeCoordinateur } from '@/features/equipe/implementations/email'
+import { lireLeCoordinateur } from '@/features/equipe/implementations/prisma/coordinateur.query'
+import { lireUneInvitation } from '@/features/equipe/implementations/prisma/invitation.query'
+
+const refuserUneInvitation = refuserUneInvitationAvec({
+  lireUneInvitation,
+  enregistrerLeRefus,
+  lireLeCoordinateur,
+  prevenirLeCoordinateur,
+})
 
 const contexte: {
   coordinateur?: CoordinateurSeme
   email?: string
-  issue?: Awaited<ReturnType<ReturnType<typeof refuserUneInvitation>>>
+  issue?: Awaited<ReturnType<typeof refuserUneInvitation>>
 } = {}
 
 const coordinateur = (): CoordinateurSeme => {
@@ -55,12 +65,13 @@ Given('une personne qui a déjà accepté de rejoindre une équipe', async () =>
 })
 
 When("cette personne refuse l'invitation", async () => {
-  contexte.issue = await refuserUneInvitation({ prevenirLeCoordinateur })({
+  contexte.issue = await refuserUneInvitation({
     reference: ReferenceInvitation({
       email: Courriel(emailInvite()),
       coordinateurId: CoordinateurId(coordinateur().coordinateurId),
     }),
     auteurId: null,
+    maintenant: new Date(),
   })
 })
 
