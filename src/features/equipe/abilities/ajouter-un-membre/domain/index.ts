@@ -1,4 +1,3 @@
-export { UtilisateurIntrouvable, UtilisateurNonMediateur } from './errors'
 export type {
   EquipeAComplementer,
   MediateurAAjouter,
