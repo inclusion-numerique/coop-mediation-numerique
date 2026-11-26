@@ -1,15 +1,21 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
+import { useRef } from 'react'
 import {
   type DepartementDuReferentiel,
   departements,
 } from '@/libraries/departement'
-import { ComboBox } from '@/libraries/ui/primitives'
+import { ComboBox, Options, type OptionsData } from '@/libraries/ui/primitives'
 import { hrefDuReseau } from '../../../../ui/presenters/liens.presenter'
 
 const itemToString = (departement: DepartementDuReferentiel | null): string =>
   departement ? `${departement.nom} · ${departement.code}` : ''
+
+const optionsDesDepartements: OptionsData<DepartementDuReferentiel> = {
+  itemToKey: ({ code }) => code,
+  renderItem: ({ item }) => itemToString(item),
+}
 
 const normalizeForSearch = (value: string): string =>
   value
@@ -39,6 +45,7 @@ const DepartementComboBox = ({
   defaultDepartement: DepartementDuReferentiel
 }) => {
   const router = useRouter()
+  const champRef = useRef<HTMLDivElement>(null)
 
   const handleSelect = (departement: DepartementDuReferentiel) => {
     router.push(hrefDuReseau(departement.code))
@@ -52,16 +59,16 @@ const DepartementComboBox = ({
       loadSuggestions={loadSuggestions}
     >
       {({
-        isOpen,
         getToggleButtonProps,
-        getMenuProps,
         getInputProps,
         getItemProps,
-        highlightedItem,
-        items,
+        ...optionsProps
       }) => (
-        <div className="fr-position-relative">
-          <div className="fr-flex fr-align-items-center">
+        <>
+          <div
+            ref={champRef}
+            className="fr-position-relative fr-flex fr-align-items-center"
+          >
             <input
               className="fr-input fr-text--medium fr-pr-10v"
               placeholder="Rechercher un département..."
@@ -75,7 +82,7 @@ const DepartementComboBox = ({
             >
               <span
                 className={
-                  isOpen
+                  optionsProps.isOpen
                     ? 'fr-icon-arrow-up-s-line'
                     : 'fr-icon-arrow-down-s-line'
                 }
@@ -83,30 +90,16 @@ const DepartementComboBox = ({
               />
             </button>
           </div>
-          <ul
-            className={`fr-position-absolute fr-background-default--grey fr-border fr-border-radius--8 fr-p-0 fr-m-0 fr-width-full fr-z-index-3 ${
-              isOpen && items.length > 0 ? '' : 'fr-hidden'
-            }`}
-            style={{ maxHeight: '300px', overflowY: 'auto', listStyle: 'none' }}
-            {...getMenuProps()}
-          >
-            {isOpen &&
-              items.map((item, index) => (
-                <li
-                  key={item.code}
-                  className={`fr-px-3v fr-py-2v fr-cursor-pointer ${
-                    highlightedItem?.code === item.code
-                      ? 'fr-background-alt--blue-france'
-                      : ''
-                  }`}
-                  {...getItemProps({ item, index })}
-                  onClick={() => handleSelect(item)}
-                >
-                  {itemToString(item)}
-                </li>
-              ))}
-          </ul>
-        </div>
+          <Options
+            {...optionsProps}
+            {...optionsDesDepartements}
+            getItemProps={({ item, index }) =>
+              getItemProps({ item, index, onClick: () => handleSelect(item) })
+            }
+            anchorRef={champRef}
+            className="fr-index-2000"
+          />
+        </>
       )}
     </ComboBox>
   )
