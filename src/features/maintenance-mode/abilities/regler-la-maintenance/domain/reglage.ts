@@ -1,4 +1,7 @@
-import type { MessageDeMaintenance } from '@/features/maintenance-mode/domain'
+import type {
+  AuteurId,
+  MessageDeMaintenance,
+} from '@/features/maintenance-mode/domain'
 
 export type DemandeDeReglage =
   | { readonly _tag: 'Activer'; readonly message: MessageDeMaintenance | null }
@@ -9,7 +12,7 @@ export type PeriodeEnCours = { readonly id: string }
 export type Ouverture = {
   readonly _tag: 'Ouvrir'
   readonly message: MessageDeMaintenance | null
-  readonly auteurId: string
+  readonly auteurId: AuteurId
   readonly debut: Date
 }
 
@@ -39,7 +42,7 @@ export const reglageDeLaMaintenance = ({
 }: {
   readonly periodeEnCours: PeriodeEnCours | null
   readonly demande: DemandeDeReglage
-  readonly auteurId: string
+  readonly auteurId: AuteurId
   readonly maintenant: Date
 }): Reglage => {
   if (demande._tag === 'Desactiver')

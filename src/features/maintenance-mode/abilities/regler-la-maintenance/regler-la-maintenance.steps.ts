@@ -11,6 +11,7 @@ import {
   ouvrirUnePeriode,
 } from '@/features/maintenance-mode/abilities/regler-la-maintenance/implementations/prisma/regler-la-maintenance.mutation'
 import {
+  AuteurId,
   type EtatDeMaintenance,
   MESSAGE_DE_MAINTENANCE_PAR_DEFAUT,
   MessageDeMaintenance,
@@ -23,7 +24,7 @@ import type { ServerActionResult } from '@/libraries/nextjs'
 
 const tentative: { resultat?: ServerActionResult<unknown> } = {}
 
-const auteurId = v4()
+const auteurId = AuteurId(v4())
 
 const regler = async (demande: DemandeDeReglage): Promise<void> => {
   await reglerLaMaintenance({

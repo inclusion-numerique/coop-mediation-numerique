@@ -15,9 +15,12 @@ export type ChangerLeMessage = (
 
 export type CloreLaPeriode = (cloture: Cloture) => Promise<void>
 
-export type ReglerLaMaintenancePorts = {
-  readonly lireLaPeriodeEnCours: LireLaPeriodeEnCours
+export type EcrituresDuReglage = {
   readonly ouvrirUnePeriode: OuvrirUnePeriode
   readonly changerLeMessage: ChangerLeMessage
   readonly cloreLaPeriode: CloreLaPeriode
+}
+
+export type ReglerLaMaintenancePorts = EcrituresDuReglage & {
+  readonly lireLaPeriodeEnCours: LireLaPeriodeEnCours
 }

@@ -11,6 +11,7 @@ import {
   cloreLaPeriode,
   ouvrirUnePeriode,
 } from '@/features/maintenance-mode/abilities/regler-la-maintenance/implementations/prisma/regler-la-maintenance.mutation'
+import { AuteurId } from '@/features/maintenance-mode/domain'
 import { consulterLaMaintenance } from '@/features/maintenance-mode/implementations/prisma/etat-de-maintenance.query'
 import { withInput } from '@/libraries/nextjs'
 
@@ -24,7 +25,7 @@ export const reglerLaMaintenanceAction = actionBuilder()
       ouvrirUnePeriode,
       changerLeMessage,
       cloreLaPeriode,
-    })({ demande: input, auteurId: user.id, maintenant: new Date() })
+    })({ demande: input, auteurId: AuteurId(user.id), maintenant: new Date() })
 
     return consulterLaMaintenance()
   })

@@ -1,3 +1,4 @@
+export { AuteurId } from './auteur-id'
 export type { EtatDeMaintenance, RoleDuCompte } from './etat-de-maintenance'
 export {
   messageAffiche,

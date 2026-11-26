@@ -1,5 +1,6 @@
+import type { AuteurId } from '@/features/maintenance-mode/domain'
 import { type Result, success } from '@/libraries/result'
-import type { ReglerLaMaintenancePorts } from './ports'
+import type { EcrituresDuReglage, ReglerLaMaintenancePorts } from './ports'
 import {
   type DemandeDeReglage,
   type Reglage,
@@ -11,7 +12,7 @@ const appliquer =
     ouvrirUnePeriode,
     changerLeMessage,
     cloreLaPeriode,
-  }: Omit<ReglerLaMaintenancePorts, 'lireLaPeriodeEnCours'>) =>
+  }: EcrituresDuReglage) =>
   async (reglage: Reglage): Promise<void> => {
     if (reglage._tag === 'Ouvrir') return ouvrirUnePeriode(reglage)
     if (reglage._tag === 'ChangerLeMessage') return changerLeMessage(reglage)
@@ -31,7 +32,7 @@ export const reglerLaMaintenance =
     maintenant,
   }: {
     readonly demande: DemandeDeReglage
-    readonly auteurId: string
+    readonly auteurId: AuteurId
     readonly maintenant: Date
   }): Promise<Result<Reglage, never>> => {
     const reglage = reglageDeLaMaintenance({

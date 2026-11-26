@@ -1,12 +1,15 @@
 import { describe, expect, it } from 'vitest'
-import { MessageDeMaintenance } from '@/features/maintenance-mode/domain'
+import {
+  AuteurId,
+  MessageDeMaintenance,
+} from '@/features/maintenance-mode/domain'
 import { reglerLaMaintenance } from './regler-la-maintenance'
 
 const message = MessageDeMaintenance('Bascule de la base')
 
 const maintenant = new Date('2026-11-26T08:00:00.000Z')
 
-const auteurId = 'auteur'
+const auteurId = AuteurId('a1b2c3d4-0000-4000-8000-000000000001')
 
 const ecritures = {
   ouvrirUnePeriode: async () => undefined,
