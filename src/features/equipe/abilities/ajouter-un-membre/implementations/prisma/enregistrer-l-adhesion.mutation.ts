@@ -1,5 +1,5 @@
 import { addMutationLog, prismaClient } from '@/configuration/prisma'
-import type { EnregistrerLAdhesion } from '../../domain/ajouter-un-membre'
+import type { EnregistrerLAdhesion } from '../../domain/ports'
 
 export const enregistrerLAdhesion: EnregistrerLAdhesion = async ({
   mediateurId,

@@ -3,7 +3,7 @@ import { Courriel, MediateurId } from '../../../../domain'
 import type {
   CoordinateurExiste,
   LireLUtilisateurAAjouter,
-} from '../../domain/ajouter-un-membre'
+} from '../../domain/ports'
 
 export const lireLUtilisateurAAjouter: LireLUtilisateurAAjouter = async (
   utilisateurId,

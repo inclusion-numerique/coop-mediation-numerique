@@ -7,7 +7,8 @@ import {
   UtilisateurId,
 } from '../../../domain'
 import type { AdhesionActive } from '../../../domain/adhesion'
-import { ajouterUnMembre, type UtilisateurAAjouter } from './ajouter-un-membre'
+import type { UtilisateurAAjouter } from './ajout'
+import { ajouterUnMembre } from './ajouter-un-membre'
 
 const coordinateurId = CoordinateurId('550e8400-e29b-41d4-a716-446655440001')
 
@@ -42,7 +43,12 @@ describe('ajouter un membre à une équipe', () => {
 
     expect(await ajouter({ utilisateurId, coordinateurId, auteurId })).toEqual({
       success: true,
-      data: undefined,
+      data: {
+        mediateurId,
+        coordinateurId,
+        email: Courriel('mediateur@example.com'),
+        auteurId,
+      },
     })
   })
 

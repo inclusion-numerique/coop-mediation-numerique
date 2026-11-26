@@ -14,6 +14,7 @@ import {
 import { CoordinateurId, UtilisateurId } from '@/features/equipe/domain'
 import { lireLesAdhesionsDeLaPaire } from '@/features/equipe/implementations/prisma/adhesion.query'
 import { fromResult, withInput } from '@/libraries/nextjs'
+import { success } from '@/libraries/result'
 
 export const ajouterUnMembreAction = actionBuilder()
   .use(withAuth())
@@ -21,8 +22,8 @@ export const ajouterUnMembreAction = actionBuilder()
   .use(withInput(AjouterUnMembreValidation))
   .execute(
     fromResult(
-      async ({ user, input }) =>
-        ajouterUnMembre({
+      async ({ user, input }) => {
+        const ajout = await ajouterUnMembre({
           lireLUtilisateurAAjouter,
           coordinateurExiste,
           lireLesAdhesionsDeLaPaire,
@@ -31,7 +32,9 @@ export const ajouterUnMembreAction = actionBuilder()
           utilisateurId: UtilisateurId(input.utilisateurId),
           coordinateurId: CoordinateurId(input.coordinateurId),
           auteurId: UtilisateurId(user.id),
-        }),
+        })
+        return ajout.success ? success(undefined) : ajout
+      },
       { onError: AJOUTER_UN_MEMBRE_ERRORS },
     ),
   )
