@@ -4,17 +4,12 @@ import {
   pageDAccueil,
 } from '@/features/authentification/domain/page-d-accueil'
 
-const utilisateur = ({
-  role = 'User' as const,
-  inscriptionValidee = null,
-  mediateur = null,
-  coordinateur = null,
-}: {
-  role?: 'Admin' | 'User'
-  inscriptionValidee?: Date | null
-  mediateur?: { id: string } | null
-  coordinateur?: { id: string } | null
-} = {}) => ({ role, inscriptionValidee, mediateur, coordinateur })
+const utilisateur: NonNullable<Parameters<typeof pageDAccueil>[0]> = {
+  role: 'User',
+  inscriptionValidee: null,
+  mediateur: null,
+  coordinateur: null,
+}
 
 describe('pageDAccueil', () => {
   it('renvoie la landing sans utilisateur', () => {
@@ -22,38 +17,38 @@ describe('pageDAccueil', () => {
   })
 
   it('renvoie l’administration pour un admin', () => {
-    expect(pageDAccueil(utilisateur({ role: 'Admin' }))).toBe('/administration')
+    expect(pageDAccueil({ ...utilisateur, role: 'Admin' })).toBe(
+      '/administration',
+    )
   })
 
   it('renvoie l’inscription quand elle n’est pas validée', () => {
-    expect(pageDAccueil(utilisateur())).toBe('/inscription')
+    expect(pageDAccueil(utilisateur)).toBe('/inscription')
   })
 
   it('renvoie l’inscription quand elle est validée sans aucun profil de rôle', () => {
-    expect(pageDAccueil(utilisateur({ inscriptionValidee: new Date() }))).toBe(
-      '/inscription',
-    )
+    expect(
+      pageDAccueil({ ...utilisateur, inscriptionValidee: new Date() }),
+    ).toBe('/inscription')
   })
 
   it('renvoie la coop pour un médiateur inscrit', () => {
     expect(
-      pageDAccueil(
-        utilisateur({
-          inscriptionValidee: new Date(),
-          mediateur: { id: 'mediateur-id' },
-        }),
-      ),
+      pageDAccueil({
+        ...utilisateur,
+        inscriptionValidee: new Date(),
+        mediateur: { id: 'mediateur-id' },
+      }),
     ).toBe('/coop')
   })
 
   it('renvoie la coop pour un coordinateur inscrit', () => {
     expect(
-      pageDAccueil(
-        utilisateur({
-          inscriptionValidee: new Date(),
-          coordinateur: { id: 'coordinateur-id' },
-        }),
-      ),
+      pageDAccueil({
+        ...utilisateur,
+        inscriptionValidee: new Date(),
+        coordinateur: { id: 'coordinateur-id' },
+      }),
     ).toBe('/coop')
   })
 })
@@ -64,42 +59,41 @@ describe('adresseDeRetourApresConnexion', () => {
   })
 
   it('renvoie les utilisateurs de l’administration pour un admin', () => {
-    expect(adresseDeRetourApresConnexion(utilisateur({ role: 'Admin' }))).toBe(
-      '/administration/utilisateurs',
-    )
+    expect(
+      adresseDeRetourApresConnexion({ ...utilisateur, role: 'Admin' }),
+    ).toBe('/administration/utilisateurs')
   })
 
   it('renvoie l’inscription quand elle n’est pas validée', () => {
-    expect(adresseDeRetourApresConnexion(utilisateur())).toBe('/inscription')
+    expect(adresseDeRetourApresConnexion(utilisateur)).toBe('/inscription')
   })
 
   it('renvoie l’inscription quand elle est validée sans aucun profil de rôle', () => {
     expect(
-      adresseDeRetourApresConnexion(
-        utilisateur({ inscriptionValidee: new Date() }),
-      ),
+      adresseDeRetourApresConnexion({
+        ...utilisateur,
+        inscriptionValidee: new Date(),
+      }),
     ).toBe('/inscription')
   })
 
   it('renvoie la coop pour un médiateur inscrit', () => {
     expect(
-      adresseDeRetourApresConnexion(
-        utilisateur({
-          inscriptionValidee: new Date(),
-          mediateur: { id: 'mediateur-id' },
-        }),
-      ),
+      adresseDeRetourApresConnexion({
+        ...utilisateur,
+        inscriptionValidee: new Date(),
+        mediateur: { id: 'mediateur-id' },
+      }),
     ).toBe('/coop')
   })
 
   it('renvoie la coop pour un coordinateur inscrit', () => {
     expect(
-      adresseDeRetourApresConnexion(
-        utilisateur({
-          inscriptionValidee: new Date(),
-          coordinateur: { id: 'coordinateur-id' },
-        }),
-      ),
+      adresseDeRetourApresConnexion({
+        ...utilisateur,
+        inscriptionValidee: new Date(),
+        coordinateur: { id: 'coordinateur-id' },
+      }),
     ).toBe('/coop')
   })
 })

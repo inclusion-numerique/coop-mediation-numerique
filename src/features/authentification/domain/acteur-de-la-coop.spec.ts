@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { estActeurDeLaCoop } from './acteur-de-la-coop'
 
-const compte = {
-  role: 'User' as const,
+const compte: Parameters<typeof estActeurDeLaCoop>[0] = {
+  role: 'User',
   inscriptionValidee: '2026-01-01T00:00:00.000Z',
   mediateur: { id: 'm1' },
   coordinateur: null,
