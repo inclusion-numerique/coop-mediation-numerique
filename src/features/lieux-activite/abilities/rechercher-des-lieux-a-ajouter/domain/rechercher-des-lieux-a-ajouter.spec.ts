@@ -75,7 +75,6 @@ const rechercher = (
   rechercherDesLieuxAAjouter(ports)({
     recherche: RechercheDeLieu(texte),
     limite,
-    sauf: [],
   })
 
 const cinquante = NombreDeLieux(50)

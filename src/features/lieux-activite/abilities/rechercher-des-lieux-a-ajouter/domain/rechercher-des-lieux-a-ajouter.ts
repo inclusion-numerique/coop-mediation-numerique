@@ -1,5 +1,4 @@
 import { type Result, success } from '@/libraries/result'
-import type { IdentifiantCartographie } from '../../../domain/cartographie-nationale/ids-cartographie-nationale'
 import { NombreDeLieux } from '../../../domain/nombres'
 import {
   connueDeLaCoop,
@@ -17,11 +16,6 @@ import type {
 } from './ports'
 import type { RechercheDeLieu } from './recherche-de-lieu'
 import type { TermeDeRecherche } from './terme-de-recherche'
-
-type OptionsDeRecherche = {
-  readonly limite: NombreDeLieux
-  readonly sauf: readonly IdentifiantCartographie[]
-}
 
 export const LIMITE_DES_SUGGESTIONS = NombreDeLieux(50)
 
@@ -86,23 +80,19 @@ const dansLaCoopEtLaCartographie =
   }: RechercherDesLieuxAAjouterPorts) =>
   async (
     terme: TermeDeRecherche,
-    { limite, sauf }: OptionsDeRecherche,
+    limite: NombreDeLieux,
   ): Promise<SuggestionsDeLieux> => {
     const [coop, cartographie] = await Promise.all([
       dansLaCoop(chercherDansLaCoop)(terme, moitie(limite)),
-      chercherDansLaCartographie(terme, { limite: moitie(limite), sauf }),
+      chercherDansLaCartographie(terme, moitie(limite)),
     ])
 
     return reunies(coop, inconnuesDeLaCoop(reponseDe(cartographie)))
   }
 
-const dansLaCoopSeulement =
-  ({ chercherDansLaCoop }: RechercherDesLieuxAAjouterPorts) =>
-  (
-    terme: TermeDeRecherche,
-    { limite }: OptionsDeRecherche,
-  ): Promise<SuggestionsDeLieux> =>
-    dansLaCoop(chercherDansLaCoop)(terme, limite)
+const dansLaCoopSeulement = ({
+  chercherDansLaCoop,
+}: RechercherDesLieuxAAjouterPorts) => dansLaCoop(chercherDansLaCoop)
 
 const sourcesPrioritaires = {
   ParNumeroDEntreprise: dansLaCoopSeulement,
@@ -134,11 +124,9 @@ export const rechercherDesLieuxAAjouter =
   async ({
     recherche,
     limite,
-    sauf,
   }: {
     readonly recherche: RechercheDeLieu
     readonly limite: NombreDeLieux
-    readonly sauf: readonly IdentifiantCartographie[]
   }): Promise<
     Result<SuggestionsDeLieux, EchecDeRechercherDesLieuxAAjouter>
   > => {
@@ -148,7 +136,7 @@ export const rechercherDesLieuxAAjouter =
       chercherDansLaCoop,
       chercherDansLaCartographie,
       chercherDansLAnnuaireDesEntreprises,
-    })(recherche.terme, { limite, sauf })
+    })(recherche.terme, limite)
 
     return success(
       auPlus(limite)(

@@ -99,7 +99,6 @@ When(
     })({
       recherche: RechercheDeLieu('Médiathèque des Minimes'),
       limite: NombreDeLieux(100),
-      sauf: [],
     })
 
     scenario.suggestions = resultat.success ? resultat.data.suggestions : []

@@ -40,14 +40,10 @@ const voie = (adresse: AdresseDeLaCartographie): string =>
 
 const lieuxDeLaCartographie = async (
   recherche: string,
-  {
-    limite,
-    sauf,
-  }: { readonly limite: number; readonly sauf: readonly string[] },
+  limite: number,
 ): Promise<SuggestionsDUneSource> => {
   const correspondances = {
-    structureCartographieNationaleId:
-      sauf.length > 0 ? { not: null, notIn: [...sauf] } : { not: null },
+    structureCartographieNationaleId: { not: null },
     adresse: { isNot: null },
     AND: recherche
       .split(' ')
@@ -121,8 +117,8 @@ const lieuxDeLaCartographie = async (
 
 export const chercherDansLaCartographie: ChercherDansLaCartographie = (
   recherche,
-  options,
+  limite,
 ) =>
-  lieuxDeLaCartographie(recherche, options).then(success, () =>
+  lieuxDeLaCartographie(recherche, limite).then(success, () =>
     failure(SourceIndisponible(SourceExterne('Cartographie'))),
   )
