@@ -1,18 +1,25 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { DescriptionDuTag, NomDuTag, TagId } from '@/features/tags/domain'
+import { lireUnTagActif } from '@/features/tags/implementations/prisma/tag-actif.query'
 import {
   acteurMediateur,
   semerUnMediateur,
   semerUnTag,
   tagEnBase,
 } from '@/features/tags/tags.cucumber'
-import { modifierUnTag } from './implementations/prisma/modifier-un-tag.mutation'
+import { modifierUnTag } from './domain/modifier-un-tag'
+import { enregistrerLaModification } from './implementations/prisma/enregistrer-la-modification.mutation'
+
+const modifierEnBase = modifierUnTag({
+  lireUnTagActif,
+  enregistrer: enregistrerLaModification,
+})
 
 const contexte: {
   mediateurId?: string
   tagId?: string
-  issue?: Awaited<ReturnType<typeof modifierUnTag>>
+  issue?: Awaited<ReturnType<typeof modifierEnBase>>
 } = {}
 
 const tagId = (): string => {
@@ -25,7 +32,7 @@ const renommer = async (
   nom: string,
   description: string | null,
 ) => {
-  contexte.issue = await modifierUnTag({
+  contexte.issue = await modifierEnBase({
     tagId: TagId(tagId()),
     acteur: acteurMediateur({ mediateurId }),
     nom: NomDuTag(nom),
