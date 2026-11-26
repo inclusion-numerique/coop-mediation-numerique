@@ -1,6 +1,7 @@
 'use server'
 
 import { actionBuilder } from '@/configuration/nextjs'
+import { signaler } from '@/configuration/telemetry/serveur'
 import { ENREGISTRER_UN_ACCOMPAGNEMENT_INDIVIDUEL_ERRORS } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/action/enregistrer-un-accompagnement-individuel.errors'
 import { accompagnementEnregistre } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/action/enregistrer-un-accompagnement-individuel.transfer'
 import { EnregistrerUnAccompagnementIndividuelValidation } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/action/enregistrer-un-accompagnement-individuel.validation'
@@ -27,10 +28,11 @@ import { consulterEmployeuseAUneDate } from '@/features/employeuse/abilities/con
 import { lieuUtilisablePar } from '@/features/lieux-activite/abilities/verifier-un-lieu-d-activite/implementations/prisma/lieu-utilisable-par.where'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { mettreAJourStatutRdv } from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/domain/mettre-a-jour-statut-rdv'
-import { marquerLeRendezVousHonore } from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/implementations/activites/marquer-le-rendez-vous-honore.adapter'
 import { contexteMiseAJourStatut } from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/implementations/prisma/contexte-mise-a-jour-statut.query'
 import { enregistrerStatutRdv } from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/implementations/prisma/enregistrer-statut-rdv.mutation'
+import { RdvId } from '@/features/rdvsp/domain/identifiants/rdv-id'
 import { UtilisateurCoopId } from '@/features/rdvsp/domain/identifiants/utilisateur-coop-id'
+import { StatutPresenceModifiable } from '@/features/rdvsp/domain/rdv/statut-presence'
 import { rdvServicePublicApi } from '@/features/rdvsp/implementations/api/rdv-service-public.client'
 import { configurationRdvServicePublic } from '@/features/rdvsp/implementations/api/rdv-service-public-configuration.client'
 import { enregistrerLesJetons } from '@/features/rdvsp/implementations/prisma/jetons-du-compte.mutation'
@@ -58,6 +60,27 @@ const mettreAJourLeStatutDuRdv = mettreAJourStatutRdv({
   enregistrer: enregistrerStatutRdv,
 })
 
+const marquerLeRendezVousHonore =
+  (utilisateurId: UtilisateurCoopId) =>
+  async (rdvId: number): Promise<void> => {
+    try {
+      const marquage = await mettreAJourLeStatutDuRdv({
+        utilisateurId,
+        rdvId: RdvId(rdvId),
+        statut: StatutPresenceModifiable('seen'),
+      })
+
+      if (!marquage.success)
+        signaler(
+          new Error(
+            `Statut du rendez-vous ${rdvId} non mis à jour (${marquage.error._tag})`,
+          ),
+        )
+    } catch (erreur) {
+      signaler(erreur)
+    }
+  }
+
 export const enregistrerUnAccompagnementIndividuelAction = actionBuilder()
   .use(withAuth())
   .use(withMaintenance())
@@ -81,8 +104,8 @@ export const enregistrerUnAccompagnementIndividuelAction = actionBuilder()
           creer: creerLActiviteDeMediation(UtilisateurId(user.id)),
           modifier: modifierLActiviteDeMediation(UtilisateurId(user.id)),
           marquerLeRendezVousHonore: marquerLeRendezVousHonore(
-            mettreAJourLeStatutDuRdv,
-          )(UtilisateurCoopId(user.id)),
+            UtilisateurCoopId(user.id),
+          ),
         })({
           saisie: input,
           mediateurId:
