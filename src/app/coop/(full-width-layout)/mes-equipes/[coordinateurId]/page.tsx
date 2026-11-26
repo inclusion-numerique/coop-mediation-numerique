@@ -4,9 +4,11 @@ import { quitterUneEquipeAction } from '@/app/_actions/equipe/quitter-une-equipe
 import { metadataTitle } from '@/configuration/projet'
 import { authenticateUser } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
 import { default as BoutonExporter } from '@/features/equipe/abilities/exporter-les-membres/ui/slots/BoutonExporter.slot'
+import { listerLesMembres } from '@/features/equipe/abilities/lister-les-membres/domain/lister-les-membres'
+import { coordinateurDeLEquipe } from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/coordinateur-de-l-equipe.query'
 import {
   estMembreActif,
-  listerLesMembres,
+  lireLesMembres,
 } from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/lister-les-membres.query'
 import {
   type ParametresDeLaListe,
@@ -41,6 +43,10 @@ const Page = async (props: {
   })
 
   const membres = await listerLesMembres({
+    coordinateurDeLEquipe,
+    lireLesMembres,
+  })({
+    maintenant: new Date(),
     coordinateurId,
     lecteur: { gestionnaire: gestionnaireDe(user), membreActifDeLEquipe },
     ...requeteDeLaListe(searchParams),

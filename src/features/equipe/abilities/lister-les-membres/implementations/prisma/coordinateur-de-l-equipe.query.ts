@@ -6,7 +6,7 @@ import {
 import { type CodeDepartement, CodeInsee } from '@/libraries/insee'
 import type { CoordinateurId } from '../../../../domain'
 import { lireLeCoordinateur } from '../../../../implementations/prisma/coordinateur.query'
-import type { CoordinateurDeLaListe } from '../../domain'
+import type { CoordinateurDeLEquipe } from '../../domain/lister-les-membres'
 
 const departementDuCoordinateur = async (
   coordinateurId: CoordinateurId,
@@ -34,9 +34,9 @@ const departementDuCoordinateur = async (
   )
 }
 
-export const coordinateurDeLEquipe = async (
-  coordinateurId: CoordinateurId,
-): Promise<CoordinateurDeLaListe | null> => {
+export const coordinateurDeLEquipe: CoordinateurDeLEquipe = async (
+  coordinateurId,
+) => {
   const [coordinateur, departementCode] = await Promise.all([
     lireLeCoordinateur(coordinateurId),
     departementDuCoordinateur(coordinateurId),

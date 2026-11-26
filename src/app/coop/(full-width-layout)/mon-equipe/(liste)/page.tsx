@@ -8,7 +8,9 @@ import { metadataTitle } from '@/configuration/projet'
 import { authenticateCoordinateur } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
 import { default as BoutonExporter } from '@/features/equipe/abilities/exporter-les-membres/ui/slots/BoutonExporter.slot'
 import { default as BoutonInviterUnePersonne } from '@/features/equipe/abilities/inviter-des-membres/ui/slots/BoutonInviterUnePersonne.slot'
-import { listerLesMembres } from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/lister-les-membres.query'
+import { listerLesMembres } from '@/features/equipe/abilities/lister-les-membres/domain/lister-les-membres'
+import { coordinateurDeLEquipe } from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/coordinateur-de-l-equipe.query'
+import { lireLesMembres } from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/lister-les-membres.query'
 import {
   type ParametresDeLaListe,
   requeteDeLaListe,
@@ -36,6 +38,10 @@ const Page = async (props: { searchParams: Promise<ParametresDeLaListe> }) => {
   const coordinateurId = user.coordinateur.id
 
   const membres = await listerLesMembres({
+    coordinateurDeLEquipe,
+    lireLesMembres,
+  })({
+    maintenant: new Date(),
     coordinateurId: CoordinateurId(coordinateurId),
     lecteur: {
       gestionnaire: gestionnaireDe(user),

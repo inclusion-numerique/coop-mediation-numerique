@@ -33,7 +33,9 @@ import {
 import { consulterHistoriqueEmployeuses } from '@/features/employeuse/abilities/consulter-historique-employeuses/implementations/prisma/consulter-historique-employeuses.query'
 import { historiqueEmployeusesAffichage } from '@/features/employeuse/abilities/consulter-historique-employeuses/ui/presenters/historique-employeuses.presenter'
 import { HistoriqueDesEmployeuses } from '@/features/employeuse/abilities/consulter-historique-employeuses/ui/slots/HistoriqueDesEmployeuses.slot'
-import { listerLesMembres } from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/lister-les-membres.query'
+import { listerLesMembres } from '@/features/equipe/abilities/lister-les-membres/domain/lister-les-membres'
+import { coordinateurDeLEquipe } from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/coordinateur-de-l-equipe.query'
+import { lireLesMembres } from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/lister-les-membres.query'
 import {
   type ParametresDeLaListe,
   requeteDeLaListe,
@@ -94,6 +96,10 @@ const sectionEquipe = async (
 
   const administrateur = await authenticateUser()
   const membres = await listerLesMembres({
+    coordinateurDeLEquipe,
+    lireLesMembres,
+  })({
+    maintenant: new Date(),
     coordinateurId: CoordinateurId(coordinateur.id),
     lecteur: {
       gestionnaire: gestionnaireDe(administrateur),
