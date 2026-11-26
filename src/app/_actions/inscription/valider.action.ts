@@ -2,7 +2,13 @@
 
 import { actionBuilder } from '@/configuration/nextjs'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
-import { accepterLesInvitationsEnAttente } from '@/features/equipe/abilities/accepter-les-invitations-en-attente/implementations/prisma/accepter-les-invitations-en-attente.mutation'
+import { accepterLesInvitationsEnAttente } from '@/features/equipe/abilities/accepter-les-invitations-en-attente/domain/accepter-les-invitations-en-attente'
+import { enregistrerLesAcceptations } from '@/features/equipe/abilities/accepter-les-invitations-en-attente/implementations/prisma/enregistrer-les-acceptations.mutation'
+import {
+  lireLeMediateurInvite,
+  lireLesInvitationsDe,
+} from '@/features/equipe/abilities/accepter-les-invitations-en-attente/implementations/prisma/mediateur-invite.query'
+import { UtilisateurId as UtilisateurDeLEquipe } from '@/features/equipe/domain'
 import { VALIDER_ERRORS } from '@/features/inscription/abilities/valider/action/valider.errors'
 import { ValiderValidation } from '@/features/inscription/abilities/valider/action/valider.validation'
 import type {
@@ -30,6 +36,16 @@ const validerAvec = (
     effetsApresValidation,
   })
 
+const accepterLesInvitationsDeLInscrit: EffetsApresValidation = async (
+  userId,
+) => {
+  await accepterLesInvitationsEnAttente({
+    lireLeMediateurInvite,
+    lireLesInvitationsDe,
+    enregistrerLesAcceptations,
+  })({ utilisateurId: UtilisateurDeLEquipe(userId), maintenant: new Date() })
+}
+
 export const validerAction = actionBuilder()
   .use(withAuth())
   .use(withMaintenance())
@@ -39,7 +55,7 @@ export const validerAction = actionBuilder()
       async ({ user }) => {
         const resultat = await validerAvec(
           inscrireALaListeDeDiffusion(inscritAInscrire),
-          accepterLesInvitationsEnAttente,
+          accepterLesInvitationsDeLInscrit,
         )({ userId: UtilisateurId(user.id), maintenant: new Date() })
 
         return resultat.success ? success(undefined) : resultat

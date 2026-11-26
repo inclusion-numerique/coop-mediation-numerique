@@ -1,5 +1,6 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
+import { UtilisateurId } from '@/features/equipe/domain'
 import {
   adhesionsDe,
   type CoordinateurSeme,
@@ -9,7 +10,12 @@ import {
   semerUneInvitation,
   semerUnMediateurDEquipe,
 } from '@/features/equipe/equipe.cucumber'
-import { accepterLesInvitationsEnAttente } from './implementations/prisma/accepter-les-invitations-en-attente.mutation'
+import { accepterLesInvitationsEnAttente } from './domain/accepter-les-invitations-en-attente'
+import { enregistrerLesAcceptations } from './implementations/prisma/enregistrer-les-acceptations.mutation'
+import {
+  lireLeMediateurInvite,
+  lireLesInvitationsDe,
+} from './implementations/prisma/mediateur-invite.query'
 
 const contexte: { coordinateur?: CoordinateurSeme; invite?: MediateurSeme } = {}
 
@@ -54,7 +60,11 @@ Given("un médiateur qui a refusé l'invitation d'une équipe", async () => {
 })
 
 When('ses invitations en attente sont acceptées', async () => {
-  await accepterLesInvitationsEnAttente(invite().userId)
+  await accepterLesInvitationsEnAttente({
+    lireLeMediateurInvite,
+    lireLesInvitationsDe,
+    enregistrerLesAcceptations,
+  })({ utilisateurId: UtilisateurId(invite().userId), maintenant: new Date() })
 })
 
 Then('son invitation en attente est désormais acceptée', async () => {
