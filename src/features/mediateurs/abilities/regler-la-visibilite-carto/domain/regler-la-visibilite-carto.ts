@@ -1,35 +1,15 @@
-import type {
-  AuteurId,
-  MediateurId,
-  UtilisateurId,
+import {
+  type AuteurId,
+  type MediateurId,
+  MediateurIntrouvable,
 } from '@/features/mediateurs/domain'
 import { failure, type Result, success } from '@/libraries/result'
-import { MediateurIntrouvable } from './errors'
-
-export type MediateurARegler = {
-  readonly id: MediateurId
-  readonly utilisateurId: UtilisateurId
-}
-
-export type LireLeMediateurARegler = (
-  mediateurId: MediateurId,
-) => Promise<MediateurARegler | null>
-
-export type EnregistrerLaVisibilite = (reglage: {
-  readonly mediateur: MediateurARegler
-  readonly visible: boolean
-  readonly auteurId: AuteurId
-  readonly maintenant: Date
-}) => Promise<void>
+import type { EchecDeReglerLaVisibiliteCarto } from './errors'
+import type { ReglerLaVisibiliteCartoPorts } from './ports'
+import type { ReglageDeVisibilite } from './reglage-de-visibilite'
 
 export const reglerLaVisibiliteCarto =
-  ({
-    lireLeMediateur,
-    enregistrer,
-  }: {
-    readonly lireLeMediateur: LireLeMediateurARegler
-    readonly enregistrer: EnregistrerLaVisibilite
-  }) =>
+  ({ lireLeMediateur, enregistrer }: ReglerLaVisibiliteCartoPorts) =>
   async ({
     mediateurId,
     visible,
@@ -40,12 +20,19 @@ export const reglerLaVisibiliteCarto =
     readonly visible: boolean
     readonly auteurId: AuteurId
     readonly maintenant: Date
-  }): Promise<Result<void, MediateurIntrouvable>> => {
+  }): Promise<Result<ReglageDeVisibilite, EchecDeReglerLaVisibiliteCarto>> => {
     const mediateur = await lireLeMediateur(mediateurId)
 
     if (mediateur === null) return failure(MediateurIntrouvable(mediateurId))
 
-    await enregistrer({ mediateur, visible, auteurId, maintenant })
+    const reglage: ReglageDeVisibilite = {
+      mediateur,
+      visible,
+      auteurId,
+      regleLe: maintenant,
+    }
 
-    return success(undefined)
+    await enregistrer(reglage)
+
+    return success(reglage)
   }

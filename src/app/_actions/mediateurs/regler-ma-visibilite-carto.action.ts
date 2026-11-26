@@ -12,6 +12,7 @@ import { lireLeMediateurARegler } from '@/features/mediateurs/abilities/regler-l
 import { AuteurId, MediateurId } from '@/features/mediateurs/domain'
 import { synchroniserPersonne } from '@/features/registre-des-personnes/implementations/prisma/registre-personne.mutation'
 import { fromResult, withInput } from '@/libraries/nextjs'
+import { success } from '@/libraries/result'
 
 export const reglerMaVisibiliteCartoAction = actionBuilder()
   .use(withAuth())
@@ -20,8 +21,8 @@ export const reglerMaVisibiliteCartoAction = actionBuilder()
   .use(withInput(ReglerMaVisibiliteCartoValidation))
   .execute(
     fromResult(
-      ({ input, user, mediateur }) =>
-        reglerLaVisibiliteCarto({
+      async ({ input, user, mediateur }) => {
+        const reglage = await reglerLaVisibiliteCarto({
           lireLeMediateur: lireLeMediateurARegler,
           enregistrer: enregistrerLaVisibilite(synchroniserPersonne),
         })({
@@ -29,7 +30,10 @@ export const reglerMaVisibiliteCartoAction = actionBuilder()
           visible: input.visible,
           auteurId: AuteurId(user.id),
           maintenant: new Date(),
-        }),
+        })
+
+        return reglage.success ? success(undefined) : reglage
+      },
       { onError: REGLER_LA_VISIBILITE_CARTO_ERRORS },
     ),
   )

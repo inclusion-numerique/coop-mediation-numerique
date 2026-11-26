@@ -1,6 +1,6 @@
 import { prismaClient } from '@/configuration/prisma'
 import { MediateurId, UtilisateurId } from '@/features/mediateurs/domain'
-import type { LireLeMediateurARegler } from '../../domain/regler-la-visibilite-carto'
+import type { LireLeMediateurARegler } from '../../domain/ports'
 
 export const lireLeMediateurARegler: LireLeMediateurARegler = async (
   mediateurId,
