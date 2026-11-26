@@ -6,7 +6,7 @@ import {
   rechercheLibre,
   triParmi,
 } from '@/libraries/etat-d-url'
-import type { ColonneTriableDesBeneficiaires } from '../../domain/lister-beneficiaires'
+import type { ColonneTriableDesBeneficiaires } from '../../domain/liste-des-beneficiaires'
 
 const CHEMIN_DES_BENEFICIAIRES = '/coop/mes-beneficiaires'
 

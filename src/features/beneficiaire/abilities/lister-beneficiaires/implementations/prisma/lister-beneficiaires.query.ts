@@ -28,7 +28,7 @@ import type {
   BeneficiaireListItem,
   ColonneTriableDesBeneficiaires,
   ListerBeneficiaires,
-} from '../../domain/lister-beneficiaires'
+} from '../../domain/liste-des-beneficiaires'
 
 const DEFAULT_PAGE_SIZE = PageSize(20)
 

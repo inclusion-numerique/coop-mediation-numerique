@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
 import { beneficiairesInitiaux } from './beneficiaires-initiaux'
-import type { BeneficiairesRecherches } from './rechercher-beneficiaires'
+import type { BeneficiairesRecherches } from './beneficiaires-recherches'
 
 const proposes: BeneficiairesRecherches = { beneficiaires: [], totalCount: 3 }
 

@@ -8,7 +8,7 @@ import type {
   BeneficiaireTrouve,
   ProposerDesBeneficiaires,
   RechercherBeneficiaires,
-} from '../../domain/rechercher-beneficiaires'
+} from '../../domain/beneficiaires-recherches'
 
 const searchSelect = {
   id: true,

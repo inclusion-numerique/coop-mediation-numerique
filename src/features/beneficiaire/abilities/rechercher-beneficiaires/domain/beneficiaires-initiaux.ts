@@ -3,7 +3,7 @@ import type { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
 import type {
   BeneficiairesRecherches,
   ProposerDesBeneficiaires,
-} from './rechercher-beneficiaires'
+} from './beneficiaires-recherches'
 
 const AUCUN: BeneficiairesRecherches = { beneficiaires: [], totalCount: 0 }
 

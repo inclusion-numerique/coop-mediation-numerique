@@ -5,7 +5,7 @@ import {
   trancheAgeLabels,
 } from '@/features/beneficiaire/domain/tranche-age'
 import { InfoLabelValue } from '@/libraries/ui/components'
-import type { BeneficiaireInformations } from '../../domain/consulter-beneficiaire'
+import type { BeneficiaireInformations } from '../../domain/beneficiaire-informations'
 
 const BeneficiaireInformationsComplementaires = ({
   beneficiaire: {

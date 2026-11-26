@@ -1,6 +1,6 @@
 import { telephoneDisplayString } from '@/libraries/telephone'
 import { InfoLabelValue } from '@/libraries/ui/components'
-import type { BeneficiaireInformations } from '../../domain/consulter-beneficiaire'
+import type { BeneficiaireInformations } from '../../domain/beneficiaire-informations'
 
 const BeneficiaireCoordonnees = ({
   beneficiaire: { telephone, pasDeTelephone, email },

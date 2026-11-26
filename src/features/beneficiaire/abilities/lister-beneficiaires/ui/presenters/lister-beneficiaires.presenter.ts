@@ -1,5 +1,5 @@
 import type { Paginated } from '@arckit/resultset'
-import type { BeneficiaireListItem } from '@/features/beneficiaire/abilities/lister-beneficiaires/domain/lister-beneficiaires'
+import type { BeneficiaireListItem } from '@/features/beneficiaire/abilities/lister-beneficiaires/domain/liste-des-beneficiaires'
 import {
   type BeneficiaireRow,
   toBeneficiaireRow,

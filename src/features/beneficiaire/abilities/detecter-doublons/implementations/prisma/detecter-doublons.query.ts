@@ -5,7 +5,7 @@ import { Nom } from '@/features/beneficiaire/domain/nom'
 import { Prenom } from '@/features/beneficiaire/domain/prenom'
 import { Prisma } from '@/generated/prisma/client'
 import { Telephone } from '@/libraries/telephone'
-import type { DetecterDoublons } from '../../domain/detecter-doublons'
+import type { DetecterDoublons } from '../../domain/lectures-des-doublons'
 
 export const detecterDoublons: DetecterDoublons = async ({
   mediateurId,

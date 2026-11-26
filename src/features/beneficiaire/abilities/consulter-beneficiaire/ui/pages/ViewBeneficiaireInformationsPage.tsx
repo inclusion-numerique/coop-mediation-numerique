@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import type { BeneficiaireInformations } from '@/features/beneficiaire/abilities/consulter-beneficiaire/domain/consulter-beneficiaire'
+import type { BeneficiaireInformations } from '@/features/beneficiaire/abilities/consulter-beneficiaire/domain/beneficiaire-informations'
 import BeneficiaireCoordonnees from '@/features/beneficiaire/abilities/consulter-beneficiaire/ui/components/BeneficiaireCoordonnees'
 import BeneficiaireInformationsComplementaires from '@/features/beneficiaire/abilities/consulter-beneficiaire/ui/components/BeneficiaireInformationsComplementaires'
 import BeneficiaireNotes from '@/features/beneficiaire/abilities/consulter-beneficiaire/ui/components/BeneficiaireNotes'

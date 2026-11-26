@@ -1,4 +1,4 @@
-import type { ColonneTriableDesBeneficiaires } from '@/features/beneficiaire/abilities/lister-beneficiaires/domain/lister-beneficiaires'
+import type { ColonneTriableDesBeneficiaires } from '@/features/beneficiaire/abilities/lister-beneficiaires/domain/liste-des-beneficiaires'
 import type { BeneficiaireRow } from '../presenters/ligne-du-beneficiaire.presenter'
 
 /**

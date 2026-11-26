@@ -2,7 +2,7 @@ import type { CommuneResidence } from '@/features/beneficiaire/domain/commune-re
 import type { BeneficiaireData } from '@/features/beneficiaire/ui/forms/beneficiaire.validation'
 import type { AdresseBanData } from '@/libraries/adresse'
 import type { SelectOption } from '@/libraries/ui'
-import type { BeneficiaireTrouve } from '../../domain/rechercher-beneficiaires'
+import type { BeneficiaireTrouve } from '../../domain/beneficiaires-recherches'
 
 /**
  * Adapte la projection domaine `BeneficiaireSearchItem` vers les formes

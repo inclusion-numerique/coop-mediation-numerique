@@ -4,7 +4,7 @@ import { Nom } from '@/features/beneficiaire/domain/nom'
 import { Prenom } from '@/features/beneficiaire/domain/prenom'
 import { findDuplicatesForBeneficiaire } from '@/features/beneficiaire/implementations/prisma/find-duplicates-for-beneficiaire.query'
 import { Telephone } from '@/libraries/telephone'
-import type { DetecterLesDoublons } from '../../domain/detecter-doublons'
+import type { DetecterLesDoublons } from '../../domain/lectures-des-doublons'
 
 export const findDuplicatesForBeneficiaireById: DetecterLesDoublons = async ({
   beneficiaireId,

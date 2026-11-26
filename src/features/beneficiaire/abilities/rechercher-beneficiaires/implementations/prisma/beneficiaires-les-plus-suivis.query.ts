@@ -1,5 +1,5 @@
 import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
-import type { BeneficiaireTrouve } from '../../domain/rechercher-beneficiaires'
+import type { BeneficiaireTrouve } from '../../domain/beneficiaires-recherches'
 import { beneficiairesProposes } from './rechercher-beneficiaires.query'
 
 export const beneficiairesLesPlusSuivis = async (
