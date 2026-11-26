@@ -9,7 +9,7 @@ import { authenticateCoordinateur } from '@/features/authentification/middleware
 import { default as BoutonExporter } from '@/features/equipe/abilities/exporter-les-membres/ui/slots/BoutonExporter.slot'
 import { default as BoutonInviterUnePersonne } from '@/features/equipe/abilities/inviter-des-membres/ui/slots/BoutonInviterUnePersonne.slot'
 import { listerLesMembres } from '@/features/equipe/abilities/lister-les-membres/domain/lister-les-membres'
-import { coordinateurDeLEquipe } from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/coordinateur-de-l-equipe.query'
+import { lireLeDepartementDuCoordinateur } from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/departement-du-coordinateur.query'
 import { lireLesMembres } from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/lister-les-membres.query'
 import {
   type ParametresDeLaListe,
@@ -24,6 +24,7 @@ import { default as BoutonSupprimerUnAncienMembre } from '@/features/equipe/abil
 import { ANNULER_UNE_INVITATION_ACTION_KEY } from '@/features/equipe/action/annuler-une-invitation.key'
 import { RELANCER_UNE_INVITATION_ACTION_KEY } from '@/features/equipe/action/relancer-une-invitation.key'
 import { CoordinateurId } from '@/features/equipe/domain'
+import { lireLeCoordinateur } from '@/features/equipe/implementations/prisma/coordinateur.query'
 import { gestionnaireDe } from '@/features/equipe/implementations/session'
 import { default as ActionsDuMembre } from '@/features/equipe/ui/slots/ActionsDuMembre.slot'
 import { ClientBinder } from '@/libraries/nextjs/injection'
@@ -38,7 +39,8 @@ const Page = async (props: { searchParams: Promise<ParametresDeLaListe> }) => {
   const coordinateurId = user.coordinateur.id
 
   const membres = await listerLesMembres({
-    coordinateurDeLEquipe,
+    lireLeCoordinateur,
+    lireLeDepartementDuCoordinateur,
     lireLesMembres,
   })({
     maintenant: new Date(),

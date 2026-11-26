@@ -2,6 +2,7 @@ import { Page, PageSize, Search, Sort } from '@arckit/resultset'
 import { describe, expect, it } from 'vitest'
 import { CodeDepartement } from '@/libraries/insee'
 import {
+  type CoordinateurDeLEquipe,
   CoordinateurId,
   Courriel,
   type CriteresEquipe,
@@ -9,10 +10,7 @@ import {
   NomAffiche,
 } from '../../../domain'
 import { listerLesMembres } from './lister-les-membres'
-import type {
-  CoordinateurDeLaListe,
-  MembresDeLEquipe,
-} from './membres-de-l-equipe'
+import type { MembresDeLEquipe } from './membres-de-l-equipe'
 
 const coordinateurId = CoordinateurId('550e8400-e29b-41d4-a716-446655440001')
 
@@ -23,12 +21,13 @@ const criteres: CriteresEquipe = {
   tri: Sort('membre', 'asc'),
 }
 
-const coordinateur: CoordinateurDeLaListe = {
+const coordinateur: CoordinateurDeLEquipe = {
   nom: NomAffiche('Camille Martin'),
   email: Courriel('camille.martin@example.com'),
   telephone: null,
-  departementCode: CodeDepartement('69'),
 }
+
+const departementCode = CodeDepartement('69')
 
 const membres: Omit<MembresDeLEquipe, 'coordinateur'> = {
   items: [],
@@ -55,7 +54,8 @@ const maintenant = new Date('2026-10-14T09:00:00Z')
 describe('lister les membres d’une équipe', () => {
   it('rend les membres avec le coordinateur de l’équipe', async () => {
     const lister = listerLesMembres({
-      coordinateurDeLEquipe: async () => coordinateur,
+      lireLeCoordinateur: async () => coordinateur,
+      lireLeDepartementDuCoordinateur: async () => departementCode,
       lireLesMembres: async () => membres,
     })
 
@@ -68,12 +68,16 @@ describe('lister les membres d’une équipe', () => {
         pageSize: PageSize(20),
         maintenant,
       }),
-    ).toEqual({ success: true, data: { coordinateur, ...membres } })
+    ).toEqual({
+      success: true,
+      data: { coordinateur: { ...coordinateur, departementCode }, ...membres },
+    })
   })
 
   it('est refusé à qui n’est ni membre actif ni gestionnaire de l’équipe', async () => {
     const lister = listerLesMembres({
-      coordinateurDeLEquipe: async () => coordinateur,
+      lireLeCoordinateur: async () => coordinateur,
+      lireLeDepartementDuCoordinateur: async () => departementCode,
       lireLesMembres: async () => membres,
     })
 
@@ -94,7 +98,8 @@ describe('lister les membres d’une équipe', () => {
 
   it('échoue quand le coordinateur de l’équipe est introuvable', async () => {
     const lister = listerLesMembres({
-      coordinateurDeLEquipe: async () => null,
+      lireLeCoordinateur: async () => null,
+      lireLeDepartementDuCoordinateur: async () => departementCode,
       lireLesMembres: async () => membres,
     })
 

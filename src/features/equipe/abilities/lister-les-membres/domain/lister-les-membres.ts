@@ -8,31 +8,16 @@ import {
   type Lecteur,
   peutConsulterLEquipe,
 } from '../../../domain'
-import type {
-  CoordinateurDeLaListe,
-  MembresDeLEquipe,
-} from './membres-de-l-equipe'
-
-export type CoordinateurDeLEquipe = (
-  coordinateurId: CoordinateurId,
-) => Promise<CoordinateurDeLaListe | null>
-
-export type LireLesMembres = (lecture: {
-  readonly coordinateurId: CoordinateurId
-  readonly criteres: CriteresEquipe
-  readonly page: Page
-  readonly pageSize: PageSize
-  readonly maintenant: Date
-}) => Promise<Omit<MembresDeLEquipe, 'coordinateur'>>
+import type { EchecDeListe } from './errors'
+import type { MembresDeLEquipe } from './membres-de-l-equipe'
+import type { ListerLesMembresPorts } from './ports'
 
 export const listerLesMembres =
   ({
-    coordinateurDeLEquipe,
+    lireLeCoordinateur,
+    lireLeDepartementDuCoordinateur,
     lireLesMembres,
-  }: {
-    readonly coordinateurDeLEquipe: CoordinateurDeLEquipe
-    readonly lireLesMembres: LireLesMembres
-  }) =>
+  }: ListerLesMembresPorts) =>
   async ({
     coordinateurId,
     lecteur,
@@ -47,13 +32,14 @@ export const listerLesMembres =
     readonly page: Page
     readonly pageSize: PageSize
     readonly maintenant: Date
-  }): Promise<
-    Result<MembresDeLEquipe, ConsultationNonAutorisee | CoordinateurIntrouvable>
-  > => {
+  }): Promise<Result<MembresDeLEquipe, EchecDeListe>> => {
     if (!peutConsulterLEquipe(lecteur)(coordinateurId))
       return failure(ConsultationNonAutorisee())
 
-    const coordinateur = await coordinateurDeLEquipe(coordinateurId)
+    const [coordinateur, departementCode] = await Promise.all([
+      lireLeCoordinateur(coordinateurId),
+      lireLeDepartementDuCoordinateur(coordinateurId),
+    ])
     if (coordinateur === null) return failure(CoordinateurIntrouvable())
 
     const membres = await lireLesMembres({
@@ -64,5 +50,8 @@ export const listerLesMembres =
       maintenant,
     })
 
-    return success({ coordinateur, ...membres })
+    return success({
+      coordinateur: { ...coordinateur, departementCode },
+      ...membres,
+    })
   }

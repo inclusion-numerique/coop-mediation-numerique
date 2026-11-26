@@ -34,7 +34,7 @@ import { consulterHistoriqueEmployeuses } from '@/features/employeuse/abilities/
 import { historiqueEmployeusesAffichage } from '@/features/employeuse/abilities/consulter-historique-employeuses/ui/presenters/historique-employeuses.presenter'
 import { HistoriqueDesEmployeuses } from '@/features/employeuse/abilities/consulter-historique-employeuses/ui/slots/HistoriqueDesEmployeuses.slot'
 import { listerLesMembres } from '@/features/equipe/abilities/lister-les-membres/domain/lister-les-membres'
-import { coordinateurDeLEquipe } from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/coordinateur-de-l-equipe.query'
+import { lireLeDepartementDuCoordinateur } from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/departement-du-coordinateur.query'
 import { lireLesMembres } from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/lister-les-membres.query'
 import {
   type ParametresDeLaListe,
@@ -48,6 +48,7 @@ import { default as BoutonSupprimerUnAncienMembre } from '@/features/equipe/abil
 import { ANNULER_UNE_INVITATION_ACTION_KEY } from '@/features/equipe/action/annuler-une-invitation.key'
 import { RELANCER_UNE_INVITATION_ACTION_KEY } from '@/features/equipe/action/relancer-une-invitation.key'
 import { CoordinateurId } from '@/features/equipe/domain'
+import { lireLeCoordinateur } from '@/features/equipe/implementations/prisma/coordinateur.query'
 import { gestionnaireDe } from '@/features/equipe/implementations/session'
 import { default as ActionsDuMembre } from '@/features/equipe/ui/slots/ActionsDuMembre.slot'
 import { AvertissementsEtatInscription } from '@/features/inscription/ui/slots/AvertissementsEtatInscription.slot'
@@ -96,7 +97,8 @@ const sectionEquipe = async (
 
   const administrateur = await authenticateUser()
   const membres = await listerLesMembres({
-    coordinateurDeLEquipe,
+    lireLeCoordinateur,
+    lireLeDepartementDuCoordinateur,
     lireLesMembres,
   })({
     maintenant: new Date(),

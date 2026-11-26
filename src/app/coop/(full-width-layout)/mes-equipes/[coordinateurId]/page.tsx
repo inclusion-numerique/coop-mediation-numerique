@@ -5,7 +5,7 @@ import { metadataTitle } from '@/configuration/projet'
 import { authenticateUser } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
 import { default as BoutonExporter } from '@/features/equipe/abilities/exporter-les-membres/ui/slots/BoutonExporter.slot'
 import { listerLesMembres } from '@/features/equipe/abilities/lister-les-membres/domain/lister-les-membres'
-import { coordinateurDeLEquipe } from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/coordinateur-de-l-equipe.query'
+import { lireLeDepartementDuCoordinateur } from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/departement-du-coordinateur.query'
 import {
   estMembreActif,
   lireLesMembres,
@@ -19,6 +19,7 @@ import { ListeDeLEquipe } from '@/features/equipe/abilities/lister-les-membres/u
 import { QUITTER_UNE_EQUIPE_ACTION_KEY } from '@/features/equipe/abilities/quitter-une-equipe/action/quitter-une-equipe.key'
 import { default as BoutonQuitterLEquipe } from '@/features/equipe/abilities/quitter-une-equipe/ui/slots/BoutonQuitterLEquipe.slot'
 import { CoordinateurId, MediateurId } from '@/features/equipe/domain'
+import { lireLeCoordinateur } from '@/features/equipe/implementations/prisma/coordinateur.query'
 import { gestionnaireDe } from '@/features/equipe/implementations/session'
 import { ClientBinder } from '@/libraries/nextjs/injection'
 
@@ -43,7 +44,8 @@ const Page = async (props: {
   })
 
   const membres = await listerLesMembres({
-    coordinateurDeLEquipe,
+    lireLeCoordinateur,
+    lireLeDepartementDuCoordinateur,
     lireLesMembres,
   })({
     maintenant: new Date(),

@@ -10,7 +10,7 @@ import {
 } from '../../../../implementations/prisma/ligne-equipe.sql'
 import { toLignesEquipe } from '../../../../implementations/prisma/ligne-equipe.transfer'
 import type { StatistiquesEquipe } from '../../domain'
-import type { LireLesMembres } from '../../domain/lister-les-membres'
+import type { LireLesMembres } from '../../domain/ports'
 
 const statistiquesVides: StatistiquesEquipe = {
   total: 0,
