@@ -1,6 +1,7 @@
-import type {
-  EtapeDInscription,
-  UtilisateurId,
+import {
+  type EtapeDInscription,
+  profilDepuisDispositif,
+  type UtilisateurId,
 } from '@/features/inscription/domain'
 import { etapeApresInitialisation } from './etape-apres-initialisation'
 import type { InitialiserInscriptionPorts } from './ports'
@@ -10,30 +11,35 @@ export type InitialiserInscription = (
   ports: InitialiserInscriptionPorts,
 ) => Promise<{ readonly nextStep: EtapeDInscription }>
 
-/**
- * Orchestration pure de l'initialisation : applique ce que dit le dispositif,
- * tente l'import structure via SIRET, relit l'état, puis dérive l'étape
- * suivante. Les effets sont injectés (ports), la décision reste testable.
- *
- * L'utilisateur suffit désormais à identifier la personne : le dispositif se lit
- * dans `main` par `coop_id`, là où l'API Dataspace se cherchait par courriel.
- */
 export const initialiserInscription: InitialiserInscription = async (
   { userId },
   {
-    appliquerDispositif,
+    lireLeDispositif,
+    enregistrerLeProfil,
+    garantirLeRoleCoordinateur,
+    garantirLeMediateur,
     importerStructureDepuisSiret,
     lireEtatPourEtapeSuivante,
   },
 ) => {
-  const dispositif = await appliquerDispositif({ userId })
+  const dispositif = await lireLeDispositif(userId)
+  const profilDuDispositif = profilDepuisDispositif(dispositif)
+
+  if (profilDuDispositif !== null)
+    await enregistrerLeProfil({ userId, profil: profilDuDispositif })
+
+  await garantirLeRoleCoordinateur(userId)
+
+  if (dispositif.estConseillerNumerique && !dispositif.estCoordinateur)
+    await garantirLeMediateur(userId)
+
   await importerStructureDepuisSiret(userId)
   const etat = await lireEtatPourEtapeSuivante(userId)
 
   return {
     nextStep: etapeApresInitialisation({
       connuDuDispositif: dispositif.connue,
-      profil: etat.profil,
+      profil: profilDuDispositif ?? etat.profil,
       hasLieuxActivite: etat.hasLieuxActivite,
       isConseillerNumerique: dispositif.estConseillerNumerique,
     }),

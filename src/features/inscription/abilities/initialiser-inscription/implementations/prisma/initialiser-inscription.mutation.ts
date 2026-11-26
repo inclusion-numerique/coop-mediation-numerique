@@ -8,8 +8,10 @@ import type {
   UtilisateurId,
 } from '@/features/inscription/domain'
 import type { SynchroniserLaPersonne } from '@/features/inscription/implementations/prisma/synchroniser-la-personne.mutation'
-import { appliquerDispositif } from './appliquer-dispositif.mutation'
+import { dispositifDepuisMain } from './dispositif-depuis-main.query'
+import { enregistrerLeProfil } from './enregistrer-le-profil.mutation'
 import { lireEtatPourEtapeSuivante } from './etat-pour-etape-suivante.query'
+import { garantirLeMediateur } from './garantir-le-mediateur.mutation'
 import { importerStructureDepuisSiret } from './importer-structure-depuis-siret.query'
 
 /** Initialise l'inscription avec les ports infra réels. */
@@ -26,10 +28,10 @@ export const initialiserInscriptionAvecInfra = (
   },
 ): Promise<{ readonly nextStep: EtapeDInscription }> =>
   initialiserInscription(input, {
-    appliquerDispositif: appliquerDispositif(
-      garantirLeRoleCoordinateur,
-      synchroniserLaPersonne,
-    ),
+    lireLeDispositif: dispositifDepuisMain,
+    enregistrerLeProfil,
+    garantirLeRoleCoordinateur,
+    garantirLeMediateur: garantirLeMediateur(synchroniserLaPersonne),
     importerStructureDepuisSiret:
       importerStructureDepuisSiret(rattacherDepuisSiret),
     lireEtatPourEtapeSuivante,

@@ -1,13 +1,16 @@
 import { v4 } from 'uuid'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { prismaClient } from '@/configuration/prisma'
-import { profilDepuisDispositif } from '@/features/inscription/domain'
+import {
+  profilDepuisDispositif,
+  UtilisateurId,
+} from '@/features/inscription/domain'
 import { dispositifDepuisMain } from './dispositif-depuis-main.query'
 
 describe('le profil d’inscription déduit du dispositif', () => {
-  const conseiller = v4()
-  const horsDispositif = v4()
-  const coordinateur = v4()
+  const conseiller = UtilisateurId(v4())
+  const horsDispositif = UtilisateurId(v4())
+  const coordinateur = UtilisateurId(v4())
 
   const tous = [conseiller, horsDispositif, coordinateur]
   const state = { employeuseId: 0 }
@@ -95,7 +98,7 @@ describe('le profil d’inscription déduit du dispositif', () => {
   })
 
   it('ne déduit aucun profil d’une personne inconnue de main', async () => {
-    const dispositif = await dispositifDepuisMain(v4())
+    const dispositif = await dispositifDepuisMain(UtilisateurId(v4()))
 
     expect(dispositif.connue).toBe(false)
     expect(profilDepuisDispositif(dispositif)).toBeNull()

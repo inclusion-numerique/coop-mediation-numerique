@@ -1,4 +1,5 @@
 import { prismaClient } from '@/configuration/prisma'
+import type { LireLeDispositif } from '@/features/inscription/abilities/initialiser-inscription/domain'
 import type { DispositifPersonne } from '@/features/inscription/domain'
 
 const dispositifInconnu: DispositifPersonne = {
@@ -19,9 +20,7 @@ type DispositifRow = {
  * `main.*` est qualifié explicitement : le `search_path` (`coop,public`) ne
  * l'inclut pas.
  */
-export const dispositifDepuisMain = async (
-  userId: string,
-): Promise<DispositifPersonne> => {
+export const dispositifDepuisMain: LireLeDispositif = async (userId) => {
   const [row] = await prismaClient.$queryRaw<DispositifRow[]>`
     SELECT
       EXISTS (
