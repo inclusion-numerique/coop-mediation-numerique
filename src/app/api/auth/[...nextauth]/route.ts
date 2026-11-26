@@ -13,7 +13,12 @@ import {
   ensurePersonneMain,
   synchroniserPersonne,
 } from '@/features/registre-des-personnes/implementations/prisma/registre-personne.mutation'
-import { garantirLeRoleCoordinateurDuDispositif } from '@/features/utilisateurs/abilities/garantir-le-role-coordinateur-du-dispositif/implementations/prisma/garantir-le-role-coordinateur.mutation'
+import { garantirLeRoleCoordinateurDuDispositif } from '@/features/utilisateurs/abilities/garantir-le-role-coordinateur-du-dispositif/domain/garantir-le-role-coordinateur-du-dispositif'
+import { creerLeRoleCoordinateur } from '@/features/utilisateurs/abilities/garantir-le-role-coordinateur-du-dispositif/implementations/prisma/creer-le-role-coordinateur.mutation'
+import {
+  aLeRoleCoordinateur,
+  coordonneDansLeDispositif,
+} from '@/features/utilisateurs/abilities/garantir-le-role-coordinateur-du-dispositif/implementations/prisma/role-coordinateur.query'
 import { isFirewallUserAgent } from '@/libraries/nextjs'
 
 const rattacher = rattacherAUneEmployeuse({
@@ -31,8 +36,12 @@ export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
 const options = nextAuthOptions({
-  garantirLeRoleCoordinateur:
-    garantirLeRoleCoordinateurDuDispositif(synchroniserPersonne),
+  garantirLeRoleCoordinateur: (utilisateurId: string) =>
+    garantirLeRoleCoordinateurDuDispositif({
+      aLeRoleCoordinateur,
+      coordonneDansLeDispositif,
+      creerLeRoleCoordinateur: creerLeRoleCoordinateur(synchroniserPersonne),
+    })({ utilisateurId }),
   importerLEmployeuseProConnect: ({ userId, siret }) =>
     rattacher({ userId, source: { _tag: 'ProConnect', siret: siret ?? null } }),
   synchroniserLaPersonne: synchroniserPersonne,

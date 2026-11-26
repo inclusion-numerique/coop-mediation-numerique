@@ -22,7 +22,12 @@ import {
   ensurePersonneMain,
   synchroniserPersonne,
 } from '@/features/registre-des-personnes/implementations/prisma/registre-personne.mutation'
-import { garantirLeRoleCoordinateurDuDispositif } from '@/features/utilisateurs/abilities/garantir-le-role-coordinateur-du-dispositif/implementations/prisma/garantir-le-role-coordinateur.mutation'
+import { garantirLeRoleCoordinateurDuDispositif } from '@/features/utilisateurs/abilities/garantir-le-role-coordinateur-du-dispositif/domain/garantir-le-role-coordinateur-du-dispositif'
+import { creerLeRoleCoordinateur } from '@/features/utilisateurs/abilities/garantir-le-role-coordinateur-du-dispositif/implementations/prisma/creer-le-role-coordinateur.mutation'
+import {
+  aLeRoleCoordinateur,
+  coordonneDansLeDispositif,
+} from '@/features/utilisateurs/abilities/garantir-le-role-coordinateur-du-dispositif/implementations/prisma/role-coordinateur.query'
 
 const rattacher = rattacherAUneEmployeuse({
   lireLEtablissement: etablissementDepuisSiret,
@@ -53,8 +58,12 @@ const InitialiserInscriptionPage = async () => {
   const initialisation = await initialiserInscription({
     lireLeDispositif: dispositifDepuisMain,
     enregistrerLeProfil,
-    garantirLeRoleCoordinateur:
-      garantirLeRoleCoordinateurDuDispositif(synchroniserPersonne),
+    garantirLeRoleCoordinateur: (utilisateurId: string) =>
+      garantirLeRoleCoordinateurDuDispositif({
+        aLeRoleCoordinateur,
+        coordonneDansLeDispositif,
+        creerLeRoleCoordinateur: creerLeRoleCoordinateur(synchroniserPersonne),
+      })({ utilisateurId }),
     garantirLeMediateur: garantirLeMediateur(synchroniserPersonne),
     lireLeSiretARattacher,
     rattacherDepuisSiret: ({ userId, siret }) =>

@@ -2,7 +2,19 @@ import { v4 } from 'uuid'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { prismaClient } from '@/configuration/prisma'
 import { enPosteWhere } from '@/features/utilisateurs/implementations/prisma/conseiller-numerique-en-poste.where'
-import { garantirLeRoleCoordinateurDuDispositif } from './garantir-le-role-coordinateur.mutation'
+import { garantirLeRoleCoordinateurDuDispositif } from '../../domain/garantir-le-role-coordinateur-du-dispositif'
+import { creerLeRoleCoordinateur } from './creer-le-role-coordinateur.mutation'
+import {
+  aLeRoleCoordinateur,
+  coordonneDansLeDispositif,
+} from './role-coordinateur.query'
+
+const garantir = (utilisateurId: string) =>
+  garantirLeRoleCoordinateurDuDispositif({
+    aLeRoleCoordinateur,
+    coordonneDansLeDispositif,
+    creerLeRoleCoordinateur: creerLeRoleCoordinateur(async () => undefined),
+  })({ utilisateurId })
 
 describe('le rôle coordinateur et le filtre en poste, lus dans le dispositif', () => {
   const conseiller = v4()
@@ -72,36 +84,24 @@ describe('le rôle coordinateur et le filtre en poste, lus dans le dispositif', 
 
   describe('la garantie du rôle coordinateur', () => {
     it('crée la ligne coop, puis ne la recrée pas', async () => {
-      expect(
-        await garantirLeRoleCoordinateurDuDispositif(async () => undefined)(
-          coordinateur,
-        ),
-      ).toEqual({
-        cree: true,
+      expect(await garantir(coordinateur)).toEqual({
+        success: true,
+        data: { _tag: 'RoleCree', utilisateurId: coordinateur },
       })
-      expect(
-        await garantirLeRoleCoordinateurDuDispositif(async () => undefined)(
-          coordinateur,
-        ),
-      ).toEqual({
-        cree: false,
+      expect(await garantir(coordinateur)).toEqual({
+        success: true,
+        data: { _tag: 'DejaCoordinateur' },
       })
     })
 
     it('ne crée rien pour qui ne coordonne pas dans le dispositif', async () => {
-      expect(
-        await garantirLeRoleCoordinateurDuDispositif(async () => undefined)(
-          conseiller,
-        ),
-      ).toEqual({
-        cree: false,
+      expect(await garantir(conseiller)).toEqual({
+        success: true,
+        data: { _tag: 'HorsDuDispositif' },
       })
-      expect(
-        await garantirLeRoleCoordinateurDuDispositif(async () => undefined)(
-          horsDispositif,
-        ),
-      ).toEqual({
-        cree: false,
+      expect(await garantir(horsDispositif)).toEqual({
+        success: true,
+        data: { _tag: 'HorsDuDispositif' },
       })
     })
   })
