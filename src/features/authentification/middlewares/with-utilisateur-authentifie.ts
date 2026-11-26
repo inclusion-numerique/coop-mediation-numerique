@@ -1,12 +1,12 @@
 import type { Route } from 'next'
 import { notFound, redirect } from 'next/navigation'
-import { AuthenticationError } from '@/features/authentification/domain/errors'
 import {
   estCoordinateur,
   estMediateur,
   type UtilisateurCoordinateur,
   type UtilisateurMediateur,
 } from '@/features/authentification/domain/profils-d-utilisateur'
+import { AuthenticationError } from '@/features/authentification/implementations/session/session-token-from-cookies.query'
 import {
   getAuthenticatedSessionUser,
   getSessionUser,

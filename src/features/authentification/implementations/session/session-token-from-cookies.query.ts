@@ -1,6 +1,12 @@
 import type { RequestCookies } from 'next/dist/server/web/spec-extension/cookies'
 import { cookies } from 'next/headers'
-import { AuthenticationError } from '@/features/authentification/domain/errors'
+
+export class AuthenticationError extends Error {
+  constructor(message: string) {
+    super(message)
+    this.name = 'AuthenticationError'
+  }
+}
 
 export const secureSessionCookie = '__Secure-next-auth.session-token'
 export const sessionCookie = 'next-auth.session-token'
