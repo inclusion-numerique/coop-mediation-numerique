@@ -22,7 +22,10 @@ describe('supprimer des bénéficiaires', () => {
 
     expect(
       await supprimer({ ids: [lea, malo, inconnu], mediateurId, maintenant }),
-    ).toEqual({ success: true, data: { ids: [lea, malo], maintenant } })
+    ).toEqual({
+      success: true,
+      data: { ids: [lea, malo], mediateurId, maintenant },
+    })
   })
 
   it('échoue quand aucun bénéficiaire demandé n’existe pour ce médiateur', async () => {

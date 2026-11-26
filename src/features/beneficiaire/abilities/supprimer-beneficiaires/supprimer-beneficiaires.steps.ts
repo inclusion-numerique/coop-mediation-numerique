@@ -9,6 +9,7 @@ import {
   nombreDeBeneficiairesAuDebutDuScenario,
   nombreDeBeneficiairesDuMediateur,
   seedBeneficiaire,
+  semerPortefeuille,
   testMediateurId,
 } from '@/features/beneficiaire/beneficiaire.cucumber'
 import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
@@ -18,17 +19,31 @@ const supprimerBeneficiaires = supprimerBeneficiairesAvec({
   anonymiserLesBeneficiaires,
 })
 
-type SuppressionResult = Awaited<ReturnType<typeof supprimerBeneficiaires>>
+const suppression: {
+  cibleId?: string
+  autreId?: string
+  resultat?: Awaited<ReturnType<typeof supprimerBeneficiaires>>
+} = {}
 
-let targetId: string | undefined
-let result: SuppressionResult | undefined
+const cibleId = (): string => {
+  assert.ok(suppression.cibleId, 'Aucun bénéficiaire à supprimer')
+  return suppression.cibleId
+}
+
+const autreId = (): string => {
+  assert.ok(suppression.autreId, "Aucun bénéficiaire d'un autre médiateur")
+  return suppression.autreId
+}
 
 Given('un bénéficiaire enregistré pour ce médiateur', async () => {
-  targetId = await seedBeneficiaire({ prenom: 'Jean', nom: 'Dupont' })
+  suppression.cibleId = await seedBeneficiaire({
+    prenom: 'Jean',
+    nom: 'Dupont',
+  })
 })
 
 Given('un bénéficiaire de Nice enregistré pour ce médiateur', async () => {
-  targetId = await seedBeneficiaire({
+  suppression.cibleId = await seedBeneficiaire({
     prenom: 'Jean',
     nom: 'Dupont',
     commune: 'Nice',
@@ -37,38 +52,77 @@ Given('un bénéficiaire de Nice enregistré pour ce médiateur', async () => {
   })
 })
 
+Given('un bénéficiaire enregistré pour un autre médiateur', async () => {
+  const { mediateurId } = await semerPortefeuille()
+  const { id } = await prismaClient.beneficiaire.findFirstOrThrow({
+    where: { mediateurId, prenom: 'Paul1' },
+    select: { id: true },
+  })
+  suppression.autreId = id
+})
+
 When('je supprime ce bénéficiaire', async () => {
-  assert.ok(targetId, 'Aucun bénéficiaire à supprimer')
-  result = await supprimerBeneficiaires({
-    ids: [BeneficiaireId(targetId)],
+  suppression.resultat = await supprimerBeneficiaires({
+    ids: [BeneficiaireId(cibleId())],
+    mediateurId: testMediateurId,
+    maintenant: new Date(),
+  })
+})
+
+When('je supprime ces deux bénéficiaires', async () => {
+  suppression.resultat = await supprimerBeneficiaires({
+    ids: [BeneficiaireId(cibleId()), BeneficiaireId(autreId())],
     mediateurId: testMediateurId,
     maintenant: new Date(),
   })
 })
 
 When('je supprime un bénéficiaire inexistant', async () => {
-  result = await supprimerBeneficiaires({
+  suppression.resultat = await supprimerBeneficiaires({
     ids: [BeneficiaireId(v4())],
     mediateurId: testMediateurId,
     maintenant: new Date(),
   })
 })
 
+When(
+  "l'anonymisation de ce bénéficiaire est écrite au nom de ce médiateur",
+  async () => {
+    await anonymiserLesBeneficiaires({
+      ids: [BeneficiaireId(autreId())],
+      mediateurId: testMediateurId,
+      maintenant: new Date(),
+    })
+  },
+)
+
 Then('la suppression retire {int} bénéficiaire', (count: number) => {
-  assert.ok(result?.success, 'La suppression a échoué')
-  assert.strictEqual(result.data.ids.length, count)
+  assert.ok(suppression.resultat?.success, 'La suppression a échoué')
+  assert.strictEqual(suppression.resultat.data.ids.length, count)
 })
 
 Then('le bénéficiaire est anonymisé et marqué supprimé', async () => {
-  assert.ok(targetId)
   const row = await prismaClient.beneficiaire.findUniqueOrThrow({
-    where: { id: targetId },
+    where: { id: cibleId() },
     select: { anonyme: true, suppression: true, prenom: true, nom: true },
   })
   assert.strictEqual(row.anonyme, true)
   assert.ok(row.suppression, 'suppression devrait être renseignée')
   assert.strictEqual(row.prenom, null)
   assert.strictEqual(row.nom, null)
+})
+
+Then("le bénéficiaire de l'autre médiateur garde son identité", async () => {
+  const row = await prismaClient.beneficiaire.findUniqueOrThrow({
+    where: { id: autreId() },
+    select: { anonyme: true, suppression: true, prenom: true, nom: true },
+  })
+  assert.deepStrictEqual(row, {
+    anonyme: false,
+    suppression: null,
+    prenom: 'Paul1',
+    nom: 'Durand',
+  })
 })
 
 Then(
@@ -82,16 +136,18 @@ Then(
 )
 
 Then("la suppression échoue avec l'erreur {string}", (tag: string) => {
-  assert.ok(result && !result.success, 'La suppression aurait dû échouer')
-  assert.strictEqual(result.error._tag, tag)
+  assert.ok(
+    suppression.resultat && !suppression.resultat.success,
+    'La suppression aurait dû échouer',
+  )
+  assert.strictEqual(suppression.resultat.error._tag, tag)
 })
 
 Then(
   'le bénéficiaire supprimé ne garde que le code postal {string}',
   async (codePostal: string) => {
-    assert.ok(targetId)
     const beneficiaire = await prismaClient.beneficiaire.findUniqueOrThrow({
-      where: { id: targetId },
+      where: { id: cibleId() },
       select: {
         commune: true,
         communeCodePostal: true,

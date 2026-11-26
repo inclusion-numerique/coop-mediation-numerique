@@ -28,7 +28,7 @@ export const supprimerBeneficiaires =
 
     if (existants.length === 0) return failure(AucunBeneficiaireValide())
 
-    const anonymises = { ids: existants, maintenant }
+    const anonymises = { ids: existants, mediateurId, maintenant }
 
     await anonymiserLesBeneficiaires(anonymises)
 
