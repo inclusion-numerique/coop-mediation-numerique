@@ -1,6 +1,7 @@
 import { prismaClient } from '@/configuration/prisma'
-import type { LireLesUsagersARapprocher } from '../../domain/rapprochement'
+import type { LireLesUsagersARapprocher } from '../../domain/ports'
 import { tenter } from './tenter.adapter'
+import { usagerExterneToDomain } from './usager-externe.transfer'
 
 export const lireLesUsagersARapprocher: LireLesUsagersARapprocher = tenter(
   async (usagerIds) =>
@@ -17,13 +18,5 @@ export const lireLesUsagersARapprocher: LireLesUsagersARapprocher = tenter(
           birthDate: true,
         },
       })
-    ).map((usager) => ({
-      rdvUserId: usager.id,
-      nom: usager.lastName,
-      prenom: usager.firstName,
-      telephone: usager.phoneNumber,
-      email: usager.email,
-      adresse: usager.address,
-      birthDate: usager.birthDate,
-    })),
+    ).map(usagerExterneToDomain),
 )

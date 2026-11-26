@@ -2,13 +2,19 @@ import type { Result } from '@/libraries/result'
 import type { Agent } from './agent'
 import type { CompteRdvUtilisable } from './compte/compte-rdv'
 import type { JetonsOAuth } from './compte/jetons-oauth'
-import type { ErreurRdvApi } from './errors'
+import type { ErreurRdvApi, ErreurTechnique } from './errors'
+import type { MediateurId } from './identifiants/mediateur-id'
 import type { OrganisationId } from './identifiants/organisation-id'
 import type { RdvAgentId } from './identifiants/rdv-agent-id'
 import type { RdvId } from './identifiants/rdv-id'
 import type { UsagerId } from './identifiants/usager-id'
+import type {
+  EmailExterne,
+  NomExterne,
+  PrenomExterne,
+  TelephoneExterne,
+} from './identite'
 import type { Organisation } from './organisation'
-import type { UsagerExterne } from './rapprochement'
 import type { DemandeRdv, DemandeRdvCreee } from './rdv/demande-rdv'
 import type { RdvSynchronise } from './rdv/rdv'
 import type {
@@ -129,11 +135,34 @@ export type RdvServicePublicApi = {
   ) => Promise<Result<JetonsOAuth, ErreurRdvApi>>
 }
 
-export type CreerOuFusionnerDepuisUsagersExternes<Fusionne = unknown> =
-  (input: { usagers: UsagerExterne[]; mediateurId: string }) => Promise<{
-    merges: readonly Fusionne[]
-    skipped: readonly { readonly rdvUserId: number; readonly reason: unknown }[]
-  }>
+export type UsagerExterne = {
+  readonly rdvUserId: UsagerId
+  readonly nom: NomExterne | null
+  readonly prenom: PrenomExterne | null
+  readonly telephone: TelephoneExterne | null
+  readonly email: EmailExterne | null
+  readonly adresse: string | null
+  readonly birthDate: Date | null
+}
+
+export type DemandeDeRapprochement = {
+  readonly usagers: readonly UsagerExterne[]
+  readonly mediateurId: MediateurId
+  readonly maintenant: Date
+}
+
+export type LireLesUsagersARapprocher = (
+  usagerIds: readonly UsagerId[],
+) => Promise<Result<readonly UsagerExterne[], ErreurTechnique>>
+
+export type RapprocherLesBeneficiaires = (
+  demande: DemandeDeRapprochement,
+) => Promise<Result<{ readonly skipped: readonly unknown[] }, never>>
+
+export type RapprochementPorts = {
+  readonly lireLesUsagersARapprocher: LireLesUsagersARapprocher
+  readonly rapprocherLesBeneficiaires: RapprocherLesBeneficiaires
+}
 
 export type RevoquerJetons = (
   jetons: JetonsOAuth,

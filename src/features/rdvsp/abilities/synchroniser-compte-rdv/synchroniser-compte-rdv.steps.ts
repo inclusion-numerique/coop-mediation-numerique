@@ -5,6 +5,7 @@ import { failure, success } from '@/libraries/result'
 import { bilanVide } from '../../domain/compte/bilan-synchronisation'
 import { estUtilisable } from '../../domain/compte/compte-rdv'
 import { ApiIndisponible, ErreurTechnique } from '../../domain/errors'
+import { MediateurId } from '../../domain/identifiants/mediateur-id'
 import { OrganisationId } from '../../domain/identifiants/organisation-id'
 import { abonnementsDeLaCoop, WebhookId } from '../../domain/webhook/webhook'
 import { compteRdvToDomain } from '../../implementations/prisma/compte-rdv.transfer'
@@ -56,7 +57,7 @@ const reinitialiser = () => {
  */
 const unChangement = { ...bilanVide, updated: 1 }
 
-const MEDIATEUR_ID = 'b6f1a6a2-3c4d-4e5f-8a9b-0c1d2e3f4a5b'
+const MEDIATEUR_ID = MediateurId('b6f1a6a2-3c4d-4e5f-8a9b-0c1d2e3f4a5b')
 
 /**
  * Organisations auxquelles le compte est rattaché, et que RDV Service Public
@@ -197,6 +198,7 @@ When('je synchronise tout le compte', async () => {
   const reponse = await synchroniser({
     compte: await compteUtilisable(),
     mediateurId: MEDIATEUR_ID,
+    maintenant: new Date(),
   })
 
   echoue = !reponse.success
@@ -207,6 +209,7 @@ When('je synchronise tout le compte en rattrapant l’exception', async () => {
   const reponse = await synchroniser({
     compte: await compteUtilisable(),
     mediateurId: MEDIATEUR_ID,
+    maintenant: new Date(),
   })
 
   echoue = !reponse.success
@@ -216,6 +219,7 @@ When('je synchronise une portée vide', async () => {
   const reponse = await synchroniser({
     compte: await compteUtilisable(),
     mediateurId: MEDIATEUR_ID,
+    maintenant: new Date(),
     organisationIds: [],
   })
 
@@ -227,6 +231,7 @@ When('je synchronise les organisations {string}', async (ids: string) => {
   const reponse = await synchroniser({
     compte: await compteUtilisable(),
     mediateurId: MEDIATEUR_ID,
+    maintenant: new Date(),
     organisationIds: ids.split(',').map((id) => OrganisationId(Number(id))),
   })
 

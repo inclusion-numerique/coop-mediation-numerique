@@ -1,4 +1,5 @@
 import { prismaClient } from '@/configuration/prisma'
+import { MediateurId } from '../../../../domain/identifiants/mediateur-id'
 import { compteRdvToDomain } from '../../../../implementations/prisma/compte-rdv.transfer'
 import type { CompteACible } from '../../domain/ports'
 
@@ -19,6 +20,9 @@ export const compteACible: CompteACible = async (utilisateurId) => {
     ? null
     : {
         compte: compteRdvToDomain(row),
-        mediateurId: row.user.mediateur?.id ?? null,
+        mediateurId:
+          row.user.mediateur === null
+            ? null
+            : MediateurId(row.user.mediateur.id),
       }
 }

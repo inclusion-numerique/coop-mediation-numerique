@@ -2,13 +2,11 @@ import { type NextRequest, NextResponse } from 'next/server'
 import { environnementServeur } from '@/configuration/environnement/serveur'
 import { signaler } from '@/configuration/telemetry/serveur'
 import { creerOuFusionnerDepuisUsagerExterne } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/domain/creer-ou-fusionner-depuis-usager-externe'
-import type { UsagerExterneAFusionner } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/domain/usager-externe'
 import { communeDeLAdresse } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/ban/commune-de-l-adresse.query'
 import { lireLeBeneficiaireLie } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/beneficiaire-lie.query'
 import { creerLeBeneficiaire } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/creer-le-beneficiaire.mutation'
 import { trouverUnDoublon } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/doublon-de-l-usager.query'
 import { mettreAJourLeBeneficiaire } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/mettre-a-jour-le-beneficiaire.mutation'
-import { MediateurId as MediateurDuBeneficiaire } from '@/features/beneficiaire/domain/mediateur-id'
 import { messageDuWebhookRdv } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/domain/message-du-webhook-rdv'
 import { recevoirWebhookRdv } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/domain/recevoir-webhook-rdv'
 import { lireNotificationRdv } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/implementations/api/notification-rdv.params'
@@ -28,7 +26,6 @@ import {
   mettreAJourUsager,
 } from '@/features/rdvsp/abilities/recevoir-webhook-usager/implementations/prisma/webhook-usager.mutation'
 import { aiguillerNotificationWebhook } from '@/features/rdvsp/domain/webhook/aiguiller-notification-webhook'
-import { rapprocherLesBeneficiaires } from '@/features/rdvsp/implementations/prisma/rapprocher-les-beneficiaires.adapter'
 import { lireLesUsagersARapprocher } from '@/features/rdvsp/implementations/prisma/usagers-a-rapprocher.query'
 import { journaliserWebhook } from '@/features/rdvsp/implementations/webhook/journal-du-webhook.mutation'
 import { lireNotificationWebhook } from '@/features/rdvsp/implementations/webhook/notification-webhook.params'
@@ -37,26 +34,13 @@ import {
   signatureValide,
 } from '@/features/rdvsp/implementations/webhook/signature-du-webhook.middleware'
 
-const creerOuFusionnerLesUsagers = async ({
-  usagers,
-  mediateurId,
-}: {
-  usagers: UsagerExterneAFusionner[]
-  mediateurId: string
-}) => {
-  const fusion = await creerOuFusionnerDepuisUsagerExterne({
-    lireLeBeneficiaireLie,
-    trouverUnDoublon,
-    communeDeLAdresse,
-    mettreAJourLeBeneficiaire,
-    creerLeBeneficiaire,
-  })({
-    usagers,
-    mediateurId: MediateurDuBeneficiaire(mediateurId),
-    maintenant: new Date(),
-  })
-  return fusion.data
-}
+const creerOuFusionnerLesUsagers = creerOuFusionnerDepuisUsagerExterne({
+  lireLeBeneficiaireLie,
+  trouverUnDoublon,
+  communeDeLAdresse,
+  mettreAJourLeBeneficiaire,
+  creerLeBeneficiaire,
+})
 
 const recevoirLeRdv = recevoirWebhookRdv({
   lireNotification: lireNotificationRdv,
@@ -66,9 +50,7 @@ const recevoirLeRdv = recevoirWebhookRdv({
   enregistrer: enregistrerRdvDeLaNotification,
   supprimer: supprimerRdvDeLaNotification,
   lireLesUsagersARapprocher,
-  rapprocherLesBeneficiaires: rapprocherLesBeneficiaires(
-    creerOuFusionnerLesUsagers,
-  ),
+  rapprocherLesBeneficiaires: creerOuFusionnerLesUsagers,
 })
 
 const recevoirLUsager = recevoirWebhookUsager({
@@ -81,7 +63,13 @@ const recevoirLUsager = recevoirWebhookUsager({
 const traiter = aiguillerNotificationWebhook({
   traiterRdv: async ({ evenement, donnees }) =>
     journaliserWebhook(
-      messageDuWebhookRdv(await recevoirLeRdv({ evenement, payload: donnees })),
+      messageDuWebhookRdv(
+        await recevoirLeRdv({
+          evenement,
+          payload: donnees,
+          maintenant: new Date(),
+        }),
+      ),
     ),
   traiterUsager: async ({ evenement, donnees }) =>
     journaliserWebhook(

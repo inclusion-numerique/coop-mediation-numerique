@@ -15,6 +15,7 @@ import {
   estUtilisable,
 } from '@/features/rdvsp/domain/compte/compte-rdv'
 import { ApiIndisponible } from '@/features/rdvsp/domain/errors'
+import { MediateurId } from '@/features/rdvsp/domain/identifiants/mediateur-id'
 import { OrganisationId } from '@/features/rdvsp/domain/identifiants/organisation-id'
 import { ParticipationId } from '@/features/rdvsp/domain/identifiants/participation-id'
 import { RdvAgentId } from '@/features/rdvsp/domain/identifiants/rdv-agent-id'
@@ -119,7 +120,7 @@ const synchroniser = synchroniserRdvs({
   supprimerRdvs,
   supprimerMotifsOrphelins,
   lireLesUsagersARapprocher: async () => success([]),
-  rapprocherLesBeneficiaires: async () => success({ ecartes: 0 }),
+  rapprocherLesBeneficiaires: async () => success({ skipped: [] }),
 })
 
 const compteUtilisable = async (): Promise<CompteRdvUtilisable> => {
@@ -181,8 +182,9 @@ Given('RDV Service Public refusera de lister les rendez-vous', () => {
 When('je synchronise les rendez-vous', async () => {
   resultat = await synchroniser({
     compte: await compteUtilisable(),
-    mediateurId: 'b6f1a6a2-3c4d-4e5f-8a9b-0c1d2e3f4a5b',
+    mediateurId: MediateurId('b6f1a6a2-3c4d-4e5f-8a9b-0c1d2e3f4a5b'),
     tailleLot: TAILLE_DES_LOTS_DE_RDVS,
+    maintenant: new Date(),
   })
 })
 

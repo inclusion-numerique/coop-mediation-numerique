@@ -5,6 +5,7 @@ import type {
   EchecDeSynchronisation,
   ErreurTechnique,
 } from '../../../domain/errors'
+import type { MediateurId } from '../../../domain/identifiants/mediateur-id'
 import type { OrganisationId } from '../../../domain/identifiants/organisation-id'
 import type { RdvAgentId } from '../../../domain/identifiants/rdv-agent-id'
 import type { RdvServicePublicApi } from '../../../domain/ports'
@@ -25,8 +26,9 @@ export type ReconcilierOrganisations = (reconciliation: {
 export type ReconcilierRdvs = (reconciliation: {
   readonly compte: CompteRdvUtilisable
   readonly organisationIds?: readonly OrganisationId[]
-  readonly mediateurId: string
+  readonly mediateurId: MediateurId
   readonly tailleLot: number
+  readonly maintenant: Date
 }) => Promise<
   Result<
     {

@@ -3,6 +3,7 @@ import { RdvAgentId } from '../../../../domain/identifiants/rdv-agent-id'
 import { RdvId } from '../../../../domain/identifiants/rdv-id'
 import { UsagerId } from '../../../../domain/identifiants/usager-id'
 import { StatutPresence } from '../../../../domain/rdv/statut-presence'
+import { identiteExterneToDomain } from '../../../../implementations/prisma/usager-externe.transfer'
 import type { LireRdvPourActivite } from '../../domain/ports'
 
 /**
@@ -54,10 +55,7 @@ export const lireRdvPourActivite: LireRdvPourActivite = async (rdvId) => {
           statutPresence: StatutPresence(participation.status),
           usager: {
             id: UsagerId(participation.user.id),
-            prenom: participation.user.firstName,
-            nom: participation.user.lastName,
-            email: participation.user.email,
-            telephone: participation.user.phoneNumber,
+            ...identiteExterneToDomain(participation.user),
             adresse: participation.user.address,
             dateNaissance: participation.user.birthDate,
           },

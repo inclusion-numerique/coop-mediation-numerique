@@ -5,18 +5,19 @@ import {
   JetonAcces,
   type JetonsOAuth,
 } from '../../../domain/compte/jetons-oauth'
+import { MediateurId } from '../../../domain/identifiants/mediateur-id'
 import { RdvAgentId } from '../../../domain/identifiants/rdv-agent-id'
 import { RdvId } from '../../../domain/identifiants/rdv-id'
 import { UsagerId } from '../../../domain/identifiants/usager-id'
 import { UtilisateurCoopId } from '../../../domain/identifiants/utilisateur-coop-id'
+import { NomExterne, PrenomExterne } from '../../../domain/identite'
 import { StatutPresence } from '../../../domain/rdv/statut-presence'
 import { creerActiviteDepuisRdv } from './creer-activite-depuis-rdv'
 import type { CreerActiviteDepuisRdvPorts } from './ports'
-import {
-  MediateurRedacteurId,
-  type ParticipationDuRdv,
-  type RdvPourActivite,
-  type UsagerDuRdv,
+import type {
+  ParticipationDuRdv,
+  RdvPourActivite,
+  UsagerDuRdv,
 } from './rdv-pour-activite'
 
 const agentId = RdvAgentId(4242)
@@ -44,8 +45,8 @@ const compte: CompteRdv = {
 
 const usager = (id: number): UsagerDuRdv => ({
   id: UsagerId(id),
-  prenom: 'Jean',
-  nom: 'Dupont',
+  prenom: PrenomExterne('Jean'),
+  nom: NomExterne('Dupont'),
   email: null,
   telephone: null,
   adresse: null,
@@ -80,14 +81,15 @@ const inconnu = StatutPresence('unknown')
 const ports: CreerActiviteDepuisRdvPorts = {
   lireRdv: async () => rdvAvec([participation(vu, 1)], inconnu),
   compteDuRedacteur: async () => compte,
-  creerOuFusionnerBeneficiaires: async () => ({ merges: [], skipped: [] }),
+  creerOuFusionnerBeneficiaires: async () => success({ merges: [] }),
   preparerUrlCreationCra: async () => urlCreationCra,
 }
 
 const demande = {
   utilisateurId: compte.utilisateurId,
-  mediateurId: MediateurRedacteurId('b6f1a6a2-3c4d-4e5f-8a9b-0c1d2e3f4a5b'),
+  mediateurId: MediateurId('b6f1a6a2-3c4d-4e5f-8a9b-0c1d2e3f4a5b'),
   rdvId,
+  maintenant: new Date('2026-11-12T10:00:00.000Z'),
 }
 
 const preparerPour = (rdv: RdvPourActivite) =>

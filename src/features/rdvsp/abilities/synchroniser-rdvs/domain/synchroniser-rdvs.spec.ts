@@ -7,6 +7,7 @@ import {
   ApiIndisponible,
   ErreurTechnique,
 } from '../../../domain/errors'
+import { MediateurId } from '../../../domain/identifiants/mediateur-id'
 import { MotifId } from '../../../domain/identifiants/motif-id'
 import { OrganisationId } from '../../../domain/identifiants/organisation-id'
 import { ParticipationId } from '../../../domain/identifiants/participation-id'
@@ -139,7 +140,8 @@ const compte: CompteRdvLie = {
 
 const accessible = OrganisationId(3089)
 const inaccessible = OrganisationId(3090)
-const mediateurId = '11111111-1111-4111-8111-111111111112'
+const mediateurId = MediateurId('11111111-1111-4111-8111-111111111112')
+const maintenant = new Date('2026-09-01T10:00:00.000Z')
 const panne = ErreurTechnique(new Error('connexion perdue'))
 
 const etatInconnu: EtatConnu = {
@@ -157,10 +159,10 @@ const dependances: SynchroniserRdvsPorts = {
   supprimerRdvs: async () => success(undefined),
   supprimerMotifsOrphelins: async () => success(2),
   lireLesUsagersARapprocher: async () => success([]),
-  rapprocherLesBeneficiaires: async () => success({ ecartes: 0 }),
+  rapprocherLesBeneficiaires: async () => success({ skipped: [] }),
 }
 
-const passe = { compte, mediateurId, tailleLot: 250 }
+const passe = { compte, mediateurId, tailleLot: 250, maintenant }
 
 describe('ramassage des motifs orphelins', () => {
   it('se borne aux organisations du compte quand la passe est complète', async () => {
@@ -280,7 +282,7 @@ describe('rapprochement des bénéficiaires', () => {
     ).toMatchObject(
       success({
         rapprochements: [
-          { _tag: 'reussi', usagers: [], mediateurId, ecartes: 0 },
+          { _tag: 'reussi', usagers: [], mediateurId, maintenant, ecartes: 0 },
         ],
       }),
     )
@@ -318,7 +320,7 @@ const synchroniserLot = (surcharge: {
     rdvsDejaImportes: async () => success(enBase),
     etatConnuDuLot: async () => success(connu),
     supprimerMotifsOrphelins: async () => success(0),
-  })({ compte: compteSuivi, mediateurId, tailleLot })
+  })({ compte: compteSuivi, mediateurId, tailleLot, maintenant })
 }
 
 const rdvConnu = (rdv: Rdv): EtatConnu => ({

@@ -16,6 +16,7 @@ import {
 } from '@/features/rdvsp/abilities/synchroniser-rdvs/domain/plan-rdvs'
 import type { CompteRdvUtilisable } from '@/features/rdvsp/domain/compte/compte-rdv'
 import type { ErreurRdvApi } from '@/features/rdvsp/domain/errors'
+import type { MediateurId } from '@/features/rdvsp/domain/identifiants/mediateur-id'
 import {
   type OrganisationId,
   organisationsAccessibles,
@@ -163,11 +164,13 @@ export const synchroniserRdvs =
     organisationIds: porteeDemandee,
     mediateurId,
     tailleLot,
+    maintenant,
   }: {
     readonly compte: CompteRdvUtilisable
     readonly organisationIds?: readonly OrganisationId[]
-    readonly mediateurId: string
+    readonly mediateurId: MediateurId
     readonly tailleLot: number
+    readonly maintenant: Date
   }): Promise<Result<RdvsSynchronises, EchecDeSynchroniserRdvs>> => {
     const lus = await lireRdvs(listerRdvs, compte, porteeDemandee)
 
@@ -227,16 +230,16 @@ export const synchroniserRdvs =
           return application
         }
 
-        const rapprochement = await rapprocherLesUsagers(
-          { lireLesUsagersARapprocher, rapprocherLesBeneficiaires },
-          {
-            usagerIds: [
-              ...plan.usagers.aCreer,
-              ...plan.usagers.aMettreAJour,
-            ].map((usager) => usager.id),
-            mediateurId,
-          },
-        )
+        const rapprochement = await rapprocherLesUsagers({
+          lireLesUsagersARapprocher,
+          rapprocherLesBeneficiaires,
+        })({
+          usagerIds: [...plan.usagers.aCreer, ...plan.usagers.aMettreAJour].map(
+            (usager) => usager.id,
+          ),
+          mediateurId,
+          maintenant,
+        })
 
         return success(cumuler(acquis.data, plan, rapprochement))
       },

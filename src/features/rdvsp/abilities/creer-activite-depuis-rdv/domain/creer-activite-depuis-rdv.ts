@@ -7,14 +7,15 @@ import {
   RdvIntrouvable,
   RdvNonAutorise,
 } from '@/features/rdvsp/domain/errors'
+import type { MediateurId } from '@/features/rdvsp/domain/identifiants/mediateur-id'
 import type { RdvId } from '@/features/rdvsp/domain/identifiants/rdv-id'
 import type { UtilisateurCoopId } from '@/features/rdvsp/domain/identifiants/utilisateur-coop-id'
+import type { UsagerExterne } from '@/features/rdvsp/domain/ports'
 import type { StatutPresence } from '@/features/rdvsp/domain/rdv/statut-presence'
 import { failure, type Result, success } from '@/libraries/result'
 import type { EchecDeCreerActiviteDepuisRdv } from './errors'
 import type { CreerActiviteDepuisRdvPorts } from './ports'
 import type {
-  MediateurRedacteurId,
   ParticipationDuRdv,
   RdvPourActivite,
   UsagerDuRdv,
@@ -87,7 +88,7 @@ const usagersPourActivite = (rdv: RdvPourActivite): readonly UsagerDuRdv[] =>
     })
     .map((participation) => participation.usager)
 
-const enUsagerExterne = (usager: UsagerDuRdv) => ({
+const enUsagerExterne = (usager: UsagerDuRdv): UsagerExterne => ({
   rdvUserId: usager.id,
   prenom: usager.prenom,
   nom: usager.nom,
@@ -114,10 +115,12 @@ export const creerActiviteDepuisRdv =
     utilisateurId,
     mediateurId,
     rdvId,
+    maintenant,
   }: {
     readonly utilisateurId: UtilisateurCoopId
-    readonly mediateurId: MediateurRedacteurId
+    readonly mediateurId: MediateurId
     readonly rdvId: RdvId
+    readonly maintenant: Date
   }): Promise<Result<CraPrepare, EchecDeCreerActiviteDepuisRdv>> => {
     const [rdv, compte] = await Promise.all([
       lireRdv(rdvId),
@@ -132,9 +135,10 @@ export const creerActiviteDepuisRdv =
 
     const usagers = usagersPourActivite(verifie.data)
 
-    const { merges } = await creerOuFusionnerBeneficiaires({
+    const fusion = await creerOuFusionnerBeneficiaires({
       usagers: usagers.map(enUsagerExterne),
       mediateurId,
+      maintenant,
     })
 
     return success({
@@ -148,7 +152,7 @@ export const creerActiviteDepuisRdv =
           collectif: verifie.data.collectif,
         },
         mediateurId,
-        beneficiaires: merges,
+        beneficiaires: fusion.data.merges,
       }),
     })
   }

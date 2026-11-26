@@ -7,6 +7,7 @@ import {
 import type { CompteRdvLie } from '../../../domain/compte/compte-rdv'
 import { JetonAcces } from '../../../domain/compte/jetons-oauth'
 import { ApiIndisponible, ErreurTechnique } from '../../../domain/errors'
+import { MediateurId } from '../../../domain/identifiants/mediateur-id'
 import { OrganisationId } from '../../../domain/identifiants/organisation-id'
 import { RdvAgentId } from '../../../domain/identifiants/rdv-agent-id'
 import { UtilisateurCoopId } from '../../../domain/identifiants/utilisateur-coop-id'
@@ -21,7 +22,8 @@ import { synchroniserCompteRdv } from './synchroniser-compte-rdv'
 
 const organisation = OrganisationId(10)
 const autreOrganisation = OrganisationId(20)
-const mediateurId = 'b6f1a6a2-3c4d-4e5f-8a9b-0c1d2e3f4a5b'
+const mediateurId = MediateurId('b6f1a6a2-3c4d-4e5f-8a9b-0c1d2e3f4a5b')
+const maintenant = new Date('2026-09-01T10:00:00.000Z')
 const panne = ErreurTechnique(new Error('connexion perdue'))
 const indisponible = ApiIndisponible(503, 'maintenance')
 
@@ -79,7 +81,7 @@ const ports: SynchroniserCompteRdvPorts = {
   noterLaSynchronisationReussie: async () => success(undefined),
 }
 
-const passeComplete = { compte, mediateurId }
+const passeComplete = { compte, mediateurId, maintenant }
 
 const synchronise = ({
   bilan,
@@ -162,7 +164,10 @@ describe('synchroniser un compte RDV', () => {
 
   it('ne réconcilie pas les rendez-vous d’un compte sans médiateur', async () => {
     expect(
-      await synchroniserCompteRdv(ports)({ compte, mediateurId: null }),
+      await synchroniserCompteRdv(ports)({
+        ...passeComplete,
+        mediateurId: null,
+      }),
     ).toEqual(
       synchronise({
         bilan: {

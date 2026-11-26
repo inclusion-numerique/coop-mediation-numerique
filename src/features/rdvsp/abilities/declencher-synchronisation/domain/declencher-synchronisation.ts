@@ -157,6 +157,7 @@ export const declencherSynchronisation =
     const synchronisation = await synchroniser({
       compte,
       mediateurId,
+      maintenant,
       ...(portee._tag === 'organisations'
         ? { organisationIds: portee.organisationIds }
         : {}),

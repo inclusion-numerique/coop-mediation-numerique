@@ -1,11 +1,32 @@
 import assert from 'node:assert'
-import { MediateurRedacteurId } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/domain/rdv-pour-activite'
+import { After, Given, Then, When } from '@cucumber/cucumber'
+import { v4 } from 'uuid'
+import { creerActiviteDepuisRdv } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/domain/creer-activite-depuis-rdv'
+import type {
+  CreerOuFusionnerBeneficiaires,
+  PreparerUrlCreationCra,
+} from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/domain/ports'
+import { compteDuRedacteur } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/implementations/prisma/compte-du-redacteur.query'
+import { lireRdvPourActivite } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/implementations/prisma/lire-rdv-pour-activite.query'
+import { MediateurId } from '@/features/rdvsp/domain/identifiants/mediateur-id'
+import { RdvId } from '@/features/rdvsp/domain/identifiants/rdv-id'
+import { StatutPresence } from '@/features/rdvsp/domain/rdv/statut-presence'
+import {
+  ID_TEST,
+  seedCompteRdv,
+  seedCompteRdvAutreMediateur,
+  seedParticipation,
+  seedRdv,
+  testMediateurId,
+  testUtilisateurId,
+} from '@/features/rdvsp/rdvsp.cucumber'
+import { success } from '@/libraries/result'
 
 const confies: { usagers: number[] } = { usagers: [] }
 
 const creerActiviteDepuisRdvAvec = (
   preparerUrlCreationCra: PreparerUrlCreationCra,
-  creerOuFusionner: CreerOuFusionnerDepuisUsagersExternes<BeneficiaireFusionne>,
+  creerOuFusionner: CreerOuFusionnerBeneficiaires,
 ) =>
   creerActiviteDepuisRdv({
     lireRdv: lireRdvPourActivite,
@@ -24,7 +45,7 @@ const creerActiviteDepuisUnRdv = creerActiviteDepuisRdvAvec(
       ...confies.usagers,
       ...usagers.map(({ rdvUserId }) => rdvUserId),
     ]
-    return {
+    return success({
       merges: usagers.map(({ prenom, nom, email, telephone, adresse }) => ({
         id: v4(),
         prenom,
@@ -36,30 +57,9 @@ const creerActiviteDepuisUnRdv = creerActiviteDepuisRdvAvec(
         anneeNaissance: null,
         commune: null,
       })),
-      skipped: [],
-    }
+    })
   },
 )
-
-import { After, Given, Then, When } from '@cucumber/cucumber'
-import { v4 } from 'uuid'
-import { creerActiviteDepuisRdv } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/domain/creer-activite-depuis-rdv'
-import type { PreparerUrlCreationCra } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/domain/ports'
-import type { BeneficiaireFusionne } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/domain/rdv-pour-activite'
-import { compteDuRedacteur } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/implementations/prisma/compte-du-redacteur.query'
-import { lireRdvPourActivite } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/implementations/prisma/lire-rdv-pour-activite.query'
-import { RdvId } from '@/features/rdvsp/domain/identifiants/rdv-id'
-import type { CreerOuFusionnerDepuisUsagersExternes } from '@/features/rdvsp/domain/ports'
-import { StatutPresence } from '@/features/rdvsp/domain/rdv/statut-presence'
-import {
-  ID_TEST,
-  seedCompteRdv,
-  seedCompteRdvAutreMediateur,
-  seedParticipation,
-  seedRdv,
-  testMediateurId,
-  testUtilisateurId,
-} from '@/features/rdvsp/rdvsp.cucumber'
 
 const AGENT_ID = ID_TEST.compte + 6
 const AGENT_ID_AUTRE = ID_TEST.compte + 7
@@ -141,7 +141,8 @@ Given('aucun compte RDV pour convertir', () => {
 When('je prépare un CRA depuis ce rendez-vous', async () => {
   resultat = await creerActiviteDepuisUnRdv({
     utilisateurId: testUtilisateurId,
-    mediateurId: MediateurRedacteurId(testMediateurId),
+    mediateurId: MediateurId(testMediateurId),
+    maintenant: new Date(),
     rdvId: RdvId(RDV_ID),
   })
 })
@@ -149,7 +150,8 @@ When('je prépare un CRA depuis ce rendez-vous', async () => {
 When('je prépare un CRA depuis un rendez-vous inexistant', async () => {
   resultat = await creerActiviteDepuisUnRdv({
     utilisateurId: testUtilisateurId,
-    mediateurId: MediateurRedacteurId(testMediateurId),
+    mediateurId: MediateurId(testMediateurId),
+    maintenant: new Date(),
     rdvId: RdvId(RDV_ID_INEXISTANT),
   })
 })

@@ -1,10 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { failure, success } from '@/libraries/result'
-import {
-  ErreurTechnique,
-  PayloadInexploitable,
-  RapprochementEchoue,
-} from '../../../domain/errors'
+import { ErreurTechnique, PayloadInexploitable } from '../../../domain/errors'
+import { MediateurId } from '../../../domain/identifiants/mediateur-id'
 import { MotifId } from '../../../domain/identifiants/motif-id'
 import { OrganisationId } from '../../../domain/identifiants/organisation-id'
 import { ParticipationId } from '../../../domain/identifiants/participation-id'
@@ -18,6 +15,7 @@ import {
   PrenomExterne,
 } from '../../../domain/identite'
 import { NomAtelier, NomMotif } from '../../../domain/libelle'
+import type { UsagerExterne } from '../../../domain/ports'
 import { AdresseRdv } from '../../../domain/rdv/adresse-rdv'
 import { DureeEnMinutes } from '../../../domain/rdv/duree-en-minutes'
 import { type Lieu, LieuId, NomLieu } from '../../../domain/rdv/lieu'
@@ -84,7 +82,9 @@ const atelier = (nom: string): Rdv => ({
 
 const fenetre = new Date('2026-08-01T00:00:00.000Z')
 
-const mediateurId = 'b6f1a6a2-3c4d-4e5f-8a9b-0c1d2e3f4a5b'
+const mediateurId = MediateurId('b6f1a6a2-3c4d-4e5f-8a9b-0c1d2e3f4a5b')
+
+const maintenant = new Date('2026-08-20T10:00:00.000Z')
 
 const usager: Usager = {
   id: UsagerId(200),
@@ -109,12 +109,12 @@ const usager: Usager = {
   notifierParSms: false,
 }
 
-const usagerExterne = {
-  rdvUserId: 200,
-  nom: 'Dupont',
-  prenom: 'Jean',
+const usagerExterne: UsagerExterne = {
+  rdvUserId: UsagerId(200),
+  nom: NomExterne('Dupont'),
+  prenom: PrenomExterne('Jean'),
   telephone: null,
-  email: 'jean.dupont@example.com',
+  email: EmailExterne('jean.dupont@example.com'),
   adresse: null,
   birthDate: null,
 }
@@ -150,11 +150,19 @@ const dependances: RecevoirWebhookRdvPorts = {
   enregistrer: async () => undefined,
   supprimer: async () => undefined,
   lireLesUsagersARapprocher: async () => success([usagerExterne]),
-  rapprocherLesBeneficiaires: async () => success({ ecartes: 0 }),
+  rapprocherLesBeneficiaires: async () => success({ skipped: [] }),
 }
 
-const misAJour = { evenement: EvenementWebhook('updated'), payload: {} }
-const detruit = { evenement: EvenementWebhook('destroyed'), payload: {} }
+const misAJour = {
+  evenement: EvenementWebhook('updated'),
+  payload: {},
+  maintenant,
+}
+const detruit = {
+  evenement: EvenementWebhook('destroyed'),
+  payload: {},
+  maintenant,
+}
 
 const recu = (rdvRecu: Rdv) => () => success({ agentId, rdv: rdvRecu })
 
@@ -195,18 +203,19 @@ describe('recevoir une notification portant sur un rendez-vous', () => {
           _tag: 'reussi',
           usagers: [usagerExterne],
           mediateurId,
+          maintenant,
           ecartes: 0,
         },
       }),
     )
   })
 
-  it('garde le rendez-vous enregistré quand le rapprochement échoue', async () => {
+  it('compte les usagers que la fusion a écartés', async () => {
     const resultat = await recevoirWebhookRdv({
       ...dependances,
       lireNotification: recu(avecParticipant),
       rapprocherLesBeneficiaires: async () =>
-        failure(RapprochementEchoue('adresse illisible')),
+        success({ skipped: [{ rdvUserId: 200 }] }),
     })(misAJour)
 
     expect(resultat).toEqual(
@@ -214,10 +223,11 @@ describe('recevoir une notification portant sur un rendez-vous', () => {
         _tag: 'enregistre',
         rdv: avecParticipant,
         rapprochement: {
-          _tag: 'echoue',
-          usagerIds: [UsagerId(200)],
+          _tag: 'reussi',
+          usagers: [usagerExterne],
           mediateurId,
-          message: 'adresse illisible',
+          maintenant,
+          ecartes: 1,
         },
       }),
     )

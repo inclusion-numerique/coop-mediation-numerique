@@ -39,7 +39,7 @@ const recevoir = recevoirWebhookRdv({
   enregistrer: enregistrerRdvDeLaNotification,
   supprimer: supprimerRdvDeLaNotification,
   lireLesUsagersARapprocher: async () => success([]),
-  rapprocherLesBeneficiaires: async () => success({ ecartes: 0 }),
+  rapprocherLesBeneficiaires: async () => success({ skipped: [] }),
 })
 
 /** Payload tel que RDV Service Public l'émet, catégorie de motif en chaîne comprise. */
@@ -173,6 +173,7 @@ Given(
 When('RDV Service Public notifie la création d’un rendez-vous', async () => {
   resultat = await recevoir({
     evenement: EvenementWebhook('created'),
+    maintenant: new Date(),
     payload: notification(),
   })
 })
@@ -180,6 +181,7 @@ When('RDV Service Public notifie la création d’un rendez-vous', async () => {
 When('RDV Service Public notifie un rendez-vous illisible', async () => {
   resultat = await recevoir({
     evenement: EvenementWebhook('updated'),
+    maintenant: new Date(),
     payload: { id: 'pas un identifiant' },
   })
 })
@@ -189,6 +191,7 @@ When(
   async (jour: string) => {
     resultat = await recevoir({
       evenement: EvenementWebhook('updated'),
+      maintenant: new Date(),
       payload: notification({ debut: `${jour}T09:00:00.000Z` }),
     })
   },
@@ -197,6 +200,7 @@ When(
 When('RDV Service Public notifie ce rendez-vous sans changement', async () => {
   resultat = await recevoir({
     evenement: EvenementWebhook('updated'),
+    maintenant: new Date(),
     payload: notification(),
   })
 })
@@ -206,6 +210,7 @@ When(
   async (statut: string) => {
     resultat = await recevoir({
       evenement: EvenementWebhook('updated'),
+      maintenant: new Date(),
       payload: notification({ statut }),
     })
   },
@@ -214,6 +219,7 @@ When(
 When('RDV Service Public notifie la suppression du rendez-vous', async () => {
   resultat = await recevoir({
     evenement: EvenementWebhook('destroyed'),
+    maintenant: new Date(),
     payload: notification(),
   })
 })

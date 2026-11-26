@@ -3,11 +3,11 @@ import type { CompteRdvUtilisable } from '../../../domain/compte/compte-rdv'
 import type { ErreurTechnique } from '../../../domain/errors'
 import type { OrganisationId } from '../../../domain/identifiants/organisation-id'
 import type { RdvId } from '../../../domain/identifiants/rdv-id'
-import type { RdvServicePublicApi } from '../../../domain/ports'
 import type {
   LireLesUsagersARapprocher,
   RapprocherLesBeneficiaires,
-} from '../../../domain/rapprochement'
+  RdvServicePublicApi,
+} from '../../../domain/ports'
 import type { EtatConnu, PlanLot } from './plan-rdvs'
 
 export type RdvsDejaImportes = (portee: {

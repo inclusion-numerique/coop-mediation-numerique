@@ -1,4 +1,5 @@
 import { prismaClient } from '@/configuration/prisma'
+import { MediateurId } from '../../../../domain/identifiants/mediateur-id'
 import {
   lieuFromDomain,
   motifFromDomain,
@@ -30,7 +31,10 @@ export const comptePourWebhook: ComptePourWebhook = async (agentId) => {
     ? null
     : {
         synchroniserDepuis: row.syncFrom,
-        mediateurId: row.user?.mediateur?.id ?? null,
+        mediateurId:
+          row.user?.mediateur == null
+            ? null
+            : MediateurId(row.user.mediateur.id),
       }
 }
 

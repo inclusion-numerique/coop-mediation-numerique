@@ -9,6 +9,7 @@ import {
   type EchecDeSynchronisation,
   messageDeLEchec,
 } from '@/features/rdvsp/domain/errors'
+import type { MediateurId } from '@/features/rdvsp/domain/identifiants/mediateur-id'
 import {
   type OrganisationId,
   organisationsAccessibles,
@@ -78,7 +79,8 @@ const rdvsDuMediateur = (
   reconcilierRdvs: ReconcilierRdvs,
   compte: CompteRdvUtilisable,
   organisationIds: readonly OrganisationId[] | undefined,
-  mediateurId: string | null,
+  mediateurId: MediateurId | null,
+  maintenant: Date,
 ): ReturnType<ReconcilierRdvs> =>
   mediateurId === null
     ? Promise.resolve(success(bilanRdvsVide))
@@ -87,6 +89,7 @@ const rdvsDuMediateur = (
         ...avecPortee(organisationIds),
         mediateurId,
         tailleLot: TAILLE_DES_LOTS_DE_RDVS,
+        maintenant,
       })
 
 const organisationsDeLaPasse = (
@@ -133,10 +136,12 @@ export const synchroniserCompteRdv =
     compte,
     mediateurId,
     organisationIds,
+    maintenant,
   }: {
     readonly compte: CompteRdvUtilisable
-    readonly mediateurId: string | null
+    readonly mediateurId: MediateurId | null
     readonly organisationIds?: readonly OrganisationId[]
+    readonly maintenant: Date
   }): Promise<Result<CompteSynchronise, EchecDeSynchroniserCompteRdv>> => {
     const passe = passePour(organisationIds)
 
@@ -194,6 +199,7 @@ export const synchroniserCompteRdv =
               compte,
               passe.organisationIds,
               mediateurId,
+              maintenant,
             )
 
             if (!rdvs.success) return echouer(rdvs.error, traceRdvs)

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { failure, type Result, success } from '@/libraries/result'
 import { PayloadInexploitable } from '../../../domain/errors'
+import { MediateurId } from '../../../domain/identifiants/mediateur-id'
 import { OrganisationId } from '../../../domain/identifiants/organisation-id'
 import { RdvAgentId } from '../../../domain/identifiants/rdv-agent-id'
 import { RdvId } from '../../../domain/identifiants/rdv-id'
@@ -36,7 +37,8 @@ const rdv: Rdv = {
 
 const demande = {
   usagers: [],
-  mediateurId: 'b6f1a6a2-3c4d-4e5f-8a9b-0c1d2e3f4a5b',
+  mediateurId: MediateurId('b6f1a6a2-3c4d-4e5f-8a9b-0c1d2e3f4a5b'),
+  maintenant: new Date('2026-09-01T10:00:00.000Z'),
 }
 
 describe('message du webhook rendez-vous', () => {

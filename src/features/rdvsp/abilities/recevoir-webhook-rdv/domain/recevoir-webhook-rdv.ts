@@ -43,9 +43,11 @@ export const recevoirWebhookRdv =
   async ({
     evenement,
     payload,
+    maintenant,
   }: {
     readonly evenement: EvenementWebhook
     readonly payload: unknown
+    readonly maintenant: Date
   }): Promise<Result<WebhookRdvTraite, EchecDeRecevoirWebhookRdv>> => {
     const notification = lireNotification(payload)
 
@@ -85,14 +87,15 @@ export const recevoirWebhookRdv =
     return success({
       _tag: 'enregistre',
       rdv,
-      rapprochement: await rapprocherLesUsagers(
-        { lireLesUsagersARapprocher, rapprocherLesBeneficiaires },
-        {
-          usagerIds: rdv.participations.map(
-            (participation) => participation.usagerId,
-          ),
-          mediateurId: compte.mediateurId,
-        },
-      ),
+      rapprochement: await rapprocherLesUsagers({
+        lireLesUsagersARapprocher,
+        rapprocherLesBeneficiaires,
+      })({
+        usagerIds: rdv.participations.map(
+          (participation) => participation.usagerId,
+        ),
+        mediateurId: compte.mediateurId,
+        maintenant,
+      }),
     })
   }

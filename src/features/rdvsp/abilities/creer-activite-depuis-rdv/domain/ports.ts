@@ -1,12 +1,10 @@
+import type { Result } from '@/libraries/result'
 import type { CompteRdv } from '../../../domain/compte/compte-rdv'
+import type { MediateurId } from '../../../domain/identifiants/mediateur-id'
 import type { RdvId } from '../../../domain/identifiants/rdv-id'
 import type { UtilisateurCoopId } from '../../../domain/identifiants/utilisateur-coop-id'
-import type { CreerOuFusionnerDepuisUsagersExternes } from '../../../domain/ports'
-import type {
-  BeneficiaireFusionne,
-  MediateurRedacteurId,
-  RdvPourActivite,
-} from './rdv-pour-activite'
+import type { DemandeDeRapprochement } from '../../../domain/ports'
+import type { BeneficiaireFusionne, RdvPourActivite } from './rdv-pour-activite'
 
 export type LireRdvPourActivite = (
   rdvId: RdvId,
@@ -16,8 +14,11 @@ export type CompteDuRedacteur = (
   utilisateurId: UtilisateurCoopId,
 ) => Promise<CompteRdv | null>
 
-export type CreerOuFusionnerBeneficiaires =
-  CreerOuFusionnerDepuisUsagersExternes<BeneficiaireFusionne>
+export type CreerOuFusionnerBeneficiaires = (
+  demande: DemandeDeRapprochement,
+) => Promise<
+  Result<{ readonly merges: readonly BeneficiaireFusionne[] }, never>
+>
 
 type RendezVousASaisir = {
   readonly id: RdvId
@@ -29,7 +30,7 @@ type RendezVousASaisir = {
 
 export type PreparerUrlCreationCra = (saisie: {
   readonly rendezVous: RendezVousASaisir
-  readonly mediateurId: MediateurRedacteurId
+  readonly mediateurId: MediateurId
   readonly beneficiaires: readonly BeneficiaireFusionne[]
 }) => Promise<string>
 
