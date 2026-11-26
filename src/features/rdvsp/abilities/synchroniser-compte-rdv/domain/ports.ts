@@ -9,6 +9,7 @@ import type { MediateurId } from '../../../domain/identifiants/mediateur-id'
 import type { OrganisationId } from '../../../domain/identifiants/organisation-id'
 import type { RdvAgentId } from '../../../domain/identifiants/rdv-agent-id'
 import type { RdvServicePublicApi } from '../../../domain/ports'
+import type { Rapprochement } from '../../../domain/rapprochement'
 import type { ResultatSynchronisation } from './resultat-synchronisation'
 
 export type ReconcilierOrganisations = (reconciliation: {
@@ -37,6 +38,7 @@ export type ReconcilierRdvs = (reconciliation: {
       readonly motifs: BilanModele
       readonly lieux: BilanModele
       readonly organisationIdsInaccessibles: readonly OrganisationId[]
+      readonly rapprochements: readonly Rapprochement[]
     },
     EchecDeSynchronisation
   >

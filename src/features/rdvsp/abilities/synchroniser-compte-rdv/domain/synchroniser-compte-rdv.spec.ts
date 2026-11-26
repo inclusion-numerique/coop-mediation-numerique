@@ -11,6 +11,7 @@ import { MediateurId } from '../../../domain/identifiants/mediateur-id'
 import { OrganisationId } from '../../../domain/identifiants/organisation-id'
 import { RdvAgentId } from '../../../domain/identifiants/rdv-agent-id'
 import { UtilisateurCoopId } from '../../../domain/identifiants/utilisateur-coop-id'
+import type { Rapprochement } from '../../../domain/rapprochement'
 import {
   AbonnementWebhook,
   abonnementsDeLaCoop,
@@ -57,6 +58,14 @@ const webhookPerime: WebhookInstalle = {
 
 const unChangement = { ...bilanVide, updated: 1 }
 
+const rapprochementsDuLot: readonly Rapprochement[] = [{ _tag: 'sansObjet' }]
+
+const journalComplet =
+  'réconciliation des organisations\norganisations réconciliées\nréconciliation des rendez-vous\nrendez-vous réconciliés\ninstallation des webhooks\nwebhooks installés'
+
+const journalRestreint =
+  'organisations non réconciliées (passe restreinte)\norganisations réconciliées\nréconciliation des rendez-vous\nrendez-vous réconciliés\ninstallation des webhooks\nwebhooks installés'
+
 const ports: SynchroniserCompteRdvPorts = {
   reconcilierOrganisations: async () =>
     success({ bilan: unChangement, organisationIdsRecues: [organisation] }),
@@ -67,6 +76,7 @@ const ports: SynchroniserCompteRdvPorts = {
       motifs: bilanVide,
       lieux: bilanVide,
       organisationIdsInaccessibles: [],
+      rapprochements: rapprochementsDuLot,
     }),
   listerWebhooksDeLaCoop: async () => success([webhookAJour]),
   poserWebhook: async () => success(webhookAJour),
@@ -89,6 +99,8 @@ const synchronise = ({
   organisationIdsSansWebhook,
   organisationIdsDetachees,
   webhook,
+  rapprochements,
+  journal,
 }: {
   readonly bilan: typeof bilanSynchronisationVide
   readonly derive: number
@@ -99,6 +111,8 @@ const synchronise = ({
     readonly operation: 'noop' | 'created' | 'updated'
     readonly invalide: boolean
   }[]
+  readonly rapprochements: readonly Rapprochement[]
+  readonly journal: string | null
 }) =>
   success({
     bilan,
@@ -106,6 +120,8 @@ const synchronise = ({
     organisationIdsSansWebhook,
     organisationIdsDetachees,
     webhooks: webhook,
+    rapprochements,
+    journal,
   })
 
 const bilanComplet = {
@@ -136,6 +152,8 @@ const poseDuWebhook = (
       invalide,
     },
   ],
+  rapprochements: rapprochementsDuLot,
+  journal: journalComplet,
 })
 
 describe('synchroniser un compte RDV', () => {
@@ -158,6 +176,8 @@ describe('synchroniser un compte RDV', () => {
         organisationIdsSansWebhook: undefined,
         organisationIdsDetachees: [],
         webhook: [],
+        rapprochements: [],
+        journal: null,
       }),
     )
   })
@@ -181,6 +201,8 @@ describe('synchroniser un compte RDV', () => {
         webhook: [
           { organisationId: organisation, operation: 'noop', invalide: false },
         ],
+        rapprochements: [],
+        journal: journalComplet,
       }),
     )
   })
@@ -204,6 +226,8 @@ describe('synchroniser un compte RDV', () => {
         webhook: [
           { organisationId: organisation, operation: 'noop', invalide: false },
         ],
+        rapprochements: rapprochementsDuLot,
+        journal: journalRestreint,
       }),
     )
   })
@@ -219,6 +243,7 @@ describe('synchroniser un compte RDV', () => {
             motifs: bilanVide,
             lieux: bilanVide,
             organisationIdsInaccessibles: [autreOrganisation],
+            rapprochements: rapprochementsDuLot,
           }),
       })({
         ...passeComplete,
@@ -237,6 +262,9 @@ describe('synchroniser un compte RDV', () => {
         webhook: [
           { organisationId: organisation, operation: 'noop', invalide: false },
         ],
+        rapprochements: rapprochementsDuLot,
+        journal:
+          'organisations non réconciliées (passe restreinte)\norganisations réconciliées\nréconciliation des rendez-vous\nrendez-vous réconciliés\norganisations inaccessibles détachées : 20\ninstallation des webhooks\nwebhooks installés',
       }),
     )
   })
@@ -348,6 +376,7 @@ describe('synchroniser un compte RDV', () => {
             motifs: bilanVide,
             lieux: bilanVide,
             organisationIdsInaccessibles: [autreOrganisation],
+            rapprochements: rapprochementsDuLot,
           }),
         detacherOrganisations: async () => failure(panne),
       })(passeComplete),

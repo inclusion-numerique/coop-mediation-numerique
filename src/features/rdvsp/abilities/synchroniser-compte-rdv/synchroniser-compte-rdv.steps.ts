@@ -98,6 +98,7 @@ const synchroniser = synchroniserCompteRdv({
           organisationIdsInaccessibles: (organisationIds ?? [])
             .filter((id) => organisationsRefusees.includes(id))
             .map((id) => OrganisationId(id)),
+          rapprochements: [],
         })
   },
   listerWebhooksDeLaCoop: async (compte, organisationId) => {

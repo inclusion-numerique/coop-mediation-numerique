@@ -14,6 +14,7 @@ import {
   type OrganisationId,
   organisationsAccessibles,
 } from '@/features/rdvsp/domain/identifiants/organisation-id'
+import type { Rapprochement } from '@/features/rdvsp/domain/rapprochement'
 import { TAILLE_DES_LOTS_DE_RDVS } from '@/features/rdvsp/domain/rdv/taille-des-lots'
 import { failure, type Result, success } from '@/libraries/result'
 import type { EchecDeSynchroniserCompteRdv } from './errors'
@@ -25,6 +26,8 @@ import type { ResultatSynchronisation } from './resultat-synchronisation'
 export type CompteSynchronise = ResultatSynchronisation & {
   readonly organisationIdsDetachees: readonly OrganisationId[]
   readonly webhooks: readonly PoseDeWebhook[]
+  readonly rapprochements: readonly Rapprochement[]
+  readonly journal: string | null
 }
 
 type PasseDeSynchronisation =
@@ -62,6 +65,8 @@ const sansObjet: CompteSynchronise = {
   organisationIdsSansWebhook: undefined,
   organisationIdsDetachees: [],
   webhooks: [],
+  rapprochements: [],
+  journal: null,
 }
 
 const bilanRdvsVide = {
@@ -70,6 +75,7 @@ const bilanRdvsVide = {
   motifs: bilanVide,
   lieux: bilanVide,
   organisationIdsInaccessibles: [],
+  rapprochements: [],
 }
 
 const avecPortee = (organisationIds: readonly OrganisationId[] | undefined) =>
@@ -273,10 +279,12 @@ export const synchroniserCompteRdv =
                 webhooks.data.organisationIdsSansWebhook,
             }
 
+            const journal = traceCloture.join('\n')
+
             const cloture = await cloturerJournal({
               journalId,
               resultat,
-              journal: traceCloture.join('\n'),
+              journal,
             })
 
             if (!cloture.success) return echouer(cloture.error, traceCloture)
@@ -285,6 +293,8 @@ export const synchroniserCompteRdv =
               ...resultat,
               organisationIdsDetachees: organisationIdsInaccessibles,
               webhooks: webhooks.data.poses,
+              rapprochements: rdvs.data.rapprochements,
+              journal,
             })
           })()
 
