@@ -13,7 +13,6 @@ import { fromResult } from '@/libraries/nextjs'
 const deconnecter = deconnecterCompteRdv({
   compteDeLUtilisateur: compteRdvDeLUtilisateur,
   enregistrer: enregistrerLeCompteDeconnecte,
-  maintenant: () => new Date(),
 })
 
 /**
@@ -28,6 +27,7 @@ export const deconnecterCompteRdvAction = actionBuilder()
       async ({ user }) => {
         const resultat = await deconnecter({
           utilisateurId: UtilisateurCoopId(user.id),
+          maintenant: new Date(),
         })
 
         return resultat.success

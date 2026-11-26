@@ -1,6 +1,6 @@
 import { prismaClient } from '@/configuration/prisma'
 import { compteRdvToDomain } from '../../../../implementations/prisma/compte-rdv.transfer'
-import type { CompteRdvDeLUtilisateur } from '../../domain/deconnecter-compte-rdv'
+import type { CompteRdvDeLUtilisateur } from '../../domain/ports'
 
 export const compteRdvDeLUtilisateur: CompteRdvDeLUtilisateur = async (
   utilisateurId,

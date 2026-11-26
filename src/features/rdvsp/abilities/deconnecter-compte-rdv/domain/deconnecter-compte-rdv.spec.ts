@@ -44,11 +44,10 @@ const deconnecteMaintenant: CompteRdvDeconnecte = {
 const deconnecter = (compte: CompteRdv | null) =>
   deconnecterCompteRdv({
     compteDeLUtilisateur: async () => compte,
-    enregistrer: async (deconnecte) => deconnecte,
-    maintenant: () => maintenant,
-  })({ utilisateurId })
+    enregistrer: async () => undefined,
+  })({ utilisateurId, maintenant })
 
-describe('deconnecterCompteRdv', () => {
+describe('déconnecter un compte RDV', () => {
   it.each<{ cas: string; compte: CompteRdv }>([
     {
       cas: 'délie un compte lié à l’instant demandé, sans rien perdre de ce qui permettra de reprendre',

@@ -1,6 +1,6 @@
 import { prismaClient } from '@/configuration/prisma'
 import { compteRdvFromDomain } from '../../../../implementations/prisma/compte-rdv.transfer'
-import type { EnregistrerLeCompteDeconnecte } from '../../domain/deconnecter-compte-rdv'
+import type { EnregistrerLeCompteDeconnecte } from '../../domain/ports'
 
 export const enregistrerLeCompteDeconnecte: EnregistrerLeCompteDeconnecte =
   async (compte) => {
@@ -8,6 +8,4 @@ export const enregistrerLeCompteDeconnecte: EnregistrerLeCompteDeconnecte =
       where: { id: compte.agentId },
       data: compteRdvFromDomain(compte),
     })
-
-    return compte
   }

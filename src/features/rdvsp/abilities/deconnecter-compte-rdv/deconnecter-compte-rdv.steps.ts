@@ -1,9 +1,6 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
-import {
-  type DeconnecterCompteRdv,
-  deconnecterCompteRdv,
-} from '@/features/rdvsp/abilities/deconnecter-compte-rdv/domain/deconnecter-compte-rdv'
+import { deconnecterCompteRdv } from '@/features/rdvsp/abilities/deconnecter-compte-rdv/domain/deconnecter-compte-rdv'
 import { compteRdvDeLUtilisateur } from '@/features/rdvsp/abilities/deconnecter-compte-rdv/implementations/prisma/compte-rdv-de-l-utilisateur.query'
 import { enregistrerLeCompteDeconnecte } from '@/features/rdvsp/abilities/deconnecter-compte-rdv/implementations/prisma/enregistrer-le-compte-deconnecte.mutation'
 import {
@@ -16,12 +13,11 @@ import {
 const AGENT_ID = ID_TEST.compte + 2
 const MAINTENANT = new Date('2026-08-17T16:00:00.000Z')
 
-let resultat: Awaited<ReturnType<DeconnecterCompteRdv>> | undefined
+let resultat: Awaited<ReturnType<typeof deconnecter>> | undefined
 
 const deconnecter = deconnecterCompteRdv({
   compteDeLUtilisateur: compteRdvDeLUtilisateur,
   enregistrer: enregistrerLeCompteDeconnecte,
-  maintenant: () => MAINTENANT,
 })
 
 Given('un compte RDV lié à déconnecter', async () => {
@@ -79,7 +75,10 @@ Given('aucun compte RDV pour ce médiateur', () => {
 })
 
 When('je déconnecte mon compte RDV Service Public', async () => {
-  resultat = await deconnecter({ utilisateurId: testUtilisateurId })
+  resultat = await deconnecter({
+    utilisateurId: testUtilisateurId,
+    maintenant: MAINTENANT,
+  })
 })
 
 Then('le compte est marqué déconnecté', async () => {

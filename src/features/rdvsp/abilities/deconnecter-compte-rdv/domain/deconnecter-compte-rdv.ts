@@ -3,26 +3,10 @@ import type {
   CompteRdv,
   CompteRdvDeconnecte,
 } from '../../../domain/compte/compte-rdv'
+import { CompteRdvIntrouvable } from '../../../domain/errors'
 import type { UtilisateurCoopId } from '../../../domain/identifiants/utilisateur-coop-id'
-import { CompteRdvIntrouvable } from './errors'
-
-export type DeconnecterCompteRdv = (input: {
-  readonly utilisateurId: UtilisateurCoopId
-}) => Promise<Result<CompteRdvDeconnecte, CompteRdvIntrouvable>>
-
-export type CompteRdvDeLUtilisateur = (
-  utilisateurId: UtilisateurCoopId,
-) => Promise<CompteRdv | null>
-
-export type EnregistrerLeCompteDeconnecte = (
-  compte: CompteRdvDeconnecte,
-) => Promise<CompteRdvDeconnecte>
-
-export type DependancesDeconnecterCompteRdv = {
-  readonly compteDeLUtilisateur: CompteRdvDeLUtilisateur
-  readonly enregistrer: EnregistrerLeCompteDeconnecte
-  readonly maintenant: () => Date
-}
+import type { EchecDeDeconnecterCompteRdv } from './errors'
+import type { DeconnecterCompteRdvPorts } from './ports'
 
 /**
  * État du compte après que le médiateur l'a délié.
@@ -52,17 +36,21 @@ const compteApresDeconnexion = (
 })
 
 export const deconnecterCompteRdv =
-  ({
-    compteDeLUtilisateur,
-    enregistrer,
+  ({ compteDeLUtilisateur, enregistrer }: DeconnecterCompteRdvPorts) =>
+  async ({
+    utilisateurId,
     maintenant,
-  }: DependancesDeconnecterCompteRdv): DeconnecterCompteRdv =>
-  async ({ utilisateurId }) => {
+  }: {
+    readonly utilisateurId: UtilisateurCoopId
+    readonly maintenant: Date
+  }): Promise<Result<CompteRdvDeconnecte, EchecDeDeconnecterCompteRdv>> => {
     const compte = await compteDeLUtilisateur(utilisateurId)
 
     if (compte === null) return failure(CompteRdvIntrouvable(utilisateurId))
 
-    return success(
-      await enregistrer(compteApresDeconnexion(compte, maintenant())),
-    )
+    const deconnecte = compteApresDeconnexion(compte, maintenant)
+
+    await enregistrer(deconnecte)
+
+    return success(deconnecte)
   }
