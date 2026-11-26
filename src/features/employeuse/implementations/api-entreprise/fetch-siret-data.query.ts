@@ -4,6 +4,7 @@ import type {
   MatchingEtablissement,
   UniteLegale,
 } from '@/libraries/recherche-entreprises'
+import { messageDe } from '@/libraries/result'
 
 const natureJuridiqueEntrepreneurIndividuel = '1000'
 
@@ -111,7 +112,7 @@ export const fetchSiretApiData = async (
     return {
       error: {
         statusCode: 500,
-        message: (error as Error).message,
+        message: messageDe(error),
       },
     }
   }
