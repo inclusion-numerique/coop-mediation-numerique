@@ -17,7 +17,12 @@ import {
 import { failure } from '@/libraries/result'
 
 // État local à cette ability (les phrasés Cucumber sont globaux).
-let inscritId: string
+const contexte: {
+  inscritId: string
+} = {
+  inscritId: '',
+}
+
 const employeuses = new Map<string, { id: number; siret: string }>()
 
 // Les employeuses sont enregistrées AVANT le rattachement, avec le SIRET et la dénomination que
@@ -46,7 +51,7 @@ const employeuseId = (nom: string): number => {
 }
 
 const affectation = async (nom: string, source: string) => {
-  const affectations = await affectationsDe(inscritId)
+  const affectations = await affectationsDe(contexte.inscritId)
   return affectations.find(
     (candidate) =>
       candidate.structureAdministrativeId === employeuseId(nom) &&
@@ -62,14 +67,14 @@ Given(
 )
 
 Given('un utilisateur nouvellement inscrit', async () => {
-  inscritId = await seedUtilisateur()
+  contexte.inscritId = await seedUtilisateur()
 })
 
 Given(
   'ce utilisateur affecté par le dispositif à {string}',
   async (nom: string) => {
     await seedAffectation({
-      userId: inscritId,
+      userId: contexte.inscritId,
       employeuseId: employeuseId(nom),
       source: 'idposte',
     })
@@ -95,14 +100,14 @@ const rattacher = rattacherAUneEmployeuse({
 
 When('je le rattache à {string}', async (nom: string) => {
   await rattacher({
-    userId: UtilisateurId(inscritId),
+    userId: UtilisateurId(contexte.inscritId),
     source: { _tag: 'Saisie', identite: identitePour(nom) },
   })
 })
 
 When('je le rattache à nouveau à {string}', async (nom: string) => {
   await rattacher({
-    userId: UtilisateurId(inscritId),
+    userId: UtilisateurId(contexte.inscritId),
     source: { _tag: 'Saisie', identite: identitePour(nom) },
   })
 })
@@ -122,7 +127,7 @@ Then('son rattachement à {string} est terminé', async (nom: string) => {
 Then(
   'il a {int} rattachement(s) déclaré(s) par la coop',
   async (attendu: number) => {
-    const affectations = await affectationsDe(inscritId)
+    const affectations = await affectationsDe(contexte.inscritId)
     assert.strictEqual(
       affectations.filter(({ source }) => source === 'coop').length,
       attendu,

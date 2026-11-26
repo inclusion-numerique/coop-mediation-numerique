@@ -11,9 +11,15 @@ import {
 
 // État local à cette ability (les phrasés Cucumber sont globaux, et une ability
 // ne s'appuie pas sur les steps d'une autre).
-let compteId: string
+const contexte: {
+  compteId: string
+  historique: EmployeuseHistorique[]
+} = {
+  compteId: '',
+  historique: [],
+}
+
 const employeusesParNom = new Map<string, number>()
-let historique: EmployeuseHistorique[] = []
 
 const employeuseNommee = async (nom: string): Promise<number> => {
   const existante = employeusesParNom.get(nom)
@@ -25,7 +31,7 @@ const employeuseNommee = async (nom: string): Promise<number> => {
 }
 
 const entree = (nom: string): EmployeuseHistorique => {
-  const trouvee = historique.find(
+  const trouvee = contexte.historique.find(
     ({ employeuse }) => employeuse.denomination === nom,
   )
   assert.ok(trouvee, `« ${nom} » ne figure pas dans l'historique`)
@@ -36,7 +42,7 @@ const entree = (nom: string): EmployeuseHistorique => {
 // source (clé d'unicité en base) : on varie la source à chaque appel.
 const rattacher = async (nom: string, active: boolean, source: string) => {
   await seedAffectation({
-    userId: compteId,
+    userId: contexte.compteId,
     employeuseId: await employeuseNommee(nom),
     source,
     active,
@@ -45,8 +51,8 @@ const rattacher = async (nom: string, active: boolean, source: string) => {
 
 const nouveauCompte = async (): Promise<void> => {
   employeusesParNom.clear()
-  historique = []
-  compteId = await seedUtilisateur()
+  contexte.historique = []
+  contexte.compteId = await seedUtilisateur()
 }
 
 Given(
@@ -79,7 +85,7 @@ Given(
   'un contrat chez {string} du {string} au {string}',
   async (nom: string, debut: string, fin: string) => {
     await seedContrat({
-      userId: compteId,
+      userId: contexte.compteId,
       employeuseId: await employeuseNommee(nom),
       debut: new Date(debut),
       fin: new Date(fin),
@@ -88,15 +94,17 @@ Given(
 )
 
 When("je consulte l'historique de ses employeuses", async () => {
-  historique = await consulterHistoriqueEmployeuses({ userId: compteId })
+  contexte.historique = await consulterHistoriqueEmployeuses({
+    userId: contexte.compteId,
+  })
 })
 
 Then("l'historique compte {int} employeuse(s)", (attendu: number) => {
-  assert.strictEqual(historique.length, attendu)
+  assert.strictEqual(contexte.historique.length, attendu)
 })
 
 Then("l'historique est vide", () => {
-  assert.deepStrictEqual(historique, [])
+  assert.deepStrictEqual(contexte.historique, [])
 })
 
 Then('{string} y figure comme rattachement actif', (nom: string) => {

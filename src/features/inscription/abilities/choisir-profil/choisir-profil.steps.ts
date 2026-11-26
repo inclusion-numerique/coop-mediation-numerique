@@ -20,7 +20,9 @@ const choisirProfilAvec = (synchroniserLaPersonne: SynchroniserLaPersonne) =>
     enregistrerProfilChoisi: enregistrerProfilChoisi(synchroniserLaPersonne),
   })
 
-let resultat: Result<ProfilChoisi, EchecDeChoisirProfil>
+const contexte: {
+  resultat: Result<ProfilChoisi, EchecDeChoisirProfil> | null
+} = { resultat: null }
 
 Given(
   'mon inscription est déjà validée avec le profil {string}',
@@ -30,7 +32,7 @@ Given(
 )
 
 When('je choisis le profil {string}', async (role: string) => {
-  resultat = await choisirProfilAvec(async () => undefined)({
+  contexte.resultat = await choisirProfilAvec(async () => undefined)({
     userId: utilisateurDeLInscriptionEnCours(),
     role: Role.schema.parse(role),
     maintenant: new Date(),
@@ -50,8 +52,11 @@ Then(
 )
 
 Then('le choix du profil est refusé car l’inscription est déjà validée', () => {
-  assert.ok(!resultat.success, 'Le choix du profil aurait dû être refusé')
-  assert.strictEqual(resultat.error._tag, 'InscriptionDejaValidee')
+  assert.ok(
+    contexte.resultat && !contexte.resultat.success,
+    'Le choix du profil aurait dû être refusé',
+  )
+  assert.strictEqual(contexte.resultat.error._tag, 'InscriptionDejaValidee')
 })
 
 Then('un compte médiateur existe pour l’utilisateur', async () => {

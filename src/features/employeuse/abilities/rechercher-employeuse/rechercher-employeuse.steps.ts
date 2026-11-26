@@ -10,10 +10,14 @@ import {
 } from '@/features/employeuse/employeuse.cucumber'
 import { rechercherEmployeuse } from '@/features/employeuse/implementations/prisma/rechercher-employeuse.query'
 
-let trouvees: Employeuse[] = []
+const contexte: {
+  trouvees: Employeuse[]
+} = {
+  trouvees: [],
+}
 
 const nomsTrouves = (): (string | null)[] =>
-  trouvees.map(({ denomination }) => denomination)
+  contexte.trouvees.map(({ denomination }) => denomination)
 
 Given(
   "l'employeuse {string} est enregistrée sous le SIRET {string}",
@@ -31,7 +35,7 @@ Given(
 
 When("je recherche l'employeuse {string}", async (recherche: string) => {
   const resultat = await rechercherEmployeuse({ recherche })
-  trouvees = resultat.employeuses
+  contexte.trouvees = resultat.employeuses
 })
 
 Then('la recherche trouve {string}', (nom: string) => {
@@ -46,7 +50,7 @@ Then('la recherche ne trouve pas {string}', (nom: string) => {
 })
 
 Then('la recherche ne trouve rien', () => {
-  assert.deepStrictEqual(trouvees, [])
+  assert.deepStrictEqual(contexte.trouvees, [])
 })
 
 const communes: { semees: readonly number[]; proposees: readonly string[] } = {

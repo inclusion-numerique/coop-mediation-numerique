@@ -15,17 +15,20 @@ import {
 } from '@/features/inscription/inscription.cucumber'
 import { success } from '@/libraries/result'
 
-// Seuls les ports à effets (dispositif, SIRET) sont fakés ; la lecture d'état
-// passe par l'adapteur Prisma RÉEL sur la base seedée (BDD hybride).
-let dispositif: DispositifPersonne = {
-  connue: false,
-  estConseillerNumerique: false,
-  estCoordinateur: false,
+const contexte: {
+  dispositif: DispositifPersonne
+  etapeSuivante: EtapeDInscription | null
+} = {
+  dispositif: {
+    connue: false,
+    estConseillerNumerique: false,
+    estCoordinateur: false,
+  },
+  etapeSuivante: null,
 }
-let etapeSuivante: EtapeDInscription | null = null
 
 Given('le dispositif ne connaît pas l’utilisateur', () => {
-  dispositif = {
+  contexte.dispositif = {
     connue: false,
     estConseillerNumerique: false,
     estCoordinateur: false,
@@ -33,7 +36,7 @@ Given('le dispositif ne connaît pas l’utilisateur', () => {
 })
 
 Given('le dispositif connaît l’utilisateur comme conseiller numérique', () => {
-  dispositif = {
+  contexte.dispositif = {
     connue: true,
     estConseillerNumerique: true,
     estCoordinateur: false,
@@ -84,7 +87,7 @@ Given(
 
 When('j’initialise l’inscription', async () => {
   const initialisation = await initialiserInscription({
-    lireLeDispositif: async () => dispositif,
+    lireLeDispositif: async () => contexte.dispositif,
     enregistrerLeProfil: async () => undefined,
     garantirLeRoleCoordinateur: async () =>
       success({ _tag: 'HorsDuDispositif' }),
@@ -93,12 +96,12 @@ When('j’initialise l’inscription', async () => {
     rattacherDepuisSiret: async () => success(undefined),
     lireEtatPourEtapeSuivante,
   })({ userId: utilisateurDeLInscriptionEnCours() })
-  etapeSuivante = initialisation.data.nextStep
+  contexte.etapeSuivante = initialisation.data.nextStep
 })
 
 Then(
   'l’étape suivante de l’initialisation est {string}',
   (expected: string) => {
-    assert.strictEqual(etapeSuivante, expected)
+    assert.strictEqual(contexte.etapeSuivante, expected)
   },
 )

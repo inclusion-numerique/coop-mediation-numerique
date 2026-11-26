@@ -9,9 +9,15 @@ import {
   seedUtilisateur,
 } from '@/features/employeuse/employeuse.cucumber'
 
-let utilisateurId: string
+const contexte: {
+  utilisateurId: string
+  employeuseCourante: EmployeuseActuelle | null
+} = {
+  utilisateurId: '',
+  employeuseCourante: null,
+}
+
 const employeusesParNom = new Map<string, number>()
-let employeuseCourante: EmployeuseActuelle | null = null
 
 const employeuseNommee = async (nom: string): Promise<number> => {
   const existante = employeusesParNom.get(nom)
@@ -26,9 +32,9 @@ Given(
   'un utilisateur affecté à {string} par la source {string}',
   async (nom: string, source: string) => {
     employeusesParNom.clear()
-    utilisateurId = await seedUtilisateur()
+    contexte.utilisateurId = await seedUtilisateur()
     await seedAffectation({
-      userId: utilisateurId,
+      userId: contexte.utilisateurId,
       employeuseId: await employeuseNommee(nom),
       source,
     })
@@ -39,7 +45,7 @@ Given(
   'ce même utilisateur affecté à {string} par la source {string}',
   async (nom: string, source: string) => {
     await seedAffectation({
-      userId: utilisateurId,
+      userId: contexte.utilisateurId,
       employeuseId: await employeuseNommee(nom),
       source,
     })
@@ -50,7 +56,7 @@ Given(
   'ce même utilisateur affecté à {string} par la source {string} le {string}',
   async (nom: string, source: string, date: string) => {
     await seedAffectation({
-      userId: utilisateurId,
+      userId: contexte.utilisateurId,
       employeuseId: await employeuseNommee(nom),
       source,
       enregistreeLe: new Date(date),
@@ -62,7 +68,7 @@ Given(
   'ce même utilisateur anciennement affecté à {string} par la source {string}',
   async (nom: string, source: string) => {
     await seedAffectation({
-      userId: utilisateurId,
+      userId: contexte.utilisateurId,
       employeuseId: await employeuseNommee(nom),
       source,
       active: false,
@@ -72,14 +78,14 @@ Given(
 
 Given('un utilisateur sans affectation', async () => {
   employeusesParNom.clear()
-  utilisateurId = await seedUtilisateur()
+  contexte.utilisateurId = await seedUtilisateur()
 })
 
 Given(
   'un contrat chez {string} débuté le {string}',
   async (nom: string, debut: string) => {
     await seedContrat({
-      userId: utilisateurId,
+      userId: contexte.utilisateurId,
       employeuseId: await employeuseNommee(nom),
       debut: new Date(debut),
       fin: null,
@@ -94,7 +100,7 @@ Given(
   'un contrat chez {string} courant du {string} au {string}',
   async (nom: string, debut: string, fin: string) => {
     await seedContrat({
-      userId: utilisateurId,
+      userId: contexte.utilisateurId,
       employeuseId: await employeuseNommee(nom),
       debut: new Date(debut),
       fin: new Date(fin),
@@ -103,23 +109,23 @@ Given(
 )
 
 When("je consulte l'employeuse courante de cet utilisateur", async () => {
-  employeuseCourante = await consulterEmployeuseActuelle({
-    userId: utilisateurId,
+  contexte.employeuseCourante = await consulterEmployeuseActuelle({
+    userId: contexte.utilisateurId,
   })
 })
 
 Then("l'employeuse courante est {string}", (nom: string) => {
-  assert.ok(employeuseCourante, 'Aucune employeuse courante')
-  assert.strictEqual(employeuseCourante.employeuse.denomination, nom)
+  assert.ok(contexte.employeuseCourante, 'Aucune employeuse courante')
+  assert.strictEqual(contexte.employeuseCourante.employeuse.denomination, nom)
 })
 
 Then("cet utilisateur n'a pas d'employeuse courante", () => {
-  assert.strictEqual(employeuseCourante, null)
+  assert.strictEqual(contexte.employeuseCourante, null)
 })
 
 Then("la période d'emploi est en cours depuis le {string}", (debut: string) => {
-  assert.ok(employeuseCourante, 'Aucune employeuse courante')
-  assert.deepStrictEqual(employeuseCourante.periode, {
+  assert.ok(contexte.employeuseCourante, 'Aucune employeuse courante')
+  assert.deepStrictEqual(contexte.employeuseCourante.periode, {
     _tag: 'enCours',
     debut: new Date(debut),
     finPrevue: null,
@@ -129,8 +135,8 @@ Then("la période d'emploi est en cours depuis le {string}", (debut: string) => 
 Then(
   "la période d'emploi est en cours depuis le {string} jusqu'au {string}",
   (debut: string, fin: string) => {
-    assert.ok(employeuseCourante, 'Aucune employeuse courante')
-    assert.deepStrictEqual(employeuseCourante.periode, {
+    assert.ok(contexte.employeuseCourante, 'Aucune employeuse courante')
+    assert.deepStrictEqual(contexte.employeuseCourante.periode, {
       _tag: 'enCours',
       debut: new Date(debut),
       finPrevue: new Date(fin),
@@ -139,17 +145,19 @@ Then(
 )
 
 Then("la période d'emploi est terminée le {string}", (fin: string) => {
-  assert.ok(employeuseCourante, 'Aucune employeuse courante')
-  assert.strictEqual(employeuseCourante.periode._tag, 'terminee')
+  assert.ok(contexte.employeuseCourante, 'Aucune employeuse courante')
+  assert.strictEqual(contexte.employeuseCourante.periode._tag, 'terminee')
   assert.deepStrictEqual(
-    employeuseCourante.periode._tag === 'terminee'
-      ? employeuseCourante.periode.fin
+    contexte.employeuseCourante.periode._tag === 'terminee'
+      ? contexte.employeuseCourante.periode.fin
       : null,
     new Date(fin),
   )
 })
 
 Then("la période d'emploi est inconnue", () => {
-  assert.ok(employeuseCourante, 'Aucune employeuse courante')
-  assert.deepStrictEqual(employeuseCourante.periode, { _tag: 'inconnue' })
+  assert.ok(contexte.employeuseCourante, 'Aucune employeuse courante')
+  assert.deepStrictEqual(contexte.employeuseCourante.periode, {
+    _tag: 'inconnue',
+  })
 })

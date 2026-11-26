@@ -12,7 +12,11 @@ import {
 } from '@/features/employeuse/employeuse.cucumber'
 
 const employeuses = new Map<string, number>()
-let fiche: EmployeuseConsultee | null = null
+const contexte: {
+  fiche: EmployeuseConsultee | null
+} = {
+  fiche: null,
+}
 
 const employeuseId = (nom: string): number => {
   const id = employeuses.get(nom)
@@ -80,21 +84,21 @@ Given("l'employeuse {string} a été supprimée", async (nom: string) => {
 })
 
 When('je consulte la fiche de {string}', async (nom: string) => {
-  fiche = await consulterEmployeuse({
+  contexte.fiche = await consulterEmployeuse({
     employeuseId: EmployeuseId(employeuseId(nom)),
   })
 })
 
 Then('la fiche porte le nom {string}', (nom: string) => {
-  assert.ok(fiche, 'Aucune fiche')
-  assert.strictEqual(fiche.employeuse.denomination, nom)
+  assert.ok(contexte.fiche, 'Aucune fiche')
+  assert.strictEqual(contexte.fiche.employeuse.denomination, nom)
 })
 
 Then('la fiche compte {int} personne(s) employée(s)', (attendu: number) => {
-  assert.ok(fiche, 'Aucune fiche')
-  assert.strictEqual(fiche.personnesEmployees.length, attendu)
+  assert.ok(contexte.fiche, 'Aucune fiche')
+  assert.strictEqual(contexte.fiche.personnesEmployees.length, attendu)
 })
 
 Then("aucune fiche n'est trouvée", () => {
-  assert.strictEqual(fiche, null)
+  assert.strictEqual(contexte.fiche, null)
 })

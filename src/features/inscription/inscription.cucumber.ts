@@ -12,7 +12,11 @@ setDefaultTimeout(60_000)
  * sur un utilisateur fraîchement authentifié mais non démarré (sans profil ni
  * rôle), nettoyé après coup. Les .steps.ts ne définissent que Given/When/Then.
  */
-let inscriptionUserId = ''
+const contexte: {
+  inscriptionUserId: string
+} = {
+  inscriptionUserId: '',
+}
 
 const trackedMediateurCoordonneUserIds = new Set<string>()
 const trackedLieuActiviteIds = new Set<string>()
@@ -36,7 +40,7 @@ const adresseDeTest = {
 }
 
 export const utilisateurDeLInscriptionEnCours = (): UtilisateurId =>
-  UtilisateurId(inscriptionUserId)
+  UtilisateurId(contexte.inscriptionUserId)
 
 /**
  * Amène l'utilisateur courant à l'état `EnCours` sans passer par l'ability
@@ -47,7 +51,7 @@ export const seedProfilChoisi = async (
   profil: ProfilInscription,
 ): Promise<void> => {
   await prismaClient.user.update({
-    where: { id: inscriptionUserId },
+    where: { id: contexte.inscriptionUserId },
     data: { profilInscription: profil, acceptationCgu: new Date() },
   })
 }
@@ -57,7 +61,7 @@ export const seedInscriptionValidee = async (
   profil: ProfilInscription,
 ): Promise<void> => {
   await prismaClient.user.update({
-    where: { id: inscriptionUserId },
+    where: { id: contexte.inscriptionUserId },
     data: {
       profilInscription: profil,
       acceptationCgu: new Date(),
@@ -187,7 +191,7 @@ export const seedMediateurCoordonne = async ({
 }
 
 Before(async () => {
-  inscriptionUserId = v4()
+  contexte.inscriptionUserId = v4()
   trackedMediateurCoordonneUserIds.clear()
   trackedLieuActiviteIds.clear()
   trackedEmployeuseMainIds.clear()
@@ -195,14 +199,17 @@ Before(async () => {
   trackedEmployeuseMainNoms.clear()
   await prismaClient.user.create({
     data: {
-      id: inscriptionUserId,
-      email: `inscription-${inscriptionUserId}@test.local`,
+      id: contexte.inscriptionUserId,
+      email: `inscription-${contexte.inscriptionUserId}@test.local`,
     },
   })
 })
 
 After(async () => {
-  const userIds = [inscriptionUserId, ...trackedMediateurCoordonneUserIds]
+  const userIds = [
+    contexte.inscriptionUserId,
+    ...trackedMediateurCoordonneUserIds,
+  ]
   await prismaClient.mediateurCoordonne.deleteMany({
     where: { coordinateur: { userId: { in: userIds } } },
   })

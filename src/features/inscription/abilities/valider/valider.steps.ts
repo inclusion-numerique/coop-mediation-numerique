@@ -29,7 +29,22 @@ const validerAvec = (accepterLesInvitations: AccepterLesInvitations) =>
     signaler: () => undefined,
   })
 
-let resultat: Result<InscriptionValidee<undefined>, EchecDeValider>
+const contexte: {
+  resultat: Result<InscriptionValidee<undefined>, EchecDeValider> | null
+} = { resultat: null }
+
+const validee = () => {
+  assert.ok(contexte.resultat?.success, 'La validation aurait dû réussir')
+  return contexte.resultat.data
+}
+
+const refusee = () => {
+  assert.ok(
+    contexte.resultat && !contexte.resultat.success,
+    'La validation aurait dû être refusée',
+  )
+  return contexte.resultat.error
+}
 
 Given('mon profil d’inscription est {string}', async (profil: string) => {
   await seedProfilChoisi(ProfilInscription.schema.parse(profil))
@@ -62,7 +77,7 @@ Given('mon inscription est déjà validée', async () => {
 })
 
 When('je valide mon inscription', async () => {
-  resultat = await validerAvec(async () => success(undefined))({
+  contexte.resultat = await validerAvec(async () => success(undefined))({
     userId: utilisateurDeLInscriptionEnCours(),
     maintenant: new Date(),
   })
@@ -71,7 +86,7 @@ When('je valide mon inscription', async () => {
 When(
   'je valide mon inscription alors que mes invitations ne peuvent être acceptées',
   async () => {
-    resultat = await validerAvec(async () =>
+    contexte.resultat = await validerAvec(async () =>
       failure(EchecTechnique('Adresse électronique invalide')),
     )({
       userId: utilisateurDeLInscriptionEnCours(),
@@ -81,7 +96,7 @@ When(
 )
 
 Then('mon inscription est validée', async () => {
-  assert.ok(resultat.success, 'La validation aurait dû réussir')
+  validee()
   const user = await prismaClient.user.findUniqueOrThrow({
     where: { id: utilisateurDeLInscriptionEnCours() },
     select: { inscriptionValidee: true },
@@ -90,9 +105,8 @@ Then('mon inscription est validée', async () => {
 })
 
 Then('l’échec de l’acceptation de mes invitations est rapporté', () => {
-  assert.ok(resultat.success, 'La validation aurait dû réussir')
   assert.strictEqual(
-    resultat.data.acceptationDesInvitations._tag,
+    validee().acceptationDesInvitations._tag,
     'AcceptationEchouee',
   )
 })
@@ -114,11 +128,9 @@ Then('mon inscription n’est pas validée', async () => {
 })
 
 Then('la validation est refusée car aucun compte de rôle n’existe', () => {
-  assert.ok(!resultat.success, 'La validation aurait dû être refusée')
-  assert.strictEqual(resultat.error._tag, 'CompteDeRoleIntrouvable')
+  assert.strictEqual(refusee()._tag, 'CompteDeRoleIntrouvable')
 })
 
 Then('la validation est refusée car l’inscription est déjà validée', () => {
-  assert.ok(!resultat.success, 'La validation aurait dû être refusée')
-  assert.strictEqual(resultat.error._tag, 'InscriptionDejaValidee')
+  assert.strictEqual(refusee()._tag, 'InscriptionDejaValidee')
 })
