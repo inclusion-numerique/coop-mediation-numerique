@@ -1,6 +1,7 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
-import { annulerUneInvitation } from '@/features/equipe/abilities/annuler-une-invitation/implementations/prisma/annuler-une-invitation.mutation'
+import { annulerUneInvitation as annulerUneInvitationAvec } from '@/features/equipe/abilities/annuler-une-invitation/domain/annuler-une-invitation'
+import { supprimerLInvitation } from '@/features/equipe/abilities/annuler-une-invitation/implementations/prisma/supprimer-l-invitation.mutation'
 import {
   CoordinateurId,
   Courriel,
@@ -13,6 +14,12 @@ import {
   semerUnCoordinateur,
   semerUneInvitation,
 } from '@/features/equipe/equipe.cucumber'
+import { lireUneInvitation } from '@/features/equipe/implementations/prisma/invitation.query'
+
+const annulerUneInvitation = annulerUneInvitationAvec({
+  lireUneInvitation,
+  supprimerLInvitation,
+})
 
 const contexte: {
   coordinateur?: CoordinateurSeme

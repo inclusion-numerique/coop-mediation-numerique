@@ -1,9 +1,8 @@
 import { prismaClient } from '@/configuration/prisma'
 import { Telephone } from '@/libraries/telephone'
 import {
-  type CoordinateurDeLEquipe,
-  type CoordinateurId,
   Courriel,
+  type LireLeCoordinateur,
   Nom,
   NomAffiche,
   nomAffiche,
@@ -11,9 +10,9 @@ import {
 } from '../../domain'
 import { lue } from './lue.transfer'
 
-export const lireLeCoordinateur = async (
-  coordinateurId: CoordinateurId,
-): Promise<CoordinateurDeLEquipe | null> => {
+export const lireLeCoordinateur: LireLeCoordinateur = async (
+  coordinateurId,
+) => {
   const coordinateur = await prismaClient.coordinateur.findUnique({
     where: { id: coordinateurId },
     select: {

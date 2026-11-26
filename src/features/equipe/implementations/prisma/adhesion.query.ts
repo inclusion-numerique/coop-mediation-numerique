@@ -1,19 +1,11 @@
 import { prismaClient } from '@/configuration/prisma'
-import type {
-  Adhesion,
-  AdhesionArchivee,
-  CoordinateurId,
-  MediateurId,
-} from '../../domain'
+import type { AdhesionArchivee, LireLesAdhesionsDeLaPaire } from '../../domain'
 import { adhesionSelect, toAdhesion } from './adhesion.transfer'
 
-export const lireLesAdhesionsDeLaPaire = async ({
+export const lireLesAdhesionsDeLaPaire: LireLesAdhesionsDeLaPaire = async ({
   mediateurId,
   coordinateurId,
-}: {
-  mediateurId: MediateurId
-  coordinateurId: CoordinateurId
-}): Promise<readonly Adhesion[]> => {
+}) => {
   const lignes = await prismaClient.mediateurCoordonne.findMany({
     where: { mediateurId, coordinateurId },
     select: adhesionSelect,

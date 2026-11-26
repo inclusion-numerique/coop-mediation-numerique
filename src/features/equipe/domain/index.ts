@@ -58,6 +58,12 @@ export {
   type StructureEmployeuseMembre,
 } from './ligne-equipe'
 export { NomStructure } from './nom-structure'
+export type {
+  InvitationLue,
+  LireLeCoordinateur,
+  LireLesAdhesionsDeLaPaire,
+  LireUneInvitation,
+} from './ports'
 export { RoleMembre, roleMembre } from './role-membre'
 export {
   SEUIL_INACTIVITE_EN_JOURS,
