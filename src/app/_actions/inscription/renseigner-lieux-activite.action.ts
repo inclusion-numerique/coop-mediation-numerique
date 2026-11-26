@@ -5,37 +5,32 @@ import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { RENSEIGNER_LIEUX_ACTIVITE_ERRORS } from '@/features/inscription/abilities/renseigner-lieux-activite/action/renseigner-lieux-activite.errors'
 import { RenseignerLieuxActiviteValidation } from '@/features/inscription/abilities/renseigner-lieux-activite/action/renseigner-lieux-activite.validation'
 import type { EchecDeRenseignerLieuxActivite } from '@/features/inscription/abilities/renseigner-lieux-activite/domain'
-import type {
-  LireLieuxActiviteExistants,
-  TrouverStructuresCarto,
-} from '@/features/inscription/abilities/renseigner-lieux-activite/domain/ports'
 import { renseignerLieuxActivite } from '@/features/inscription/abilities/renseigner-lieux-activite/domain/renseigner-lieux-activite'
-import type { RattacherAuLieuDesire } from '@/features/inscription/abilities/renseigner-lieux-activite/implementations/prisma/enregistrer-reconciliation.mutation'
 import { enregistrerReconciliation } from '@/features/inscription/abilities/renseigner-lieux-activite/implementations/prisma/enregistrer-reconciliation.mutation'
 import { UtilisateurId } from '@/features/inscription/domain'
 import { getInscriptionEtat } from '@/features/inscription/implementations/prisma/get-inscription-etat.query'
+import { planifierLesRattachements } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/domain/planifier-les-rattachements'
 import { structuresCartoParIds } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/entrepot/structures-carto.query'
 import { activitesEnCoursDeLUtilisateur } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/activites-en-cours.query'
-import { rattacherAuLieuDesire } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/rattacher-au-lieu-desire.mutation'
+import { appliquerLesDestinations } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/ajouter-des-lieux-activite.mutation'
+import { lieuDisparu } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/destinations.mutation'
+import { lieuDemandeDepuisLeLieuDesire } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/lieu-desire.transfer'
+import {
+  estUnLieuActif,
+  lieuPorteurDeLaCarto,
+  lieuxAuMemeEndroit,
+  nouvelIdentifiantDeLieu,
+} from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/situation-du-lieu.query'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { fromResult, withInput } from '@/libraries/nextjs'
 import { type Result, success } from '@/libraries/result'
 
-const renseignerLieuxActiviteAvec = <StructureCarto>({
-  trouverStructuresCarto,
-  lireLieuxActiviteExistants,
-  rattacherAuLieuDesire,
-}: {
-  readonly trouverStructuresCarto: TrouverStructuresCarto<StructureCarto>
-  readonly lireLieuxActiviteExistants: LireLieuxActiviteExistants
-  readonly rattacherAuLieuDesire: RattacherAuLieuDesire<StructureCarto>
-}) =>
-  renseignerLieuxActivite({
-    lireLEtat: getInscriptionEtat,
-    lireLieuxActiviteExistants,
-    trouverStructuresCarto,
-    enregistrerReconciliation: enregistrerReconciliation(rattacherAuLieuDesire),
-  })
+const planifier = planifierLesRattachements({
+  estUnLieuActif,
+  lieuPorteurDeLaCarto,
+  lieuxAuMemeEndroit,
+  nouvelIdentifiantDeLieu,
+})
 
 export const renseignerLieuxActiviteAction = actionBuilder()
   .use(withAuth())
@@ -47,10 +42,19 @@ export const renseignerLieuxActiviteAction = actionBuilder()
         user,
         input,
       }): Promise<Result<undefined, EchecDeRenseignerLieuxActivite>> => {
-        const resultat = await renseignerLieuxActiviteAvec({
-          trouverStructuresCarto: structuresCartoParIds,
+        const resultat = await renseignerLieuxActivite({
+          lireLEtat: getInscriptionEtat,
           lireLieuxActiviteExistants: activitesEnCoursDeLUtilisateur,
-          rattacherAuLieuDesire,
+          trouverStructuresCarto: structuresCartoParIds,
+          planifierLesRattachements: ({ lieux, ...reste }) =>
+            planifier({
+              ...reste,
+              lieux: lieux.map(lieuDemandeDepuisLeLieuDesire),
+            }),
+          enregistrerReconciliation: enregistrerReconciliation({
+            lieuDisparu,
+            appliquerLesDestinations,
+          }),
         })({
           command: {
             userId: UtilisateurId(user.id),

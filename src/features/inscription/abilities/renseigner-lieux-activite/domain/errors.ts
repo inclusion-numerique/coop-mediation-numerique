@@ -1,6 +1,7 @@
 import type {
   InscriptionDejaValidee,
   InscriptionIntrouvable,
+  LieuIntrouvable,
   ProfilNonChoisi,
 } from '@/features/inscription/domain'
 
@@ -19,3 +20,4 @@ export type EchecDeRenseignerLieuxActivite =
   | ProfilNonChoisi
   | InscriptionDejaValidee
   | AdresseNonValidee
+  | LieuIntrouvable

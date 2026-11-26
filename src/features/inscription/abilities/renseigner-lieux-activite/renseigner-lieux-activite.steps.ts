@@ -2,12 +2,7 @@ import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
-import type {
-  LireLieuxActiviteExistants,
-  TrouverStructuresCarto,
-} from '@/features/inscription/abilities/renseigner-lieux-activite/domain/ports'
 import { renseignerLieuxActivite } from '@/features/inscription/abilities/renseigner-lieux-activite/domain/renseigner-lieux-activite'
-import type { RattacherAuLieuDesire } from '@/features/inscription/abilities/renseigner-lieux-activite/implementations/prisma/enregistrer-reconciliation.mutation'
 import { enregistrerReconciliation } from '@/features/inscription/abilities/renseigner-lieux-activite/implementations/prisma/enregistrer-reconciliation.mutation'
 import { ProfilInscription } from '@/features/inscription/domain'
 import { getInscriptionEtat } from '@/features/inscription/implementations/prisma/get-inscription-etat.query'
@@ -16,22 +11,7 @@ import {
   seedProfilChoisi,
   utilisateurDeLInscriptionEnCours,
 } from '@/features/inscription/inscription.cucumber'
-
-const renseignerLieuxActiviteAvec = <StructureCarto>({
-  trouverStructuresCarto,
-  lireLieuxActiviteExistants,
-  rattacherAuLieuDesire,
-}: {
-  readonly trouverStructuresCarto: TrouverStructuresCarto<StructureCarto>
-  readonly lireLieuxActiviteExistants: LireLieuxActiviteExistants
-  readonly rattacherAuLieuDesire: RattacherAuLieuDesire<StructureCarto>
-}) =>
-  renseignerLieuxActivite({
-    lireLEtat: getInscriptionEtat,
-    lireLieuxActiviteExistants,
-    trouverStructuresCarto,
-    enregistrerReconciliation: enregistrerReconciliation(rattacherAuLieuDesire),
-  })
+import { success } from '@/libraries/result'
 
 const etat: {
   ancienneActivite?: { readonly id: string; readonly lieuId: string }
@@ -52,11 +32,17 @@ const lireLesActivitesEnCours = async () =>
         },
       ]
 
+const lieuxConnus = async ({
+  lieux,
+}: {
+  readonly lieux: readonly { readonly id?: string | null }[]
+}) => success(lieux.flatMap(({ id }) => (id == null ? [] : [id])))
+
 const confierAuRattachement = async (
   _transaction: unknown,
-  { lieu }: { readonly lieu: { readonly id?: string | null } },
+  { destinations }: { readonly destinations: readonly string[] },
 ) => {
-  if (lieu.id != null) etat.confies.push(lieu.id)
+  etat.confies.push(...destinations)
 }
 
 Given('je suis un médiateur en cours d’inscription', async () => {
@@ -84,10 +70,15 @@ When(
   'je renseigne un lieu connu de la coop comme lieu d’activité',
   async () => {
     etat.lieuRenseigne = v4()
-    const resultat = await renseignerLieuxActiviteAvec({
-      trouverStructuresCarto: async () => new Map(),
+    const resultat = await renseignerLieuxActivite({
+      lireLEtat: getInscriptionEtat,
       lireLieuxActiviteExistants: lireLesActivitesEnCours,
-      rattacherAuLieuDesire: confierAuRattachement,
+      trouverStructuresCarto: async () => new Map(),
+      planifierLesRattachements: lieuxConnus,
+      enregistrerReconciliation: enregistrerReconciliation({
+        lieuDisparu: async () => null,
+        appliquerLesDestinations: confierAuRattachement,
+      }),
     })({
       command: {
         userId: utilisateurDeLInscriptionEnCours(),

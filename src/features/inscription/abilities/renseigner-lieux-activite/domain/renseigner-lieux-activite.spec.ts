@@ -108,16 +108,19 @@ const existant = (
   lieuInclusion: { id: lieuId, structureCartographieNationaleId },
 })
 
-const ports: RenseignerLieuxActivitePorts<string> = {
+const destinations = ['destination-1']
+
+const ports: RenseignerLieuxActivitePorts<string, string> = {
   lireLEtat: async () => enCours,
   lireLieuxActiviteExistants: async () => [],
   trouverStructuresCarto: async () => new Map<string, string>(),
-  enregistrerReconciliation: async () => undefined,
+  planifierLesRattachements: async () => success(destinations),
+  enregistrerReconciliation: async () => ({ _tag: 'Enregistree' }),
 }
 
 const avecExistants = (
   existants: readonly LieuActiviteExistant[],
-): RenseignerLieuxActivitePorts<string> => ({
+): RenseignerLieuxActivitePorts<string, string> => ({
   ...ports,
   lireLieuxActiviteExistants: async () => existants,
 })
@@ -232,7 +235,7 @@ describe('renseigner les lieux d’activité', () => {
         command: { userId, lieuxActivite: lieux },
         maintenant,
       }),
-    ).toEqual(success({ etatFranchi, aCloturer, aCreer }))
+    ).toEqual(success({ etatFranchi, aCloturer, aCreer, destinations }))
   })
 
   it('ne prête à un lieu connu aucun identifiant qui n’a pas été soumis', async () => {
@@ -246,6 +249,7 @@ describe('renseigner les lieux d’activité', () => {
         etatFranchi,
         aCloturer: [],
         aCreer: [connuDesire('lieu-1', 'Lieu 1')],
+        destinations,
       }),
     )
   })
@@ -281,6 +285,7 @@ describe('renseigner les lieux d’activité', () => {
             codeInsee: null,
           },
         ],
+        destinations,
       }),
     )
   })
@@ -355,5 +360,33 @@ describe('renseigner les lieux d’activité', () => {
         maintenant,
       }),
     ).toEqual(failure({ _tag: 'AdresseNonValidee', nom }))
+  })
+
+  it('refuse les lieux dont l’un n’existe plus au moment de les planifier', async () => {
+    expect(
+      await renseignerLieuxActivite({
+        ...ports,
+        planifierLesRattachements: async () =>
+          failure({ _tag: 'LieuIntrouvable', lieuId: 'lieu-1' }),
+      })({
+        command: { userId, lieuxActivite: [connu('lieu-1', 'Lieu 1')] },
+        maintenant,
+      }),
+    ).toEqual(failure({ _tag: 'LieuIntrouvable', lieuId: 'lieu-1' }))
+  })
+
+  it('refuse les lieux dont l’un a disparu avant l’enregistrement', async () => {
+    expect(
+      await renseignerLieuxActivite({
+        ...ports,
+        enregistrerReconciliation: async () => ({
+          _tag: 'LieuDisparu',
+          lieuId: 'lieu-1',
+        }),
+      })({
+        command: { userId, lieuxActivite: [connu('lieu-1', 'Lieu 1')] },
+        maintenant,
+      }),
+    ).toEqual(failure({ _tag: 'LieuIntrouvable', lieuId: 'lieu-1' }))
   })
 })

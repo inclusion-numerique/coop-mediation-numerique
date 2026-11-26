@@ -6,6 +6,7 @@ export {
 export {
   InscriptionDejaValidee,
   InscriptionIntrouvable,
+  LieuIntrouvable,
   ProfilNonChoisi,
 } from './errors'
 export {

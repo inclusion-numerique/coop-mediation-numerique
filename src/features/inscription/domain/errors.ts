@@ -33,3 +33,13 @@ export const ProfilNonChoisi = (userId: UtilisateurId): ProfilNonChoisi => ({
   _tag: 'ProfilNonChoisi',
   userId,
 })
+
+export type LieuIntrouvable = {
+  readonly _tag: 'LieuIntrouvable'
+  readonly lieuId: string
+}
+
+export const LieuIntrouvable = (lieuId: string): LieuIntrouvable => ({
+  _tag: 'LieuIntrouvable',
+  lieuId,
+})
