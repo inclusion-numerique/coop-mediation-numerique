@@ -2,22 +2,18 @@ import { describe, expect, it } from 'vitest'
 import type { Model } from '@/libraries/model'
 import { AdresseEmployeuse } from './adresse-employeuse'
 
-// Le type d'ENTRÉE du modèle, pas sa sortie brandée : c'est lui qui décrit ce
-// qu'on a le droit de soumettre au constructeur, y compris des valeurs que la
-// validation rejettera.
-type AdresseInput = Model.InputOf<typeof AdresseEmployeuse>
+type AdresseSoumise = Model.InputOf<typeof AdresseEmployeuse>
 
-const adresse = (overrides: Partial<AdresseInput> = {}): AdresseInput => ({
+const adresseComplete: AdresseSoumise = {
   voie: '12 rue des Tests',
   codePostal: '44000',
   codeInsee: '44109',
   commune: 'Nantes',
-  ...overrides,
-})
+}
 
 describe('AdresseEmployeuse', () => {
   it('accepte une adresse complète', () => {
-    expect(AdresseEmployeuse(adresse())).toEqual({
+    expect(AdresseEmployeuse(adresseComplete)).toEqual({
       voie: '12 rue des Tests',
       codePostal: '44000',
       codeInsee: '44109',
@@ -25,73 +21,72 @@ describe('AdresseEmployeuse', () => {
     })
   })
 
-  it('tolère l’absence de voie — seule elle peut manquer dans main.adresse', () => {
-    expect(AdresseEmployeuse(adresse({ voie: null }))).toMatchObject({
+  it('tolère l’absence de voie, seule partie qui peut manquer dans main.adresse', () => {
+    expect(AdresseEmployeuse({ ...adresseComplete, voie: null })).toEqual({
       voie: null,
+      codePostal: '44000',
+      codeInsee: '44109',
+      commune: 'Nantes',
     })
   })
 
   describe('code postal', () => {
-    it('exige 5 chiffres', () => {
-      expect(AdresseEmployeuse.safe(adresse({ codePostal: '4400' }))).toBeNull()
+    it.each<{ cas: string; codePostal: string }>([
+      { cas: 'quatre chiffres', codePostal: '4400' },
+      { cas: 'six chiffres', codePostal: '440000' },
+      { cas: 'une lettre', codePostal: '4400A' },
+      { cas: 'une chaîne vide', codePostal: '' },
+    ])('exige 5 chiffres et écarte $cas', ({ codePostal }) => {
       expect(
-        AdresseEmployeuse.safe(adresse({ codePostal: '440000' })),
+        AdresseEmployeuse.safe({ ...adresseComplete, codePostal }),
       ).toBeNull()
-      expect(
-        AdresseEmployeuse.safe(adresse({ codePostal: '4400A' })),
-      ).toBeNull()
-      expect(AdresseEmployeuse.safe(adresse({ codePostal: '' }))).toBeNull()
     })
 
-    it('accepte les DOM — 5 chiffres couvre 97xxx et 98xxx', () => {
-      expect(AdresseEmployeuse(adresse({ codePostal: '97400' }))).toMatchObject(
-        {
-          codePostal: '97400',
-        },
-      )
+    it('accepte les DOM, dont les codes 97xxx et 98xxx ont 5 chiffres', () => {
+      expect(
+        AdresseEmployeuse({ ...adresseComplete, codePostal: '97400' }),
+      ).toEqual({ ...adresseComplete, codePostal: '97400' })
     })
 
     it('normalise les espaces, y compris imbriqué dans l’adresse', () => {
       expect(
-        AdresseEmployeuse(adresse({ codePostal: ' 44 000 ' })),
-      ).toMatchObject({ codePostal: '44000' })
+        AdresseEmployeuse({ ...adresseComplete, codePostal: ' 44 000 ' }),
+      ).toEqual(adresseComplete)
     })
 
-    // Le schéma est TOTAL : le code postal ne dégrade pas à `null`, il emporte
-    // l'adresse entière — donc le code INSEE avec lui, et le rattachement au
-    // département. Arbitrage assumé (cf. en-tête d'adresse-employeuse.ts) :
-    // 22 lignes sur 43 313 en base. Si ce comptage monte, c'est ce test qu'il
-    // faudra rouvrir en premier.
-    it('fait tomber l’adresse ENTIÈRE quand le code postal est hors format', () => {
+    it('fait tomber l’adresse entière, code INSEE compris, quand le code postal est hors format', () => {
       expect(
-        AdresseEmployeuse.safe(adresse({ codePostal: 'pas-un-code' })),
+        AdresseEmployeuse.safe({
+          ...adresseComplete,
+          codePostal: 'pas-un-code',
+        }),
       ).toBeNull()
     })
   })
 
   describe('code INSEE', () => {
     it('accepte la Corse', () => {
-      expect(AdresseEmployeuse(adresse({ codeInsee: '2A004' }))).toMatchObject({
-        codeInsee: '2A004',
-      })
+      expect(
+        AdresseEmployeuse({ ...adresseComplete, codeInsee: '2A004' }),
+      ).toEqual({ ...adresseComplete, codeInsee: '2A004' })
     })
 
-    // Régression : le normalisateur de CodeInsee vivait dans le second argument
-    // de defineModel, qui n'est PAS appliqué quand `.schema` est imbriqué ici.
-    // Un code corse en minuscules faisait donc tomber l'adresse entière, alors
-    // que CodeInsee('2a004') l'acceptait.
     it('normalise la casse de la Corse, y compris imbriqué dans l’adresse', () => {
-      expect(AdresseEmployeuse(adresse({ codeInsee: '2a004' }))).toMatchObject({
-        codeInsee: '2A004',
-      })
+      expect(
+        AdresseEmployeuse({ ...adresseComplete, codeInsee: '2a004' }),
+      ).toEqual({ ...adresseComplete, codeInsee: '2A004' })
     })
 
     it('écarte un code hors format', () => {
-      expect(AdresseEmployeuse.safe(adresse({ codeInsee: '441' }))).toBeNull()
+      expect(
+        AdresseEmployeuse.safe({ ...adresseComplete, codeInsee: '441' }),
+      ).toBeNull()
     })
   })
 
   it('exige une commune', () => {
-    expect(AdresseEmployeuse.safe(adresse({ commune: '' }))).toBeNull()
+    expect(
+      AdresseEmployeuse.safe({ ...adresseComplete, commune: '' }),
+    ).toBeNull()
   })
 })

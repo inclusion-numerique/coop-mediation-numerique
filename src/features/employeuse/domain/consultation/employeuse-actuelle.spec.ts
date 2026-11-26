@@ -1,97 +1,117 @@
 import { describe, expect, it } from 'vitest'
 import { Siret } from '@/libraries/insee'
 import { AdresseEmployeuse } from '../adresse-employeuse'
-import { type Contrat } from '../affectation/contrat'
+import type { Contrat } from '../affectation/contrat'
 import { PeriodeEmploi } from '../affectation/periode-emploi'
 import { SourceAffectation } from '../affectation/source-affectation'
+import { ContactReferent } from '../contact-referent'
 import { DenominationEmployeuse } from '../denomination-employeuse'
-import { type Employeuse } from '../employeuse'
+import type { Employeuse } from '../employeuse'
 import { EmployeuseId } from '../employeuse-id'
-import {
-  type AffectationActuelle,
-  employeuseActuelle,
-} from './employeuse-actuelle'
+import { employeuseActuelle } from './employeuse-actuelle'
 
-const employeuse = (
-  id: number,
-  overrides: Partial<Employeuse> = {},
-): Employeuse => ({
-  id: EmployeuseId(id),
-  denomination: DenominationEmployeuse(`Structure ${id}`),
-  denominationSirene: DenominationEmployeuse(`Structure ${id}`),
-  siret: Siret(`${id}`.padStart(14, '9')),
+const nantes = AdresseEmployeuse({
+  voie: '12 rue des Tests',
+  codePostal: '44000',
+  codeInsee: '44109',
+  commune: 'Nantes',
+})
+
+const structure1: Employeuse = {
+  id: EmployeuseId(1),
+  denomination: DenominationEmployeuse('Structure 1'),
+  denominationSirene: DenominationEmployeuse('Structure 1'),
+  siret: Siret('99999999999991'),
   rna: null,
-  adresse: AdresseEmployeuse({
-    voie: '12 rue des Tests',
-    codePostal: '44000',
-    codeInsee: '44109',
-    commune: 'Nantes',
-  }),
-  contactReferent: { _tag: 'nonRenseigne' },
+  adresse: nantes,
+  contactReferent: ContactReferent(null),
   creation: null,
   modification: null,
   suppression: null,
-  ...overrides,
-})
+}
 
-const affectationActuelle = (
-  source: string,
-  employeuseId: number,
-): AffectationActuelle => ({
-  employeuse: employeuse(employeuseId),
-  source: SourceAffectation(source),
-})
+const structure2: Employeuse = {
+  ...structure1,
+  id: EmployeuseId(2),
+  denomination: DenominationEmployeuse('Structure 2'),
+  denominationSirene: DenominationEmployeuse('Structure 2'),
+  siret: Siret('99999999999992'),
+}
 
-const contrat = (
-  employeuseId: number,
-  dates: {
-    debut?: Date | null
-    fin?: Date | null
-    rupture?: Date | null
-    maintenant?: Date
-  } = {},
-): Contrat => ({
-  employeuse: employeuse(employeuseId),
+const lointain = new Date('2100-01-01')
+
+const contratOuvertChezStructure1: Contrat = {
+  employeuse: structure1,
   periode: PeriodeEmploi({
-    debut: dates.debut ?? null,
-    fin: dates.fin ?? null,
-    rupture: dates.rupture ?? null,
-    maintenant: dates.maintenant ?? new Date('2100-01-01'),
+    debut: new Date('2020-01-01'),
+    fin: null,
+    rupture: null,
+    maintenant: lointain,
   }),
-})
+}
+
+const contratTermineChezStructure2: Contrat = {
+  employeuse: structure2,
+  periode: PeriodeEmploi({
+    debut: new Date('2026-03-01'),
+    fin: new Date('2026-09-01'),
+    rupture: null,
+    maintenant: lointain,
+  }),
+}
+
+const contratOuvertChezStructure2: Contrat = {
+  employeuse: structure2,
+  periode: PeriodeEmploi({
+    debut: new Date('2026-03-01'),
+    fin: null,
+    rupture: null,
+    maintenant: lointain,
+  }),
+}
 
 describe('employeuseActuelle', () => {
-  it('retient la période du contrat de l’employeuse actuelle', () => {
-    const actuelle = employeuseActuelle(affectationActuelle('idposte', 2), [
-      contrat(1, { debut: new Date('2020-01-01') }),
-      contrat(2, {
+  it('retient l’employeuse, la source et la période du contrat de l’employeuse actuelle', () => {
+    expect(
+      employeuseActuelle(
+        { employeuse: structure2, source: SourceAffectation('idposte') },
+        [contratOuvertChezStructure1, contratTermineChezStructure2],
+      ),
+    ).toEqual({
+      employeuse: structure2,
+      source: 'idposte',
+      periode: {
+        _tag: 'terminee',
         debut: new Date('2026-03-01'),
         fin: new Date('2026-09-01'),
-      }),
-    ])
-
-    expect(actuelle?.employeuse.id).toBe(2)
-    expect(actuelle?.source).toBe('idposte')
-    expect(actuelle?.periode).toEqual({
-      _tag: 'terminee',
-      debut: new Date('2026-03-01'),
-      fin: new Date('2026-09-01'),
+      },
     })
   })
 
-  // ~53 % des affectations de source coop n'ont aucun contrat (ADR-002) : c'est
-  // l'état « inconnue », et non un emploi commencé à une date nulle.
-  it('rend la période inconnue quand aucun contrat ne couvre l’employeuse', () => {
-    const actuelle = employeuseActuelle(affectationActuelle('coop', 1), [])
-    expect(actuelle?.employeuse.id).toBe(1)
-    expect(actuelle?.periode).toEqual({ _tag: 'inconnue' })
+  it('rend la période inconnue, et non un emploi commencé à une date nulle, quand aucun contrat ne couvre l’employeuse', () => {
+    expect(
+      employeuseActuelle(
+        { employeuse: structure1, source: SourceAffectation('coop') },
+        [],
+      ),
+    ).toEqual({
+      employeuse: structure1,
+      source: 'coop',
+      periode: { _tag: 'inconnue' },
+    })
   })
 
   it('ignore un contrat qui vise une autre employeuse', () => {
-    const actuelle = employeuseActuelle(affectationActuelle('coop', 1), [
-      contrat(2, { debut: new Date('2026-03-01') }),
-    ])
-    expect(actuelle?.periode).toEqual({ _tag: 'inconnue' })
+    expect(
+      employeuseActuelle(
+        { employeuse: structure1, source: SourceAffectation('coop') },
+        [contratOuvertChezStructure2],
+      ),
+    ).toEqual({
+      employeuse: structure1,
+      source: 'coop',
+      periode: { _tag: 'inconnue' },
+    })
   })
 
   it('n’a pas d’employeuse sans affectation active', () => {

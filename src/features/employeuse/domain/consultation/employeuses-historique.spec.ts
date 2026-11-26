@@ -1,23 +1,21 @@
 import { describe, expect, it } from 'vitest'
 import { Siret } from '@/libraries/insee'
 import { AdresseEmployeuse } from '../adresse-employeuse'
-import { type Affectation } from '../affectation/affectation'
-import { type Contrat } from '../affectation/contrat'
+import type { Affectation } from '../affectation/affectation'
+import type { Contrat } from '../affectation/contrat'
 import { PeriodeEmploi } from '../affectation/periode-emploi'
 import { SourceAffectation } from '../affectation/source-affectation'
+import { ContactReferent } from '../contact-referent'
 import { DenominationEmployeuse } from '../denomination-employeuse'
-import { type Employeuse } from '../employeuse'
+import type { Employeuse } from '../employeuse'
 import { EmployeuseId } from '../employeuse-id'
 import { employeusesHistorique } from './employeuses-historique'
 
-const employeuse = (
-  id: number,
-  overrides: Partial<Employeuse> = {},
-): Employeuse => ({
-  id: EmployeuseId(id),
-  denomination: DenominationEmployeuse(`Structure ${id}`),
-  denominationSirene: DenominationEmployeuse(`Structure ${id}`),
-  siret: Siret(`${id}`.padStart(14, '9')),
+const structure1: Employeuse = {
+  id: EmployeuseId(1),
+  denomination: DenominationEmployeuse('Structure 1'),
+  denominationSirene: DenominationEmployeuse('Structure 1'),
+  siret: Siret('99999999999991'),
   rna: null,
   adresse: AdresseEmployeuse({
     voie: '12 rue des Tests',
@@ -25,89 +23,159 @@ const employeuse = (
     codeInsee: '44109',
     commune: 'Nantes',
   }),
-  contactReferent: { _tag: 'nonRenseigne' },
+  contactReferent: ContactReferent(null),
   creation: null,
   modification: null,
   suppression: null,
-  ...overrides,
-})
+}
 
-const affectation = (
-  source: string,
-  employeuseId: number,
-  depuis: Date | null = new Date('2026-01-01'),
-): Affectation => ({
-  employeuse: employeuse(employeuseId),
-  source: SourceAffectation(source),
+const structure2: Employeuse = {
+  ...structure1,
+  id: EmployeuseId(2),
+  denomination: DenominationEmployeuse('Structure 2'),
+  denominationSirene: DenominationEmployeuse('Structure 2'),
+  siret: Siret('99999999999992'),
+}
+
+const janvier2025 = new Date('2025-01-01')
+const janvier2026 = new Date('2026-01-01')
+const lointain = new Date('2100-01-01')
+
+const affectationCoopActiveChezStructure1: Affectation = {
+  employeuse: structure1,
+  source: SourceAffectation('coop'),
   active: true,
-  depuis,
-})
+  depuis: janvier2026,
+}
 
-const contrat = (
-  employeuseId: number,
-  dates: {
-    debut?: Date | null
-    fin?: Date | null
-    rupture?: Date | null
-    maintenant?: Date
-  } = {},
-): Contrat => ({
-  employeuse: employeuse(employeuseId),
+const affectationCoopActiveChezStructure2: Affectation = {
+  ...affectationCoopActiveChezStructure1,
+  employeuse: structure2,
+}
+
+const contratSansDateChezStructure1: Contrat = {
+  employeuse: structure1,
   periode: PeriodeEmploi({
-    debut: dates.debut ?? null,
-    fin: dates.fin ?? null,
-    rupture: dates.rupture ?? null,
-    maintenant: dates.maintenant ?? new Date('2100-01-01'),
+    debut: null,
+    fin: null,
+    rupture: null,
+    maintenant: lointain,
   }),
-})
+}
+
+const contratOuvertDepuis2024ChezStructure1: Contrat = {
+  employeuse: structure1,
+  periode: PeriodeEmploi({
+    debut: new Date('2024-01-01'),
+    fin: null,
+    rupture: null,
+    maintenant: lointain,
+  }),
+}
+
+const contratDe2020a2021ChezStructure1: Contrat = {
+  employeuse: structure1,
+  periode: PeriodeEmploi({
+    debut: new Date('2020-01-01'),
+    fin: new Date('2021-12-31'),
+    rupture: null,
+    maintenant: lointain,
+  }),
+}
+
+const contratOuvertDepuis2026ChezStructure2: Contrat = {
+  employeuse: structure2,
+  periode: PeriodeEmploi({
+    debut: janvier2026,
+    fin: null,
+    rupture: null,
+    maintenant: lointain,
+  }),
+}
 
 describe('employeusesHistorique', () => {
   it('retient les employeuses en cours comme passées', () => {
-    const historique = employeusesHistorique(
-      [affectation('coop', 1), { ...affectation('idposte', 2), active: false }],
-      [],
-    )
-
     expect(
-      historique.map(({ employeuse, affectationActive }) => [
-        employeuse.id,
-        affectationActive,
-      ]),
+      employeusesHistorique(
+        [
+          affectationCoopActiveChezStructure1,
+          {
+            employeuse: structure2,
+            source: SourceAffectation('idposte'),
+            active: false,
+            depuis: janvier2026,
+          },
+        ],
+        [],
+      ),
     ).toEqual([
-      [1, true],
-      [2, false],
+      {
+        employeuse: structure1,
+        affectationActive: true,
+        periode: { _tag: 'inconnue' },
+        depuis: janvier2026,
+      },
+      {
+        employeuse: structure2,
+        affectationActive: false,
+        periode: { _tag: 'inconnue' },
+        depuis: janvier2026,
+      },
     ])
   })
 
-  // Une personne peut être rattachée deux fois à la même structure — une par le
-  // dispositif, une par le déclaratif — et l'admin doit y voir un seul employeur.
-  it('ne fait qu’une entrée d’une employeuse rattachée par deux sources', () => {
-    const historique = employeusesHistorique(
-      [
-        { ...affectation('coop', 1, new Date('2025-01-01')), active: false },
-        affectation('idposte', 1, new Date('2026-01-01')),
-      ],
-      [],
-    )
-
-    expect(historique).toHaveLength(1)
-    // En cours dès qu'un des rattachements l'est, depuis le plus ancien des deux.
-    expect(historique[0]?.affectationActive).toBe(true)
-    expect(historique[0]?.depuis).toEqual(new Date('2025-01-01'))
+  it('ne fait qu’une entrée, en cours depuis le plus ancien rattachement, d’une employeuse rattachée par le dispositif et par le déclaratif', () => {
+    expect(
+      employeusesHistorique(
+        [
+          {
+            employeuse: structure1,
+            source: SourceAffectation('coop'),
+            active: false,
+            depuis: janvier2025,
+          },
+          {
+            employeuse: structure1,
+            source: SourceAffectation('idposte'),
+            active: true,
+            depuis: janvier2026,
+          },
+        ],
+        [],
+      ),
+    ).toEqual([
+      {
+        employeuse: structure1,
+        affectationActive: true,
+        periode: { _tag: 'inconnue' },
+        depuis: janvier2025,
+      },
+    ])
   })
 
   it('rattache la période du contrat à son employeuse', () => {
-    const historique = employeusesHistorique(
-      [affectation('coop', 1), affectation('coop', 2)],
-      [contrat(2, { debut: new Date('2026-01-01') })],
-    )
-
-    expect(historique[0]?.periode).toEqual({ _tag: 'inconnue' })
-    expect(historique[1]?.periode).toEqual({
-      _tag: 'enCours',
-      debut: new Date('2026-01-01'),
-      finPrevue: null,
-    })
+    expect(
+      employeusesHistorique(
+        [
+          affectationCoopActiveChezStructure1,
+          affectationCoopActiveChezStructure2,
+        ],
+        [contratOuvertDepuis2026ChezStructure2],
+      ),
+    ).toEqual([
+      {
+        employeuse: structure1,
+        affectationActive: true,
+        periode: { _tag: 'inconnue' },
+        depuis: janvier2026,
+      },
+      {
+        employeuse: structure2,
+        affectationActive: true,
+        periode: { _tag: 'enCours', debut: janvier2026, finPrevue: null },
+        depuis: janvier2026,
+      },
+    ])
   })
 
   it('est vide sans aucun rattachement', () => {
@@ -116,32 +184,42 @@ describe('employeusesHistorique', () => {
 
   it('ne date pas l’entrée chez une employeuse dont aucun rattachement n’est daté', () => {
     expect(
-      employeusesHistorique([affectation('coop', 1, null)], []),
-    ).toMatchObject([{ depuis: null }])
+      employeusesHistorique(
+        [{ ...affectationCoopActiveChezStructure1, depuis: null }],
+        [],
+      ),
+    ).toEqual([
+      {
+        employeuse: structure1,
+        affectationActive: true,
+        periode: { _tag: 'inconnue' },
+        depuis: null,
+      },
+    ])
   })
 
   it('retient la période du contrat le plus récemment commencé chez l’employeuse', () => {
     expect(
       employeusesHistorique(
-        [affectation('coop', 1)],
+        [affectationCoopActiveChezStructure1],
         [
-          contrat(1),
-          contrat(1, {
-            debut: new Date('2020-01-01'),
-            fin: new Date('2021-12-31'),
-          }),
-          contrat(1, { debut: new Date('2024-01-01') }),
-          contrat(1),
-          contrat(2, { debut: new Date('2026-01-01') }),
+          contratSansDateChezStructure1,
+          contratDe2020a2021ChezStructure1,
+          contratOuvertDepuis2024ChezStructure1,
+          contratSansDateChezStructure1,
+          contratOuvertDepuis2026ChezStructure2,
         ],
       ),
-    ).toMatchObject([
+    ).toEqual([
       {
+        employeuse: structure1,
+        affectationActive: true,
         periode: {
           _tag: 'enCours',
           debut: new Date('2024-01-01'),
           finPrevue: null,
         },
+        depuis: janvier2026,
       },
     ])
   })
