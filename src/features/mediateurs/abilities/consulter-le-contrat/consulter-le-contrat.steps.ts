@@ -3,7 +3,8 @@ import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
 import type { Contrat } from '@/features/mediateurs/abilities/consulter-le-contrat/domain'
-import { consulterLeContrat } from '@/features/mediateurs/abilities/consulter-le-contrat/implementations/prisma/contrat.query'
+import { consulterLeContrat } from '@/features/mediateurs/abilities/consulter-le-contrat/domain/consulter-le-contrat'
+import { lireLesContrats } from '@/features/mediateurs/abilities/consulter-le-contrat/implementations/prisma/contrat.query'
 import { UtilisateurId } from '@/features/mediateurs/domain'
 
 type CompteSeme = {
@@ -92,10 +93,11 @@ Given(
 When(
   /^on consulte son contrat le (\d{2}\/\d{2}\/\d{4})$/,
   async (jour: string) => {
-    etat.contrat = await consulterLeContrat({
+    const consultation = await consulterLeContrat({ lireLesContrats })({
       utilisateurId: UtilisateurId(compteSeme().userId),
       maintenant: date(jour),
     })
+    etat.contrat = consultation.success ? consultation.data : null
   },
 )
 

@@ -23,7 +23,8 @@ import { triDesLieuxDuMediateur } from '@/features/lieux-activite/abilities/list
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
 import { MediateurId as MediateurIdDesLieux } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
 import { LieuxRepliables } from '@/features/lieux-activite/ui/slots/LieuxRepliables.slot'
-import { consulterLeContrat } from '@/features/mediateurs/abilities/consulter-le-contrat/implementations/prisma/contrat.query'
+import { consulterLeContrat } from '@/features/mediateurs/abilities/consulter-le-contrat/domain/consulter-le-contrat'
+import { lireLesContrats } from '@/features/mediateurs/abilities/consulter-le-contrat/implementations/prisma/contrat.query'
 import { CarteContrat } from '@/features/mediateurs/abilities/consulter-le-contrat/ui/slots/CarteContrat.slot'
 import { UtilisateurId } from '@/features/mediateurs/domain'
 import {
@@ -101,7 +102,7 @@ const Page = async ({ params }: Parametres) => {
   const fiche = consultation.data
   const { acteur, regard } = fiche
   const mediation = acteur.profil.mediation
-  const [employeuse, lieux, contrat] = await Promise.all([
+  const [employeuse, lieux, consultationDuContrat] = await Promise.all([
     consulterEmployeuseAUneDate({ userId: acteur.acteurId, date: maintenant }),
     mediation === null
       ? null
@@ -110,12 +111,15 @@ const Page = async ({ params }: Parametres) => {
           tri: triDesLieuxDuMediateur,
         }),
     contratVisible(acteur, regard)
-      ? consulterLeContrat({
+      ? consulterLeContrat({ lireLesContrats })({
           utilisateurId: UtilisateurId(acteur.acteurId),
           maintenant,
         })
       : null,
   ])
+  const contrat = consultationDuContrat?.success
+    ? consultationDuContrat.data
+    : null
   const ancienMembre = ancienMembreDe(regard)
   const encart = encartDeLEmployeuse(acteur, regard)
 

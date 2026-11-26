@@ -5,7 +5,8 @@ import { supprimerMonCompteAction } from '@/app/_actions/utilisateurs/supprimer-
 import { metadataTitle } from '@/configuration/projet'
 import { LierLaDeconnexion } from '@/features/authentification/abilities/se-deconnecter/ui/slots/LierLaDeconnexion.slot'
 import { authenticateUser } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
-import { consulterLeContrat } from '@/features/mediateurs/abilities/consulter-le-contrat/implementations/prisma/contrat.query'
+import { consulterLeContrat } from '@/features/mediateurs/abilities/consulter-le-contrat/domain/consulter-le-contrat'
+import { lireLesContrats } from '@/features/mediateurs/abilities/consulter-le-contrat/implementations/prisma/contrat.query'
 import { CarteContrat } from '@/features/mediateurs/abilities/consulter-le-contrat/ui/slots/CarteContrat.slot'
 import { UtilisateurId } from '@/features/mediateurs/domain'
 import { ACTIVER_LA_MEDIATION_NUMERIQUE_ACTION_KEY } from '@/features/utilisateurs/abilities/activer-la-mediation-numerique/action/activer-la-mediation-numerique.key'
@@ -32,9 +33,13 @@ const MonProfil = async () => {
     coordinateur: user.coordinateur !== null,
     conseillerNumerique: user.isConseillerNumerique,
   })
-  const contrat = visibles.contrat
-    ? await consulterLeContrat({ utilisateurId: UtilisateurId(user.id) })
+  const consultation = visibles.contrat
+    ? await consulterLeContrat({ lireLesContrats })({
+        utilisateurId: UtilisateurId(user.id),
+        maintenant: new Date(),
+      })
     : null
+  const contrat = consultation?.success ? consultation.data : null
 
   return (
     <ClientBinder

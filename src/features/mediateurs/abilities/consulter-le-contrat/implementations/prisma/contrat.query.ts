@@ -1,19 +1,8 @@
 import { prismaClient } from '@/configuration/prisma'
-import type { UtilisateurId } from '@/features/mediateurs/domain'
-import {
-  type Contrat,
-  dernierContrat,
-  type LigneDeContrat,
-  TypeDeContrat,
-} from '../../domain'
+import { type LigneDeContrat, TypeDeContrat } from '../../domain'
+import type { LireLesContrats } from '../../domain/ports'
 
-export const consulterLeContrat = async ({
-  utilisateurId,
-  maintenant = new Date(),
-}: {
-  readonly utilisateurId: UtilisateurId
-  readonly maintenant?: Date
-}): Promise<Contrat | null> => {
+export const lireLesContrats: LireLesContrats = async (utilisateurId) => {
   const personne = await prismaClient.personneMain.findFirst({
     where: { coopId: utilisateurId },
     select: {
@@ -28,7 +17,7 @@ export const consulterLeContrat = async ({
     },
   })
 
-  const lignes = (personne?.contrats ?? []).map(
+  return (personne?.contrats ?? []).map(
     (contrat): LigneDeContrat => ({
       type: contrat.type == null ? null : TypeDeContrat.safe(contrat.type),
       debut: contrat.dateDebut,
@@ -36,6 +25,4 @@ export const consulterLeContrat = async ({
       rupture: contrat.dateRupture,
     }),
   )
-
-  return dernierContrat(lignes, maintenant)
 }
