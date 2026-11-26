@@ -3,8 +3,8 @@ import { estMediateur } from '@/features/authentification/domain/profils-d-utili
 import { utilisateurDuJetonDeSession } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
 import { jetonDeSessionDesCookies } from '@/features/authentification/implementations/session/session-token-from-cookies.query'
 import { ExportBeneficiairesFilterValidations } from '@/features/beneficiaire/abilities/exporter-beneficiaires/action/filtres-de-l-export.validation'
-import type { ListerLesBeneficiairesAExporter } from '@/features/beneficiaire/abilities/exporter-beneficiaires/domain/exporter-beneficiaires'
 import { exporterBeneficiaires } from '@/features/beneficiaire/abilities/exporter-beneficiaires/domain/exporter-beneficiaires'
+import type { ListerLesBeneficiairesAExporter } from '@/features/beneficiaire/abilities/exporter-beneficiaires/domain/ports'
 import { classeurDesBeneficiaires } from '@/features/beneficiaire/abilities/exporter-beneficiaires/implementations/excel/classeur-des-beneficiaires.classeur'
 import { nomDuFichierDesBeneficiaires } from '@/features/beneficiaire/abilities/exporter-beneficiaires/ui/presenters/nom-du-fichier.presenter'
 import { listerBeneficiaires } from '@/features/beneficiaire/abilities/lister-beneficiaires/implementations/prisma/lister-beneficiaires.query'
@@ -39,16 +39,21 @@ export const GET = async (request: NextRequest) => {
     return new Response('Invalid query params', { status: 400 })
   }
 
-  const workbook = await exporterBeneficiairesAvec(listerBeneficiaires)({
+  const exportation = await exporterBeneficiairesAvec(listerBeneficiaires)({
     mediateurId: MediateurId(user.mediateur.id),
     filters:
       parsedQueryParams.data.recherche === undefined
         ? {}
         : { recherche: parsedQueryParams.data.recherche },
     auteur: auteurDeLExport(user),
+    maintenant: new Date(),
   })
 
-  const data = await workbook.xlsx.writeBuffer()
+  if (!exportation.success) {
+    return new Response('Export impossible', { status: 500 })
+  }
+
+  const data = await exportation.data.xlsx.writeBuffer()
   const filename = nomDuFichierDesBeneficiaires(new Date())
 
   return new Response(data, {

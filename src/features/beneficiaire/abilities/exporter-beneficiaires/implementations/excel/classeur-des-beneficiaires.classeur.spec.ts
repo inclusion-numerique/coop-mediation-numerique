@@ -15,7 +15,7 @@ import {
 } from '@/features/beneficiaire/domain/tranche-age'
 import type { AuteurDExport } from '@/libraries/tableur'
 import { Telephone } from '@/libraries/telephone'
-import type { BeneficiaireExportRow } from '../../domain/exporter-beneficiaires'
+import type { BeneficiaireExportRow } from '../../domain/beneficiaire-a-exporter'
 import { classeurDesBeneficiaires } from './classeur-des-beneficiaires.classeur'
 
 const user: AuteurDExport = {

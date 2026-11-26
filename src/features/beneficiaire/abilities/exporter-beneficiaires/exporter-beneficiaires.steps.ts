@@ -1,8 +1,8 @@
 import assert from 'node:assert'
 import { type DataTable, Given, Then, When } from '@cucumber/cucumber'
 import type { Workbook } from 'exceljs'
-import type { ListerLesBeneficiairesAExporter } from '@/features/beneficiaire/abilities/exporter-beneficiaires/domain/exporter-beneficiaires'
 import { exporterBeneficiaires } from '@/features/beneficiaire/abilities/exporter-beneficiaires/domain/exporter-beneficiaires'
+import type { ListerLesBeneficiairesAExporter } from '@/features/beneficiaire/abilities/exporter-beneficiaires/domain/ports'
 import { classeurDesBeneficiaires } from '@/features/beneficiaire/abilities/exporter-beneficiaires/implementations/excel/classeur-des-beneficiaires.classeur'
 import { listerBeneficiaires } from '@/features/beneficiaire/abilities/lister-beneficiaires/implementations/prisma/lister-beneficiaires.query'
 import {
@@ -69,11 +69,14 @@ Given(
 When(
   'je génère le classeur des bénéficiaires avec la recherche {string}',
   async (recherche: string) => {
-    workbook = await exporterBeneficiairesAvec(listerBeneficiaires)({
+    const exportation = await exporterBeneficiairesAvec(listerBeneficiaires)({
       mediateurId: testMediateurId,
       filters: { recherche },
       auteur: user,
+      maintenant: new Date(),
     })
+    assert.ok(exportation.success, "L'export a échoué")
+    workbook = exportation.data
   },
 )
 

@@ -13,10 +13,8 @@ import {
 } from '@/libraries/tableur'
 import { telephoneDisplayString } from '@/libraries/telephone'
 import { htmlToText } from '@/libraries/texte'
-import type {
-  BeneficiaireExportRow,
-  ConstruireLeClasseurDesBeneficiaires,
-} from '../../domain/exporter-beneficiaires'
+import type { BeneficiaireExportRow } from '../../domain/beneficiaire-a-exporter'
+import type { ConstruireLeClasseurDesBeneficiaires } from '../../domain/ports'
 
 const beneficiairesTableHeaders = [
   'Nom',
@@ -57,7 +55,7 @@ export const classeurDesBeneficiaires: ConstruireLeClasseurDesBeneficiaires<
   beneficiaires,
   filters,
   auteur,
-  worksheetGenerationDate = new Date(),
+  worksheetGenerationDate,
   matchesCount,
 }) => {
   const workbook = new Excel.Workbook()

@@ -5,10 +5,10 @@ import { Nom } from '@/features/beneficiaire/domain/nom'
 import { Prenom } from '@/features/beneficiaire/domain/prenom'
 import { StatutSocial } from '@/features/beneficiaire/domain/statut-social'
 import { TrancheAge } from '@/features/beneficiaire/domain/tranche-age'
-import {
-  type BeneficiaireExportRow,
-  exporterBeneficiaires,
-} from './exporter-beneficiaires'
+import type { BeneficiaireExportRow } from './beneficiaire-a-exporter'
+import { exporterBeneficiaires } from './exporter-beneficiaires'
+
+const maintenant = new Date('2026-11-26T10:00:00.000Z')
 
 const lea: BeneficiaireExportRow = {
   nom: Nom('Martin'),
@@ -37,12 +37,17 @@ describe('exporter les bénéficiaires', () => {
         mediateurId: MediateurId('8a1b2c3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d'),
         filters: {},
         auteur: 'Camille Martin',
+        maintenant,
       }),
     ).toEqual({
-      beneficiaires: [lea],
-      filters: {},
-      matchesCount: 1,
-      auteur: 'Camille Martin',
+      success: true,
+      data: {
+        beneficiaires: [lea],
+        filters: {},
+        matchesCount: 1,
+        auteur: 'Camille Martin',
+        worksheetGenerationDate: maintenant,
+      },
     })
   })
 
@@ -57,12 +62,17 @@ describe('exporter les bénéficiaires', () => {
         mediateurId: MediateurId('8a1b2c3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d'),
         filters: { recherche: 'Léa' },
         auteur: 'Camille Martin',
+        maintenant,
       }),
     ).toEqual({
-      beneficiaires: [lea],
-      filters: { recherche: 'Léa' },
-      matchesCount: 1,
-      auteur: 'Camille Martin',
+      success: true,
+      data: {
+        beneficiaires: [lea],
+        filters: { recherche: 'Léa' },
+        matchesCount: 1,
+        auteur: 'Camille Martin',
+        worksheetGenerationDate: maintenant,
+      },
     })
   })
 })
