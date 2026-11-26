@@ -10,4 +10,4 @@ export const LieuIntrouvable = (lieuId: LieuId): LieuIntrouvable => ({
   lieuId,
 })
 
-export type EchecDeFusion = LieuIntrouvable
+export type EchecDeFusionnerDesLieux = LieuIntrouvable

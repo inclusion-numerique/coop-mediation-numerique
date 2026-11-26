@@ -1,9 +1,7 @@
 export { champsCommuns } from './champs-communs'
-export type { EchecDeFusion } from './errors'
+export type { EchecDeFusionnerDesLieux } from './errors'
 export type { FusionApercue } from './fusion-apercue'
-export {
-  type FusionnerLesLieux,
-  fusionnerDesLieux,
-  type LieuxExistants,
-} from './fusionner-des-lieux'
+export type { FusionDeLieux } from './fusion-de-lieux'
+export { fusionnerDesLieux } from './fusionner-des-lieux'
 export type { ChampsPartageables, LieuAFusionner } from './lieu-a-fusionner'
+export type { FusionnerLesLieux, LieuxExistants } from './ports'

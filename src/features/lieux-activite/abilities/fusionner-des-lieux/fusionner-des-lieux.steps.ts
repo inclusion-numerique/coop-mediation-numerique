@@ -140,6 +140,7 @@ When("l'administration fusionne le premier dans le second", async () => {
   })({
     source: LieuId(semis.absorbeId ?? ''),
     cible: LieuId(semis.conserveId ?? ''),
+    maintenant: new Date(),
   })
 })
 
@@ -307,6 +308,7 @@ When(
     })({
       source: LieuId(semis.absorbeId ?? ''),
       cible: LieuId(v4()),
+      maintenant: new Date(),
     })
   },
 )

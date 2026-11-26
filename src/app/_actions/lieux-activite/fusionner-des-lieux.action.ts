@@ -10,6 +10,7 @@ import { fusionnerLesLieux } from '@/features/lieux-activite/abilities/fusionner
 import { lieuxExistants } from '@/features/lieux-activite/abilities/fusionner-des-lieux/implementations/prisma/lieux-existants.query'
 import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
 import { fromResult, withInput } from '@/libraries/nextjs'
+import { success } from '@/libraries/result'
 
 /**
  * Fusionner deux lieux est un acte de modération : la source disparaît, et rien
@@ -22,11 +23,18 @@ export const fusionnerDesLieuxAction = actionBuilder()
   .use(withInput(FusionnerDesLieuxValidation))
   .execute(
     fromResult(
-      async ({ input }) =>
-        fusionnerDesLieux({ lieuxExistants, fusionner: fusionnerLesLieux })({
+      async ({ input }) => {
+        const fusion = await fusionnerDesLieux({
+          lieuxExistants,
+          fusionner: fusionnerLesLieux,
+        })({
           source: LieuId(input.sourceStructureId),
           cible: LieuId(input.targetStructureId),
-        }),
+          maintenant: new Date(),
+        })
+
+        return fusion.success ? success(undefined) : fusion
+      },
       { onError: FUSIONNER_DES_LIEUX_ERRORS },
     ),
   )

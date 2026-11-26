@@ -1,6 +1,6 @@
 import { prismaClient } from '@/configuration/prisma'
 import { LieuId } from '../../../../domain/identifiants/lieu-id'
-import type { LieuxExistants } from '../../domain'
+import type { LieuxExistants } from '../../domain/ports'
 
 export const lieuxExistants: LieuxExistants = async (lieux) =>
   (

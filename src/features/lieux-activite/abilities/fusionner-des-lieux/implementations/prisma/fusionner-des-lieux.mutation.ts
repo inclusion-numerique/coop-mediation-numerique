@@ -5,7 +5,7 @@ import { toutesLesColonnes } from '../../../../implementations/prisma/registre/c
 import { ecrireLeLieuAuRegistre } from '../../../../implementations/prisma/registre/ecrire-au-registre.mutation'
 import { inscriptionPourLIdentifiantCarto } from '../../../../implementations/prisma/registre/identifiants-carto.query'
 import { retirerDuRegistre } from '../../../../implementations/prisma/registre/retirer-du-registre.mutation'
-import type { FusionnerLesLieux } from '../../domain'
+import type { FusionnerLesLieux } from '../../domain/ports'
 
 type PrismaTransaction = Prisma.TransactionClient
 
@@ -52,7 +52,7 @@ const legs = <Champ extends keyof LieuInclusion>(
 ): LieuInclusion[Champ] => target[champ] ?? source[champ]
 
 const fusionnerLesChamps =
-  (prisma: PrismaTransaction) =>
+  (prisma: PrismaTransaction, maintenant: Date) =>
   async (sourceStructureId: string, targetStructureId: string) => {
     const [source, target] = await Promise.all([
       prisma.lieuInclusion.findUnique({ where: { id: sourceStructureId } }),
@@ -107,7 +107,7 @@ const fusionnerLesChamps =
         v1StructureId: legs(source, target, 'v1StructureId'),
         v1StructureIdPg: legs(source, target, 'v1StructureIdPg'),
         v1PermanenceId: legs(source, target, 'v1PermanenceId'),
-        modification: new Date(),
+        modification: maintenant,
       },
     })
   }
@@ -120,10 +120,8 @@ const deleteStructure =
   }
 
 const fusionnerAuRegistre =
-  (prisma: PrismaTransaction) =>
+  (prisma: PrismaTransaction, maintenant: Date) =>
   async (sourceStructureId: string, targetStructureId: string) => {
-    const maintenant = new Date()
-
     await retirerDuRegistre(prisma, { lieuId: sourceStructureId, maintenant })
 
     const fusionne = await prisma.lieuInclusion.findUnique({
@@ -140,11 +138,27 @@ const fusionnerAuRegistre =
     })
   }
 
-export const fusionnerLesLieux: FusionnerLesLieux = async ({ source, cible }) =>
+const tousExistent = async (
+  prisma: PrismaTransaction,
+  lieux: readonly string[],
+): Promise<boolean> =>
+  (await prisma.lieuInclusion.count({ where: { id: { in: [...lieux] } } })) ===
+  new Set(lieux).size
+
+export const fusionnerLesLieux: FusionnerLesLieux = async ({
+  source,
+  cible,
+  fusionneLe,
+}) =>
   prismaClient.$transaction(async (prisma) => {
+    if (!(await tousExistent(prisma, [source, cible])))
+      return { fusionne: false }
+
     await mergeMediateursEnActivite(prisma)(source, cible)
     await mergeActivitesLieu(prisma)(source, cible)
-    await fusionnerLesChamps(prisma)(source, cible)
-    await fusionnerAuRegistre(prisma)(source, cible)
+    await fusionnerLesChamps(prisma, fusionneLe)(source, cible)
+    await fusionnerAuRegistre(prisma, fusionneLe)(source, cible)
     await deleteStructure(prisma)(source)
+
+    return { fusionne: true }
   })

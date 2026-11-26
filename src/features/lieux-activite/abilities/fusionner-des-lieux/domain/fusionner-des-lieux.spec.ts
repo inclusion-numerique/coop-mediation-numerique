@@ -4,16 +4,17 @@ import { fusionnerDesLieux } from './fusionner-des-lieux'
 
 const source = LieuId('550e8400-e29b-41d4-a716-446655440000')
 const cible = LieuId('7c9e6679-7425-40de-944b-e07fc1f90ae7')
+const maintenant = new Date('2026-11-26T10:00:00Z')
 
-const fusionner = async () => undefined
+const fusionne = async () => ({ fusionne: true })
 
 describe('fusionner des lieux', () => {
   it('refuse la fusion quand le lieu à absorber est introuvable', async () => {
     expect(
-      await fusionnerDesLieux({ lieuxExistants: async () => [], fusionner })({
-        source,
-        cible,
-      }),
+      await fusionnerDesLieux({
+        lieuxExistants: async () => [],
+        fusionner: fusionne,
+      })({ source, cible, maintenant }),
     ).toEqual({
       success: false,
       error: { _tag: 'LieuIntrouvable', lieuId: source },
@@ -24,8 +25,8 @@ describe('fusionner des lieux', () => {
     expect(
       await fusionnerDesLieux({
         lieuxExistants: async () => [source],
-        fusionner,
-      })({ source, cible }),
+        fusionner: fusionne,
+      })({ source, cible, maintenant }),
     ).toEqual({
       success: false,
       error: { _tag: 'LieuIntrouvable', lieuId: cible },
@@ -36,8 +37,23 @@ describe('fusionner des lieux', () => {
     expect(
       await fusionnerDesLieux({
         lieuxExistants: async () => [source, cible],
-        fusionner,
-      })({ source, cible }),
-    ).toEqual({ success: true, data: undefined })
+        fusionner: fusionne,
+      })({ source, cible, maintenant }),
+    ).toEqual({
+      success: true,
+      data: { source, cible, fusionneLe: maintenant },
+    })
+  })
+
+  it('signale le lieu à absorber introuvable quand il disparaît avant la fusion', async () => {
+    expect(
+      await fusionnerDesLieux({
+        lieuxExistants: async () => [source, cible],
+        fusionner: async () => ({ fusionne: false }),
+      })({ source, cible, maintenant }),
+    ).toEqual({
+      success: false,
+      error: { _tag: 'LieuIntrouvable', lieuId: source },
+    })
   })
 })
