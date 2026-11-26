@@ -39,6 +39,8 @@ const coordinateur: CoordinateurDeLEquipe = {
 
 const maintenant = new Date('2026-01-10T09:00:00Z')
 
+const refus = { reference, auteurId: null, refuseeLe: maintenant }
+
 describe('refuser une invitation', () => {
   it('refuse une invitation en attente', async () => {
     const refuser = refuserUneInvitation({
@@ -53,7 +55,14 @@ describe('refuser une invitation', () => {
 
     expect(await refuser({ reference, auteurId: null, maintenant })).toEqual({
       success: true,
-      data: undefined,
+      data: {
+        refus,
+        prevenance: {
+          coordinateur: Courriel('camille.martin@example.com'),
+          invite: Courriel('invite@example.com'),
+          reponse: 'Refusee',
+        },
+      },
     })
   })
 
@@ -70,7 +79,7 @@ describe('refuser une invitation', () => {
 
     expect(await refuser({ reference, auteurId: null, maintenant })).toEqual({
       success: true,
-      data: undefined,
+      data: { refus, prevenance: null },
     })
   })
 

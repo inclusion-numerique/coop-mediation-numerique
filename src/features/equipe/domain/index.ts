@@ -44,7 +44,7 @@ export {
   LienInvitation,
   PREFIXE_DU_LIEN_D_INVITATION,
 } from './invitation/lien-invitation'
-export type { Prevenance } from './invitation/prevenance'
+export { type Prevenance, prevenanceDe } from './invitation/prevenance'
 export { ReferenceInvitation } from './invitation/reference-invitation'
 export { type Lecteur, peutConsulterLEquipe } from './lecteur'
 export {

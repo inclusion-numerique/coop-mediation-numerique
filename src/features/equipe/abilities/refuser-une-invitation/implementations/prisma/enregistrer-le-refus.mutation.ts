@@ -1,16 +1,16 @@
 import { addMutationLog, prismaClient } from '@/configuration/prisma'
 import type { CleDInvitation } from '../../../../implementations/prisma/invitation.query'
-import type { EnregistrerLeRefus } from '../../domain/refuser-une-invitation'
+import type { EnregistrerLeRefus } from '../../domain/ports'
 
 export const enregistrerLeRefus: EnregistrerLeRefus<CleDInvitation> = async ({
   cle,
   reference,
   auteurId,
-  maintenant,
+  refuseeLe,
 }) => {
   await prismaClient.invitationEquipe.update({
     where: cle,
-    data: { refusee: maintenant },
+    data: { refusee: refuseeLe },
   })
 
   addMutationLog({

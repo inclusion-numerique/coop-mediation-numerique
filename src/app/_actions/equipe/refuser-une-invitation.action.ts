@@ -16,6 +16,7 @@ import { prevenirLeCoordinateur } from '@/features/equipe/implementations/email'
 import { lireLeCoordinateur } from '@/features/equipe/implementations/prisma/coordinateur.query'
 import { lireUneInvitation } from '@/features/equipe/implementations/prisma/invitation.query'
 import { fromResult, withInput } from '@/libraries/nextjs'
+import { success } from '@/libraries/result'
 
 export const refuserUneInvitationAction = actionBuilder()
   .use(withInput(RefuserUneInvitationValidation))
@@ -23,7 +24,7 @@ export const refuserUneInvitationAction = actionBuilder()
     fromResult(
       async ({ input }) => {
         const user = await getSessionUser()
-        return refuserUneInvitation({
+        const refus = await refuserUneInvitation({
           lireUneInvitation,
           enregistrerLeRefus,
           lireLeCoordinateur,
@@ -36,6 +37,7 @@ export const refuserUneInvitationAction = actionBuilder()
           auteurId: user == null ? null : UtilisateurId(user.id),
           maintenant: new Date(),
         })
+        return refus.success ? success(undefined) : refus
       },
       { onError: REFUSER_UNE_INVITATION_ERRORS },
     ),
