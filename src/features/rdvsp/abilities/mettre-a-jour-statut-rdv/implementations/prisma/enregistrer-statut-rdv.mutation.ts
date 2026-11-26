@@ -1,5 +1,5 @@
 import { prismaClient } from '@/configuration/prisma'
-import type { EnregistrerStatutRdv } from '../../domain/mettre-a-jour-statut-rdv'
+import type { EnregistrerStatutRdv } from '../../domain/ports'
 
 /**
  * L'autorisation a déjà été établie par `verifierAcces` : la mutation cible le

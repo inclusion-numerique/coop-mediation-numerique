@@ -1,7 +1,7 @@
 import { prismaClient } from '@/configuration/prisma'
 import { RdvAgentId } from '../../../../domain/identifiants/rdv-agent-id'
 import { compteRdvToDomain } from '../../../../implementations/prisma/compte-rdv.transfer'
-import type { ContexteMiseAJourStatut } from '../../domain/mettre-a-jour-statut-rdv'
+import type { ContexteMiseAJourStatut } from '../../domain/ports'
 
 /**
  * Lit le compte du médiateur et le propriétaire du rendez-vous visé. La requête

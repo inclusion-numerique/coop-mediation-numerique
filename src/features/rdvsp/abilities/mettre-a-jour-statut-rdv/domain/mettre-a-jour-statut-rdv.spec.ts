@@ -14,10 +14,8 @@ import {
   StatutPresence,
   StatutPresenceModifiable,
 } from '../../../domain/rdv/statut-presence'
-import {
-  type DependancesMettreAJourStatutRdv,
-  mettreAJourStatutRdv,
-} from './mettre-a-jour-statut-rdv'
+import { mettreAJourStatutRdv } from './mettre-a-jour-statut-rdv'
+import type { MettreAJourStatutRdvPorts } from './ports'
 
 const agentId = RdvAgentId(4242)
 const rdvId = RdvId(77)
@@ -55,7 +53,7 @@ const deconnecte: CompteRdv = {
   deconnexion: new Date('2026-07-08T00:00:00.000Z'),
 }
 
-const proprietaire: DependancesMettreAJourStatutRdv = {
+const proprietaire: MettreAJourStatutRdvPorts = {
   contexte: async () => ({ compte: lie, agentIdDuRdv: agentId }),
   changerStatutRdv: async () => success(StatutPresence('seen')),
   enregistrer: async () => undefined,
@@ -67,11 +65,14 @@ const demande = {
   statut: StatutPresenceModifiable('seen'),
 }
 
-describe('mettreAJourStatutRdv', () => {
+describe('mettre à jour le statut d’un rendez-vous', () => {
   describe('contrôle d’accès', () => {
     it('autorise le propriétaire du rendez-vous', async () => {
       expect(await mettreAJourStatutRdv(proprietaire)(demande)).toEqual(
-        success({ statutPresence: 'seen', compteRenduRegle: true }),
+        success({
+          rdvId,
+          statut: { statutPresence: 'seen', compteRenduRegle: true },
+        }),
       )
     })
 
@@ -82,7 +83,10 @@ describe('mettreAJourStatutRdv', () => {
       })(demande)
 
       expect(resultat).toEqual(
-        success({ statutPresence: 'seen', compteRenduRegle: true }),
+        success({
+          rdvId,
+          statut: { statutPresence: 'seen', compteRenduRegle: true },
+        }),
       )
     })
 
@@ -155,7 +159,10 @@ describe('mettreAJourStatutRdv', () => {
       })(demande)
 
       expect(resultat).toEqual(
-        success({ statutPresence: statutConfirme, compteRenduRegle: false }),
+        success({
+          rdvId,
+          statut: { statutPresence: statutConfirme, compteRenduRegle: false },
+        }),
       )
     },
   )
@@ -167,7 +174,10 @@ describe('mettreAJourStatutRdv', () => {
     })(demande)
 
     expect(resultat).toEqual(
-      success({ statutPresence: 'unknown', compteRenduRegle: false }),
+      success({
+        rdvId,
+        statut: { statutPresence: 'unknown', compteRenduRegle: false },
+      }),
     )
   })
 })

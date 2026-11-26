@@ -1,63 +1,25 @@
-import { RdvNonAutorise } from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/domain/errors'
 import {
   type CompteRdv,
   type CompteRdvUtilisable,
   estUtilisable,
 } from '@/features/rdvsp/domain/compte/compte-rdv'
-import {
-  CompteNonLie,
-  type ErreurRdvApi,
-  RdvIntrouvable,
-} from '@/features/rdvsp/domain/errors'
+import { CompteNonLie, RdvIntrouvable } from '@/features/rdvsp/domain/errors'
 import type { RdvAgentId } from '@/features/rdvsp/domain/identifiants/rdv-agent-id'
 import type { RdvId } from '@/features/rdvsp/domain/identifiants/rdv-id'
 import type { UtilisateurCoopId } from '@/features/rdvsp/domain/identifiants/utilisateur-coop-id'
-import type { RdvServicePublicApi } from '@/features/rdvsp/domain/ports'
 import type {
   StatutPresence,
   StatutPresenceModifiable,
 } from '@/features/rdvsp/domain/rdv/statut-presence'
 import { failure, type Result, success } from '@/libraries/result'
+import { type EchecDeMettreAJourStatutRdv, RdvNonAutorise } from './errors'
+import type { MettreAJourStatutRdvPorts } from './ports'
+import type {
+  StatutRdvEnregistre,
+  StatutRdvMisAJour,
+} from './statut-rdv-enregistre'
 
-export type ErreurMiseAJourStatut = RdvNonAutorise | ErreurRdvApi
-
-export type MettreAJourStatutRdv = (input: {
-  readonly utilisateurId: UtilisateurCoopId
-  readonly rdvId: RdvId
-  readonly statut: StatutPresenceModifiable
-}) => Promise<Result<StatutRdvMisAJour, ErreurMiseAJourStatut>>
-
-/** Compte du médiateur et propriétaire du rendez-vous visé, lus d'un seul tenant. */
-export type ContexteMiseAJourStatut = (input: {
-  readonly utilisateurId: UtilisateurCoopId
-  readonly rdvId: RdvId
-}) => Promise<{
-  readonly compte: CompteRdv | null
-  readonly agentIdDuRdv: RdvAgentId | null
-}>
-
-export type StatutRdvMisAJour = {
-  readonly statutPresence: StatutPresence
-  /** Le compte rendu n'est plus attendu : rédigé, ou décliné. */
-  readonly compteRenduRegle: boolean
-}
-
-export type EnregistrerStatutRdv = (input: {
-  readonly rdvId: RdvId
-  readonly statut: StatutRdvMisAJour
-}) => Promise<void>
-
-/**
- * Autorise — ou non — l'écriture sur ce rendez-vous.
- *
- * Trois refus distincts, dans cet ordre : sans compte exploitable rien ne peut
- * partir vers RDV Service Public ; un rendez-vous inconnu de La Coop n'est pas
- * modifiable ; un rendez-vous connu mais rattaché à un autre agent ne l'est pas
- * davantage. La règle est ici, et non dans la requête, pour être vérifiable sans
- * base — c'est du contrôle d'accès, la partie qu'on ne veut pas découvrir en
- * production.
- */
-export const verifierAcces = ({
+const verifierAcces = ({
   compte,
   agentIdDuRdv,
   rdvId,
@@ -65,7 +27,7 @@ export const verifierAcces = ({
   compte: CompteRdv | null
   agentIdDuRdv: RdvAgentId | null
   rdvId: RdvId
-}): Result<CompteRdvUtilisable, ErreurMiseAJourStatut> => {
+}): Result<CompteRdvUtilisable, EchecDeMettreAJourStatutRdv> => {
   if (compte === null) {
     return failure(CompteNonLie(null))
   }
@@ -95,18 +57,12 @@ export const verifierAcces = ({
  * et le compteur de l'accueil. Les autres statuts le lèvent : un rendez-vous
  * annulé n'appelle aucun compte rendu.
  */
-export const statutRdvMisAJour = (
+const statutRdvMisAJour = (
   statutConfirme: StatutPresence,
 ): StatutRdvMisAJour => ({
   statutPresence: statutConfirme,
   compteRenduRegle: statutConfirme === 'seen',
 })
-
-export type DependancesMettreAJourStatutRdv = {
-  readonly contexte: ContexteMiseAJourStatut
-  readonly changerStatutRdv: RdvServicePublicApi['changerStatutRdv']
-  readonly enregistrer: EnregistrerStatutRdv
-}
 
 /**
  * RDV Service Public est prévenu avant que La Coop n'écrive quoi que ce soit, et
@@ -115,12 +71,16 @@ export type DependancesMettreAJourStatutRdv = {
  * base intacte plutôt que d'y inscrire une valeur qu'il ignore.
  */
 export const mettreAJourStatutRdv =
-  ({
-    contexte,
-    changerStatutRdv,
-    enregistrer,
-  }: DependancesMettreAJourStatutRdv): MettreAJourStatutRdv =>
-  async ({ utilisateurId, rdvId, statut }) => {
+  ({ contexte, changerStatutRdv, enregistrer }: MettreAJourStatutRdvPorts) =>
+  async ({
+    utilisateurId,
+    rdvId,
+    statut,
+  }: {
+    readonly utilisateurId: UtilisateurCoopId
+    readonly rdvId: RdvId
+    readonly statut: StatutPresenceModifiable
+  }): Promise<Result<StatutRdvEnregistre, EchecDeMettreAJourStatutRdv>> => {
     const { compte, agentIdDuRdv } = await contexte({ utilisateurId, rdvId })
 
     const acces = verifierAcces({ compte, agentIdDuRdv, rdvId })
@@ -135,9 +95,12 @@ export const mettreAJourStatutRdv =
       return confirmation
     }
 
-    const misAJour = statutRdvMisAJour(confirmation.data)
+    const enregistrement: StatutRdvEnregistre = {
+      rdvId,
+      statut: statutRdvMisAJour(confirmation.data),
+    }
 
-    await enregistrer({ rdvId, statut: misAJour })
+    await enregistrer(enregistrement)
 
-    return success(misAJour)
+    return success(enregistrement)
   }

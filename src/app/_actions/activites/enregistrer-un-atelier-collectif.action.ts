@@ -1,7 +1,6 @@
 'use server'
 
 import { actionBuilder } from '@/configuration/nextjs'
-import { signaler } from '@/configuration/telemetry/serveur'
 import { ENREGISTRER_UN_ATELIER_COLLECTIF_ERRORS } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/action/enregistrer-un-atelier-collectif.errors'
 import { atelierEnregistre } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/action/enregistrer-un-atelier-collectif.transfer'
 import { EnregistrerUnAtelierCollectifValidation } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/action/enregistrer-un-atelier-collectif.validation'
@@ -27,8 +26,8 @@ import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { consulterEmployeuseAUneDate } from '@/features/employeuse/abilities/consulter-employeuse-a-une-date/implementations/prisma/consulter-employeuse-a-une-date.query'
 import { lieuUtilisablePar } from '@/features/lieux-activite/abilities/verifier-un-lieu-d-activite/implementations/prisma/lieu-utilisable-par.where'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
-import { marquerLeRendezVousHonore } from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/domain/marquer-le-rendez-vous-honore'
 import { mettreAJourStatutRdv } from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/domain/mettre-a-jour-statut-rdv'
+import { marquerLeRendezVousHonore } from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/implementations/activites/marquer-le-rendez-vous-honore.adapter'
 import { contexteMiseAJourStatut } from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/implementations/prisma/contexte-mise-a-jour-statut.query'
 import { enregistrerStatutRdv } from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/implementations/prisma/enregistrer-statut-rdv.mutation'
 import { UtilisateurCoopId } from '@/features/rdvsp/domain/identifiants/utilisateur-coop-id'
@@ -81,10 +80,9 @@ export const enregistrerUnAtelierCollectifAction = actionBuilder()
           rendezVousDejaSaisi,
           creer: creerLActiviteDeMediation(UtilisateurId(user.id)),
           modifier: modifierLActiviteDeMediation(UtilisateurId(user.id)),
-          marquerLeRendezVousHonore: marquerLeRendezVousHonore({
-            mettreAJour: mettreAJourLeStatutDuRdv,
-            signaler,
-          })(UtilisateurCoopId(user.id)),
+          marquerLeRendezVousHonore: marquerLeRendezVousHonore(
+            mettreAJourLeStatutDuRdv,
+          )(UtilisateurCoopId(user.id)),
         })({
           saisie: input,
           mediateurId:

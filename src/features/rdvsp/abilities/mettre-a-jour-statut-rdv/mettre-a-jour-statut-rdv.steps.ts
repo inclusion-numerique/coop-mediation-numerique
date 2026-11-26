@@ -1,6 +1,5 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
-import type { MettreAJourStatutRdv } from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/domain/mettre-a-jour-statut-rdv'
 import { mettreAJourStatutRdv } from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/domain/mettre-a-jour-statut-rdv'
 import { contexteMiseAJourStatut } from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/implementations/prisma/contexte-mise-a-jour-statut.query'
 import { enregistrerStatutRdv } from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/implementations/prisma/enregistrer-statut-rdv.mutation'
@@ -29,7 +28,7 @@ const RDV_ID_INEXISTANT = ID_TEST.rdv + 999
 let statutConfirme: StatutPresence | null = null
 let apiRefuse = false
 let apiSollicitee = false
-let resultat: Awaited<ReturnType<MettreAJourStatutRdv>> | undefined
+let resultat: Awaited<ReturnType<typeof mettreAJour>> | undefined
 
 /**
  * Double de l'API : il enregistre au passage s'il a été appelé, ce qui permet

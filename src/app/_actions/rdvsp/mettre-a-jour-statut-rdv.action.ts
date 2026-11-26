@@ -14,6 +14,7 @@ import { configurationRdvServicePublic } from '@/features/rdvsp/implementations/
 import { enregistrerLesJetons } from '@/features/rdvsp/implementations/prisma/jetons-du-compte.mutation'
 import { jetonsCourants } from '@/features/rdvsp/implementations/prisma/jetons-du-compte.query'
 import { fromResult, withInput } from '@/libraries/nextjs'
+import { success } from '@/libraries/result'
 
 /**
  * Composition de l'ability avec ses adaptateurs réels, partagée par la server
@@ -39,12 +40,15 @@ export const mettreAJourStatutRdvAction = actionBuilder()
   .use(withInput(MettreAJourStatutRdvValidation))
   .execute(
     fromResult(
-      async ({ user, input }) =>
-        mettreAJourLeStatutDuRdv({
+      async ({ user, input }) => {
+        const miseAJour = await mettreAJourLeStatutDuRdv({
           utilisateurId: UtilisateurCoopId(user.id),
           rdvId: input.rdvId,
           statut: input.statut,
-        }),
+        })
+
+        return miseAJour.success ? success(miseAJour.data.statut) : miseAJour
+      },
       { onError: METTRE_A_JOUR_STATUT_RDV_ERRORS },
     ),
   )
