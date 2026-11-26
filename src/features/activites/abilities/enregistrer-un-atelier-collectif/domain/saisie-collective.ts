@@ -10,6 +10,7 @@ import {
   type DureeEnMinutes,
   dateDActiviteBornee,
   dateDActiviteDuJour,
+  type EcritureDeMediation,
   type EmployeuseALaDate,
   type Equipement,
   type LieuSaisi,
@@ -42,9 +43,9 @@ export type SaisieCollective = {
   readonly anonymes: ParticipantsAnonymes
 }
 
-export type AtelierEnregistre = {
-  readonly id: ActiviteId
-  readonly type: 'Collectif'
+export type AtelierCollectifEnregistre = {
+  readonly ecriture: EcritureDeMediation<AtelierCollectif>
+  readonly rendezVousHonore: RdvId | null
 }
 
 export const atelierDeLaSaisie = ({

@@ -3,8 +3,8 @@ import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
 import {
-  type AccompagnementEnregistre,
-  type EchecDEnregistrement,
+  type AccompagnementIndividuelEnregistre,
+  type EchecDEnregistrerUnAccompagnementIndividuel,
   enregistrerUnAccompagnementIndividuel,
   type SaisieIndividuelle,
 } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/domain/index'
@@ -46,7 +46,12 @@ type Semis = {
 }
 
 let semis: Semis | undefined
-let resultat: Result<AccompagnementEnregistre, EchecDEnregistrement> | undefined
+let resultat:
+  | Result<
+      AccompagnementIndividuelEnregistre,
+      EchecDEnregistrerUnAccompagnementIndividuel
+    >
+  | undefined
 
 const semerUnMediateur = async (): Promise<Mediateur> => {
   const userId = v4()
@@ -135,16 +140,16 @@ const enregistrerPar = async (
     rendezVousDejaSaisi,
     creer: creerLActiviteDeMediation(UtilisateurId(mediateur.userId)),
     modifier: modifierLActiviteDeMediation(UtilisateurId(mediateur.userId)),
-    maintenant: () => new Date(),
   })({
     saisie: saisieIndividuelle,
     mediateurId: MediateurId(mediateur.mediateurId),
+    maintenant: new Date(),
   })
 }
 
 const activiteEnregistree = (): string => {
   assert.ok(resultat?.success)
-  return resultat.data.id
+  return resultat.data.ecriture.activite.id
 }
 
 Given(

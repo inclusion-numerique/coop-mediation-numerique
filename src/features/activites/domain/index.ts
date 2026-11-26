@@ -137,11 +137,13 @@ export { AdresseDuLieu } from './mediation/adresse-du-lieu'
 export { AUTONOMIES, Autonomie } from './mediation/autonomie'
 export {
   creationOuModification,
-  type DependancesDeLaSaisieDeMediation,
+  type EcritureDeMediation,
   type EnregistrementDeMediation,
   ecrireLActiviteDeMediation,
+  ecritureDe,
   enregistrementDeMediation,
   lieuVerifie,
+  rendezVousHonore,
   rendezVousVerifie,
 } from './mediation/enregistrement-de-mediation'
 export { MATERIELS, Materiel } from './mediation/materiel'
@@ -193,6 +195,7 @@ export type {
   NouvelIdentifiantDActivite,
   RendezVousDejaSaisi,
   RendezVousDUnAutreMediateur,
+  SaisieDeMediationPorts,
   TagsUtilisables,
 } from './ports'
 export { Precision } from './precision'

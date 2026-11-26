@@ -1,17 +1,21 @@
 import { describe, expect, it } from 'vitest'
 import { failure, type Result, success } from '@/libraries/result'
 import {
+  ActionNonAutorisee,
   type ActiviteDeMediationExistante,
   ActiviteId,
   ActiviteIntrouvable,
+  type AtelierCollectif,
   AtelierSansParticipant,
   BeneficiaireEnDouble,
   BeneficiaireId,
   BeneficiaireIntrouvable,
+  Commune,
   DateDActivite,
   DateTropLointaine,
   DureeEnMinutes,
   Effectif,
+  EmployeuseId,
   LieuActiviteId,
   LieuInutilisable,
   MediateurId,
@@ -24,13 +28,13 @@ import {
   TypeDActivite,
   TypeDActiviteIncompatible,
 } from '../../../domain'
-import {
-  type DependancesDeLAtelierCollectif,
-  type EchecDEnregistrement,
-  enregistrerUnAtelierCollectif,
-} from './enregistrer-un-atelier-collectif'
-import { ActionNonAutorisee } from './errors'
-import type { AtelierEnregistre, SaisieCollective } from './saisie-collective'
+import { enregistrerUnAtelierCollectif } from './enregistrer-un-atelier-collectif'
+import type { EchecDEnregistrerUnAtelierCollectif } from './errors'
+import type { EnregistrerUnAtelierCollectifPorts } from './ports'
+import type {
+  AtelierCollectifEnregistre,
+  SaisieCollective,
+} from './saisie-collective'
 
 type Entree = {
   readonly saisie: SaisieCollective
@@ -39,10 +43,15 @@ type Entree = {
 
 type Cas = {
   readonly cas: string
-  readonly dependances: DependancesDeLAtelierCollectif
+  readonly ports: EnregistrerUnAtelierCollectifPorts
   readonly entree: Entree
-  readonly attendu: Result<AtelierEnregistre, EchecDEnregistrement>
+  readonly attendu: Result<
+    AtelierCollectifEnregistre,
+    EchecDEnregistrerUnAtelierCollectif
+  >
 }
+
+const maintenant = new Date('2026-11-10T08:00:00Z')
 
 const nouvelId = ActiviteId('a0000000-0000-4000-8000-000000000001')
 
@@ -51,6 +60,14 @@ const activiteModifiee = ActiviteId('a0000000-0000-4000-8000-000000000002')
 const mediateurId = MediateurId('c0000000-0000-4000-8000-000000000001')
 
 const suivi = BeneficiaireId('5b2d0c4e-8f1a-4c3b-9d7e-2a6f1b3c4d5e')
+
+const lieuActiviteId = LieuActiviteId('d0000000-0000-4000-8000-000000000001')
+
+const lyon = Commune({ nom: 'Lyon', codePostal: '69001', codeInsee: '69123' })
+
+const creationExistante = new Date('2026-11-01T08:00:00Z')
+
+const precedente = { lieuActiviteId: null, suivis: [], anonymesOrphelins: [] }
 
 const sansAnonyme: ParticipantsAnonymes = {
   total: Effectif(0),
@@ -81,12 +98,12 @@ const sansAnonyme: ParticipantsAnonymes = {
 
 const existante: ActiviteDeMediationExistante = {
   type: TypeDActivite('Collectif'),
-  creation: new Date('2026-11-01T08:00:00Z'),
+  creation: creationExistante,
   identifiantV1: null,
-  precedente: { lieuActiviteId: null, suivis: [], anonymesOrphelins: [] },
+  precedente,
 }
 
-const dependances: DependancesDeLAtelierCollectif = {
+const ports: EnregistrerUnAtelierCollectifPorts = {
   activiteDuMediateur: async () => existante,
   nouvelIdentifiant: () => nouvelId,
   nombreDeSuivisDuMediateur: async () => 1,
@@ -98,21 +115,19 @@ const dependances: DependancesDeLAtelierCollectif = {
   creer: async () => undefined,
   modifier: async () => undefined,
   marquerLeRendezVousHonore: async () => undefined,
-  maintenant: () => new Date('2026-11-10T08:00:00Z'),
+}
+
+const thematiques = {
+  mediation: [ThematiqueDeMediation('DiagnosticNumerique')],
+  demarche: null,
 }
 
 const saisie: SaisieCollective = {
   id: null,
   date: DateDActivite('2026-11-05'),
   duree: DureeEnMinutes(90),
-  lieu: {
-    _tag: 'LieuActivite',
-    lieuActiviteId: LieuActiviteId('d0000000-0000-4000-8000-000000000001'),
-  },
-  thematiques: {
-    mediation: [ThematiqueDeMediation('DiagnosticNumerique')],
-    demarche: null,
-  },
+  lieu: { _tag: 'LieuActivite', lieuActiviteId },
+  thematiques,
   equipement: { _tag: 'AucunMateriel' },
   tags: [],
   notes: null,
@@ -127,24 +142,44 @@ const enModification: SaisieCollective = { ...saisie, id: activiteModifiee }
 
 const avecRendezVous: SaisieCollective = { ...saisie, rdvId: RdvId(4) }
 
+const atelier: AtelierCollectif = {
+  _tag: 'Collectif',
+  id: nouvelId,
+  mediateurId,
+  date: DateDActivite('2026-11-05'),
+  duree: DureeEnMinutes(90),
+  lieu: { _tag: 'LieuActivite', lieuActiviteId },
+  thematiques,
+  equipement: { _tag: 'AucunMateriel' },
+  tags: [],
+  notes: null,
+  origine: { _tag: 'Saisie' },
+  employeuse: null,
+  creation: maintenant,
+  modification: maintenant,
+  titre: null,
+  niveau: null,
+  participants: { suivis: [suivi], anonymes: sansAnonyme },
+}
+
 describe('enregistrer un atelier collectif', () => {
   it.each<Cas>([
     {
       cas: 'refuse un utilisateur qui n’est pas médiateur',
-      dependances,
+      ports,
       entree: { saisie, mediateurId: null },
       attendu: failure(ActionNonAutorisee()),
     },
     {
       cas: 'refuse de modifier un atelier introuvable chez le médiateur',
-      dependances: { ...dependances, activiteDuMediateur: async () => null },
+      ports: { ...ports, activiteDuMediateur: async () => null },
       entree: { saisie: enModification, mediateurId },
       attendu: failure(ActiviteIntrouvable()),
     },
     {
       cas: 'refuse de modifier un accompagnement individuel en atelier',
-      dependances: {
-        ...dependances,
+      ports: {
+        ...ports,
         activiteDuMediateur: async () => ({
           ...existante,
           type: TypeDActivite('Individuel'),
@@ -155,31 +190,31 @@ describe('enregistrer un atelier collectif', () => {
     },
     {
       cas: 'refuse un participant que le médiateur ne suit pas',
-      dependances: { ...dependances, nombreDeSuivisDuMediateur: async () => 0 },
+      ports: { ...ports, nombreDeSuivisDuMediateur: async () => 0 },
       entree: { saisie, mediateurId },
       attendu: failure(BeneficiaireIntrouvable()),
     },
     {
       cas: 'refuse un participant suivi inscrit deux fois',
-      dependances,
+      ports,
       entree: { saisie: { ...saisie, suivis: [suivi, suivi] }, mediateurId },
       attendu: failure(BeneficiaireEnDouble()),
     },
     {
       cas: 'refuse un atelier sans participant',
-      dependances,
+      ports,
       entree: { saisie: { ...saisie, suivis: [] }, mediateurId },
       attendu: failure(AtelierSansParticipant()),
     },
     {
       cas: 'refuse un lieu d’activité inutilisable',
-      dependances: { ...dependances, lieuUtilisable: async () => false },
+      ports: { ...ports, lieuUtilisable: async () => false },
       entree: { saisie, mediateurId },
       attendu: failure(LieuInutilisable()),
     },
     {
       cas: 'refuse un tag que le médiateur ne peut pas utiliser',
-      dependances,
+      ports,
       entree: {
         saisie: {
           ...saisie,
@@ -191,13 +226,13 @@ describe('enregistrer un atelier collectif', () => {
     },
     {
       cas: 'refuse un rendez-vous indisponible',
-      dependances: { ...dependances, rendezVousDejaSaisi: async () => true },
+      ports: { ...ports, rendezVousDejaSaisi: async () => true },
       entree: { saisie: avecRendezVous, mediateurId },
       attendu: failure(RendezVousIndisponible()),
     },
     {
       cas: 'refuse une date au-delà de deux ans',
-      dependances,
+      ports,
       entree: {
         saisie: { ...saisie, date: DateDActivite('2029-01-01') },
         mediateurId,
@@ -205,26 +240,67 @@ describe('enregistrer un atelier collectif', () => {
       attendu: failure(DateTropLointaine(DateDActivite('2028-11-10'))),
     },
     {
-      cas: 'crée l’atelier sous un nouvel identifiant',
-      dependances,
+      cas: 'crée l’atelier avec ses participants sous un nouvel identifiant',
+      ports,
       entree: { saisie, mediateurId },
-      attendu: success({ id: nouvelId, type: 'Collectif' }),
+      attendu: success({
+        ecriture: { _tag: 'Creation', activite: atelier },
+        rendezVousHonore: null,
+      }),
     },
     {
-      cas: 'modifie l’atelier sous son identifiant',
-      dependances,
+      cas: 'modifie l’atelier sous son identifiant, à sa date de création',
+      ports,
       entree: { saisie: enModification, mediateurId },
-      attendu: success({ id: activiteModifiee, type: 'Collectif' }),
+      attendu: success({
+        ecriture: {
+          _tag: 'Modification',
+          activite: {
+            ...atelier,
+            id: activiteModifiee,
+            creation: creationExistante,
+          },
+          precedente,
+        },
+        rendezVousHonore: null,
+      }),
     },
     {
-      cas: 'enregistre l’atelier d’un rendez-vous disponible',
-      dependances,
-      entree: { saisie: avecRendezVous, mediateurId },
-      attendu: success({ id: nouvelId, type: 'Collectif' }),
+      cas: 'rattache l’atelier à l’employeuse du jour',
+      ports: {
+        ...ports,
+        employeuseDeLaDate: async () => ({
+          id: EmployeuseId(17),
+          commune: lyon,
+        }),
+      },
+      entree: { saisie, mediateurId },
+      attendu: success({
+        ecriture: {
+          _tag: 'Creation',
+          activite: { ...atelier, employeuse: EmployeuseId(17) },
+        },
+        rendezVousHonore: null,
+      }),
     },
-  ])('$cas', async ({ dependances, entree, attendu }) => {
-    expect(await enregistrerUnAtelierCollectif(dependances)(entree)).toEqual(
-      attendu,
-    )
+    {
+      cas: 'honore le rendez-vous disponible dont l’atelier est issu',
+      ports,
+      entree: { saisie: avecRendezVous, mediateurId },
+      attendu: success({
+        ecriture: {
+          _tag: 'Creation',
+          activite: {
+            ...atelier,
+            origine: { _tag: 'RendezVous', rdvId: RdvId(4) },
+          },
+        },
+        rendezVousHonore: RdvId(4),
+      }),
+    },
+  ])('$cas', async ({ ports, entree, attendu }) => {
+    expect(
+      await enregistrerUnAtelierCollectif(ports)({ ...entree, maintenant }),
+    ).toEqual(attendu)
   })
 })

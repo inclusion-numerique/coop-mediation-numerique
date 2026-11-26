@@ -1,52 +1,32 @@
 import { failure, type Result, success } from '@/libraries/result'
 import {
-  type ActiviteIntrouvable,
+  ActionNonAutorisee,
   type BeneficiaireId,
   BeneficiaireIntrouvable,
   creationOuModification,
-  type DateTropLointaine,
-  type DependancesDeLaSaisieDeMediation,
   ecrireLActiviteDeMediation,
+  ecritureDe,
   enregistrementDeMediation,
-  type LieuInutilisable,
   lieuVerifie,
   type MediateurId,
   origineDeLaSaisie,
-  type RendezVousIndisponible,
+  rendezVousHonore,
   rendezVousVerifie,
-  type TagInutilisable,
   TypeDActivite,
-  type TypeDActiviteIncompatible,
   tagsDeLaSaisie,
 } from '../../../domain'
-import { ActionNonAutorisee } from './errors'
+import type { EchecDEnregistrerUnAccompagnementIndividuel } from './errors'
+import type {
+  BeneficiaireDuMediateur,
+  EnregistrerUnAccompagnementIndividuelPorts,
+} from './ports'
 import {
-  type AccompagnementEnregistre,
+  type AccompagnementIndividuelEnregistre,
   accompagnementDeLaSaisie,
   type BeneficiaireSaisi,
   beneficiaireAccompagneDe,
   type SaisieIndividuelle,
 } from './saisie-individuelle'
-
-export type EchecDEnregistrement =
-  | ActionNonAutorisee
-  | ActiviteIntrouvable
-  | TypeDActiviteIncompatible
-  | BeneficiaireIntrouvable
-  | LieuInutilisable
-  | TagInutilisable
-  | RendezVousIndisponible
-  | DateTropLointaine
-
-export type BeneficiaireDuMediateur = (criteres: {
-  readonly id: BeneficiaireId
-  readonly mediateurId: MediateurId
-}) => Promise<{ readonly anonyme: boolean } | null>
-
-export type DependancesDeLAccompagnementIndividuel =
-  DependancesDeLaSaisieDeMediation & {
-    readonly beneficiaireDuMediateur: BeneficiaireDuMediateur
-  }
 
 const suiviDe =
   (beneficiaireDuMediateur: BeneficiaireDuMediateur) =>
@@ -64,50 +44,66 @@ const suiviDe =
   }
 
 export const enregistrerUnAccompagnementIndividuel =
-  (dependances: DependancesDeLAccompagnementIndividuel) =>
+  ({
+    activiteDuMediateur,
+    nouvelIdentifiant,
+    beneficiaireDuMediateur,
+    lieuUtilisable,
+    tagsUtilisables,
+    rendezVousDUnAutreMediateur,
+    rendezVousDejaSaisi,
+    employeuseDeLaDate,
+    creer,
+    modifier,
+    marquerLeRendezVousHonore,
+  }: EnregistrerUnAccompagnementIndividuelPorts) =>
   async ({
     saisie,
     mediateurId,
+    maintenant,
   }: {
     readonly saisie: SaisieIndividuelle
     readonly mediateurId: MediateurId | null
-  }): Promise<Result<AccompagnementEnregistre, EchecDEnregistrement>> => {
+    readonly maintenant: Date
+  }): Promise<
+    Result<
+      AccompagnementIndividuelEnregistre,
+      EchecDEnregistrerUnAccompagnementIndividuel
+    >
+  > => {
     if (mediateurId === null) return failure(ActionNonAutorisee())
 
-    const enregistrement = await enregistrementDeMediation(dependances)({
-      id: saisie.id,
-      type: TypeDActivite('Individuel'),
-      mediateurId,
-    })
+    const enregistrement = await enregistrementDeMediation({
+      activiteDuMediateur,
+      nouvelIdentifiant,
+    })({ id: saisie.id, type: TypeDActivite('Individuel'), mediateurId })
     if (!enregistrement.success) return enregistrement
 
-    const suivi = await suiviDe(dependances.beneficiaireDuMediateur)(
+    const suivi = await suiviDe(beneficiaireDuMediateur)(
       saisie.beneficiaire,
       mediateurId,
     )
     if (!suivi.success) return suivi
 
-    const lieu = await lieuVerifie(
-      saisie.lieu,
-      enregistrement.data,
-      dependances.lieuUtilisable,
-    )
+    const lieu = await lieuVerifie({ lieuUtilisable })({
+      lieu: saisie.lieu,
+      enregistrement: enregistrement.data,
+    })
     if (!lieu.success) return lieu
 
-    const tags = tagsDeLaSaisie(
-      saisie.tags,
-      await dependances.tagsUtilisables(saisie.tags),
-    )
+    const tags = tagsDeLaSaisie(saisie.tags, await tagsUtilisables(saisie.tags))
     if (!tags.success) return tags
 
-    const rendezVous = await rendezVousVerifie(dependances)({
+    const rendezVous = await rendezVousVerifie({
+      rendezVousDUnAutreMediateur,
+      rendezVousDejaSaisi,
+    })({
       rdvId: saisie.rdvId,
       activiteId: enregistrement.data.id,
       mediateurId,
     })
     if (!rendezVous.success) return rendezVous
 
-    const maintenant = dependances.maintenant()
     const { creation, identifiantV1 } = creationOuModification(
       enregistrement.data,
       maintenant,
@@ -117,21 +113,20 @@ export const enregistrerUnAccompagnementIndividuel =
       id: enregistrement.data.id,
       mediateurId,
       beneficiaire: beneficiaireAccompagneDe(saisie.beneficiaire, suivi.data),
-      employeuse: await dependances.employeuseDeLaDate(saisie.date),
+      employeuse: await employeuseDeLaDate(saisie.date),
       origine: origineDeLaSaisie({ rdvId: saisie.rdvId, identifiantV1 }),
       creation,
       maintenant,
     })
     if (!accompagnement.success) return accompagnement
 
-    await ecrireLActiviteDeMediation(dependances)(
-      accompagnement.data,
-      enregistrement.data,
-    )
+    const ecriture = ecritureDe(accompagnement.data, enregistrement.data)
+    await ecrireLActiviteDeMediation({ creer, modifier })(ecriture)
 
-    if (saisie.rdvId !== null) {
-      await dependances.marquerLeRendezVousHonore(saisie.rdvId)
-    }
-
-    return success({ id: accompagnement.data.id, type: 'Individuel' })
+    return success({
+      ecriture,
+      rendezVousHonore: await rendezVousHonore({ marquerLeRendezVousHonore })(
+        saisie.rdvId,
+      ),
+    })
   }

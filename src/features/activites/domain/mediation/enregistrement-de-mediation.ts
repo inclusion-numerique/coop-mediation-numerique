@@ -11,34 +11,13 @@ import type { LieuActiviteId } from '../identifiants/lieu-activite-id'
 import type { MediateurId } from '../identifiants/mediateur-id'
 import type { RdvId } from '../identifiants/rdv-id'
 import type {
-  ActiviteDeMediationDuMediateur,
   ActiviteDeMediationExistante,
-  CreerLActiviteDeMediation,
-  EmployeuseDeLaDate,
-  LieuUtilisable,
-  MarquerLeRendezVousHonore,
-  ModifierLActiviteDeMediation,
-  RendezVousDejaSaisi,
-  RendezVousDUnAutreMediateur,
-  TagsUtilisables,
+  ActiviteDeMediationPrecedente,
+  SaisieDeMediationPorts,
 } from '../ports'
 import type { ActiviteDeMediation } from './activite-de-mediation'
 import type { LieuSaisi } from './saisie-de-mediation'
 import type { TypeDActivite } from './type-d-activite'
-
-export type DependancesDeLaSaisieDeMediation = {
-  readonly activiteDuMediateur: ActiviteDeMediationDuMediateur
-  readonly nouvelIdentifiant: () => ActiviteId
-  readonly lieuUtilisable: LieuUtilisable
-  readonly tagsUtilisables: TagsUtilisables
-  readonly rendezVousDUnAutreMediateur: RendezVousDUnAutreMediateur
-  readonly rendezVousDejaSaisi: RendezVousDejaSaisi
-  readonly employeuseDeLaDate: EmployeuseDeLaDate
-  readonly creer: CreerLActiviteDeMediation
-  readonly modifier: ModifierLActiviteDeMediation
-  readonly marquerLeRendezVousHonore: MarquerLeRendezVousHonore
-  readonly maintenant: () => Date
-}
 
 export type EnregistrementDeMediation =
   | { readonly _tag: 'Creation'; readonly id: ActiviteId }
@@ -47,14 +26,22 @@ export type EnregistrementDeMediation =
       readonly id: ActiviteId
     } & Omit<ActiviteDeMediationExistante, 'type'>)
 
+export type EcritureDeMediation<Activite extends ActiviteDeMediation> =
+  | { readonly _tag: 'Creation'; readonly activite: Activite }
+  | {
+      readonly _tag: 'Modification'
+      readonly activite: Activite
+      readonly precedente: ActiviteDeMediationPrecedente
+    }
+
 export const enregistrementDeMediation =
   ({
     activiteDuMediateur,
     nouvelIdentifiant,
-  }: {
-    readonly activiteDuMediateur: ActiviteDeMediationDuMediateur
-    readonly nouvelIdentifiant: () => ActiviteId
-  }) =>
+  }: Pick<
+    SaisieDeMediationPorts,
+    'activiteDuMediateur' | 'nouvelIdentifiant'
+  >) =>
   async ({
     id,
     type,
@@ -91,25 +78,32 @@ const lieuActuel = (
     ? enregistrement.precedente.lieuActiviteId
     : null
 
-export const lieuVerifie = async (
-  lieu: LieuSaisi,
-  enregistrement: EnregistrementDeMediation,
-  lieuUtilisable: LieuUtilisable,
-): Promise<Result<null, LieuInutilisable>> => {
-  if (lieu._tag !== 'LieuActivite') return success(null)
-  return (await lieuUtilisable(lieu.lieuActiviteId, lieuActuel(enregistrement)))
-    ? success(null)
-    : failure(LieuInutilisable())
-}
+export const lieuVerifie =
+  ({ lieuUtilisable }: Pick<SaisieDeMediationPorts, 'lieuUtilisable'>) =>
+  async ({
+    lieu,
+    enregistrement,
+  }: {
+    readonly lieu: LieuSaisi
+    readonly enregistrement: EnregistrementDeMediation
+  }): Promise<Result<null, LieuInutilisable>> => {
+    if (lieu._tag !== 'LieuActivite') return success(null)
+    return (await lieuUtilisable(
+      lieu.lieuActiviteId,
+      lieuActuel(enregistrement),
+    ))
+      ? success(null)
+      : failure(LieuInutilisable())
+  }
 
 export const rendezVousVerifie =
   ({
     rendezVousDUnAutreMediateur,
     rendezVousDejaSaisi,
-  }: {
-    readonly rendezVousDUnAutreMediateur: RendezVousDUnAutreMediateur
-    readonly rendezVousDejaSaisi: RendezVousDejaSaisi
-  }) =>
+  }: Pick<
+    SaisieDeMediationPorts,
+    'rendezVousDUnAutreMediateur' | 'rendezVousDejaSaisi'
+  >) =>
   async ({
     rdvId,
     activiteId,
@@ -143,18 +137,27 @@ export const creationOuModification = (
       }
     : { creation: maintenant, identifiantV1: null }
 
+export const ecritureDe = <Activite extends ActiviteDeMediation>(
+  activite: Activite,
+  enregistrement: EnregistrementDeMediation,
+): EcritureDeMediation<Activite> =>
+  enregistrement._tag === 'Creation'
+    ? { _tag: 'Creation', activite }
+    : { _tag: 'Modification', activite, precedente: enregistrement.precedente }
+
 export const ecrireLActiviteDeMediation =
+  ({ creer, modifier }: Pick<SaisieDeMediationPorts, 'creer' | 'modifier'>) =>
+  (ecriture: EcritureDeMediation<ActiviteDeMediation>): Promise<void> =>
+    ecriture._tag === 'Creation'
+      ? creer(ecriture.activite)
+      : modifier(ecriture.activite, ecriture.precedente)
+
+export const rendezVousHonore =
   ({
-    creer,
-    modifier,
-  }: {
-    readonly creer: CreerLActiviteDeMediation
-    readonly modifier: ModifierLActiviteDeMediation
-  }) =>
-  (
-    activite: ActiviteDeMediation,
-    enregistrement: EnregistrementDeMediation,
-  ): Promise<void> =>
-    enregistrement._tag === 'Creation'
-      ? creer(activite)
-      : modifier(activite, enregistrement.precedente)
+    marquerLeRendezVousHonore,
+  }: Pick<SaisieDeMediationPorts, 'marquerLeRendezVousHonore'>) =>
+  async (rdvId: RdvId | null): Promise<RdvId | null> => {
+    if (rdvId === null) return null
+    await marquerLeRendezVousHonore(rdvId)
+    return rdvId
+  }

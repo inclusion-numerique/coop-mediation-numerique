@@ -1,7 +1,7 @@
 import type { z } from 'zod'
 import type { ServerActionResult } from '@/libraries/nextjs'
 import { keyFor } from '@/libraries/nextjs/injection'
-import type { AccompagnementEnregistre } from '../domain'
+import type { AccompagnementEnregistre } from './enregistrer-un-accompagnement-individuel.transfer'
 import type { EnregistrerUnAccompagnementIndividuelValidation } from './enregistrer-un-accompagnement-individuel.validation'
 
 export const ENREGISTRER_UN_ACCOMPAGNEMENT_INDIVIDUEL_ACTION_KEY = keyFor<

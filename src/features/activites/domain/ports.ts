@@ -70,3 +70,16 @@ export type MarquerLeRendezVousHonore = (rdvId: RdvId) => Promise<void>
 export type TagsUtilisables = (
   tagIds: readonly TagId[],
 ) => Promise<readonly TagDeLActivite[]>
+
+export type SaisieDeMediationPorts = {
+  readonly activiteDuMediateur: ActiviteDeMediationDuMediateur
+  readonly nouvelIdentifiant: NouvelIdentifiantDActivite
+  readonly lieuUtilisable: LieuUtilisable
+  readonly tagsUtilisables: TagsUtilisables
+  readonly rendezVousDUnAutreMediateur: RendezVousDUnAutreMediateur
+  readonly rendezVousDejaSaisi: RendezVousDejaSaisi
+  readonly employeuseDeLaDate: EmployeuseDeLaDate
+  readonly creer: CreerLActiviteDeMediation
+  readonly modifier: ModifierLActiviteDeMediation
+  readonly marquerLeRendezVousHonore: MarquerLeRendezVousHonore
+}

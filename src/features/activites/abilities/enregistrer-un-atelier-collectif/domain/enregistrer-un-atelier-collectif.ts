@@ -1,54 +1,30 @@
 import { failure, type Result, success } from '@/libraries/result'
 import {
-  type ActiviteIntrouvable,
-  type AtelierSansParticipant,
-  type BeneficiaireEnDouble,
+  ActionNonAutorisee,
   type BeneficiaireId,
   BeneficiaireIntrouvable,
   creationOuModification,
-  type DateTropLointaine,
-  type DependancesDeLaSaisieDeMediation,
   ecrireLActiviteDeMediation,
+  ecritureDe,
   enregistrementDeMediation,
-  type LieuInutilisable,
   lieuVerifie,
   type MediateurId,
   origineDeLaSaisie,
-  type RendezVousIndisponible,
+  rendezVousHonore,
   rendezVousVerifie,
-  type TagInutilisable,
   TypeDActivite,
-  type TypeDActiviteIncompatible,
   tagsDeLaSaisie,
 } from '../../../domain'
-import { ActionNonAutorisee } from './errors'
+import type { EchecDEnregistrerUnAtelierCollectif } from './errors'
+import type {
+  EnregistrerUnAtelierCollectifPorts,
+  NombreDeSuivisDuMediateur,
+} from './ports'
 import {
-  type AtelierEnregistre,
+  type AtelierCollectifEnregistre,
   atelierDeLaSaisie,
   type SaisieCollective,
 } from './saisie-collective'
-
-export type EchecDEnregistrement =
-  | ActionNonAutorisee
-  | ActiviteIntrouvable
-  | TypeDActiviteIncompatible
-  | BeneficiaireIntrouvable
-  | BeneficiaireEnDouble
-  | AtelierSansParticipant
-  | LieuInutilisable
-  | TagInutilisable
-  | RendezVousIndisponible
-  | DateTropLointaine
-
-export type NombreDeSuivisDuMediateur = (criteres: {
-  readonly ids: readonly BeneficiaireId[]
-  readonly mediateurId: MediateurId
-}) => Promise<number>
-
-export type DependancesDeLAtelierCollectif =
-  DependancesDeLaSaisieDeMediation & {
-    readonly nombreDeSuivisDuMediateur: NombreDeSuivisDuMediateur
-  }
 
 const suivisVerifies =
   (nombreDeSuivisDuMediateur: NombreDeSuivisDuMediateur) =>
@@ -67,50 +43,63 @@ const suivisVerifies =
   }
 
 export const enregistrerUnAtelierCollectif =
-  (dependances: DependancesDeLAtelierCollectif) =>
+  ({
+    activiteDuMediateur,
+    nouvelIdentifiant,
+    nombreDeSuivisDuMediateur,
+    lieuUtilisable,
+    tagsUtilisables,
+    rendezVousDUnAutreMediateur,
+    rendezVousDejaSaisi,
+    employeuseDeLaDate,
+    creer,
+    modifier,
+    marquerLeRendezVousHonore,
+  }: EnregistrerUnAtelierCollectifPorts) =>
   async ({
     saisie,
     mediateurId,
+    maintenant,
   }: {
     readonly saisie: SaisieCollective
     readonly mediateurId: MediateurId | null
-  }): Promise<Result<AtelierEnregistre, EchecDEnregistrement>> => {
+    readonly maintenant: Date
+  }): Promise<
+    Result<AtelierCollectifEnregistre, EchecDEnregistrerUnAtelierCollectif>
+  > => {
     if (mediateurId === null) return failure(ActionNonAutorisee())
 
-    const enregistrement = await enregistrementDeMediation(dependances)({
-      id: saisie.id,
-      type: TypeDActivite('Collectif'),
-      mediateurId,
-    })
+    const enregistrement = await enregistrementDeMediation({
+      activiteDuMediateur,
+      nouvelIdentifiant,
+    })({ id: saisie.id, type: TypeDActivite('Collectif'), mediateurId })
     if (!enregistrement.success) return enregistrement
 
-    const suivis = await suivisVerifies(dependances.nombreDeSuivisDuMediateur)(
+    const suivis = await suivisVerifies(nombreDeSuivisDuMediateur)(
       saisie.suivis,
       mediateurId,
     )
     if (!suivis.success) return suivis
 
-    const lieu = await lieuVerifie(
-      saisie.lieu,
-      enregistrement.data,
-      dependances.lieuUtilisable,
-    )
+    const lieu = await lieuVerifie({ lieuUtilisable })({
+      lieu: saisie.lieu,
+      enregistrement: enregistrement.data,
+    })
     if (!lieu.success) return lieu
 
-    const tags = tagsDeLaSaisie(
-      saisie.tags,
-      await dependances.tagsUtilisables(saisie.tags),
-    )
+    const tags = tagsDeLaSaisie(saisie.tags, await tagsUtilisables(saisie.tags))
     if (!tags.success) return tags
 
-    const rendezVous = await rendezVousVerifie(dependances)({
+    const rendezVous = await rendezVousVerifie({
+      rendezVousDUnAutreMediateur,
+      rendezVousDejaSaisi,
+    })({
       rdvId: saisie.rdvId,
       activiteId: enregistrement.data.id,
       mediateurId,
     })
     if (!rendezVous.success) return rendezVous
 
-    const maintenant = dependances.maintenant()
     const { creation, identifiantV1 } = creationOuModification(
       enregistrement.data,
       maintenant,
@@ -119,21 +108,20 @@ export const enregistrerUnAtelierCollectif =
       saisie,
       id: enregistrement.data.id,
       mediateurId,
-      employeuse: await dependances.employeuseDeLaDate(saisie.date),
+      employeuse: await employeuseDeLaDate(saisie.date),
       origine: origineDeLaSaisie({ rdvId: saisie.rdvId, identifiantV1 }),
       creation,
       maintenant,
     })
     if (!atelier.success) return atelier
 
-    await ecrireLActiviteDeMediation(dependances)(
-      atelier.data,
-      enregistrement.data,
-    )
+    const ecriture = ecritureDe(atelier.data, enregistrement.data)
+    await ecrireLActiviteDeMediation({ creer, modifier })(ecriture)
 
-    if (saisie.rdvId !== null) {
-      await dependances.marquerLeRendezVousHonore(saisie.rdvId)
-    }
-
-    return success({ id: atelier.data.id, type: 'Collectif' })
+    return success({
+      ecriture,
+      rendezVousHonore: await rendezVousHonore({ marquerLeRendezVousHonore })(
+        saisie.rdvId,
+      ),
+    })
   }

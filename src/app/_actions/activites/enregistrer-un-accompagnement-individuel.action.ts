@@ -3,6 +3,7 @@
 import { actionBuilder } from '@/configuration/nextjs'
 import { signaler } from '@/configuration/telemetry/serveur'
 import { ENREGISTRER_UN_ACCOMPAGNEMENT_INDIVIDUEL_ERRORS } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/action/enregistrer-un-accompagnement-individuel.errors'
+import { accompagnementEnregistre } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/action/enregistrer-un-accompagnement-individuel.transfer'
 import { EnregistrerUnAccompagnementIndividuelValidation } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/action/enregistrer-un-accompagnement-individuel.validation'
 import { enregistrerUnAccompagnementIndividuel } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/domain/enregistrer-un-accompagnement-individuel'
 import { beneficiaireDuMediateur } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/implementations/prisma/beneficiaire-du-mediateur.query'
@@ -38,6 +39,7 @@ import { jetonsCourants } from '@/features/rdvsp/implementations/prisma/jetons-d
 import { tagsVisiblesPar } from '@/features/tags/abilities/lire-les-tags-visibles/implementations/prisma/tags-visibles-par.query'
 import { acteurDe } from '@/features/tags/domain'
 import { fromResult, withInput } from '@/libraries/nextjs'
+import { success } from '@/libraries/result'
 
 /**
  * Composition de l'ability avec ses adaptateurs réels, partagée par la server
@@ -63,8 +65,8 @@ export const enregistrerUnAccompagnementIndividuelAction = actionBuilder()
   .use(withInput(EnregistrerUnAccompagnementIndividuelValidation))
   .execute(
     fromResult(
-      async ({ user, input }) =>
-        enregistrerUnAccompagnementIndividuel({
+      async ({ user, input }) => {
+        const enregistre = await enregistrerUnAccompagnementIndividuel({
           activiteDuMediateur: activiteDeMediationDuMediateur,
           nouvelIdentifiant: nouvelIdentifiantDActivite,
           beneficiaireDuMediateur,
@@ -83,12 +85,16 @@ export const enregistrerUnAccompagnementIndividuelAction = actionBuilder()
             mettreAJour: mettreAJourLeStatutDuRdv,
             signaler,
           })(UtilisateurCoopId(user.id)),
-          maintenant: () => new Date(),
         })({
           saisie: input,
           mediateurId:
             user.mediateur == null ? null : MediateurId(user.mediateur.id),
-        }),
+          maintenant: new Date(),
+        })
+        return enregistre.success
+          ? success(accompagnementEnregistre(enregistre.data))
+          : enregistre
+      },
       { onError: ENREGISTRER_UN_ACCOMPAGNEMENT_INDIVIDUEL_ERRORS },
     ),
   )

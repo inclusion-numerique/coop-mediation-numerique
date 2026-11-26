@@ -3,6 +3,7 @@
 import { actionBuilder } from '@/configuration/nextjs'
 import { signaler } from '@/configuration/telemetry/serveur'
 import { ENREGISTRER_UN_ATELIER_COLLECTIF_ERRORS } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/action/enregistrer-un-atelier-collectif.errors'
+import { atelierEnregistre } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/action/enregistrer-un-atelier-collectif.transfer'
 import { EnregistrerUnAtelierCollectifValidation } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/action/enregistrer-un-atelier-collectif.validation'
 import { enregistrerUnAtelierCollectif } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/domain/enregistrer-un-atelier-collectif'
 import { nombreDeSuivisDuMediateur } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/implementations/prisma/nombre-de-suivis-du-mediateur.query'
@@ -38,6 +39,7 @@ import { jetonsCourants } from '@/features/rdvsp/implementations/prisma/jetons-d
 import { tagsVisiblesPar } from '@/features/tags/abilities/lire-les-tags-visibles/implementations/prisma/tags-visibles-par.query'
 import { acteurDe } from '@/features/tags/domain'
 import { fromResult, withInput } from '@/libraries/nextjs'
+import { success } from '@/libraries/result'
 
 /**
  * Composition de l'ability avec ses adaptateurs réels, partagée par la server
@@ -63,8 +65,8 @@ export const enregistrerUnAtelierCollectifAction = actionBuilder()
   .use(withInput(EnregistrerUnAtelierCollectifValidation))
   .execute(
     fromResult(
-      async ({ user, input }) =>
-        enregistrerUnAtelierCollectif({
+      async ({ user, input }) => {
+        const enregistre = await enregistrerUnAtelierCollectif({
           activiteDuMediateur: activiteDeMediationDuMediateur,
           nouvelIdentifiant: nouvelIdentifiantDActivite,
           nombreDeSuivisDuMediateur,
@@ -83,12 +85,16 @@ export const enregistrerUnAtelierCollectifAction = actionBuilder()
             mettreAJour: mettreAJourLeStatutDuRdv,
             signaler,
           })(UtilisateurCoopId(user.id)),
-          maintenant: () => new Date(),
         })({
           saisie: input,
           mediateurId:
             user.mediateur == null ? null : MediateurId(user.mediateur.id),
-        }),
+          maintenant: new Date(),
+        })
+        return enregistre.success
+          ? success(atelierEnregistre(enregistre.data))
+          : enregistre
+      },
       { onError: ENREGISTRER_UN_ATELIER_COLLECTIF_ERRORS },
     ),
   )
