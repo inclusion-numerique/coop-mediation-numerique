@@ -6,21 +6,47 @@ import {
   type Lecteur,
   type LigneEquipe,
   peutConsulterLEquipe,
+  profilDe,
+  type UtilisateurId,
 } from '../../../domain'
-import type { MembreAExporter } from './contrat-membre'
+import {
+  contratEnCours,
+  type LigneContrat,
+  type MembreAExporter,
+} from './contrat-membre'
+import type { EchecDExport } from './errors'
+import type { ExporterLesMembresPorts } from './ports'
 
-export type LireLesMembresAExporter = (lecture: {
-  readonly coordinateurId: CoordinateurId
-  readonly criteres: CriteresEquipe
-  readonly maintenant: Date
-}) => Promise<readonly MembreAExporter<LigneEquipe>[]>
+const utilisateursDe = (lignes: readonly LigneEquipe[]): UtilisateurId[] =>
+  lignes.flatMap((ligne) => {
+    const profil = profilDe(ligne)
+    return profil === null ? [] : [profil.utilisateurId]
+  })
+
+const membreAExporter =
+  (
+    contrats: ReadonlyMap<UtilisateurId, readonly LigneContrat[]>,
+    maintenant: Date,
+  ) =>
+  (ligne: LigneEquipe): MembreAExporter<LigneEquipe> => {
+    const profil = profilDe(ligne)
+    return {
+      ligne,
+      contrat:
+        profil === null
+          ? null
+          : contratEnCours(
+              contrats.get(profil.utilisateurId) ?? [],
+              maintenant,
+            ),
+    }
+  }
 
 export const exporterLesMembres =
   ({
     lireLesMembresAExporter,
-  }: {
-    readonly lireLesMembresAExporter: LireLesMembresAExporter
-  }) =>
+    lireLesContratsDesMembres,
+  }: ExporterLesMembresPorts) =>
   async ({
     coordinateurId,
     lecteur,
@@ -32,14 +58,18 @@ export const exporterLesMembres =
     readonly criteres: CriteresEquipe
     readonly maintenant: Date
   }): Promise<
-    Result<readonly MembreAExporter<LigneEquipe>[], ConsultationNonAutorisee>
-  > =>
-    peutConsulterLEquipe(lecteur)(coordinateurId)
-      ? success(
-          await lireLesMembresAExporter({
-            coordinateurId,
-            criteres,
-            maintenant,
-          }),
-        )
-      : failure(ConsultationNonAutorisee())
+    Result<readonly MembreAExporter<LigneEquipe>[], EchecDExport>
+  > => {
+    if (!peutConsulterLEquipe(lecteur)(coordinateurId))
+      return failure(ConsultationNonAutorisee())
+
+    const lignes = await lireLesMembresAExporter({
+      coordinateurId,
+      criteres,
+      maintenant,
+    })
+
+    const contrats = await lireLesContratsDesMembres(utilisateursDe(lignes))
+
+    return success(lignes.map(membreAExporter(contrats, maintenant)))
+  }

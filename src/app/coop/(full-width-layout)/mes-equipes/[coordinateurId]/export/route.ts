@@ -3,6 +3,7 @@ import { utilisateurDuJetonDeSession } from '@/features/authentification/impleme
 import { jetonDeSessionDesCookies } from '@/features/authentification/implementations/session/session-token-from-cookies.query'
 import { exporterLesMembres } from '@/features/equipe/abilities/exporter-les-membres/domain/exporter-les-membres'
 import { classeurDesMembresAvec } from '@/features/equipe/abilities/exporter-les-membres/implementations/excel/classeur-equipe.classeur'
+import { lireLesContratsDesMembres } from '@/features/equipe/abilities/exporter-les-membres/implementations/prisma/contrats-des-membres.query'
 import { lireLesMembresAExporter } from '@/features/equipe/abilities/exporter-les-membres/implementations/prisma/membres-a-exporter.query'
 import { membreExporte } from '@/features/equipe/abilities/exporter-les-membres/ui/presenters/membre-exporte.presenter'
 import { nomDuFichierDeLEquipe } from '@/features/equipe/abilities/exporter-les-membres/ui/presenters/nom-du-fichier.presenter'
@@ -26,7 +27,10 @@ export const GET = async (
 
   const criteres = criteresDeLEquipe(new URL(request.url).searchParams)
 
-  const membres = await exporterLesMembres({ lireLesMembresAExporter })({
+  const membres = await exporterLesMembres({
+    lireLesMembresAExporter,
+    lireLesContratsDesMembres,
+  })({
     coordinateurId,
     lecteur: {
       gestionnaire: gestionnaireDe(user),
