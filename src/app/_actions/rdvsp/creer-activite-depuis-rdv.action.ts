@@ -12,6 +12,7 @@ import { lireLeBeneficiaireLie } from '@/features/beneficiaire/abilities/creer-o
 import { creerLeBeneficiaire } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/creer-le-beneficiaire.mutation'
 import { trouverUnDoublon } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/doublon-de-l-usager.query'
 import { mettreAJourLeBeneficiaire } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/mettre-a-jour-le-beneficiaire.mutation'
+import { signalerLesUsagersEcartes } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/telemetrie/usagers-ecartes.adapter'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { CREER_ACTIVITE_DEPUIS_RDV_ERRORS } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/action/creer-activite-depuis-rdv.errors'
 import { CreerActiviteDepuisRdvValidation } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/action/creer-activite-depuis-rdv.validation'
@@ -23,13 +24,17 @@ import { UtilisateurCoopId } from '@/features/rdvsp/domain/identifiants/utilisat
 import { fromResult, withInput } from '@/libraries/nextjs'
 import { success } from '@/libraries/result'
 
-const creerOuFusionnerLesUsagers = creerOuFusionnerDepuisUsagerExterne({
+const fusionnerLesUsagers = creerOuFusionnerDepuisUsagerExterne({
   lireLeBeneficiaireLie,
   trouverUnDoublon,
   communeDeLAdresse,
   mettreAJourLeBeneficiaire,
   creerLeBeneficiaire,
 })
+
+const creerOuFusionnerLesUsagers = (
+  demande: Parameters<typeof fusionnerLesUsagers>[0],
+) => fusionnerLesUsagers(demande).then(signalerLesUsagersEcartes)
 
 const creerUneActiviteDepuisUnRdv = creerActiviteDepuisRdv({
   lireRdv: lireRdvPourActivite,

@@ -7,6 +7,7 @@ import { lireLeBeneficiaireLie } from '@/features/beneficiaire/abilities/creer-o
 import { creerLeBeneficiaire } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/creer-le-beneficiaire.mutation'
 import { trouverUnDoublon } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/doublon-de-l-usager.query'
 import { mettreAJourLeBeneficiaire } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/mettre-a-jour-le-beneficiaire.mutation'
+import { signalerLesUsagersEcartes } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/telemetrie/usagers-ecartes.adapter'
 import { messageDuWebhookRdv } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/domain/message-du-webhook-rdv'
 import { recevoirWebhookRdv } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/domain/recevoir-webhook-rdv'
 import { lireNotificationRdv } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/implementations/api/notification-rdv.params'
@@ -34,13 +35,17 @@ import {
   signatureValide,
 } from '@/features/rdvsp/implementations/webhook/signature-du-webhook.middleware'
 
-const creerOuFusionnerLesUsagers = creerOuFusionnerDepuisUsagerExterne({
+const fusionnerLesUsagers = creerOuFusionnerDepuisUsagerExterne({
   lireLeBeneficiaireLie,
   trouverUnDoublon,
   communeDeLAdresse,
   mettreAJourLeBeneficiaire,
   creerLeBeneficiaire,
 })
+
+const creerOuFusionnerLesUsagers = (
+  demande: Parameters<typeof fusionnerLesUsagers>[0],
+) => fusionnerLesUsagers(demande).then(signalerLesUsagersEcartes)
 
 const recevoirLeRdv = recevoirWebhookRdv({
   lireNotification: lireNotificationRdv,

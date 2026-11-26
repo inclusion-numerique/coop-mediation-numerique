@@ -9,6 +9,7 @@ import { lireLeBeneficiaireLie } from '@/features/beneficiaire/abilities/creer-o
 import { creerLeBeneficiaire } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/creer-le-beneficiaire.mutation'
 import { trouverUnDoublon } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/doublon-de-l-usager.query'
 import { mettreAJourLeBeneficiaire } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/mettre-a-jour-le-beneficiaire.mutation'
+import { signalerLesUsagersEcartes } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/telemetrie/usagers-ecartes.adapter'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { DECLENCHER_SYNCHRONISATION_ERRORS } from '@/features/rdvsp/abilities/declencher-synchronisation/action/declencher-synchronisation.errors'
 import { DeclencherSynchronisationValidation } from '@/features/rdvsp/abilities/declencher-synchronisation/action/declencher-synchronisation.validation'
@@ -52,13 +53,17 @@ const rdvServicePublic = rdvServicePublicApi({
   jetonsCourants,
 })
 
-const creerOuFusionnerLesUsagers = creerOuFusionnerDepuisUsagerExterne({
+const fusionnerLesUsagers = creerOuFusionnerDepuisUsagerExterne({
   lireLeBeneficiaireLie,
   trouverUnDoublon,
   communeDeLAdresse,
   mettreAJourLeBeneficiaire,
   creerLeBeneficiaire,
 })
+
+const creerOuFusionnerLesUsagers = (
+  demande: Parameters<typeof fusionnerLesUsagers>[0],
+) => fusionnerLesUsagers(demande).then(signalerLesUsagersEcartes)
 
 const declencher = declencherSynchronisation({
   compteACible,
