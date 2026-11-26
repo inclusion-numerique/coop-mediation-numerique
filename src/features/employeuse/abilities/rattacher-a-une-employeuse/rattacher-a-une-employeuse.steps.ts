@@ -1,13 +1,19 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
-import { rattacherAUneEmployeuse } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/prisma/rattacher-a-une-employeuse.mutation'
-import { IdentiteEmployeuse } from '@/features/employeuse/domain/identite-employeuse'
+import { EmployeuseIndisponible } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/domain/errors'
+import { rattacherAUneEmployeuse } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/domain/rattacher-a-une-employeuse'
+import type { SaisieEmployeuse } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/domain/source-du-rattachement'
+import { estConseillerNumeriqueEnPoste } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/prisma/conseiller-numerique-en-poste.query'
+import { creerLEmployeuse } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/prisma/creer-l-employeuse.mutation'
+import { lireLesEmployeusesDuSiret } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/prisma/employeuses-du-siret.query'
+import { enregistrerLeRattachement } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/prisma/enregistrer-le-rattachement.mutation'
 import {
   affectationsDe,
   seedAffectation,
   seedEmployeuseMain,
   seedUtilisateur,
 } from '@/features/employeuse/employeuse.cucumber'
+import { failure } from '@/libraries/result'
 
 // État local à cette ability (les phrasés Cucumber sont globaux).
 let inscritId: string
@@ -16,11 +22,11 @@ const employeuses = new Map<string, { id: number; siret: string }>()
 // Les employeuses sont enregistrées AVANT le rattachement, avec le SIRET et la dénomination que
 // l'identité portera : la garantie les retrouve alors par leur clé métier, sans géocodage — donc
 // sans appel réseau, et le scénario reste déterministe.
-const identitePour = (nom: string): IdentiteEmployeuse => {
+const saisiePour = (nom: string): SaisieEmployeuse => {
   const employeuse = employeuses.get(nom)
   assert.ok(employeuse, `L'employeuse « ${nom} » n'a pas été enregistrée`)
 
-  return IdentiteEmployeuse({
+  return {
     siret: employeuse.siret,
     denomination: nom,
     adresse: {
@@ -29,7 +35,7 @@ const identitePour = (nom: string): IdentiteEmployeuse => {
       codePostal: '44000',
       codeInsee: '44109',
     },
-  })
+  }
 }
 
 const employeuseId = (nom: string): number => {
@@ -69,30 +75,36 @@ Given(
   },
 )
 
+const signaler = () => undefined
+
 const rattacher = rattacherAUneEmployeuse({
-  geocoder: async () => null,
-  signaler: () => undefined,
-  garantirLaPersonne: ({ coopUserId, email }, transaction) =>
-    transaction.personneMain.upsert({
-      where: { coopId: coopUserId },
-      create: { coopId: coopUserId, contact: { coop: { email } } },
-      update: {},
-      select: { id: true },
-    }),
-  synchroniserLaPersonne: async () => undefined,
+  lireLEtablissement: async () => failure(EmployeuseIndisponible()),
+  estConseillerNumeriqueEnPoste,
+  lireLesEmployeusesDuSiret: lireLesEmployeusesDuSiret(signaler),
+  creerLEmployeuse: creerLEmployeuse({ geocoder: async () => null, signaler }),
+  enregistrerLeRattachement: enregistrerLeRattachement({
+    garantirLaPersonne: ({ coopUserId, email }, transaction) =>
+      transaction.personneMain.upsert({
+        where: { coopId: coopUserId },
+        create: { coopId: coopUserId, contact: { coop: { email } } },
+        update: {},
+        select: { id: true },
+      }),
+    synchroniserLaPersonne: async () => undefined,
+  }),
 })
 
 When('je le rattache à {string}', async (nom: string) => {
   await rattacher({
     userId: inscritId,
-    identite: identitePour(nom),
+    source: { _tag: 'Saisie', saisie: saisiePour(nom) },
   })
 })
 
 When('je le rattache à nouveau à {string}', async (nom: string) => {
   await rattacher({
     userId: inscritId,
-    identite: identitePour(nom),
+    source: { _tag: 'Saisie', saisie: saisiePour(nom) },
   })
 })
 

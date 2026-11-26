@@ -2,7 +2,7 @@ import { rechercheApiEntreprise } from '@/configuration/recherche-entreprises'
 import { etablissementsDepuisUniteLegale } from '@/libraries/recherche-entreprises'
 import type { Employeuse } from '../../../../domain/employeuse'
 import type { RechercherEmployeuse } from '../../../../domain/rechercher-employeuse'
-import type { StructureTrouvee } from '../../domain/employeuse-choisie'
+import type { StructureTrouvee } from '../../domain/structure-trouvee'
 
 type EmployeuseRecherchee = {
   readonly id: string

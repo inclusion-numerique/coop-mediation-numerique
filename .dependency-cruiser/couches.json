@@ -88,8 +88,6 @@
     "authentification/implementations/next-auth",
     "beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/ban",
     "clients-api/abilities/authentifier-un-client-api/implementations/api-v1",
-    "equipe/abilities/inviter-des-membres/implementations/prisma",
-    "equipe/abilities/relancer-une-invitation/implementations/prisma",
     "equipe/implementations/email",
     "inscription/abilities/ajouter-structure-employeuse-en-lieu/implementations/ban",
     "rdvsp/abilities/effacer-empreinte-rdv/implementations/prisma",
@@ -189,6 +187,7 @@
     "activites/abilities/exporter-mes-accompagnements/domain",
     "activites/abilities/rechercher-les-lieux-des-statistiques/domain",
     "activites/domain",
+    "employeuse/abilities/rattacher-a-une-employeuse/action",
     "employeuse/abilities/rattacher-a-une-employeuse/domain",
     "employeuse/domain",
     "equipe/abilities/lister-les-membres/domain",
@@ -222,7 +221,7 @@
     "statistiques/implementations/excel"
   ],
   "libraries/result": [
-    "inscription/abilities/renseigner-lieux-activite/action",
+    "employeuse/abilities/rattacher-a-une-employeuse/implementations/api-entreprise",
     "lieux-activite/abilities/ajouter-des-lieux-activite/action",
     "lieux-activite/abilities/ajouter-des-lieux-activite/ui/forms",
     "rdvsp/abilities/consulter-rdvs-accueil/ui/slots"

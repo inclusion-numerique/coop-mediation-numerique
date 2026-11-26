@@ -1,8 +1,12 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from 'vitest'
 import { prismaClient } from '@/configuration/prisma'
-import { estConseillerNumeriqueEnPoste } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/prisma/conseiller-numerique-en-poste.query'
-import { rattacherAUneEmployeuseDepuisSiret } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/prisma/rattacher-depuis-siret.mutation'
-import { importerLaStructureEmployeuseDepuisProConnect } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/proconnect/importer-la-structure-employeuse-depuis-proconnect.mutation'
+import { EmployeuseIndisponible } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/domain/errors'
+import { rattacherAUneEmployeuse } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/domain/rattacher-a-une-employeuse'
+import { failure, success } from '@/libraries/result'
+import { estConseillerNumeriqueEnPoste } from './conseiller-numerique-en-poste.query'
+import { creerLEmployeuse } from './creer-l-employeuse.mutation'
+import { lireLesEmployeusesDuSiret } from './employeuses-du-siret.query'
+import { enregistrerLeRattachement } from './enregistrer-le-rattachement.mutation'
 
 const MEDIATEUR = '93b7d259-61b0-4069-ae42-db887984777f'
 const CONSEILLER = '09d6e0af-56e7-43b8-a649-b7e9d3c70c51'
@@ -11,11 +15,13 @@ const NOS_UTILISATEURS = [MEDIATEUR, CONSEILLER]
 const PROCONNECT_SIRET = '11111111111111'
 const OTHER_SIRET = '22222222222222'
 
-const importer = importerLaStructureEmployeuseDepuisProConnect({
+const signaler = () => undefined
+
+const rattacher = rattacherAUneEmployeuse({
   estConseillerNumeriqueEnPoste,
-  rattacherDepuisSiret: rattacherAUneEmployeuseDepuisSiret({
-    geocoder: async () => null,
-    signaler: () => undefined,
+  lireLesEmployeusesDuSiret: lireLesEmployeusesDuSiret(signaler),
+  creerLEmployeuse: creerLEmployeuse({ geocoder: async () => null, signaler }),
+  enregistrerLeRattachement: enregistrerLeRattachement({
     garantirLaPersonne: ({ coopUserId, email }, transaction) =>
       transaction.personneMain.upsert({
         where: { coopId: coopUserId },
@@ -24,20 +30,28 @@ const importer = importerLaStructureEmployeuseDepuisProConnect({
         select: { id: true },
       }),
     synchroniserLaPersonne: async () => undefined,
-    etablissementDepuisSiret: async (siret) =>
-      siret === PROCONNECT_SIRET
-        ? {
-            siret,
-            raisonSociale: 'Structure ProConnect',
-            ferme: false,
-            voie: '1 rue du Test',
-            commune: 'Paris',
-            codePostal: '75001',
-            codeInsee: '75101',
-          }
-        : null,
   }),
+  lireLEtablissement: async (siret) =>
+    siret === PROCONNECT_SIRET
+      ? success({
+          siret,
+          raisonSociale: 'Structure ProConnect',
+          ferme: false,
+          voie: '1 rue du Test',
+          commune: 'Paris',
+          codePostal: '75001',
+          codeInsee: '75101',
+        })
+      : failure(EmployeuseIndisponible()),
 })
+
+const importer = ({
+  userId,
+  siret,
+}: {
+  readonly userId: string
+  readonly siret: string | null
+}) => rattacher({ userId, source: { _tag: 'ProConnect', siret } })
 
 const employeusesActivesDe = async (userId: string) =>
   (
@@ -47,7 +61,7 @@ const employeusesActivesDe = async (userId: string) =>
     })
   ).map(({ structureAdministrativeId }) => structureAdministrativeId)
 
-describe('importerLaStructureEmployeuseDepuisProConnect', () => {
+describe('rattacher une employeuse depuis ProConnect', () => {
   const state = { proconnectMainId: 0, otherMainId: 0 }
 
   beforeAll(async () => {
@@ -129,8 +143,14 @@ describe('importerLaStructureEmployeuseDepuisProConnect', () => {
       siret: PROCONNECT_SIRET,
     })
 
-    expect(result.success).toBe(true)
-    expect(result.noOp).toBe(false)
+    expect(result).toEqual(
+      success({
+        _tag: 'Rattachee',
+        userId: MEDIATEUR,
+        employeuseId: state.proconnectMainId,
+        employeuseCreee: null,
+      }),
+    )
     expect(await employeusesActivesDe(MEDIATEUR)).toEqual([
       state.proconnectMainId,
     ])
@@ -155,8 +175,12 @@ describe('importerLaStructureEmployeuseDepuisProConnect', () => {
       siret: PROCONNECT_SIRET,
     })
 
-    expect(result.success).toBe(true)
-    expect(result.noOp).toBe(true)
+    expect(result).toEqual(
+      success({
+        _tag: 'SansRattachement',
+        motif: 'ConseillerNumeriqueEnPoste',
+      }),
+    )
     expect(await employeusesActivesDe(CONSEILLER)).not.toContain(
       state.proconnectMainId,
     )
@@ -168,8 +192,9 @@ describe('importerLaStructureEmployeuseDepuisProConnect', () => {
       siret: null,
     })
 
-    expect(result.success).toBe(true)
-    expect(result.noOp).toBe(true)
+    expect(result).toEqual(
+      success({ _tag: 'SansRattachement', motif: 'SiretAbsent' }),
+    )
     expect(await employeusesActivesDe(MEDIATEUR)).toEqual([])
   })
 })

@@ -1,17 +1,9 @@
 import { fetchSiretApiData } from '@/features/employeuse/implementations/api-entreprise/fetch-siret-data.query'
-import type { EtablissementSirene } from '../../../../domain/identite-employeuse'
+import { failure, success } from '@/libraries/result'
+import { EmployeuseIndisponible } from '../../domain/errors'
+import type { LireLEtablissement } from '../../domain/ports'
 
-/**
- * Traduit une réponse de l'API Recherche d'entreprises en établissement du
- * domaine. Adaptateur pur transport : il n'a pas d'avis sur ce qui fait une
- * identité valable — c'est `identiteDepuisEtablissement` qui juge.
- *
- * `null` quand l'API n'a rien à dire (erreur, indisponibilité) : l'appelant ne
- * doit pas échouer pour autant.
- */
-export const etablissementDepuisSiret = async (
-  siret: string,
-): Promise<EtablissementSirene | null> => {
+export const etablissementDepuisSiret: LireLEtablissement = async (siret) => {
   const reponse = await fetchSiretApiData(siret)
 
   if ('error' in reponse) {
@@ -21,7 +13,7 @@ export const etablissementDepuisSiret = async (
       reponse.error.statusCode,
       reponse.error.message,
     )
-    return null
+    return failure(EmployeuseIndisponible())
   }
 
   const {
@@ -32,7 +24,7 @@ export const etablissementDepuisSiret = async (
     },
   } = reponse
 
-  return {
+  return success({
     siret,
     raisonSociale: personne_morale_attributs?.raison_sociale ?? null,
     // `F` = fermé, dans le vocabulaire SIRENE.
@@ -51,5 +43,5 @@ export const etablissementDepuisSiret = async (
     commune: adresse.libelle_commune ?? null,
     codePostal: adresse.code_postal ?? null,
     codeInsee: adresse.code_commune ?? null,
-  }
+  })
 }

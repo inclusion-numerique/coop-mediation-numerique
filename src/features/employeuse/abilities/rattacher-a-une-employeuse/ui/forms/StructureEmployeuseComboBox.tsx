@@ -4,7 +4,7 @@ import type { ComboBoxData } from '@/libraries/formulaire/fields-components'
 import { inject } from '@/libraries/nextjs/injection'
 import type { OptionsData } from '@/libraries/ui/primitives'
 import { RECHERCHER_STRUCTURE_EMPLOYEUSE_ACTION_KEY } from '../../action/rechercher-structure-employeuse.key'
-import type { StructureTrouvee } from '../../domain/employeuse-choisie'
+import type { StructureTrouvee } from '../../domain/structure-trouvee'
 
 /**
  * Le SIRET identifie le choix : c'est la clé que les deux sources — structures

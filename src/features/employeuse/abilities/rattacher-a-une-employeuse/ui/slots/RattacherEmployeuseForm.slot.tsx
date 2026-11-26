@@ -13,10 +13,8 @@ import { inject } from '@/libraries/nextjs/injection'
 import { Options } from '@/libraries/ui/primitives'
 import { createToast } from '@/libraries/ui/toast'
 import { RENSEIGNER_STRUCTURE_EMPLOYEUSE_ACTION_KEY } from '../../action/renseigner-structure-employeuse.key'
-import {
-  RenseignerStructureEmployeuseValidation,
-  type StructureTrouvee,
-} from '../../domain/employeuse-choisie'
+import { RenseignerStructureEmployeuseValidation } from '../../action/renseigner-structure-employeuse.validation'
+import type { StructureTrouvee } from '../../domain/structure-trouvee'
 import {
   StructureEmployeuseComboBox,
   StructureEmployeuseOptions,

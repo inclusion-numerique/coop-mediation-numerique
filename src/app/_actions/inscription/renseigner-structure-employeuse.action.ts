@@ -4,11 +4,13 @@ import { geocoder } from '@/configuration/ban'
 import { actionBuilder } from '@/configuration/nextjs'
 import { signaler } from '@/configuration/telemetry/serveur'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
-import { RenseignerStructureEmployeuseValidation } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/domain/employeuse-choisie'
-import { rattacherUneSaisie } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/domain/rattacher-une-saisie'
+import { RenseignerStructureEmployeuseValidation } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/action/renseigner-structure-employeuse.validation'
+import { rattacherAUneEmployeuse } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/domain/rattacher-a-une-employeuse'
 import { etablissementDepuisSiret } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/api-entreprise/etablissement-depuis-siret.query'
-import type { RegistreDesPersonnes } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/prisma/rattacher-a-une-employeuse.mutation'
-import { rattacherAUneEmployeuse } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/prisma/rattacher-a-une-employeuse.mutation'
+import { estConseillerNumeriqueEnPoste } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/prisma/conseiller-numerique-en-poste.query'
+import { creerLEmployeuse } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/prisma/creer-l-employeuse.mutation'
+import { lireLesEmployeusesDuSiret } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/prisma/employeuses-du-siret.query'
+import { enregistrerLeRattachement } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/prisma/enregistrer-le-rattachement.mutation'
 import { RENSEIGNER_STRUCTURE_EMPLOYEUSE_ERRORS } from '@/features/inscription/abilities/renseigner-structure-employeuse/action/renseigner-structure-employeuse.errors'
 import type { RattacherEmployeuse } from '@/features/inscription/abilities/renseigner-structure-employeuse/domain/ports'
 import { renseignerStructureEmployeuse } from '@/features/inscription/abilities/renseigner-structure-employeuse/domain/renseigner-structure-employeuse'
@@ -32,21 +34,24 @@ const renseignerStructureEmployeuseAvec = (
     projeterEtapeFranchie,
   })
 
-const services = {
-  geocoder,
-  signaler,
-  etablissementDepuisSiret,
-}
+const rattacherAUneEmployeuseSaisie = rattacherAUneEmployeuse({
+  lireLEtablissement: etablissementDepuisSiret,
+  estConseillerNumeriqueEnPoste,
+  lireLesEmployeusesDuSiret: lireLesEmployeusesDuSiret(signaler),
+  creerLEmployeuse: creerLEmployeuse({ geocoder, signaler }),
+  enregistrerLeRattachement: enregistrerLeRattachement({
+    garantirLaPersonne: ensurePersonneMain,
+    synchroniserLaPersonne: synchroniserPersonne,
+  }),
+})
 
-const rattacherAUneEmployeuseAvec = (registre: RegistreDesPersonnes) =>
-  rattacherAUneEmployeuse({ ...services, ...registre })
+const rattacherEmployeuse: RattacherEmployeuse = async ({ userId, saisie }) => {
+  const rattachement = await rattacherAUneEmployeuseSaisie({
+    userId,
+    source: { _tag: 'Saisie', saisie },
+  })
 
-const rattacherUneSaisieAvec = (registre: RegistreDesPersonnes) =>
-  rattacherUneSaisie(rattacherAUneEmployeuseAvec(registre))
-
-const registreDesPersonnes = {
-  garantirLaPersonne: ensurePersonneMain,
-  synchroniserLaPersonne: synchroniserPersonne,
+  return { _tag: rattachement.success ? 'rattachee' : rattachement.error._tag }
 }
 
 /**
@@ -67,7 +72,7 @@ export const renseignerStructureEmployeuseAction = actionBuilder()
     fromResult(
       async ({ input, user }) => {
         const resultat = await renseignerStructureEmployeuseAvec(
-          rattacherUneSaisieAvec(registreDesPersonnes),
+          rattacherEmployeuse,
         )({
           command: {
             userId: UtilisateurId(user.id),
