@@ -7,8 +7,9 @@ import { metadataTitle } from '@/configuration/projet'
 import {
   consulterLAccueil,
   selonLeProfil,
+  UtilisateurId,
 } from '@/features/accueil/abilities/consulter-l-accueil/domain/index'
-import { visiteurDe } from '@/features/accueil/abilities/consulter-l-accueil/implementations/session/visiteur.query'
+import { lireLeVisiteur } from '@/features/accueil/abilities/consulter-l-accueil/implementations/prisma/visiteur.query'
 import { AccueilPage } from '@/features/accueil/abilities/consulter-l-accueil/ui/pages/AccueilPage'
 import { compterLesActivitesDeCoordination } from '@/features/activites/abilities/compter-les-activites-de-coordination/implementations/prisma/activites-de-coordination.query'
 import { activitesDeCoordinationPresentees } from '@/features/activites/abilities/compter-les-activites-de-coordination/ui/presenters/activites-de-coordination.presenter'
@@ -44,8 +45,12 @@ type SectionsDeLAccueil = {
 
 const Page = async () => {
   const user = await authenticateMediateurOrCoordinateur()
-  const accueil = consulterLAccueil(visiteurDe(user))
-  if (accueil === null) notFound()
+  const consultation = await consulterLAccueil({ lireLeVisiteur })({
+    utilisateurId: UtilisateurId(user.id),
+  })
+  if (!consultation.success) notFound()
+
+  const accueil = consultation.data
 
   const [{ equipe, activites }, consultationRdv] = await Promise.all([
     selonLeProfil<Promise<SectionsDeLAccueil>>(accueil.profil, {
