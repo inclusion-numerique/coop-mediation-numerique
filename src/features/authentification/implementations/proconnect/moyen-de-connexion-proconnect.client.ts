@@ -1,34 +1,17 @@
 import type { CallbacksOptions } from 'next-auth'
 import { signaler } from '@/configuration/telemetry/serveur'
-import type { UtilisateurDeLaSession } from '@/features/authentification/domain/utilisateur-de-la-session'
 import { telephoneEnregistrable } from '@/libraries/telephone'
+import {
+  type ConnexionProConnect,
+  lireLaConnexionProConnect,
+} from './connexion-proconnect.transfer'
 import { proConnectProviderId } from './proconnect.client'
 import { ProConnectProvider } from './proconnect-provider.client'
-
-type ProfilALaConnexion = {
-  email: string
-  given_name: string
-  usual_name: string
-  phone_number: string | null
-  siret?: string | null
-}
-
-type CompteALaConnexion = {
-  provider: string
-  access_token?: string
-  refresh_token?: string
-  expires_at?: number
-  id_token?: string
-  scope?: string
-}
 
 const sessionUserHasOutdatedData = ({
   user,
   profile,
-}: {
-  user: UtilisateurDeLaSession
-  profile: ProfilALaConnexion
-}) =>
+}: Pick<ConnexionProConnect, 'user' | 'profile'>) =>
   user.firstName !== profile.given_name ||
   user.lastName !== profile.usual_name ||
   user.phone !== telephoneEnregistrable(profile.phone_number) ||
@@ -75,11 +58,13 @@ export const moyenDeConnexionProConnect = {
       }) => Promise<void>
     }): CallbacksOptions['signIn'] =>
     async (params) => {
-      const { user, profile, account } = params as unknown as {
-        user: UtilisateurDeLaSession
-        profile: ProfilALaConnexion
-        account: CompteALaConnexion
+      const lu = lireLaConnexionProConnect(params)
+      if (!lu.success) {
+        signaler(lu.error)
+        return true
       }
+
+      const { user, profile, account } = lu.data
 
       if (account?.provider === proConnectProviderId && account.access_token) {
         mettreAJourLesJetons({

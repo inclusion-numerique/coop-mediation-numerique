@@ -8,15 +8,7 @@ import {
 import { expediteur, serveurSmtp } from '@/configuration/smtp'
 import { signaler } from '@/configuration/telemetry/serveur'
 import { sendVerificationRequest } from './send-verification-request.mutation'
-
-type UtilisateurALaConnexion = {
-  id: string
-  email: string
-  firstName?: string | null
-  lastName?: string | null
-  phone?: string | null
-  siret?: string | null
-}
+import { lireLUtilisateurALaConnexion } from './utilisateur-a-la-connexion.transfer'
 
 const affichage: {
   readonly via: 'courriel'
@@ -58,7 +50,13 @@ export const moyenDeConnexionParCourriel = {
         return true
       }
 
-      const user = params.user as UtilisateurALaConnexion
+      const lu = lireLUtilisateurALaConnexion(params.user)
+      if (!lu.success) {
+        signaler(lu.error)
+        return true
+      }
+
+      const user = lu.data
       const [partieLocale = ''] = user.email.split('@')
       const [prenomDeLAdresse, nomDeLAdresse] = partieLocale.split('.')
       const fallbackFirstName = prenomDeLAdresse || 'User'

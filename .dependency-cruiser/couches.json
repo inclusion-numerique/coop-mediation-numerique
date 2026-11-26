@@ -313,6 +313,8 @@
     "lieux-activite/abilities/creer-lieu-activite/implementations/prisma"
   ],
   "zod": [
+    "authentification/implementations/email",
+    "authentification/implementations/proconnect",
     "lieux-activite/abilities/ajouter-des-lieux-activite/implementations/entrepot",
     "rdvsp/implementations/webhook"
   ]
