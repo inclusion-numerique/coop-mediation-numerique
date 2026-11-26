@@ -14,8 +14,15 @@ import {
   tagsDeLActiviteDeCoordination,
 } from '@/features/tags/tags.cucumber'
 import type { DestinationDeFusion } from './domain'
+import { fusionnerUnTag } from './domain/fusionner-un-tag'
 import { destinationsDeFusion } from './implementations/prisma/destinations-de-fusion.query'
-import { fusionnerUnTag } from './implementations/prisma/fusionner-un-tag.mutation'
+import { reporterLeTag } from './implementations/prisma/reporter-le-tag.mutation'
+import { lireLesTagsDeLaFusion } from './implementations/prisma/tags-de-la-fusion.query'
+
+const fusionnerEnBase = fusionnerUnTag({
+  lireLesTags: lireLesTagsDeLaFusion,
+  reporter: reporterLeTag,
+})
 
 const contexte: {
   acteur?: Acteur
@@ -25,7 +32,7 @@ const contexte: {
   autreTagId?: string
   activiteId?: string
   activiteCoordinationId?: string
-  issue?: Awaited<ReturnType<typeof fusionnerUnTag>>
+  issue?: Awaited<ReturnType<typeof fusionnerEnBase>>
   proposees?: readonly DestinationDeFusion[]
 } = {}
 
@@ -103,7 +110,7 @@ Given("un tag personnel d'un autre médiateur", async () => {
 })
 
 When('ce médiateur fusionne son tag dans le tag de destination', async () => {
-  contexte.issue = await fusionnerUnTag({
+  contexte.issue = await fusionnerEnBase({
     acteur: valeur(contexte.acteur),
     sourceId: TagId(valeur(contexte.sourceId)),
     destinationId: TagId(valeur(contexte.destinationId)),
@@ -113,7 +120,7 @@ When('ce médiateur fusionne son tag dans le tag de destination', async () => {
 When(
   'ce coordinateur fusionne son tag dans le tag de destination',
   async () => {
-    contexte.issue = await fusionnerUnTag({
+    contexte.issue = await fusionnerEnBase({
       acteur: valeur(contexte.acteur),
       sourceId: TagId(valeur(contexte.sourceId)),
       destinationId: TagId(valeur(contexte.destinationId)),
