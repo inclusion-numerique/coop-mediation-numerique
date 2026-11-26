@@ -1,11 +1,11 @@
 import { prismaClient } from '@/configuration/prisma'
 import { Prisma } from '@/generated/prisma/client'
 import {
+  correspondALaRecherche,
   type Departement,
   departementDuCode,
   departements as REFERENTIEL_DES_DEPARTEMENTS,
 } from '@/libraries/departement'
-import { contientSansAccent } from '@/libraries/texte'
 import {
   communeComptee,
   LieuActiviteId,
@@ -88,9 +88,7 @@ const communes = async (
 const correspond =
   (recherche: string) =>
   ({ departement }: { readonly departement: Departement }): boolean =>
-    recherche === '' ||
-    departement.code.startsWith(recherche.toUpperCase()) ||
-    contientSansAccent(departement.nom, recherche)
+    correspondALaRecherche(recherche)(departement)
 
 const departementsDuReferentiel = (
   recherche: string,

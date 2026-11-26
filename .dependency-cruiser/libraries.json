@@ -43,9 +43,10 @@
   "libraries/nextjs": ["etat-d-url"],
   "libraries/nombre": ["proportions"],
   "libraries/pictograms": ["formulaire"],
+  "libraries/pluriel": ["ui"],
   "libraries/result": ["departement"],
-  "libraries/texte": ["etat-d-url", "recherche-entreprises"],
-  "libraries/ui": ["ban", "etat-d-url", "formulaire"],
+  "libraries/texte": ["departement", "etat-d-url", "recherche-entreprises"],
+  "libraries/ui": ["ban", "departement", "etat-d-url", "formulaire"],
   "lodash-es": ["formulaire", "json-api"],
   "mjml": ["emails"],
   "next": [
@@ -67,6 +68,7 @@
   "radix-ui": ["ui"],
   "react": [
     "data-table",
+    "departement",
     "emails",
     "etat-d-url",
     "formulaire",

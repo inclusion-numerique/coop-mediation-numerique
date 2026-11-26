@@ -12,3 +12,7 @@ export { departements, departementsByCode } from './departements'
 
 export { departementsRegionByCode } from './departements-region'
 export { getUserDepartement } from './get-user-departement'
+export {
+  correspondALaRecherche,
+  rechercherDesDepartements,
+} from './recherche-de-departements'

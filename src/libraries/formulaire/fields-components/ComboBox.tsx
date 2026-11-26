@@ -59,6 +59,7 @@ export const ComboBox = <TItem, TPayload extends object>(
     <ComboBoxBase
       key={currentValueKey}
       {...comboBoxProps}
+      onSelect={undefined}
       clearOnSelect={isMultipleSelection}
       defaultValue={state.value}
     >

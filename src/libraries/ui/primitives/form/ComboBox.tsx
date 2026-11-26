@@ -20,6 +20,12 @@ import {
   saisieEnCours,
 } from '../../suggestions'
 
+const SELECTIONS_PAR_L_UTILISATEUR: ReadonlySet<UseComboboxStateChangeTypes> =
+  new Set([
+    useCombobox.stateChangeTypes.ItemClick,
+    useCombobox.stateChangeTypes.InputKeyDownEnter,
+  ])
+
 const CHANGEMENTS_PAR_SELECTION: ReadonlySet<UseComboboxStateChangeTypes> =
   new Set([
     useCombobox.stateChangeTypes.ItemClick,
@@ -39,6 +45,7 @@ export type ComboBoxProps<TItem, TPayload extends object> = {
   defaultItems?: TItem[]
   defaultValue?: Partial<TItem>
   clearOnSelect?: boolean
+  onSelect?: ((item: TItem) => void) | undefined
   children: (props: {
     getLabelProps: UseComboboxReturnValue<TItem>['getLabelProps']
     getMenuProps: UseComboboxReturnValue<TItem>['getMenuProps']
@@ -76,6 +83,7 @@ export const ComboBox = <TItem, TPayload extends object>({
   loadSuggestions,
   itemToString,
   clearOnSelect = false,
+  onSelect,
   children,
 }: ComboBoxProps<TItem, TPayload>) => {
   const [{ items, payload }, setEtat] = useState<
@@ -120,7 +128,9 @@ export const ComboBox = <TItem, TPayload extends object>({
     },
     items,
     itemToString,
-    onSelectedItemChange: () => {
+    onSelectedItemChange: ({ selectedItem, type }) => {
+      if (selectedItem != null && SELECTIONS_PAR_L_UTILISATEUR.has(type))
+        onSelect?.(selectedItem)
       if (!clearOnSelect) return
       setInputValue('')
       setItems([])

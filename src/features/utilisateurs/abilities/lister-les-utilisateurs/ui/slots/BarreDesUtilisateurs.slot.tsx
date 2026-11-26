@@ -13,13 +13,12 @@ import {
   filtreDuStatut,
 } from '@/features/utilisateurs/ui/filtres/utilisateurs.filtre'
 import type { BarreDesUtilisateursPresentee } from '@/features/utilisateurs/ui/presenters/barre-des-utilisateurs.presenter'
-import { departements } from '@/libraries/departement'
+import { rechercherDesDepartements } from '@/libraries/departement'
 import {
   BarreDeFiltres,
   CaseACocher,
   ChoixEnPopover,
   RechercheEnPopover,
-  rechercherParmi,
 } from '@/libraries/etat-d-url/filtres'
 import { inject } from '@/libraries/nextjs/injection'
 import type { SelectOption } from '@/libraries/ui'
@@ -27,10 +26,16 @@ import { RECHERCHER_DES_COMMUNES_ACTION_KEY } from '../../action/rechercher-des-
 import { RECHERCHER_DES_COORDINATEURS_ACTION_KEY } from '../../action/rechercher-des-coordinateurs.key'
 import { RECHERCHER_DES_EMPLOYEUSES_ACTION_KEY } from '../../action/rechercher-des-employeuses.key'
 import { RECHERCHER_DES_LIEUX_ACTION_KEY } from '../../action/rechercher-des-lieux.key'
+import { optionDuDepartement } from '../presenters/options-des-filtres.presenter'
 
-const OPTIONS_DES_DEPARTEMENTS: readonly SelectOption[] = departements.map(
-  ({ code, nom }) => ({ value: code, label: `${code} · ${nom}` }),
-)
+const rechercherUnDepartement = async ({
+  recherche,
+}: {
+  recherche: string
+}): Promise<{ success: true; data: readonly SelectOption[] }> => ({
+  success: true,
+  data: rechercherDesDepartements(recherche).map(optionDuDepartement),
+})
 
 export const BarreDesUtilisateurs = ({
   barre,
@@ -117,7 +122,7 @@ export const BarreDesUtilisateurs = ({
         singular: 'département sélectionné',
         plural: 'départements sélectionnés',
       }}
-      rechercher={rechercherParmi(OPTIONS_DES_DEPARTEMENTS)}
+      rechercher={rechercherUnDepartement}
       choisies={barre.choisies.departements}
       longueurMinimale={1}
     />

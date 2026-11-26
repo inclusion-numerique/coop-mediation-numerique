@@ -30,14 +30,20 @@ const employeusesChoisies = async (
   )
 }
 
+export const optionDuDepartement = ({
+  code,
+  nom,
+}: {
+  readonly code: string
+  readonly nom: string
+}): SelectOption => ({ value: code, label: `${code} · ${nom}` })
+
 const departementsChoisis = (
   codes: FiltresUtilisateurs['departements'],
 ): readonly SelectOption[] =>
   codes.flatMap((code) => {
     const departement = departementsByCode.get(code)
-    return departement === undefined
-      ? []
-      : [{ value: code, label: `${code} · ${departement.nom}` }]
+    return departement === undefined ? [] : [optionDuDepartement(departement)]
   })
 
 export const optionsDesFiltres = async (
