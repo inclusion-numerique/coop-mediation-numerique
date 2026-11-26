@@ -1,25 +1,8 @@
 import { prismaClient } from '@/configuration/prisma'
-import {
-  UtilisateurId,
-  UtilisateurIntrouvable,
-} from '@/features/utilisateurs/domain'
-import { failure, type Result, success } from '@/libraries/result'
+import type { UtilisateurId } from '@/features/utilisateurs/domain'
 
-export const deconnecterUnUtilisateur = async (
-  utilisateurId: string,
-): Promise<
-  Result<{ readonly sessionsFermees: number }, UtilisateurIntrouvable>
-> => {
-  const id = UtilisateurId.safe(utilisateurId)
-  const existe =
-    id !== null && (await prismaClient.user.count({ where: { id } })) > 0
-
-  if (id === null || !existe)
-    return failure(UtilisateurIntrouvable(utilisateurId))
-
-  const { count } = await prismaClient.session.deleteMany({
-    where: { userId: id },
-  })
-
-  return success({ sessionsFermees: count })
-}
+export const fermerLesSessions = async (
+  utilisateurId: UtilisateurId,
+): Promise<number> =>
+  (await prismaClient.session.deleteMany({ where: { userId: utilisateurId } }))
+    .count
