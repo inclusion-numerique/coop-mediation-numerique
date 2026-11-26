@@ -1,5 +1,6 @@
 export { AuteurId } from './auteur-id'
 export { CoordinateurId } from './coordinateur-id'
+export { MediateurIntrouvable } from './errors'
 export { LienDePartageId } from './lien-de-partage-id'
 export type { LienDuPerimetre } from './lien-du-perimetre'
 export { MediateurId } from './mediateur-id'
