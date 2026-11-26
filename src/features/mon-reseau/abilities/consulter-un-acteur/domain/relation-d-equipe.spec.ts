@@ -120,4 +120,28 @@ describe('lien d’équipe entre le coordinateur qui consulte et l’acteur', ()
       fin: new Date('2026-03-01'),
     })
   })
+
+  it('reste ancien membre depuis l’adhésion la plus récente, quel que soit l’ordre de lecture', () => {
+    expect(
+      lienDEquipe({
+        ...sansLien,
+        adhesions: [
+          {
+            _tag: 'Terminee',
+            debut: new Date('2026-01-01'),
+            fin: new Date('2026-03-01'),
+          },
+          {
+            _tag: 'Terminee',
+            debut: new Date('2025-01-01'),
+            fin: new Date('2025-06-01'),
+          },
+        ],
+      }),
+    ).toEqual({
+      _tag: 'AncienMembre',
+      depuis: new Date('2026-01-01'),
+      fin: new Date('2026-03-01'),
+    })
+  })
 })
