@@ -4,7 +4,8 @@ import { accepterUneInvitationAction } from '@/app/_actions/equipe/accepter-une-
 import { refuserUneInvitationAction } from '@/app/_actions/equipe/refuser-une-invitation.action'
 import { metadataTitle } from '@/configuration/projet'
 import { getSessionUser } from '@/features/authentification/middlewares/with-utilisateur-de-la-session'
-import { consulterUneInvitation } from '@/features/equipe/abilities/consulter-une-invitation/implementations/prisma/consulter-une-invitation.query'
+import { consulterUneInvitation as consulterUneInvitationAvec } from '@/features/equipe/abilities/consulter-une-invitation/domain/consulter-une-invitation'
+import { compterLesMembresActifs } from '@/features/equipe/abilities/consulter-une-invitation/implementations/prisma/membres-actifs.query'
 import { default as InvitationEnAttentePage } from '@/features/equipe/abilities/consulter-une-invitation/ui/pages/InvitationEnAttentePage'
 import { default as InvitationPlusValide } from '@/features/equipe/abilities/consulter-une-invitation/ui/slots/InvitationPlusValide.slot'
 import { ACCEPTER_UNE_INVITATION_ACTION_KEY } from '@/features/equipe/action/accepter-une-invitation.key'
@@ -14,9 +15,17 @@ import {
   lienInvitation,
   referenceDuCode,
 } from '@/features/equipe/implementations/email/lien-invitation.transfer'
+import { lireLeCoordinateur } from '@/features/equipe/implementations/prisma/coordinateur.query'
+import { lireUneInvitation } from '@/features/equipe/implementations/prisma/invitation.query'
 import { default as ReponseAInvitation } from '@/features/equipe/ui/slots/ReponseAInvitation.slot'
 import type { EncodedState } from '@/libraries/etat-encode'
 import { ClientBinder } from '@/libraries/nextjs/injection'
+
+const consulterUneInvitation = consulterUneInvitationAvec({
+  lireUneInvitation,
+  lireLeCoordinateur,
+  compterLesMembresActifs,
+})
 
 export const metadata: Metadata = {
   title: metadataTitle('Invitation à rejoindre une équipe'),
@@ -28,10 +37,12 @@ const InvitationPage = async (props: {
   const { data } = await props.params
   const user = await getSessionUser()
 
-  const vue = await consulterUneInvitation({
+  const consultation = await consulterUneInvitation({
     reference: referenceDuCode(data),
     session: user == null ? null : Courriel.safe(user.email),
   })
+  if (!consultation.success) redirect('/')
+  const vue = consultation.data
 
   if (vue.type === 'Illisible') redirect('/')
   if (vue.type === 'MauvaisDestinataire') redirect('/coop/invitation')
