@@ -1,12 +1,20 @@
 import { failure, type Result, success } from '@/libraries/result'
-import {
-  AdresseNonValidee,
-  type AdresseValidee,
-  type LieuActiviteInput,
-} from '../domain'
-import type { RenseignerLieuxActiviteData } from './renseigner-lieux-activite.validation'
+import { AdresseNonValidee } from './adresse-non-validee'
+import type { AdresseValidee, LieuActiviteInput } from './reconcilier'
 
-type LieuSoumis = RenseignerLieuxActiviteData['lieux'][number]
+export type LieuSoumis = {
+  readonly id?: string | null | undefined
+  readonly structureCartographieNationaleId?: string | null | undefined
+  readonly nom: string
+  readonly siret?: string | null | undefined
+  readonly adresse: string
+  readonly commune: string
+  readonly codePostal: string
+  readonly codeInsee?: string | null | undefined
+  readonly banId?: string | null | undefined
+  readonly latitude?: number | null | undefined
+  readonly longitude?: number | null | undefined
+}
 
 const identite = ({
   nom,
@@ -20,7 +28,6 @@ const identite = ({
     : { structureCartographieNationaleId }),
 })
 
-/** L'adresse soumise, si la Base Adresse Nationale l'a reconnue. */
 const adresseValidee = (lieu: LieuSoumis): AdresseValidee | null =>
   lieu.codeInsee == null ||
   lieu.banId == null ||
@@ -37,16 +44,8 @@ const adresseValidee = (lieu: LieuSoumis): AdresseValidee | null =>
         longitude: lieu.longitude,
       }
 
-/**
- * Les lieux soumis deviennent des lieux désirés.
- *
- * C'est ici que se tient la règle : un lieu que la coop connaît déjà se
- * rattache tel quel ; tout autre sera CRÉÉ, et l'on n'admet plus de créer un
- * lieu dont l'adresse n'a pas été validée par la Base Adresse Nationale. Le
- * formulaire géocode avant d'ajouter ; cette garde est le filet.
- */
-export const depuisLaSaisie = (
-  lieux: RenseignerLieuxActiviteData['lieux'],
+export const lieuxDesires = (
+  lieux: readonly LieuSoumis[],
 ): Result<readonly LieuActiviteInput[], AdresseNonValidee> =>
   lieux.reduce<Result<readonly LieuActiviteInput[], AdresseNonValidee>>(
     (precedents, lieu) => {

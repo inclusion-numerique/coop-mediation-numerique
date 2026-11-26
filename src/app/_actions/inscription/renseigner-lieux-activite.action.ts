@@ -4,7 +4,6 @@ import { actionBuilder } from '@/configuration/nextjs'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { RENSEIGNER_LIEUX_ACTIVITE_ERRORS } from '@/features/inscription/abilities/renseigner-lieux-activite/action/renseigner-lieux-activite.errors'
 import { RenseignerLieuxActiviteValidation } from '@/features/inscription/abilities/renseigner-lieux-activite/action/renseigner-lieux-activite.validation'
-import { depuisLaSaisie } from '@/features/inscription/abilities/renseigner-lieux-activite/action/saisie-des-lieux.transfer'
 import type {
   AdresseNonValidee,
   RenseignerLieuxActiviteError,
@@ -53,10 +52,6 @@ export const renseignerLieuxActiviteAction = actionBuilder()
       }): Promise<
         Result<void, RenseignerLieuxActiviteError | AdresseNonValidee>
       > => {
-        const lieuxActivite = depuisLaSaisie(input.lieux)
-
-        if (!lieuxActivite.success) return lieuxActivite
-
         return renseignerLieuxActiviteAvec({
           trouverStructuresCarto: structuresCartoParIds,
           lireLieuxActiviteExistants: activitesEnCoursDeLUtilisateur,
@@ -64,7 +59,7 @@ export const renseignerLieuxActiviteAction = actionBuilder()
         })({
           command: {
             userId: UtilisateurId(user.id),
-            lieuxActivite: lieuxActivite.data,
+            lieuxActivite: input.lieux,
           },
           maintenant: new Date(),
         })

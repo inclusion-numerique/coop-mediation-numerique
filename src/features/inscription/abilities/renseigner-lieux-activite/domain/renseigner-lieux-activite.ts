@@ -2,16 +2,18 @@ import type { UtilisateurId } from '@/features/inscription/domain'
 import type { LireLEtatDeLInscription } from '@/features/inscription/domain/ports'
 import { onlyDefinedAndNotNull } from '@/libraries/collections'
 import { type Result, success } from '@/libraries/result'
+import type { AdresseNonValidee } from './adresse-non-validee'
 import {
   deciderLesLieux,
   type RenseignerLieuxActiviteError,
 } from './decider-les-lieux'
+import { type LieuSoumis, lieuxDesires } from './lieux-desires'
 import type {
   EnregistrerReconciliation,
   LireLieuxActiviteExistants,
   TrouverStructuresCarto,
 } from './ports'
-import { type LieuActiviteInput, reconcilierLieuxActivite } from './reconcilier'
+import { reconcilierLieuxActivite } from './reconcilier'
 
 export type RenseignerLieuxActivitePorts<StructureCarto> = {
   readonly lireLEtat: LireLEtatDeLInscription
@@ -33,10 +35,16 @@ export const renseignerLieuxActivite =
   }: {
     readonly command: {
       readonly userId: UtilisateurId
-      readonly lieuxActivite: readonly LieuActiviteInput[]
+      readonly lieuxActivite: readonly LieuSoumis[]
     }
     readonly maintenant: Date
-  }): Promise<Result<void, RenseignerLieuxActiviteError>> => {
+  }): Promise<
+    Result<void, RenseignerLieuxActiviteError | AdresseNonValidee>
+  > => {
+    const desires = lieuxDesires(lieuxActivite)
+
+    if (!desires.success) return desires
+
     const decision = deciderLesLieux(
       await lireLEtat(userId),
       userId,
@@ -47,7 +55,7 @@ export const renseignerLieuxActivite =
 
     const { aCloturer, aCreer } = reconcilierLieuxActivite(
       await lireLieuxActiviteExistants(userId),
-      lieuxActivite,
+      desires.data,
     )
 
     const structuresCarto = await trouverStructuresCarto(
