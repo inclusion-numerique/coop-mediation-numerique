@@ -74,9 +74,10 @@ tests unitaires qui l'exercent par son point d'appel le plus haut.
 L'orchestrateur porte le nom de son cas d'usage. Il a deux étages : le
 premier reçoit les ports, déstructurés ; le second reçoit un seul objet
 d'entrée nommé, même quand il ne porte qu'un identifiant. Son type de retour
-est écrit dans la signature, sans alias exporté. Ni valeur par défaut, ni
-port optionnel : une taille de lot devient une constante du domaine, ou une
-entrée si le point d'entrée la règle.
+est écrit dans la signature, sans alias exporté. Aucun port optionnel, et
+aucune valeur par défaut, ni dans l'orchestrateur ni ailleurs dans le
+domaine : une taille de lot devient une constante du domaine, ou une entrée
+si le point d'entrée la règle.
 
 ### Des ports nommés, à un seul endroit
 
