@@ -3,7 +3,7 @@ import type {
   InscriptionEnCours,
   InscriptionNonDemarree,
 } from './etat-de-l-inscription'
-import { estFranchi, Franchissement } from './franchissement'
+import { Franchissement } from './franchissement'
 import { Role } from './role'
 import {
   franchirLieuxActivite,
@@ -37,106 +37,109 @@ const inscriptionEnCours: InscriptionEnCours = {
 const structureDejaFranchie: InscriptionEnCours = {
   ...inscriptionEnCours,
   progression: {
-    ...inscriptionEnCours.progression,
     structureEmployeuse: Franchissement(acceptationCgu),
+    lieuxActivite: Franchissement(null),
   },
 }
 
+const conseillerNumeriqueEnCours: InscriptionEnCours = {
+  ...inscriptionEnCours,
+  conseillerNumerique: true,
+}
+
 describe('poserRole', () => {
-  it('démarre l’inscription sur le rôle choisi, CGU acceptées au même instant', () => {
-    const etat = poserRole(inscriptionNonDemarree, Role('Coordinateur'), le)
-
-    expect(etat._tag).toBe('EnCours')
-    expect(etat.role).toBe('Coordinateur')
-    expect(etat.acceptationCgu).toEqual(le)
-  })
-
-  it('démarre avec une progression vierge et non conseiller numérique', () => {
-    const etat = poserRole(inscriptionNonDemarree, Role('Mediateur'), le)
-
-    expect(estFranchi(etat.progression.structureEmployeuse)).toBe(false)
-    expect(estFranchi(etat.progression.lieuxActivite)).toBe(false)
-    expect(etat.conseillerNumerique).toBe(false)
-  })
-
-  it('remplace le rôle et la date de CGU lors d’un re-choix', () => {
-    const etat = poserRole(structureDejaFranchie, Role('Coordinateur'), le)
-
-    expect(etat.role).toBe('Coordinateur')
-    expect(etat.acceptationCgu).toEqual(le)
-  })
-
-  it('conserve les étapes déjà franchies lors d’un re-choix', () => {
-    const { progression } = poserRole(
-      structureDejaFranchie,
-      Role('Coordinateur'),
-      le,
+  it('démarre l’inscription sur le rôle choisi, CGU acceptées au même instant, avec une progression vierge et non conseiller numérique', () => {
+    expect(poserRole(inscriptionNonDemarree, Role('Coordinateur'), le)).toEqual(
+      {
+        _tag: 'EnCours',
+        userId,
+        role: 'Coordinateur',
+        conseillerNumerique: false,
+        acceptationCgu: le,
+        progression: {
+          structureEmployeuse: { _tag: 'aFranchir' },
+          lieuxActivite: { _tag: 'aFranchir' },
+        },
+      },
     )
+  })
 
-    expect(progression.structureEmployeuse).toEqual({
-      _tag: 'franchi',
-      le: acceptationCgu,
+  it('remplace le rôle et la date de CGU lors d’un re-choix, en conservant les étapes déjà franchies', () => {
+    expect(poserRole(structureDejaFranchie, Role('Coordinateur'), le)).toEqual({
+      _tag: 'EnCours',
+      userId,
+      role: 'Coordinateur',
+      conseillerNumerique: false,
+      acceptationCgu: le,
+      progression: {
+        structureEmployeuse: { _tag: 'franchi', le: acceptationCgu },
+        lieuxActivite: { _tag: 'aFranchir' },
+      },
     })
   })
 
   it('conserve le statut conseiller numérique lors d’un re-choix', () => {
-    const conseillerNumerique: InscriptionEnCours = {
-      ...inscriptionEnCours,
-      conseillerNumerique: true,
-    }
-
     expect(
-      poserRole(conseillerNumerique, Role('Coordinateur'), le)
-        .conseillerNumerique,
-    ).toBe(true)
+      poserRole(conseillerNumeriqueEnCours, Role('Coordinateur'), le),
+    ).toEqual({
+      _tag: 'EnCours',
+      userId,
+      role: 'Coordinateur',
+      conseillerNumerique: true,
+      acceptationCgu: le,
+      progression: {
+        structureEmployeuse: { _tag: 'aFranchir' },
+        lieuxActivite: { _tag: 'aFranchir' },
+      },
+    })
   })
 })
 
 describe('franchirStructureEmployeuse', () => {
-  it('marque l’étape franchie à la date fournie', () => {
-    const { progression } = franchirStructureEmployeuse(inscriptionEnCours, le)
-
-    expect(progression.structureEmployeuse).toEqual({ _tag: 'franchi', le })
-  })
-
-  it('laisse l’étape lieux d’activité intacte', () => {
-    const { progression } = franchirStructureEmployeuse(inscriptionEnCours, le)
-
-    expect(estFranchi(progression.lieuxActivite)).toBe(false)
+  it('marque l’étape franchie à la date fournie et laisse l’étape lieux d’activité intacte', () => {
+    expect(franchirStructureEmployeuse(inscriptionEnCours, le)).toEqual({
+      _tag: 'EnCours',
+      userId,
+      role: 'Mediateur',
+      conseillerNumerique: false,
+      acceptationCgu,
+      progression: {
+        structureEmployeuse: { _tag: 'franchi', le },
+        lieuxActivite: { _tag: 'aFranchir' },
+      },
+    })
   })
 })
 
 describe('franchirLieuxActivite', () => {
-  it('marque l’étape franchie à la date fournie', () => {
-    const { progression } = franchirLieuxActivite(inscriptionEnCours, le)
-
-    expect(progression.lieuxActivite).toEqual({ _tag: 'franchi', le })
-  })
-
-  it('laisse l’étape structure employeuse intacte', () => {
-    const { progression } = franchirLieuxActivite(structureDejaFranchie, le)
-
-    expect(progression.structureEmployeuse).toEqual({
-      _tag: 'franchi',
-      le: acceptationCgu,
+  it('marque l’étape franchie à la date fournie et laisse l’étape structure employeuse intacte', () => {
+    expect(franchirLieuxActivite(structureDejaFranchie, le)).toEqual({
+      _tag: 'EnCours',
+      userId,
+      role: 'Mediateur',
+      conseillerNumerique: false,
+      acceptationCgu,
+      progression: {
+        structureEmployeuse: { _tag: 'franchi', le: acceptationCgu },
+        lieuxActivite: { _tag: 'franchi', le },
+      },
     })
   })
 })
 
 describe('valider', () => {
-  it('pose l’état terminal à la date fournie', () => {
-    const etat = valider(inscriptionEnCours, le)
-
-    expect(etat._tag).toBe('Validee')
-    expect(etat.inscriptionValidee).toEqual(le)
-  })
-
-  it('conserve rôle, statut CN, acceptation des CGU et progression', () => {
-    const etat = valider(structureDejaFranchie, le)
-
-    expect(etat.role).toBe('Mediateur')
-    expect(etat.conseillerNumerique).toBe(false)
-    expect(etat.acceptationCgu).toEqual(acceptationCgu)
-    expect(etat.progression).toEqual(structureDejaFranchie.progression)
+  it('pose l’état terminal à la date fournie en conservant rôle, statut conseiller numérique, acceptation des CGU et progression', () => {
+    expect(valider(structureDejaFranchie, le)).toEqual({
+      _tag: 'Validee',
+      userId,
+      role: 'Mediateur',
+      conseillerNumerique: false,
+      acceptationCgu,
+      progression: {
+        structureEmployeuse: { _tag: 'franchi', le: acceptationCgu },
+        lieuxActivite: { _tag: 'aFranchir' },
+      },
+      inscriptionValidee: le,
+    })
   })
 })

@@ -102,7 +102,7 @@ describe('etapeSuivante — flow sans Dataspace (ou non conseiller numérique)',
     ).toBeNull()
   })
 
-  it('emprunte le flow complet même en Dataspace si non conseiller numérique', () => {
+  it('emprunte le flow entier même en Dataspace si non conseiller numérique', () => {
     expect(premiereEtape(avecDataspaceNonConseillerNumerique)).toBe(
       'choisir-role',
     )
