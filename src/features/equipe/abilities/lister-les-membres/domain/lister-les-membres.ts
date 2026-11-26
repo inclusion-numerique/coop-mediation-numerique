@@ -1,4 +1,6 @@
 import type { Page, PageSize } from '@arckit/resultset'
+import { DEPARTEMENT_PAR_DEFAUT } from '@/libraries/departement'
+import { codeDepartementDuCodeInsee } from '@/libraries/insee'
 import { failure, type Result, success } from '@/libraries/result'
 import {
   ConsultationNonAutorisee,
@@ -15,7 +17,7 @@ import type { ListerLesMembresPorts } from './ports'
 export const listerLesMembres =
   ({
     lireLeCoordinateur,
-    lireLeDepartementDuCoordinateur,
+    lireLaCommuneDuCoordinateur,
     lireLesMembres,
   }: ListerLesMembresPorts) =>
   async ({
@@ -36,11 +38,16 @@ export const listerLesMembres =
     if (!peutConsulterLEquipe(lecteur)(coordinateurId))
       return failure(ConsultationNonAutorisee())
 
-    const [coordinateur, departementCode] = await Promise.all([
+    const [coordinateur, commune] = await Promise.all([
       lireLeCoordinateur(coordinateurId),
-      lireLeDepartementDuCoordinateur(coordinateurId),
+      lireLaCommuneDuCoordinateur(coordinateurId),
     ])
     if (coordinateur === null) return failure(CoordinateurIntrouvable())
+
+    const departementCode =
+      commune === null
+        ? DEPARTEMENT_PAR_DEFAUT
+        : codeDepartementDuCodeInsee(commune)
 
     const membres = await lireLesMembres({
       coordinateurId,

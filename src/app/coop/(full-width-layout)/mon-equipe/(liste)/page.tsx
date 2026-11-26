@@ -9,7 +9,7 @@ import { authenticateCoordinateur } from '@/features/authentification/middleware
 import { default as BoutonExporter } from '@/features/equipe/abilities/exporter-les-membres/ui/slots/BoutonExporter.slot'
 import { default as BoutonInviterUnePersonne } from '@/features/equipe/abilities/inviter-des-membres/ui/slots/BoutonInviterUnePersonne.slot'
 import { listerLesMembres } from '@/features/equipe/abilities/lister-les-membres/domain/lister-les-membres'
-import { lireLeDepartementDuCoordinateur } from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/departement-du-coordinateur.query'
+import { lireLaCommuneDuCoordinateur } from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/commune-du-coordinateur.query'
 import { lireLesMembres } from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/lister-les-membres.query'
 import {
   type ParametresDeLaListe,
@@ -40,7 +40,7 @@ const Page = async (props: { searchParams: Promise<ParametresDeLaListe> }) => {
 
   const membres = await listerLesMembres({
     lireLeCoordinateur,
-    lireLeDepartementDuCoordinateur,
+    lireLaCommuneDuCoordinateur,
     lireLesMembres,
   })({
     maintenant: new Date(),

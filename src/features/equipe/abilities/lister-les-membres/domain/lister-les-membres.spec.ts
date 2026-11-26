@@ -1,6 +1,6 @@
 import { Page, PageSize, Search, Sort } from '@arckit/resultset'
 import { describe, expect, it } from 'vitest'
-import { CodeDepartement } from '@/libraries/insee'
+import { CodeDepartement, CodeInsee } from '@/libraries/insee'
 import {
   type CoordinateurDeLEquipe,
   CoordinateurId,
@@ -29,6 +29,8 @@ const coordinateur: CoordinateurDeLEquipe = {
 
 const departementCode = CodeDepartement('69')
 
+const communeDeLEmployeuse = CodeInsee('69123')
+
 const membres: Omit<MembresDeLEquipe, 'coordinateur'> = {
   items: [],
   statistiques: {
@@ -52,10 +54,10 @@ const membreActif: Lecteur = {
 const maintenant = new Date('2026-10-14T09:00:00Z')
 
 describe('lister les membres d’une équipe', () => {
-  it('rend les membres avec le coordinateur de l’équipe', async () => {
+  it('rend les membres avec le coordinateur de l’équipe, situé par la commune de son employeuse', async () => {
     const lister = listerLesMembres({
       lireLeCoordinateur: async () => coordinateur,
-      lireLeDepartementDuCoordinateur: async () => departementCode,
+      lireLaCommuneDuCoordinateur: async () => communeDeLEmployeuse,
       lireLesMembres: async () => membres,
     })
 
@@ -74,10 +76,38 @@ describe('lister les membres d’une équipe', () => {
     })
   })
 
+  it('situe dans le département par défaut un coordinateur sans commune d’employeuse', async () => {
+    const lister = listerLesMembres({
+      lireLeCoordinateur: async () => coordinateur,
+      lireLaCommuneDuCoordinateur: async () => null,
+      lireLesMembres: async () => membres,
+    })
+
+    expect(
+      await lister({
+        coordinateurId,
+        lecteur: membreActif,
+        criteres,
+        page: Page(1),
+        pageSize: PageSize(20),
+        maintenant,
+      }),
+    ).toEqual({
+      success: true,
+      data: {
+        coordinateur: {
+          ...coordinateur,
+          departementCode: CodeDepartement('75'),
+        },
+        ...membres,
+      },
+    })
+  })
+
   it('est refusé à qui n’est ni membre actif ni gestionnaire de l’équipe', async () => {
     const lister = listerLesMembres({
       lireLeCoordinateur: async () => coordinateur,
-      lireLeDepartementDuCoordinateur: async () => departementCode,
+      lireLaCommuneDuCoordinateur: async () => communeDeLEmployeuse,
       lireLesMembres: async () => membres,
     })
 
@@ -99,7 +129,7 @@ describe('lister les membres d’une équipe', () => {
   it('échoue quand le coordinateur de l’équipe est introuvable', async () => {
     const lister = listerLesMembres({
       lireLeCoordinateur: async () => null,
-      lireLeDepartementDuCoordinateur: async () => departementCode,
+      lireLaCommuneDuCoordinateur: async () => communeDeLEmployeuse,
       lireLesMembres: async () => membres,
     })
 
@@ -117,7 +147,7 @@ describe('lister les membres d’une équipe', () => {
   it('rend les membres au coordinateur de l’équipe', async () => {
     const lister = listerLesMembres({
       lireLeCoordinateur: async () => coordinateur,
-      lireLeDepartementDuCoordinateur: async () => departementCode,
+      lireLaCommuneDuCoordinateur: async () => communeDeLEmployeuse,
       lireLesMembres: async () => membres,
     })
 
@@ -142,7 +172,7 @@ describe('lister les membres d’une équipe', () => {
   it('est refusé au coordinateur d’une autre équipe', async () => {
     const lister = listerLesMembres({
       lireLeCoordinateur: async () => coordinateur,
-      lireLeDepartementDuCoordinateur: async () => departementCode,
+      lireLaCommuneDuCoordinateur: async () => communeDeLEmployeuse,
       lireLesMembres: async () => membres,
     })
 

@@ -3,7 +3,7 @@ import { Page, PageSize } from '@arckit/resultset'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { type MembresDeLEquipe } from '@/features/equipe/abilities/lister-les-membres/domain/index'
 import { listerLesMembres as listerLesMembresAvec } from '@/features/equipe/abilities/lister-les-membres/domain/lister-les-membres'
-import { lireLeDepartementDuCoordinateur } from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/departement-du-coordinateur.query'
+import { lireLaCommuneDuCoordinateur } from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/commune-du-coordinateur.query'
 import { lireLesMembres } from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/lister-les-membres.query'
 import { CoordinateurId, type Lecteur } from '@/features/equipe/domain'
 import {
@@ -20,7 +20,7 @@ import { subDays } from '@/libraries/date'
 
 const listerLesMembres = listerLesMembresAvec({
   lireLeCoordinateur,
-  lireLeDepartementDuCoordinateur,
+  lireLaCommuneDuCoordinateur,
   lireLesMembres,
 })
 

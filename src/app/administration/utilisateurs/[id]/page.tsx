@@ -34,7 +34,7 @@ import { consulterHistoriqueEmployeuses } from '@/features/employeuse/abilities/
 import { historiqueEmployeusesAffichage } from '@/features/employeuse/abilities/consulter-historique-employeuses/ui/presenters/historique-employeuses.presenter'
 import { HistoriqueDesEmployeuses } from '@/features/employeuse/abilities/consulter-historique-employeuses/ui/slots/HistoriqueDesEmployeuses.slot'
 import { listerLesMembres } from '@/features/equipe/abilities/lister-les-membres/domain/lister-les-membres'
-import { lireLeDepartementDuCoordinateur } from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/departement-du-coordinateur.query'
+import { lireLaCommuneDuCoordinateur } from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/commune-du-coordinateur.query'
 import { lireLesMembres } from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/lister-les-membres.query'
 import {
   type ParametresDeLaListe,
@@ -98,7 +98,7 @@ const sectionEquipe = async (
   const administrateur = await authenticateUser()
   const membres = await listerLesMembres({
     lireLeCoordinateur,
-    lireLeDepartementDuCoordinateur,
+    lireLaCommuneDuCoordinateur,
     lireLesMembres,
   })({
     maintenant: new Date(),

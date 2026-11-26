@@ -5,7 +5,7 @@ import { metadataTitle } from '@/configuration/projet'
 import { authenticateUser } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
 import { default as BoutonExporter } from '@/features/equipe/abilities/exporter-les-membres/ui/slots/BoutonExporter.slot'
 import { listerLesMembres } from '@/features/equipe/abilities/lister-les-membres/domain/lister-les-membres'
-import { lireLeDepartementDuCoordinateur } from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/departement-du-coordinateur.query'
+import { lireLaCommuneDuCoordinateur } from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/commune-du-coordinateur.query'
 import {
   estMembreActif,
   lireLesMembres,
@@ -45,7 +45,7 @@ const Page = async (props: {
 
   const membres = await listerLesMembres({
     lireLeCoordinateur,
-    lireLeDepartementDuCoordinateur,
+    lireLaCommuneDuCoordinateur,
     lireLesMembres,
   })({
     maintenant: new Date(),

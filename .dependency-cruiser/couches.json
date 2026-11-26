@@ -165,6 +165,7 @@
     "activites/abilities/exporter-les-accompagnements-par-departement/domain",
     "activites/abilities/rechercher-les-lieux-des-statistiques/domain",
     "authentification/domain",
+    "equipe/abilities/lister-les-membres/domain",
     "lieux-activite/abilities/mesurer-la-visibilite-sur-la-cartographie/domain",
     "mon-reseau/abilities/consulter-le-reseau-du-departement/domain",
     "mon-reseau/abilities/consulter-les-lieux-du-departement/domain",

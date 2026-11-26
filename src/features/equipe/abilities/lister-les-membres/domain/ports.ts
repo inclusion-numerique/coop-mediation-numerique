@@ -1,5 +1,5 @@
 import type { Page, PageSize } from '@arckit/resultset'
-import type { CodeDepartement } from '@/libraries/insee'
+import type { CodeInsee } from '@/libraries/insee'
 import type {
   CoordinateurId,
   CriteresEquipe,
@@ -7,9 +7,9 @@ import type {
 } from '../../../domain'
 import type { MembresDeLEquipe } from './membres-de-l-equipe'
 
-export type LireLeDepartementDuCoordinateur = (
+export type LireLaCommuneDuCoordinateur = (
   coordinateurId: CoordinateurId,
-) => Promise<CodeDepartement>
+) => Promise<CodeInsee | null>
 
 export type LireLesMembres = (lecture: {
   readonly coordinateurId: CoordinateurId
@@ -21,6 +21,6 @@ export type LireLesMembres = (lecture: {
 
 export type ListerLesMembresPorts = {
   readonly lireLeCoordinateur: LireLeCoordinateur
-  readonly lireLeDepartementDuCoordinateur: LireLeDepartementDuCoordinateur
+  readonly lireLaCommuneDuCoordinateur: LireLaCommuneDuCoordinateur
   readonly lireLesMembres: LireLesMembres
 }
