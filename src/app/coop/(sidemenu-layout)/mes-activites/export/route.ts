@@ -11,7 +11,6 @@ import { filtresDeToutesLesActivites } from '@/features/activites/ui/filtres/tou
 import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
 import { utilisateurDuJetonDeSession } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
 import { jetonDeSessionDesCookies } from '@/features/authentification/implementations/session/session-token-from-cookies.query'
-import { beneficiairesInitiaux } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/domain/beneficiaires-initiaux'
 import { beneficiairesProposes } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/implementations/prisma/rechercher-beneficiaires.query'
 import { optionsDesBeneficiairesInitiaux } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/ui/presenters/options-des-beneficiaires-initiaux.presenter'
 import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
@@ -56,12 +55,14 @@ export const GET = async (request: NextRequest) => {
         tagsVisiblesPar(acteurDe(profilDeLaSession(user))),
       ),
       beneficiaires: async (ids) =>
-        optionsDesBeneficiairesInitiaux(
-          await beneficiairesInitiaux(beneficiairesProposes)({
-            mediateurId: user.mediateur ? MediateurId(user.mediateur.id) : null,
-            includeBeneficiaireIds: ids.map(BeneficiaireId),
-          }),
-        ),
+        user.mediateur
+          ? optionsDesBeneficiairesInitiaux(
+              await beneficiairesProposes({
+                mediateurId: MediateurId(user.mediateur.id),
+                includeBeneficiaireIds: ids.map(BeneficiaireId),
+              }),
+            )
+          : [],
     }),
   ])
   const classeur = classeurDeMesAccompagnements({
