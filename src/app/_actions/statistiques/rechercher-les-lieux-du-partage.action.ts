@@ -10,14 +10,17 @@ import { rechercherLesLieuxDesStatistiques } from '@/features/activites/abilitie
 import { optionDeLieu } from '@/features/activites/abilities/rechercher-les-lieux-des-statistiques/ui/presenters/options-de-lieux.presenter'
 import { perimetreDeLUtilisateur } from '@/features/activites/implementations/session/perimetre.query'
 import { utilisateurDeLaSessionParId } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
-import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage/implementations/prisma/resoudre-un-lien-de-partage.query'
+import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage/domain'
+import { lireLePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage/implementations/prisma/partage.query'
 import { utilisateurDuPartage } from '@/features/statistiques/domain/utilisateur-du-partage'
 import { withInput } from '@/libraries/nextjs'
 
 const rechercherDansLePartage = actionBuilder()
   .use(withInput(RechercherLesLieuxDuPartageValidation))
   .execute(async ({ input: { partage, genre, recherche } }) => {
-    const lien = await resoudreUnLienDePartage(partage)
+    const lien = await resoudreUnLienDePartage({ lirePartage: lireLePartage })(
+      partage,
+    )
     if (!lien.success) return []
     const perimetre = perimetreDeLUtilisateur(
       utilisateurDuPartage(

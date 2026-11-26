@@ -62,7 +62,8 @@ import { filtresDesStatistiques } from '@/features/activites/ui/filtres/statisti
 import { barreDesStatistiquesAvec } from '@/features/activites/ui/presenters/barre-des-statistiques.presenter'
 import { BarreDesStatistiques } from '@/features/activites/ui/slots/BarreDesStatistiques.slot'
 import { utilisateurDeLaSessionParId } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
-import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage/implementations/prisma/resoudre-un-lien-de-partage.query'
+import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage/domain'
+import { lireLePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage/implementations/prisma/partage.query'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/rdvs-des-activites.query'
 import { StatistiquesPartageesPage } from '@/features/statistiques/abilities/consulter-des-statistiques-partagees/ui/pages/StatistiquesPartageesPage'
 import { utilisateurDuPartage } from '@/features/statistiques/domain/utilisateur-du-partage'
@@ -106,7 +107,9 @@ const Page = async ({ params, searchParams }: PageProps) => {
   const shareId = (await params).shareId
   const parametres = await searchParams
 
-  const partage = await resoudreUnLienDePartage(shareId)
+  const partage = await resoudreUnLienDePartage({ lirePartage: lireLePartage })(
+    shareId,
+  )
   if (!partage.success) return notFound()
 
   const user = utilisateurDuPartage(

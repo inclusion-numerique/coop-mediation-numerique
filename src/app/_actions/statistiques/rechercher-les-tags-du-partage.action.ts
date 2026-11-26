@@ -3,7 +3,8 @@
 import { actionBuilder } from '@/configuration/nextjs'
 import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
 import { utilisateurDeLaSessionParId } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
-import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage/implementations/prisma/resoudre-un-lien-de-partage.query'
+import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage/domain'
+import { lireLePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage/implementations/prisma/partage.query'
 import { utilisateurDuPartage } from '@/features/statistiques/domain/utilisateur-du-partage'
 import { RechercherDesTagsDuPartageValidation } from '@/features/tags/abilities/rechercher-des-tags/action/rechercher-des-tags.validation'
 import { rechercherDesTags } from '@/features/tags/abilities/rechercher-des-tags/implementations/prisma/rechercher-des-tags.query'
@@ -14,7 +15,9 @@ import { withInput } from '@/libraries/nextjs'
 const rechercherDansLePartage = actionBuilder()
   .use(withInput(RechercherDesTagsDuPartageValidation))
   .execute(async ({ input: { partage, recherche, exclus } }) => {
-    const lien = await resoudreUnLienDePartage(partage)
+    const lien = await resoudreUnLienDePartage({ lirePartage: lireLePartage })(
+      partage,
+    )
     if (!lien.success) return []
     const acteur = acteurDe(
       profilDeLaSession(
