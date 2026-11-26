@@ -14,7 +14,9 @@ import {
 import type { BeneficiaireIdentifie } from '@/features/beneficiaire/domain/beneficiaire'
 import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
 
-let lastCreated: BeneficiaireIdentifie | undefined
+const contexte: {
+  lastCreated?: BeneficiaireIdentifie | undefined
+} = {}
 
 const creer = async (form: Record<string, unknown>): Promise<void> => {
   const beneficiaire = CreerBeneficiaireValidation.parse(form)
@@ -24,8 +26,8 @@ const creer = async (form: Record<string, unknown>): Promise<void> => {
     mediateurId: testMediateurId,
     maintenant: new Date(),
   })
-  lastCreated = creation.data
-  suivreLeBeneficiaire(lastCreated.id)
+  contexte.lastCreated = creation.data
+  suivreLeBeneficiaire(contexte.lastCreated.id)
 }
 
 When(
@@ -47,8 +49,8 @@ When('je crée un bénéficiaire né en {int}', async (annee: number) => {
 Then(
   'le bénéficiaire est créé avec les données suivantes',
   (dataTable: DataTable) => {
-    assert.ok(lastCreated, 'Aucun bénéficiaire créé')
-    assertMatchesDataTable(dataTable)(lastCreated)
+    assert.ok(contexte.lastCreated, 'Aucun bénéficiaire créé')
+    assertMatchesDataTable(dataTable)(contexte.lastCreated)
   },
 )
 
@@ -63,6 +65,6 @@ Then(
 )
 
 Then("la tranche d'âge du bénéficiaire est {string}", (expected: string) => {
-  assert.ok(lastCreated, 'Aucun bénéficiaire créé')
-  assert.strictEqual(lastCreated.trancheAge, expected)
+  assert.ok(contexte.lastCreated, 'Aucun bénéficiaire créé')
+  assert.strictEqual(contexte.lastCreated.trancheAge, expected)
 })

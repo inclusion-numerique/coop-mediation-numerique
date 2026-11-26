@@ -20,12 +20,14 @@ const fusionnerBeneficiaires = fusionnerBeneficiairesAvec({
 
 type FusionResult = Awaited<ReturnType<typeof fusionnerBeneficiaires>>
 
-let destinationId: string | undefined
-let sourceId: string | undefined
-let result: FusionResult | undefined
+const contexte: {
+  destinationId?: string | undefined
+  sourceId?: string | undefined
+  result?: FusionResult | undefined
+} = {}
 
 Given('un bénéficiaire destination sans email', async () => {
-  destinationId = await seedBeneficiaire({
+  contexte.destinationId = await seedBeneficiaire({
     prenom: 'Jean',
     nom: 'Dupont',
     email: null,
@@ -33,33 +35,37 @@ Given('un bénéficiaire destination sans email', async () => {
 })
 
 Given("un bénéficiaire source avec l'email {string}", async (email: string) => {
-  sourceId = await seedBeneficiaire({ prenom: 'Jean', nom: 'Dupont', email })
+  contexte.sourceId = await seedBeneficiaire({
+    prenom: 'Jean',
+    nom: 'Dupont',
+    email,
+  })
 })
 
 When('je fusionne la source dans la destination', async () => {
-  assert.ok(sourceId && destinationId)
-  result = await fusionnerBeneficiaires({
-    sourceId: BeneficiaireId(sourceId),
-    destinationId: BeneficiaireId(destinationId),
+  assert.ok(contexte.sourceId && contexte.destinationId)
+  contexte.result = await fusionnerBeneficiaires({
+    sourceId: BeneficiaireId(contexte.sourceId),
+    destinationId: BeneficiaireId(contexte.destinationId),
     mediateurId: testMediateurId,
     maintenant: new Date(),
   })
 })
 
 When('je fusionne une source inexistante dans la destination', async () => {
-  assert.ok(destinationId)
-  result = await fusionnerBeneficiaires({
+  assert.ok(contexte.destinationId)
+  contexte.result = await fusionnerBeneficiaires({
     sourceId: BeneficiaireId(v4()),
-    destinationId: BeneficiaireId(destinationId),
+    destinationId: BeneficiaireId(contexte.destinationId),
     mediateurId: testMediateurId,
     maintenant: new Date(),
   })
 })
 
 When('je fusionne la source dans une destination inexistante', async () => {
-  assert.ok(sourceId)
-  result = await fusionnerBeneficiaires({
-    sourceId: BeneficiaireId(sourceId),
+  assert.ok(contexte.sourceId)
+  contexte.result = await fusionnerBeneficiaires({
+    sourceId: BeneficiaireId(contexte.sourceId),
     destinationId: BeneficiaireId(v4()),
     mediateurId: testMediateurId,
     maintenant: new Date(),
@@ -67,29 +73,32 @@ When('je fusionne la source dans une destination inexistante', async () => {
 })
 
 Then('la fusion réussit', () => {
-  assert.ok(result?.success, 'La fusion a échoué')
+  assert.ok(contexte.result?.success, 'La fusion a échoué')
 })
 
 Then("la destination porte l'email {string}", async (email: string) => {
-  assert.ok(destinationId)
+  assert.ok(contexte.destinationId)
   const row = await prismaClient.beneficiaire.findUniqueOrThrow({
-    where: { id: destinationId },
+    where: { id: contexte.destinationId },
     select: { email: true },
   })
   assert.strictEqual(row.email, email)
 })
 
 Then('la source est marquée fusionnée vers la destination', async () => {
-  assert.ok(sourceId)
+  assert.ok(contexte.sourceId)
   const row = await prismaClient.beneficiaire.findUniqueOrThrow({
-    where: { id: sourceId },
+    where: { id: contexte.sourceId },
     select: { suppression: true, fusionVersId: true },
   })
   assert.ok(row.suppression, 'La source devrait être supprimée')
-  assert.strictEqual(row.fusionVersId, destinationId)
+  assert.strictEqual(row.fusionVersId, contexte.destinationId)
 })
 
 Then("la fusion échoue avec l'erreur {string}", (tag: string) => {
-  assert.ok(result && !result.success, 'La fusion aurait dû échouer')
-  assert.strictEqual(result.error._tag, tag)
+  assert.ok(
+    contexte.result && !contexte.result.success,
+    'La fusion aurait dû échouer',
+  )
+  assert.strictEqual(contexte.result.error._tag, tag)
 })

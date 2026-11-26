@@ -16,7 +16,9 @@ import { Prenom } from '@/features/beneficiaire/domain/prenom'
 import { StatutSocial } from '@/features/beneficiaire/domain/statut-social'
 import { TrancheAge } from '@/features/beneficiaire/domain/tranche-age'
 
-let result: { importes: number } | undefined
+const contexte: {
+  result?: { importes: number } | undefined
+} = {}
 
 const beneficiaireAImporter = (
   prenom: string,
@@ -45,7 +47,7 @@ When("j'importe {int} bénéficiaires", async (count: number) => {
     mediateurId: testMediateurId,
     maintenant: new Date(),
   })
-  result = { importes: importation.data.beneficiaires.length }
+  contexte.result = { importes: importation.data.beneficiaires.length }
 
   const created = await prismaClient.beneficiaire.findMany({
     where: {
@@ -59,5 +61,5 @@ When("j'importe {int} bénéficiaires", async (count: number) => {
 })
 
 Then("l'import crée {int} bénéficiaires", (count: number) => {
-  assert.strictEqual(result?.importes, count)
+  assert.strictEqual(contexte.result?.importes, count)
 })

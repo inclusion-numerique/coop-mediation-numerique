@@ -11,14 +11,16 @@ import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
 
 type ConsultationResult = Awaited<ReturnType<typeof consulterBeneficiaire>>
 
-let result: ConsultationResult | undefined
+const contexte: {
+  result?: ConsultationResult | undefined
+} = {}
 
 When(
   'je consulte un bénéficiaire enregistré avec les données suivantes',
   async (dataTable: DataTable) => {
     const data = Object.fromEntries(dataTable.rows())
     const id = await seedBeneficiaire({ prenom: data.prenom, nom: data.nom })
-    result = await consulterBeneficiaire({
+    contexte.result = await consulterBeneficiaire({
       beneficiaireId: BeneficiaireId(id),
       mediateurId: testMediateurId,
     })
@@ -26,7 +28,7 @@ When(
 )
 
 When('je consulte un bénéficiaire inexistant', async () => {
-  result = await consulterBeneficiaire({
+  contexte.result = await consulterBeneficiaire({
     beneficiaireId: BeneficiaireId(v4()),
     mediateurId: testMediateurId,
   })
@@ -35,11 +37,11 @@ When('je consulte un bénéficiaire inexistant', async () => {
 Then(
   'la consultation retourne le bénéficiaire avec les données suivantes',
   (dataTable: DataTable) => {
-    assert.ok(result, 'Aucun bénéficiaire consulté')
-    assertMatchesDataTable(dataTable)(result)
+    assert.ok(contexte.result, 'Aucun bénéficiaire consulté')
+    assertMatchesDataTable(dataTable)(contexte.result)
   },
 )
 
 Then('la consultation ne retourne aucun bénéficiaire', () => {
-  assert.strictEqual(result, null)
+  assert.strictEqual(contexte.result, null)
 })

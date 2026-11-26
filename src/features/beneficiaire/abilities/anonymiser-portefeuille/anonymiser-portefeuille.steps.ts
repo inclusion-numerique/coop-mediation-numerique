@@ -7,7 +7,9 @@ import {
   semerPortefeuille,
 } from '@/features/beneficiaire/beneficiaire.cucumber'
 
-let anonymises: number | undefined
+const contexte: {
+  anonymises?: number | undefined
+} = {}
 
 Given('un portefeuille de deux bénéficiaires identifiés', async () => {
   await semerPortefeuille()
@@ -26,7 +28,7 @@ Given('un portefeuille de deux bénéficiaires de Nice', async () => {
 })
 
 When("j'anonymise le portefeuille de ce médiateur", async () => {
-  anonymises = (
+  contexte.anonymises = (
     await anonymiserPortefeuille({
       mediateurId: portefeuilleSeme().mediateurId,
     })
@@ -34,7 +36,7 @@ When("j'anonymise le portefeuille de ce médiateur", async () => {
 })
 
 When("j'anonymise à nouveau le portefeuille de ce médiateur", async () => {
-  anonymises = (
+  contexte.anonymises = (
     await anonymiserPortefeuille({
       mediateurId: portefeuilleSeme().mediateurId,
     })
@@ -42,11 +44,11 @@ When("j'anonymise à nouveau le portefeuille de ce médiateur", async () => {
 })
 
 Then("l'anonymisation porte sur {int} bénéficiaire", (attendu: number) => {
-  assert.strictEqual(anonymises, attendu)
+  assert.strictEqual(contexte.anonymises, attendu)
 })
 
 Then("l'anonymisation porte sur {int} bénéficiaires", (attendu: number) => {
-  assert.strictEqual(anonymises, attendu)
+  assert.strictEqual(contexte.anonymises, attendu)
 })
 
 Then("les bénéficiaires du portefeuille n'ont plus d'identité", async () => {

@@ -8,8 +8,10 @@ import {
 
 type Detection = Awaited<ReturnType<typeof detecterDoublons>>
 
-let seededIds: string[] = []
-let detection: Detection | undefined
+const contexte: {
+  seededIds: string[]
+  detection?: Detection | undefined
+} = { seededIds: [] }
 
 Given('un doublon évident pour ce médiateur', async () => {
   const data = {
@@ -18,7 +20,7 @@ Given('un doublon évident pour ce médiateur', async () => {
     telephone: '0102030405',
     email: 'dup@example.com',
   }
-  seededIds = await Promise.all([
+  contexte.seededIds = await Promise.all([
     seedBeneficiaire(data),
     seedBeneficiaire(data),
   ])
@@ -26,14 +28,14 @@ Given('un doublon évident pour ce médiateur', async () => {
 
 Given('un doublon sans téléphone ni email pour ce médiateur', async () => {
   const data = { prenom: 'Camille', nom: 'Testsanscontact' }
-  seededIds = await Promise.all([
+  contexte.seededIds = await Promise.all([
     seedBeneficiaire(data),
     seedBeneficiaire(data),
   ])
 })
 
 Given('deux bénéficiaires distincts pour ce médiateur', async () => {
-  seededIds = await Promise.all([
+  contexte.seededIds = await Promise.all([
     seedBeneficiaire({
       prenom: 'Alicia',
       nom: 'Testuniquea',
@@ -50,23 +52,27 @@ Given('deux bénéficiaires distincts pour ce médiateur', async () => {
 })
 
 When('je détecte les doublons', async () => {
-  detection = await detecterDoublons({ mediateurId: testMediateurId })
+  contexte.detection = await detecterDoublons({ mediateurId: testMediateurId })
 })
 
 Then('un doublon impliquant les bénéficiaires créés est détecté', () => {
-  assert.ok(detection)
-  const ids = new Set<string>(seededIds)
+  assert.ok(contexte.detection)
+  const ids = new Set<string>(contexte.seededIds)
   assert.ok(
-    detection.duplicates.some((d) => ids.has(d.a.id) && ids.has(d.b.id)),
+    contexte.detection.duplicates.some(
+      (d) => ids.has(d.a.id) && ids.has(d.b.id),
+    ),
     'Le doublon créé devrait être détecté',
   )
 })
 
 Then("aucun doublon n'implique les bénéficiaires créés", () => {
-  assert.ok(detection)
-  const ids = new Set<string>(seededIds)
+  assert.ok(contexte.detection)
+  const ids = new Set<string>(contexte.seededIds)
   assert.ok(
-    detection.duplicates.every((d) => !ids.has(d.a.id) && !ids.has(d.b.id)),
+    contexte.detection.duplicates.every(
+      (d) => !ids.has(d.a.id) && !ids.has(d.b.id),
+    ),
     'Aucun doublon ne devrait impliquer les bénéficiaires distincts',
   )
 })

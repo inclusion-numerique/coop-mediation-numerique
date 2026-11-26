@@ -9,13 +9,15 @@ import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
 
 type SearchResult = Awaited<ReturnType<typeof rechercherBeneficiaires>>
 
-let seededIds: string[] = []
-let searchResult: SearchResult | undefined
+const contexte: {
+  seededIds: string[]
+  searchResult?: SearchResult | undefined
+} = { seededIds: [] }
 
 Given(
   'les bénéficiaires de recherche suivants',
   async (dataTable: DataTable) => {
-    seededIds = await Promise.all(
+    contexte.seededIds = await Promise.all(
       dataTable.hashes().map(({ prenom, nom }) =>
         seedBeneficiaire({
           ...(prenom === undefined ? {} : { prenom }),
@@ -27,20 +29,20 @@ Given(
 )
 
 When('je recherche {string}', async (query: string) => {
-  searchResult = await rechercherBeneficiaires({
+  contexte.searchResult = await rechercherBeneficiaires({
     mediateurId: testMediateurId,
     query,
   })
 })
 
 When('je recherche {string} en excluant le premier', async (query: string) => {
-  searchResult = await rechercherBeneficiaires({
+  contexte.searchResult = await rechercherBeneficiaires({
     mediateurId: testMediateurId,
     query,
-    excludeIds: [BeneficiaireId(seededIds[0] ?? '')],
+    excludeIds: [BeneficiaireId(contexte.seededIds[0] ?? '')],
   })
 })
 
 Then('la recherche retourne {int} bénéficiaire(s)', (count: number) => {
-  assert.strictEqual(searchResult?.beneficiaires.length, count)
+  assert.strictEqual(contexte.searchResult?.beneficiaires.length, count)
 })

@@ -25,7 +25,9 @@ const user: AuteurDExport = {
   role: 'Médiateur',
 }
 
-let workbook: Workbook | undefined
+const contexte: {
+  workbook?: Workbook | undefined
+} = {}
 
 const exportedNoms = (book: Workbook | undefined): string[] => {
   const worksheet = book?.getWorksheet('Bénéficiaires')
@@ -70,18 +72,18 @@ When(
       auteur: user,
       maintenant: new Date(),
     })
-    workbook = exportation.data
+    contexte.workbook = exportation.data
   },
 )
 
 Then('le classeur exporté contient {int} bénéficiaire(s)', (count: number) => {
-  assert.strictEqual(exportedNoms(workbook).length, count)
+  assert.strictEqual(exportedNoms(contexte.workbook).length, count)
 })
 
 Then('le classeur exporté contient {string}', (nom: string) => {
-  assert.ok(exportedNoms(workbook).includes(nom))
+  assert.ok(exportedNoms(contexte.workbook).includes(nom))
 })
 
 Then('le classeur exporté ne contient pas {string}', (nom: string) => {
-  assert.ok(!exportedNoms(workbook).includes(nom))
+  assert.ok(!exportedNoms(contexte.workbook).includes(nom))
 })

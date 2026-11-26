@@ -11,7 +11,9 @@ import {
 
 type ListResult = Awaited<ReturnType<typeof listerBeneficiaires>>
 
-let listResult: ListResult | undefined
+const contexte: {
+  listResult?: ListResult | undefined
+} = {}
 
 const toSortField = (value: string): ColonneTriableDesBeneficiaires => {
   const field = colonnesTriablesDesBeneficiaires.find(
@@ -38,7 +40,7 @@ Given(
 When(
   'je liste les bénéficiaires avec la recherche {string}',
   async (recherche: string) => {
-    listResult = await listerBeneficiaires({
+    contexte.listResult = await listerBeneficiaires({
       mediateurId: testMediateurId,
       search: Search(recherche),
     })
@@ -48,7 +50,7 @@ When(
 When(
   'je liste les bénéficiaires avec la recherche {string} par pages de {int}',
   async (recherche: string, pageSize: number) => {
-    listResult = await listerBeneficiaires({
+    contexte.listResult = await listerBeneficiaires({
       mediateurId: testMediateurId,
       search: Search(recherche),
       pageSize: PageSize(pageSize),
@@ -59,7 +61,7 @@ When(
 When(
   'je liste les bénéficiaires triés par {string} en {string}',
   async (field: string, direction: string) => {
-    listResult = await listerBeneficiaires({
+    contexte.listResult = await listerBeneficiaires({
       mediateurId: testMediateurId,
       sort: Sort(toSortField(field), SortDirection(direction)),
     })
@@ -67,19 +69,21 @@ When(
 )
 
 Then('la liste contient {int} bénéficiaire(s)', (count: number) => {
-  assert.strictEqual(listResult?.items.length, count)
+  assert.strictEqual(contexte.listResult?.items.length, count)
 })
 
 Then('le premier bénéficiaire est {string}', (nom: string) => {
-  assert.strictEqual(listResult?.items[0]?.nom, nom)
+  assert.strictEqual(contexte.listResult?.items[0]?.nom, nom)
 })
 
 Then('le nombre total de correspondances est {int}', (count: number) => {
-  assert.strictEqual(listResult?.totalItems, count)
+  assert.strictEqual(contexte.listResult?.totalItems, count)
 })
 
 Then('le nombre de pages est {int}', (count: number) => {
-  assert.ok(listResult)
-  const totalPages = Math.ceil(listResult.totalItems / listResult.pageSize)
+  assert.ok(contexte.listResult)
+  const totalPages = Math.ceil(
+    contexte.listResult.totalItems / contexte.listResult.pageSize,
+  )
   assert.strictEqual(totalPages, count)
 })

@@ -43,10 +43,13 @@ export const nombreDeBeneficiairesDuMediateur = async (): Promise<number> =>
     })
   ).beneficiairesCount
 
-let beneficiairesCountBefore = 0
+const contexte: {
+  beneficiairesCountBefore: number
+  portefeuille?: PortefeuilleSeme | undefined
+} = { beneficiairesCountBefore: 0 }
 
 export const nombreDeBeneficiairesAuDebutDuScenario = (): number =>
-  beneficiairesCountBefore
+  contexte.beneficiairesCountBefore
 
 export const seedBeneficiaire = async (
   data: Partial<Prisma.BeneficiaireUncheckedCreateInput> = {},
@@ -69,7 +72,7 @@ BeforeAll({ timeout: 120_000 }, async () => {
 
 Before(async () => {
   trackedBeneficiaireIds.clear()
-  beneficiairesCountBefore = await nombreDeBeneficiairesDuMediateur()
+  contexte.beneficiairesCountBefore = await nombreDeBeneficiairesDuMediateur()
 })
 
 After(async () => {
@@ -85,11 +88,9 @@ type PortefeuilleSeme = {
   readonly mediateurId: string
 }
 
-let portefeuille: PortefeuilleSeme | undefined
-
 export const portefeuilleSeme = (): PortefeuilleSeme => {
-  if (!portefeuille) throw new Error('Aucun portefeuille semé')
-  return portefeuille
+  if (!contexte.portefeuille) throw new Error('Aucun portefeuille semé')
+  return contexte.portefeuille
 }
 
 export const semerPortefeuille = async (): Promise<PortefeuilleSeme> => {
@@ -119,14 +120,14 @@ export const semerPortefeuille = async (): Promise<PortefeuilleSeme> => {
     })),
   })
 
-  portefeuille = { userId, mediateurId: mediateur.id }
+  contexte.portefeuille = { userId, mediateurId: mediateur.id }
 
-  return portefeuille
+  return contexte.portefeuille
 }
 
 After(async () => {
-  const semé = portefeuille
-  portefeuille = undefined
+  const semé = contexte.portefeuille
+  contexte.portefeuille = undefined
   if (!semé) return
 
   await prismaClient.beneficiaire.deleteMany({
