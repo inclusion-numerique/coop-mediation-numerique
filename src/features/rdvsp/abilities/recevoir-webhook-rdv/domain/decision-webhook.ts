@@ -10,7 +10,7 @@ export type RdvConnu = {
   readonly compteRenduRegle: boolean
 }
 
-type RaisonIgnore =
+export type RaisonIgnore =
   | 'dejaSupprime'
   | 'horsFenetreDeSynchronisation'
   | 'reglageDuCompteRenduPreserve'

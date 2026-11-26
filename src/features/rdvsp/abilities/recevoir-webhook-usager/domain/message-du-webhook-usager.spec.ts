@@ -1,10 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { failure, type Result, success } from '@/libraries/result'
+import { PayloadInexploitable } from '../../../domain/errors'
 import { UsagerId } from '../../../domain/identifiants/usager-id'
-import {
-  type EchecDeRecevoirWebhookUsager,
-  PayloadInexploitable,
-} from './errors'
+import type { EchecDeRecevoirWebhookUsager } from './errors'
 import { messageDuWebhookUsager } from './message-du-webhook-usager'
 import type { WebhookUsagerTraite } from './webhook-usager-traite'
 

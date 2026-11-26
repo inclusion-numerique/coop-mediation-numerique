@@ -105,6 +105,22 @@ export const CompteRdvIntrouvable = (
   utilisateurId: UtilisateurCoopId,
 ): CompteRdvIntrouvable => ({ _tag: 'CompteRdvIntrouvable', utilisateurId })
 
+export type PayloadInexploitable = { readonly _tag: 'PayloadInexploitable' }
+
+export const PayloadInexploitable = (): PayloadInexploitable => ({
+  _tag: 'PayloadInexploitable',
+})
+
+export type RapprochementEchoue = {
+  readonly _tag: 'RapprochementEchoue'
+  readonly message: string
+}
+
+export const RapprochementEchoue = (message: string): RapprochementEchoue => ({
+  _tag: 'RapprochementEchoue',
+  message,
+})
+
 export type ErreurRdvApi =
   | JetonRevoque
   | AccesRefuse

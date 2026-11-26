@@ -1,9 +1,11 @@
 import { z } from 'zod'
 import { failure, success } from '@/libraries/result'
+import { PayloadInexploitable } from '../../../../domain/errors'
 import { RdvAgentId } from '../../../../domain/identifiants/rdv-agent-id'
 import { rdvPayload } from '../../../../implementations/api/rdv-service-public.payload'
 import { rdvToDomain } from '../../../../implementations/api/rdv-service-public.transfer'
-import type { LireNotificationRdv } from '../../domain/recevoir-webhook-rdv'
+import { AucunAgent } from '../../domain/errors'
+import type { LireNotificationRdv } from '../../domain/ports'
 
 /**
  * La notification reprend la forme d'un rendez-vous de l'API, à deux écarts près.
@@ -36,13 +38,13 @@ export const lireNotificationRdv: LireNotificationRdv = (payload) => {
   const analyse = notificationRdv.safeParse(payload)
 
   if (!analyse.success) {
-    return failure('payloadInexploitable')
+    return failure(PayloadInexploitable())
   }
 
   const agent = analyse.data.agents.at(0)
 
   if (agent === undefined) {
-    return failure('aucunAgent')
+    return failure(AucunAgent())
   }
 
   const agentId = RdvAgentId(agent.id)

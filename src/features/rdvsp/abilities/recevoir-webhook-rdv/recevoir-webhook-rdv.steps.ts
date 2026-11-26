@@ -1,6 +1,6 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
-import type { RecevoirWebhookRdv } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/domain/recevoir-webhook-rdv'
+import { messageDuWebhookRdv } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/domain/message-du-webhook-rdv'
 import { recevoirWebhookRdv } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/domain/recevoir-webhook-rdv'
 import { lireNotificationRdv } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/implementations/api/notification-rdv.params'
 import {
@@ -20,6 +20,7 @@ import {
   seedRdv,
   suivreUsagerRdv,
 } from '@/features/rdvsp/rdvsp.cucumber'
+import { success } from '@/libraries/result'
 
 const AGENT_ID = ID_TEST.compte + 11
 const RDV_ID = ID_TEST.rdv + 400
@@ -28,7 +29,7 @@ const USAGER_ID = ID_TEST.usager + 400
 const PARTICIPATION_ID = ID_TEST.participation + 400
 const MOTIF_ID = ID_TEST.organisation + 401
 
-let resultat: Awaited<ReturnType<RecevoirWebhookRdv>> | undefined
+let resultat: Awaited<ReturnType<typeof recevoir>> | undefined
 
 const recevoir = recevoirWebhookRdv({
   lireNotification: lireNotificationRdv,
@@ -37,10 +38,8 @@ const recevoir = recevoirWebhookRdv({
   organisationConnue,
   enregistrer: enregistrerRdvDeLaNotification,
   supprimer: supprimerRdvDeLaNotification,
-  // Le rapprochement des bénéficiaires a ses propres scénarios.
-  rapprocherBeneficiaires: async () => {
-    // Volontairement inerte.
-  },
+  lireLesUsagersARapprocher: async () => [],
+  rapprocherLesBeneficiaires: async () => success({ ecartes: 0 }),
 })
 
 /** Payload tel que RDV Service Public l'émet, catégorie de motif en chaîne comprise. */
@@ -220,16 +219,17 @@ When('RDV Service Public notifie la suppression du rendez-vous', async () => {
 })
 
 Then('la notification est traitée', () => {
-  assert.strictEqual(resultat?._tag, 'traite')
+  assert.ok(resultat, 'Aucune notification reçue')
+  assert.match(messageDuWebhookRdv(resultat), /^rendez-vous /)
 })
 
 Then(
   'la notification est ignorée pour la raison {string}',
   (raison: string) => {
-    assert.strictEqual(resultat?._tag, 'ignore')
+    assert.ok(resultat, 'Aucune notification reçue')
     assert.strictEqual(
-      resultat._tag === 'ignore' ? resultat.raison : undefined,
-      raison,
+      messageDuWebhookRdv(resultat),
+      `notification ignorée : ${raison}`,
     )
   },
 )

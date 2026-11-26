@@ -12,7 +12,6 @@ import { MediateurId as MediateurDuBeneficiaire } from '@/features/beneficiaire/
 import { messageDuWebhookRdv } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/domain/message-du-webhook-rdv'
 import { recevoirWebhookRdv } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/domain/recevoir-webhook-rdv'
 import { lireNotificationRdv } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/implementations/api/notification-rdv.params'
-import { rapprocherBeneficiairesDuRdv } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/implementations/prisma/rapprocher-beneficiaires-du-rdv.adapter'
 import {
   comptePourWebhook,
   enregistrerRdvDeLaNotification,
@@ -29,6 +28,8 @@ import {
   mettreAJourUsager,
 } from '@/features/rdvsp/abilities/recevoir-webhook-usager/implementations/prisma/webhook-usager.mutation'
 import { aiguillerNotificationWebhook } from '@/features/rdvsp/domain/webhook/aiguiller-notification-webhook'
+import { rapprocherLesBeneficiaires } from '@/features/rdvsp/implementations/prisma/rapprocher-les-beneficiaires.adapter'
+import { lireLesUsagersARapprocher } from '@/features/rdvsp/implementations/prisma/usagers-a-rapprocher.query'
 import { journaliserWebhook } from '@/features/rdvsp/implementations/webhook/journal-du-webhook.mutation'
 import { lireNotificationWebhook } from '@/features/rdvsp/implementations/webhook/notification-webhook.params'
 import {
@@ -57,8 +58,6 @@ const creerOuFusionnerLesUsagers = async ({
   return fusion.success ? fusion.data : { merges: [], skipped: [] }
 }
 
-const creerOuFusionnerLesBeneficiaires = creerOuFusionnerLesUsagers
-
 const recevoirLeRdv = recevoirWebhookRdv({
   lireNotification: lireNotificationRdv,
   comptePourWebhook,
@@ -66,9 +65,9 @@ const recevoirLeRdv = recevoirWebhookRdv({
   organisationConnue,
   enregistrer: enregistrerRdvDeLaNotification,
   supprimer: supprimerRdvDeLaNotification,
-  rapprocherBeneficiaires: rapprocherBeneficiairesDuRdv(
-    creerOuFusionnerLesBeneficiaires,
-    journaliserWebhook,
+  lireLesUsagersARapprocher,
+  rapprocherLesBeneficiaires: rapprocherLesBeneficiaires(
+    creerOuFusionnerLesUsagers,
   ),
 })
 

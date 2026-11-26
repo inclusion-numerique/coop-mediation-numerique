@@ -1,10 +1,21 @@
 import { describe, expect, it } from 'vitest'
 import { failure, success } from '@/libraries/result'
+import {
+  PayloadInexploitable,
+  RapprochementEchoue,
+} from '../../../domain/errors'
 import { MotifId } from '../../../domain/identifiants/motif-id'
 import { OrganisationId } from '../../../domain/identifiants/organisation-id'
+import { ParticipationId } from '../../../domain/identifiants/participation-id'
 import { RdvAgentId } from '../../../domain/identifiants/rdv-agent-id'
 import { RdvId } from '../../../domain/identifiants/rdv-id'
 import { RdvUuid } from '../../../domain/identifiants/rdv-uuid'
+import { UsagerId } from '../../../domain/identifiants/usager-id'
+import {
+  EmailExterne,
+  NomExterne,
+  PrenomExterne,
+} from '../../../domain/identite'
 import { NomAtelier, NomMotif } from '../../../domain/libelle'
 import { AdresseRdv } from '../../../domain/rdv/adresse-rdv'
 import { DureeEnMinutes } from '../../../domain/rdv/duree-en-minutes'
@@ -13,12 +24,11 @@ import type { Motif } from '../../../domain/rdv/motif'
 import type { Rdv } from '../../../domain/rdv/rdv'
 import { StatutPresence } from '../../../domain/rdv/statut-presence'
 import { UrlAgent } from '../../../domain/url-agent'
+import type { Usager } from '../../../domain/usager'
 import { EvenementWebhook } from '../../../domain/webhook/evenement-webhook'
 import type { RdvConnu } from './decision-webhook'
-import {
-  type DependancesRecevoirWebhookRdv,
-  recevoirWebhookRdv,
-} from './recevoir-webhook-rdv'
+import type { RecevoirWebhookRdvPorts } from './ports'
+import { recevoirWebhookRdv } from './recevoir-webhook-rdv'
 
 const agentId = RdvAgentId(4242)
 
@@ -42,9 +52,7 @@ const lieu = (id: number): Lieu => ({
   usageUnique: false,
 })
 
-const rdv = (
-  surcharge: Partial<Extract<Rdv, { collectif: false }>> = {},
-): Rdv => ({
+const rdv = (surcharge: Partial<Extract<Rdv, { collectif: false }>>): Rdv => ({
   id: RdvId(1),
   uuid: RdvUuid('0e1f2a3b-4c5d-6e7f-8a9b-0c1d2e3f4a5b'),
   agentId,
@@ -67,7 +75,7 @@ const rdv = (
 })
 
 const atelier = (nom: string): Rdv => ({
-  ...rdv(),
+  ...rdv({}),
   collectif: true,
   nom: NomAtelier(nom),
   participantsMax: null,
@@ -75,17 +83,73 @@ const atelier = (nom: string): Rdv => ({
 
 const fenetre = new Date('2026-08-01T00:00:00.000Z')
 
-const dependances: DependancesRecevoirWebhookRdv = {
-  lireNotification: () => success({ agentId, rdv: rdv() }),
+const mediateurId = 'b6f1a6a2-3c4d-4e5f-8a9b-0c1d2e3f4a5b'
+
+const usager: Usager = {
+  id: UsagerId(200),
+  prenom: PrenomExterne('Jean'),
+  nom: NomExterne('Dupont'),
+  email: EmailExterne('jean.dupont@example.com'),
+  telephone: null,
+  telephoneFormate: null,
+  creation: null,
+  invitationCreee: null,
+  invitationAcceptee: null,
+  dateNaissance: null,
+  coordonnees: {
+    adresse: null,
+    complementAdresse: null,
+    numeroAllocataire: null,
+    caisseAffiliation: null,
+    nomNaissance: null,
+  },
+  responsableId: null,
+  notifierParEmail: false,
+  notifierParSms: false,
+}
+
+const usagerExterne = {
+  rdvUserId: 200,
+  nom: 'Dupont',
+  prenom: 'Jean',
+  telephone: null,
+  email: 'jean.dupont@example.com',
+  adresse: null,
+  birthDate: null,
+}
+
+const avecParticipant = rdv({
+  participations: [
+    {
+      id: ParticipationId(1),
+      usagerId: UsagerId(200),
+      usager,
+      statutPresence: StatutPresence('unknown'),
+      notificationRappel: false,
+      notificationsCycleDeVie: false,
+    },
+  ],
+})
+
+const enregistre = (rdvRecu: Rdv) =>
+  success({
+    _tag: 'enregistre',
+    rdv: rdvRecu,
+    rapprochement: { _tag: 'sansObjet' },
+  })
+
+const dependances: RecevoirWebhookRdvPorts = {
+  lireNotification: () => success({ agentId, rdv: rdv({}) }),
   comptePourWebhook: async () => ({
     synchroniserDepuis: null,
-    mediateurId: 'b6f1a6a2-3c4d-4e5f-8a9b-0c1d2e3f4a5b',
+    mediateurId,
   }),
   rdvConnuParId: async () => null,
   organisationConnue: async () => true,
   enregistrer: async () => undefined,
   supprimer: async () => undefined,
-  rapprocherBeneficiaires: async () => undefined,
+  lireLesUsagersARapprocher: async () => [usagerExterne],
+  rapprocherLesBeneficiaires: async () => success({ ecartes: 0 }),
 }
 
 const misAJour = { evenement: EvenementWebhook('updated'), payload: {} }
@@ -97,12 +161,11 @@ const connu =
   (rdvConnu: Rdv, compteRenduRegle: boolean) =>
   async (): Promise<RdvConnu> => ({ rdv: rdvConnu, compteRenduRegle })
 
-describe('recevoirWebhookRdv', () => {
+describe('recevoir une notification portant sur un rendez-vous', () => {
   it('enregistre un rendez-vous inconnu', async () => {
-    expect(await recevoirWebhookRdv(dependances)(misAJour)).toEqual({
-      _tag: 'traite',
-      action: 'enregistre',
-    })
+    expect(await recevoirWebhookRdv(dependances)(misAJour)).toEqual(
+      enregistre(rdv({})),
+    )
   })
 
   it('enregistre le rendez-vous d’un compte sans médiateur', async () => {
@@ -114,16 +177,71 @@ describe('recevoirWebhookRdv', () => {
       }),
     })(misAJour)
 
-    expect(resultat).toEqual({ _tag: 'traite', action: 'enregistre' })
+    expect(resultat).toEqual(enregistre(rdv({})))
+  })
+
+  it('rapproche les bénéficiaires des participants du rendez-vous enregistré', async () => {
+    const resultat = await recevoirWebhookRdv({
+      ...dependances,
+      lireNotification: recu(avecParticipant),
+    })(misAJour)
+
+    expect(resultat).toEqual(
+      success({
+        _tag: 'enregistre',
+        rdv: avecParticipant,
+        rapprochement: {
+          _tag: 'reussi',
+          usagers: [usagerExterne],
+          mediateurId,
+          ecartes: 0,
+        },
+      }),
+    )
+  })
+
+  it('garde le rendez-vous enregistré quand le rapprochement échoue', async () => {
+    const resultat = await recevoirWebhookRdv({
+      ...dependances,
+      lireNotification: recu(avecParticipant),
+      rapprocherLesBeneficiaires: async () =>
+        failure(RapprochementEchoue('adresse illisible')),
+    })(misAJour)
+
+    expect(resultat).toEqual(
+      success({
+        _tag: 'enregistre',
+        rdv: avecParticipant,
+        rapprochement: {
+          _tag: 'echoue',
+          usagers: [usagerExterne],
+          mediateurId,
+          message: 'adresse illisible',
+        },
+      }),
+    )
+  })
+
+  it('ne rapproche rien pour un compte sans médiateur', async () => {
+    const resultat = await recevoirWebhookRdv({
+      ...dependances,
+      lireNotification: recu(avecParticipant),
+      comptePourWebhook: async () => ({
+        synchroniserDepuis: null,
+        mediateurId: null,
+      }),
+    })(misAJour)
+
+    expect(resultat).toEqual(enregistre(avecParticipant))
   })
 
   it('renonce à une notification dont le payload a changé de forme', async () => {
     const resultat = await recevoirWebhookRdv({
       ...dependances,
-      lireNotification: () => failure('payloadInexploitable'),
+      lireNotification: () => failure(PayloadInexploitable()),
     })(misAJour)
 
-    expect(resultat).toEqual({ _tag: 'ignore', raison: 'payloadInexploitable' })
+    expect(resultat).toEqual(failure({ _tag: 'PayloadInexploitable' }))
   })
 
   it('renonce à une notification pour un compte que La Coop ne suit pas', async () => {
@@ -132,7 +250,9 @@ describe('recevoirWebhookRdv', () => {
       comptePourWebhook: async () => null,
     })(misAJour)
 
-    expect(resultat).toEqual({ _tag: 'ignore', raison: 'compteInconnu' })
+    expect(resultat).toEqual(
+      success({ _tag: 'ignore', raison: 'compteInconnu' }),
+    )
   })
 
   it('renonce quand l’organisation du rendez-vous n’est pas encore connue', async () => {
@@ -141,23 +261,24 @@ describe('recevoirWebhookRdv', () => {
       organisationConnue: async () => false,
     })(misAJour)
 
-    expect(resultat).toEqual({ _tag: 'ignore', raison: 'organisationInconnue' })
+    expect(resultat).toEqual(
+      success({ _tag: 'ignore', raison: 'organisationInconnue' }),
+    )
   })
 
   it('supprime un rendez-vous détruit chez RDV Service Public', async () => {
     const resultat = await recevoirWebhookRdv({
       ...dependances,
-      rdvConnuParId: connu(rdv(), false),
+      rdvConnuParId: connu(rdv({}), false),
     })(detruit)
 
-    expect(resultat).toEqual({ _tag: 'traite', action: 'supprime' })
+    expect(resultat).toEqual(success({ _tag: 'supprime', rdvId: RdvId(1) }))
   })
 
   it('ignore une suppression déjà appliquée — la notification peut arriver deux fois', async () => {
-    expect(await recevoirWebhookRdv(dependances)(detruit)).toEqual({
-      _tag: 'ignore',
-      raison: 'dejaSupprime',
-    })
+    expect(await recevoirWebhookRdv(dependances)(detruit)).toEqual(
+      success({ _tag: 'ignore', raison: 'dejaSupprime' }),
+    )
   })
 
   describe('fenêtre de synchronisation', () => {
@@ -175,10 +296,9 @@ describe('recevoirWebhookRdv', () => {
         lireNotification: recu(ancien),
       })(misAJour)
 
-      expect(resultat).toEqual({
-        _tag: 'ignore',
-        raison: 'horsFenetreDeSynchronisation',
-      })
+      expect(resultat).toEqual(
+        success({ _tag: 'ignore', raison: 'horsFenetreDeSynchronisation' }),
+      )
     })
 
     it('sort un rendez-vous détenu que la fenêtre ne couvre plus', async () => {
@@ -189,7 +309,7 @@ describe('recevoirWebhookRdv', () => {
         rdvConnuParId: connu(ancien, false),
       })(misAJour)
 
-      expect(resultat).toEqual({ _tag: 'traite', action: 'supprime' })
+      expect(resultat).toEqual(success({ _tag: 'supprime', rdvId: RdvId(1) }))
     })
 
     it('accepte un rendez-vous qui commence à la fenêtre elle-même', async () => {
@@ -199,7 +319,7 @@ describe('recevoirWebhookRdv', () => {
         lireNotification: recu(rdv({ debut: fenetre })),
       })(misAJour)
 
-      expect(resultat).toEqual({ _tag: 'traite', action: 'enregistre' })
+      expect(resultat).toEqual(enregistre(rdv({ debut: fenetre })))
     })
   })
 
@@ -207,13 +327,12 @@ describe('recevoirWebhookRdv', () => {
     it('préserve le refus quand la notification n’apporte rien', async () => {
       const resultat = await recevoirWebhookRdv({
         ...dependances,
-        rdvConnuParId: connu(rdv(), true),
+        rdvConnuParId: connu(rdv({}), true),
       })(misAJour)
 
-      expect(resultat).toEqual({
-        _tag: 'ignore',
-        raison: 'reglageDuCompteRenduPreserve',
-      })
+      expect(resultat).toEqual(
+        success({ _tag: 'ignore', raison: 'reglageDuCompteRenduPreserve' }),
+      )
     })
 
     it.each<[string, Rdv]>([
@@ -231,10 +350,10 @@ describe('recevoirWebhookRdv', () => {
       const resultat = await recevoirWebhookRdv({
         ...dependances,
         lireNotification: recu(rdvRecu),
-        rdvConnuParId: connu(rdv(), true),
+        rdvConnuParId: connu(rdv({}), true),
       })(misAJour)
 
-      expect(resultat).toEqual({ _tag: 'traite', action: 'enregistre' })
+      expect(resultat).toEqual(enregistre(rdvRecu))
     })
 
     it.each<[string, Rdv]>([
@@ -247,7 +366,7 @@ describe('recevoirWebhookRdv', () => {
         rdvConnuParId: connu(rdv({ motif: null, lieu: null }), true),
       })(misAJour)
 
-      expect(resultat).toEqual({ _tag: 'traite', action: 'enregistre' })
+      expect(resultat).toEqual(enregistre(rdvRecu))
     })
 
     it('cède devant un atelier renommé', async () => {
@@ -257,7 +376,7 @@ describe('recevoirWebhookRdv', () => {
         rdvConnuParId: connu(atelier('Atelier CV'), true),
       })(misAJour)
 
-      expect(resultat).toEqual({ _tag: 'traite', action: 'enregistre' })
+      expect(resultat).toEqual(enregistre(atelier('Atelier emploi')))
     })
 
     it('préserve le refus d’un atelier dont le nom n’a pas changé', async () => {
@@ -267,41 +386,39 @@ describe('recevoirWebhookRdv', () => {
         rdvConnuParId: connu(atelier('Atelier CV'), true),
       })(misAJour)
 
-      expect(resultat).toEqual({
-        _tag: 'ignore',
-        raison: 'reglageDuCompteRenduPreserve',
-      })
+      expect(resultat).toEqual(
+        success({ _tag: 'ignore', raison: 'reglageDuCompteRenduPreserve' }),
+      )
     })
 
     it('tient le refus malgré une adresse retouchée, que la notification ne fiabilise pas', async () => {
       const resultat = await recevoirWebhookRdv({
         ...dependances,
         lireNotification: recu(rdv({ adresse: AdresseRdv('Ailleurs') })),
-        rdvConnuParId: connu(rdv(), true),
+        rdvConnuParId: connu(rdv({}), true),
       })(misAJour)
 
-      expect(resultat).toEqual({
-        _tag: 'ignore',
-        raison: 'reglageDuCompteRenduPreserve',
-      })
+      expect(resultat).toEqual(
+        success({ _tag: 'ignore', raison: 'reglageDuCompteRenduPreserve' }),
+      )
     })
 
     it('ne protège rien quand aucun refus n’a été exprimé', async () => {
       const resultat = await recevoirWebhookRdv({
         ...dependances,
-        rdvConnuParId: connu(rdv(), false),
+        rdvConnuParId: connu(rdv({}), false),
       })(misAJour)
 
-      expect(resultat).toEqual({ _tag: 'traite', action: 'enregistre' })
+      expect(resultat).toEqual(enregistre(rdv({})))
     })
 
     it('cède devant une suppression, quel que soit le refus', async () => {
       const resultat = await recevoirWebhookRdv({
         ...dependances,
-        rdvConnuParId: connu(rdv(), true),
+        rdvConnuParId: connu(rdv({}), true),
       })(detruit)
 
-      expect(resultat).toEqual({ _tag: 'traite', action: 'supprime' })
+      expect(resultat).toEqual(success({ _tag: 'supprime', rdvId: RdvId(1) }))
     })
   })
 })

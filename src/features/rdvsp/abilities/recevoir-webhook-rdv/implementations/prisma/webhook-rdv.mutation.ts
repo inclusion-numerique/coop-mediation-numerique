@@ -15,7 +15,7 @@ import type {
   OrganisationConnue,
   RdvConnuParId,
   SupprimerRdvDeLaNotification,
-} from '../../domain/recevoir-webhook-rdv'
+} from '../../domain/ports'
 
 export const comptePourWebhook: ComptePourWebhook = async (agentId) => {
   const row = await prismaClient.rdvAccount.findUnique({

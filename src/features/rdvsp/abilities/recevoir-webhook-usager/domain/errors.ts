@@ -1,7 +1,3 @@
-export type PayloadInexploitable = { readonly _tag: 'PayloadInexploitable' }
-
-export const PayloadInexploitable = (): PayloadInexploitable => ({
-  _tag: 'PayloadInexploitable',
-})
+import type { PayloadInexploitable } from '../../../domain/errors'
 
 export type EchecDeRecevoirWebhookUsager = PayloadInexploitable

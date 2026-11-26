@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { failure, success } from '@/libraries/result'
+import { PayloadInexploitable } from '../../../domain/errors'
 import { UsagerId } from '../../../domain/identifiants/usager-id'
 import {
   EmailExterne,
@@ -8,7 +9,6 @@ import {
 } from '../../../domain/identite'
 import type { Usager } from '../../../domain/usager'
 import { EvenementWebhook } from '../../../domain/webhook/evenement-webhook'
-import { PayloadInexploitable } from './errors'
 import type { RecevoirWebhookUsagerPorts } from './ports'
 import { recevoirWebhookUsager } from './recevoir-webhook-usager'
 
