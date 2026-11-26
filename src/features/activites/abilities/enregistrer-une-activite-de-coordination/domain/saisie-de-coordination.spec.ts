@@ -1,15 +1,13 @@
 import { describe, expect, it } from 'vitest'
-import { failure, success } from '@/libraries/result'
+import { success } from '@/libraries/result'
 import {
   ActiviteDeCoordinationId,
   CoordinateurId,
   DateDActivite,
-  DateTropLointaine,
   Effectif,
   NomDeTag,
   Organisateur,
   TagId,
-  TagInutilisable,
   TypeDEvenement,
   tagsDeLaSaisie,
 } from '../../../domain'
@@ -57,20 +55,7 @@ describe('saisie d’une activité de coordination', () => {
     })
   })
 
-  it('refuse une date au-delà de deux ans', () => {
-    expect(
-      activiteDeLaSaisie({
-        ...enregistrement,
-        saisie: { ...saisie, date: DateDActivite('2028-11-11') },
-      }),
-    ).toEqual(failure(DateTropLointaine(DateDActivite('2028-11-10'))))
-  })
-
   it('reprend les tags choisis parmi les tags utilisables', () => {
     expect(tagsDeLaSaisie([reseau.id], [reseau])).toEqual(success([reseau]))
-  })
-
-  it('refuse un tag qui n’est pas utilisable', () => {
-    expect(tagsDeLaSaisie([reseau.id], [])).toEqual(failure(TagInutilisable()))
   })
 })

@@ -1,67 +1,16 @@
 import { v4 } from 'uuid'
 import { addMutationLog, prismaClient } from '@/configuration/prisma'
 import { Prisma } from '@/generated/prisma/client'
-import { failure, type Result, success } from '@/libraries/result'
 import {
   type ActiviteDeCoordination,
   ActiviteDeCoordinationId,
-  ActiviteIntrouvable,
-  type CoordinateurId,
-  type DateTropLointaine,
-  type TagInutilisable,
-  type TagsUtilisables,
-  TypeDActiviteIncompatible,
-  tagsDeLaSaisie,
   type UtilisateurId,
 } from '../../../../domain'
 import { activiteDeCoordinationVersLaBase } from '../../../../implementations/prisma/activite-de-coordination.transfer'
-import {
-  ActionNonAutorisee,
-  type ActiviteEnregistree,
-  activiteDeLaSaisie,
-  type SaisieDeCoordination,
-} from '../../domain'
+import type { EcrireLActiviteDeCoordination } from '../../domain'
 
-export type EchecDEnregistrement =
-  | ActionNonAutorisee
-  | ActiviteIntrouvable
-  | TypeDActiviteIncompatible
-  | TagInutilisable
-  | DateTropLointaine
-
-type Enregistrement =
-  | { readonly _tag: 'Creation'; readonly id: ActiviteDeCoordinationId }
-  | {
-      readonly _tag: 'Modification'
-      readonly id: ActiviteDeCoordinationId
-      readonly creation: Date
-    }
-
-const enregistrementDe = async (
-  saisie: SaisieDeCoordination,
-  coordinateurId: CoordinateurId,
-): Promise<
-  Result<Enregistrement, ActiviteIntrouvable | TypeDActiviteIncompatible>
-> => {
-  if (saisie.id === null) {
-    return success({
-      _tag: 'Creation',
-      id: ActiviteDeCoordinationId(v4()),
-    })
-  }
-  const activite = await prismaClient.activiteCoordination.findFirst({
-    where: { id: saisie.id, coordinateurId, suppression: null },
-    select: { type: true, creation: true },
-  })
-  if (activite === null) return failure(ActiviteIntrouvable())
-  return activite.type === saisie._tag
-    ? success({
-        _tag: 'Modification',
-        id: saisie.id,
-        creation: activite.creation,
-      })
-    : failure(TypeDActiviteIncompatible())
-}
+export const nouvelIdentifiantDeCoordination = (): ActiviteDeCoordinationId =>
+  ActiviteDeCoordinationId(v4())
 
 const colonnesDe = (activite: ActiviteDeCoordination) => {
   const { tags, ...colonnes } = activiteDeCoordinationVersLaBase(activite)
@@ -110,52 +59,27 @@ const modifier = (activite: ActiviteDeCoordination) => {
   ])
 }
 
-export const enregistrerUneActiviteDeCoordination = async ({
-  saisie,
-  coordinateurId,
-  auteurId,
-  tagsUtilisables,
-  maintenant = new Date(),
-}: {
-  readonly saisie: SaisieDeCoordination
-  readonly coordinateurId: CoordinateurId | null
-  readonly auteurId: UtilisateurId
-  readonly tagsUtilisables: TagsUtilisables
-  readonly maintenant?: Date
-}): Promise<Result<ActiviteEnregistree, EchecDEnregistrement>> => {
-  if (coordinateurId === null) return failure(ActionNonAutorisee())
-
-  const enregistrement = await enregistrementDe(saisie, coordinateurId)
-  if (!enregistrement.success) return enregistrement
-
-  const tags = tagsDeLaSaisie(saisie.tags, await tagsUtilisables(saisie.tags))
-  if (!tags.success) return tags
-
-  const activite = activiteDeLaSaisie({
-    saisie,
-    id: enregistrement.data.id,
-    coordinateurId,
-    tags: tags.data,
-    creation:
-      enregistrement.data._tag === 'Modification'
-        ? enregistrement.data.creation
-        : maintenant,
-    maintenant,
-  })
-  if (!activite.success) return activite
-
-  await (enregistrement.data._tag === 'Creation'
-    ? creer(activite.data)
-    : modifier(activite.data))
-
+const journaliser = (
+  auteurId: UtilisateurId,
+  nom: 'CreerActiviteCoordination' | 'ModifierActiviteCoordination',
+  activite: ActiviteDeCoordination,
+) =>
   addMutationLog({
     userId: auteurId,
-    nom:
-      enregistrement.data._tag === 'Creation'
-        ? 'CreerActiviteCoordination'
-        : 'ModifierActiviteCoordination',
-    data: { type: activite.data._tag, id: activite.data.id },
+    nom,
+    data: { type: activite._tag, id: activite.id },
   })
 
-  return success({ id: activite.data.id, type: activite.data._tag })
-}
+export const creerLActiviteDeCoordination =
+  (auteurId: UtilisateurId): EcrireLActiviteDeCoordination =>
+  async (activite) => {
+    await creer(activite)
+    journaliser(auteurId, 'CreerActiviteCoordination', activite)
+  }
+
+export const modifierLActiviteDeCoordination =
+  (auteurId: UtilisateurId): EcrireLActiviteDeCoordination =>
+  async (activite) => {
+    await modifier(activite)
+    journaliser(auteurId, 'ModifierActiviteCoordination', activite)
+  }

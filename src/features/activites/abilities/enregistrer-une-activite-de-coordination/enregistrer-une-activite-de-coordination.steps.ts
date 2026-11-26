@@ -4,11 +4,15 @@ import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
 import {
   type ActiviteEnregistree,
-  type SaisieDeCoordination,
-} from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/domain/index'
-import {
   type EchecDEnregistrement,
   enregistrerUneActiviteDeCoordination,
+  type SaisieDeCoordination,
+} from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/domain/index'
+import { activiteDeCoordinationDuCoordinateur } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/implementations/prisma/activite-de-coordination-du-coordinateur.query'
+import {
+  creerLActiviteDeCoordination,
+  modifierLActiviteDeCoordination,
+  nouvelIdentifiantDeCoordination,
 } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/implementations/prisma/enregistrer-une-activite-de-coordination.mutation'
 import {
   ActiviteDeCoordinationId,
@@ -106,16 +110,22 @@ const enregistrerPar = async (
   coordinateur: Coordinateur | null,
   saisie: SaisieDeCoordination,
 ) => {
+  const auteurId = UtilisateurId(
+    coordinateur?.userId ?? semisCourant().auteur.userId,
+  )
   resultat = await enregistrerUneActiviteDeCoordination({
+    activiteDuCoordinateur: activiteDeCoordinationDuCoordinateur,
+    nouvelIdentifiant: nouvelIdentifiantDeCoordination,
+    tagsUtilisables: tagsDuCoordinateur(coordinateur?.coordinateurId ?? ''),
+    creer: creerLActiviteDeCoordination(auteurId),
+    modifier: modifierLActiviteDeCoordination(auteurId),
+    maintenant: () => new Date(),
+  })({
     saisie,
     coordinateurId:
       coordinateur === null
         ? null
         : CoordinateurId(coordinateur.coordinateurId),
-    auteurId: UtilisateurId(
-      coordinateur?.userId ?? semisCourant().auteur.userId,
-    ),
-    tagsUtilisables: tagsDuCoordinateur(coordinateur?.coordinateurId ?? ''),
   })
 }
 
