@@ -200,6 +200,7 @@
     "mon-reseau/abilities/consulter-un-acteur/domain",
     "mon-reseau/abilities/lister-les-acteurs-du-departement/domain",
     "mon-reseau/domain",
+    "tags/abilities/creer-un-tag/domain",
     "tags/domain",
     "utilisateurs/abilities/consulter-un-utilisateur/domain",
     "utilisateurs/domain"
