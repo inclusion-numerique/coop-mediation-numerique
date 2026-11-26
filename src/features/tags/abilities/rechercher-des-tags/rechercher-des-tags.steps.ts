@@ -8,6 +8,7 @@ import {
   semerUnTag,
 } from '@/features/tags/tags.cucumber'
 import { rechercherDesTags } from './implementations/prisma/rechercher-des-tags.query'
+import { tagsInitiauxAvec } from './implementations/prisma/tags-initiaux-par.query'
 
 const contexte: {
   acteur?: Acteur
@@ -24,14 +25,33 @@ const valeur = <T>(valeur: T | undefined): T => {
 const noms = (): readonly string[] =>
   valeur(contexte.proposes).map(({ nom }) => nom)
 
-const chercher = async (recherche: string, exclus: readonly string[]) => {
+const chercher = async (
+  recherche: string,
+  exclus: readonly string[],
+  limite = 1000,
+) => {
   contexte.proposes = await rechercherDesTags({
     acteur: valeur(contexte.acteur),
     recherche,
     exclus: exclus.map((nom) => TagId(valeur(contexte.tagIds.get(nom)))),
-    limite: 1000,
+    limite,
   })
 }
+
+const tagNumero = (numero: number): string =>
+  `Tag ${String(numero).padStart(2, '0')}`
+
+const semerDesTags = async (
+  noms: readonly string[],
+  mediateurId: string,
+): Promise<Map<string, string>> =>
+  new Map(
+    await Promise.all(
+      noms.map(
+        async (nom) => [nom, await semerUnTag({ nom, mediateurId })] as const,
+      ),
+    ),
+  )
 
 Given(
   'un médiateur qui cherche parmi ses tags {string} et {string}',
@@ -39,13 +59,21 @@ Given(
     const { mediateurId } = await semerUnMediateur()
     contexte.mediateurId = mediateurId
     contexte.acteur = acteurMediateur({ mediateurId })
-    contexte.tagIds = new Map(
-      await Promise.all(
-        [premier, second].map(
-          async (nom) => [nom, await semerUnTag({ nom, mediateurId })] as const,
-        ),
-      ),
+    contexte.tagIds = await semerDesTags([premier, second], mediateurId)
+  },
+)
+
+Given(
+  'un médiateur qui a {int} tags, de {string} à {string}',
+  async (nombre: number, premier: string, dernier: string) => {
+    const noms = Array.from({ length: nombre }, (_, index) =>
+      tagNumero(index + 1),
     )
+    assert.deepStrictEqual([noms.at(0), noms.at(-1)], [premier, dernier])
+    const { mediateurId } = await semerUnMediateur()
+    contexte.mediateurId = mediateurId
+    contexte.acteur = acteurMediateur({ mediateurId })
+    contexte.tagIds = await semerDesTags(noms, mediateurId)
   },
 )
 
@@ -77,6 +105,31 @@ When(
     await chercher(recherche, [exclu])
   },
 )
+
+When(
+  'ce médiateur ouvre la liste de ses tags, limitée à {int}',
+  async (limite: number) => {
+    contexte.proposes = await tagsInitiauxAvec(
+      () => (tag: Tag) => tag,
+      limite,
+    )(valeur(contexte.acteur))([])
+  },
+)
+
+When(
+  'ce médiateur cherche {string} parmi au plus {int} tags',
+  async (recherche: string, limite: number) => {
+    await chercher(recherche, [], limite)
+  },
+)
+
+Then('la recherche de tags propose {int} tags', (nombre: number) => {
+  assert.strictEqual(noms().length, nombre)
+})
+
+Then('{string} est proposé en premier', (nom: string) => {
+  assert.strictEqual(noms().at(0), nom)
+})
 
 Then(
   'la recherche de tags propose {string} et {string}',

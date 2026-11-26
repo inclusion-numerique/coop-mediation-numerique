@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import { enregistrerUneActiviteDeCoordinationAction } from '@/app/_actions/activites/enregistrer-une-activite-de-coordination.action'
 import { creerUnTagAction } from '@/app/_actions/tags/creer-un-tag.action'
-import { rechercherDesTagsAction } from '@/app/_actions/tags/rechercher-des-tags.action'
+import { rechercherDesTagsDuCraAction } from '@/app/_actions/tags/rechercher-des-tags.action'
 import { ENREGISTRER_UNE_ACTIVITE_DE_COORDINATION_ACTION_KEY } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/action/enregistrer-une-activite-de-coordination.key'
 import { lireUneActiviteDeCoordination } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/implementations/prisma/lire-une-activite-de-coordination.query'
 import CraEvenementPage from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/pages/CraEvenementPage'
@@ -11,6 +11,7 @@ import {
 } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/ui/presenters/page-de-saisie.presenter'
 import { CREER_UN_TAG_DU_CRA_KEY } from '@/features/activites/action/creer-un-tag.key'
 import { RECHERCHER_DES_TAGS_DU_CRA_KEY } from '@/features/activites/action/rechercher-des-tags.key'
+import { TAGS_PROPOSES_PAR_LE_CRA } from '@/features/activites/domain'
 import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
 import { authenticateCoordinateur } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
 import { visibilitesProposees } from '@/features/tags/abilities/creer-un-tag/ui/presenters/visibilites.presenter'
@@ -38,7 +39,10 @@ const UpdateCraEvenementPage = async ({
     coordinateurId: user.coordinateur.id,
     activiteLue: lireUneActiviteDeCoordination,
     fournisseurs: {
-      tagsInitiaux: tagsInitiauxAvec(tagAffiche)(acteur),
+      tagsInitiaux: tagsInitiauxAvec(
+        tagAffiche,
+        TAGS_PROPOSES_PAR_LE_CRA,
+      )(acteur),
       visibilitesProposees: visibilitesProposees(acteur),
     },
   })
@@ -52,7 +56,7 @@ const UpdateCraEvenementPage = async ({
     >
       <ClientBinder
         bind={RECHERCHER_DES_TAGS_DU_CRA_KEY}
-        to={rechercherDesTagsAction}
+        to={rechercherDesTagsDuCraAction}
       >
         <ClientBinder bind={CREER_UN_TAG_DU_CRA_KEY} to={creerUnTagAction}>
           <CraEvenementPage {...saisie} retour={retour} />

@@ -4,7 +4,10 @@ import { rechercherDesTags } from './rechercher-des-tags.query'
 type TagTrouve = Awaited<ReturnType<typeof rechercherDesTags>>[number]
 
 export const tagsInitiauxAvec =
-  <Affiche>(presenter: (acteur: Acteur) => (tag: TagTrouve) => Affiche) =>
+  <Affiche>(
+    presenter: (acteur: Acteur) => (tag: TagTrouve) => Affiche,
+    limite: number,
+  ) =>
   (acteur: Acteur) =>
   async (exclus: readonly string[]): Promise<readonly Affiche[]> => {
     const tags = await rechercherDesTags({
@@ -14,7 +17,7 @@ export const tagsInitiauxAvec =
         const tagId = TagId.safe(id)
         return tagId === null ? [] : [tagId]
       }),
-      limite: 10,
+      limite,
     })
     return tags.map(presenter(acteur))
   }

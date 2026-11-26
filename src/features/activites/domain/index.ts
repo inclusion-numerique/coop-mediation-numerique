@@ -207,4 +207,5 @@ export {
   repartitionComplete,
 } from './statistiques/repartition'
 export { NomDeTag } from './tags/nom-de-tag'
+export { TAGS_PROPOSES_PAR_LE_CRA } from './tags/tags-proposes-par-le-cra'
 export { type TagsUtilisables, tagsDeLaSaisie } from './tags/tags-utilisables'
