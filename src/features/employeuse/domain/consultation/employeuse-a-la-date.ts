@@ -11,22 +11,20 @@ import type { Employeuse } from '../employeuse'
  * de la requête, que rien ne fixe : deux saisies du même CRA pouvaient le
  * rattacher à deux employeuses. L'arbitrage reprend celui des affectations —
  * à autorité égale, le rattachement le plus récent l'emporte.
- *
- * Une période qui couvre une date a nécessairement un début (voir `couvre`),
- * d'où le repli à 0 qui ne sert qu'à satisfaire le type.
  */
 const contratCouvrant = (
   contrats: readonly Contrat[],
   date: Date,
 ): Contrat | null =>
   contrats
-    .filter((contrat) => couvre(contrat.periode, date))
-    .toSorted(
-      (a, b) =>
-        (debutEmploi(b.periode)?.getTime() ?? 0) -
-        (debutEmploi(a.periode)?.getTime() ?? 0),
-    )
-    .at(0) ?? null
+    .flatMap((contrat) => {
+      const debut = debutEmploi(contrat.periode)
+      return debut !== null && couvre(contrat.periode, date)
+        ? [{ contrat, debut }]
+        : []
+    })
+    .toSorted((a, b) => b.debut.getTime() - a.debut.getTime())
+    .at(0)?.contrat ?? null
 
 /**
  * L'employeuse d'une personne à une date donnée.
