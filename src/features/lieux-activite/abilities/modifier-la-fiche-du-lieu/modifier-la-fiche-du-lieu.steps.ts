@@ -11,8 +11,9 @@ import {
   Url,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { prismaClient } from '@/configuration/prisma'
+import { modifierLaFicheDuLieu } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/domain/modifier-la-fiche-du-lieu'
 import { consulterLaFicheDuLieu } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/implementations/prisma/consulter-la-fiche-du-lieu.query'
-import { modifierLaFicheDuLieu } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/implementations/prisma/modifier-la-fiche-du-lieu.mutation'
+import { enregistrerLesSections } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/implementations/prisma/enregistrer-les-sections.mutation'
 import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
 import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
 import { UtilisateurId } from '@/features/lieux-activite/domain/identifiants/utilisateur-id'
@@ -25,6 +26,17 @@ import { InformationsGeneralesSaisie } from './action/modifier-la-fiche-du-lieu.
 import { depuisLaSaisie } from './action/saisie-de-la-fiche.transfer'
 import type { FicheDuLieu } from './domain'
 import { informationsGeneralesSoumises } from './ui/forms/informations-generales-soumises.form-data'
+
+const modifier = (
+  entree: Omit<
+    Parameters<ReturnType<typeof modifierLaFicheDuLieu>>[0],
+    'maintenant'
+  >,
+) =>
+  modifierLaFicheDuLieu({
+    consulter: consulterLaFicheDuLieu,
+    enregistrer: enregistrerLesSections,
+  })({ ...entree, maintenant: new Date() })
 
 const auteur = () => UtilisateurId(ficheSemee().userIds[0] ?? '')
 
@@ -44,7 +56,7 @@ Given(
 When(
   'le médiateur rattaché enregistre les informations pratiques avec un nouveau site web',
   async () => {
-    await modifierLaFicheDuLieu({
+    await modifier({
       id: LieuId(ficheSemee().lieuId),
       par: auteur(),
       modification: {
@@ -61,7 +73,7 @@ When(
 When(
   'le médiateur rattaché enregistre les informations pratiques sans site web',
   async () => {
-    await modifierLaFicheDuLieu({
+    await modifier({
       id: LieuId(ficheSemee().lieuId),
       par: auteur(),
       modification: {
@@ -78,7 +90,7 @@ When(
 When(
   "le médiateur rattaché enregistre les modalités d'accès sans téléphone",
   async () => {
-    await modifierLaFicheDuLieu({
+    await modifier({
       id: LieuId(ficheSemee().lieuId),
       par: auteur(),
       modification: {
@@ -93,7 +105,7 @@ When(
 )
 
 When('un médiateur étranger au lieu enregistre la description', async () => {
-  await modifierLaFicheDuLieu({
+  await modifier({
     id: LieuId(ficheSemee().lieuId),
     par: UtilisateurId(ficheSemee().userIds[1] ?? ''),
     modification: {
@@ -183,7 +195,7 @@ const ETABLISSEMENT = {
 const enregistrerLesInformationsGenerales = async (
   valeurs: Parameters<typeof informationsGeneralesSoumises>[0],
 ) =>
-  modifierLaFicheDuLieu({
+  modifier({
     id: LieuId(ficheSemee().lieuId),
     par: auteur(),
     modification: depuisLaSaisie(
@@ -259,8 +271,7 @@ Then('le nom du lieu est celui qui a été saisi', async () => {
   assert.strictEqual(lieu.fiche.nom, 'Tiers-lieu du Port')
 })
 
-const derniere: { issue?: Awaited<ReturnType<typeof modifierLaFicheDuLieu>> } =
-  {}
+const derniere: { issue?: Awaited<ReturnType<typeof modifier>> } = {}
 
 Given('une fiche de lieu sans service', async () => {
   await semerUneFicheDeLieu()
@@ -314,7 +325,7 @@ Given('une fiche de lieu située à la seule commune', async () => {
 })
 
 When('le médiateur rattaché retire le lieu de la cartographie', async () => {
-  derniere.issue = await modifierLaFicheDuLieu({
+  derniere.issue = await modifier({
     id: LieuId(ficheSemee().lieuId),
     par: auteur(),
     modification: depuisLaSaisie({
@@ -327,7 +338,7 @@ When('le médiateur rattaché retire le lieu de la cartographie', async () => {
 When(
   'le médiateur rattaché rend le lieu visible sur la cartographie',
   async () => {
-    derniere.issue = await modifierLaFicheDuLieu({
+    derniere.issue = await modifier({
       id: LieuId(ficheSemee().lieuId),
       par: auteur(),
       modification: depuisLaSaisie({
@@ -339,7 +350,7 @@ When(
 )
 
 When('le médiateur rattaché retire tous les services', async () => {
-  derniere.issue = await modifierLaFicheDuLieu({
+  derniere.issue = await modifier({
     id: LieuId(ficheSemee().lieuId),
     par: auteur(),
     modification: depuisLaSaisie({
@@ -351,7 +362,7 @@ When('le médiateur rattaché retire tous les services', async () => {
 })
 
 When('le médiateur rattaché modifie la description du lieu', async () => {
-  derniere.issue = await modifierLaFicheDuLieu({
+  derniere.issue = await modifier({
     id: LieuId(ficheSemee().lieuId),
     par: auteur(),
     modification: depuisLaSaisie({
