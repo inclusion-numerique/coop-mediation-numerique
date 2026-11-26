@@ -326,6 +326,10 @@ export type CompteDeListe = {
   readonly suppressionAnnonceeLe?: Date | null
   readonly avecUnBeneficiaire?: boolean
   readonly avecUneActiviteSupprimee?: boolean
+  readonly activites?: readonly {
+    readonly date: Date
+    readonly supprimeeLe: Date | null
+  }[]
   readonly fixture?: boolean
   readonly coordinateurDeclare?: boolean
   readonly telephone?: string | null
@@ -526,6 +530,18 @@ export const semerUnCompteDeListe = async (
         duree: 60,
         suppression: new Date(),
       },
+    })
+
+  if (compte.activites && mediateur)
+    await prismaClient.activite.createMany({
+      data: compte.activites.map(({ date, supprimeeLe }) => ({
+        mediateurId: mediateur.id,
+        type: 'Individuel',
+        typeLieu: 'Autre',
+        date,
+        duree: 60,
+        suppression: supprimeeLe,
+      })),
     })
 
   if (compte.lieuId && mediateur)
