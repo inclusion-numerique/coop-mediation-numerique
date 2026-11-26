@@ -2,7 +2,7 @@ import { enregistrerUnAccompagnementIndividuelAction } from '@/app/_actions/acti
 import { rechercherBeneficiairesAction } from '@/app/_actions/beneficiaire/rechercher-beneficiaires.action'
 import { rechercherUnLieuActiviteAction } from '@/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
 import { creerUnTagAction } from '@/app/_actions/tags/creer-un-tag.action'
-import { rechercherDesTagsAction } from '@/app/_actions/tags/rechercher-des-tags.action'
+import { rechercherDesTagsDuCraAction } from '@/app/_actions/tags/rechercher-des-tags.action'
 import { ENREGISTRER_UN_ACCOMPAGNEMENT_INDIVIDUEL_ACTION_KEY } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/action/enregistrer-un-accompagnement-individuel.key'
 import CraIndividuelPage from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/pages/CraIndividuelPage'
 import type { SaisieIndividuelleEncodee } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/ui/presenters/page-de-saisie.presenter'
@@ -11,6 +11,7 @@ import { CREER_UN_TAG_DU_CRA_KEY } from '@/features/activites/action/creer-un-ta
 import { RECHERCHER_DES_BENEFICIAIRES_DU_CRA_KEY } from '@/features/activites/action/rechercher-des-beneficiaires.key'
 import { RECHERCHER_DES_LIEUX_DU_CRA_KEY } from '@/features/activites/action/rechercher-des-lieux.key'
 import { RECHERCHER_DES_TAGS_DU_CRA_KEY } from '@/features/activites/action/rechercher-des-tags.key'
+import { TAGS_PROPOSES_PAR_LE_CRA } from '@/features/activites/domain'
 import { dureesFrequentesDuMediateur } from '@/features/activites/implementations/prisma/durees-frequentes.query'
 import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
 import { authenticateMediateur } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
@@ -59,7 +60,10 @@ const CreateCraIndividuelPage = async ({
       lieuxDuMediateur,
       beneficiairesLesPlusSuivis,
       dureesFrequentes: dureesFrequentesDuMediateur,
-      tagsInitiaux: tagsInitiauxAvec(tagAffiche)(acteur),
+      tagsInitiaux: tagsInitiauxAvec(
+        tagAffiche,
+        TAGS_PROPOSES_PAR_LE_CRA,
+      )(acteur),
       visibilitesProposees: visibilitesProposees(acteur),
     },
   })
@@ -71,7 +75,7 @@ const CreateCraIndividuelPage = async ({
     >
       <ClientBinder
         bind={RECHERCHER_DES_TAGS_DU_CRA_KEY}
-        to={rechercherDesTagsAction}
+        to={rechercherDesTagsDuCraAction}
       >
         <ClientBinder bind={CREER_UN_TAG_DU_CRA_KEY} to={creerUnTagAction}>
           <ClientBinder

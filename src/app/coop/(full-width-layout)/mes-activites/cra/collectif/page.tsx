@@ -2,7 +2,7 @@ import { enregistrerUnAtelierCollectifAction } from '@/app/_actions/activites/en
 import { rechercherBeneficiairesAction } from '@/app/_actions/beneficiaire/rechercher-beneficiaires.action'
 import { rechercherUnLieuActiviteAction } from '@/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
 import { creerUnTagAction } from '@/app/_actions/tags/creer-un-tag.action'
-import { rechercherDesTagsAction } from '@/app/_actions/tags/rechercher-des-tags.action'
+import { rechercherDesTagsDuCraAction } from '@/app/_actions/tags/rechercher-des-tags.action'
 import { ENREGISTRER_UN_ATELIER_COLLECTIF_ACTION_KEY } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/action/enregistrer-un-atelier-collectif.key'
 import CraCollectifPage from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/pages/CraCollectifPage'
 import type { SaisieCollectiveEncodee } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/presenters/page-de-saisie.presenter'
@@ -11,6 +11,7 @@ import { CREER_UN_TAG_DU_CRA_KEY } from '@/features/activites/action/creer-un-ta
 import { RECHERCHER_DES_BENEFICIAIRES_DU_CRA_KEY } from '@/features/activites/action/rechercher-des-beneficiaires.key'
 import { RECHERCHER_DES_LIEUX_DU_CRA_KEY } from '@/features/activites/action/rechercher-des-lieux.key'
 import { RECHERCHER_DES_TAGS_DU_CRA_KEY } from '@/features/activites/action/rechercher-des-tags.key'
+import { TAGS_PROPOSES_PAR_LE_CRA } from '@/features/activites/domain'
 import { dureesFrequentesDuMediateur } from '@/features/activites/implementations/prisma/durees-frequentes.query'
 import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
 import { authenticateMediateur } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
@@ -59,7 +60,10 @@ const CreateCraCollectifPage = async ({
       lieuxDuMediateur,
       beneficiairesLesPlusSuivis,
       dureesFrequentes: dureesFrequentesDuMediateur,
-      tagsInitiaux: tagsInitiauxAvec(tagAffiche)(acteur),
+      tagsInitiaux: tagsInitiauxAvec(
+        tagAffiche,
+        TAGS_PROPOSES_PAR_LE_CRA,
+      )(acteur),
       visibilitesProposees: visibilitesProposees(acteur),
     },
   })
@@ -71,7 +75,7 @@ const CreateCraCollectifPage = async ({
     >
       <ClientBinder
         bind={RECHERCHER_DES_TAGS_DU_CRA_KEY}
-        to={rechercherDesTagsAction}
+        to={rechercherDesTagsDuCraAction}
       >
         <ClientBinder bind={CREER_UN_TAG_DU_CRA_KEY} to={creerUnTagAction}>
           <ClientBinder

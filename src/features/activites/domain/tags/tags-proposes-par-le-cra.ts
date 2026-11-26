@@ -1,0 +1,1 @@
+export const TAGS_PROPOSES_PAR_LE_CRA = 20
