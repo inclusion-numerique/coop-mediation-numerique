@@ -1,16 +1,22 @@
 import { Nom, Typologie } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { entrepotPrismaClient } from '@/configuration/prisma'
 import type { Prisma } from '@/generated/entrepot/client'
+import { failure, success } from '@/libraries/result'
 import { toTitleCase } from '@/libraries/texte'
 import { IdentifiantCartographie } from '../../../../domain/cartographie-nationale/ids-cartographie-nationale'
 import { LieuId } from '../../../../domain/identifiants/lieu-id'
 import { NombreDeLieux } from '../../../../domain/nombres'
 import { reconnues } from '../../../../domain/nomenclatures'
+import { SourceExterne } from '../../../../domain/registre/source-externe'
 import {
   AdresseLibre,
   type SuggestionDeLieu,
 } from '../../../../domain/suggestion-de-lieu'
-import type { ChercherDansLaCartographie } from '../../domain/ports'
+import { SourceIndisponible } from '../../domain/errors'
+import type {
+  ChercherDansLaCartographie,
+  SuggestionsDUneSource,
+} from '../../domain/ports'
 
 type AdresseDeLaCartographie = {
   numeroVoie: number | null
@@ -32,10 +38,13 @@ const voie = (adresse: AdresseDeLaCartographie): string =>
     { noUpper: true },
   )
 
-export const chercherDansLaCartographie: ChercherDansLaCartographie = async (
-  recherche,
-  { limite, sauf },
-) => {
+const lieuxDeLaCartographie = async (
+  recherche: string,
+  {
+    limite,
+    sauf,
+  }: { readonly limite: number; readonly sauf: readonly string[] },
+): Promise<SuggestionsDUneSource> => {
   const correspondances = {
     structureCartographieNationaleId:
       sauf.length > 0 ? { not: null, notIn: [...sauf] } : { not: null },
@@ -109,3 +118,11 @@ export const chercherDansLaCartographie: ChercherDansLaCartographie = async (
 
   return { suggestions, nombre: NombreDeLieux(nombre) }
 }
+
+export const chercherDansLaCartographie: ChercherDansLaCartographie = (
+  recherche,
+  options,
+) =>
+  lieuxDeLaCartographie(recherche, options).then(success, () =>
+    failure(SourceIndisponible(SourceExterne('Cartographie'))),
+  )

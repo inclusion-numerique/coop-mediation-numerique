@@ -1,2 +1,5 @@
 export { RechercheDeLieu } from './recherche-de-lieu'
-export { rechercherDesLieuxAAjouter } from './rechercher'
+export {
+  LIMITE_DES_SUGGESTIONS,
+  rechercherDesLieuxAAjouter,
+} from './rechercher-des-lieux-a-ajouter'

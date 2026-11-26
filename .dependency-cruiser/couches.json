@@ -228,6 +228,8 @@
     "inscription/abilities/renseigner-lieux-activite/action",
     "lieux-activite/abilities/ajouter-des-lieux-activite/action",
     "lieux-activite/abilities/ajouter-des-lieux-activite/ui/forms",
+    "lieux-activite/abilities/rechercher-des-lieux-a-ajouter/implementations/api-entreprise",
+    "lieux-activite/abilities/rechercher-des-lieux-a-ajouter/implementations/entrepot",
     "rdvsp/abilities/consulter-rdvs-accueil/ui/slots",
     "utilisateurs/abilities/anonymiser-les-comptes-inactifs/implementations/email",
     "utilisateurs/abilities/relancer-les-inscriptions-inachevees/implementations/brevo",
