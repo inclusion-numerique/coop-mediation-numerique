@@ -4,6 +4,7 @@ import {
   coordinateurDe,
   mediateurDe,
   type RattachementsDuCompte,
+  type UtilisateurId,
 } from '@/features/utilisateurs/domain'
 import { failure, type Result, success } from '@/libraries/result'
 import { NonCoordinateur } from './errors'
@@ -12,7 +13,7 @@ export type Activation =
   | { readonly _tag: 'DejaActivee' }
   | {
       readonly _tag: 'Activee'
-      readonly utilisateurId: string
+      readonly utilisateurId: UtilisateurId
       readonly coordinateurId: CoordinateurId
       readonly inscription: ContactAImporter | null
     }

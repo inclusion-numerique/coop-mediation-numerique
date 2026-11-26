@@ -2,13 +2,13 @@ import type { UtilisateurId } from '@/features/utilisateurs/domain'
 import type { CibleUsurpation } from './usurpation'
 
 export type LireLaCible = (
-  utilisateurId: string,
+  utilisateurId: UtilisateurId,
 ) => Promise<CibleUsurpation | null>
 
 export type OuvrirLUsurpation = (usurpation: {
   readonly jetonDeSession: string
   readonly cibleId: UtilisateurId
-  readonly usurpateurId: string
+  readonly usurpateurId: UtilisateurId
 }) => Promise<void>
 
 export type UsurperUnUtilisateurPorts = {

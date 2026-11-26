@@ -1,3 +1,4 @@
+import type { UtilisateurId } from '@/features/utilisateurs/domain'
 import { failure, type Result, success } from '@/libraries/result'
 import { autoriserFusion, type FusionAutorisee } from './compte-a-fusionner'
 import {
@@ -17,9 +18,12 @@ export const fusionnerDesComptes =
     sourceId,
     cibleId,
   }: {
-    readonly sourceId: string
-    readonly cibleId: string
+    readonly sourceId: UtilisateurId | null
+    readonly cibleId: UtilisateurId | null
   }): Promise<Result<FusionAutorisee, EchecDeFusionnerDesComptes>> => {
+    if (sourceId === null) return failure(SourceIntrouvable())
+    if (cibleId === null) return failure(CibleIntrouvable())
+
     const { source, cible } = await lireLesComptesAFusionner({
       sourceId,
       cibleId,

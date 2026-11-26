@@ -12,7 +12,7 @@ import { PorteeUsurpation } from '@/features/utilisateurs/abilities/usurper-un-u
 import { usurperUnUtilisateur as usurper } from '@/features/utilisateurs/abilities/usurper-un-utilisateur/domain/usurper-un-utilisateur'
 import { cibleUsurpation } from '@/features/utilisateurs/abilities/usurper-un-utilisateur/implementations/prisma/cible-usurpation.query'
 import { ouvrirLUsurpation } from '@/features/utilisateurs/abilities/usurper-un-utilisateur/implementations/prisma/ouvrir-l-usurpation.mutation'
-import { identifiantsDe } from '@/features/utilisateurs/domain'
+import { identifiantsDe, UtilisateurId } from '@/features/utilisateurs/domain'
 import { fromResult, withInput } from '@/libraries/nextjs'
 import { success } from '@/libraries/result'
 
@@ -29,8 +29,8 @@ export const usurperUnUtilisateurAction = actionBuilder()
     fromResult(
       async ({ input, user }) => {
         const resultat = await usurperUnUtilisateur({
-          utilisateurId: input.utilisateurId,
-          usurpateurId: user.id,
+          utilisateurId: UtilisateurId.safe(input.utilisateurId),
+          usurpateurId: UtilisateurId(user.id),
           jetonDeSession: await getAuthenticatedSessionToken(),
           portee: PorteeUsurpation(
             environnementServeur().SUDO_USURPATION

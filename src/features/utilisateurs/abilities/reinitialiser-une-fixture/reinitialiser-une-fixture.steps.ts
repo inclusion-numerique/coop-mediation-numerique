@@ -2,10 +2,9 @@ import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { reinitialiserUneFixture as reinitialiserLaFixture } from '@/features/utilisateurs/abilities/reinitialiser-une-fixture/domain/reinitialiser-une-fixture'
-import {
-  estUneFixture,
-  reinitialiser,
-} from '@/features/utilisateurs/abilities/reinitialiser-une-fixture/implementations/prisma/reinitialiser.mutation'
+import { estUneFixture } from '@/features/utilisateurs/abilities/reinitialiser-une-fixture/implementations/prisma/est-une-fixture.query'
+import { reinitialiser } from '@/features/utilisateurs/abilities/reinitialiser-une-fixture/implementations/prisma/reinitialiser.mutation'
+import { UtilisateurId } from '@/features/utilisateurs/domain'
 import { semerUnCompteDeListe } from '@/features/utilisateurs/utilisateurs.cucumber'
 
 const reinitialiserUneFixture = reinitialiserLaFixture({
@@ -43,7 +42,7 @@ Given(
 When('ce compte est réinitialisé', async () => {
   assert.ok(reinitialisation.compteId, 'Aucun compte semé')
   reinitialisation.resultat = await reinitialiserUneFixture({
-    utilisateurId: reinitialisation.compteId,
+    utilisateurId: UtilisateurId.safe(reinitialisation.compteId),
     demonstration: {
       employeuse: { structureCoopId: '5a0c41b6-34c9-4d3b-9e0a-6b1f8a2d7c35' },
       semerLesActivitesDansLesLieux: async () => undefined,

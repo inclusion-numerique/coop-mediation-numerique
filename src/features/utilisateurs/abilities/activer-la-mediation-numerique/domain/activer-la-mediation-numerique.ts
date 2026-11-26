@@ -1,8 +1,6 @@
 import {
-  CoordinateurId,
   contactAInscrire,
-  MediateurId,
-  rattachements,
+  type UtilisateurId,
   UtilisateurIntrouvable,
 } from '@/features/utilisateurs/domain'
 import { failure, type Result, success } from '@/libraries/result'
@@ -20,19 +18,14 @@ export const activerLaMediationNumerique =
   async ({
     utilisateurId,
   }: {
-    readonly utilisateurId: string
+    readonly utilisateurId: UtilisateurId | null
   }): Promise<Result<Activation, EchecDActiverLaMediationNumerique>> => {
+    if (utilisateurId === null) return failure(UtilisateurIntrouvable())
+
     const compte = await lireLeCompteQuiActive(utilisateurId)
     if (compte === null) return failure(UtilisateurIntrouvable())
 
-    const activation = activationDe(
-      rattachements(
-        compte.mediateur === null ? null : MediateurId(compte.mediateur.id),
-        compte.coordinateur === null
-          ? null
-          : CoordinateurId(compte.coordinateur.id),
-      ),
-    )
+    const activation = activationDe(compte.rattachements)
     if (!activation.success) return activation
     if (activation.data._tag === 'DejaActivee')
       return success({ _tag: 'DejaActivee' })

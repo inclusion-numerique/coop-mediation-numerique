@@ -7,11 +7,10 @@ import { synchroniserPersonne } from '@/features/registre-des-personnes/implemen
 import { ACTIVER_LA_MEDIATION_NUMERIQUE_ERRORS } from '@/features/utilisateurs/abilities/activer-la-mediation-numerique/action/activer-la-mediation-numerique.errors'
 import { activerLaMediationNumerique } from '@/features/utilisateurs/abilities/activer-la-mediation-numerique/domain/activer-la-mediation-numerique'
 import { inscrireLeContactALaListe } from '@/features/utilisateurs/abilities/activer-la-mediation-numerique/implementations/brevo/inscrire-le-contact-a-la-liste.mutation'
-import {
-  activer,
-  compteQuiActive,
-} from '@/features/utilisateurs/abilities/activer-la-mediation-numerique/implementations/prisma/activer.mutation'
+import { activer } from '@/features/utilisateurs/abilities/activer-la-mediation-numerique/implementations/prisma/activer.mutation'
+import { compteQuiActive } from '@/features/utilisateurs/abilities/activer-la-mediation-numerique/implementations/prisma/compte-qui-active.query'
 import { inscritAInscrire } from '@/features/utilisateurs/abilities/activer-la-mediation-numerique/implementations/prisma/inscrit-a-inscrire.query'
+import { UtilisateurId } from '@/features/utilisateurs/domain'
 import type { SynchroniserLaPersonne } from '@/features/utilisateurs/implementations/prisma/registre-des-personnes.mutation'
 import { fromResult } from '@/libraries/nextjs'
 import { success } from '@/libraries/result'
@@ -34,7 +33,7 @@ export const activerLaMediationNumeriqueAction = actionBuilder()
       async ({ user }) => {
         const resultat = await activerLaMediationNumeriqueAvec(
           synchroniserPersonne,
-        )({ utilisateurId: user.id })
+        )({ utilisateurId: UtilisateurId.safe(user.id) })
         if (!resultat.success) return resultat
         return success(
           resultat.data._tag === 'DejaActivee' ? 'DejaActivee' : 'AActiver',

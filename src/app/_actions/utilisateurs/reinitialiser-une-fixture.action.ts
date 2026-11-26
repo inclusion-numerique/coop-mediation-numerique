@@ -14,10 +14,9 @@ import {
 } from '@/features/lieux-activite/fixtures/lieux-de-demonstration'
 import { ReinitialiserUneFixtureValidation } from '@/features/utilisateurs/abilities/reinitialiser-une-fixture/action/reinitialiser-une-fixture.validation'
 import { reinitialiserUneFixture as reinitialiserLaFixture } from '@/features/utilisateurs/abilities/reinitialiser-une-fixture/domain/reinitialiser-une-fixture'
-import {
-  estUneFixture,
-  reinitialiser,
-} from '@/features/utilisateurs/abilities/reinitialiser-une-fixture/implementations/prisma/reinitialiser.mutation'
+import { estUneFixture } from '@/features/utilisateurs/abilities/reinitialiser-une-fixture/implementations/prisma/est-une-fixture.query'
+import { reinitialiser } from '@/features/utilisateurs/abilities/reinitialiser-une-fixture/implementations/prisma/reinitialiser.mutation'
+import { UtilisateurId } from '@/features/utilisateurs/domain'
 import { mediateursDesPersonas } from '@/features/utilisateurs/fixtures/personas'
 import { fromResult, withInput } from '@/libraries/nextjs'
 import { success } from '@/libraries/result'
@@ -35,7 +34,7 @@ export const reinitialiserUneFixtureAction = actionBuilder()
     fromResult(
       async ({ input }) => {
         const resultat = await reinitialiserUneFixture({
-          utilisateurId: input.utilisateurId,
+          utilisateurId: UtilisateurId.safe(input.utilisateurId),
           demonstration: {
             employeuse: { structureCoopId: structureEmployeuse.id },
             semerLesActivitesDansLesLieux:
@@ -55,6 +54,7 @@ export const reinitialiserUneFixtureAction = actionBuilder()
       },
       {
         onError: {
+          UtilisateurIntrouvable: 'Cet utilisateur est introuvable',
           CompteNonFixture: 'Seul un utilisateur de test se réinitialise',
         },
       },

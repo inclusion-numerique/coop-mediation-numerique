@@ -1,17 +1,15 @@
-import type { AdresseCourriel } from '@/features/utilisateurs/domain'
 import type {
-  CibleFusionId,
-  CompteAFusionner,
-  FusionAutorisee,
-  SourceFusionId,
-} from './compte-a-fusionner'
+  AdresseCourriel,
+  UtilisateurId,
+} from '@/features/utilisateurs/domain'
+import type { CompteAFusionner, FusionAutorisee } from './compte-a-fusionner'
 
 export type LireLesComptesAFusionner = (ids: {
-  readonly sourceId: string
-  readonly cibleId: string
+  readonly sourceId: UtilisateurId
+  readonly cibleId: UtilisateurId
 }) => Promise<{
-  readonly source: CompteAFusionner<SourceFusionId> | null
-  readonly cible: CompteAFusionner<CibleFusionId> | null
+  readonly source: CompteAFusionner | null
+  readonly cible: CompteAFusionner | null
 }>
 
 export type Fusionner = (fusion: FusionAutorisee) => Promise<void>

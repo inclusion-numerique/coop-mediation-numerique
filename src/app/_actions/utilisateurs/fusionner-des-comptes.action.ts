@@ -10,6 +10,7 @@ import { fusionnerDesComptes } from '@/features/utilisateurs/abilities/fusionner
 import { retirerLaSourceDesListes } from '@/features/utilisateurs/abilities/fusionner-des-comptes/implementations/brevo/retirer-la-source-des-listes.mutation'
 import { comptesAFusionner } from '@/features/utilisateurs/abilities/fusionner-des-comptes/implementations/prisma/comptes-a-fusionner.query'
 import { fusionner } from '@/features/utilisateurs/abilities/fusionner-des-comptes/implementations/prisma/fusionner.mutation'
+import { UtilisateurId } from '@/features/utilisateurs/domain'
 import type { SynchroniserLaPersonne } from '@/features/utilisateurs/implementations/prisma/registre-des-personnes.mutation'
 import { fromResult, withInput } from '@/libraries/nextjs'
 import { success } from '@/libraries/result'
@@ -30,8 +31,10 @@ export const fusionnerDesComptesAction = actionBuilder()
   .execute(
     fromResult(
       async ({ input }) => {
-        const resultat =
-          await fusionnerDesComptesAvec(synchroniserPersonne)(input)
+        const resultat = await fusionnerDesComptesAvec(synchroniserPersonne)({
+          sourceId: UtilisateurId.safe(input.sourceId),
+          cibleId: UtilisateurId.safe(input.cibleId),
+        })
         return resultat.success ? success(undefined) : resultat
       },
       { onError: FUSIONNER_DES_COMPTES_ERRORS },

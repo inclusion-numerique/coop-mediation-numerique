@@ -12,11 +12,11 @@ import {
 import { type CibleUsurpation, PorteeUsurpation } from './usurpation'
 import { usurperUnUtilisateur } from './usurper-un-utilisateur'
 
-const utilisateurId = '0d1a1e7e-1f2b-4c3d-8e4f-5a6b7c8d9e0f'
-const usurpateurId = '1c2d3e4f-5a6b-4c7d-8e9f-0a1b2c3d4e5f'
+const utilisateurId = UtilisateurId('0d1a1e7e-1f2b-4c3d-8e4f-5a6b7c8d9e0f')
+const usurpateurId = UtilisateurId('1c2d3e4f-5a6b-4c7d-8e9f-0a1b2c3d4e5f')
 
 const cible = (origine: OrigineCompte): CibleUsurpation => ({
-  id: UtilisateurId(utilisateurId),
+  id: utilisateurId,
   nom: NomAffiche('Jeanne Martin'),
   origine,
   role: RoleUtilisateur('User'),
@@ -27,11 +27,14 @@ const cible = (origine: OrigineCompte): CibleUsurpation => ({
 const fixture = cible(OrigineCompte('Fixture'))
 const reel = cible(OrigineCompte('Reel'))
 
-const usurper = (cibleLue: CibleUsurpation | null, portee: PorteeUsurpation) =>
+const usurpation = (cibleLue: CibleUsurpation | null) =>
   usurperUnUtilisateur({
     lireLaCible: async () => cibleLue,
     ouvrirLUsurpation: async () => undefined,
-  })({
+  })
+
+const usurper = (cibleLue: CibleUsurpation | null, portee: PorteeUsurpation) =>
+  usurpation(cibleLue)({
     utilisateurId,
     usurpateurId,
     jetonDeSession: 'jeton',
@@ -59,6 +62,20 @@ describe('usurper un utilisateur', () => {
     expect(await usurper(reel, PorteeUsurpation('FixturesSeulement'))).toEqual({
       success: false,
       error: { _tag: 'UsurpationHorsFixtures' },
+    })
+  })
+
+  it('signale un identifiant qui ne désigne aucun compte', async () => {
+    expect(
+      await usurpation(fixture)({
+        utilisateurId: null,
+        usurpateurId,
+        jetonDeSession: 'jeton',
+        portee: PorteeUsurpation('TousLesComptes'),
+      }),
+    ).toEqual({
+      success: false,
+      error: { _tag: 'UtilisateurIntrouvable' },
     })
   })
 

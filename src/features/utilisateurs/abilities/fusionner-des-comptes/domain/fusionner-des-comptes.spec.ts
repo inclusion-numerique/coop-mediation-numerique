@@ -4,34 +4,30 @@ import {
   RoleUtilisateur,
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
-import {
-  CibleFusionId,
-  type CompteAFusionner,
-  SourceFusionId,
-} from './compte-a-fusionner'
+import type { CompteAFusionner } from './compte-a-fusionner'
 import type { EchecDeFusionnerDesComptes } from './errors'
 import { fusionnerDesComptes } from './fusionner-des-comptes'
 
-const UN = '0d1a1e7e-1f2b-4c3d-8e4f-5a6b7c8d9e0f'
-const DEUX = '1a2b3c4d-5e6f-4708-8192-a3b4c5d6e7f8'
+const UN = UtilisateurId('0d1a1e7e-1f2b-4c3d-8e4f-5a6b7c8d9e0f')
+const DEUX = UtilisateurId('1a2b3c4d-5e6f-4708-8192-a3b4c5d6e7f8')
 
-const source: CompteAFusionner<SourceFusionId> = {
-  id: SourceFusionId(UN),
+const source: CompteAFusionner = {
+  id: UN,
   courriel: AdresseCourriel('source@example.com'),
   role: RoleUtilisateur('User'),
   supprime: false,
 }
 
-const cible: CompteAFusionner<CibleFusionId> = {
-  id: CibleFusionId(DEUX),
+const cible: CompteAFusionner = {
+  id: DEUX,
   courriel: AdresseCourriel('cible@example.com'),
   role: RoleUtilisateur('User'),
   supprime: false,
 }
 
-const fusionnerEntre = (
-  sourceLue: CompteAFusionner<SourceFusionId> | null,
-  cibleLue: CompteAFusionner<CibleFusionId> | null,
+const fusion = (
+  sourceLue: CompteAFusionner | null,
+  cibleLue: CompteAFusionner | null,
 ) =>
   fusionnerDesComptes({
     lireLesComptesAFusionner: async () => ({
@@ -40,7 +36,12 @@ const fusionnerEntre = (
     }),
     fusionner: async () => undefined,
     retirerLaSourceDesListes: async () => undefined,
-  })({ sourceId: UN, cibleId: DEUX })
+  })
+
+const fusionnerEntre = (
+  sourceLue: CompteAFusionner | null,
+  cibleLue: CompteAFusionner | null,
+) => fusion(sourceLue, cibleLue)({ sourceId: UN, cibleId: DEUX })
 
 describe('fusionner des comptes', () => {
   it('fusionne deux comptes distincts', async () => {
@@ -59,8 +60,8 @@ describe('fusionner des comptes', () => {
 
   it.each<{
     cas: string
-    sourceLue: CompteAFusionner<SourceFusionId> | null
-    cibleLue: CompteAFusionner<CibleFusionId> | null
+    sourceLue: CompteAFusionner | null
+    cibleLue: CompteAFusionner | null
     erreur: EchecDeFusionnerDesComptes
   }>([
     {
@@ -78,7 +79,7 @@ describe('fusionner des comptes', () => {
     {
       cas: 'refuse de fusionner un compte avec lui-même',
       sourceLue: source,
-      cibleLue: { ...cible, id: CibleFusionId(UN) },
+      cibleLue: { ...cible, id: UN },
       erreur: { _tag: 'FusionSurLeMemeCompte' },
     },
     {
@@ -93,7 +94,7 @@ describe('fusionner des comptes', () => {
       cibleLue: cible,
       erreur: {
         _tag: 'RoleProtege',
-        utilisateurId: UtilisateurId(UN),
+        utilisateurId: UN,
         role: RoleUtilisateur('Admin'),
       },
     },
@@ -103,12 +104,37 @@ describe('fusionner des comptes', () => {
       cibleLue: { ...cible, role: RoleUtilisateur('Admin') },
       erreur: {
         _tag: 'RoleProtege',
-        utilisateurId: UtilisateurId(DEUX),
+        utilisateurId: DEUX,
         role: RoleUtilisateur('Admin'),
       },
     },
   ])('$cas', async ({ sourceLue, cibleLue, erreur }) => {
     expect(await fusionnerEntre(sourceLue, cibleLue)).toEqual({
+      success: false,
+      error: erreur,
+    })
+  })
+
+  it.each<{
+    cas: string
+    sourceId: UtilisateurId | null
+    cibleId: UtilisateurId | null
+    erreur: EchecDeFusionnerDesComptes
+  }>([
+    {
+      cas: 'signale une source qu’aucun identifiant ne désigne',
+      sourceId: null,
+      cibleId: DEUX,
+      erreur: { _tag: 'SourceIntrouvable' },
+    },
+    {
+      cas: 'signale une cible qu’aucun identifiant ne désigne',
+      sourceId: UN,
+      cibleId: null,
+      erreur: { _tag: 'CibleIntrouvable' },
+    },
+  ])('$cas', async ({ sourceId, cibleId, erreur }) => {
+    expect(await fusion(source, cible)({ sourceId, cibleId })).toEqual({
       success: false,
       error: erreur,
     })

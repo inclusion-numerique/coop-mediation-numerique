@@ -5,6 +5,7 @@ import { fusionnerDesComptes } from '@/features/utilisateurs/abilities/fusionner
 import { retirerLaSourceDesListes } from '@/features/utilisateurs/abilities/fusionner-des-comptes/implementations/brevo/retirer-la-source-des-listes.mutation'
 import { comptesAFusionner } from '@/features/utilisateurs/abilities/fusionner-des-comptes/implementations/prisma/comptes-a-fusionner.query'
 import { fusionner } from '@/features/utilisateurs/abilities/fusionner-des-comptes/implementations/prisma/fusionner.mutation'
+import { UtilisateurId } from '@/features/utilisateurs/domain'
 import type { SynchroniserLaPersonne } from '@/features/utilisateurs/implementations/prisma/registre-des-personnes.mutation'
 import {
   type CompteSeme,
@@ -132,15 +133,15 @@ Given('la cible est supprimée', async () => {
 
 When("l'administration fusionne la source dans la cible", async () => {
   fusion.resultat = await fusionnerDesComptesAvec(async () => undefined)({
-    sourceId: source().userId,
-    cibleId: cible().userId,
+    sourceId: UtilisateurId.safe(source().userId),
+    cibleId: UtilisateurId.safe(cible().userId),
   })
 })
 
 When("l'administration fusionne la source avec elle-même", async () => {
   fusion.resultat = await fusionnerDesComptesAvec(async () => undefined)({
-    sourceId: source().userId,
-    cibleId: source().userId,
+    sourceId: UtilisateurId.safe(source().userId),
+    cibleId: UtilisateurId.safe(source().userId),
   })
 })
 

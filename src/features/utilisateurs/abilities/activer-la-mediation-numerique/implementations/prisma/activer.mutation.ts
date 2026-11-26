@@ -1,15 +1,9 @@
 import { addMutationLog, prismaClient } from '@/configuration/prisma'
+import type {
+  CoordinateurId,
+  UtilisateurId,
+} from '@/features/utilisateurs/domain'
 import type { SynchroniserLaPersonne } from '@/features/utilisateurs/implementations/prisma/registre-des-personnes.mutation'
-
-export const compteQuiActive = (utilisateurId: string) =>
-  prismaClient.user.findUnique({
-    where: { id: utilisateurId },
-    select: {
-      id: true,
-      mediateur: { select: { id: true } },
-      coordinateur: { select: { id: true } },
-    },
-  })
 
 export const activer =
   (synchroniserLaPersonne: SynchroniserLaPersonne) =>
@@ -17,8 +11,8 @@ export const activer =
     utilisateurId,
     coordinateurId,
   }: {
-    readonly utilisateurId: string
-    readonly coordinateurId: string
+    readonly utilisateurId: UtilisateurId
+    readonly coordinateurId: CoordinateurId
   }): Promise<void> => {
     await prismaClient.$transaction(async (transaction) => {
       await transaction.mediateur.upsert({

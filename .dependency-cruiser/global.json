@@ -9,8 +9,10 @@
       "^src/features/equipe/fixtures/semer-les-coordinations-de-demonstration[.]ts$",
       "^src/features/activites/fixtures/semer-les-cras-de-demonstration[.]ts$"
     ],
+    "^src/features/utilisateurs/abilities/reinitialiser-une-fixture/implementations/prisma/est-une-fixture[.]query[.]ts$": [
+      "^src/features/utilisateurs/fixtures/personas[.]ts$"
+    ],
     "^src/features/utilisateurs/abilities/reinitialiser-une-fixture/implementations/prisma/reinitialiser[.]mutation[.]ts$": [
-      "^src/features/utilisateurs/fixtures/personas[.]ts$",
       "^src/features/utilisateurs/fixtures/reinitialiser-un-utilisateur[.]ts$"
     ]
   },

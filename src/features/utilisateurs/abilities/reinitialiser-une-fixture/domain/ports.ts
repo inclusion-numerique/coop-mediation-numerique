@@ -1,9 +1,9 @@
-import type { NomAffiche } from '@/features/utilisateurs/domain'
+import type { NomAffiche, UtilisateurId } from '@/features/utilisateurs/domain'
 
-export type EstUneFixture = (utilisateurId: string) => Promise<boolean>
+export type EstUneFixture = (utilisateurId: UtilisateurId) => Promise<boolean>
 
 export type Reinitialiser<Demonstration> = (
-  utilisateurId: string,
+  utilisateurId: UtilisateurId,
   demonstration: Demonstration,
 ) => Promise<NomAffiche>
 

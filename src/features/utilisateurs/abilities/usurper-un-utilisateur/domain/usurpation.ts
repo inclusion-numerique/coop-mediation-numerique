@@ -34,7 +34,7 @@ export type CompteDeTest = {
 export type UsurpationOuverte = {
   readonly jetonDeSession: string
   readonly cible: CibleUsurpation
-  readonly usurpateurId: string
+  readonly usurpateurId: UtilisateurId
 }
 
 export const autoriserUsurpation = (

@@ -13,11 +13,8 @@ import { roleLu } from '../../../../implementations/prisma/role.transfer'
 import type { CibleUsurpation, CompteDeTest } from '../../domain'
 
 export const cibleUsurpation = async (
-  utilisateurId: string,
+  id: UtilisateurId,
 ): Promise<CibleUsurpation | null> => {
-  const id = UtilisateurId.safe(utilisateurId)
-  if (id === null) return null
-
   const row = await prismaClient.user.findUnique({
     where: { id, deleted: null },
     select: {

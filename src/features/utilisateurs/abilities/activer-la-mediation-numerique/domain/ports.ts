@@ -2,25 +2,26 @@ import type {
   ContactAImporter,
   CoordinateurId,
   InscritDeLaListe,
+  RattachementsDuCompte,
+  UtilisateurId,
 } from '@/features/utilisateurs/domain'
 
 export type CompteQuiActive = {
-  readonly id: string
-  readonly mediateur: { readonly id: string } | null
-  readonly coordinateur: { readonly id: string } | null
+  readonly id: UtilisateurId
+  readonly rattachements: RattachementsDuCompte
 }
 
 export type LireLeCompteQuiActive = (
-  utilisateurId: string,
+  utilisateurId: UtilisateurId,
 ) => Promise<CompteQuiActive | null>
 
 export type Activer = (activation: {
-  readonly utilisateurId: string
+  readonly utilisateurId: UtilisateurId
   readonly coordinateurId: CoordinateurId
 }) => Promise<void>
 
 export type LireLInscritAInscrire = (
-  utilisateurId: string,
+  utilisateurId: UtilisateurId,
 ) => Promise<InscritDeLaListe | null>
 
 export type InscrireALaListeDeDiffusion = (

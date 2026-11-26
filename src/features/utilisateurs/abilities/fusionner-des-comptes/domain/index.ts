@@ -6,10 +6,8 @@ export {
   categoriesDeFusion,
   communs,
 } from './apercu-de-fusion'
-export {
-  CibleFusionId,
-  type CompteAFusionner,
-  type FusionAutorisee,
-  SourceFusionId,
+export type {
+  CompteAFusionner,
+  FusionAutorisee,
 } from './compte-a-fusionner'
 export type { CompteTrouve } from './compte-trouve'

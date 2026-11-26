@@ -5,6 +5,7 @@ import { prismaClient } from '@/configuration/prisma'
 import { usurperUnUtilisateur as usurperAvec } from '@/features/utilisateurs/abilities/usurper-un-utilisateur/domain/usurper-un-utilisateur'
 import { cibleUsurpation } from '@/features/utilisateurs/abilities/usurper-un-utilisateur/implementations/prisma/cible-usurpation.query'
 import { ouvrirLUsurpation } from '@/features/utilisateurs/abilities/usurper-un-utilisateur/implementations/prisma/ouvrir-l-usurpation.mutation'
+import { UtilisateurId } from '@/features/utilisateurs/domain'
 import { semerUnCompteDeListe } from '@/features/utilisateurs/utilisateurs.cucumber'
 import { PorteeUsurpation } from './domain'
 
@@ -57,8 +58,8 @@ const semer = async (fixture: boolean) => {
 
 const usurper = async (portee: PorteeUsurpation) => {
   usurpation.resultat = await usurperUnUtilisateur({
-    utilisateurId: exiger(usurpation.cibleId),
-    usurpateurId: exiger(usurpation.administrateurId),
+    utilisateurId: UtilisateurId.safe(exiger(usurpation.cibleId)),
+    usurpateurId: UtilisateurId(exiger(usurpation.administrateurId)),
     jetonDeSession: exiger(usurpation.jeton),
     portee,
   })

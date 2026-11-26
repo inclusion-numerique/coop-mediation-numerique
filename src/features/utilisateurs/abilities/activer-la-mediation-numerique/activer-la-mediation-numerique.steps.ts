@@ -4,11 +4,10 @@ import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
 import { activerLaMediationNumerique } from '@/features/utilisateurs/abilities/activer-la-mediation-numerique/domain/activer-la-mediation-numerique'
 import { inscrireLeContactALaListe } from '@/features/utilisateurs/abilities/activer-la-mediation-numerique/implementations/brevo/inscrire-le-contact-a-la-liste.mutation'
-import {
-  activer,
-  compteQuiActive,
-} from '@/features/utilisateurs/abilities/activer-la-mediation-numerique/implementations/prisma/activer.mutation'
+import { activer } from '@/features/utilisateurs/abilities/activer-la-mediation-numerique/implementations/prisma/activer.mutation'
+import { compteQuiActive } from '@/features/utilisateurs/abilities/activer-la-mediation-numerique/implementations/prisma/compte-qui-active.query'
 import { inscritAInscrire } from '@/features/utilisateurs/abilities/activer-la-mediation-numerique/implementations/prisma/inscrit-a-inscrire.query'
+import { UtilisateurId } from '@/features/utilisateurs/domain'
 import type { SynchroniserLaPersonne } from '@/features/utilisateurs/implementations/prisma/registre-des-personnes.mutation'
 import { semerUnCompteDeListe } from '@/features/utilisateurs/utilisateurs.cucumber'
 
@@ -64,7 +63,7 @@ Given('un médiateur sans rôle coordinateur', async () => {
 When('il active la médiation numérique', async () => {
   activation.resultat = await activerLaMediationNumeriqueAvec(
     async () => undefined,
-  )({ utilisateurId: utilisateurId() })
+  )({ utilisateurId: UtilisateurId.safe(utilisateurId()) })
 })
 
 Then("l'activation de la médiation aboutit", () => {
