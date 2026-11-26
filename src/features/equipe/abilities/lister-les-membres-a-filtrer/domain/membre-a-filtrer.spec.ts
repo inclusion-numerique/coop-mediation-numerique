@@ -43,4 +43,42 @@ describe('membres à filtrer', () => {
       'Grace hopper AncienMembre',
     ])
   })
+
+  it('sans demandeur, compte comme membre celui qui n’a jamais quitté l’équipe et range d’abord les noms inconnus', () => {
+    expect(
+      membresDansLOrdre(null, [
+        membre(1, 'Grace', 'Hopper', []),
+        {
+          ...membre(2, 'Ada', 'Lovelace', []),
+          prenom: null,
+          nomDeFamille: null,
+        },
+      ]),
+    ).toEqual([
+      {
+        mediateurId: MediateurId('0b3c4f62-2d6a-4f6e-9a39-3a4c8f1d2e02'),
+        nom: NomAffiche('Ada Lovelace'),
+        email: Courriel('ada@example.com'),
+        situation: 'Membre',
+      },
+      {
+        mediateurId: MediateurId('0b3c4f62-2d6a-4f6e-9a39-3a4c8f1d2e01'),
+        nom: NomAffiche('Grace Hopper'),
+        email: Courriel('grace@example.com'),
+        situation: 'Membre',
+      },
+    ])
+  })
+
+  it('départage par le prénom les membres qui portent le même nom', () => {
+    expect(
+      membresDansLOrdre(null, [
+        membre(1, 'Grace', 'Hopper', []),
+        membre(2, 'Ada', 'hopper', []),
+      ]),
+    ).toMatchObject([
+      { nom: NomAffiche('Ada hopper') },
+      { nom: NomAffiche('Grace Hopper') },
+    ])
+  })
 })

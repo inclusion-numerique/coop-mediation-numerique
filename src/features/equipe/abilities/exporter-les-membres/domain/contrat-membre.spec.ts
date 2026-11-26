@@ -52,4 +52,17 @@ describe('contrat en cours d’un membre', () => {
       ),
     ).toEqual({ type: 'CDI', debut: cdd.debut, fin: null })
   })
+
+  it('fait passer un contrat daté avant ceux dont le début est inconnu', () => {
+    expect(
+      contratEnCours(
+        [
+          { ...cdd, type: TypeContrat('PEC'), debut: null },
+          cdd,
+          { ...cdd, type: TypeContrat('CDI'), debut: null },
+        ],
+        maintenant,
+      ),
+    ).toEqual({ type: 'CDD', debut: cdd.debut, fin: cdd.fin })
+  })
 })

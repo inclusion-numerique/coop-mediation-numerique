@@ -39,4 +39,10 @@ describe('mediateurCoordonnesEtAnciensIdsFor', () => {
       }),
     ).toEqual([ACTUEL, REINVITE, ANCIEN])
   })
+
+  it("ne rend personne pour un compte qui n'est pas coordinateur", () => {
+    expect(mediateurCoordonnesEtAnciensIdsFor({ coordinateur: null })).toEqual(
+      [],
+    )
+  })
 })
