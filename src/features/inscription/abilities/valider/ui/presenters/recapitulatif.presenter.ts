@@ -1,23 +1,41 @@
+import type { ProfilInscriptionValue } from '@/features/inscription/domain/profil-inscription'
 import { cheminDeLEtape } from '@/features/inscription/ui/presenters/chemin-de-l-etape.presenter'
 import type { EmployeuseAffichee } from '@/features/inscription/ui/presenters/employeuse-affichee.presenter'
-import type {
-  InscritDuRecapitulatif,
-  RecapitulatifLu,
-} from '../../domain/recapitulatif'
+
+type InscritDuRecapitulatif = {
+  readonly id: string
+  readonly email: string
+  readonly name: string | null
+  readonly profilInscription: ProfilInscriptionValue | null
+  readonly acceptationCgu: Date | null
+  readonly isConseillerNumerique: boolean
+  readonly mediateur: { readonly id: string } | null
+  readonly coordinateur: { readonly id: string } | null
+}
+
+type RecapitulatifConsulte<Lieu> = {
+  readonly lieuxActivite: readonly Lieu[]
+  readonly nombreDeMediateursCoordonnes: number | null
+  readonly lieuxImportesLe: Date | null
+}
 
 export const recapitulatifPresente = <Lieu>({
   user,
   employeuse,
-  lu: { lieuxActivite, mediateursCoordonnesCount, importedLieuxFromDataspace },
+  recapitulatif: {
+    lieuxActivite,
+    nombreDeMediateursCoordonnes,
+    lieuxImportesLe,
+  },
 }: {
   user: InscritDuRecapitulatif
   employeuse: EmployeuseAffichee | null
-  lu: RecapitulatifLu<Lieu>
+  recapitulatif: RecapitulatifConsulte<Lieu>
 }) => ({
   user,
   structureEmployeuse: employeuse ?? undefined,
   lieuxActivite,
-  mediateursCoordonnesCount,
+  mediateursCoordonnesCount: nombreDeMediateursCoordonnes,
   backHref: user.mediateur
     ? cheminDeLEtape('lieux-activite')
     : user.profilInscription === 'Coordinateur'
@@ -36,8 +54,7 @@ export const recapitulatifPresente = <Lieu>({
     user.profilInscription === 'CoordinateurConseillerNumerique',
   showInscriptionSteps:
     user.profilInscription === 'Mediateur' ||
-    (user.profilInscription === 'ConseillerNumerique' &&
-      !importedLieuxFromDataspace)
+    (user.profilInscription === 'ConseillerNumerique' && !lieuxImportesLe)
       ? 3
       : null,
 })

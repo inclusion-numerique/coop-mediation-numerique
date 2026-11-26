@@ -14,6 +14,7 @@ setDefaultTimeout(60_000)
  */
 let inscriptionUserId = ''
 
+const trackedMediateurCoordonneUserIds = new Set<string>()
 const trackedLieuActiviteIds = new Set<string>()
 const trackedEmployeuseMainIds = new Set<number>()
 const trackedAdresseMainIds = new Set<number>()
@@ -164,8 +165,30 @@ export const seedEmployeuseMain = async (
   return structure.id
 }
 
+export const seedMediateurCoordonne = async ({
+  coordinateurId,
+  suppression,
+}: {
+  coordinateurId: string
+  suppression: Date | null
+}): Promise<void> => {
+  const userId = v4()
+  trackedMediateurCoordonneUserIds.add(userId)
+  await prismaClient.user.create({
+    data: { id: userId, email: `coordonne-${userId}@test.local` },
+  })
+  const mediateur = await prismaClient.mediateur.create({
+    data: { id: v4(), userId },
+    select: { id: true },
+  })
+  await prismaClient.mediateurCoordonne.create({
+    data: { mediateurId: mediateur.id, coordinateurId, suppression },
+  })
+}
+
 Before(async () => {
   inscriptionUserId = v4()
+  trackedMediateurCoordonneUserIds.clear()
   trackedLieuActiviteIds.clear()
   trackedEmployeuseMainIds.clear()
   trackedAdresseMainIds.clear()
@@ -179,7 +202,10 @@ Before(async () => {
 })
 
 After(async () => {
-  const userIds = [inscriptionUserId]
+  const userIds = [inscriptionUserId, ...trackedMediateurCoordonneUserIds]
+  await prismaClient.mediateurCoordonne.deleteMany({
+    where: { coordinateur: { userId: { in: userIds } } },
+  })
   await prismaClient.mediateurEnActivite.deleteMany({
     where: { mediateur: { userId: { in: userIds } } },
   })
