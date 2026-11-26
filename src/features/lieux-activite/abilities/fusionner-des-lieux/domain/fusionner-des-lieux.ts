@@ -1,6 +1,7 @@
 import { failure, type Result, success } from '@/libraries/result'
+import { LieuIntrouvable } from '../../../domain/errors'
 import type { LieuId } from '../../../domain/identifiants/lieu-id'
-import { type EchecDeFusionnerDesLieux, LieuIntrouvable } from './errors'
+import type { EchecDeFusionnerDesLieux } from './errors'
 import type { FusionDeLieux } from './fusion-de-lieux'
 import type { FusionnerDesLieuxPorts } from './ports'
 

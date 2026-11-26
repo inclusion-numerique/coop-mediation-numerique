@@ -1,13 +1,3 @@
-import type { LieuId } from '../../../domain/identifiants/lieu-id'
-
-export type LieuIntrouvable = {
-  readonly _tag: 'LieuIntrouvable'
-  readonly lieuId: LieuId
-}
-
-export const LieuIntrouvable = (lieuId: LieuId): LieuIntrouvable => ({
-  _tag: 'LieuIntrouvable',
-  lieuId,
-})
+import type { LieuIntrouvable } from '../../../domain/errors'
 
 export type EchecDeFusionnerDesLieux = LieuIntrouvable

@@ -41,17 +41,13 @@ export const lieuCorrele = async (
   return correler(candidats, lieu)
 }
 
-export const preparerCorrele = async (
+export const releverLeLieu = async (
   transaction: Prisma.TransactionClient,
-  correle: Correle,
+  lieuId: string,
   maintenant: Date,
-): Promise<{ readonly id: string } | null> => {
-  if (correle.suppression === null) return { id: correle.id }
-
-  if (!correle.forte) return null
-
+): Promise<{ readonly id: string }> => {
   const releve = await transaction.lieuInclusion.update({
-    where: { id: correle.id },
+    where: { id: lieuId },
     data: {
       suppression: null,
       suppressionParId: null,
@@ -64,4 +60,16 @@ export const preparerCorrele = async (
   await depublierAuRegistre(transaction, { lieuId: releve.id, maintenant })
 
   return releve
+}
+
+export const preparerCorrele = async (
+  transaction: Prisma.TransactionClient,
+  correle: Correle,
+  maintenant: Date,
+): Promise<{ readonly id: string } | null> => {
+  if (correle.suppression === null) return { id: correle.id }
+
+  if (!correle.forte) return null
+
+  return releverLeLieu(transaction, correle.id, maintenant)
 }

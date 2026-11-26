@@ -25,13 +25,21 @@ import type {
   LieuExistant,
 } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/domain'
 import { ajouterDesLieuxActivite } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/domain/ajouter-des-lieux-activite'
+import { destinationDuLieuDecrit } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/domain/destination-du-lieu-decrit'
+import { lieuCorreleAuLieuDecrit } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/domain/lieu-correle-au-lieu-decrit'
 import { rattacherAuxLieux } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/ajouter-des-lieux-activite.mutation'
-import { lireLieuxDejaRattaches } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/lieux-deja-rattaches.query'
 import {
-  detacherDuLieuDecrit,
+  detacherDuLieu,
   type LieuDecrit,
   rattacherAuLieuDecrit,
-} from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/rattacher-au-lieu-decrit.mutation'
+} from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/lieu-decrit.mutation'
+import { lireLieuxDejaRattaches } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/lieux-deja-rattaches.query'
+import {
+  estUnLieuActif,
+  lieuPorteurDeLaCarto,
+  lieuxAuMemeEndroit,
+  nouvelIdentifiantDeLieu,
+} from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/situation-du-lieu.query'
 import {
   IdentifiantCartographie,
   IdsCartographieNationale,
@@ -65,6 +73,10 @@ const ajouter = async (
   dernier.ajout = await ajouterDesLieuxActivite({
     lireLieuxDejaRattaches,
     trouverStructuresCarto: async () => structuresCarto,
+    estUnLieuActif,
+    lieuPorteurDeLaCarto,
+    lieuxAuMemeEndroit,
+    nouvelIdentifiantDeLieu,
     rattacherAuxLieux,
   })({
     demandes,
@@ -485,12 +497,19 @@ const semerUnMediateur = async (): Promise<string> => {
   return utilisateurId
 }
 
-const rattacher = async (utilisateurId: string, nom = etat.nom) =>
-  rattacherAuLieuDecrit({
-    userId: utilisateurId,
-    lieu: lieuDecrit(nom),
+const rattacher = async (utilisateurId: string, nom = etat.nom) => {
+  const destination = await destinationDuLieuDecrit({
+    lieuxAuMemeEndroit,
+    nouvelIdentifiantDeLieu,
+  })({ lieu: lieuDecrit(nom) })
+
+  return rattacherAuLieuDecrit({
+    utilisateurId,
+    destination: destination.data,
     trace: { userId: utilisateurId },
+    maintenant: new Date(),
   })
+}
 
 const rattachementsActifs = (utilisateurId: string) =>
   prismaClient.mediateurEnActivite.findMany({
@@ -557,11 +576,17 @@ When('mon collègue se rattache au même lieu décrit', async () => {
 
 When('je me détache du lieu décrit', async () => {
   const utilisateurId = utilisateurCourant()
-  await detacherDuLieuDecrit({
-    userId: utilisateurId,
+  const correle = await lieuCorreleAuLieuDecrit({ lieuxAuMemeEndroit })({
     lieu: lieuDecrit(etat.nom),
-    trace: { userId: utilisateurId },
   })
+
+  if (correle.data !== null)
+    await detacherDuLieu({
+      utilisateurId,
+      lieuId: correle.data,
+      trace: { userId: utilisateurId },
+      maintenant: new Date(),
+    })
 })
 
 Then('je suis rattaché au lieu décrit', async () => {

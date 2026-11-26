@@ -3,7 +3,18 @@ import { After, Given, setDefaultTimeout, Then, When } from '@cucumber/cucumber'
 import { typologiesDepuisNom } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
-import { rattacherAuLieuDesire } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/rattacher-au-lieu-desire.mutation'
+import { planifierLesRattachements } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/domain/planifier-les-rattachements'
+import { appliquerLesDestinations } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/ajouter-des-lieux-activite.mutation'
+import {
+  type LieuDesire,
+  lieuDemandeDepuisLeLieuDesire,
+} from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/lieu-desire.transfer'
+import {
+  estUnLieuActif,
+  lieuPorteurDeLaCarto,
+  lieuxAuMemeEndroit,
+  nouvelIdentifiantDeLieu,
+} from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/situation-du-lieu.query'
 import { nouveauLieu } from '@/features/lieux-activite/abilities/creer-lieu-activite/action/saisie-du-lieu.transfer'
 import { creerLieuActivite } from '@/features/lieux-activite/abilities/creer-lieu-activite/domain/creer-lieu-activite'
 import { enregistrerLieuActivite } from '@/features/lieux-activite/abilities/creer-lieu-activite/implementations/prisma/enregistrer-lieu-activite.mutation'
@@ -370,20 +381,29 @@ const seedLieuActivite = async (
   return id
 }
 
-const renseigner = (
-  lieux: Parameters<typeof rattacherAuLieuDesire>[1]['lieu'][],
-) =>
-  prismaClient.$transaction(async (transaction) => {
-    await lieux.reduce(async (precedents, lieu) => {
-      await precedents
-      await rattacherAuLieuDesire(transaction, {
-        userId: utilisateurCourant(),
-        lieu,
-        structuresCartoParId: new Map(),
-        maintenant: new Date(),
-      })
-    }, Promise.resolve())
+const renseigner = async (lieux: readonly LieuDesire[]) => {
+  const maintenant = new Date()
+  const destinations = await planifierLesRattachements({
+    estUnLieuActif,
+    lieuPorteurDeLaCarto,
+    lieuxAuMemeEndroit,
+    nouvelIdentifiantDeLieu,
+  })({
+    lieux: lieux.map(lieuDemandeDepuisLeLieuDesire),
+    structuresCarto: new Map(),
+    maintenant,
   })
+
+  assert.ok(destinations.success, 'Les lieux désirés auraient dû se résoudre')
+
+  await prismaClient.$transaction((transaction) =>
+    appliquerLesDestinations(transaction, {
+      utilisateurId: utilisateurCourant(),
+      destinations: destinations.data,
+      maintenant,
+    }),
+  )
+}
 
 const creerUnLieuDActivite = (saisie: CreerLieuActiviteData) =>
   creerLieuActivite({ enregistrer: enregistrerLieuActivite })({

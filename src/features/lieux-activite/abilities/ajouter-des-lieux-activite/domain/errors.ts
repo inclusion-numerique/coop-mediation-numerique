@@ -1,4 +1,4 @@
-import type { MediateurRequis } from '../../../domain/errors'
+import type { LieuIntrouvable, MediateurRequis } from '../../../domain/errors'
 
 export type PanierVide = { readonly _tag: 'PanierVide' }
 
@@ -18,3 +18,4 @@ export type EchecDeAjouterDesLieuxActivite =
   | MediateurRequis
   | PanierVide
   | AdresseNonValidee
+  | LieuIntrouvable

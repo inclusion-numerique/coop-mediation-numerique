@@ -112,14 +112,16 @@ export type Correle = {
   readonly forte: boolean
 }
 
-type CandidatJuge = {
-  readonly candidat: LieuCandidat
+type CandidatJuge<Candidat extends LieuCandidat> = {
+  readonly candidat: Candidat
   readonly comparaison: ComparaisonMesuree
 }
 
 const juger =
   (aReconnaitre: LieuPrepare) =>
-  (candidat: LieuCandidat): readonly CandidatJuge[] => {
+  <Candidat extends LieuCandidat>(
+    candidat: Candidat,
+  ): readonly CandidatJuge<Candidat>[] => {
     const comparaison = comparer(auStandard(candidat), aReconnaitre)
     return 'score' in comparaison && comparaison.score > SCORE_MINIMAL
       ? [{ candidat, comparaison }]
@@ -131,9 +133,13 @@ const juger =
  * été volontairement —, et à ce niveau le mieux noté. À défaut, le plus ancien
  * (les candidats arrivent triés).
  */
-const meilleur = (juges: readonly CandidatJuge[]): CandidatJuge | null => {
-  const parNoteDecroissante = (un: CandidatJuge, autre: CandidatJuge): number =>
-    autre.comparaison.score - un.comparaison.score
+const meilleur = <Candidat extends LieuCandidat>(
+  juges: readonly CandidatJuge<Candidat>[],
+): CandidatJuge<Candidat> | null => {
+  const parNoteDecroissante = (
+    un: CandidatJuge<Candidat>,
+    autre: CandidatJuge<Candidat>,
+  ): number => autre.comparaison.score - un.comparaison.score
 
   const actifs = juges.filter(({ candidat }) => candidat.suppression === null)
 
@@ -150,10 +156,10 @@ const meilleur = (juges: readonly CandidatJuge[]): CandidatJuge | null => {
  * Seule entrée publique : les candidats arrivent déjà ratissés (même code INSEE)
  * et TRIÉS — l'ordre porte l'ancienneté, qui départage à note égale.
  */
-export const correler = (
-  candidats: readonly LieuCandidat[],
+export const correler = <Candidat extends LieuCandidat>(
+  candidats: readonly Candidat[],
   lieu: LieuAMaterialiser,
-): Correle | null => {
+): (Correle & { readonly id: Candidat['id'] }) | null => {
   const juges = candidats.flatMap(juger(auStandard(lieu)))
 
   const elu = meilleur(juges)

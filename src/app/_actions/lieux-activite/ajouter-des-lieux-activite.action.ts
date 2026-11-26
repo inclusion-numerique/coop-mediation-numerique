@@ -9,6 +9,12 @@ import { ajouterDesLieuxActivite } from '@/features/lieux-activite/abilities/ajo
 import { trouverStructuresCarto } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/entrepot/trouver-structures-carto.query'
 import { rattacherAuxLieux } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/ajouter-des-lieux-activite.mutation'
 import { lireLieuxDejaRattaches } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/lieux-deja-rattaches.query'
+import {
+  estUnLieuActif,
+  lieuPorteurDeLaCarto,
+  lieuxAuMemeEndroit,
+  nouvelIdentifiantDeLieu,
+} from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/situation-du-lieu.query'
 import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
 import { UtilisateurId } from '@/features/lieux-activite/domain/identifiants/utilisateur-id'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
@@ -34,6 +40,10 @@ export const ajouterDesLieuxActiviteAction = actionBuilder()
         const ajout = await ajouterDesLieuxActivite({
           lireLieuxDejaRattaches,
           trouverStructuresCarto,
+          estUnLieuActif,
+          lieuPorteurDeLaCarto,
+          lieuxAuMemeEndroit,
+          nouvelIdentifiantDeLieu,
           rattacherAuxLieux,
         })({
           demandes: demandes.data,

@@ -1,4 +1,5 @@
-import { type Result, success } from '@/libraries/result'
+import { failure, type Result, success } from '@/libraries/result'
+import { LieuIntrouvable } from '../../../domain/errors'
 import type { MediateurId } from '../../../domain/identifiants/mediateur-id'
 import type { UtilisateurId } from '../../../domain/identifiants/utilisateur-id'
 import type { AjoutDeLieux, LieuxAjoutes } from './ajout-de-lieux'
@@ -7,6 +8,7 @@ import type { EchecDeAjouterDesLieuxActivite } from './errors'
 import { identifiantsCarto } from './identifiants-carto'
 import type { LieuDemande } from './lieu-demande'
 import { lieuxAMaterialiser } from './lieux-a-materialiser'
+import { planifierLesRattachements } from './planifier-les-rattachements'
 import type { AjouterDesLieuxActivitePorts } from './ports'
 
 export const ajouterDesLieuxActivite =
@@ -14,6 +16,7 @@ export const ajouterDesLieuxActivite =
     lireLieuxDejaRattaches,
     trouverStructuresCarto,
     rattacherAuxLieux,
+    ...portsDePlanification
   }: AjouterDesLieuxActivitePorts) =>
   async ({
     demandes,
@@ -39,19 +42,33 @@ export const ajouterDesLieuxActivite =
       return success({
         utilisateurId,
         mediateurId: demande.data.mediateurId,
-        lieux,
-        structuresCarto: new Map(),
+        destinations: [],
         ajouteLe: maintenant,
         lieuxRattaches: [],
       })
 
+    const destinations = await planifierLesRattachements(portsDePlanification)({
+      lieux,
+      structuresCarto: await trouverStructuresCarto(identifiantsCarto(lieux)),
+      maintenant,
+    })
+
+    if (!destinations.success) return destinations
+
     const ajout: AjoutDeLieux = {
       utilisateurId,
       mediateurId: demande.data.mediateurId,
-      lieux,
-      structuresCarto: await trouverStructuresCarto(identifiantsCarto(lieux)),
+      destinations: destinations.data,
       ajouteLe: maintenant,
     }
 
-    return success({ ...ajout, lieuxRattaches: await rattacherAuxLieux(ajout) })
+    const rattachement = await rattacherAuxLieux(ajout)
+
+    if (rattachement._tag === 'LieuDisparu')
+      return failure(LieuIntrouvable(rattachement.lieuId))
+
+    return success({
+      ...ajout,
+      lieuxRattaches: destinations.data.map(({ id }) => id),
+    })
   }
