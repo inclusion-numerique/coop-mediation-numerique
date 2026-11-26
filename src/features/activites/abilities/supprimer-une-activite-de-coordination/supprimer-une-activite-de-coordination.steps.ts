@@ -2,8 +2,12 @@ import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
-import { type EchecDeSuppression } from '@/features/activites/abilities/supprimer-une-activite-de-coordination/domain/index'
-import { supprimerUneActiviteDeCoordination } from '@/features/activites/abilities/supprimer-une-activite-de-coordination/implementations/prisma/supprimer-une-activite-de-coordination.mutation'
+import {
+  type EchecDeSuppression,
+  supprimerUneActiviteDeCoordination,
+} from '@/features/activites/abilities/supprimer-une-activite-de-coordination/domain/index'
+import { activiteDeCoordinationEnregistree } from '@/features/activites/abilities/supprimer-une-activite-de-coordination/implementations/prisma/activite-de-coordination-enregistree.query'
+import { supprimerLActiviteDeCoordination } from '@/features/activites/abilities/supprimer-une-activite-de-coordination/implementations/prisma/supprimer-une-activite-de-coordination.mutation'
 import {
   ActiviteDeCoordinationId,
   CoordinateurId,
@@ -40,9 +44,11 @@ const semisCourant = (): Semis => {
 
 const supprimerPar = async (coordinateurId: string, userId: string) => {
   resultat = await supprimerUneActiviteDeCoordination({
+    activiteEnregistree: activiteDeCoordinationEnregistree,
+    supprimer: supprimerLActiviteDeCoordination(UtilisateurId(userId)),
+  })({
     activiteId: ActiviteDeCoordinationId(semisCourant().activiteId),
     coordinateurId: CoordinateurId(coordinateurId),
-    auteurId: UtilisateurId(userId),
   })
 }
 
