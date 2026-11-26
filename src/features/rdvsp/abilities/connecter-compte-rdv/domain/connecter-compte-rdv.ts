@@ -102,7 +102,7 @@ export type DependancesConnecterCompteRdv = {
   readonly identifierAgent: RdvServicePublicApi['identifierAgent']
   readonly compteExistant: CompteRdvExistant
   readonly enregistrer: EnregistrerCompteConnecte
-  readonly maintenant?: () => Date
+  readonly maintenant: () => Date
 }
 
 /**
@@ -121,7 +121,7 @@ export const connecterCompteRdv =
     identifierAgent,
     compteExistant,
     enregistrer,
-    maintenant = () => new Date(),
+    maintenant,
   }: DependancesConnecterCompteRdv): ConnecterCompteRdv =>
   async ({ utilisateurId, emailUtilisateur, code }) => {
     const jetons = await echangerCode(code)
