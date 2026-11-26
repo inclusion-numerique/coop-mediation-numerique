@@ -5,6 +5,7 @@ import {
   genres,
   repartitionComplete,
   statutsSociaux,
+  type TRANCHES_D_AGE,
   tranchesDAge,
 } from '../../../../domain'
 import {
@@ -12,12 +13,24 @@ import {
   personneAccompagnee,
 } from '../../../../implementations/prisma/statistiques/statistiques.sql'
 import { valeurEnBase } from '../../../../implementations/prisma/valeur-en-base.transfer'
-import {
-  AGE_AVANT_LA_TRANCHE_SUIVANTE,
-  PREMIERE_ANNEE_DE_NAISSANCE,
-  type ProfilDesPersonnesAccompagnees,
-  TRANCHE_DES_PLUS_AGES,
-} from '../../domain'
+import type { ProfilDesPersonnesAccompagnees } from '../../domain'
+
+const PREMIERE_ANNEE_DE_NAISSANCE = 1900
+
+const AGE_AVANT_LA_TRANCHE_SUIVANTE = [
+  { tranche: 'MoinsDeDouze', avant: 12 },
+  { tranche: 'DouzeDixHuit', avant: 18 },
+  { tranche: 'DixHuitVingtQuatre', avant: 25 },
+  { tranche: 'VingtCinqTrenteNeuf', avant: 40 },
+  { tranche: 'QuaranteCinquanteNeuf', avant: 60 },
+  { tranche: 'SoixanteSoixanteNeuf', avant: 70 },
+] as const satisfies readonly {
+  readonly tranche: (typeof TRANCHES_D_AGE)[number]
+  readonly avant: number
+}[]
+
+const TRANCHE_DES_PLUS_AGES =
+  'SoixanteDixPlus' satisfies (typeof TRANCHES_D_AGE)[number]
 
 type Ligne = {
   readonly total: number
