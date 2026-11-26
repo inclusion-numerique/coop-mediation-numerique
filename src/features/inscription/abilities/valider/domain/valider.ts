@@ -3,24 +3,25 @@ import { type Result, success } from '@/libraries/result'
 import type { EchecDeValider } from './errors'
 import type { ValiderPorts } from './ports'
 import {
-  type ValidationAEnregistrer,
+  type InscriptionValidee,
   validerInscription,
 } from './valider-inscription'
 
 export const valider =
-  ({
+  <Contact>({
     lireFaitsInscription,
     enregistrerValidation,
+    lireLeContactAInscrire,
     inscrireALaListeDeDiffusion,
     effetsApresValidation,
-  }: ValiderPorts) =>
+  }: ValiderPorts<Contact>) =>
   async ({
     userId,
     maintenant,
   }: {
     readonly userId: UtilisateurId
     readonly maintenant: Date
-  }): Promise<Result<ValidationAEnregistrer, EchecDeValider>> => {
+  }): Promise<Result<InscriptionValidee<Contact>, EchecDeValider>> => {
     const validation = validerInscription({
       faits: await lireFaitsInscription(userId),
       maintenant,
@@ -29,8 +30,12 @@ export const valider =
     if (!validation.success) return validation
 
     await enregistrerValidation(validation.data)
-    await inscrireALaListeDeDiffusion(userId)
+
+    const contactInscrit = await lireLeContactAInscrire(userId)
+    if (contactInscrit !== null)
+      await inscrireALaListeDeDiffusion(contactInscrit)
+
     await effetsApresValidation(userId)
 
-    return success(validation.data)
+    return success({ ...validation.data, contactInscrit })
   }

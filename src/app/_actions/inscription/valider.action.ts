@@ -11,28 +11,25 @@ import {
 import { UtilisateurId as UtilisateurDeLEquipe } from '@/features/equipe/domain'
 import { VALIDER_ERRORS } from '@/features/inscription/abilities/valider/action/valider.errors'
 import { ValiderValidation } from '@/features/inscription/abilities/valider/action/valider.validation'
-import type {
-  EffetsApresValidation,
-  InscrireALaListeDeDiffusion,
-} from '@/features/inscription/abilities/valider/domain/ports'
+import type { EffetsApresValidation } from '@/features/inscription/abilities/valider/domain/ports'
 import { valider } from '@/features/inscription/abilities/valider/domain/valider'
 import { enregistrerValidation } from '@/features/inscription/abilities/valider/implementations/prisma/enregistrer-validation.mutation'
 import { lireFaitsInscription } from '@/features/inscription/abilities/valider/implementations/prisma/lire-faits-inscription.query'
 import { UtilisateurId } from '@/features/inscription/domain'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
-import { inscrireALaListeDeDiffusion } from '@/features/utilisateurs/abilities/activer-la-mediation-numerique/implementations/brevo/inscrire-a-la-liste-de-diffusion.mutation'
+import { inscrireLeContactALaListe } from '@/features/utilisateurs/abilities/activer-la-mediation-numerique/implementations/brevo/inscrire-le-contact-a-la-liste.mutation'
 import { inscritAInscrire } from '@/features/utilisateurs/abilities/activer-la-mediation-numerique/implementations/prisma/inscrit-a-inscrire.query'
+import { contactAInscrire } from '@/features/utilisateurs/domain'
 import { fromResult, withInput } from '@/libraries/nextjs'
 import { success } from '@/libraries/result'
 
-const validerAvec = (
-  inscrireALaListeDeDiffusion: InscrireALaListeDeDiffusion,
-  effetsApresValidation: EffetsApresValidation,
-) =>
+const validerAvec = (effetsApresValidation: EffetsApresValidation) =>
   valider({
     lireFaitsInscription,
     enregistrerValidation,
-    inscrireALaListeDeDiffusion,
+    lireLeContactAInscrire: async (userId) =>
+      contactAInscrire(await inscritAInscrire(userId)),
+    inscrireALaListeDeDiffusion: inscrireLeContactALaListe,
     effetsApresValidation,
   })
 
@@ -53,10 +50,10 @@ export const validerAction = actionBuilder()
   .execute(
     fromResult(
       async ({ user }) => {
-        const resultat = await validerAvec(
-          inscrireALaListeDeDiffusion(inscritAInscrire),
-          accepterLesInvitationsDeLInscrit,
-        )({ userId: UtilisateurId(user.id), maintenant: new Date() })
+        const resultat = await validerAvec(accepterLesInvitationsDeLInscrit)({
+          userId: UtilisateurId(user.id),
+          maintenant: new Date(),
+        })
 
         return resultat.success ? success(undefined) : resultat
       },

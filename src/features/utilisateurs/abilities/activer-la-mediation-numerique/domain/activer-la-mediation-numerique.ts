@@ -1,8 +1,6 @@
 import {
-  type ContactAImporter,
   CoordinateurId,
-  contactASynchroniser,
-  type InscritDeLaListe,
+  contactAInscrire,
   MediateurId,
   rattachements,
   UtilisateurIntrouvable,
@@ -11,14 +9,6 @@ import { failure, type Result, success } from '@/libraries/result'
 import type { EchecDActiverLaMediationNumerique } from './errors'
 import { type Activation, activationDe } from './mediation'
 import type { ActiverLaMediationNumeriquePorts } from './ports'
-
-const contactAInscrire = (
-  inscrit: InscritDeLaListe | null,
-): ContactAImporter | null => {
-  if (inscrit === null) return null
-  const contact = contactASynchroniser(inscrit)
-  return contact._tag === 'AImporter' ? contact.contact : null
-}
 
 export const activerLaMediationNumerique =
   ({

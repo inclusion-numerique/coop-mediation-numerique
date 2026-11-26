@@ -6,6 +6,7 @@ export {
 } from './compte'
 export {
   type ContactAImporter,
+  contactAInscrire,
   contactASynchroniser,
   type DatesDeContrat,
   type InscritDeLaListe,

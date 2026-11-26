@@ -125,3 +125,11 @@ export const contactASynchroniser = (
         },
       }
 }
+
+export const contactAInscrire = (
+  inscrit: InscritDeLaListe | null,
+): ContactAImporter | null => {
+  if (inscrit === null) return null
+  const contact = contactASynchroniser(inscrit)
+  return contact._tag === 'AImporter' ? contact.contact : null
+}

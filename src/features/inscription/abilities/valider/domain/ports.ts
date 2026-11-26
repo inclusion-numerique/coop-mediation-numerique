@@ -14,13 +14,18 @@ export type EnregistrerValidation = (
 
 export type EffetsApresValidation = (userId: UtilisateurId) => Promise<void>
 
-export type InscrireALaListeDeDiffusion = (
+export type LireLeContactAInscrire<Contact> = (
   userId: UtilisateurId,
+) => Promise<Contact | null>
+
+export type InscrireALaListeDeDiffusion<Contact> = (
+  contact: Contact,
 ) => Promise<void>
 
-export type ValiderPorts = {
+export type ValiderPorts<Contact> = {
   readonly lireFaitsInscription: LireFaitsInscription
   readonly enregistrerValidation: EnregistrerValidation
-  readonly inscrireALaListeDeDiffusion: InscrireALaListeDeDiffusion
+  readonly lireLeContactAInscrire: LireLeContactAInscrire<Contact>
+  readonly inscrireALaListeDeDiffusion: InscrireALaListeDeDiffusion<Contact>
   readonly effetsApresValidation: EffetsApresValidation
 }

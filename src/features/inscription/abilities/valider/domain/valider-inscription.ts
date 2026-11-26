@@ -20,6 +20,10 @@ export type ValidationAEnregistrer = {
   readonly cguAPoser: Date | null
 }
 
+export type InscriptionValidee<Contact> = ValidationAEnregistrer & {
+  readonly contactInscrit: Contact | null
+}
+
 export const validerInscription = ({
   faits: {
     userId,

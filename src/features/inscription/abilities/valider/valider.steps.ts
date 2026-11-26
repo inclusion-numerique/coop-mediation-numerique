@@ -3,12 +3,9 @@ import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
 import type { EchecDeValider } from '@/features/inscription/abilities/valider/domain/errors'
-import type {
-  EffetsApresValidation,
-  InscrireALaListeDeDiffusion,
-} from '@/features/inscription/abilities/valider/domain/ports'
+import type { EffetsApresValidation } from '@/features/inscription/abilities/valider/domain/ports'
 import { valider } from '@/features/inscription/abilities/valider/domain/valider'
-import type { ValidationAEnregistrer } from '@/features/inscription/abilities/valider/domain/valider-inscription'
+import type { InscriptionValidee } from '@/features/inscription/abilities/valider/domain/valider-inscription'
 import { enregistrerValidation } from '@/features/inscription/abilities/valider/implementations/prisma/enregistrer-validation.mutation'
 import { lireFaitsInscription } from '@/features/inscription/abilities/valider/implementations/prisma/lire-faits-inscription.query'
 import { ProfilInscription } from '@/features/inscription/domain'
@@ -18,18 +15,16 @@ import {
 } from '@/features/inscription/inscription.cucumber'
 import type { Result } from '@/libraries/result'
 
-const validerAvec = (
-  inscrireALaListeDeDiffusion: InscrireALaListeDeDiffusion,
-  effetsApresValidation: EffetsApresValidation,
-) =>
+const validerAvec = (effetsApresValidation: EffetsApresValidation) =>
   valider({
     lireFaitsInscription,
     enregistrerValidation,
-    inscrireALaListeDeDiffusion,
+    lireLeContactAInscrire: async () => null,
+    inscrireALaListeDeDiffusion: async () => undefined,
     effetsApresValidation,
   })
 
-let resultat: Result<ValidationAEnregistrer, EchecDeValider>
+let resultat: Result<InscriptionValidee<never>, EchecDeValider>
 
 Given('mon profil d’inscription est {string}', async (profil: string) => {
   await seedProfilChoisi(ProfilInscription.schema.parse(profil))
@@ -62,10 +57,10 @@ Given('mon inscription est déjà validée', async () => {
 })
 
 When('je valide mon inscription', async () => {
-  resultat = await validerAvec(
-    async () => undefined,
-    async () => undefined,
-  )({ userId: utilisateurDeLInscriptionEnCours(), maintenant: new Date() })
+  resultat = await validerAvec(async () => undefined)({
+    userId: utilisateurDeLInscriptionEnCours(),
+    maintenant: new Date(),
+  })
 })
 
 Then('mon inscription est validée', async () => {

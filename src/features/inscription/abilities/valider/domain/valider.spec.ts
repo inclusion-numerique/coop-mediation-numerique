@@ -16,29 +16,55 @@ const inscriptionValidable: FaitsInscription = {
   cguDejaAcceptee: true,
 }
 
-const validerDepuis = (faits: FaitsInscription) =>
+const validerDepuis = (
+  faits: FaitsInscription,
+  contactAInscrire: string | null,
+) =>
   valider({
     lireFaitsInscription: async () => faits,
     enregistrerValidation: async () => undefined,
+    lireLeContactAInscrire: async () => contactAInscrire,
     inscrireALaListeDeDiffusion: async () => undefined,
     effetsApresValidation: async () => undefined,
   })({ userId, maintenant })
 
 describe('valider l’inscription', () => {
   it('pose la date de validation sans toucher aux CGU déjà acceptées', async () => {
-    expect(await validerDepuis(inscriptionValidable)).toEqual(
-      success({ userId, inscriptionValidee: maintenant, cguAPoser: null }),
+    expect(await validerDepuis(inscriptionValidable, null)).toEqual(
+      success({
+        userId,
+        inscriptionValidee: maintenant,
+        cguAPoser: null,
+        contactInscrit: null,
+      }),
     )
   })
 
   it('pose les CGU quand elles n’avaient pas été acceptées, au parcours Dataspace', async () => {
     expect(
-      await validerDepuis({ ...inscriptionValidable, cguDejaAcceptee: false }),
+      await validerDepuis(
+        { ...inscriptionValidable, cguDejaAcceptee: false },
+        null,
+      ),
     ).toEqual(
       success({
         userId,
         inscriptionValidee: maintenant,
         cguAPoser: maintenant,
+        contactInscrit: null,
+      }),
+    )
+  })
+
+  it('inscrit à la liste de diffusion le contact que l’inscrit y a', async () => {
+    expect(
+      await validerDepuis(inscriptionValidable, 'camille@example.com'),
+    ).toEqual(
+      success({
+        userId,
+        inscriptionValidee: maintenant,
+        cguAPoser: null,
+        contactInscrit: 'camille@example.com',
       }),
     )
   })
@@ -60,7 +86,7 @@ describe('valider l’inscription', () => {
       erreur: 'CompteDeRoleIntrouvable',
     },
   ])('$cas', async ({ faits, erreur }) => {
-    expect(await validerDepuis(faits)).toEqual(
+    expect(await validerDepuis(faits, 'camille@example.com')).toEqual(
       failure({ _tag: erreur, userId }),
     )
   })
