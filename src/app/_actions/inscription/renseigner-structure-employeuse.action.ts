@@ -4,6 +4,7 @@ import { geocoder } from '@/configuration/ban'
 import { actionBuilder } from '@/configuration/nextjs'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { RenseignerStructureEmployeuseValidation } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/action/renseigner-structure-employeuse.validation'
+import { identiteSaisie } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/action/saisie-employeuse.transfer'
 import { rattacherAUneEmployeuse } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/domain/rattacher-a-une-employeuse'
 import { etablissementDepuisSiret } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/api-entreprise/etablissement-depuis-siret.query'
 import { statutDeConseillerNumerique } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/prisma/conseiller-numerique-en-poste.query'
@@ -11,9 +12,8 @@ import { creerLEmployeuse } from '@/features/employeuse/abilities/rattacher-a-un
 import { lireLesEmployeusesDuSiret } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/prisma/employeuses-du-siret.query'
 import { enregistrerLeRattachement } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/prisma/enregistrer-le-rattachement.mutation'
 import { UtilisateurId as UtilisateurIdDeLEmployeuse } from '@/features/employeuse/domain'
-import { IdentiteEmployeuse } from '@/features/employeuse/domain/identite-employeuse'
+import type { IdentiteEmployeuse } from '@/features/employeuse/domain/identite-employeuse'
 import { RENSEIGNER_STRUCTURE_EMPLOYEUSE_ERRORS } from '@/features/inscription/abilities/renseigner-structure-employeuse/action/renseigner-structure-employeuse.errors'
-import { saisieEmployeuse } from '@/features/inscription/abilities/renseigner-structure-employeuse/action/saisie-employeuse.transfer'
 import { renseignerStructureEmployeuse } from '@/features/inscription/abilities/renseigner-structure-employeuse/domain/renseigner-structure-employeuse'
 import { projeterEtapeFranchie } from '@/features/inscription/abilities/renseigner-structure-employeuse/implementations/prisma/projeter-etape-franchie.mutation'
 import { UtilisateurId } from '@/features/inscription/domain'
@@ -39,10 +39,16 @@ const rattacherAUneEmployeuseSaisie = rattacherAUneEmployeuse({
 
 const renseigner = renseignerStructureEmployeuse({
   lireLEtat: getInscriptionEtat,
-  rattacherEmployeuse: ({ userId, saisie }) =>
+  rattacherEmployeuse: ({
+    userId,
+    employeuse,
+  }: {
+    readonly userId: UtilisateurId
+    readonly employeuse: IdentiteEmployeuse | null
+  }) =>
     rattacherAUneEmployeuseSaisie({
       userId: UtilisateurIdDeLEmployeuse(userId),
-      source: { _tag: 'Saisie', identite: IdentiteEmployeuse.safe(saisie) },
+      source: { _tag: 'Saisie', identite: employeuse },
     }),
   projeterEtapeFranchie,
 })
@@ -57,7 +63,7 @@ export const renseignerStructureEmployeuseAction = actionBuilder()
         const resultat = await renseigner({
           command: {
             userId: UtilisateurId(user.id),
-            saisie: saisieEmployeuse(input.structure),
+            employeuse: identiteSaisie(input.structure),
           },
           maintenant: new Date(),
         })

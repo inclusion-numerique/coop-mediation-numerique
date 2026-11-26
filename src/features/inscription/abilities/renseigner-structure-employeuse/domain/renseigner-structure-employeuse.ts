@@ -3,29 +3,31 @@ import { failure, type Result, success } from '@/libraries/result'
 import { deciderLaStructureEmployeuse } from './decider-la-structure-employeuse'
 import {
   type EchecDeRenseignerStructureEmployeuse,
-  EmployeuseIndisponible,
+  EmployeuseNonRattachee,
 } from './errors'
 import type { RenseignerStructureEmployeusePorts } from './ports'
-import type { SaisieEmployeuse } from './saisie-employeuse'
 import type { StructureEmployeuseRenseignee } from './structure-employeuse-renseignee'
 
 export const renseignerStructureEmployeuse =
-  ({
+  <Employeuse, Rattachement>({
     lireLEtat,
     rattacherEmployeuse,
     projeterEtapeFranchie,
-  }: RenseignerStructureEmployeusePorts) =>
+  }: RenseignerStructureEmployeusePorts<Employeuse, Rattachement>) =>
   async ({
-    command: { userId, saisie },
+    command: { userId, employeuse },
     maintenant,
   }: {
     readonly command: {
       readonly userId: UtilisateurId
-      readonly saisie: SaisieEmployeuse
+      readonly employeuse: Employeuse
     }
     readonly maintenant: Date
   }): Promise<
-    Result<StructureEmployeuseRenseignee, EchecDeRenseignerStructureEmployeuse>
+    Result<
+      StructureEmployeuseRenseignee<Employeuse, Rattachement>,
+      EchecDeRenseignerStructureEmployeuse
+    >
   > => {
     const etatFranchi = deciderLaStructureEmployeuse({
       etat: await lireLEtat(userId),
@@ -35,11 +37,15 @@ export const renseignerStructureEmployeuse =
 
     if (!etatFranchi.success) return etatFranchi
 
-    const rattachement = await rattacherEmployeuse({ userId, saisie })
+    const rattachement = await rattacherEmployeuse({ userId, employeuse })
 
-    if (!rattachement.success) return failure(EmployeuseIndisponible(userId))
+    if (!rattachement.success) return failure(EmployeuseNonRattachee(userId))
 
     await projeterEtapeFranchie(etatFranchi.data)
 
-    return success({ saisie, etatFranchi: etatFranchi.data })
+    return success({
+      employeuse,
+      rattachement: rattachement.data,
+      etatFranchi: etatFranchi.data,
+    })
   }

@@ -3,17 +3,17 @@ import type {
   UtilisateurId,
 } from '@/features/inscription/domain'
 import type { LireLEtatDeLInscription } from '@/features/inscription/domain/ports'
-import type { SaisieEmployeuse } from './saisie-employeuse'
+import type { Result } from '@/libraries/result'
 
-export type RattacherEmployeuse = (input: {
+export type RattacherEmployeuse<Employeuse, Rattachement> = (entree: {
   readonly userId: UtilisateurId
-  readonly saisie: SaisieEmployeuse
-}) => Promise<{ readonly success: boolean }>
+  readonly employeuse: Employeuse
+}) => Promise<Result<Rattachement, unknown>>
 
 export type ProjeterEtapeFranchie = (etat: InscriptionEnCours) => Promise<void>
 
-export type RenseignerStructureEmployeusePorts = {
+export type RenseignerStructureEmployeusePorts<Employeuse, Rattachement> = {
   readonly lireLEtat: LireLEtatDeLInscription
-  readonly rattacherEmployeuse: RattacherEmployeuse
+  readonly rattacherEmployeuse: RattacherEmployeuse<Employeuse, Rattachement>
   readonly projeterEtapeFranchie: ProjeterEtapeFranchie
 }

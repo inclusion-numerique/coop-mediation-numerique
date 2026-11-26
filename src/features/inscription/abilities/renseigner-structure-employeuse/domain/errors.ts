@@ -5,15 +5,15 @@ import type {
   UtilisateurId,
 } from '@/features/inscription/domain'
 
-export type EmployeuseIndisponible = {
-  readonly _tag: 'EmployeuseIndisponible'
+export type EmployeuseNonRattachee = {
+  readonly _tag: 'EmployeuseNonRattachee'
   readonly userId: UtilisateurId
 }
 
-export const EmployeuseIndisponible = (
+export const EmployeuseNonRattachee = (
   userId: UtilisateurId,
-): EmployeuseIndisponible => ({
-  _tag: 'EmployeuseIndisponible',
+): EmployeuseNonRattachee => ({
+  _tag: 'EmployeuseNonRattachee',
   userId,
 })
 
@@ -21,4 +21,4 @@ export type EchecDeRenseignerStructureEmployeuse =
   | InscriptionIntrouvable
   | ProfilNonChoisi
   | InscriptionDejaValidee
-  | EmployeuseIndisponible
+  | EmployeuseNonRattachee
