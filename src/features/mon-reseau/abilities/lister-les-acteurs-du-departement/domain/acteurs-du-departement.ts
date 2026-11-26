@@ -1,20 +1,18 @@
 import type { Paginated } from '@arckit/resultset'
-import type { CodeDepartement } from '@/libraries/insee'
+import type { Departement } from '@/libraries/departement'
 import type { Acteur } from '../../../domain'
 import type { CriteresActeurs } from './criteres-acteurs'
 
 export type PageDActeurs = Paginated<Acteur>
 
-type OptionDeCommune = {
+export type OptionDeCommune = {
   readonly value: string
   readonly label: string
 }
 
-export type ListerLesActeursDuDepartement = (
-  departement: CodeDepartement,
-  criteres: CriteresActeurs,
-) => Promise<PageDActeurs>
-
-export type CommunesDesLieux = (options: {
-  departementCode: CodeDepartement
-}) => Promise<{ readonly communesOptions: readonly OptionDeCommune[] }>
+export type ActeursDuDepartement = {
+  readonly departement: Departement
+  readonly criteres: CriteresActeurs
+  readonly acteurs: PageDActeurs
+  readonly communes: readonly OptionDeCommune[]
+}

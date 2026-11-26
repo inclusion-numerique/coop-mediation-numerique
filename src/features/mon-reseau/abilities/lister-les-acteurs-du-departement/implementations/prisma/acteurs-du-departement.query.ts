@@ -17,7 +17,7 @@ import {
 import type {
   CriteresActeurs,
   FiltreRole,
-  ListerLesActeursDuDepartement,
+  LireLesActeursDuDepartement,
 } from '../../domain'
 
 const normalisee = (expression: Prisma.Sql) =>
@@ -56,7 +56,7 @@ const SENS_DU_TRI = {
   desc: Prisma.raw('DESC'),
 } as const
 
-export const acteursDuDepartement: ListerLesActeursDuDepartement = async (
+export const acteursDuDepartement: LireLesActeursDuDepartement = async (
   departement,
   criteres,
 ) => {

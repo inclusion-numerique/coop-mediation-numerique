@@ -1,6 +1,7 @@
 import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
-import { listerLesActeursDuDepartement } from '@/features/mon-reseau/abilities/lister-les-acteurs-du-departement/implementations/prisma/acteurs-listes.query'
+import { listerLesActeursDuDepartement } from '@/features/mon-reseau/abilities/lister-les-acteurs-du-departement/domain/lister-les-acteurs-du-departement'
+import { acteursDuDepartement } from '@/features/mon-reseau/abilities/lister-les-acteurs-du-departement/implementations/prisma'
 import {
   exercerDansLeLieu,
   semerUnActeur,
@@ -10,7 +11,9 @@ import { criteresDesActeursDuReseau } from './ui/filtres/acteurs-du-reseau.filtr
 
 const communesDesLieux = async () => ({ communesOptions: [] })
 
-type Consultation = Awaited<ReturnType<typeof listerLesActeursDuDepartement>>
+type Consultation = Awaited<
+  ReturnType<ReturnType<typeof listerLesActeursDuDepartement>>
+>
 
 const etat: { consultation?: Consultation } = {}
 
@@ -51,11 +54,13 @@ const semerDansLeCantal = async ({
 }
 
 const consulter = async (parametres: Record<string, string>) => {
-  etat.consultation = await listerLesActeursDuDepartement(
-    '15',
-    criteresDesActeursDuReseau({ lignes: '100', ...parametres }),
-    { communesDesLieux },
-  )
+  etat.consultation = await listerLesActeursDuDepartement({
+    acteursDuDepartement,
+    communesDesLieux,
+  })({
+    code: '15',
+    criteres: criteresDesActeursDuReseau({ lignes: '100', ...parametres }),
+  })
 }
 
 Given(
@@ -124,11 +129,10 @@ When(
 When(
   'on consulte l’annuaire des acteurs du département « {word} »',
   async (code: string) => {
-    etat.consultation = await listerLesActeursDuDepartement(
-      code,
-      criteresDesActeursDuReseau({}),
-      { communesDesLieux },
-    )
+    etat.consultation = await listerLesActeursDuDepartement({
+      acteursDuDepartement,
+      communesDesLieux,
+    })({ code: code, criteres: criteresDesActeursDuReseau({}) })
   },
 )
 

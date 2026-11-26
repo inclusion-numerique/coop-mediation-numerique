@@ -4,7 +4,8 @@ import { rechercherDesCommunesDuReseauAction } from '@/app/_actions/mon-reseau/r
 import { metadataTitle } from '@/configuration/projet'
 import { authenticateMediateurOrCoordinateur } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
 import { communesDesLieux } from '@/features/lieux-activite/abilities/lister-les-lieux-du-departement/implementations/prisma/communes-des-lieux.query'
-import { listerLesActeursDuDepartement } from '@/features/mon-reseau/abilities/lister-les-acteurs-du-departement/implementations/prisma/acteurs-listes.query'
+import { listerLesActeursDuDepartement } from '@/features/mon-reseau/abilities/lister-les-acteurs-du-departement/domain/lister-les-acteurs-du-departement'
+import { acteursDuDepartement } from '@/features/mon-reseau/abilities/lister-les-acteurs-du-departement/implementations/prisma'
 import {
   criteresDesActeursDuReseau,
   filtresDesActeursDuReseau,
@@ -33,11 +34,10 @@ const Page = async ({
 
   const { departement } = await params
   const parametres = await searchParams
-  const consultation = await listerLesActeursDuDepartement(
-    departement,
-    criteresDesActeursDuReseau(parametres),
-    { communesDesLieux },
-  )
+  const consultation = await listerLesActeursDuDepartement({
+    acteursDuDepartement,
+    communesDesLieux,
+  })({ code: departement, criteres: criteresDesActeursDuReseau(parametres) })
 
   return consultation.success ? (
     <ClientBinder
