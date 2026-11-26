@@ -1,6 +1,7 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
-import { supprimerUnAncienMembre } from '@/features/equipe/abilities/supprimer-un-ancien-membre/implementations/prisma/supprimer-un-ancien-membre.mutation'
+import { supprimerUnAncienMembre as supprimerUnAncienMembreAvec } from '@/features/equipe/abilities/supprimer-un-ancien-membre/domain/supprimer-un-ancien-membre'
+import { supprimerLesAdhesionsArchivees } from '@/features/equipe/abilities/supprimer-un-ancien-membre/implementations/prisma/supprimer-les-adhesions-archivees.mutation'
 import {
   CoordinateurId,
   MediateurId,
@@ -14,6 +15,12 @@ import {
   semerUneAdhesion,
   semerUnMediateurDEquipe,
 } from '@/features/equipe/equipe.cucumber'
+import { lireLesAdhesionsDeLaPaire } from '@/features/equipe/implementations/prisma/adhesion.query'
+
+const supprimerUnAncienMembre = supprimerUnAncienMembreAvec({
+  lireLesAdhesionsDeLaPaire,
+  supprimerLesAdhesionsArchivees,
+})
 
 const contexte: {
   coordinateur?: CoordinateurSeme
