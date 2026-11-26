@@ -63,6 +63,7 @@ export type {
   LireLeCoordinateur,
   LireLesAdhesionsDeLaPaire,
   LireUneInvitation,
+  Signaler,
 } from './ports'
 export { RoleMembre, roleMembre } from './role-membre'
 export {

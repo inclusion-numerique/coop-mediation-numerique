@@ -22,3 +22,5 @@ export type LireLesAdhesionsDeLaPaire = (paire: {
   readonly mediateurId: MediateurId
   readonly coordinateurId: CoordinateurId
 }) => Promise<readonly Adhesion[]>
+
+export type Signaler = (erreur: unknown) => void

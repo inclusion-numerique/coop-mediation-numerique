@@ -1,5 +1,3 @@
-import { addMutationLog, prismaClient } from '@/configuration/prisma'
-import { signaler } from '@/configuration/telemetry/serveur'
 import { failure, type Result, success } from '@/libraries/result'
 import {
   ActionNonAutorisee,
@@ -11,13 +9,14 @@ import {
   type Gestionnaire,
   type InvitationDejaTraitee,
   InvitationIntrouvable,
+  type LireLeCoordinateur,
+  type LireUneInvitation,
   peutGererLEquipe,
   type ReferenceInvitation,
   type RelanceTropRecente,
+  type Signaler,
   type UtilisateurId,
-} from '../../../../domain'
-import { lireLeCoordinateur } from '../../../../implementations/prisma/coordinateur.query'
-import { lireUneInvitation } from '../../../../implementations/prisma/invitation.query'
+} from '../../../domain'
 
 export type EchecDeRelance =
   | ActionNonAutorisee
@@ -27,30 +26,37 @@ export type EchecDeRelance =
   | CoordinateurIntrouvable
   | EnvoiEchoue
 
-const envoyerAvec =
-  (envoyerUneInvitation: EnvoyerUneInvitation) =>
-  async (envoi: Parameters<EnvoyerUneInvitation>[0]): Promise<boolean> => {
-    try {
-      await envoyerUneInvitation(envoi)
-      return true
-    } catch (erreur) {
-      signaler(erreur)
-      return false
-    }
-  }
+export type EnregistrerLaRelance<Cle> = (relance: {
+  readonly cle: Cle
+  readonly reference: ReferenceInvitation
+  readonly auteurId: UtilisateurId
+  readonly maintenant: Date
+}) => Promise<void>
 
 export const relancerUneInvitation =
-  ({ envoyerUneInvitation }: { envoyerUneInvitation: EnvoyerUneInvitation }) =>
+  <Cle>({
+    lireUneInvitation,
+    lireLeCoordinateur,
+    envoyerUneInvitation,
+    signaler,
+    enregistrerLaRelance,
+  }: {
+    readonly lireUneInvitation: LireUneInvitation<Cle>
+    readonly lireLeCoordinateur: LireLeCoordinateur
+    readonly envoyerUneInvitation: EnvoyerUneInvitation
+    readonly signaler: Signaler
+    readonly enregistrerLaRelance: EnregistrerLaRelance<Cle>
+  }) =>
   async ({
     reference,
     gestionnaire,
     auteurId,
-    maintenant = new Date(),
+    maintenant,
   }: {
-    reference: ReferenceInvitation
-    gestionnaire: Gestionnaire
-    auteurId: UtilisateurId
-    maintenant?: Date
+    readonly reference: ReferenceInvitation
+    readonly gestionnaire: Gestionnaire
+    readonly auteurId: UtilisateurId
+    readonly maintenant: Date
   }): Promise<Result<void, EchecDeRelance>> => {
     if (!peutGererLEquipe(gestionnaire)(reference.coordinateurId))
       return failure(ActionNonAutorisee())
@@ -67,24 +73,23 @@ export const relancerUneInvitation =
     const coordinateur = await lireLeCoordinateur(reference.coordinateurId)
     if (coordinateur === null) return failure(CoordinateurIntrouvable())
 
-    const envoyee = await envoyerAvec(envoyerUneInvitation)({
-      invitation: enAttente.data,
+    const envoyee = await envoyerUneInvitation({
+      invitation: relancable.data,
       de: coordinateur.nom,
-    })
+    }).then(
+      () => true,
+      (erreur: unknown) => {
+        signaler(erreur)
+        return false
+      },
+    )
     if (!envoyee) return failure(EnvoiEchoue())
 
-    await prismaClient.invitationEquipe.update({
-      where: lue.cle,
-      data: { renvoyee: maintenant },
-    })
-
-    addMutationLog({
-      userId: auteurId,
-      nom: 'RenvoyerInvitationMediateurCoordonne',
-      data: {
-        email: reference.email,
-        coordinateurId: reference.coordinateurId,
-      },
+    await enregistrerLaRelance({
+      cle: lue.cle,
+      reference,
+      auteurId,
+      maintenant,
     })
 
     return success(undefined)
