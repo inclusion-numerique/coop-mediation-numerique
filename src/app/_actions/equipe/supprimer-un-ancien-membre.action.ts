@@ -15,6 +15,7 @@ import { lireLesAdhesionsDeLaPaire } from '@/features/equipe/implementations/pri
 import { gestionnaireDe } from '@/features/equipe/implementations/session'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { fromResult, withInput } from '@/libraries/nextjs'
+import { success } from '@/libraries/result'
 
 export const supprimerUnAncienMembreAction = actionBuilder()
   .use(withAuth())
@@ -22,8 +23,8 @@ export const supprimerUnAncienMembreAction = actionBuilder()
   .use(withInput(SupprimerUnAncienMembreValidation))
   .execute(
     fromResult(
-      async ({ user, input }) =>
-        supprimerUnAncienMembre({
+      async ({ user, input }) => {
+        const suppression = await supprimerUnAncienMembre({
           lireLesAdhesionsDeLaPaire,
           supprimerLesAdhesionsArchivees,
         })({
@@ -31,7 +32,9 @@ export const supprimerUnAncienMembreAction = actionBuilder()
           coordinateurId: CoordinateurId(input.coordinateurId),
           gestionnaire: gestionnaireDe(user),
           auteurId: UtilisateurId(user.id),
-        }),
+        })
+        return suppression.success ? success(undefined) : suppression
+      },
       { onError: SUPPRIMER_UN_ANCIEN_MEMBRE_ERRORS },
     ),
   )

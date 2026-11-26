@@ -1,5 +1,5 @@
 import { addMutationLog, prismaClient } from '@/configuration/prisma'
-import type { SupprimerLesAdhesionsArchivees } from '../../domain/supprimer-un-ancien-membre'
+import type { SupprimerLesAdhesionsArchivees } from '../../domain/ports'
 
 export const supprimerLesAdhesionsArchivees: SupprimerLesAdhesionsArchivees =
   async ({ adhesions, mediateurId, coordinateurId, auteurId }) => {

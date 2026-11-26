@@ -36,7 +36,7 @@ const gestionnaire: Gestionnaire = { type: 'Coordinateur', coordinateurId }
 const auteurId = UtilisateurId('550e8400-e29b-41d4-a716-446655440041')
 
 describe('supprimer définitivement un ancien membre', () => {
-  it('supprime les archives d’un ancien membre', async () => {
+  it('supprime toutes les adhésions archivées d’un ancien membre', async () => {
     const supprimer = supprimerUnAncienMembre({
       lireLesAdhesionsDeLaPaire: async () => [adhesionArchivee],
       supprimerLesAdhesionsArchivees: async () => undefined,
@@ -44,7 +44,15 @@ describe('supprimer définitivement un ancien membre', () => {
 
     expect(
       await supprimer({ mediateurId, coordinateurId, gestionnaire, auteurId }),
-    ).toEqual({ success: true, data: undefined })
+    ).toEqual({
+      success: true,
+      data: {
+        adhesions: [adhesionArchivee],
+        mediateurId,
+        coordinateurId,
+        auteurId,
+      },
+    })
   })
 
   it('est refusé à qui ne gère pas l’équipe', async () => {

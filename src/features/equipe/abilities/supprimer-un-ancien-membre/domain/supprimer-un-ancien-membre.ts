@@ -1,37 +1,22 @@
 import { failure, type Result, success } from '@/libraries/result'
 import {
   ActionNonAutorisee,
-  type AdhesionArchivee,
   type CoordinateurId,
   type Gestionnaire,
-  type LireLesAdhesionsDeLaPaire,
   type MediateurId,
   peutGererLEquipe,
   type UtilisateurId,
 } from '../../../domain'
 import { exigerAncienMembre } from './ancien-membre'
-import type { PasAncienMembre, ToujoursMembre } from './errors'
-
-export type EchecDeSuppression =
-  | ActionNonAutorisee
-  | ToujoursMembre
-  | PasAncienMembre
-
-export type SupprimerLesAdhesionsArchivees = (suppression: {
-  readonly adhesions: readonly AdhesionArchivee[]
-  readonly mediateurId: MediateurId
-  readonly coordinateurId: CoordinateurId
-  readonly auteurId: UtilisateurId
-}) => Promise<void>
+import type { EchecDeSuppression } from './errors'
+import type { SupprimerUnAncienMembrePorts } from './ports'
+import type { SuppressionDesArchives } from './suppression-des-archives'
 
 export const supprimerUnAncienMembre =
   ({
     lireLesAdhesionsDeLaPaire,
     supprimerLesAdhesionsArchivees,
-  }: {
-    readonly lireLesAdhesionsDeLaPaire: LireLesAdhesionsDeLaPaire
-    readonly supprimerLesAdhesionsArchivees: SupprimerLesAdhesionsArchivees
-  }) =>
+  }: SupprimerUnAncienMembrePorts) =>
   async ({
     mediateurId,
     coordinateurId,
@@ -42,7 +27,7 @@ export const supprimerUnAncienMembre =
     readonly coordinateurId: CoordinateurId
     readonly gestionnaire: Gestionnaire
     readonly auteurId: UtilisateurId
-  }): Promise<Result<void, EchecDeSuppression>> => {
+  }): Promise<Result<SuppressionDesArchives, EchecDeSuppression>> => {
     if (!peutGererLEquipe(gestionnaire)(coordinateurId))
       return failure(ActionNonAutorisee())
 
@@ -51,12 +36,14 @@ export const supprimerUnAncienMembre =
     )
     if (!anciennes.success) return anciennes
 
-    await supprimerLesAdhesionsArchivees({
+    const suppression: SuppressionDesArchives = {
       adhesions: anciennes.data,
       mediateurId,
       coordinateurId,
       auteurId,
-    })
+    }
 
-    return success(undefined)
+    await supprimerLesAdhesionsArchivees(suppression)
+
+    return success(suppression)
   }
