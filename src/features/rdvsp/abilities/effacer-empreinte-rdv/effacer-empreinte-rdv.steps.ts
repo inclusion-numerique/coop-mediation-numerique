@@ -1,7 +1,17 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { prismaClient } from '@/configuration/prisma'
-import { effacerEmpreinteRdvAvec } from '@/features/rdvsp/abilities/effacer-empreinte-rdv/implementations/prisma/effacer-empreinte-rdv.mutation'
+import { effacerEmpreinteRdv } from '@/features/rdvsp/abilities/effacer-empreinte-rdv/domain/effacer-empreinte-rdv'
+import { effacementPourLaSuppressionDeCompte } from '@/features/rdvsp/abilities/effacer-empreinte-rdv/implementations/prisma/effacement-pour-la-suppression-de-compte.adapter'
+import {
+  supprimerLeCompteRdv,
+  supprimerLesUsagers,
+} from '@/features/rdvsp/abilities/effacer-empreinte-rdv/implementations/prisma/effacer-empreinte-rdv.mutation'
+import {
+  compteAEffacer,
+  rendezVousDuCompte,
+  usagersOrphelinsParmi,
+} from '@/features/rdvsp/abilities/effacer-empreinte-rdv/implementations/prisma/effacer-empreinte-rdv.query'
 import type { JetonsOAuth } from '@/features/rdvsp/domain/compte/jetons-oauth'
 import { ApiIndisponible } from '@/features/rdvsp/domain/errors'
 import {
@@ -21,15 +31,24 @@ const rdvServicePublic: {
   revocations: JetonsOAuth[]
 } = { disponible: true, revocations: [] }
 
-const effacerEmpreinteRdv = effacerEmpreinteRdvAvec(async (jetons) => {
-  if (!rdvServicePublic.disponible) {
-    return failure(ApiIndisponible(503, 'Service indisponible'))
-  }
-  rdvServicePublic.revocations.push(jetons)
-  return success(undefined)
-})
+const effacer = effacementPourLaSuppressionDeCompte(
+  effacerEmpreinteRdv({
+    compteAEffacer,
+    revoquerJetons: async (jetons) => {
+      if (!rdvServicePublic.disponible) {
+        return failure(ApiIndisponible(503, 'Service indisponible'))
+      }
+      rdvServicePublic.revocations.push(jetons)
+      return success(undefined)
+    },
+    rendezVousDuCompte,
+    supprimerLeCompte: supprimerLeCompteRdv,
+    usagersOrphelinsParmi,
+    supprimerLesUsagers,
+  }),
+)
 
-type Bilan = Awaited<ReturnType<typeof effacerEmpreinteRdv>>
+type Bilan = Awaited<ReturnType<typeof effacer>>
 
 let bilan: Bilan | undefined
 
@@ -96,11 +115,11 @@ Given(
 )
 
 When("j'efface l'empreinte RDV de ce compte", async () => {
-  bilan = await effacerEmpreinteRdv({ utilisateurId: testUtilisateurId })
+  bilan = await effacer({ utilisateurId: testUtilisateurId })
 })
 
 When("j'efface à nouveau l'empreinte RDV de ce compte", async () => {
-  bilan = await effacerEmpreinteRdv({ utilisateurId: testUtilisateurId })
+  bilan = await effacer({ utilisateurId: testUtilisateurId })
 })
 
 Then('le compte RDV est délié', () => {

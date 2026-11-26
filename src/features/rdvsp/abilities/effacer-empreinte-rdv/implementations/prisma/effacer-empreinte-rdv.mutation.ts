@@ -1,7 +1,8 @@
 import { prismaClient } from '@/configuration/prisma'
-import { errorReporter } from '@/configuration/telemetry/serveur'
-import type { RevoquerJetons } from '../../../../domain/ports'
-import { jetonsCompteToDomain } from '../../../../implementations/prisma/compte-rdv.transfer'
+import type {
+  SupprimerLeCompteRdv,
+  SupprimerLesUsagers,
+} from '../../domain/ports'
 
 /**
  * Efface tout ce qu'un compte a laissé dans RDV Service Public.
@@ -36,109 +37,19 @@ import { jetonsCompteToDomain } from '../../../../implementations/prisma/compte-
  *
  * Idempotent : un second passage ne trouve plus de compte agent et rend zéro.
  */
-const revoquerSansBloquer = async (
-  revoquerJetons: RevoquerJetons,
-  compte: Parameters<typeof jetonsCompteToDomain>[0] & { readonly id: number },
-): Promise<boolean> => {
-  const jetons = jetonsCompteToDomain(compte)
-
-  if (jetons === null) return false
-
-  const resultat = await revoquerJetons(jetons)
-
-  if (!resultat.success) {
-    errorReporter.captureException({
-      error: new Error('Révocation des jetons RDV Service Public impossible'),
-      attributes: {
-        agentId: compte.id,
-        erreur: JSON.stringify(resultat.error),
-      },
-    })
-  }
-
-  return resultat.success
+export const supprimerLeCompteRdv: SupprimerLeCompteRdv = async (agentId) => {
+  await prismaClient.$transaction([
+    prismaClient.rdv.deleteMany({ where: { rdvAccountId: agentId } }),
+    prismaClient.rdvSyncLog.deleteMany({ where: { rdvAccountId: agentId } }),
+    prismaClient.rdvAccountOrganisation.deleteMany({
+      where: { accountId: agentId },
+    }),
+    prismaClient.rdvAccount.delete({ where: { id: agentId } }),
+  ])
 }
 
-export const effacerEmpreinteRdvAvec =
-  (revoquerJetons: RevoquerJetons) =>
-  async ({
-    utilisateurId,
-  }: {
-    readonly utilisateurId: string
-  }): Promise<{
-    readonly compteDelie: boolean
-    readonly jetonsRevoques: boolean
-    readonly rdvsExpurges: number
-    readonly usagersSupprimes: number
-  }> => {
-    const compte = await prismaClient.rdvAccount.findUnique({
-      where: { userId: utilisateurId },
-      select: {
-        id: true,
-        accessToken: true,
-        refreshToken: true,
-        expiresAt: true,
-        scope: true,
-      },
-    })
-
-    if (compte === null)
-      return {
-        compteDelie: false,
-        jetonsRevoques: false,
-        rdvsExpurges: 0,
-        usagersSupprimes: 0,
-      }
-
-    const jetonsRevoques = await revoquerSansBloquer(revoquerJetons, compte)
-
-    const rdvs = await prismaClient.rdv.findMany({
-      where: { rdvAccountId: compte.id },
-      select: { id: true },
-    })
-
-    const rdvIds = rdvs.map(({ id }) => id)
-
-    // Les usagers touchés sont relevés AVANT la suppression : les participations
-    // qui les désignent disparaissent en cascade avec les rendez-vous.
-    const participations = await prismaClient.rdvParticipation.findMany({
-      where: { rdvId: { in: rdvIds } },
-      select: { userId: true },
-    })
-
-    const usagersTouches = [
-      ...new Set(participations.map(({ userId }) => userId)),
-    ]
-
-    await prismaClient.$transaction([
-      prismaClient.rdv.deleteMany({ where: { rdvAccountId: compte.id } }),
-      prismaClient.rdvSyncLog.deleteMany({
-        where: { rdvAccountId: compte.id },
-      }),
-      prismaClient.rdvAccountOrganisation.deleteMany({
-        where: { accountId: compte.id },
-      }),
-      prismaClient.rdvAccount.delete({ where: { id: compte.id } }),
-    ])
-
-    const orphelins = await prismaClient.rdvUser.findMany({
-      where: {
-        id: { in: usagersTouches },
-        participations: { none: {} },
-        beneficiaires: { none: {} },
-        dependents: { none: {} },
-      },
-      select: { id: true },
-    })
-
-    const { count } = await prismaClient.rdvUser.deleteMany({
-      where: { id: { in: orphelins.map(({ id }) => id) } },
-    })
-
-    return {
-      compteDelie: true,
-      jetonsRevoques,
-      rdvsExpurges: rdvIds.length,
-      usagersSupprimes: count,
-    }
-  }
+export const supprimerLesUsagers: SupprimerLesUsagers = async (usagerIds) => {
+  await prismaClient.rdvUser.deleteMany({
+    where: { id: { in: [...usagerIds] } },
+  })
+}
