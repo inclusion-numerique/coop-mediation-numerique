@@ -4,7 +4,6 @@ import { LieuId } from '../../../../domain/identifiants/lieu-id'
 import type {
   EstUnLieuActif,
   LieuPorteurDeLaCarto,
-  LieuxAuMemeEndroit,
   NouvelIdentifiantDeLieu,
 } from '../../domain'
 
@@ -29,29 +28,3 @@ export const lieuPorteurDeLaCarto: LieuPorteurDeLaCarto = async (
 
   return porteur === null ? null : LieuId(porteur.id)
 }
-
-export const lieuxAuMemeEndroit: LieuxAuMemeEndroit = async ({
-  codeInsee,
-  codePostal,
-}) =>
-  (
-    await prismaClient.lieuInclusion.findMany({
-      where: {
-        banId: { not: null },
-        OR: [{ codeInsee }, { codePostal }],
-      },
-      orderBy: { creation: 'asc' },
-      select: {
-        id: true,
-        nom: true,
-        adresse: true,
-        latitude: true,
-        longitude: true,
-        commune: true,
-        codePostal: true,
-        codeInsee: true,
-        suppression: true,
-        typologies: true,
-      },
-    })
-  ).map((candidat) => ({ ...candidat, id: LieuId(candidat.id) }))

@@ -17,10 +17,10 @@ import { lieuDemandeDepuisLeLieuDesire } from '@/features/lieux-activite/abiliti
 import {
   estUnLieuActif,
   lieuPorteurDeLaCarto,
-  lieuxAuMemeEndroit,
   nouvelIdentifiantDeLieu,
 } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/situation-du-lieu.query'
 import { lieuDisparu } from '@/features/lieux-activite/implementations/prisma/destination-du-lieu.mutation'
+import { lieuxAuMemeEndroit } from '@/features/lieux-activite/implementations/prisma/lieux-au-meme-endroit.query'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { fromResult, withInput } from '@/libraries/nextjs'
 import { type Result, success } from '@/libraries/result'

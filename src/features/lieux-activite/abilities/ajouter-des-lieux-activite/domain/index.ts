@@ -5,7 +5,6 @@ export type {
   LieuConnu,
   LieuNouveau,
 } from '../../../domain/destination-du-lieu'
-export type { LieuxAuMemeEndroit } from '../../../domain/ports'
 export type { AjoutDeLieux, LieuxAjoutes } from './ajout-de-lieux'
 export type { CreationDemandee } from './destination-du-lieu'
 export {

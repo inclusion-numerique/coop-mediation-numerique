@@ -15,10 +15,8 @@ import {
   detacherDuLieu,
   rattacherAuLieuDecrit,
 } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/lieu-decrit.mutation'
-import {
-  lieuxAuMemeEndroit,
-  nouvelIdentifiantDeLieu,
-} from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/situation-du-lieu.query'
+import { nouvelIdentifiantDeLieu } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/situation-du-lieu.query'
+import { lieuxAuMemeEndroit } from '@/features/lieux-activite/implementations/prisma/lieux-au-meme-endroit.query'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { fromResult, withInput } from '@/libraries/nextjs'
 import { success } from '@/libraries/result'

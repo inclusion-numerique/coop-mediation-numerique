@@ -37,7 +37,6 @@ import { lireLieuxDejaRattaches } from '@/features/lieux-activite/abilities/ajou
 import {
   estUnLieuActif,
   lieuPorteurDeLaCarto,
-  lieuxAuMemeEndroit,
   nouvelIdentifiantDeLieu,
 } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/situation-du-lieu.query'
 import {
@@ -49,6 +48,7 @@ import { BanId } from '@/features/lieux-activite/domain/identifiants/ban-id'
 import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
 import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
 import { UtilisateurId } from '@/features/lieux-activite/domain/identifiants/utilisateur-id'
+import { lieuxAuMemeEndroit } from '@/features/lieux-activite/implementations/prisma/lieux-au-meme-endroit.query'
 import {
   effacerDuRegistre,
   lieuxSemes,
