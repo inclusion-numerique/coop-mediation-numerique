@@ -5,7 +5,6 @@ import {
   BeneficiaireCibleId,
   MediateurProprietaireId,
 } from '@/features/rdvsp/abilities/prendre-rendez-vous/domain/beneficiaire-cible'
-import type { PrendreRendezVous } from '@/features/rdvsp/abilities/prendre-rendez-vous/domain/prendre-rendez-vous'
 import { prendreRendezVous } from '@/features/rdvsp/abilities/prendre-rendez-vous/domain/prendre-rendez-vous'
 import { beneficiaireADemander } from '@/features/rdvsp/abilities/prendre-rendez-vous/implementations/prisma/beneficiaire-a-demander.query'
 import { compteDuMediateur } from '@/features/rdvsp/abilities/prendre-rendez-vous/implementations/prisma/compte-du-mediateur.query'
@@ -38,7 +37,9 @@ const USAGER_RENDU = ID_TEST.usager + 2
 let beneficiaireId: string | undefined
 let usagerRecu: UsagerDeLaDemande | undefined
 let apiRefuse = false
-let resultat: Awaited<ReturnType<PrendreRendezVous>> | undefined
+let resultat:
+  | Awaited<ReturnType<ReturnType<typeof prendreRendezVous>>>
+  | undefined
 
 /** Retient l'usager transmis : c'est lui que les scénarios interrogent. */
 const creerDemandeRdvDouble: RdvServicePublicApi['creerDemandeRdv'] = async (

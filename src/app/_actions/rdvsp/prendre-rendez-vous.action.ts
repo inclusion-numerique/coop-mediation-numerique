@@ -49,7 +49,7 @@ export const prendreRendezVousAction = actionBuilder()
         // Seule l'URL de prise de rendez-vous intéresse le navigateur, qui n'a
         // qu'à s'y rendre.
         return resultat.success
-          ? { success: true as const, data: { url: resultat.data.url } }
+          ? { success: true as const, data: { url: resultat.data.creee.url } }
           : resultat
       },
       { onError: PRENDRE_RENDEZ_VOUS_ERRORS },

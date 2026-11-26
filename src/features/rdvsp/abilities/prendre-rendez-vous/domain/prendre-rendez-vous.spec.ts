@@ -26,17 +26,20 @@ import {
   BeneficiaireCibleId,
   MediateurProprietaireId,
 } from './beneficiaire-cible'
-import {
-  type DependancesPrendreRendezVous,
-  demandePourBeneficiaire,
-  prendreRendezVous,
-} from './prendre-rendez-vous'
+import type { PrendreRendezVousPorts } from './ports'
+import { prendreRendezVous } from './prendre-rendez-vous'
 
 const mediateurId = MediateurProprietaireId(
   'c513c349-46dc-461a-a3dc-a81d53c459b6',
 )
 const beneficiaireId = BeneficiaireCibleId(
   '3f2504e0-4f89-41d3-9a0c-0305e82c3301',
+)
+const utilisateurId = UtilisateurCoopId('d10844c6-b6de-402a-a68d-f8328b1d1b0c')
+const agentId = RdvAgentId(4242)
+
+const urlDossier = UrlRetour(
+  'https://coop.fr/coop/mes-beneficiaires/3f2504e0-4f89-41d3-9a0c-0305e82c3301/accompagnements',
 )
 
 const beneficiaire: BeneficiaireCible = {
@@ -50,6 +53,20 @@ const beneficiaire: BeneficiaireCible = {
   adresse: '12 rue de la Paix, 75002 Paris',
 }
 
+const beneficiaireRattache: BeneficiaireCible = {
+  ...beneficiaire,
+  usagerId: UsagerId(9001),
+}
+
+const beneficiaireSansIdentite: BeneficiaireCible = {
+  ...beneficiaire,
+  prenom: null,
+  nom: null,
+  email: null,
+  telephone: null,
+  adresse: null,
+}
+
 const jetons: JetonsOAuth = {
   acces: JetonAcces('jeton-acces'),
   rafraichissement: null,
@@ -58,112 +75,112 @@ const jetons: JetonsOAuth = {
 }
 
 const compteBase = {
-  agentId: RdvAgentId(4242),
-  utilisateurId: UtilisateurCoopId('d10844c6-b6de-402a-a68d-f8328b1d1b0c'),
+  agentId,
+  utilisateurId,
   organisationIds: [],
   organisationIdsSansWebhook: [],
   synchroniserDepuis: null,
   derniereSynchro: null,
   inclureRdvsDansActivites: false,
-} as const
+}
 
-describe('demandePourBeneficiaire', () => {
-  const urlDossier = UrlRetour(
-    'https://coop.fr/coop/mes-beneficiaires/3f2504e0-4f89-41d3-9a0c-0305e82c3301/accompagnements',
-  )
+const compteLie: CompteRdv = { ...compteBase, _tag: 'lie', jetons }
 
-  it('pointe le retour et le dossier vers la même page d’accompagnement', () => {
-    const demande = demandePourBeneficiaire(beneficiaire, urlDossier)
-
-    expect(demande.urlRetour).toBe(urlDossier)
-    expect(demande.urlDossier).toBe(urlDossier)
-  })
-
-  it('désigne l’usager déjà rattaché par son seul identifiant', () => {
-    const { usager } = demandePourBeneficiaire(
-      { ...beneficiaire, usagerId: UsagerId(9001) },
-      urlDossier,
-    )
-
-    expect(usager).toEqual({ _tag: 'existant', id: 9001 })
-  })
-
-  it('n’envoie aucune identité avec un usager existant', () => {
-    const { usager } = demandePourBeneficiaire(
-      { ...beneficiaire, usagerId: UsagerId(9001) },
-      urlDossier,
-    )
-
-    // L'exclusivité est ce qui empêche RDV Service Public d'arbitrer entre un
-    // identifiant et une identité, et donc de créer un doublon.
-    expect(Object.keys(usager)).toEqual(['_tag', 'id'])
-  })
-
-  it('transmet le pré-remplissage quand aucun usager n’est rattaché', () => {
-    const { usager } = demandePourBeneficiaire(beneficiaire, urlDossier)
-
-    expect(usager).toEqual({
-      _tag: 'aCreer',
-      prenom: 'Jean',
-      nom: 'Dupont',
-      email: 'jean.dupont@example.com',
-      telephone: '+33600000000',
-      adresse: '12 rue de la Paix, 75002 Paris',
-      dateNaissance: null,
-    })
-  })
-
-  it('accepte un bénéficiaire sans identité — RDV Service Public la complétera', () => {
-    const { usager } = demandePourBeneficiaire(
-      {
-        ...beneficiaire,
-        prenom: null,
-        nom: null,
-        email: null,
-        telephone: null,
-        adresse: null,
-      },
-      urlDossier,
-    )
-
-    expect(usager._tag).toBe('aCreer')
-  })
-})
-
-const demandeCreee: DemandeRdvCreee = {
+const creee: DemandeRdvCreee = {
   id: DemandeRdvId(31),
   usagerId: UsagerId(9001),
   url: UrlPriseRdv('https://rdv.anct.gouv.fr/prendre_rdv?invitation=31'),
   rdvId: null,
 }
 
-const compteLie: CompteRdv = { ...compteBase, _tag: 'lie', jetons }
-
-const dependances: DependancesPrendreRendezVous = {
+const ports: PrendreRendezVousPorts = {
   beneficiaireADemander: async () => beneficiaire,
   compteDuMediateur: async () => compteLie,
-  creerDemandeRdv: async () => success(demandeCreee),
+  creerDemandeRdv: async () => success(creee),
   lierUsager: async () => undefined,
-  urlDossierBeneficiaire: () =>
-    'https://coop.fr/coop/mes-beneficiaires/3f2504e0-4f89-41d3-9a0c-0305e82c3301/accompagnements',
+  urlDossierBeneficiaire: () => urlDossier,
 }
 
-const demande = {
-  utilisateurId: compteBase.utilisateurId,
-  mediateurId,
-  beneficiaireId,
-}
+const demande = { utilisateurId, mediateurId, beneficiaireId }
 
-describe('prendreRendezVous', () => {
-  it('rend la demande créée pour un bénéficiaire suivi par ce médiateur', async () => {
-    expect(await prendreRendezVous(dependances)(demande)).toEqual(
-      success(demandeCreee),
+describe('prendre rendez-vous pour un bénéficiaire', () => {
+  it('demande un rendez-vous pré-rempli qui revient au dossier d’accompagnement, puis rattache l’usager créé', async () => {
+    expect(await prendreRendezVous(ports)(demande)).toEqual(
+      success({
+        demande: {
+          usager: {
+            _tag: 'aCreer',
+            prenom: 'Jean',
+            nom: 'Dupont',
+            email: 'jean.dupont@example.com',
+            telephone: '+33600000000',
+            adresse: '12 rue de la Paix, 75002 Paris',
+            dateNaissance: null,
+          },
+          urlRetour: urlDossier,
+          urlDossier,
+        },
+        creee,
+        liaison: { beneficiaire, usagerId: UsagerId(9001) },
+      }),
+    )
+  })
+
+  it('désigne l’usager déjà rattaché par son seul identifiant, sans identité qui ferait arbitrer RDV Service Public', async () => {
+    expect(
+      await prendreRendezVous({
+        ...ports,
+        beneficiaireADemander: async () => beneficiaireRattache,
+      })(demande),
+    ).toStrictEqual(
+      success({
+        demande: {
+          usager: { _tag: 'existant', id: UsagerId(9001) },
+          urlRetour: urlDossier,
+          urlDossier,
+        },
+        creee,
+        liaison: {
+          beneficiaire: beneficiaireRattache,
+          usagerId: UsagerId(9001),
+        },
+      }),
+    )
+  })
+
+  it('accepte un bénéficiaire sans identité — RDV Service Public la complétera', async () => {
+    expect(
+      await prendreRendezVous({
+        ...ports,
+        beneficiaireADemander: async () => beneficiaireSansIdentite,
+      })(demande),
+    ).toEqual(
+      success({
+        demande: {
+          usager: {
+            _tag: 'aCreer',
+            prenom: null,
+            nom: null,
+            email: null,
+            telephone: null,
+            adresse: null,
+            dateNaissance: null,
+          },
+          urlRetour: urlDossier,
+          urlDossier,
+        },
+        creee,
+        liaison: {
+          beneficiaire: beneficiaireSansIdentite,
+          usagerId: UsagerId(9001),
+        },
+      }),
     )
   })
 
   it('refuse un bénéficiaire suivi par un autre médiateur', async () => {
     const resultat = await prendreRendezVous({
-      ...dependances,
+      ...ports,
       beneficiaireADemander: async () => ({
         ...beneficiaire,
         mediateurId: MediateurProprietaireId(
@@ -179,7 +196,7 @@ describe('prendreRendezVous', () => {
 
   it('rend la même erreur pour un bénéficiaire absent que pour celui d’autrui', async () => {
     const resultat = await prendreRendezVous({
-      ...dependances,
+      ...ports,
       beneficiaireADemander: async () => null,
     })(demande)
 
@@ -190,7 +207,7 @@ describe('prendreRendezVous', () => {
 
   it('refuse un médiateur sans compte', async () => {
     const resultat = await prendreRendezVous({
-      ...dependances,
+      ...ports,
       compteDuMediateur: async () => null,
     })(demande)
 
@@ -199,7 +216,7 @@ describe('prendreRendezVous', () => {
 
   it('refuse un compte délié', async () => {
     const resultat = await prendreRendezVous({
-      ...dependances,
+      ...ports,
       compteDuMediateur: async () => ({
         ...compteBase,
         _tag: 'deconnecte',
@@ -207,14 +224,12 @@ describe('prendreRendezVous', () => {
       }),
     })(demande)
 
-    expect(resultat).toEqual(
-      failure({ _tag: 'CompteNonLie', agentId: compteBase.agentId }),
-    )
+    expect(resultat).toEqual(failure({ _tag: 'CompteNonLie', agentId }))
   })
 
   it('remonte l’échec de RDV Service Public', async () => {
     const resultat = await prendreRendezVous({
-      ...dependances,
+      ...ports,
       creerDemandeRdv: async () => failure(ApiIndisponible(502, 'Bad Gateway')),
     })(demande)
 

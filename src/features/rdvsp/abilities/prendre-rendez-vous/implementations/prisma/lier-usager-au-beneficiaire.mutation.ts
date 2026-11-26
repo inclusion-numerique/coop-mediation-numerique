@@ -1,5 +1,5 @@
 import { prismaClient } from '@/configuration/prisma'
-import type { LierUsagerAuBeneficiaire } from '../../domain/prendre-rendez-vous'
+import type { LierUsagerAuBeneficiaire } from '../../domain/ports'
 
 /**
  * L'usager rendu par RDV Service Public vient d'être créé chez eux et n'est

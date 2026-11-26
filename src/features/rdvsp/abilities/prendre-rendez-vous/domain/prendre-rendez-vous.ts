@@ -3,47 +3,27 @@ import type {
   BeneficiaireCibleId,
   MediateurProprietaireId,
 } from '@/features/rdvsp/abilities/prendre-rendez-vous/domain/beneficiaire-cible'
-import { BeneficiaireIntrouvable } from '@/features/rdvsp/abilities/prendre-rendez-vous/domain/errors'
 import type {
   CompteRdv,
   CompteRdvUtilisable,
 } from '@/features/rdvsp/domain/compte/compte-rdv'
 import { estUtilisable } from '@/features/rdvsp/domain/compte/compte-rdv'
-import { CompteNonLie, type ErreurRdvApi } from '@/features/rdvsp/domain/errors'
-import type { UsagerId } from '@/features/rdvsp/domain/identifiants/usager-id'
+import { CompteNonLie } from '@/features/rdvsp/domain/errors'
 import type { UtilisateurCoopId } from '@/features/rdvsp/domain/identifiants/utilisateur-coop-id'
-import type { RdvServicePublicApi } from '@/features/rdvsp/domain/ports'
 import type {
   DemandeRdv,
-  DemandeRdvCreee,
   UsagerDeLaDemande,
 } from '@/features/rdvsp/domain/rdv/demande-rdv'
 import { UrlRetour } from '@/features/rdvsp/domain/rdv/demande-rdv'
 import { failure, type Result, success } from '@/libraries/result'
+import {
+  BeneficiaireIntrouvable,
+  type EchecDePrendreRendezVous,
+} from './errors'
+import type { PrendreRendezVousPorts } from './ports'
+import type { LiaisonUsager, RendezVousDemande } from './rendez-vous-demande'
 
-export type ErreurPriseRendezVous = BeneficiaireIntrouvable | ErreurRdvApi
-
-export type PrendreRendezVous = (input: {
-  readonly utilisateurId: UtilisateurCoopId
-  readonly mediateurId: MediateurProprietaireId
-  readonly beneficiaireId: BeneficiaireCibleId
-}) => Promise<Result<DemandeRdvCreee, ErreurPriseRendezVous>>
-
-export type BeneficiaireADemander = (
-  id: BeneficiaireCibleId,
-) => Promise<BeneficiaireCible | null>
-
-export type CompteDuMediateur = (
-  utilisateurId: UtilisateurCoopId,
-) => Promise<CompteRdv | null>
-
-/** Rattache l'usager rendu par RDV Service Public au bénéficiaire de La Coop. */
-export type LierUsagerAuBeneficiaire = (input: {
-  readonly beneficiaire: BeneficiaireCible
-  readonly usagerId: UsagerId
-}) => Promise<void>
-
-export const verifierBeneficiaire = ({
+const verifierBeneficiaire = ({
   beneficiaire,
   mediateurId,
   beneficiaireId,
@@ -51,14 +31,14 @@ export const verifierBeneficiaire = ({
   beneficiaire: BeneficiaireCible | null
   mediateurId: MediateurProprietaireId
   beneficiaireId: BeneficiaireCibleId
-}): Result<BeneficiaireCible, ErreurPriseRendezVous> =>
+}): Result<BeneficiaireCible, EchecDePrendreRendezVous> =>
   beneficiaire === null || beneficiaire.mediateurId !== mediateurId
     ? failure(BeneficiaireIntrouvable(beneficiaireId))
     : success(beneficiaire)
 
-export const verifierCompte = (
+const verifierCompte = (
   compte: CompteRdv | null,
-): Result<CompteRdvUtilisable, ErreurPriseRendezVous> => {
+): Result<CompteRdvUtilisable, EchecDePrendreRendezVous> => {
   if (compte === null) {
     return failure(CompteNonLie(null))
   }
@@ -98,7 +78,7 @@ const usagerDeLaDemande = (
  * `urlRetour` ramène l'usager après sa prise de rendez-vous, `urlDossier` donne à
  * l'agent un accès au dossier depuis l'interface de RDV Service Public.
  */
-export const demandePourBeneficiaire = (
+const demandePourBeneficiaire = (
   beneficiaire: BeneficiaireCible,
   urlDossierBeneficiaire: UrlRetour,
 ): DemandeRdv => ({
@@ -106,15 +86,6 @@ export const demandePourBeneficiaire = (
   urlRetour: urlDossierBeneficiaire,
   urlDossier: urlDossierBeneficiaire,
 })
-
-export type DependancesPrendreRendezVous = {
-  readonly beneficiaireADemander: BeneficiaireADemander
-  readonly compteDuMediateur: CompteDuMediateur
-  readonly creerDemandeRdv: RdvServicePublicApi['creerDemandeRdv']
-  readonly lierUsager: LierUsagerAuBeneficiaire
-  /** Construit l'URL du dossier d'accompagnement, qui dépend de l'hôte. */
-  readonly urlDossierBeneficiaire: (id: BeneficiaireCibleId) => string
-}
 
 /**
  * Le rattachement de l'usager suit immédiatement la création de la demande : le
@@ -128,8 +99,16 @@ export const prendreRendezVous =
     creerDemandeRdv,
     lierUsager,
     urlDossierBeneficiaire,
-  }: DependancesPrendreRendezVous): PrendreRendezVous =>
-  async ({ utilisateurId, mediateurId, beneficiaireId }) => {
+  }: PrendreRendezVousPorts) =>
+  async ({
+    utilisateurId,
+    mediateurId,
+    beneficiaireId,
+  }: {
+    readonly utilisateurId: UtilisateurCoopId
+    readonly mediateurId: MediateurProprietaireId
+    readonly beneficiaireId: BeneficiaireCibleId
+  }): Promise<Result<RendezVousDemande, EchecDePrendreRendezVous>> => {
     const verifie = verifierBeneficiaire({
       beneficiaire: await beneficiaireADemander(beneficiaireId),
       mediateurId,
@@ -146,22 +125,23 @@ export const prendreRendezVous =
       return compte
     }
 
-    const demande = await creerDemandeRdv(
-      compte.data,
-      demandePourBeneficiaire(
-        verifie.data,
-        UrlRetour(urlDossierBeneficiaire(beneficiaireId)),
-      ),
+    const demande = demandePourBeneficiaire(
+      verifie.data,
+      UrlRetour(urlDossierBeneficiaire(beneficiaireId)),
     )
 
-    if (!demande.success) {
-      return demande
+    const creee = await creerDemandeRdv(compte.data, demande)
+
+    if (!creee.success) {
+      return creee
     }
 
-    await lierUsager({
+    const liaison: LiaisonUsager = {
       beneficiaire: verifie.data,
-      usagerId: demande.data.usagerId,
-    })
+      usagerId: creee.data.usagerId,
+    }
 
-    return success(demande.data)
+    await lierUsager(liaison)
+
+    return success({ demande, creee: creee.data, liaison })
   }

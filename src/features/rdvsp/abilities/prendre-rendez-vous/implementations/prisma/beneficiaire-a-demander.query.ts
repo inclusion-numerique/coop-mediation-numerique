@@ -11,7 +11,7 @@ import {
   BeneficiaireCibleId,
   MediateurProprietaireId,
 } from '../../domain/beneficiaire-cible'
-import type { BeneficiaireADemander } from '../../domain/prendre-rendez-vous'
+import type { BeneficiaireADemander } from '../../domain/ports'
 
 /**
  * Adaptateur vers la table des bénéficiaires. Les identités passent par
