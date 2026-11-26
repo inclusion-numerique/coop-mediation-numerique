@@ -45,4 +45,24 @@ describe('exporter les bénéficiaires', () => {
       auteur: 'Camille Martin',
     })
   })
+
+  it('reporte la recherche demandée dans le classeur', async () => {
+    const exporter = exporterBeneficiaires({
+      listerBeneficiaires: async () => ({ items: [lea], totalItems: 1 }),
+      construireLeClasseur: (classeur) => classeur,
+    })
+
+    expect(
+      await exporter({
+        mediateurId: MediateurId('8a1b2c3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d'),
+        filters: { recherche: 'Léa' },
+        auteur: 'Camille Martin',
+      }),
+    ).toEqual({
+      beneficiaires: [lea],
+      filters: { recherche: 'Léa' },
+      matchesCount: 1,
+      auteur: 'Camille Martin',
+    })
+  })
 })
