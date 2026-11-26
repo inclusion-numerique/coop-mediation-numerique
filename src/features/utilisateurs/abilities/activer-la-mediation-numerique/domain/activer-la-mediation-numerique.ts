@@ -1,42 +1,37 @@
 import {
+  type ContactAImporter,
   CoordinateurId,
+  contactASynchroniser,
+  type InscritDeLaListe,
   MediateurId,
   rattachements,
   UtilisateurIntrouvable,
 } from '@/features/utilisateurs/domain'
 import { failure, type Result, success } from '@/libraries/result'
-import {
-  type Activation,
-  activationDe,
-  type NonCoordinateur,
-} from './mediation'
+import type { EchecDActiverLaMediationNumerique } from './errors'
+import { type Activation, activationDe } from './mediation'
+import type { ActiverLaMediationNumeriquePorts } from './ports'
 
-type CompteQuiActive = {
-  readonly id: string
-  readonly mediateur: { readonly id: string } | null
-  readonly coordinateur: { readonly id: string } | null
-}
-
-export type ActiverLaMediationNumeriquePorts = {
-  readonly lireLeCompteQuiActive: (
-    utilisateurId: string,
-  ) => Promise<CompteQuiActive | null>
-  readonly activer: (activation: {
-    readonly utilisateurId: string
-    readonly coordinateurId: string
-  }) => Promise<unknown>
-  readonly inscrireALaListeDeDiffusion: (utilisateurId: string) => Promise<void>
+const contactAInscrire = (
+  inscrit: InscritDeLaListe | null,
+): ContactAImporter | null => {
+  if (inscrit === null) return null
+  const contact = contactASynchroniser(inscrit)
+  return contact._tag === 'AImporter' ? contact.contact : null
 }
 
 export const activerLaMediationNumerique =
   ({
     lireLeCompteQuiActive,
     activer,
+    lireLInscritAInscrire,
     inscrireALaListeDeDiffusion,
   }: ActiverLaMediationNumeriquePorts) =>
-  async (
-    utilisateurId: string,
-  ): Promise<Result<Activation, UtilisateurIntrouvable | NonCoordinateur>> => {
+  async ({
+    utilisateurId,
+  }: {
+    readonly utilisateurId: string
+  }): Promise<Result<Activation, EchecDActiverLaMediationNumerique>> => {
     const compte = await lireLeCompteQuiActive(utilisateurId)
     if (compte === null) return failure(UtilisateurIntrouvable(utilisateurId))
 
@@ -49,13 +44,19 @@ export const activerLaMediationNumerique =
       ),
     )
     if (!activation.success) return activation
-    if (activation.data._tag === 'DejaActivee') return success('DejaActivee')
+    if (activation.data._tag === 'DejaActivee')
+      return success({ _tag: 'DejaActivee' })
 
-    await activer({
+    const { coordinateurId } = activation.data
+    await activer({ utilisateurId: compte.id, coordinateurId })
+
+    const inscription = contactAInscrire(await lireLInscritAInscrire(compte.id))
+    if (inscription !== null) await inscrireALaListeDeDiffusion(inscription)
+
+    return success({
+      _tag: 'Activee',
       utilisateurId: compte.id,
-      coordinateurId: activation.data.coordinateurId,
+      coordinateurId,
+      inscription,
     })
-    await inscrireALaListeDeDiffusion(compte.id)
-
-    return success('AActiver')
   }
