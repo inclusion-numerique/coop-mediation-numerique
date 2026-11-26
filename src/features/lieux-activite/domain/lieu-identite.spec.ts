@@ -195,6 +195,32 @@ describe('correler', () => {
     })
   })
 
+  describe('la typologie oppose deux établissements différents', () => {
+    it('sépare deux lieux dont les typologies déclarées diffèrent', () => {
+      expect(
+        correler(
+          [candidat({ typologies: ['BIB'] })],
+          lieu({ typologies: ['CAF'] }),
+        ),
+      ).toBeNull()
+    })
+
+    it('rapproche deux lieux qui déclarent la même typologie', () => {
+      expect(
+        correler(
+          [candidat({ typologies: ['BIB'] })],
+          lieu({ typologies: ['BIB'] }),
+        ),
+      ).toMatchObject({ id: 'candidat-1' })
+    })
+
+    it('ignore une typologie inconnue du standard plutôt que de refuser le lieu', () => {
+      expect(
+        correler([candidat({ typologies: ['PAS_UNE_TYPOLOGIE'] })], lieu()),
+      ).toMatchObject({ id: 'candidat-1' })
+    })
+  })
+
   describe('départage entre plusieurs candidats', () => {
     it('préfère un lieu actif à un lieu supprimé', () => {
       const supprime = candidat({

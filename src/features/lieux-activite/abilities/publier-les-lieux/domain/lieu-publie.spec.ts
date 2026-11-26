@@ -95,4 +95,18 @@ describe('ce que la coop verse à la cartographie nationale', () => {
       Service.UtilisationSecuriseeDuNumerique,
     ])
   })
+
+  it('dédoublonne et ordonne les autres formations et labels', () => {
+    expect(
+      LieuPublieSchema.parse(
+        lieu({
+          autres_formations_labels: [
+            'Label maison',
+            'Atelier local',
+            'Label maison',
+          ],
+        }),
+      ).autres_formations_labels,
+    ).toEqual(['Atelier local', 'Label maison'])
+  })
 })

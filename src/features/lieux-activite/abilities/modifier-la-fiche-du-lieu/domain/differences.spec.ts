@@ -18,7 +18,7 @@ import {
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { describe, expect, it } from 'vitest'
 import type { Fiche } from '../../../domain/fiche'
-import { differences } from './differences'
+import { differences, sectionsConcernees } from './differences'
 
 const fiche: Fiche = {
   nom: Nom('Espace numérique'),
@@ -124,6 +124,22 @@ describe('différences entre la fiche de la coop et celle du registre', () => {
         coop: 'Mo 09:00-12:00',
         registre: 'Tu 14:00-18:00',
       },
+    ])
+  })
+})
+
+describe('sections concernées par les différences', () => {
+  it('nomme une seule fois chaque section où la fiche diffère', () => {
+    const repris = {
+      ...fiche,
+      nom: Nom('Tiers-lieu du Port'),
+      contact: Contact({ telephone: '+33180059880' }),
+      horaires: null,
+    }
+
+    expect(sectionsConcernees(differences(fiche, repris))).toEqual([
+      'InformationsGenerales',
+      'InformationsPratiques',
     ])
   })
 })

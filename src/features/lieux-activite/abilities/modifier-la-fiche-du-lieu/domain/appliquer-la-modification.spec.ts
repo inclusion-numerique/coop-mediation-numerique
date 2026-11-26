@@ -118,6 +118,37 @@ describe('appliquer une modification à la fiche du lieu', () => {
     expect(modifie.fiche).toEqual(lieu.fiche)
   })
 
+  it('n’ajoute aucun service par défaut à un lieu retiré de la carte', () => {
+    const modifie = appliquerModification(
+      { ...lieu, fiche: { ...lieu.fiche, services: Services([]) } },
+      {
+        section: 'VisibiliteCartographie',
+        visibilite: VisibiliteCartographie('NonPublie'),
+      },
+      auteur,
+      maintenant,
+    )
+
+    expect(modifie.fiche.services).toEqual([])
+  })
+
+  it('enregistre les courriels saisis dans les modalités d’accès', () => {
+    const modifie = appliquerModification(
+      lieu,
+      {
+        section: 'ModalitesAccesAuService',
+        modalitesAcces: ModalitesAcces([ModaliteAcces.ContacterParMail]),
+        telephone: null,
+        courriels: [Courriel('accueil@example.fr')],
+        fraisACharge: FraisACharge([]),
+      },
+      auteur,
+      maintenant,
+    )
+
+    expect(modifie.fiche.contact.courriels).toEqual(['accueil@example.fr'])
+  })
+
   it('préserve téléphone et courriels quand on édite les informations pratiques', () => {
     const modifie = appliquerModification(
       lieu,
