@@ -4,30 +4,8 @@ import {
   type UtilisateurId,
 } from '@/features/inscription/domain'
 import { failure, type Result, success } from '@/libraries/result'
+import { CompteDeRoleIntrouvable, type EchecDeValider } from './errors'
 
-/**
- * Un profil d'inscription est posé mais aucun compte de rôle (médiateur ou
- * coordinateur) n'existe en base : l'état fantôme né de l'incident des comptes
- * sans rôle, qu'on refuse de rendre validable.
- */
-type CompteDeRoleIntrouvable = {
-  readonly _tag: 'CompteDeRoleIntrouvable'
-  readonly userId: UtilisateurId
-}
-
-const CompteDeRoleIntrouvable = (
-  userId: UtilisateurId,
-): CompteDeRoleIntrouvable => ({
-  _tag: 'CompteDeRoleIntrouvable',
-  userId,
-})
-
-/**
- * Faits d'inscription bruts requis par la validation. `valider` ne reconstruit
- * pas l'état `EnCours` : dans le flow Dataspace, c'est cette étape qui pose les
- * CGU (profil pré-rempli par le Dataspace, CGU encore absentes), un cas que
- * l'état `EnCours` — qui suppose les CGU déjà acceptées — ne modélise pas.
- */
 export type FaitsInscription = {
   readonly userId: UtilisateurId
   readonly profilChoisi: boolean
@@ -36,48 +14,32 @@ export type FaitsInscription = {
   readonly cguDejaAcceptee: boolean
 }
 
-/**
- * Charge d'écriture décidée : la date de validation, et la date de CGU à poser
- * si elles n'avaient pas encore été acceptées (`null` = ne pas toucher à une
- * acceptation déjà posée).
- */
 export type ValidationAEnregistrer = {
+  readonly userId: UtilisateurId
   readonly inscriptionValidee: Date
   readonly cguAPoser: Date | null
 }
 
-export type ValiderInscriptionError =
-  | ProfilNonChoisi
-  | InscriptionDejaValidee
-  | CompteDeRoleIntrouvable
-
-/**
- * Décide la validation de l'inscription à partir des faits bruts. Fonction pure :
- * la couche appelante lit les faits et projette `aEnregistrer`. Ordre des gardes :
- * profil choisi, puis idempotence (déjà validée), puis garde anti-compte-fantôme
- * — cette dernière ne concerne qu'une inscription pas encore validée.
- */
-export const validerInscription = (
-  {
+export const validerInscription = ({
+  faits: {
     userId,
     profilChoisi,
     compteDeRoleExiste,
     dejaValidee,
     cguDejaAcceptee,
-  }: FaitsInscription,
-  maintenant: Date,
-): Result<
-  { aEnregistrer: ValidationAEnregistrer },
-  ValiderInscriptionError
-> => {
+  },
+  maintenant,
+}: {
+  readonly faits: FaitsInscription
+  readonly maintenant: Date
+}): Result<ValidationAEnregistrer, EchecDeValider> => {
   if (!profilChoisi) return failure(ProfilNonChoisi(userId))
   if (dejaValidee) return failure(InscriptionDejaValidee(userId))
   if (!compteDeRoleExiste) return failure(CompteDeRoleIntrouvable(userId))
 
   return success({
-    aEnregistrer: {
-      inscriptionValidee: maintenant,
-      cguAPoser: cguDejaAcceptee ? null : maintenant,
-    },
+    userId,
+    inscriptionValidee: maintenant,
+    cguAPoser: cguDejaAcceptee ? null : maintenant,
   })
 }

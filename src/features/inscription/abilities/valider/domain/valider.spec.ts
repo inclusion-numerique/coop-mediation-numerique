@@ -1,9 +1,11 @@
 import { describe, expect, it } from 'vitest'
 import { UtilisateurId } from '@/features/inscription/domain'
+import { failure, success } from '@/libraries/result'
 import { valider } from './valider'
 import type { FaitsInscription } from './valider-inscription'
 
 const userId = UtilisateurId('11111111-1111-1111-1111-111111111111')
+
 const maintenant = new Date('2026-07-16T10:00:00.000Z')
 
 const inscriptionValidable: FaitsInscription = {
@@ -14,20 +16,31 @@ const inscriptionValidable: FaitsInscription = {
   cguDejaAcceptee: true,
 }
 
-const validerAvec = (faits: FaitsInscription) =>
+const validerDepuis = (faits: FaitsInscription) =>
   valider({
     lireFaitsInscription: async () => faits,
     enregistrerValidation: async () => undefined,
     inscrireALaListeDeDiffusion: async () => undefined,
     effetsApresValidation: async () => undefined,
-  })(userId, maintenant)
+  })({ userId, maintenant })
 
-describe('valider', () => {
-  it('valide une inscription complète', async () => {
-    expect(await validerAvec(inscriptionValidable)).toEqual({
-      success: true,
-      data: undefined,
-    })
+describe('valider l’inscription', () => {
+  it('pose la date de validation sans toucher aux CGU déjà acceptées', async () => {
+    expect(await validerDepuis(inscriptionValidable)).toEqual(
+      success({ userId, inscriptionValidee: maintenant, cguAPoser: null }),
+    )
+  })
+
+  it('pose les CGU quand elles n’avaient pas été acceptées, au parcours Dataspace', async () => {
+    expect(
+      await validerDepuis({ ...inscriptionValidable, cguDejaAcceptee: false }),
+    ).toEqual(
+      success({
+        userId,
+        inscriptionValidee: maintenant,
+        cguAPoser: maintenant,
+      }),
+    )
   })
 
   it.each<{ cas: string; faits: FaitsInscription; erreur: string }>([
@@ -47,9 +60,8 @@ describe('valider', () => {
       erreur: 'CompteDeRoleIntrouvable',
     },
   ])('$cas', async ({ faits, erreur }) => {
-    expect(await validerAvec(faits)).toEqual({
-      success: false,
-      error: { _tag: erreur, userId },
-    })
+    expect(await validerDepuis(faits)).toEqual(
+      failure({ _tag: erreur, userId }),
+    )
   })
 })

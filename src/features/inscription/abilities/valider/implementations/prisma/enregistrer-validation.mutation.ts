@@ -9,7 +9,8 @@ import type { EnregistrerValidation } from '../../domain/ports'
  */
 export const enregistrerValidation: EnregistrerValidation = async ({
   userId,
-  aEnregistrer: { inscriptionValidee, cguAPoser },
+  inscriptionValidee,
+  cguAPoser,
 }) => {
   await prismaClient.user.update({
     where: { id: userId },

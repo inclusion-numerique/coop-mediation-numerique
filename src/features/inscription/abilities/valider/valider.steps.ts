@@ -2,12 +2,13 @@ import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
+import type { EchecDeValider } from '@/features/inscription/abilities/valider/domain/errors'
 import type {
   EffetsApresValidation,
   InscrireALaListeDeDiffusion,
 } from '@/features/inscription/abilities/valider/domain/ports'
 import { valider } from '@/features/inscription/abilities/valider/domain/valider'
-import { type ValiderInscriptionError } from '@/features/inscription/abilities/valider/domain/valider-inscription'
+import type { ValidationAEnregistrer } from '@/features/inscription/abilities/valider/domain/valider-inscription'
 import { enregistrerValidation } from '@/features/inscription/abilities/valider/implementations/prisma/enregistrer-validation.mutation'
 import { lireFaitsInscription } from '@/features/inscription/abilities/valider/implementations/prisma/lire-faits-inscription.query'
 import { ProfilInscription } from '@/features/inscription/domain'
@@ -28,7 +29,7 @@ const validerAvec = (
     effetsApresValidation,
   })
 
-let resultat: Result<void, ValiderInscriptionError>
+let resultat: Result<ValidationAEnregistrer, EchecDeValider>
 
 Given('mon profil d’inscription est {string}', async (profil: string) => {
   await seedProfilChoisi(ProfilInscription.schema.parse(profil))
@@ -64,7 +65,7 @@ When('je valide mon inscription', async () => {
   resultat = await validerAvec(
     async () => undefined,
     async () => undefined,
-  )(utilisateurDeLInscriptionEnCours(), new Date())
+  )({ userId: utilisateurDeLInscriptionEnCours(), maintenant: new Date() })
 })
 
 Then('mon inscription est validée', async () => {
