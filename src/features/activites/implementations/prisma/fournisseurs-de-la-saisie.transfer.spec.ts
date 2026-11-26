@@ -8,10 +8,17 @@ import {
 } from '../../domain'
 import {
   employeuseDeLaDateDepuis,
+  instantDuJour,
   tagsUtilisablesDepuis,
 } from './fournisseurs-de-la-saisie.transfer'
 
 describe('fournisseurs de la saisie', () => {
+  it("situe le jour de l'activité à minuit UTC", () => {
+    expect(instantDuJour(DateDActivite('2026-03-05'))).toEqual(
+      new Date(Date.UTC(2026, 2, 5)),
+    )
+  })
+
   it("traduit l'employeuse fournie et sa commune", async () => {
     const employeuse = await employeuseDeLaDateDepuis(async () => ({
       id: 42,

@@ -1,5 +1,6 @@
 import {
   Commune,
+  type DateDActivite,
   type EmployeuseDeLaDate,
   EmployeuseId,
   NomDeTag,
@@ -28,14 +29,15 @@ export const tagsUtilisablesDepuis =
       nom: NomDeTag(nom),
     }))
 
+export const instantDuJour = (date: DateDActivite): Date =>
+  new Date(`${date}T00:00:00.000Z`)
+
 export const employeuseDeLaDateDepuis =
   (
     employeuseALaDate: (date: Date) => Promise<EmployeuseFournie | null>,
   ): EmployeuseDeLaDate =>
   async (date) => {
-    const employeuse = await employeuseALaDate(
-      new Date(`${date}T00:00:00.000Z`),
-    )
+    const employeuse = await employeuseALaDate(instantDuJour(date))
     if (employeuse === null) return null
     const { adresse } = employeuse
     return {
