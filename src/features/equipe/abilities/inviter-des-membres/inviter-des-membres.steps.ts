@@ -1,8 +1,11 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { prismaClient } from '@/configuration/prisma'
+import { signaler } from '@/configuration/telemetry/serveur'
 import { type MediateursAInviter } from '@/features/equipe/abilities/inviter-des-membres/domain/index'
-import { inviterDesMembres } from '@/features/equipe/abilities/inviter-des-membres/implementations/prisma/inviter-des-membres.mutation'
+import { inviterDesMembres as inviterDesMembresAvec } from '@/features/equipe/abilities/inviter-des-membres/domain/inviter-des-membres'
+import { enregistrerLesInvitations } from '@/features/equipe/abilities/inviter-des-membres/implementations/prisma/enregistrer-les-invitations.mutation'
+import { lireLExistant } from '@/features/equipe/abilities/inviter-des-membres/implementations/prisma/existant.query'
 import { rechercherDesMediateursAInviter } from '@/features/equipe/abilities/inviter-des-membres/implementations/prisma/rechercher-des-mediateurs-a-inviter.query'
 import {
   CoordinateurId,
@@ -19,11 +22,20 @@ import {
   semerUnMediateurDEquipe,
 } from '@/features/equipe/equipe.cucumber'
 import { envoyerUneInvitation } from '@/features/equipe/implementations/email'
+import { lireLeCoordinateur } from '@/features/equipe/implementations/prisma/coordinateur.query'
+
+const inviterDesMembres = inviterDesMembresAvec({
+  lireLeCoordinateur,
+  lireLExistant,
+  enregistrerLesInvitations,
+  envoyerUneInvitation,
+  signaler,
+})
 
 const contexte: {
   coordinateur?: CoordinateurSeme
   mediateur?: MediateurSeme
-  issue?: Awaited<ReturnType<ReturnType<typeof inviterDesMembres>>>
+  issue?: Awaited<ReturnType<typeof inviterDesMembres>>
   proposes?: MediateursAInviter
 } = {}
 
@@ -41,10 +53,14 @@ const unique = (email: string): string =>
   email.replace('@', `+${coordinateur().coordinateurId.slice(0, 8)}@`)
 
 const inviter = async (emails: readonly string[]) => {
-  contexte.issue = await inviterDesMembres({ envoyerUneInvitation })({
-    coordinateurId: CoordinateurId(coordinateur().coordinateurId),
+  contexte.issue = await inviterDesMembres({
+    inviteur: {
+      type: 'Coordinateur',
+      coordinateurId: CoordinateurId(coordinateur().coordinateurId),
+    },
     candidats: emails.map(Courriel),
     auteurId: UtilisateurId(coordinateur().userId),
+    maintenant: new Date(),
   })
 }
 
