@@ -23,7 +23,7 @@ const base = {
   synchroniserDepuis: null,
   derniereSynchro: null,
   inclureRdvsDansActivites: false,
-} as const
+}
 
 const nonLie: CompteRdv = { ...base, _tag: 'nonLie' }
 const lie: CompteRdv = { ...base, _tag: 'lie', jetons }

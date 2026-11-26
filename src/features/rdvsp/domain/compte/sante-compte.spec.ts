@@ -5,6 +5,8 @@ import { type CompteRdv, MessageErreurCompte } from './compte-rdv'
 import { JetonAcces, type JetonsOAuth } from './jetons-oauth'
 import {
   peutEtreSynchronise,
+  type SanteCompteRdv,
+  type StatutIntegration,
   santeDuCompte,
   statutDuCompteDeLaSession,
   statutIntegration,
@@ -27,7 +29,7 @@ const base = {
   synchroniserDepuis: null,
   derniereSynchro: null,
   inclureRdvsDansActivites: false,
-} as const
+}
 
 describe('santeDuCompte', () => {
   it('tient pour opérationnel un compte lié dont le jeton court encore', () => {
@@ -93,22 +95,13 @@ describe('santeDuCompte', () => {
 })
 
 describe('statutIntegration', () => {
-  it.each([
-    ['operationnel', 'connecte'],
-    ['jetonExpire', 'connecte'],
-    ['enErreur', 'enPanne'],
-    ['jamaisLie', 'enPanne'],
-    ['deconnecteParUtilisateur', 'deconnecte'],
-  ] as const)('pour un compte « %s » : %s', (tag, attendu) => {
-    const sante =
-      tag === 'enErreur'
-        ? ({ _tag: 'enErreur', message: 'x' } as const)
-        : tag === 'jetonExpire'
-          ? ({ _tag: 'jetonExpire', depuis: maintenant } as const)
-          : tag === 'deconnecteParUtilisateur'
-            ? ({ _tag: 'deconnecteParUtilisateur', quand: maintenant } as const)
-            : ({ _tag: tag } as const)
-
+  it.each<[SanteCompteRdv, StatutIntegration]>([
+    [{ _tag: 'operationnel' }, 'connecte'],
+    [{ _tag: 'jetonExpire', depuis: maintenant }, 'connecte'],
+    [{ _tag: 'enErreur', message: 'x' }, 'enPanne'],
+    [{ _tag: 'jamaisLie' }, 'enPanne'],
+    [{ _tag: 'deconnecteParUtilisateur', quand: maintenant }, 'deconnecte'],
+  ])('pour un compte %o : %s', (sante, attendu) => {
     expect(statutIntegration(sante)).toBe(attendu)
   })
 
@@ -131,9 +124,6 @@ describe('statutIntegration', () => {
       deconnexion: new Date('2026-08-01T10:00:00.000Z'),
     }
 
-    // « jamaisConnecte » ne sort jamais de la dérivation : c'est la valeur que
-    // prennent les écrans quand aucun compte n'existe. La confusion des deux
-    // faisait passer pour neuf un outil que le médiateur venait de débrancher.
     expect(statutIntegration(santeDuCompte(compte, maintenant))).not.toBe(
       'jamaisConnecte',
     )
@@ -141,12 +131,12 @@ describe('statutIntegration', () => {
 })
 
 describe('peutEtreSynchronise', () => {
-  it.each([
-    [{ _tag: 'operationnel' } as const, true],
-    [{ _tag: 'jetonExpire', depuis: maintenant } as const, true],
-    [{ _tag: 'enErreur', message: 'x' } as const, false],
-    [{ _tag: 'jamaisLie' } as const, false],
-    [{ _tag: 'deconnecteParUtilisateur', quand: maintenant } as const, false],
+  it.each<[SanteCompteRdv, boolean]>([
+    [{ _tag: 'operationnel' }, true],
+    [{ _tag: 'jetonExpire', depuis: maintenant }, true],
+    [{ _tag: 'enErreur', message: 'x' }, false],
+    [{ _tag: 'jamaisLie' }, false],
+    [{ _tag: 'deconnecteParUtilisateur', quand: maintenant }, false],
   ])('pour un compte « %o » : %s', (sante, attendu) => {
     expect(peutEtreSynchronise(sante)).toBe(attendu)
   })
