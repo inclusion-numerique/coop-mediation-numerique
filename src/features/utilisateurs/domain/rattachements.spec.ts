@@ -12,27 +12,36 @@ const MEDIATEUR = MediateurId('1a2b3c4d-5e6f-4708-8192-a3b4c5d6e7f8')
 const COORDINATEUR = CoordinateurId('2b3c4d5e-6f70-4819-92a3-b4c5d6e7f809')
 
 describe('rattachements d’un compte', () => {
-  it.each([
+  it.each<[string, MediateurId | null, CoordinateurId | null, string]>([
     ['aucun', null, null, 'aucun'],
     ['médiateur seul', MEDIATEUR, null, 'mediateur'],
     ['coordinateur seul', null, COORDINATEUR, 'coordinateur'],
     ['les deux', MEDIATEUR, COORDINATEUR, 'mediateurEtCoordinateur'],
-  ] as const)('%s', (_, mediateur, coordinateur, tag) => {
-    const rattache = rattachements(mediateur, coordinateur)
-
-    expect(rattache._tag).toBe(tag)
-    expect(mediateurDe(rattache)).toBe(mediateur)
-    expect(coordinateurDe(rattache)).toBe(coordinateur)
+  ])('%s', (_, mediateur, coordinateur, tag) => {
+    expect(rattachements(mediateur, coordinateur)._tag).toBe(tag)
   })
 
-  it('projette l’union vers le couple que les features attendent', () => {
-    expect(identifiantsDe(rattachements(MEDIATEUR, COORDINATEUR))).toEqual({
-      mediateurId: MEDIATEUR,
-      coordinateurId: COORDINATEUR,
-    })
-    expect(identifiantsDe({ _tag: 'aucun' })).toEqual({
-      mediateurId: null,
-      coordinateurId: null,
-    })
+  it.each<[string, MediateurId | null, CoordinateurId | null]>([
+    ['aucun', null, null],
+    ['médiateur seul', MEDIATEUR, null],
+    ['coordinateur seul', null, COORDINATEUR],
+    ['les deux', MEDIATEUR, COORDINATEUR],
+  ])(
+    'projette vers le couple d’identifiants : %s',
+    (_, mediateurId, coordinateurId) => {
+      expect(
+        identifiantsDe(rattachements(mediateurId, coordinateurId)),
+      ).toEqual({ mediateurId, coordinateurId })
+    },
+  )
+
+  it('retrouve le médiateur rattaché', () => {
+    expect(mediateurDe(rattachements(MEDIATEUR, COORDINATEUR))).toBe(MEDIATEUR)
+  })
+
+  it('retrouve le coordinateur rattaché', () => {
+    expect(coordinateurDe(rattachements(MEDIATEUR, COORDINATEUR))).toBe(
+      COORDINATEUR,
+    )
   })
 })

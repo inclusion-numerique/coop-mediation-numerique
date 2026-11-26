@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { cycleDeVie, inscription } from './cycle-de-vie'
+import type { Jalon } from './jalon'
 
 const creeLe = new Date('2026-01-01')
 const inscritLe = new Date('2026-01-02')
@@ -14,7 +15,7 @@ describe('cycle de vie d’un compte', () => {
     })
   })
 
-  it.each([
+  it.each<[Parameters<typeof cycleDeVie>[0], Jalon]>([
     [{ creeLe, inscritLe: null, supprimeLe: null }, { _tag: 'Jamais' }],
     [
       { creeLe, inscritLe, supprimeLe: null },

@@ -56,7 +56,7 @@ describe('rôles Brevo d’un inscrit', () => {
     )
   })
 
-  it.each([
+  it.each<[RattachementsDuCompte, SituationDansLeDispositif, string[]]>([
     [rattachements(mediateur, null), hors, ['Mediateur']],
     [
       rattachements(mediateur, null),
