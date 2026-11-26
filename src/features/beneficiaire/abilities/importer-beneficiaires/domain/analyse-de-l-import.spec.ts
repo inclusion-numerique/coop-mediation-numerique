@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import type { Genre } from '@/features/beneficiaire/domain/genre'
 import {
   AnalysisSchema,
   analyserLaFeuille,
@@ -302,6 +303,75 @@ describe('analyse de la feuille d’import', () => {
     }).toEqual({
       commune: null,
       errors: { communeCodeInsee: 'Code commune non trouvé' },
+    })
+  })
+})
+
+describe('analyse des saisies de la feuille d’import', () => {
+  const blaziert: CommunesClient = {
+    findCommuneByInsee: () => ({
+      codeInsee: '32057',
+      nom: 'Blaziert',
+      codePostal: '32100',
+    }),
+  }
+
+  const sansCommune: CommunesClient = { findCommuneByInsee: () => null }
+
+  it.each<{ saisie: string; genre: Genre }>([
+    { saisie: 'Masculin', genre: 'Masculin' },
+    { saisie: 'Féminin', genre: 'Feminin' },
+    { saisie: 'Non communiqué', genre: 'NonCommunique' },
+  ])('lit le genre $saisie comme $genre', ({ saisie, genre }) => {
+    expect(
+      analyserLaFeuille(sansCommune)(
+        feuilleDepuisLignes([
+          ['Exemple', 'Léa', null, null, null, null, null, null, saisie],
+        ]),
+      ).rows,
+    ).toMatchObject([{ parsed: { genre } }])
+  })
+
+  it('refuse un genre inconnu', () => {
+    expect(
+      analyserLaFeuille(sansCommune)(
+        feuilleDepuisLignes([
+          ['Exemple', 'Léa', null, null, null, null, null, null, 'Autre'],
+        ]),
+      ).rows,
+    ).toMatchObject([
+      { parsed: { genre: null }, errors: { genre: 'Genre invalide' } },
+    ])
+  })
+
+  it('refuse un code postal qui n’est pas celui de la commune', () => {
+    expect(
+      analyserLaFeuille(blaziert)(
+        feuilleDepuisLignes([
+          ['Exemple', 'Léa', 1970, 'Blaziert', '32057', '32200'],
+        ]),
+      ).rows,
+    ).toMatchObject([
+      {
+        errors: {
+          communeCodePostal: 'Le code postal de la commune ne correspond pas',
+        },
+      },
+    ])
+  })
+
+  it('lit une année de naissance saisie en texte', () => {
+    expect(
+      analyserLaFeuille(sansCommune)(
+        feuilleDepuisLignes([['Exemple', 'Léa', '1970']]),
+      ).rows,
+    ).toMatchObject([{ parsed: { anneeNaissance: 1970 } }])
+  })
+
+  it('ne trouve aucun bénéficiaire dans une feuille réduite à ses instructions', () => {
+    expect(analyserLaFeuille(sansCommune)([['Instructions']])).toEqual({
+      status: 'ok',
+      rows: [],
     })
   })
 })
