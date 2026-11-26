@@ -98,4 +98,44 @@ describe('annuler une invitation', () => {
       error: { _tag: 'InvitationDejaTraitee', reference, statut: 'Acceptee' },
     })
   })
+  it('est permis à un administrateur', async () => {
+    const annuler = annulerUneInvitation({
+      lireUneInvitation: async () => ({
+        invitation: invitationEnAttente,
+        cle: 1,
+      }),
+      supprimerLInvitation: async () => undefined,
+    })
+
+    expect(
+      await annuler({
+        reference,
+        gestionnaire: { type: 'Administrateur' },
+        auteurId,
+      }),
+    ).toEqual({ success: true, data: { reference, auteurId } })
+  })
+
+  it('est refusé au coordinateur d’une autre équipe', async () => {
+    const annuler = annulerUneInvitation({
+      lireUneInvitation: async () => ({
+        invitation: invitationEnAttente,
+        cle: 1,
+      }),
+      supprimerLInvitation: async () => undefined,
+    })
+
+    expect(
+      await annuler({
+        reference,
+        gestionnaire: {
+          type: 'Coordinateur',
+          coordinateurId: CoordinateurId(
+            '550e8400-e29b-41d4-a716-446655440002',
+          ),
+        },
+        auteurId,
+      }),
+    ).toEqual({ success: false, error: { _tag: 'ActionNonAutorisee' } })
+  })
 })

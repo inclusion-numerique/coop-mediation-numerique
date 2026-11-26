@@ -114,4 +114,55 @@ describe('lister les membres d’une équipe', () => {
       }),
     ).toEqual({ success: false, error: { _tag: 'CoordinateurIntrouvable' } })
   })
+  it('rend les membres au coordinateur de l’équipe', async () => {
+    const lister = listerLesMembres({
+      lireLeCoordinateur: async () => coordinateur,
+      lireLeDepartementDuCoordinateur: async () => departementCode,
+      lireLesMembres: async () => membres,
+    })
+
+    expect(
+      await lister({
+        coordinateurId,
+        lecteur: {
+          gestionnaire: { type: 'Coordinateur', coordinateurId },
+          membreActifDeLEquipe: false,
+        },
+        criteres,
+        page: Page(1),
+        pageSize: PageSize(20),
+        maintenant,
+      }),
+    ).toEqual({
+      success: true,
+      data: { coordinateur: { ...coordinateur, departementCode }, ...membres },
+    })
+  })
+
+  it('est refusé au coordinateur d’une autre équipe', async () => {
+    const lister = listerLesMembres({
+      lireLeCoordinateur: async () => coordinateur,
+      lireLeDepartementDuCoordinateur: async () => departementCode,
+      lireLesMembres: async () => membres,
+    })
+
+    expect(
+      await lister({
+        coordinateurId,
+        lecteur: {
+          gestionnaire: {
+            type: 'Coordinateur',
+            coordinateurId: CoordinateurId(
+              '550e8400-e29b-41d4-a716-446655440002',
+            ),
+          },
+          membreActifDeLEquipe: false,
+        },
+        criteres,
+        page: Page(1),
+        pageSize: PageSize(20),
+        maintenant,
+      }),
+    ).toEqual({ success: false, error: { _tag: 'ConsultationNonAutorisee' } })
+  })
 })

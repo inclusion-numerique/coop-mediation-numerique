@@ -6,7 +6,7 @@ import {
   MediateurId,
   UtilisateurId,
 } from '../../../domain'
-import type { AdhesionActive } from '../../../domain/adhesion'
+import type { AdhesionActive, AdhesionArchivee } from '../../../domain/adhesion'
 import type { UtilisateurAAjouter } from './ajout'
 import { ajouterUnMembre } from './ajouter-un-membre'
 
@@ -30,6 +30,13 @@ const adhesionActive: AdhesionActive = {
   coordinateurId,
   depuis: new Date('2026-02-01T09:00:00Z'),
   statut: 'Active',
+}
+
+const adhesionArchivee: AdhesionArchivee = {
+  ...adhesionActive,
+  id: AdhesionId('550e8400-e29b-41d4-a716-446655440022'),
+  statut: 'Archivee',
+  archiveeLe: new Date('2026-03-01T09:00:00Z'),
 }
 
 describe('ajouter un membre à une équipe', () => {
@@ -105,6 +112,24 @@ describe('ajouter un membre à une équipe', () => {
     expect(await ajouter({ utilisateurId, coordinateurId, auteurId })).toEqual({
       success: false,
       error: { _tag: 'DejaMembre', mediateurId },
+    })
+  })
+  it('fait adhérer de nouveau un ancien membre de l’équipe', async () => {
+    const ajouter = ajouterUnMembre({
+      lireLUtilisateurAAjouter: async () => mediateur,
+      coordinateurExiste: async () => true,
+      lireLesAdhesionsDeLaPaire: async () => [adhesionArchivee],
+      enregistrerLAdhesion: async () => undefined,
+    })
+
+    expect(await ajouter({ utilisateurId, coordinateurId, auteurId })).toEqual({
+      success: true,
+      data: {
+        mediateurId,
+        coordinateurId,
+        email: Courriel('mediateur@example.com'),
+        auteurId,
+      },
     })
   })
 })

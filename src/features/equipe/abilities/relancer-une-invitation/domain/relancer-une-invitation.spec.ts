@@ -177,4 +177,58 @@ describe('relancer une invitation', () => {
       await relancer({ reference, gestionnaire, auteurId, maintenant }),
     ).toEqual({ success: false, error: { _tag: 'EnvoiEchoue' } })
   })
+  it('se relance une heure exactement après l’envoi', async () => {
+    const relancer = relancerUneInvitation({
+      lireUneInvitation: async () => ({
+        invitation: invitationEnAttente,
+        cle: 1,
+      }),
+      lireLeCoordinateur: async () => coordinateur,
+      envoyerUneInvitation: async () => success(undefined),
+      enregistrerLaRelance: async () => undefined,
+    })
+
+    expect(
+      await relancer({
+        reference,
+        gestionnaire,
+        auteurId,
+        maintenant: new Date('2026-01-01T10:00:00Z'),
+      }),
+    ).toEqual({
+      success: true,
+      data: {
+        envoi: { invitation: invitationEnAttente, de: coordinateur.nom },
+        relance: {
+          reference,
+          auteurId,
+          renvoyeeLe: new Date('2026-01-01T10:00:00Z'),
+        },
+      },
+    })
+  })
+
+  it('attend une heure après la dernière relance', async () => {
+    const relancer = relancerUneInvitation({
+      lireUneInvitation: async () => ({
+        invitation: {
+          ...invitationEnAttente,
+          renvoyeeLe: new Date('2026-01-05T09:00:00Z'),
+        },
+        cle: 1,
+      }),
+      lireLeCoordinateur: async () => coordinateur,
+      envoyerUneInvitation: async () => success(undefined),
+      enregistrerLaRelance: async () => undefined,
+    })
+
+    expect(
+      await relancer({
+        reference,
+        gestionnaire,
+        auteurId,
+        maintenant: new Date('2026-01-05T09:30:00Z'),
+      }),
+    ).toEqual({ success: false, error: { _tag: 'RelanceTropRecente' } })
+  })
 })
