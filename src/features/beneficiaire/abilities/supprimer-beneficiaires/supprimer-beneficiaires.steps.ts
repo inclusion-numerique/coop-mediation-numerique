@@ -2,7 +2,9 @@ import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
-import { supprimerBeneficiaires } from '@/features/beneficiaire/abilities/supprimer-beneficiaires/implementations/prisma/supprimer-beneficiaires.mutation'
+import { supprimerBeneficiaires as supprimerBeneficiairesAvec } from '@/features/beneficiaire/abilities/supprimer-beneficiaires/domain/supprimer-beneficiaires'
+import { anonymiserLesBeneficiaires } from '@/features/beneficiaire/abilities/supprimer-beneficiaires/implementations/prisma/anonymiser-les-beneficiaires.mutation'
+import { beneficiairesExistants } from '@/features/beneficiaire/abilities/supprimer-beneficiaires/implementations/prisma/beneficiaires-existants.query'
 import {
   nombreDeBeneficiairesAuDebutDuScenario,
   nombreDeBeneficiairesDuMediateur,
@@ -10,6 +12,11 @@ import {
   testMediateurId,
 } from '@/features/beneficiaire/beneficiaire.cucumber'
 import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
+
+const supprimerBeneficiaires = supprimerBeneficiairesAvec({
+  beneficiairesExistants,
+  anonymiserLesBeneficiaires,
+})
 
 type SuppressionResult = Awaited<ReturnType<typeof supprimerBeneficiaires>>
 
@@ -35,6 +42,7 @@ When('je supprime ce bénéficiaire', async () => {
   result = await supprimerBeneficiaires({
     ids: [BeneficiaireId(targetId)],
     mediateurId: testMediateurId,
+    maintenant: new Date(),
   })
 })
 
@@ -42,6 +50,7 @@ When('je supprime un bénéficiaire inexistant', async () => {
   result = await supprimerBeneficiaires({
     ids: [BeneficiaireId(v4())],
     mediateurId: testMediateurId,
+    maintenant: new Date(),
   })
 })
 
