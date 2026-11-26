@@ -1,2 +1,2 @@
 export { AucuneStatistiqueAPartager, PerimetreNonRattache } from './errors'
-export { proprietaireChoisi } from './proprietaire-choisi'
+export type { ReglageDuPartage } from './reglage-du-partage'

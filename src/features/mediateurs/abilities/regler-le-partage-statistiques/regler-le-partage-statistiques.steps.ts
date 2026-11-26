@@ -1,14 +1,15 @@
 import assert from 'node:assert'
 import { Then, When } from '@cucumber/cucumber'
 import { prismaClient } from '@/configuration/prisma'
-import { reglerLePartageStatistiques } from '@/features/mediateurs/abilities/regler-le-partage-statistiques/implementations/prisma/regler-le-partage-statistiques.mutation'
+import { reglerLePartageStatistiques } from '@/features/mediateurs/abilities/regler-le-partage-statistiques/domain/regler-le-partage-statistiques'
+import { enregistrerLeReglageDuPartage } from '@/features/mediateurs/abilities/regler-le-partage-statistiques/implementations/prisma/regler-le-partage-statistiques.mutation'
 import { AuteurId, PerimetrePartage } from '@/features/mediateurs/domain'
 import {
   compteSeme,
   rattachementsSemes,
 } from '@/features/mediateurs/mediateurs.cucumber'
 
-type Issue = Awaited<ReturnType<typeof reglerLePartageStatistiques>>
+type Issue = Awaited<ReturnType<ReturnType<typeof reglerLePartageStatistiques>>>
 
 type Partage = { readonly id: string; readonly deleted: Date | null }
 
@@ -40,6 +41,8 @@ const regler = async (
 ) => {
   dernier.avant = await partageDu('mediateur')
   dernier.reglage = await reglerLePartageStatistiques({
+    enregistrer: enregistrerLeReglageDuPartage,
+  })({
     rattachements: rattachementsSemes(),
     perimetre,
     actif,
