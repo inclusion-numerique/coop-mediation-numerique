@@ -3,7 +3,7 @@ import {
   personneEmployeuseActuelleSelect,
   personneToEmployeuseALaDate,
 } from '../../../../implementations/prisma/employeuse.transfer'
-import type { ConsulterEmployeuseAUneDate } from '../../domain/consulter-employeuse-a-une-date'
+import type { ConsulterEmployeuseAUneDate } from '../../domain/ports'
 
 export const consulterEmployeuseAUneDate: ConsulterEmployeuseAUneDate = async ({
   userId,
