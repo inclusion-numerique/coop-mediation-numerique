@@ -39,31 +39,35 @@ export const lireLesAccompagnements = async () => {
       JOIN main.personne p ON p.id = cn.personne_id
       WHERE p.coop_id IS NOT NULL
     ),
-    -- Base data: all accompagnements with role
     base_accompagnements AS (
       SELECT 
         act.date,
+        act.accompagnements,
         CASE WHEN cn.user_id IS NOT NULL THEN 'conseiller' ELSE 'mediateur' END AS role
-      FROM activites act
-        JOIN accompagnements acc ON acc.activite_id = act.id
+      FROM (
+        SELECT
+          mediateur_id,
+          DATE_TRUNC('month', date) AS date,
+          SUM(accompagnements_count) AS accompagnements
+        FROM activites
+        WHERE suppression IS NULL
+          AND v1_cra_id IS NULL
+        GROUP BY mediateur_id, DATE_TRUNC('month', date)
+      ) act
         LEFT JOIN mediateurs med ON act.mediateur_id = med.id
         LEFT JOIN users u ON med.user_id = u.id
         LEFT JOIN conseillers cn ON cn.user_id = u.id
-      WHERE act.suppression IS NULL 
-        AND act.v1_cra_id IS NULL
     ),
     
-    -- Totals by role (all time, up to current month)
     totals AS (
       SELECT 
-        COALESCE(SUM(CASE WHEN role = 'mediateur' THEN 1 ELSE 0 END), 0)::int AS total_mediateurs,
-        COALESCE(SUM(CASE WHEN role = 'conseiller' THEN 1 ELSE 0 END), 0)::int AS total_conseillers,
-        COUNT(*)::int AS total_count
+        COALESCE(SUM(CASE WHEN role = 'mediateur' THEN accompagnements ELSE 0 END), 0)::int AS total_mediateurs,
+        COALESCE(SUM(CASE WHEN role = 'conseiller' THEN accompagnements ELSE 0 END), 0)::int AS total_conseillers,
+        COALESCE(SUM(accompagnements), 0)::int AS total_count
       FROM base_accompagnements
       WHERE DATE_TRUNC('month', date) <= DATE_TRUNC('month', CURRENT_DATE)
     ),
     
-    -- Monthly breakdown for the last 12 months
     months AS (
       SELECT generate_series(${Prisma.raw(fromDate)}, CURRENT_DATE, '1 month'::interval) AS month
     ),
@@ -71,7 +75,7 @@ export const lireLesAccompagnements = async () => {
       SELECT 
         DATE_TRUNC('month', date) AS month,
         role,
-        COUNT(*)::int AS count
+        SUM(accompagnements)::int AS count
       FROM base_accompagnements
       WHERE date >= ${Prisma.raw(fromDate)}
       GROUP BY DATE_TRUNC('month', date), role
@@ -88,11 +92,10 @@ export const lireLesAccompagnements = async () => {
       ORDER BY months.month
     ),
     
-    -- Initial counts before the 12-month period
     initial_counts AS (
       SELECT 
-        COALESCE(SUM(CASE WHEN role = 'mediateur' THEN 1 ELSE 0 END), 0)::int AS initial_mediateurs,
-        COALESCE(SUM(CASE WHEN role = 'conseiller' THEN 1 ELSE 0 END), 0)::int AS initial_conseillers
+        COALESCE(SUM(CASE WHEN role = 'mediateur' THEN accompagnements ELSE 0 END), 0)::int AS initial_mediateurs,
+        COALESCE(SUM(CASE WHEN role = 'conseiller' THEN accompagnements ELSE 0 END), 0)::int AS initial_conseillers
       FROM base_accompagnements
       WHERE date < ${Prisma.raw(fromDate)}
     )
