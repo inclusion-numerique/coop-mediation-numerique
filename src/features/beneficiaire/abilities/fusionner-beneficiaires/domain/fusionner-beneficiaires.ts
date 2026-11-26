@@ -4,52 +4,30 @@ import { failure, type Result, success } from '@/libraries/result'
 import {
   BeneficiaireDestinationIntrouvable,
   BeneficiaireSourceIntrouvable,
+  type EchecDeFusionnerBeneficiaires,
 } from './errors'
-import type { MergeableBeneficiaire } from './merge-beneficiaire-fields'
+import type { FusionDeBeneficiaires } from './fusion-de-beneficiaires'
+import { mergeBeneficiaireFields } from './merge-beneficiaire-fields'
+import type { FusionnerBeneficiairesPorts } from './ports'
 
-export type BeneficiaireAFusionner = MergeableBeneficiaire & {
-  readonly creation: Date
-}
-
-export type LireLesBeneficiairesAFusionner = (cibles: {
-  readonly sourceId: BeneficiaireId
-  readonly destinationId: BeneficiaireId
-  readonly mediateurId: MediateurId
-}) => Promise<{
-  readonly source: BeneficiaireAFusionner | null
-  readonly destination: BeneficiaireAFusionner | null
-}>
-
-export type EnregistrerLaFusion = (fusion: {
-  readonly sourceId: BeneficiaireId
-  readonly destinationId: BeneficiaireId
-  readonly source: BeneficiaireAFusionner
-  readonly destination: BeneficiaireAFusionner
-  readonly mediateurId: MediateurId
-  readonly maintenant: Date
-}) => Promise<void>
-
-export type FusionnerBeneficiaires = (input: {
-  readonly sourceId: BeneficiaireId
-  readonly destinationId: BeneficiaireId
-  readonly mediateurId: MediateurId
-  readonly maintenant: Date
-}) => Promise<
-  Result<
-    { beneficiaireFusionneId: BeneficiaireId },
-    BeneficiaireSourceIntrouvable | BeneficiaireDestinationIntrouvable
-  >
->
+const laPlusAncienne = (a: Date, b: Date): Date => (a < b ? a : b)
 
 export const fusionnerBeneficiaires =
   ({
     lireLesBeneficiairesAFusionner,
     enregistrerLaFusion,
+  }: FusionnerBeneficiairesPorts) =>
+  async ({
+    sourceId,
+    destinationId,
+    mediateurId,
+    maintenant,
   }: {
-    readonly lireLesBeneficiairesAFusionner: LireLesBeneficiairesAFusionner
-    readonly enregistrerLaFusion: EnregistrerLaFusion
-  }): FusionnerBeneficiaires =>
-  async ({ sourceId, destinationId, mediateurId, maintenant }) => {
+    readonly sourceId: BeneficiaireId
+    readonly destinationId: BeneficiaireId
+    readonly mediateurId: MediateurId
+    readonly maintenant: Date
+  }): Promise<Result<FusionDeBeneficiaires, EchecDeFusionnerBeneficiaires>> => {
     const { source, destination } = await lireLesBeneficiairesAFusionner({
       sourceId,
       destinationId,
@@ -60,14 +38,16 @@ export const fusionnerBeneficiaires =
     if (destination === null)
       return failure(BeneficiaireDestinationIntrouvable(destinationId))
 
-    await enregistrerLaFusion({
+    const fusion: FusionDeBeneficiaires = {
       sourceId,
       destinationId,
-      source,
-      destination,
       mediateurId,
+      donneesDeLaDestination: mergeBeneficiaireFields(source, destination),
+      creation: laPlusAncienne(source.creation, destination.creation),
       maintenant,
-    })
+    }
 
-    return success({ beneficiaireFusionneId: destinationId })
+    await enregistrerLaFusion(fusion)
+
+    return success(fusion)
   }

@@ -1,7 +1,7 @@
 import { prismaClient } from '@/configuration/prisma'
 import type { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
 import type { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
-import type { LireLesBeneficiairesAFusionner } from '../../domain/fusionner-beneficiaires'
+import type { LireLesBeneficiairesAFusionner } from '../../domain/ports'
 
 const beneficiaireAFusionner = (id: BeneficiaireId, mediateurId: MediateurId) =>
   prismaClient.beneficiaire.findFirst({

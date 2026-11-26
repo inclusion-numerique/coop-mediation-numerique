@@ -36,7 +36,5 @@ export const fusionnerBeneficiairesAction = actionBuilder()
 
     return firstError && !firstError.success
       ? ServerActionError(FUSIONNER_BENEFICIAIRES_ERRORS[firstError.error._tag])
-      : results
-          .filter((r) => r.success)
-          .map((r) => r.data.beneficiaireFusionneId)
+      : results.filter((r) => r.success).map((r) => r.data.destinationId)
   })

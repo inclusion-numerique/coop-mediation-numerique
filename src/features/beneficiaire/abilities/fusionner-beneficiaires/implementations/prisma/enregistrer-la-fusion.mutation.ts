@@ -1,32 +1,21 @@
 import { prismaClient } from '@/configuration/prisma'
-import type { EnregistrerLaFusion } from '../../domain/fusionner-beneficiaires'
-import { mergeBeneficiaireFields } from '../../domain/merge-beneficiaire-fields'
-
-const earliestDate = (a: Date, b: Date) => (a < b ? a : b)
+import type { EnregistrerLaFusion } from '../../domain/ports'
 
 export const enregistrerLaFusion: EnregistrerLaFusion = async ({
   sourceId,
   destinationId,
-  source: sourceBeneficiaire,
-  destination: destinationBeneficiaire,
+  donneesDeLaDestination,
+  creation,
   mediateurId,
   maintenant: now,
 }) => {
   await prismaClient.$transaction(async (tx) => {
-    const mergedData = mergeBeneficiaireFields(
-      sourceBeneficiaire,
-      destinationBeneficiaire,
-    )
-
     await tx.beneficiaire.update({
       where: { id: destinationId },
       data: {
-        ...mergedData,
+        ...donneesDeLaDestination,
         modification: now,
-        creation: earliestDate(
-          sourceBeneficiaire.creation,
-          destinationBeneficiaire.creation,
-        ),
+        creation,
       },
     })
 
