@@ -29,15 +29,11 @@ export type BeneficiaireListItem = {
   readonly notes: Notes | null
 }
 
-export const colonnesTriablesDesBeneficiaires = [
-  'nom',
-  'prenom',
-  'anneeNaissance',
-  'accompagnementsCount',
-] as const
-
 export type ColonneTriableDesBeneficiaires =
-  (typeof colonnesTriablesDesBeneficiaires)[number]
+  | 'nom'
+  | 'prenom'
+  | 'anneeNaissance'
+  | 'accompagnementsCount'
 
 export type ListerBeneficiaires = (input: {
   mediateurId: MediateurId

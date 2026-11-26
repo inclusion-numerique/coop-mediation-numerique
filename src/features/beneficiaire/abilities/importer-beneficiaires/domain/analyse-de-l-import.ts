@@ -94,9 +94,8 @@ const parseAnneeNaissance = (anneeNaissanceRaw: number | null | undefined) => {
     return { value: null }
   }
 
-  const parsed = anneeNaissanceValidation.safeParse(anneeNaissanceRaw)
-  if (!parsed.success) {
-    return { error: parsed.error.issues[0]?.message ?? anneeNaissanceInvalide }
+  if (!anneeNaissanceValidation.safeParse(anneeNaissanceRaw).success) {
+    return { error: anneeNaissanceInvalide }
   }
 
   return { value: anneeNaissanceRaw }

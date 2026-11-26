@@ -1,11 +1,9 @@
 import assert from 'node:assert'
 import { PageSize, Search, Sort, SortDirection } from '@arckit/resultset'
 import { type DataTable, Given, Then, When } from '@cucumber/cucumber'
-import {
-  type ColonneTriableDesBeneficiaires,
-  colonnesTriablesDesBeneficiaires,
-} from '@/features/beneficiaire/abilities/lister-beneficiaires/domain/lister-beneficiaires'
+import type { ColonneTriableDesBeneficiaires } from '@/features/beneficiaire/abilities/lister-beneficiaires/domain/lister-beneficiaires'
 import { listerBeneficiaires } from '@/features/beneficiaire/abilities/lister-beneficiaires/implementations/prisma/lister-beneficiaires.query'
+import { colonnesTriablesDesBeneficiaires } from '@/features/beneficiaire/abilities/lister-beneficiaires/ui/filtres/liste-des-beneficiaires.filtre'
 import {
   seedBeneficiaire,
   testMediateurId,
