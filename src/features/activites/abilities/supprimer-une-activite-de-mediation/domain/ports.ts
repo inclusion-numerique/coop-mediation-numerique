@@ -5,6 +5,18 @@ import type {
   TypeDActivite,
 } from '../../../domain'
 
+export type ParticipantDeLActivite = {
+  readonly beneficiaireId: BeneficiaireId
+  readonly anonyme: boolean
+  readonly autresAccompagnements: number
+}
+
+export type ActiviteDeMediationLue = {
+  readonly id: ActiviteId
+  readonly type: TypeDActivite
+  readonly participants: readonly ParticipantDeLActivite[]
+}
+
 export type ActiviteDeMediationASupprimer = {
   readonly id: ActiviteId
   readonly type: TypeDActivite
@@ -20,7 +32,7 @@ export type SuppressionDeLActiviteDeMediation = {
 export type ActiviteDeMediationDuMediateur = (criteres: {
   readonly id: ActiviteId
   readonly mediateurId: MediateurId
-}) => Promise<ActiviteDeMediationASupprimer | null>
+}) => Promise<ActiviteDeMediationLue | null>
 
 export type SupprimerLActiviteDeMediation = (
   suppression: SuppressionDeLActiviteDeMediation,

@@ -37,18 +37,15 @@ export const activiteDeMediationDuMediateur: ActiviteDeMediationDuMediateur =
     })
     if (activite === null) return null
 
-    const participants = await participantsDe(id)
     return {
       id,
       type: TypeDActivite(activite.type),
-      suivis: participants
-        .filter(({ anonyme }) => !anonyme)
-        .map(({ beneficiaire_id }) => BeneficiaireId(beneficiaire_id)),
-      anonymesOrphelins: participants
-        .filter(
-          ({ anonyme, autres_accompagnements }) =>
-            anonyme && autres_accompagnements === 0,
-        )
-        .map(({ beneficiaire_id }) => BeneficiaireId(beneficiaire_id)),
+      participants: (await participantsDe(id)).map(
+        ({ beneficiaire_id, anonyme, autres_accompagnements }) => ({
+          beneficiaireId: BeneficiaireId(beneficiaire_id),
+          anonyme,
+          autresAccompagnements: autres_accompagnements,
+        }),
+      ),
     }
   }
