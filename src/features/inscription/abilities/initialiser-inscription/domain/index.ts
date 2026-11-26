@@ -1,10 +1,9 @@
-export { initialiserInscription } from './initialiser-inscription'
 export type {
   EnregistrerLeProfil,
   GarantirLeMediateur,
   GarantirLeRoleCoordinateur,
-  ImporterStructureDepuisSiret,
   LireEtatPourEtapeSuivante,
   LireLeDispositif,
+  LireLeSiretARattacher,
   RattacherDepuisSiret,
 } from './ports'

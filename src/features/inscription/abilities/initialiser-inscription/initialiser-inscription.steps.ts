@@ -2,7 +2,7 @@ import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
-import { initialiserInscription } from '@/features/inscription/abilities/initialiser-inscription/domain'
+import { initialiserInscription } from '@/features/inscription/abilities/initialiser-inscription/domain/initialiser-inscription'
 import { lireEtatPourEtapeSuivante } from '@/features/inscription/abilities/initialiser-inscription/implementations/prisma/etat-pour-etape-suivante.query'
 import {
   type DispositifPersonne,
@@ -82,18 +82,17 @@ Given(
 )
 
 When('j’initialise l’inscription', async () => {
-  const { nextStep } = await initialiserInscription(
-    { userId: utilisateurDeLInscriptionEnCours() },
-    {
-      lireLeDispositif: async () => dispositif,
-      enregistrerLeProfil: async () => undefined,
-      garantirLeRoleCoordinateur: async () => undefined,
-      garantirLeMediateur: async () => undefined,
-      importerStructureDepuisSiret: async () => undefined,
-      lireEtatPourEtapeSuivante,
-    },
-  )
-  etapeSuivante = nextStep
+  const initialisation = await initialiserInscription({
+    lireLeDispositif: async () => dispositif,
+    enregistrerLeProfil: async () => undefined,
+    garantirLeRoleCoordinateur: async () => undefined,
+    garantirLeMediateur: async () => undefined,
+    lireLeSiretARattacher: async () => ({ siret: null, aUneEmployeuse: false }),
+    rattacherDepuisSiret: async () => undefined,
+    lireEtatPourEtapeSuivante,
+  })({ userId: utilisateurDeLInscriptionEnCours() })
+  assert.ok(initialisation.success, 'L’initialisation aurait dû réussir')
+  etapeSuivante = initialisation.data.nextStep
 })
 
 Then(

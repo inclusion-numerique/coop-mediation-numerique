@@ -10,7 +10,12 @@ import { estConseillerNumeriqueEnPoste } from '@/features/employeuse/abilities/r
 import { creerLEmployeuse } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/prisma/creer-l-employeuse.mutation'
 import { lireLesEmployeusesDuSiret } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/prisma/employeuses-du-siret.query'
 import { enregistrerLeRattachement } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/prisma/enregistrer-le-rattachement.mutation'
-import { initialiserInscriptionAvecInfra } from '@/features/inscription/abilities/initialiser-inscription/implementations/prisma/initialiser-inscription.mutation'
+import { initialiserInscription } from '@/features/inscription/abilities/initialiser-inscription/domain/initialiser-inscription'
+import { dispositifDepuisMain } from '@/features/inscription/abilities/initialiser-inscription/implementations/prisma/dispositif-depuis-main.query'
+import { enregistrerLeProfil } from '@/features/inscription/abilities/initialiser-inscription/implementations/prisma/enregistrer-le-profil.mutation'
+import { lireEtatPourEtapeSuivante } from '@/features/inscription/abilities/initialiser-inscription/implementations/prisma/etat-pour-etape-suivante.query'
+import { garantirLeMediateur } from '@/features/inscription/abilities/initialiser-inscription/implementations/prisma/garantir-le-mediateur.mutation'
+import { lireLeSiretARattacher } from '@/features/inscription/abilities/initialiser-inscription/implementations/prisma/siret-a-rattacher.query'
 import { UtilisateurId } from '@/features/inscription/domain'
 import { cheminDeLEtape } from '@/features/inscription/ui/presenters/chemin-de-l-etape.presenter'
 import {
@@ -45,18 +50,22 @@ const InitialiserInscriptionPage = async () => {
     redirect('/coop')
   }
 
-  const { nextStep } = await initialiserInscriptionAvecInfra(
-    { userId: UtilisateurId(user.id) },
-    {
-      rattacherDepuisSiret: ({ userId, siret }) =>
-        rattacher({ userId, source: { _tag: 'Siret', siret } }),
-      garantirLeRoleCoordinateur:
-        garantirLeRoleCoordinateurDuDispositif(synchroniserPersonne),
-      synchroniserLaPersonne: synchroniserPersonne,
-    },
-  )
+  const initialisation = await initialiserInscription({
+    lireLeDispositif: dispositifDepuisMain,
+    enregistrerLeProfil,
+    garantirLeRoleCoordinateur:
+      garantirLeRoleCoordinateurDuDispositif(synchroniserPersonne),
+    garantirLeMediateur: garantirLeMediateur(synchroniserPersonne),
+    lireLeSiretARattacher,
+    rattacherDepuisSiret: ({ userId, siret }) =>
+      rattacher({ userId, source: { _tag: 'Siret', siret } }),
+    lireEtatPourEtapeSuivante,
+  })({ userId: UtilisateurId(user.id) })
 
-  redirect(cheminDeLEtape(nextStep))
+  if (initialisation.success)
+    redirect(cheminDeLEtape(initialisation.data.nextStep))
+
+  return null
 }
 
 export default InitialiserInscriptionPage

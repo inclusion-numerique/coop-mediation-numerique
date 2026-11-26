@@ -1,47 +1,57 @@
 import {
-  type EtapeDInscription,
   profilDepuisDispositif,
   type UtilisateurId,
 } from '@/features/inscription/domain'
+import { type Result, success } from '@/libraries/result'
 import { etapeApresInitialisation } from './etape-apres-initialisation'
+import type { InscriptionInitialisee } from './inscription-initialisee'
 import type { InitialiserInscriptionPorts } from './ports'
 
-export type InitialiserInscription = (
-  input: { readonly userId: UtilisateurId },
-  ports: InitialiserInscriptionPorts,
-) => Promise<{ readonly nextStep: EtapeDInscription }>
-
-export const initialiserInscription: InitialiserInscription = async (
-  { userId },
-  {
+export const initialiserInscription =
+  ({
     lireLeDispositif,
     enregistrerLeProfil,
     garantirLeRoleCoordinateur,
     garantirLeMediateur,
-    importerStructureDepuisSiret,
+    lireLeSiretARattacher,
+    rattacherDepuisSiret,
     lireEtatPourEtapeSuivante,
-  },
-) => {
-  const dispositif = await lireLeDispositif(userId)
-  const profilDuDispositif = profilDepuisDispositif(dispositif)
+  }: InitialiserInscriptionPorts) =>
+  async ({
+    userId,
+  }: {
+    readonly userId: UtilisateurId
+  }): Promise<Result<InscriptionInitialisee, never>> => {
+    const dispositif = await lireLeDispositif(userId)
+    const profilDuDispositif = profilDepuisDispositif(dispositif)
 
-  if (profilDuDispositif !== null)
-    await enregistrerLeProfil({ userId, profil: profilDuDispositif })
+    if (profilDuDispositif !== null)
+      await enregistrerLeProfil({ userId, profil: profilDuDispositif })
 
-  await garantirLeRoleCoordinateur(userId)
+    await garantirLeRoleCoordinateur(userId)
 
-  if (dispositif.estConseillerNumerique && !dispositif.estCoordinateur)
-    await garantirLeMediateur(userId)
+    const mediateurGaranti =
+      dispositif.estConseillerNumerique && !dispositif.estCoordinateur
 
-  await importerStructureDepuisSiret(userId)
-  const etat = await lireEtatPourEtapeSuivante(userId)
+    if (mediateurGaranti) await garantirLeMediateur(userId)
 
-  return {
-    nextStep: etapeApresInitialisation({
-      connuDuDispositif: dispositif.connue,
-      profil: profilDuDispositif ?? etat.profil,
-      hasLieuxActivite: etat.hasLieuxActivite,
-      isConseillerNumerique: dispositif.estConseillerNumerique,
-    }),
+    const { siret, aUneEmployeuse } = await lireLeSiretARattacher(userId)
+    const siretRattache = aUneEmployeuse ? null : siret
+
+    if (siretRattache !== null)
+      await rattacherDepuisSiret({ userId, siret: siretRattache })
+
+    const etat = await lireEtatPourEtapeSuivante(userId)
+
+    return success({
+      profilEnregistre: profilDuDispositif,
+      mediateurGaranti,
+      siretRattache,
+      nextStep: etapeApresInitialisation({
+        connuDuDispositif: dispositif.connue,
+        profil: profilDuDispositif ?? etat.profil,
+        hasLieuxActivite: etat.hasLieuxActivite,
+        isConseillerNumerique: dispositif.estConseillerNumerique,
+      }),
+    })
   }
-}

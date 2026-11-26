@@ -19,9 +19,10 @@ export type GarantirLeRoleCoordinateur = (
 
 export type GarantirLeMediateur = (userId: UtilisateurId) => Promise<void>
 
-export type ImporterStructureDepuisSiret = (
-  userId: UtilisateurId,
-) => Promise<void>
+export type LireLeSiretARattacher = (userId: UtilisateurId) => Promise<{
+  readonly siret: string | null
+  readonly aUneEmployeuse: boolean
+}>
 
 export type RattacherDepuisSiret = (input: {
   readonly userId: UtilisateurId
@@ -38,6 +39,7 @@ export type InitialiserInscriptionPorts = {
   readonly enregistrerLeProfil: EnregistrerLeProfil
   readonly garantirLeRoleCoordinateur: GarantirLeRoleCoordinateur
   readonly garantirLeMediateur: GarantirLeMediateur
-  readonly importerStructureDepuisSiret: ImporterStructureDepuisSiret
+  readonly lireLeSiretARattacher: LireLeSiretARattacher
+  readonly rattacherDepuisSiret: RattacherDepuisSiret
   readonly lireEtatPourEtapeSuivante: LireEtatPourEtapeSuivante
 }
