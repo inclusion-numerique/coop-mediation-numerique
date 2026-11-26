@@ -46,4 +46,8 @@ describe('maintenance', () => {
   it('affiche le message par défaut d’une maintenance sans message', () => {
     expect(messageAffiche(active)).toBe(MESSAGE_DE_MAINTENANCE_PAR_DEFAUT)
   })
+
+  it('affiche le message par défaut hors maintenance', () => {
+    expect(messageAffiche(inactive)).toBe(MESSAGE_DE_MAINTENANCE_PAR_DEFAUT)
+  })
 })
