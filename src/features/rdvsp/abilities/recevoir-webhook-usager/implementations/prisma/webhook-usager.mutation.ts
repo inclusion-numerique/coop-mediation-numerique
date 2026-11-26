@@ -5,7 +5,7 @@ import type {
   AnonymiserEtSupprimerUsager,
   BeneficiairesLiesAUsager,
   MettreAJourUsager,
-} from '../../domain/recevoir-webhook-usager'
+} from '../../domain/ports'
 import { garderUnSeulCodePostal } from './un-seul-code-postal.mutation'
 
 export const beneficiairesLiesAUsager: BeneficiairesLiesAUsager = async (

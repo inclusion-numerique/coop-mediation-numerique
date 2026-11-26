@@ -1,7 +1,6 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { prismaClient } from '@/configuration/prisma'
-import type { RecevoirWebhookUsager } from '@/features/rdvsp/abilities/recevoir-webhook-usager/domain/recevoir-webhook-usager'
 import { recevoirWebhookUsager } from '@/features/rdvsp/abilities/recevoir-webhook-usager/domain/recevoir-webhook-usager'
 import { lireNotificationUsager } from '@/features/rdvsp/abilities/recevoir-webhook-usager/implementations/api/notification-usager.params'
 import {
@@ -22,7 +21,7 @@ const USAGER_ID = ID_TEST.usager + 500
 
 let beneficiaireId: string | undefined
 let compteurAvant = 0
-let resultat: Awaited<ReturnType<RecevoirWebhookUsager>> | undefined
+let resultat: Awaited<ReturnType<typeof recevoir>> | undefined
 
 const recevoir = recevoirWebhookUsager({
   lireNotification: lireNotificationUsager,
@@ -131,15 +130,17 @@ When('RDV Service Public notifie la suppression de l’usager', async () => {
 })
 
 Then('la notification usager est traitée', () => {
-  assert.strictEqual(resultat?._tag, 'traite')
+  assert.ok(resultat?.success, 'La notification n’a pas été lue')
+  assert.notStrictEqual(resultat.data._tag, 'ignore')
 })
 
 Then(
   'la notification usager est ignorée pour la raison {string}',
   (raison: string) => {
-    assert.strictEqual(resultat?._tag, 'ignore')
+    assert.ok(resultat?.success, 'La notification n’a pas été lue')
+    assert.strictEqual(resultat.data._tag, 'ignore')
     assert.strictEqual(
-      resultat._tag === 'ignore' ? resultat.raison : undefined,
+      resultat.data._tag === 'ignore' ? resultat.data.raison : undefined,
       raison,
     )
   },

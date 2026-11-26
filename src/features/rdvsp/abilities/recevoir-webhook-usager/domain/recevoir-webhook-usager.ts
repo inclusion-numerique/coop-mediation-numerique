@@ -1,48 +1,12 @@
-import type { BeneficiaireLie } from '@/features/rdvsp/abilities/recevoir-webhook-usager/domain/decision-webhook-usager'
-import { decisionPourWebhookUsager } from '@/features/rdvsp/abilities/recevoir-webhook-usager/domain/decision-webhook-usager'
-import type { UsagerId } from '@/features/rdvsp/domain/identifiants/usager-id'
-import type { Usager } from '@/features/rdvsp/domain/usager'
-import type { EvenementWebhook } from '@/features/rdvsp/domain/webhook/evenement-webhook'
-import type { Result } from '@/libraries/result'
-
-export type ResultatWebhookUsager =
-  | {
-      readonly _tag: 'traite'
-      readonly action: 'misAJour' | 'anonymiseEtSupprime'
-    }
-  | { readonly _tag: 'ignore'; readonly raison: string }
-
-export type RecevoirWebhookUsager = (input: {
-  readonly evenement: EvenementWebhook
-  readonly payload: unknown
-}) => Promise<ResultatWebhookUsager>
-
-export type LireNotificationUsager = (
-  payload: unknown,
-) => Result<Usager, 'payloadInexploitable'>
-
-export type BeneficiairesLiesAUsager = (
-  usagerId: UsagerId,
-) => Promise<readonly BeneficiaireLie[]>
-
-export type MettreAJourUsager = (usager: Usager) => Promise<void>
-
-/**
- * Anonymise les bénéficiaires descendant de l'usager, délie ce qui reste et
- * supprime l'usager — d'un seul tenant : un effacement à moitié appliqué laisserait des fiches nominatives
- * derrière un usager disparu.
- */
-export type AnonymiserEtSupprimerUsager = (input: {
-  readonly usagerId: UsagerId
-  readonly beneficiaires: readonly BeneficiaireLie[]
-}) => Promise<void>
-
-export type DependancesRecevoirWebhookUsager = {
-  readonly lireNotification: LireNotificationUsager
-  readonly beneficiairesLies: BeneficiairesLiesAUsager
-  readonly mettreAJour: MettreAJourUsager
-  readonly anonymiserEtSupprimer: AnonymiserEtSupprimerUsager
-}
+import { type Result, success } from '@/libraries/result'
+import type { EvenementWebhook } from '../../../domain/webhook/evenement-webhook'
+import { decisionPourWebhookUsager } from './decision-webhook-usager'
+import type { EchecDeRecevoirWebhookUsager } from './errors'
+import type { RecevoirWebhookUsagerPorts } from './ports'
+import type {
+  AnonymisationDeLUsager,
+  WebhookUsagerTraite,
+} from './webhook-usager-traite'
 
 export const recevoirWebhookUsager =
   ({
@@ -50,12 +14,18 @@ export const recevoirWebhookUsager =
     beneficiairesLies,
     mettreAJour,
     anonymiserEtSupprimer,
-  }: DependancesRecevoirWebhookUsager): RecevoirWebhookUsager =>
-  async ({ evenement, payload }) => {
+  }: RecevoirWebhookUsagerPorts) =>
+  async ({
+    evenement,
+    payload,
+  }: {
+    readonly evenement: EvenementWebhook
+    readonly payload: unknown
+  }): Promise<Result<WebhookUsagerTraite, EchecDeRecevoirWebhookUsager>> => {
     const notification = lireNotification(payload)
 
     if (!notification.success) {
-      return { _tag: 'ignore', raison: notification.error }
+      return notification
     }
 
     const usager = notification.data
@@ -67,18 +37,20 @@ export const recevoirWebhookUsager =
     })
 
     if (decision._tag === 'ignorer') {
-      return { _tag: 'ignore', raison: decision.raison }
+      return success({ _tag: 'ignore', raison: decision.raison })
     }
 
     if (decision._tag === 'mettreAJour') {
       await mettreAJour(usager)
-      return { _tag: 'traite', action: 'misAJour' }
+      return success({ _tag: 'misAJour', usager })
     }
 
-    await anonymiserEtSupprimer({
+    const anonymisation: AnonymisationDeLUsager = {
       usagerId: usager.id,
       beneficiaires,
-    })
+    }
 
-    return { _tag: 'traite', action: 'anonymiseEtSupprime' }
+    await anonymiserEtSupprimer(anonymisation)
+
+    return success({ _tag: 'anonymiseEtSupprime', ...anonymisation })
   }

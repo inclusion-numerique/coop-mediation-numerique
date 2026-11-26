@@ -8,10 +8,9 @@ import {
 } from '../../../domain/identite'
 import type { Usager } from '../../../domain/usager'
 import { EvenementWebhook } from '../../../domain/webhook/evenement-webhook'
-import {
-  type DependancesRecevoirWebhookUsager,
-  recevoirWebhookUsager,
-} from './recevoir-webhook-usager'
+import { PayloadInexploitable } from './errors'
+import type { RecevoirWebhookUsagerPorts } from './ports'
+import { recevoirWebhookUsager } from './recevoir-webhook-usager'
 
 const usager: Usager = {
   id: UsagerId(200),
@@ -36,70 +35,83 @@ const usager: Usager = {
   notifierParSms: false,
 }
 
-const sansBeneficiaire: DependancesRecevoirWebhookUsager = {
+const sansBeneficiaire: RecevoirWebhookUsagerPorts = {
   lireNotification: () => success(usager),
   beneficiairesLies: async () => [],
   mettreAJour: async () => undefined,
   anonymiserEtSupprimer: async () => undefined,
 }
 
-const avecBeneficiaire: DependancesRecevoirWebhookUsager = {
+const avecBeneficiaire: RecevoirWebhookUsagerPorts = {
   ...sansBeneficiaire,
   beneficiairesLies: async () => [{ id: 'b1' }],
 }
 
-const notification = (evenement: 'created' | 'updated' | 'destroyed') => ({
-  evenement: EvenementWebhook(evenement),
-  payload: {},
-})
+const creation = { evenement: EvenementWebhook('created'), payload: {} }
+const miseAJour = { evenement: EvenementWebhook('updated'), payload: {} }
+const suppression = { evenement: EvenementWebhook('destroyed'), payload: {} }
 
-describe('recevoirWebhookUsager', () => {
+describe('recevoir une notification portant sur un usager', () => {
   it('renonce à une notification dont le payload a changé de forme', async () => {
     const resultat = await recevoirWebhookUsager({
       ...sansBeneficiaire,
-      lireNotification: () => failure('payloadInexploitable'),
-    })(notification('updated'))
+      lireNotification: () => failure(PayloadInexploitable()),
+    })(miseAJour)
 
-    expect(resultat).toEqual({ _tag: 'ignore', raison: 'payloadInexploitable' })
+    expect(resultat).toEqual(failure({ _tag: 'PayloadInexploitable' }))
   })
 
   it('diffère toute création — un usager sans rendez-vous n’a pas de médiateur', async () => {
-    const resultat = await recevoirWebhookUsager(sansBeneficiaire)(
-      notification('created'),
-    )
+    const resultat = await recevoirWebhookUsager(sansBeneficiaire)(creation)
 
-    expect(resultat).toEqual({ _tag: 'ignore', raison: 'creationDeferee' })
+    expect(resultat).toEqual(
+      success({ _tag: 'ignore', raison: 'creationDeferee' }),
+    )
   })
 
   it('diffère la création même si un bénéficiaire est déjà rattaché', async () => {
-    const resultat = await recevoirWebhookUsager(avecBeneficiaire)(
-      notification('created'),
-    )
+    const resultat = await recevoirWebhookUsager(avecBeneficiaire)(creation)
 
-    expect(resultat).toEqual({ _tag: 'ignore', raison: 'creationDeferee' })
+    expect(resultat).toEqual(
+      success({ _tag: 'ignore', raison: 'creationDeferee' }),
+    )
   })
 
   it('met à jour un usager rattaché à un bénéficiaire', async () => {
-    const resultat = await recevoirWebhookUsager(avecBeneficiaire)(
-      notification('updated'),
-    )
+    const resultat = await recevoirWebhookUsager(avecBeneficiaire)(miseAJour)
 
-    expect(resultat).toEqual({ _tag: 'traite', action: 'misAJour' })
+    expect(resultat).toEqual(success({ _tag: 'misAJour', usager }))
   })
 
   it('ignore la mise à jour d’un usager que La Coop ne suit pas', async () => {
-    const resultat = await recevoirWebhookUsager(sansBeneficiaire)(
-      notification('updated'),
-    )
+    const resultat = await recevoirWebhookUsager(sansBeneficiaire)(miseAJour)
 
-    expect(resultat).toEqual({ _tag: 'ignore', raison: 'usagerNonSuivi' })
+    expect(resultat).toEqual(
+      success({ _tag: 'ignore', raison: 'usagerNonSuivi' }),
+    )
+  })
+
+  it('anonymise les bénéficiaires rattachés à un usager supprimé', async () => {
+    const resultat = await recevoirWebhookUsager(avecBeneficiaire)(suppression)
+
+    expect(resultat).toEqual(
+      success({
+        _tag: 'anonymiseEtSupprime',
+        usagerId: UsagerId(200),
+        beneficiaires: [{ id: 'b1' }],
+      }),
+    )
   })
 
   it('applique une suppression, même sans bénéficiaire rattaché', async () => {
-    const resultat = await recevoirWebhookUsager(sansBeneficiaire)(
-      notification('destroyed'),
-    )
+    const resultat = await recevoirWebhookUsager(sansBeneficiaire)(suppression)
 
-    expect(resultat).toEqual({ _tag: 'traite', action: 'anonymiseEtSupprime' })
+    expect(resultat).toEqual(
+      success({
+        _tag: 'anonymiseEtSupprime',
+        usagerId: UsagerId(200),
+        beneficiaires: [],
+      }),
+    )
   })
 })

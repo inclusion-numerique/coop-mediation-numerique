@@ -1,7 +1,8 @@
 import { failure, success } from '@/libraries/result'
 import { usagerPayload } from '../../../../implementations/api/rdv-service-public.payload'
 import { usagerToDomain } from '../../../../implementations/api/rdv-service-public.transfer'
-import type { LireNotificationUsager } from '../../domain/recevoir-webhook-usager'
+import { PayloadInexploitable } from '../../domain/errors'
+import type { LireNotificationUsager } from '../../domain/ports'
 
 /**
  * La notification d'usager reprend la forme de l'API. Elle omet la caisse
@@ -13,5 +14,5 @@ export const lireNotificationUsager: LireNotificationUsager = (payload) => {
 
   return analyse.success
     ? success(usagerToDomain(analyse.data))
-    : failure('payloadInexploitable')
+    : failure(PayloadInexploitable())
 }
