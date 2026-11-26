@@ -28,10 +28,7 @@ export const lireLesTagsVisibles = async ({
       AND ${tagVisiblePar(acteur)}
   `
 
-  return lignes.flatMap((ligne) => {
-    const tag = tagToDomain(ligne)
-    return tag === null ? [] : [tag]
-  })
+  return lignes.map(tagToDomain)
 }
 
 export const lireTousLesTagsVisibles = async ({
@@ -47,10 +44,7 @@ export const lireTousLesTagsVisibles = async ({
     ORDER BY t.nom
   `
 
-  return lignes.flatMap((ligne) => {
-    const tag = tagToDomain(ligne)
-    return tag === null ? [] : [tag]
-  })
+  return lignes.map(tagToDomain)
 }
 
 export const lireLesTagsCollectifs = async (): Promise<readonly Tag[]> => {
@@ -62,8 +56,5 @@ export const lireLesTagsCollectifs = async (): Promise<readonly Tag[]> => {
     ORDER BY t.nom
   `
 
-  return lignes.flatMap((ligne) => {
-    const tag = tagToDomain(ligne)
-    return tag === null ? [] : [tag]
-  })
+  return lignes.map(tagToDomain)
 }

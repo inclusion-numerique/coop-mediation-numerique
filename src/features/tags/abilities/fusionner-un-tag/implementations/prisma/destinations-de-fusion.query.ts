@@ -35,10 +35,8 @@ export const lireLesCandidatesALaFusion: LireLesCandidatesALaFusion = async ({
     LIMIT ${limite}
   `
 
-  return lignes.flatMap((ligne) => {
-    const tag = tagToDomain(ligne)
-    return tag === null
-      ? []
-      : [{ tag, utilisations: Effectif(Number(ligne.utilisations)) }]
-  })
+  return lignes.map((ligne) => ({
+    tag: tagToDomain(ligne),
+    utilisations: Effectif(Number(ligne.utilisations)),
+  }))
 }

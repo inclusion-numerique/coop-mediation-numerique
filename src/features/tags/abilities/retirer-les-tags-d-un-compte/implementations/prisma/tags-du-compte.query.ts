@@ -46,7 +46,8 @@ const tagsDuCoordinateur = async (
       ).map((tag) => ({
         id: TagId(tag.id),
         nom: NomDuTag(tag.nom),
-        description: DescriptionDuTag.safe(tag.description ?? ''),
+        description:
+          tag.description === null ? null : DescriptionDuTag(tag.description),
         departement:
           tag.departement === null ? null : CodeDepartement(tag.departement),
         utilisateurs: tag.activites.map(({ activite }) =>
