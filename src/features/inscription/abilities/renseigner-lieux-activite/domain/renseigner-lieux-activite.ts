@@ -1,26 +1,12 @@
 import type { UtilisateurId } from '@/features/inscription/domain'
-import type { LireLEtatDeLInscription } from '@/features/inscription/domain/ports'
 import { onlyDefinedAndNotNull } from '@/libraries/collections'
 import { type Result, success } from '@/libraries/result'
-import type { AdresseNonValidee } from './adresse-non-validee'
-import {
-  deciderLesLieux,
-  type RenseignerLieuxActiviteError,
-} from './decider-les-lieux'
+import { deciderLesLieux } from './decider-les-lieux'
+import type { EchecDeRenseignerLieuxActivite } from './errors'
+import type { LieuxActiviteRenseignes } from './lieux-activite-renseignes'
 import { type LieuSoumis, lieuxDesires } from './lieux-desires'
-import type {
-  EnregistrerReconciliation,
-  LireLieuxActiviteExistants,
-  TrouverStructuresCarto,
-} from './ports'
+import type { RenseignerLieuxActivitePorts } from './ports'
 import { reconcilierLieuxActivite } from './reconcilier'
-
-export type RenseignerLieuxActivitePorts<StructureCarto> = {
-  readonly lireLEtat: LireLEtatDeLInscription
-  readonly lireLieuxActiviteExistants: LireLieuxActiviteExistants
-  readonly trouverStructuresCarto: TrouverStructuresCarto<StructureCarto>
-  readonly enregistrerReconciliation: EnregistrerReconciliation<StructureCarto>
-}
 
 export const renseignerLieuxActivite =
   <StructureCarto>({
@@ -39,19 +25,19 @@ export const renseignerLieuxActivite =
     }
     readonly maintenant: Date
   }): Promise<
-    Result<void, RenseignerLieuxActiviteError | AdresseNonValidee>
+    Result<LieuxActiviteRenseignes, EchecDeRenseignerLieuxActivite>
   > => {
     const desires = lieuxDesires(lieuxActivite)
 
     if (!desires.success) return desires
 
-    const decision = deciderLesLieux(
-      await lireLEtat(userId),
+    const etatFranchi = deciderLesLieux({
+      etat: await lireLEtat(userId),
       userId,
       maintenant,
-    )
+    })
 
-    if (!decision.success) return decision
+    if (!etatFranchi.success) return etatFranchi
 
     const { aCloturer, aCreer } = reconcilierLieuxActivite(
       await lireLieuxActiviteExistants(userId),
@@ -68,12 +54,13 @@ export const renseignerLieuxActivite =
     )
 
     await enregistrerReconciliation({
-      etatFranchi: decision.data.etatFranchi,
+      etatFranchi: etatFranchi.data,
       userId,
       aCloturer,
       aCreer,
       structuresCarto,
+      maintenant,
     })
 
-    return success<void>(undefined)
+    return success({ etatFranchi: etatFranchi.data, aCloturer, aCreer })
   }

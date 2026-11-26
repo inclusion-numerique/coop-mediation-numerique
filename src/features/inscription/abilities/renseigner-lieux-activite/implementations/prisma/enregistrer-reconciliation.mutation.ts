@@ -34,9 +34,8 @@ export const enregistrerReconciliation =
     aCloturer,
     aCreer,
     structuresCarto: structuresCartoParId,
+    maintenant,
   }) => {
-    const maintenant = new Date()
-
     await prismaClient.$transaction(async (transaction) => {
       await transaction.mediateurEnActivite.updateMany({
         where: { id: { in: [...aCloturer] } },

@@ -1,5 +1,5 @@
 import { failure, type Result, success } from '@/libraries/result'
-import { AdresseNonValidee } from './adresse-non-validee'
+import { AdresseNonValidee } from './errors'
 import type { AdresseValidee, LieuActiviteInput } from './reconcilier'
 
 export type LieuSoumis = {

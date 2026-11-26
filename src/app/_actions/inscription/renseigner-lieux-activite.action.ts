@@ -4,10 +4,7 @@ import { actionBuilder } from '@/configuration/nextjs'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { RENSEIGNER_LIEUX_ACTIVITE_ERRORS } from '@/features/inscription/abilities/renseigner-lieux-activite/action/renseigner-lieux-activite.errors'
 import { RenseignerLieuxActiviteValidation } from '@/features/inscription/abilities/renseigner-lieux-activite/action/renseigner-lieux-activite.validation'
-import type {
-  AdresseNonValidee,
-  RenseignerLieuxActiviteError,
-} from '@/features/inscription/abilities/renseigner-lieux-activite/domain'
+import type { EchecDeRenseignerLieuxActivite } from '@/features/inscription/abilities/renseigner-lieux-activite/domain'
 import type {
   LireLieuxActiviteExistants,
   TrouverStructuresCarto,
@@ -22,7 +19,7 @@ import { activitesEnCoursDeLUtilisateur } from '@/features/lieux-activite/abilit
 import { rattacherAuLieuDesire } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/rattacher-au-lieu-desire.mutation'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { fromResult, withInput } from '@/libraries/nextjs'
-import type { Result } from '@/libraries/result'
+import { type Result, success } from '@/libraries/result'
 
 const renseignerLieuxActiviteAvec = <StructureCarto>({
   trouverStructuresCarto,
@@ -49,10 +46,8 @@ export const renseignerLieuxActiviteAction = actionBuilder()
       async ({
         user,
         input,
-      }): Promise<
-        Result<void, RenseignerLieuxActiviteError | AdresseNonValidee>
-      > => {
-        return renseignerLieuxActiviteAvec({
+      }): Promise<Result<undefined, EchecDeRenseignerLieuxActivite>> => {
+        const resultat = await renseignerLieuxActiviteAvec({
           trouverStructuresCarto: structuresCartoParIds,
           lireLieuxActiviteExistants: activitesEnCoursDeLUtilisateur,
           rattacherAuLieuDesire,
@@ -63,6 +58,8 @@ export const renseignerLieuxActiviteAction = actionBuilder()
           },
           maintenant: new Date(),
         })
+
+        return resultat.success ? success(undefined) : resultat
       },
       { onError: RENSEIGNER_LIEUX_ACTIVITE_ERRORS },
     ),
