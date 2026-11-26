@@ -1,6 +1,6 @@
 import { prismaClient } from '@/configuration/prisma'
 import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
-import type { BeneficiairesExistants } from '../../domain/supprimer-beneficiaires'
+import type { BeneficiairesExistants } from '../../domain/ports'
 
 export const beneficiairesExistants: BeneficiairesExistants = async ({
   ids,

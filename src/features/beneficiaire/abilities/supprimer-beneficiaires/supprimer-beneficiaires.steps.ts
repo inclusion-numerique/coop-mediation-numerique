@@ -56,7 +56,7 @@ When('je supprime un bénéficiaire inexistant', async () => {
 
 Then('la suppression retire {int} bénéficiaire', (count: number) => {
   assert.ok(result?.success, 'La suppression a échoué')
-  assert.strictEqual(result.data.deleted, count)
+  assert.strictEqual(result.data.ids.length, count)
 })
 
 Then('le bénéficiaire est anonymisé et marqué supprimé', async () => {

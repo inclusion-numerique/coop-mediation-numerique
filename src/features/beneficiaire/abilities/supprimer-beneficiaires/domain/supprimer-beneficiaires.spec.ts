@@ -14,7 +14,7 @@ const inconnu = BeneficiaireId('7b2e9c74-3d1a-4e5c-9f40-9c0d8e7f6a51')
 const maintenant = new Date('2026-11-26T10:00:00.000Z')
 
 describe('supprimer des bénéficiaires', () => {
-  it('compte les seuls bénéficiaires du médiateur qui existent encore', async () => {
+  it('anonymise les seuls bénéficiaires du médiateur qui existent encore', async () => {
     const supprimer = supprimerBeneficiaires({
       beneficiairesExistants: async () => [lea, malo],
       anonymiserLesBeneficiaires: async () => undefined,
@@ -22,7 +22,7 @@ describe('supprimer des bénéficiaires', () => {
 
     expect(
       await supprimer({ ids: [lea, malo, inconnu], mediateurId, maintenant }),
-    ).toEqual({ success: true, data: { deleted: 2 } })
+    ).toEqual({ success: true, data: { ids: [lea, malo], maintenant } })
   })
 
   it('échoue quand aucun bénéficiaire demandé n’existe pour ce médiateur', async () => {

@@ -11,6 +11,7 @@ import { beneficiairesExistants } from '@/features/beneficiaire/abilities/suppri
 import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { fromResult, withInput } from '@/libraries/nextjs'
+import { success } from '@/libraries/result'
 
 export const supprimerBeneficiairesAction = actionBuilder()
   .use(withAuth())
@@ -19,15 +20,19 @@ export const supprimerBeneficiairesAction = actionBuilder()
   .use(withInput(SupprimerBeneficiairesValidation))
   .execute(
     fromResult(
-      async ({ input, mediateur }) =>
-        supprimerBeneficiaires({
+      async ({ input, mediateur }) => {
+        const suppression = await supprimerBeneficiaires({
           beneficiairesExistants,
           anonymiserLesBeneficiaires,
         })({
           ids: input.ids,
           mediateurId: MediateurId(mediateur.id),
           maintenant: new Date(),
-        }),
+        })
+        return suppression.success
+          ? success({ deleted: suppression.data.ids.length })
+          : suppression
+      },
       { onError: SUPPRIMER_BENEFICIAIRES_ERRORS },
     ),
   )

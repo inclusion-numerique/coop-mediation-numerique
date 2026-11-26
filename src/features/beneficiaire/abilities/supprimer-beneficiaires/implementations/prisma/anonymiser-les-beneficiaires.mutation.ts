@@ -1,7 +1,7 @@
 import { prismaClient } from '@/configuration/prisma'
 import { Prisma } from '@/generated/prisma/client'
 import { garderUnSeulCodePostal } from '../../../../implementations/prisma/un-seul-code-postal.mutation'
-import type { AnonymiserLesBeneficiaires } from '../../domain/supprimer-beneficiaires'
+import type { AnonymiserLesBeneficiaires } from '../../domain/ports'
 
 export const anonymiserLesBeneficiaires: AnonymiserLesBeneficiaires = async ({
   ids,
