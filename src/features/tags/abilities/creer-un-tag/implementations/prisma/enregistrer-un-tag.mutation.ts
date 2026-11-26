@@ -1,7 +1,7 @@
 import { prismaClient } from '@/configuration/prisma'
 import { TagId } from '../../../../domain'
 import { porteeFromDomain } from '../../../../implementations/prisma/tag.transfer'
-import type { EnregistrerUnTag } from '../../domain/creer-un-tag'
+import type { EnregistrerUnTag } from '../../domain/ports'
 
 export const enregistrerUnTag: EnregistrerUnTag = async ({
   nom,

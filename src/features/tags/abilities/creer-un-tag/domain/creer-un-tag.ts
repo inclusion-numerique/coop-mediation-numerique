@@ -3,22 +3,16 @@ import {
   type Acteur,
   type DescriptionDuTag,
   type NomDuTag,
-  type Portee,
   porteeChoisie,
   type Tag,
-  type TagId,
   type VisibiliteChoisie,
   VisibiliteNonAutorisee,
 } from '../../../domain'
-
-export type EnregistrerUnTag = (tag: {
-  readonly nom: NomDuTag
-  readonly description: DescriptionDuTag | null
-  readonly portee: Portee
-}) => Promise<TagId>
+import type { EchecDeCreerUnTag } from './errors'
+import type { CreerUnTagPorts } from './ports'
 
 export const creerUnTag =
-  ({ enregistrer }: { readonly enregistrer: EnregistrerUnTag }) =>
+  ({ enregistrer }: CreerUnTagPorts) =>
   async ({
     acteur,
     nom,
@@ -29,7 +23,7 @@ export const creerUnTag =
     readonly nom: NomDuTag
     readonly description: DescriptionDuTag | null
     readonly visibilite: VisibiliteChoisie
-  }): Promise<Result<Tag, VisibiliteNonAutorisee>> => {
+  }): Promise<Result<Tag, EchecDeCreerUnTag>> => {
     const portee = porteeChoisie(acteur, visibilite)
 
     if (portee === null) return failure(VisibiliteNonAutorisee())
