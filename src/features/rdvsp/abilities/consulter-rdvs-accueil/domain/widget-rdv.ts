@@ -1,4 +1,4 @@
-import type { CompteRdv } from '../../../domain/compte/compte-rdv'
+import type { CompteRdv, CompteRdvLie } from '../../../domain/compte/compte-rdv'
 import type { DonneesAccueilRdv } from './donnees-accueil-rdv'
 
 /**
@@ -25,20 +25,12 @@ export type WidgetRdvAccueil =
  * Un compte en erreur ou resté non lié appelle une alerte : dans les deux cas
  * une reconnexion est nécessaire, et elle n'est pas destructive.
  */
-export const widgetPour = (
-  compte: CompteRdv | null,
-  donnees: DonneesAccueilRdv | null,
-): WidgetRdvAccueil => {
-  if (compte === null || compte._tag === 'deconnecte') {
-    return { _tag: 'masque' }
-  }
-
-  if (compte._tag === 'nonLie' || compte._tag === 'enErreur') {
-    return { _tag: 'alerte' }
-  }
-
-  return donnees === null ? { _tag: 'alerte' } : { _tag: 'donnees', donnees }
-}
+export const widgetSansDonnees = (
+  compte: Exclude<CompteRdv, CompteRdvLie> | null,
+): WidgetRdvAccueil =>
+  compte === null || compte._tag === 'deconnecte'
+    ? { _tag: 'masque' }
+    : { _tag: 'alerte' }
 
 /**
  * Certaines organisations n'ont pas accepté la pose d'un webhook : leurs

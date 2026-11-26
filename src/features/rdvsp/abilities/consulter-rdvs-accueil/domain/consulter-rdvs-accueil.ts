@@ -1,11 +1,10 @@
 import type { DonneesAccueilRdv } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/domain/donnees-accueil-rdv'
 import type { WidgetRdvAccueil } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/domain/widget-rdv'
-import { widgetPour } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/domain/widget-rdv'
+import { widgetSansDonnees } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/domain/widget-rdv'
 import type {
   CompteRdv,
   CompteRdvUtilisable,
 } from '@/features/rdvsp/domain/compte/compte-rdv'
-import { estUtilisable } from '@/features/rdvsp/domain/compte/compte-rdv'
 import type { UtilisateurCoopId } from '@/features/rdvsp/domain/identifiants/utilisateur-coop-id'
 
 export type ConsulterRdvsAccueil = (input: {
@@ -39,9 +38,12 @@ export const consulterRdvsAccueil =
   async ({ utilisateurId, maintenant }) => {
     const compte = await compteDuMediateur(utilisateurId)
 
-    if (compte === null || !estUtilisable(compte) || compte._tag !== 'lie') {
-      return widgetPour(compte, null)
+    if (compte === null || compte._tag !== 'lie') {
+      return widgetSansDonnees(compte)
     }
 
-    return widgetPour(compte, await lireDonnees({ compte, maintenant }))
+    return {
+      _tag: 'donnees',
+      donnees: await lireDonnees({ compte, maintenant }),
+    }
   }

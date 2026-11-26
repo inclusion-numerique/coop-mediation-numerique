@@ -28,8 +28,6 @@ const bilanRdvsVide = {
   organisationIdsInaccessibles: [],
 }
 
-const silencieux = () => undefined
-
 const rdvsDuMediateur =
   (
     reconcilierLesRdvsDuMediateur: ReconcilierLesRdvsDuMediateur,
@@ -38,10 +36,7 @@ const rdvsDuMediateur =
   async (portee) =>
     mediateurId === undefined
       ? success(bilanRdvsVide)
-      : reconcilierLesRdvsDuMediateur({
-          mediateurId,
-          journaliser: silencieux,
-        })(portee)
+      : reconcilierLesRdvsDuMediateur({ mediateurId })(portee)
 
 export const synchroniserLeCompte =
   ({

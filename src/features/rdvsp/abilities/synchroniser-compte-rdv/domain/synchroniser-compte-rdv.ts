@@ -95,7 +95,6 @@ export type ReconcilierRdvs = (input: {
 
 export type ReconcilierLesRdvsDuMediateur = (rattachement: {
   readonly mediateurId: string
-  readonly journaliser: (message: string) => void
 }) => ReconcilierRdvs
 
 export type DetacherOrganisations = (input: {
@@ -153,7 +152,6 @@ export type DependancesSynchroniserCompteRdv = {
   readonly ouvrirJournal: OuvrirJournal
   readonly cloturerJournal: CloturerJournal
   readonly echouerJournal: EchouerJournal
-  readonly journaliser?: (message: string) => void
 }
 
 const sansObjet: ResultatSynchronisation = {
@@ -181,15 +179,11 @@ export const synchroniserCompteRdv =
     ouvrirJournal,
     cloturerJournal,
     echouerJournal,
-    journaliser = () => {
-      // Journal facultatif.
-    },
   }: DependancesSynchroniserCompteRdv): SynchroniserCompteRdv =>
   async (portee: PorteeDemandee) => {
     const passe = passePour(portee)
 
     if (passe._tag === 'sansObjet') {
-      journaliser('aucune organisation à synchroniser')
       return success(sansObjet)
     }
 
@@ -203,7 +197,6 @@ export const synchroniserCompteRdv =
     const lignes: string[] = []
     const tracer = (message: string) => {
       lignes.push(message)
-      journaliser(message)
     }
 
     try {

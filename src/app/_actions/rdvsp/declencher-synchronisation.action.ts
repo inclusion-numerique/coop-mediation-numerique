@@ -63,7 +63,7 @@ const declencher = consignerLEchec(
           etatOrganisations,
           appliquerPlan: appliquerPlanOrganisations,
         }),
-        reconcilierLesRdvsDuMediateur: ({ mediateurId, journaliser }) =>
+        reconcilierLesRdvsDuMediateur: ({ mediateurId }) =>
           synchroniserRdvs({
             listerRdvs: rdvServicePublic.listerRdvs,
             rdvsDejaImportes,
@@ -77,7 +77,6 @@ const declencher = consignerLEchec(
                 creerOuFusionnerBeneficiairesDepuisUsagersExternes({
                   communeDeLAdresse,
                 }),
-              journaliser,
             }),
           }),
         reconcilierWebhooks: reconcilierWebhooks({

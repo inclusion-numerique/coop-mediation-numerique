@@ -1,7 +1,7 @@
 export class EchecDeSynchronisation extends Error {
   constructor(
     readonly motif: string,
-    diagnostic: string = motif,
+    diagnostic: string,
   ) {
     super(`Impossible de synchroniser le compte RDV (${diagnostic})`)
     this.name = 'EchecDeSynchronisation'
