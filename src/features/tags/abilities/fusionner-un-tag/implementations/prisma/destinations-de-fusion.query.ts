@@ -1,10 +1,5 @@
 import { prismaClient } from '@/configuration/prisma'
-import {
-  type Acteur,
-  Effectif,
-  peutFusionnerVers,
-  type TagId,
-} from '../../../../domain'
+import { Effectif } from '../../../../domain'
 import {
   type TagRow,
   tagToDomain,
@@ -15,26 +10,14 @@ import {
   TAGS,
   tagVisiblePar,
 } from '../../../../implementations/prisma/visibilite.sql'
-import type { DestinationDeFusion } from '../../domain'
+import type { LireLesCandidatesALaFusion } from '../../domain/ports'
 
-export const destinationsDeFusion = async ({
+export const lireLesCandidatesALaFusion: LireLesCandidatesALaFusion = async ({
   acteur,
-  sourceId,
+  source,
   recherche,
   limite,
-}: {
-  readonly acteur: Acteur
-  readonly sourceId: TagId
-  readonly recherche: string
-  readonly limite: number
-}): Promise<readonly DestinationDeFusion[]> => {
-  const ligneSource = await prismaClient.tag.findFirst({
-    where: { id: sourceId, suppression: null },
-  })
-  const source = ligneSource === null ? null : tagToDomain(ligneSource)
-
-  if (source === null) return []
-
+}) => {
   const lignes = await prismaClient.$queryRaw<
     (TagRow & { utilisations: bigint })[]
   >`
@@ -44,7 +27,7 @@ export const destinationsDeFusion = async ({
       AS utilisations
     FROM ${TAGS}
     WHERE t.suppression IS NULL
-      AND t.id != ${sourceId}::UUID
+      AND t.id != ${source.id}::UUID
       AND t.nom ILIKE ${`%${recherche.trim()}%`}
       AND ${tagVisiblePar(acteur)}
       AND ${porteeAuMoinsAussiLargeQue(source.portee._tag)}
@@ -54,8 +37,8 @@ export const destinationsDeFusion = async ({
 
   return lignes.flatMap((ligne) => {
     const tag = tagToDomain(ligne)
-    return tag !== null && peutFusionnerVers(acteur)(source, tag)
-      ? [{ tag, utilisations: Effectif(Number(ligne.utilisations)) }]
-      : []
+    return tag === null
+      ? []
+      : [{ tag, utilisations: Effectif(Number(ligne.utilisations)) }]
   })
 }

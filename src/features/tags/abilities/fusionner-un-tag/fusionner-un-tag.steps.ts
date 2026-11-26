@@ -13,15 +13,22 @@ import {
   tagsDeLActivite,
   tagsDeLActiviteDeCoordination,
 } from '@/features/tags/tags.cucumber'
+import { lireUnTagActif } from '../../implementations/prisma/tag-actif.query'
 import type { DestinationDeFusion } from './domain'
 import { fusionnerUnTag } from './domain/fusionner-un-tag'
-import { destinationsDeFusion } from './implementations/prisma/destinations-de-fusion.query'
+import { rechercherDesDestinations } from './domain/rechercher-des-destinations'
+import { lireLesCandidatesALaFusion } from './implementations/prisma/destinations-de-fusion.query'
 import { reporterLeTag } from './implementations/prisma/reporter-le-tag.mutation'
 import { lireLesTagsDeLaFusion } from './implementations/prisma/tags-de-la-fusion.query'
 
 const fusionnerEnBase = fusionnerUnTag({
   lireLesTags: lireLesTagsDeLaFusion,
   reporter: reporterLeTag,
+})
+
+const rechercherEnBase = rechercherDesDestinations({
+  lireUnTagActif,
+  lireLesCandidates: lireLesCandidatesALaFusion,
 })
 
 const contexte: {
@@ -129,12 +136,13 @@ When(
 )
 
 When('ce médiateur cherche où fusionner son tag', async () => {
-  contexte.proposees = await destinationsDeFusion({
+  const proposees = await rechercherEnBase({
     acteur: valeur(contexte.acteur),
     sourceId: TagId(valeur(contexte.sourceId)),
     recherche: '',
     limite: 1000,
   })
+  contexte.proposees = proposees.data
 })
 
 Then('la fusion du tag réussit', () => {
