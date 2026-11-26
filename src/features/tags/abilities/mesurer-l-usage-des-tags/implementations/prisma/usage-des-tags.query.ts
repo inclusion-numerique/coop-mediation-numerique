@@ -91,7 +91,8 @@ const tagsLesPlusUtilises = async (): Promise<TagLePlusUtilise[]> => {
     id: TagId(tag.id),
     nom: NomDuTag(tag.nom),
     portee: porteeDepuisLaBase(tag),
-    description: DescriptionDuTag.safe(tag.description ?? ''),
+    description:
+      tag.description === null ? null : DescriptionDuTag(tag.description),
     utilisations: Effectif(usageParTag.get(tag.id) ?? 0),
     accompagnements: Effectif(tag.accompagnementsCount),
   }))
