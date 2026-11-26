@@ -1,6 +1,7 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
-import { exporterLesMembres } from '@/features/equipe/abilities/exporter-les-membres/implementations/prisma/exporter-les-membres.query'
+import { exporterLesMembres as exporterLesMembresAvec } from '@/features/equipe/abilities/exporter-les-membres/domain/exporter-les-membres'
+import { lireLesMembresAExporter } from '@/features/equipe/abilities/exporter-les-membres/implementations/prisma/membres-a-exporter.query'
 import { CoordinateurId, type Lecteur } from '@/features/equipe/domain'
 import {
   type CoordinateurSeme,
@@ -9,6 +10,8 @@ import {
   semerUnMediateurDEquipe,
 } from '@/features/equipe/equipe.cucumber'
 import { criteresDeLEquipe } from '@/features/equipe/ui/filtres/equipe.filtre'
+
+const exporterLesMembres = exporterLesMembresAvec({ lireLesMembresAExporter })
 
 const contexte: {
   coordinateur?: CoordinateurSeme
@@ -28,6 +31,7 @@ const exporter = async (
     coordinateurId: CoordinateurId(coordinateur().coordinateurId),
     lecteur,
     criteres: criteresDeLEquipe(parametres),
+    maintenant: new Date(),
   })
 }
 
