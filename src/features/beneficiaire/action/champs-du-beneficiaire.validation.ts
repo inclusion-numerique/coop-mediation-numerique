@@ -35,7 +35,7 @@ export const beneficiaireFormShape = z.object({
   telephone: optional(Telephone.schema),
   pasDeTelephone: z.boolean().nullish(),
   email: optional(Email.schema),
-  anneeNaissance: optional(AnneeNaissance.schema),
+  anneeNaissance: optional(AnneeNaissance(new Date()).schema),
   communeResidence: CommuneResidenceForm.nullish(),
   genre: z.enum(genres).nullish(),
   trancheAge: TrancheAge.schema,

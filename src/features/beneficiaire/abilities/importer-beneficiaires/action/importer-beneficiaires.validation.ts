@@ -53,7 +53,7 @@ const toBeneficiaireAImporter = (
     anneeNaissance:
       row.parsed.anneeNaissance == null
         ? null
-        : AnneeNaissance(row.parsed.anneeNaissance),
+        : AnneeNaissance(new Date())(row.parsed.anneeNaissance),
     communeResidence: row.parsed.commune
       ? CommuneResidence({
           commune: row.parsed.commune.nom,

@@ -7,10 +7,7 @@ import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import type { DefaultValues } from 'react-hook-form'
 import { z } from 'zod'
-import {
-  ANNEE_NAISSANCE_MAX as anneeNaissanceMax,
-  ANNEE_NAISSANCE_MIN as anneeNaissanceMin,
-} from '@/features/beneficiaire/domain/annee-naissance'
+import { ANNEE_NAISSANCE_MIN as anneeNaissanceMin } from '@/features/beneficiaire/domain/annee-naissance'
 import { effectiveTrancheAge } from '@/features/beneficiaire/domain/tranche-age'
 import FormSection from '@/features/beneficiaire/ui/components/FormSection'
 import {
@@ -67,6 +64,8 @@ const craAvecBeneficiaire = (
   'participants' in cra
     ? { ...cra, participants: [...(cra.participants ?? []), beneficiaire] }
     : { ...cra, beneficiaire }
+
+const anneeNaissanceMax = new Date().getFullYear()
 
 const BeneficiaireForm = ({
   defaultValues,
@@ -195,7 +194,11 @@ const BeneficiaireForm = ({
       form.setFieldValue('anneeNaissance', null)
       return
     }
-    const trancheAgeFromAnnee = effectiveTrancheAge(value)
+    const trancheAgeFromAnnee = effectiveTrancheAge(
+      value ?? null,
+      null,
+      new Date(),
+    )
     if (
       trancheAgeFromAnnee &&
       form.getFieldValue('trancheAge') !== trancheAgeFromAnnee
@@ -207,7 +210,9 @@ const BeneficiaireForm = ({
   // pour que le champ tranche désactivé affiche la bonne valeur.
   useEffect(() => {
     const trancheAgeFromAnnee = effectiveTrancheAge(
-      form.getFieldValue('anneeNaissance'),
+      form.getFieldValue('anneeNaissance') ?? null,
+      null,
+      new Date(),
     )
     if (
       trancheAgeFromAnnee &&

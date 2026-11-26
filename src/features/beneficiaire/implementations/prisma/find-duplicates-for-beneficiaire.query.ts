@@ -67,7 +67,7 @@ const toDuplicateBeneficiaire = (
         email: row.email ? Email.safe(row.email) : null,
         creation: row.creation,
         anneeNaissance: row.anneeNaissance
-          ? AnneeNaissance.safe(row.anneeNaissance)
+          ? AnneeNaissance(new Date()).safe(row.anneeNaissance)
           : null,
         communeResidence: toCommuneResidence(row),
       }

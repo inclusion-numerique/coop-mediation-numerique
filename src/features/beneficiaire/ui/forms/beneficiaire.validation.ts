@@ -50,7 +50,7 @@ export const BeneficiaireValidation = z.object({
       z.null(),
     ])
     .optional(),
-  anneeNaissance: anneeNaissanceValidation,
+  anneeNaissance: anneeNaissanceValidation(new Date()),
   adresse: z.string().nullish(),
   dejaAccompagne: z.boolean().nullish(),
   communeResidence: AdresseBanValidation.nullish(),

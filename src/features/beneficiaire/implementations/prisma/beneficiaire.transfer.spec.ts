@@ -73,7 +73,9 @@ describe('beneficiaire transfer layer', () => {
         numero: Telephone('06 12 34 56 78'),
       },
       email: Email('marie@curie.fr'),
-      anneeNaissance: AnneeNaissance(1990),
+      anneeNaissance: AnneeNaissance(new Date('2026-06-15T12:00:00.000Z'))(
+        1990,
+      ),
       communeResidence: CommuneResidence({
         commune: 'Paris',
         codePostal: '75001',

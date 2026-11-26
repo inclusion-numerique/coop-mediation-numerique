@@ -29,7 +29,11 @@ const BeneficiaireInformationsComplementaires = ({
     | 'anneeNaissance'
   >
 }) => {
-  const displayedTrancheAge = effectiveTrancheAge(anneeNaissance, trancheAge)
+  const displayedTrancheAge = effectiveTrancheAge(
+    anneeNaissance,
+    trancheAge,
+    new Date(),
+  )
 
   return (
     <div className="fr-border--bottom fr-pt-6v fr-px-6v fr-pb-8v">

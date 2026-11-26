@@ -1,77 +1,65 @@
-import { describe, expect, it, test } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { effectiveTrancheAge, TrancheAge } from './tranche-age'
 
-const currentYear = new Date().getFullYear()
+const maintenant = new Date('2026-06-15T12:00:00.000Z')
 
 describe('TrancheAge', () => {
   it('accepts a provided tranche', () => {
     expect(TrancheAge('VingtCinqTrenteNeuf')).toBe('VingtCinqTrenteNeuf')
   })
 
-  it('defaults to NonCommunique when absent', () => {
-    expect(TrancheAge(null)).toBe('NonCommunique')
-    expect(TrancheAge(undefined)).toBe('NonCommunique')
+  it.each<{ cas: string; valeur: null | undefined }>([
+    { cas: 'null', valeur: null },
+    { cas: 'undefined', valeur: undefined },
+  ])('defaults to NonCommunique when $cas', ({ valeur }) => {
+    expect(TrancheAge(valeur)).toBe('NonCommunique')
   })
 })
 
 describe('effectiveTrancheAge', () => {
-  test.each([
-    { age: 5, expected: 'MoinsDeDouze' },
-    { age: 14, expected: 'DouzeDixHuit' },
-    { age: 20, expected: 'DixHuitVingtQuatre' },
-    { age: 30, expected: 'VingtCinqTrenteNeuf' },
-    { age: 50, expected: 'QuaranteCinquanteNeuf' },
-    { age: 65, expected: 'SoixanteSoixanteNeuf' },
-    { age: 80, expected: 'SoixanteDixPlus' },
-  ])('derives $expected for someone aged $age', ({ age, expected }) => {
-    expect(effectiveTrancheAge(currentYear - age)).toEqual(expected)
+  it.each<{ annee: number; tranche: TrancheAge }>([
+    { annee: 2021, tranche: TrancheAge('MoinsDeDouze') },
+    { annee: 2012, tranche: TrancheAge('DouzeDixHuit') },
+    { annee: 2006, tranche: TrancheAge('DixHuitVingtQuatre') },
+    { annee: 1996, tranche: TrancheAge('VingtCinqTrenteNeuf') },
+    { annee: 1976, tranche: TrancheAge('QuaranteCinquanteNeuf') },
+    { annee: 1961, tranche: TrancheAge('SoixanteSoixanteNeuf') },
+    { annee: 1946, tranche: TrancheAge('SoixanteDixPlus') },
+  ])('derives $tranche for a birth year $annee', ({ annee, tranche }) => {
+    expect(effectiveTrancheAge(annee, null, maintenant)).toBe(tranche)
   })
 
-  test('parses a string birth year', () => {
-    expect(effectiveTrancheAge(`${currentYear - 30}`)).toEqual(
+  it('parses a string birth year', () => {
+    expect(effectiveTrancheAge('1996', null, maintenant)).toBe(
       'VingtCinqTrenteNeuf',
     )
   })
 
-  test.each([null, undefined, 0])(
-    'returns null for absent value %p',
-    (value) => {
-      expect(effectiveTrancheAge(value)).toBeNull()
-    },
-  )
+  it.each<{ cas: string; annee: string | number | null }>([
+    { cas: 'an absent year', annee: null },
+    { cas: 'a zero year', annee: 0 },
+    { cas: 'a year before 1900', annee: 1899 },
+    { cas: 'a year after the current one', annee: 2027 },
+  ])('returns null for $cas without stored value', ({ annee }) => {
+    expect(effectiveTrancheAge(annee, null, maintenant)).toBeNull()
+  })
 
-  test.each([1899, currentYear + 1])(
-    'returns null for out-of-range year %p',
-    (year) => {
-      expect(effectiveTrancheAge(year)).toBeNull()
-    },
-  )
-
-  test('derives from a valid birth year, ignoring the stored value', () => {
+  it('derives from a valid birth year, ignoring the stored value', () => {
     expect(
-      effectiveTrancheAge(currentYear - 65, 'VingtCinqTrenteNeuf'),
-    ).toEqual('SoixanteSoixanteNeuf')
+      effectiveTrancheAge(1961, TrancheAge('VingtCinqTrenteNeuf'), maintenant),
+    ).toBe('SoixanteSoixanteNeuf')
   })
 
-  test('derives from the birth year when the stored value is null (the RDVSP bug)', () => {
-    expect(effectiveTrancheAge(currentYear - 65, null)).toEqual(
-      'SoixanteSoixanteNeuf',
-    )
-  })
-
-  test('falls back to the stored value when there is no birth year', () => {
-    expect(effectiveTrancheAge(null, 'QuaranteCinquanteNeuf')).toEqual(
-      'QuaranteCinquanteNeuf',
-    )
-  })
-
-  test('falls back to the stored value when the birth year is out of range', () => {
-    expect(effectiveTrancheAge(1899, 'QuaranteCinquanteNeuf')).toEqual(
-      'QuaranteCinquanteNeuf',
-    )
-  })
-
-  test('returns null when neither birth year nor stored value is usable', () => {
-    expect(effectiveTrancheAge(null, null)).toBeNull()
+  it.each<{ cas: string; annee: number | null }>([
+    { cas: 'there is no birth year', annee: null },
+    { cas: 'the birth year is out of range', annee: 1899 },
+  ])('falls back to the stored value when $cas', ({ annee }) => {
+    expect(
+      effectiveTrancheAge(
+        annee,
+        TrancheAge('QuaranteCinquanteNeuf'),
+        maintenant,
+      ),
+    ).toBe('QuaranteCinquanteNeuf')
   })
 })

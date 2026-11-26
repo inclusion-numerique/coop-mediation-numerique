@@ -66,7 +66,7 @@ const toIdentifie = (row: PrismaBeneficiaire): BeneficiaireIdentifie => ({
   contactTelephone: toContactTelephone(row),
   email: row.email ? Email(row.email) : null,
   anneeNaissance: row.anneeNaissance
-    ? AnneeNaissance(row.anneeNaissance)
+    ? AnneeNaissance(new Date())(row.anneeNaissance)
     : null,
   communeResidence: toCommuneResidence(row),
   notes: row.notes ? Notes.safe(row.notes) : null,

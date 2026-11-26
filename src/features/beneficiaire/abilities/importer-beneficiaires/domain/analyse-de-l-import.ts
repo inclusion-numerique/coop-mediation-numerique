@@ -89,12 +89,17 @@ const parseGenre = (
   return { error: 'Genre invalide' }
 }
 
-const parseAnneeNaissance = (anneeNaissanceRaw: number | null | undefined) => {
+const parseAnneeNaissance = (
+  anneeNaissanceRaw: number | null | undefined,
+  maintenant: Date,
+) => {
   if (!anneeNaissanceRaw) {
     return { value: null }
   }
 
-  if (!anneeNaissanceValidation.safeParse(anneeNaissanceRaw).success) {
+  if (
+    !anneeNaissanceValidation(maintenant).safeParse(anneeNaissanceRaw).success
+  ) {
     return { error: anneeNaissanceInvalide }
   }
 
@@ -142,6 +147,7 @@ const parseBeneficiaireRow = (
   feuille: FeuilleImport,
   rowNumber: number,
   communesClient: CommunesClient,
+  maintenant: Date,
 ) => {
   const nom = getCellValueAsString(feuille, rowNumber, 1)
   const prenom = getCellValueAsString(feuille, rowNumber, 2)
@@ -185,7 +191,7 @@ const parseBeneficiaireRow = (
     errors.genre = parsedGenre.error
   }
 
-  const parsedAnneeNaissance = parseAnneeNaissance(anneeNaissance)
+  const parsedAnneeNaissance = parseAnneeNaissance(anneeNaissance, maintenant)
   if (parsedAnneeNaissance.error) {
     errors.anneeNaissance = parsedAnneeNaissance.error
   }
@@ -237,9 +243,15 @@ const numerosLignesBeneficiaires = (
 
 export const analyserLaFeuille =
   (communesClient: CommunesClient) =>
-  (feuille: FeuilleImport): Analysis => {
+  ({
+    feuille,
+    maintenant,
+  }: {
+    readonly feuille: FeuilleImport
+    readonly maintenant: Date
+  }): Analysis => {
     const rows = numerosLignesBeneficiaires(feuille).map((rowNumber) =>
-      parseBeneficiaireRow(feuille, rowNumber, communesClient),
+      parseBeneficiaireRow(feuille, rowNumber, communesClient, maintenant),
     )
 
     return {

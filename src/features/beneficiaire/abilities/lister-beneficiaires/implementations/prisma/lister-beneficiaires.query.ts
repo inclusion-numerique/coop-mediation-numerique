@@ -105,7 +105,7 @@ const toListItem = (row: {
   telephone: row.telephone ? Telephone(row.telephone) : null,
   email: row.email ? Email(row.email) : null,
   anneeNaissance: row.anneeNaissance
-    ? AnneeNaissance(row.anneeNaissance)
+    ? AnneeNaissance(new Date())(row.anneeNaissance)
     : null,
   trancheAge: TrancheAge(row.trancheAge),
   genre: Genre(row.genre),

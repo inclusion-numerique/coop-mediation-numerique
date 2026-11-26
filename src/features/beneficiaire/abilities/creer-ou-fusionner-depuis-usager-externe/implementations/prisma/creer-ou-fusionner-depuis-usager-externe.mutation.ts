@@ -76,7 +76,7 @@ const anneeNaissanceFromBirthDate = (
   birthDate: Date | null,
 ): AnneeNaissance | null => {
   const year = birthDate?.getFullYear()
-  return year && year > 1900 ? AnneeNaissance.safe(year) : null
+  return year && year > 1900 ? AnneeNaissance(new Date()).safe(year) : null
 }
 
 const normalizeExternalUser = (
@@ -146,7 +146,11 @@ const mergeUpdateData = async (
     ...(usager.anneeNaissance && !existing.anneeNaissance
       ? {
           anneeNaissance: usager.anneeNaissance,
-          trancheAge: effectiveTrancheAge(usager.anneeNaissance),
+          trancheAge: effectiveTrancheAge(
+            usager.anneeNaissance,
+            null,
+            new Date(),
+          ),
         }
       : {}),
     ...(communeFields
@@ -197,7 +201,7 @@ const createBeneficiaire = async (
       email: usager.email,
       adresse: usager.adresse,
       anneeNaissance: usager.anneeNaissance,
-      trancheAge: effectiveTrancheAge(usager.anneeNaissance),
+      trancheAge: effectiveTrancheAge(usager.anneeNaissance, null, new Date()),
       commune: communeFields?.commune ?? null,
       communeCodePostal: communeFields?.communeCodePostal ?? null,
       communeCodeInsee: communeFields?.communeCodeInsee ?? null,

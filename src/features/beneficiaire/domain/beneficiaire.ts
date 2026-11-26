@@ -122,6 +122,7 @@ export const toBeneficiaireIdentifie = (
   trancheAge: trancheAgeForBeneficiaire(
     attributs.anneeNaissance,
     attributs.trancheAge,
+    modification,
   ),
   creation,
   modification,
