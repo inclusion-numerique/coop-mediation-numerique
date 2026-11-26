@@ -1,8 +1,11 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { prismaClient } from '@/configuration/prisma'
+import {
+  type BilanDeLEffacement,
+  bilanDeLEffacement,
+} from '@/features/rdvsp/abilities/effacer-empreinte-rdv/domain/bilan-de-l-effacement'
 import { effacerEmpreinteRdv } from '@/features/rdvsp/abilities/effacer-empreinte-rdv/domain/effacer-empreinte-rdv'
-import { effacementPourLaSuppressionDeCompte } from '@/features/rdvsp/abilities/effacer-empreinte-rdv/implementations/prisma/effacement-pour-la-suppression-de-compte.adapter'
 import {
   supprimerLeCompteRdv,
   supprimerLesUsagers,
@@ -31,26 +34,23 @@ const rdvServicePublic: {
   revocations: JetonsOAuth[]
 } = { disponible: true, revocations: [] }
 
-const effacer = effacementPourLaSuppressionDeCompte(
-  effacerEmpreinteRdv({
-    compteAEffacer,
-    revoquerJetons: async (jetons) => {
-      if (!rdvServicePublic.disponible) {
-        return failure(ApiIndisponible(503, 'Service indisponible'))
-      }
-      rdvServicePublic.revocations.push(jetons)
-      return success(undefined)
-    },
-    rendezVousDuCompte,
-    supprimerLeCompte: supprimerLeCompteRdv,
-    usagersOrphelinsParmi,
-    supprimerLesUsagers,
-  }),
-)
+const effacer = effacerEmpreinteRdv({
+  compteAEffacer,
+  revoquerJetons: async (jetons) => {
+    if (!rdvServicePublic.disponible) {
+      return failure(ApiIndisponible(503, 'Service indisponible'))
+    }
+    rdvServicePublic.revocations.push(jetons)
+    return success(undefined)
+  },
+  signalerLaRevocationEchouee: () => undefined,
+  rendezVousDuCompte,
+  supprimerLeCompte: supprimerLeCompteRdv,
+  usagersOrphelinsParmi,
+  supprimerLesUsagers,
+})
 
-type Bilan = Awaited<ReturnType<typeof effacer>>
-
-let bilan: Bilan | undefined
+let bilan: BilanDeLEffacement | undefined
 
 Given('un compte RDV avec un rendez-vous et un usager', async () => {
   await seedCompteRdv({ id: ID_TEST.compte })
@@ -115,11 +115,15 @@ Given(
 )
 
 When("j'efface l'empreinte RDV de ce compte", async () => {
-  bilan = await effacer({ utilisateurId: testUtilisateurId })
+  bilan = bilanDeLEffacement(
+    (await effacer({ utilisateurId: testUtilisateurId })).data,
+  )
 })
 
 When("j'efface à nouveau l'empreinte RDV de ce compte", async () => {
-  bilan = await effacer({ utilisateurId: testUtilisateurId })
+  bilan = bilanDeLEffacement(
+    (await effacer({ utilisateurId: testUtilisateurId })).data,
+  )
 })
 
 Then('le compte RDV est délié', () => {

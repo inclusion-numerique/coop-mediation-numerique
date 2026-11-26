@@ -25,6 +25,7 @@ const jetons: JetonsOAuth = {
 const ports: EffacerEmpreinteRdvPorts = {
   compteAEffacer: async () => ({ agentId, jetons }),
   revoquerJetons: async () => success(undefined),
+  signalerLaRevocationEchouee: () => undefined,
   rendezVousDuCompte: async () => ({
     rdvIds: [RdvId(1), RdvId(2)],
     usagerIds: [UsagerId(10), UsagerId(20)],

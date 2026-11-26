@@ -11,8 +11,8 @@ import { retirerDesEquipes } from '@/features/equipe/abilities/detacher-des-equi
 import { retirerDesLieux } from '@/features/lieux-activite/abilities/retirer-des-lieux/implementations/prisma/retirer-des-lieux.mutation'
 import { revoquerPartageStatistiques } from '@/features/mediateurs/abilities/revoquer-partage-statistiques/domain/revoquer-partage-statistiques'
 import { revoquerLesPartages } from '@/features/mediateurs/abilities/revoquer-partage-statistiques/implementations/prisma/revoquer-partage-statistiques.mutation'
+import { bilanDeLEffacement } from '@/features/rdvsp/abilities/effacer-empreinte-rdv/domain/bilan-de-l-effacement'
 import { effacerEmpreinteRdv } from '@/features/rdvsp/abilities/effacer-empreinte-rdv/domain/effacer-empreinte-rdv'
-import { effacementPourLaSuppressionDeCompte } from '@/features/rdvsp/abilities/effacer-empreinte-rdv/implementations/prisma/effacement-pour-la-suppression-de-compte.adapter'
 import {
   supprimerLeCompteRdv,
   supprimerLesUsagers,
@@ -22,6 +22,8 @@ import {
   rendezVousDuCompte,
   usagersOrphelinsParmi,
 } from '@/features/rdvsp/abilities/effacer-empreinte-rdv/implementations/prisma/effacer-empreinte-rdv.query'
+import { signalerLaRevocationEchouee } from '@/features/rdvsp/abilities/effacer-empreinte-rdv/implementations/telemetrie/revocation-echouee.mutation'
+import { UtilisateurCoopId } from '@/features/rdvsp/domain/identifiants/utilisateur-coop-id'
 import { configurationOAuthRdvsp } from '@/features/rdvsp/implementations/api/rdv-service-public-configuration.client'
 import { revoquerJetons } from '@/features/rdvsp/implementations/api/revoquer-jetons.mutation'
 import { synchroniserPersonne } from '@/features/registre-des-personnes/implementations/prisma/registre-personne.mutation'
@@ -75,16 +77,26 @@ const supprimerCompteAvec = (
   synchroniserLaPersonne: SynchroniserLaPersonne,
 ) => supprimerCompte(portsDeSuppression(effacements, synchroniserLaPersonne))
 
-const effacerLEmpreinteRdv = effacementPourLaSuppressionDeCompte(
-  effacerEmpreinteRdv({
-    compteAEffacer,
-    revoquerJetons: revoquerJetons(configurationOAuthRdvsp()),
-    rendezVousDuCompte,
-    supprimerLeCompte: supprimerLeCompteRdv,
-    usagersOrphelinsParmi,
-    supprimerLesUsagers,
-  }),
-)
+const effacerLEmpreinte = effacerEmpreinteRdv({
+  compteAEffacer,
+  revoquerJetons: revoquerJetons(configurationOAuthRdvsp()),
+  signalerLaRevocationEchouee,
+  rendezVousDuCompte,
+  supprimerLeCompte: supprimerLeCompteRdv,
+  usagersOrphelinsParmi,
+  supprimerLesUsagers,
+})
+
+const effacerLEmpreinteRdv = async ({
+  utilisateurId,
+}: {
+  readonly utilisateurId: string
+}) => {
+  const effacement = await effacerLEmpreinte({
+    utilisateurId: UtilisateurCoopId(utilisateurId),
+  })
+  return bilanDeLEffacement(effacement.data)
+}
 
 const detacherDesEquipes = async (identifiants: IdentifiantsRattaches) => {
   const detachement = await detacherDesEquipesAvec({ retirerDesEquipes })({

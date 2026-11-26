@@ -92,7 +92,7 @@
     "equipe/implementations/email",
     "inscription/abilities/ajouter-structure-employeuse-en-lieu/implementations/ban",
     "maintenance-mode/implementations/prisma",
-    "rdvsp/abilities/effacer-empreinte-rdv/implementations/prisma",
+    "rdvsp/abilities/effacer-empreinte-rdv/implementations/telemetrie",
     "registre-des-personnes/implementations/prisma",
     "utilisateurs/abilities/fusionner-des-comptes/implementations/brevo",
     "utilisateurs/implementations/brevo"

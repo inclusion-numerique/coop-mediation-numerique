@@ -40,6 +40,7 @@ export const effacerEmpreinteRdv =
   ({
     compteAEffacer,
     revoquerJetons,
+    signalerLaRevocationEchouee,
     rendezVousDuCompte,
     supprimerLeCompte,
     usagersOrphelinsParmi,
@@ -55,6 +56,13 @@ export const effacerEmpreinteRdv =
     if (compte === null) return success({ _tag: 'aucunCompte' })
 
     const revocation = await revoquer(revoquerJetons, compte.jetons)
+
+    if (revocation._tag === 'echouee')
+      signalerLaRevocationEchouee({
+        agentId: compte.agentId,
+        erreur: revocation.erreur,
+      })
+
     const { rdvIds, usagerIds } = await rendezVousDuCompte(compte.agentId)
 
     await supprimerLeCompte(compte.agentId)
