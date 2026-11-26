@@ -1,0 +1,35 @@
+language js
+
+or {
+  `vi.$m` as $x where {
+    register_diagnostic(span=$x, message="TS-9 : ni mock ni espion : un double écrit à la main, sans logique.")
+  },
+  `$v as const` as $x where {
+    register_diagnostic(span=$x, message="TS-9 : un it.each se type par son générique, pas par as const.")
+  },
+  JsIfStatement() as $x where {
+    register_diagnostic(span=$x, message="TS-9 : aucune logique dans un test.")
+  },
+  JsConditionalExpression() as $x where {
+    register_diagnostic(span=$x, message="TS-9 : aucune logique dans un test.")
+  },
+  JsForStatement() as $x where {
+    register_diagnostic(span=$x, message="TS-9 : aucune logique dans un test.")
+  },
+  JsForOfStatement() as $x where {
+    register_diagnostic(span=$x, message="TS-9 : aucune logique dans un test.")
+  },
+  JsForInStatement() as $x where {
+    register_diagnostic(span=$x, message="TS-9 : aucune logique dans un test.")
+  },
+  JsWhileStatement() as $x where {
+    register_diagnostic(span=$x, message="TS-9 : aucune logique dans un test.")
+  },
+  JsVariableDeclaration() as $x where {
+    $x <: r"^let[\s\S]*",
+    register_diagnostic(span=$x, message="TS-9 : aucune logique dans un test.")
+  },
+  `$a.map($f)` as $x where {
+    register_diagnostic(span=$x, message="TS-9 : aucune logique dans un test.")
+  }
+}

@@ -1,0 +1,6 @@
+language js
+
+TsTypeAliasDeclaration(binding_identifier=$n) as $x where {
+  $n <: r"^Dependances.*|.*Dependances$",
+  register_diagnostic(span=$n, message="AB-8 : le type agrégé des ports se nomme <NomDeLAbility>Ports, dans ports.ts.")
+}
