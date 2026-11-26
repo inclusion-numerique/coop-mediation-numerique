@@ -13,6 +13,7 @@ import { lireMediateurEtContrats } from '@/features/mediateurs/abilities/choisir
 import { AuteurId, MediateurId } from '@/features/mediateurs/domain'
 import { synchroniserPersonne } from '@/features/registre-des-personnes/implementations/prisma/registre-personne.mutation'
 import { fromResult, withInput } from '@/libraries/nextjs'
+import { success } from '@/libraries/result'
 
 export const choisirLaVisibiliteApresRuptureAction = actionBuilder()
   .use(withAuth())
@@ -21,8 +22,8 @@ export const choisirLaVisibiliteApresRuptureAction = actionBuilder()
   .use(withInput(ChoisirLaVisibiliteApresRuptureValidation))
   .execute(
     fromResult(
-      ({ input, user, mediateur }) =>
-        choisirLaVisibiliteApresRupture({
+      async ({ input, user, mediateur }) => {
+        const choix = await choisirLaVisibiliteApresRupture({
           lireMediateurEtContrats,
           enregistrer: enregistrerLeChoix(synchroniserPersonne),
         })({
@@ -30,7 +31,10 @@ export const choisirLaVisibiliteApresRuptureAction = actionBuilder()
           reponse: ReponseApresRupture(input.reponse),
           auteurId: AuteurId(user.id),
           maintenant: new Date(),
-        }),
+        })
+
+        return choix.success ? success(undefined) : choix
+      },
       { onError: CHOISIR_LA_VISIBILITE_APRES_RUPTURE_ERRORS },
     ),
   )

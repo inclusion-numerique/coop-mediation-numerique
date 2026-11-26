@@ -1,13 +1,7 @@
-import type { MediateurId } from '@/features/mediateurs/domain'
-
-export type MediateurIntrouvable = {
-  readonly _tag: 'MediateurIntrouvable'
-  readonly mediateurId: MediateurId
-}
-
-export const MediateurIntrouvable = (
-  mediateurId: MediateurId,
-): MediateurIntrouvable => ({ _tag: 'MediateurIntrouvable', mediateurId })
+import type {
+  MediateurId,
+  MediateurIntrouvable,
+} from '@/features/mediateurs/domain'
 
 export type AucuneRuptureEnAttente = {
   readonly _tag: 'AucuneRuptureEnAttente'
@@ -18,6 +12,10 @@ export const AucuneRuptureEnAttente = (
   mediateurId: MediateurId,
 ): AucuneRuptureEnAttente => ({ _tag: 'AucuneRuptureEnAttente', mediateurId })
 
-export type ChoisirLaVisibiliteApresRuptureError =
+export type EchecDeChoisirLaVisibiliteApresRupture =
+  | MediateurIntrouvable
+  | AucuneRuptureEnAttente
+
+export type EchecDeConsulterLaRuptureEnAttente =
   | MediateurIntrouvable
   | AucuneRuptureEnAttente

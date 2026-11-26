@@ -1,6 +1,6 @@
 import { prismaClient } from '@/configuration/prisma'
 import { MediateurId } from '@/features/mediateurs/domain'
-import type { LireMediateurEtContrats } from '../../domain/choisir-la-visibilite-apres-rupture'
+import type { LireMediateurEtContrats } from '../../domain/ports'
 import { etatContrat } from '../../domain/rupture-en-attente'
 
 export const lireMediateurEtContrats: LireMediateurEtContrats = async (

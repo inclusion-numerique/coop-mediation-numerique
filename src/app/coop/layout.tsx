@@ -11,7 +11,8 @@ import { BanniereDeMaintenance } from '@/features/maintenance-mode/abilities/con
 import { messageAffiche } from '@/features/maintenance-mode/domain'
 import { consulterLaMaintenance } from '@/features/maintenance-mode/implementations/prisma/etat-de-maintenance.query'
 import { CHOISIR_LA_VISIBILITE_APRES_RUPTURE_ACTION_KEY } from '@/features/mediateurs/abilities/choisir-la-visibilite-apres-rupture/action/choisir-la-visibilite-apres-rupture.key'
-import { lireLaRuptureEnAttente } from '@/features/mediateurs/abilities/choisir-la-visibilite-apres-rupture/implementations/prisma/rupture-en-attente.query'
+import { consulterLaRuptureEnAttente } from '@/features/mediateurs/abilities/choisir-la-visibilite-apres-rupture/domain/consulter-la-rupture-en-attente'
+import { lireMediateurEtContrats } from '@/features/mediateurs/abilities/choisir-la-visibilite-apres-rupture/implementations/prisma/mediateur-et-contrats.query'
 import { ChoixDeVisibiliteApresRupture } from '@/features/mediateurs/abilities/choisir-la-visibilite-apres-rupture/ui/slots/ChoixDeVisibiliteApresRupture.slot'
 import { MediateurId } from '@/features/mediateurs/domain'
 import { accesALaCoop } from '@/features/navigation/domain'
@@ -58,11 +59,12 @@ const Layout = async ({ children }: PropsWithChildren) => {
   const ruptureEnAttente =
     user.mediateur == null
       ? null
-      : await lireLaRuptureEnAttente({
+      : await consulterLaRuptureEnAttente({ lireMediateurEtContrats })({
           mediateurId: MediateurId(user.mediateur.id),
+          maintenant: new Date(),
         })
 
-  if (ruptureEnAttente != null) {
+  if (ruptureEnAttente?.success) {
     return (
       <CoopShellLayout
         cadre="etape"
