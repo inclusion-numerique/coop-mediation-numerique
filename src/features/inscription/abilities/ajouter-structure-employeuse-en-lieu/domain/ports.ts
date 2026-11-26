@@ -1,5 +1,6 @@
 import type { UtilisateurId } from '@/features/inscription/domain'
 import type { AdresseBanData } from '@/libraries/adresse'
+import type { Result } from '@/libraries/result'
 import type { EmployeuseId } from './employeuse-id'
 
 type AdresseAGeocoder = {
@@ -57,16 +58,30 @@ export type TraceDeLEmployeuse = {
   readonly structureId: number
 }
 
-export type RattacherAuLieuDecrit = (input: {
-  readonly userId: UtilisateurId
+export type DestinationDuLieuDecrit<Destination> = (input: {
   readonly lieu: LieuDecrit
-  readonly trace: TraceDeLEmployeuse
-}) => Promise<void>
+}) => Promise<Result<Destination, never>>
 
-export type DetacherDuLieuDecrit = (input: {
-  readonly userId: UtilisateurId
-  readonly lieu: LieuDecrit
+export type RattachementAuLieuDecrit =
+  | { readonly _tag: 'Rattaches' }
+  | { readonly _tag: 'LieuDisparu'; readonly lieuId: string }
+
+export type RattacherAuLieuDecrit<Destination> = (input: {
+  readonly utilisateurId: UtilisateurId
+  readonly destination: Destination
   readonly trace: TraceDeLEmployeuse
+  readonly maintenant: Date
+}) => Promise<RattachementAuLieuDecrit>
+
+export type LieuCorreleAuLieuDecrit = (input: {
+  readonly lieu: LieuDecrit
+}) => Promise<Result<string | null, never>>
+
+export type DetacherDuLieu = (input: {
+  readonly utilisateurId: UtilisateurId
+  readonly lieuId: string
+  readonly trace: TraceDeLEmployeuse
+  readonly maintenant: Date
 }) => Promise<void>
 
 export type LireLAdresseDeLEmployeuse = (
@@ -80,10 +95,12 @@ export type Geocodage =
 
 export type GeocoderLAdresse = (adresse: AdresseAGeocoder) => Promise<Geocodage>
 
-export type AjouterStructureEmployeuseEnLieuPorts = {
+export type AjouterStructureEmployeuseEnLieuPorts<Destination> = {
   readonly consulterEmployeuseActuelle: ConsulterEmployeuseActuelle
   readonly lireLAdresseDeLEmployeuse: LireLAdresseDeLEmployeuse
   readonly geocoderLAdresse: GeocoderLAdresse
-  readonly rattacherAuLieuDecrit: RattacherAuLieuDecrit
-  readonly detacherDuLieuDecrit: DetacherDuLieuDecrit
+  readonly destinationDuLieuDecrit: DestinationDuLieuDecrit<Destination>
+  readonly rattacherAuLieuDecrit: RattacherAuLieuDecrit<Destination>
+  readonly lieuCorreleAuLieuDecrit: LieuCorreleAuLieuDecrit
+  readonly detacherDuLieu: DetacherDuLieu
 }

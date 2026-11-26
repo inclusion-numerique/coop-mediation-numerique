@@ -9,10 +9,16 @@ import { ajouterStructureEmployeuseEnLieu } from '@/features/inscription/abiliti
 import { geocoderLAdresse } from '@/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/implementations/ban/geocoder-l-adresse.query'
 import { lireLAdresseDeLEmployeuse } from '@/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/implementations/prisma/adresse-de-l-employeuse.query'
 import { UtilisateurId } from '@/features/inscription/domain'
+import { destinationDuLieuDecrit } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/domain/destination-du-lieu-decrit'
+import { lieuCorreleAuLieuDecrit } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/domain/lieu-correle-au-lieu-decrit'
 import {
-  detacherDuLieuDecrit,
+  detacherDuLieu,
   rattacherAuLieuDecrit,
-} from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/rattacher-au-lieu-decrit.mutation'
+} from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/lieu-decrit.mutation'
+import {
+  lieuxAuMemeEndroit,
+  nouvelIdentifiantDeLieu,
+} from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/situation-du-lieu.query'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { fromResult, withInput } from '@/libraries/nextjs'
 import { success } from '@/libraries/result'
@@ -26,10 +32,17 @@ export const ajouterStructureEmployeuseEnLieuAction = actionBuilder()
       async ({ user, input }) => {
         const resultat = await ajouterStructureEmployeuseEnLieu({
           consulterEmployeuseActuelle,
-          rattacherAuLieuDecrit,
-          detacherDuLieuDecrit,
           lireLAdresseDeLEmployeuse,
           geocoderLAdresse,
+          destinationDuLieuDecrit: destinationDuLieuDecrit({
+            lieuxAuMemeEndroit,
+            nouvelIdentifiantDeLieu,
+          }),
+          rattacherAuLieuDecrit,
+          lieuCorreleAuLieuDecrit: lieuCorreleAuLieuDecrit({
+            lieuxAuMemeEndroit,
+          }),
+          detacherDuLieu,
         })({
           userId: UtilisateurId(user.id),
           estLieuActivite: input.estLieuActivite,

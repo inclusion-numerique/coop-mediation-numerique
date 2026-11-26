@@ -12,6 +12,7 @@ import {
   utilisateurDeLInscriptionEnCours,
 } from '@/features/inscription/inscription.cucumber'
 import type { AdresseBanData } from '@/libraries/adresse'
+import { success } from '@/libraries/result'
 import { ajouterStructureEmployeuseEnLieu } from './domain/ajouter-structure-employeuse-en-lieu'
 import { lireLAdresseDeLEmployeuse } from './implementations/prisma/adresse-de-l-employeuse.query'
 
@@ -65,12 +66,16 @@ const declarer = async (estLieuActivite: boolean) => {
     lireLAdresseDeLEmployeuse,
     geocoderLAdresse,
     consulterEmployeuseActuelle,
-    rattacherAuLieuDecrit: async ({ lieu }) => {
-      etat.rattaches.push(lieu)
+    destinationDuLieuDecrit: async ({ lieu }) => success(lieu),
+    rattacherAuLieuDecrit: async ({ destination }) => {
+      etat.rattaches.push(destination)
+      return { _tag: 'Rattaches' }
     },
-    detacherDuLieuDecrit: async ({ lieu }) => {
+    lieuCorreleAuLieuDecrit: async ({ lieu }) => {
       etat.detaches.push(lieu)
+      return success(null)
     },
+    detacherDuLieu: async () => undefined,
   })({
     userId: utilisateurDeLInscriptionEnCours(),
     estLieuActivite,

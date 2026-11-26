@@ -1,4 +1,7 @@
-import type { UtilisateurId } from '@/features/inscription/domain'
+import type {
+  LieuIntrouvable,
+  UtilisateurId,
+} from '@/features/inscription/domain'
 
 export type EmployeuseIntrouvable = {
   readonly _tag: 'EmployeuseIntrouvable'
@@ -40,3 +43,4 @@ export type EchecDAjouterStructureEmployeuseEnLieu =
   | EmployeuseIntrouvable
   | AdresseNonReconnue
   | ServiceAdresseIndisponible
+  | LieuIntrouvable

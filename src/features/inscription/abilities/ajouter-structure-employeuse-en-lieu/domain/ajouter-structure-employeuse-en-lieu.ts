@@ -1,4 +1,7 @@
-import type { UtilisateurId } from '@/features/inscription/domain'
+import {
+  LieuIntrouvable,
+  type UtilisateurId,
+} from '@/features/inscription/domain'
 import { failure, type Result, success } from '@/libraries/result'
 import type { EmployeuseEnLieu } from './employeuse-en-lieu'
 import { EmployeuseId } from './employeuse-id'
@@ -12,13 +15,15 @@ import { lieuDepuisEmployeuse } from './lieu-depuis-employeuse'
 import type { AjouterStructureEmployeuseEnLieuPorts, Geocodage } from './ports'
 
 export const ajouterStructureEmployeuseEnLieu =
-  ({
+  <Destination>({
     consulterEmployeuseActuelle,
     lireLAdresseDeLEmployeuse,
     geocoderLAdresse,
+    destinationDuLieuDecrit,
     rattacherAuLieuDecrit,
-    detacherDuLieuDecrit,
-  }: AjouterStructureEmployeuseEnLieuPorts) =>
+    lieuCorreleAuLieuDecrit,
+    detacherDuLieu,
+  }: AjouterStructureEmployeuseEnLieuPorts<Destination>) =>
   async ({
     userId,
     estLieuActivite,
@@ -28,7 +33,10 @@ export const ajouterStructureEmployeuseEnLieu =
     readonly estLieuActivite: boolean
     readonly maintenant: Date
   }): Promise<
-    Result<EmployeuseEnLieu, EchecDAjouterStructureEmployeuseEnLieu>
+    Result<
+      EmployeuseEnLieu<Destination>,
+      EchecDAjouterStructureEmployeuseEnLieu
+    >
   > => {
     const actuelle = await consulterEmployeuseActuelle({ userId })
 
@@ -45,9 +53,17 @@ export const ajouterStructureEmployeuseEnLieu =
         maintenant,
       })
 
-      await detacherDuLieuDecrit({ userId, lieu, trace })
+      const { data: lieuDetache } = await lieuCorreleAuLieuDecrit({ lieu })
 
-      return success({ _tag: 'DetacheeDesLieux', lieu, trace })
+      if (lieuDetache !== null)
+        await detacherDuLieu({
+          utilisateurId: userId,
+          lieuId: lieuDetache,
+          trace,
+          maintenant,
+        })
+
+      return success({ _tag: 'DetacheeDesLieux', lieu, trace, lieuDetache })
     }
 
     const adresse = await lireLAdresseDeLEmployeuse(employeuseId)
@@ -68,7 +84,17 @@ export const ajouterStructureEmployeuseEnLieu =
       maintenant,
     })
 
-    await rattacherAuLieuDecrit({ userId, lieu, trace })
+    const { data: destination } = await destinationDuLieuDecrit({ lieu })
 
-    return success({ _tag: 'RattacheeCommeLieu', lieu, trace })
+    const rattachement = await rattacherAuLieuDecrit({
+      utilisateurId: userId,
+      destination,
+      trace,
+      maintenant,
+    })
+
+    if (rattachement._tag === 'LieuDisparu')
+      return failure(LieuIntrouvable(rattachement.lieuId))
+
+    return success({ _tag: 'RattacheeCommeLieu', lieu, trace, destination })
   }

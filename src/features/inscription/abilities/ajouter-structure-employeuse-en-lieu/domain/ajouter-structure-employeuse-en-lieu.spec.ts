@@ -53,7 +53,7 @@ const adresseBan: AdresseBanData = {
 
 const trace = { userId, structureId: 42 }
 
-const ports: AjouterStructureEmployeuseEnLieuPorts = {
+const ports: AjouterStructureEmployeuseEnLieuPorts<string> = {
   consulterEmployeuseActuelle: async () => ({ employeuse: employeuseAdressee }),
   lireLAdresseDeLEmployeuse: async () => ({
     adresse: '4 rue de la Rue',
@@ -65,8 +65,10 @@ const ports: AjouterStructureEmployeuseEnLieuPorts = {
     _tag: 'AdresseReconnue',
     adresse: adresseBan,
   }),
-  rattacherAuLieuDecrit: async () => undefined,
-  detacherDuLieuDecrit: async () => undefined,
+  destinationDuLieuDecrit: async () => success('destination-1'),
+  rattacherAuLieuDecrit: async () => ({ _tag: 'Rattaches' }),
+  lieuCorreleAuLieuDecrit: async () => success(null),
+  detacherDuLieu: async () => undefined,
 }
 
 describe('ajouter la structure employeuse en lieu d’activité', () => {
@@ -81,6 +83,7 @@ describe('ajouter la structure employeuse en lieu d’activité', () => {
       success({
         _tag: 'RattacheeCommeLieu',
         trace,
+        destination: 'destination-1',
         lieu: {
           nom: 'Association du numérique',
           adresse: '4 Rue de la Rue',
@@ -113,6 +116,7 @@ describe('ajouter la structure employeuse en lieu d’activité', () => {
       success({
         _tag: 'DetacheeDesLieux',
         trace,
+        lieuDetache: null,
         lieu: {
           nom: 'Association du numérique',
           adresse: '4 rue de la Rue',
@@ -143,6 +147,7 @@ describe('ajouter la structure employeuse en lieu d’activité', () => {
       success({
         _tag: 'DetacheeDesLieux',
         trace,
+        lieuDetache: null,
         lieu: {
           nom: '',
           adresse: '',
@@ -181,6 +186,7 @@ describe('ajouter la structure employeuse en lieu d’activité', () => {
       success({
         _tag: 'DetacheeDesLieux',
         trace,
+        lieuDetache: null,
         lieu: {
           nom: '',
           adresse: '',
@@ -233,5 +239,28 @@ describe('ajouter la structure employeuse en lieu d’activité', () => {
         lireLAdresseDeLEmployeuse: async () => null,
       })({ userId, estLieuActivite: true, maintenant }),
     ).toEqual(failure({ _tag: 'AdresseNonReconnue', employeuseId: 42 }))
+  })
+
+  it('détache le médiateur du lieu de la coop corrélé à son employeuse', async () => {
+    expect(
+      await ajouterStructureEmployeuseEnLieu({
+        ...ports,
+        lieuCorreleAuLieuDecrit: async () => success('lieu-correle'),
+      })({ userId, estLieuActivite: false, maintenant }),
+    ).toMatchObject(
+      success({ _tag: 'DetacheeDesLieux', lieuDetache: 'lieu-correle' }),
+    )
+  })
+
+  it('refuse quand le lieu visé a disparu avant le rattachement', async () => {
+    expect(
+      await ajouterStructureEmployeuseEnLieu({
+        ...ports,
+        rattacherAuLieuDecrit: async () => ({
+          _tag: 'LieuDisparu',
+          lieuId: 'lieu-correle',
+        }),
+      })({ userId, estLieuActivite: true, maintenant }),
+    ).toEqual(failure({ _tag: 'LieuIntrouvable', lieuId: 'lieu-correle' }))
   })
 })
