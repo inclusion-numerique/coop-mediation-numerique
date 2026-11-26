@@ -1,7 +1,11 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
-import type { AfficherRdvsDansActivites } from '@/features/rdvsp/abilities/afficher-rdvs-dans-activites/domain/afficher-rdvs-dans-activites'
-import { afficherRdvsDansActivites } from '@/features/rdvsp/abilities/afficher-rdvs-dans-activites/implementations/prisma/afficher-rdvs-dans-activites.mutation'
+import {
+  type AfficherRdvsDansActivites,
+  afficherRdvsDansActivites,
+} from '@/features/rdvsp/abilities/afficher-rdvs-dans-activites/domain/afficher-rdvs-dans-activites'
+import { compteRdvExiste } from '@/features/rdvsp/abilities/afficher-rdvs-dans-activites/implementations/prisma/compte-rdv-existe.query'
+import { enregistrerLAffichage } from '@/features/rdvsp/abilities/afficher-rdvs-dans-activites/implementations/prisma/enregistrer-l-affichage.mutation'
 import {
   compteRdvEnBase,
   ID_TEST,
@@ -10,6 +14,11 @@ import {
 } from '@/features/rdvsp/rdvsp.cucumber'
 
 const AGENT_ID = ID_TEST.compte + 9
+
+const regler = afficherRdvsDansActivites({
+  compteRdvExiste,
+  enregistrerLAffichage,
+})
 
 let reglage: Awaited<ReturnType<AfficherRdvsDansActivites>> | undefined
 
@@ -37,14 +46,14 @@ Given('aucun compte RDV pour régler l’affichage', () => {
 })
 
 When('je demande à voir les rendez-vous dans mes activités', async () => {
-  reglage = await afficherRdvsDansActivites({
+  reglage = await regler({
     utilisateurId: testUtilisateurId,
     afficher: true,
   })
 })
 
 When('je demande à masquer les rendez-vous dans mes activités', async () => {
-  reglage = await afficherRdvsDansActivites({
+  reglage = await regler({
     utilisateurId: testUtilisateurId,
     afficher: false,
   })
