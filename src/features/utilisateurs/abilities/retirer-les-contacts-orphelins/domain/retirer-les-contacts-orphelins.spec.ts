@@ -1,10 +1,13 @@
 import { describe, expect, it } from 'vitest'
-import { AdresseCourriel, UtilisateurId } from '@/features/utilisateurs/domain'
-import type { ContactBrevo } from './contacts'
 import {
-  type RetirerLesContactsOrphelinsDependances,
-  retirerLesContactsOrphelins,
-} from './retirer-les-contacts-orphelins'
+  AdresseCourriel,
+  EchecTechnique,
+  UtilisateurId,
+} from '@/features/utilisateurs/domain'
+import { failure, success } from '@/libraries/result'
+import type { ContactBrevo } from './contacts'
+import type { RetirerLesContactsOrphelinsPorts } from './ports'
+import { retirerLesContactsOrphelins } from './retirer-les-contacts-orphelins'
 
 const vivant = UtilisateurId('3c4d5e6f-7a8b-4c9d-8e0f-1a2b3c4d5e6f')
 const parti = UtilisateurId('4d5e6f7a-8b9c-4d0e-9f1a-2b3c4d5e6f7a')
@@ -36,51 +39,59 @@ const contacts: readonly ContactBrevo[] = [
   },
 ]
 
-const dependances: RetirerLesContactsOrphelinsDependances = {
-  listerLesContacts: async () => contacts,
+const ports: RetirerLesContactsOrphelinsPorts = {
   inscritsVivantsParmi: async () => new Set([vivant]),
-  supprimerLeContact: async () => undefined,
-  retirerLeContactDeLaListe: async () => ({ _tag: 'Retire' }),
+  supprimerLeContact: async () => success(undefined),
+  retirerLeContactDeLaListe: async () => success({ _tag: 'Retire' }),
 }
 
 describe('retirer les contacts orphelins', () => {
   it('supprime les seuls contacts anonymisés par l’effacement et retire de la liste ceux qui n’ont pas d’inscrit vivant', async () => {
-    expect(await retirerLesContactsOrphelins(dependances)()).toEqual({
-      contacts: 5,
-      anonymisesSupprimes: 1,
-      orphelinsRetires: 2,
-      echecs: [],
+    expect(await retirerLesContactsOrphelins(ports)({ contacts })).toEqual({
+      success: true,
+      data: {
+        contacts: 5,
+        anonymisesSupprimes: [courrielAnonymise],
+        orphelinsRetires: [courrielInconnu, courrielParti],
+        echecs: [],
+      },
     })
   })
 
-  it('ne compte pas un orphelin déjà absent de la liste', async () => {
+  it('ne retient pas un orphelin déjà absent de la liste', async () => {
     expect(
       await retirerLesContactsOrphelins({
-        ...dependances,
-        retirerLeContactDeLaListe: async () => ({ _tag: 'DejaAbsent' }),
-      })(),
+        ...ports,
+        retirerLeContactDeLaListe: async () => success({ _tag: 'DejaAbsent' }),
+      })({ contacts }),
     ).toEqual({
-      contacts: 5,
-      anonymisesSupprimes: 1,
-      orphelinsRetires: 0,
-      echecs: [],
+      success: true,
+      data: {
+        contacts: 5,
+        anonymisesSupprimes: [courrielAnonymise],
+        orphelinsRetires: [],
+        echecs: [],
+      },
     })
   })
 
   it('poursuit après un échec et rapporte les courriels non traités', async () => {
     expect(
       await retirerLesContactsOrphelins({
-        ...dependances,
+        ...ports,
         supprimerLeContact: async () =>
-          Promise.reject(new Error('Brevo indisponible')),
+          failure(EchecTechnique('Brevo indisponible')),
         retirerLeContactDeLaListe: async () =>
-          Promise.reject(new Error('Brevo indisponible')),
-      })(),
+          failure(EchecTechnique('Brevo indisponible')),
+      })({ contacts }),
     ).toEqual({
-      contacts: 5,
-      anonymisesSupprimes: 0,
-      orphelinsRetires: 0,
-      echecs: [courrielAnonymise, courrielInconnu, courrielParti],
+      success: true,
+      data: {
+        contacts: 5,
+        anonymisesSupprimes: [],
+        orphelinsRetires: [],
+        echecs: [courrielAnonymise, courrielInconnu, courrielParti],
+      },
     })
   })
 })

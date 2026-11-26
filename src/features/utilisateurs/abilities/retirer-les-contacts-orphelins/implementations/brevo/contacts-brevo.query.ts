@@ -1,5 +1,9 @@
 import axios from 'axios'
-import { AdresseCourriel, UtilisateurId } from '@/features/utilisateurs/domain'
+import {
+  AdresseCourriel,
+  EchecTechnique,
+  UtilisateurId,
+} from '@/features/utilisateurs/domain'
 import {
   cleApiBrevo,
   listeDesUtilisateurs,
@@ -8,11 +12,12 @@ import { brevoApiThrottle } from '@/features/utilisateurs/implementations/brevo/
 import { deleteBrevoContact } from '@/features/utilisateurs/implementations/brevo/delete-brevo-contact.mutation'
 import { deleteBrevoContactIfOrphan } from '@/features/utilisateurs/implementations/brevo/delete-brevo-contact-if-orphan.mutation'
 import { removeBrevoContactFromList } from '@/features/utilisateurs/implementations/brevo/remove-brevo-contact-from-list.mutation'
+import { failure, success } from '@/libraries/result'
+import type { CompteDuContact, ContactBrevo } from '../../domain'
 import type {
-  CompteDuContact,
-  ContactBrevo,
-  RetirerLesContactsOrphelinsPorts,
-} from '../../domain'
+  RetirerLeContactDeLaListe,
+  SupprimerLeContact,
+} from '../../domain/ports'
 
 type PageDeContacts = {
   readonly contacts: readonly {
@@ -66,17 +71,32 @@ const lireAPartirDe = async (
     : [...contacts, ...(await lireAPartirDe(offset + TAILLE_DE_PAGE))]
 }
 
-export const contactsBrevoPorts: RetirerLesContactsOrphelinsPorts = {
-  listerLesContacts: () => lireAPartirDe(0),
-  supprimerLeContact: async (courriel) => {
+const echecDe = (erreur: unknown): EchecTechnique =>
+  EchecTechnique(erreur instanceof Error ? erreur.message : String(erreur))
+
+export const listerLesContacts = (): Promise<readonly ContactBrevo[]> =>
+  lireAPartirDe(0)
+
+export const supprimerLeContact: SupprimerLeContact = async (courriel) => {
+  try {
     await deleteBrevoContact(courriel)
-  },
-  retirerLeContactDeLaListe: async (courriel) => {
+    return success(undefined)
+  } catch (erreur) {
+    return failure(echecDe(erreur))
+  }
+}
+
+export const retirerLeContactDeLaListe: RetirerLeContactDeLaListe = async (
+  courriel,
+) => {
+  try {
     const retire = await removeBrevoContactFromList(
       courriel,
       listeDesUtilisateurs,
     )
     await deleteBrevoContactIfOrphan(courriel)
-    return retire ? { _tag: 'Retire' } : { _tag: 'DejaAbsent' }
-  },
+    return success(retire ? { _tag: 'Retire' } : { _tag: 'DejaAbsent' })
+  } catch (erreur) {
+    return failure(echecDe(erreur))
+  }
 }

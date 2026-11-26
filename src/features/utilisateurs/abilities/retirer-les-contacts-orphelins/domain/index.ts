@@ -5,4 +5,3 @@ export {
   contactsAReconcilier,
   orphelinsParmi,
 } from './contacts'
-export type { RetirerLesContactsOrphelinsPorts } from './ports'
