@@ -1,29 +1,23 @@
 import { describe, expect, it } from 'vitest'
+import { Siret } from '@/libraries/insee'
 import { failure, success } from '@/libraries/result'
+import { DenominationEmployeuse } from '../../../domain/denomination-employeuse'
 import { EmployeuseId } from '../../../domain/employeuse-id'
 import { IdentiteEmployeuse } from '../../../domain/identite-employeuse'
+import { UtilisateurId } from '../../../domain/utilisateur-id'
 import type { EmployeuseDuSiret } from './employeuse-du-siret'
-import { EmployeuseIndisponible } from './errors'
+import { SireneIndisponible } from './errors'
+import { MotifSansRattachement } from './motif-sans-rattachement'
 import type { RattacherAUneEmployeusePorts } from './ports'
 import { rattacherAUneEmployeuse } from './rattacher-a-une-employeuse'
-import type { SaisieEmployeuse } from './source-du-rattachement'
 
-const userId = '550e8400-e29b-41d4-a716-446655440000'
+const userId = UtilisateurId('550e8400-e29b-41d4-a716-446655440000')
+
+const siret = Siret('93429789600011')
 
 const employeuseCreeeId = EmployeuseId(7)
 
 const employeuseExistanteId = EmployeuseId(3)
-
-const saisie: SaisieEmployeuse = {
-  siret: '93429789600011',
-  denomination: 'Association des tests',
-  adresse: {
-    voie: '10 rue de la Bascule',
-    commune: 'Nantes',
-    codePostal: '44000',
-    codeInsee: '44109',
-  },
-}
 
 const identiteSaisie = IdentiteEmployeuse({
   siret: '93429789600011',
@@ -49,18 +43,10 @@ const identiteSirene = IdentiteEmployeuse({
 
 const ports: RattacherAUneEmployeusePorts = {
   lireLEtablissement: async () =>
-    success({
-      siret: '93429789600011',
-      raisonSociale: 'ASSOCIATION SIRENE',
-      ferme: false,
-      voie: '1 rue du Registre',
-      commune: 'Paris',
-      codePostal: '75001',
-      codeInsee: '75101',
-    }),
-  estConseillerNumeriqueEnPoste: async () => false,
-  lireLesEmployeusesDuSiret: async () => success([]),
-  creerLEmployeuse: async () => success(employeuseCreeeId),
+    success({ _tag: 'Ouvert', identite: identiteSirene }),
+  lireLeStatutDeConseillerNumerique: async () => ({ _tag: 'HorsPoste' }),
+  lireLesEmployeusesDuSiret: async () => [],
+  creerLEmployeuse: async () => employeuseCreeeId,
   enregistrerLeRattachement: async () => undefined,
 }
 
@@ -68,7 +54,7 @@ const homonymes = (
   employeuses: readonly EmployeuseDuSiret[],
 ): RattacherAUneEmployeusePorts => ({
   ...ports,
-  lireLesEmployeusesDuSiret: async () => success(employeuses),
+  lireLesEmployeusesDuSiret: async () => employeuses,
 })
 
 describe('rattacher à une employeuse saisie', () => {
@@ -76,7 +62,7 @@ describe('rattacher à une employeuse saisie', () => {
     expect(
       await rattacherAUneEmployeuse(ports)({
         userId,
-        source: { _tag: 'Saisie', saisie },
+        source: { _tag: 'Saisie', identite: identiteSaisie },
       }),
     ).toEqual(
       success({
@@ -94,7 +80,9 @@ describe('rattacher à une employeuse saisie', () => {
       employeuses: [
         {
           id: employeuseExistanteId,
-          denominationAntenne: ' association des TESTS ',
+          denominationAntenne: DenominationEmployeuse(
+            ' association des TESTS ',
+          ),
           denominationSirene: null,
         },
       ],
@@ -105,7 +93,7 @@ describe('rattacher à une employeuse saisie', () => {
         {
           id: employeuseExistanteId,
           denominationAntenne: null,
-          denominationSirene: 'Association des tests',
+          denominationSirene: DenominationEmployeuse('Association des tests'),
         },
       ],
     },
@@ -114,12 +102,12 @@ describe('rattacher à une employeuse saisie', () => {
       employeuses: [
         {
           id: EmployeuseId(9),
-          denominationAntenne: 'Antenne de Rennes',
-          denominationSirene: 'Association des tests',
+          denominationAntenne: DenominationEmployeuse('Antenne de Rennes'),
+          denominationSirene: DenominationEmployeuse('Association des tests'),
         },
         {
           id: employeuseExistanteId,
-          denominationAntenne: 'Association des tests',
+          denominationAntenne: DenominationEmployeuse('Association des tests'),
           denominationSirene: null,
         },
       ],
@@ -128,7 +116,7 @@ describe('rattacher à une employeuse saisie', () => {
     expect(
       await rattacherAUneEmployeuse(homonymes(employeuses))({
         userId,
-        source: { _tag: 'Saisie', saisie },
+        source: { _tag: 'Saisie', identite: identiteSaisie },
       }),
     ).toEqual(
       success({
@@ -146,11 +134,11 @@ describe('rattacher à une employeuse saisie', () => {
         homonymes([
           {
             id: employeuseExistanteId,
-            denominationAntenne: 'Antenne de Rennes',
-            denominationSirene: 'Fédération des tests',
+            denominationAntenne: DenominationEmployeuse('Antenne de Rennes'),
+            denominationSirene: DenominationEmployeuse('Fédération des tests'),
           },
         ]),
-      )({ userId, source: { _tag: 'Saisie', saisie } }),
+      )({ userId, source: { _tag: 'Saisie', identite: identiteSaisie } }),
     ).toEqual(
       success({
         _tag: 'Rattachee',
@@ -162,6 +150,17 @@ describe('rattacher à une employeuse saisie', () => {
   })
 
   it('crée une employeuse sans dénomination, qu’aucune ligne ne peut désigner', async () => {
+    const sansDenomination = IdentiteEmployeuse({
+      siret: '93429789600011',
+      denomination: null,
+      adresse: {
+        voie: '10 rue de la Bascule',
+        commune: 'Nantes',
+        codePostal: '44000',
+        codeInsee: '44109',
+      },
+    })
+
     expect(
       await rattacherAUneEmployeuse(
         homonymes([
@@ -173,51 +172,25 @@ describe('rattacher à une employeuse saisie', () => {
         ]),
       )({
         userId,
-        source: { _tag: 'Saisie', saisie: { ...saisie, denomination: null } },
+        source: { _tag: 'Saisie', identite: sansDenomination },
       }),
     ).toEqual(
       success({
         _tag: 'Rattachee',
         userId,
         employeuseId: employeuseCreeeId,
-        employeuseCreee: IdentiteEmployeuse({
-          siret: '93429789600011',
-          denomination: null,
-          adresse: saisie.adresse,
-        }),
+        employeuseCreee: sansDenomination,
       }),
     )
   })
 
-  it('refuse une saisie sans commune', async () => {
+  it('refuse une saisie dont l’identité est inexploitable', async () => {
     expect(
       await rattacherAUneEmployeuse(ports)({
         userId,
-        source: {
-          _tag: 'Saisie',
-          saisie: { ...saisie, adresse: { ...saisie.adresse, commune: '' } },
-        },
+        source: { _tag: 'Saisie', identite: null },
       }),
     ).toEqual(failure({ _tag: 'IdentiteInexploitable' }))
-  })
-
-  it('échoue quand les employeuses du SIRET ne peuvent pas être lues', async () => {
-    expect(
-      await rattacherAUneEmployeuse({
-        ...ports,
-        lireLesEmployeusesDuSiret: async () =>
-          failure(EmployeuseIndisponible()),
-      })({ userId, source: { _tag: 'Saisie', saisie } }),
-    ).toEqual(failure({ _tag: 'EmployeuseIndisponible' }))
-  })
-
-  it('échoue quand l’employeuse ne peut pas être créée', async () => {
-    expect(
-      await rattacherAUneEmployeuse({
-        ...ports,
-        creerLEmployeuse: async () => failure(EmployeuseIndisponible()),
-      })({ userId, source: { _tag: 'Saisie', saisie } }),
-    ).toEqual(failure({ _tag: 'EmployeuseIndisponible' }))
   })
 })
 
@@ -226,7 +199,7 @@ describe('rattacher à l’employeuse d’un SIRET', () => {
     expect(
       await rattacherAUneEmployeuse(ports)({
         userId,
-        source: { _tag: 'Siret', siret: '93429789600011' },
+        source: { _tag: 'Siret', siret },
       }),
     ).toEqual(
       success({
@@ -242,26 +215,27 @@ describe('rattacher à l’employeuse d’un SIRET', () => {
     expect(
       await rattacherAUneEmployeuse({
         ...ports,
-        lireLEtablissement: async () => failure(EmployeuseIndisponible()),
-      })({ userId, source: { _tag: 'Siret', siret: '93429789600011' } }),
-    ).toEqual(failure({ _tag: 'EmployeuseIndisponible' }))
+        lireLEtablissement: async () => failure(SireneIndisponible()),
+      })({ userId, source: { _tag: 'Siret', siret } }),
+    ).toEqual(failure({ _tag: 'SireneIndisponible' }))
   })
 
   it('refuse un établissement fermé', async () => {
     expect(
       await rattacherAUneEmployeuse({
         ...ports,
+        lireLEtablissement: async () => success({ _tag: 'Ferme' }),
+      })({ userId, source: { _tag: 'Siret', siret } }),
+    ).toEqual(failure({ _tag: 'IdentiteInexploitable' }))
+  })
+
+  it('refuse un établissement ouvert dont SIRENE ne tire aucune identité', async () => {
+    expect(
+      await rattacherAUneEmployeuse({
+        ...ports,
         lireLEtablissement: async () =>
-          success({
-            siret: '93429789600011',
-            raisonSociale: 'ASSOCIATION SIRENE',
-            ferme: true,
-            voie: '1 rue du Registre',
-            commune: 'Paris',
-            codePostal: '75001',
-            codeInsee: '75101',
-          }),
-      })({ userId, source: { _tag: 'Siret', siret: '93429789600011' } }),
+          success({ _tag: 'Ouvert', identite: null }),
+      })({ userId, source: { _tag: 'Siret', siret } }),
     ).toEqual(failure({ _tag: 'IdentiteInexploitable' }))
   })
 })
@@ -271,7 +245,7 @@ describe('rattacher à l’employeuse déclarée par ProConnect', () => {
     expect(
       await rattacherAUneEmployeuse(ports)({
         userId,
-        source: { _tag: 'ProConnect', siret: '93429789600011' },
+        source: { _tag: 'ProConnect', siret },
       }),
     ).toEqual(
       success({
@@ -289,19 +263,24 @@ describe('rattacher à l’employeuse déclarée par ProConnect', () => {
         userId,
         source: { _tag: 'ProConnect', siret: null },
       }),
-    ).toEqual(success({ _tag: 'SansRattachement', motif: 'SiretAbsent' }))
+    ).toEqual(
+      success({
+        _tag: 'SansRattachement',
+        motif: MotifSansRattachement('SiretAbsent'),
+      }),
+    )
   })
 
   it('ne rattache pas un conseiller numérique en poste, dont le dispositif fixe l’employeuse', async () => {
     expect(
       await rattacherAUneEmployeuse({
         ...ports,
-        estConseillerNumeriqueEnPoste: async () => true,
-      })({ userId, source: { _tag: 'ProConnect', siret: '93429789600011' } }),
+        lireLeStatutDeConseillerNumerique: async () => ({ _tag: 'EnPoste' }),
+      })({ userId, source: { _tag: 'ProConnect', siret } }),
     ).toEqual(
       success({
         _tag: 'SansRattachement',
-        motif: 'ConseillerNumeriqueEnPoste',
+        motif: MotifSansRattachement('ConseillerNumeriqueEnPoste'),
       }),
     )
   })
@@ -310,8 +289,10 @@ describe('rattacher à l’employeuse déclarée par ProConnect', () => {
     expect(
       await rattacherAUneEmployeuse({
         ...ports,
-        estConseillerNumeriqueEnPoste: async () => null,
-      })({ userId, source: { _tag: 'ProConnect', siret: '93429789600011' } }),
+        lireLeStatutDeConseillerNumerique: async () => ({
+          _tag: 'CompteInconnu',
+        }),
+      })({ userId, source: { _tag: 'ProConnect', siret } }),
     ).toEqual(failure({ _tag: 'UtilisateurIntrouvable' }))
   })
 })

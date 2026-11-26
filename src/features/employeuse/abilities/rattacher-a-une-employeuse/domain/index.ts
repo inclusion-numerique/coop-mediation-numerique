@@ -1,4 +1,4 @@
 export type {
-  EstConseillerNumeriqueEnPoste,
+  LireLeStatutDeConseillerNumerique,
   RattacherAUneEmployeusePorts,
 } from './ports'

@@ -2,16 +2,16 @@ import type { NextRequest } from 'next/server'
 import NextAuth from 'next-auth'
 import { geocoder } from '@/configuration/ban'
 import { connexionParProConnect } from '@/configuration/projet/serveur'
-import { signaler } from '@/configuration/telemetry/serveur'
 import { moyenDeConnexionParCourriel } from '@/features/authentification/implementations/email/moyen-de-connexion-par-courriel.client'
 import { nextAuthOptions } from '@/features/authentification/implementations/next-auth/next-auth.client'
 import { moyenDeConnexionProConnect } from '@/features/authentification/implementations/proconnect/moyen-de-connexion-proconnect.client'
 import { rattacherAUneEmployeuse } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/domain/rattacher-a-une-employeuse'
 import { etablissementDepuisSiret } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/api-entreprise/etablissement-depuis-siret.query'
-import { estConseillerNumeriqueEnPoste } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/prisma/conseiller-numerique-en-poste.query'
+import { statutDeConseillerNumerique } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/prisma/conseiller-numerique-en-poste.query'
 import { creerLEmployeuse } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/prisma/creer-l-employeuse.mutation'
 import { lireLesEmployeusesDuSiret } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/prisma/employeuses-du-siret.query'
 import { enregistrerLeRattachement } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/prisma/enregistrer-le-rattachement.mutation'
+import { UtilisateurId } from '@/features/employeuse/domain'
 import {
   ensurePersonneMain,
   synchroniserPersonne,
@@ -22,13 +22,14 @@ import {
   aLeRoleCoordinateur,
   coordonneDansLeDispositif,
 } from '@/features/utilisateurs/abilities/garantir-le-role-coordinateur-du-dispositif/implementations/prisma/role-coordinateur.query'
+import { Siret } from '@/libraries/insee'
 import { isFirewallUserAgent } from '@/libraries/nextjs'
 
 const rattacher = rattacherAUneEmployeuse({
   lireLEtablissement: etablissementDepuisSiret,
-  estConseillerNumeriqueEnPoste,
-  lireLesEmployeusesDuSiret: lireLesEmployeusesDuSiret(signaler),
-  creerLEmployeuse: creerLEmployeuse({ geocoder, signaler }),
+  lireLeStatutDeConseillerNumerique: statutDeConseillerNumerique,
+  lireLesEmployeusesDuSiret,
+  creerLEmployeuse: creerLEmployeuse({ geocoder }),
   enregistrerLeRattachement: enregistrerLeRattachement({
     garantirLaPersonne: ensurePersonneMain,
     synchroniserLaPersonne: synchroniserPersonne,
@@ -49,7 +50,10 @@ const options = nextAuthOptions({
       creerLeRoleCoordinateur: creerLeRoleCoordinateur(synchroniserPersonne),
     })({ utilisateurId }),
   importerLEmployeuseProConnect: ({ userId, siret }) =>
-    rattacher({ userId, source: { _tag: 'ProConnect', siret: siret ?? null } }),
+    rattacher({
+      userId: UtilisateurId(userId),
+      source: { _tag: 'ProConnect', siret: Siret.safe(siret ?? '') },
+    }),
   synchroniserLaPersonne: synchroniserPersonne,
 })
 

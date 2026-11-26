@@ -3,6 +3,7 @@ import type {
   ProfilInscription,
   UtilisateurId,
 } from '@/features/inscription/domain'
+import type { Siret } from '@/libraries/insee'
 
 export type LireLeDispositif = (
   userId: UtilisateurId,
@@ -20,13 +21,13 @@ export type GarantirLeRoleCoordinateur = (
 export type GarantirLeMediateur = (userId: UtilisateurId) => Promise<void>
 
 export type LireLeSiretARattacher = (userId: UtilisateurId) => Promise<{
-  readonly siret: string | null
+  readonly siret: Siret | null
   readonly aUneEmployeuse: boolean
 }>
 
 export type RattacherDepuisSiret = (input: {
   readonly userId: UtilisateurId
-  readonly siret: string
+  readonly siret: Siret
 }) => Promise<unknown>
 
 export type LireEtatPourEtapeSuivante = (userId: UtilisateurId) => Promise<{

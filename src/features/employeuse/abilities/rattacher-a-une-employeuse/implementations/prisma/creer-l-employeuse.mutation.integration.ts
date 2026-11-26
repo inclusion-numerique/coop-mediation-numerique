@@ -36,7 +36,6 @@ describe('créer l’employeuse, service d’adresse indisponible', () => {
       geocoder: async () => {
         throw new AdresseIndisponible('HTTP 503')
       },
-      signaler: () => undefined,
     })(
       IdentiteEmployeuse({
         siret,
@@ -51,7 +50,7 @@ describe('créer l’employeuse, service d’adresse indisponible', () => {
     )
 
     const ligne = await prismaClient.structureAdministrativeMain.findUnique({
-      where: { id: creee.success ? creee.data : -1 },
+      where: { id: creee },
       select: { adresse: { select: { nomVoie: true, codeBan: true } } },
     })
 
@@ -77,7 +76,6 @@ describe('créer l’employeuse, SIRET non diffusible', () => {
   it('crée une employeuse pour un SIRET [Non-Diffusible]', async () => {
     const creee = await creerLEmployeuse({
       geocoder: async () => null,
-      signaler: () => undefined,
     })(
       IdentiteEmployeuse({
         siret,
@@ -91,6 +89,6 @@ describe('créer l’employeuse, SIRET non diffusible', () => {
       }),
     )
 
-    expect(creee.success).toBe(true)
+    expect(creee).toBeGreaterThan(0)
   })
 })

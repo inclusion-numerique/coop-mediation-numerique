@@ -1,17 +1,21 @@
+import type { DenominationEmployeuse } from '../../../domain/denomination-employeuse'
 import type { EmployeuseId } from '../../../domain/employeuse-id'
 
 export type EmployeuseDuSiret = {
   readonly id: EmployeuseId
-  readonly denominationAntenne: string | null
-  readonly denominationSirene: string | null
+  readonly denominationAntenne: DenominationEmployeuse | null
+  readonly denominationSirene: DenominationEmployeuse | null
 }
 
-const memeDenomination = (a: string | null, b: string | null): boolean =>
+const memeDenomination = (
+  a: DenominationEmployeuse | null,
+  b: DenominationEmployeuse | null,
+): boolean =>
   a !== null && b !== null && a.trim().toLowerCase() === b.trim().toLowerCase()
 
 export const employeuseExistante = (
   employeuses: readonly EmployeuseDuSiret[],
-  denomination: string | null,
+  denomination: DenominationEmployeuse | null,
 ): EmployeuseId | null =>
   (
     employeuses.find(({ denominationAntenne }) =>

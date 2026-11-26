@@ -33,6 +33,7 @@
       "app/coop/(sidemenu-layout)/mon-reseau/page.tsx"
     ],
     "libraries/insee": [
+      "app/api/auth/[...nextauth]/route.ts",
       "app/coop/(sidemenu-layout)/mes-outils/[slug]/page.tsx"
     ],
     "libraries/texte": [

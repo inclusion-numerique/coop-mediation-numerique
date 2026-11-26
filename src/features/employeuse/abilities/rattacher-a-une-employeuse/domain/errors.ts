@@ -1,9 +1,9 @@
-export type EmployeuseIndisponible = {
-  readonly _tag: 'EmployeuseIndisponible'
+export type SireneIndisponible = {
+  readonly _tag: 'SireneIndisponible'
 }
 
-export const EmployeuseIndisponible = (): EmployeuseIndisponible => ({
-  _tag: 'EmployeuseIndisponible',
+export const SireneIndisponible = (): SireneIndisponible => ({
+  _tag: 'SireneIndisponible',
 })
 
 export type IdentiteInexploitable = {
@@ -23,6 +23,6 @@ export const UtilisateurIntrouvable = (): UtilisateurIntrouvable => ({
 })
 
 export type EchecDeRattacherAUneEmployeuse =
-  | EmployeuseIndisponible
+  | SireneIndisponible
   | IdentiteInexploitable
   | UtilisateurIntrouvable

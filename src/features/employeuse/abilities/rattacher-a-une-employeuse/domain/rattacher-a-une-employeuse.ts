@@ -1,25 +1,23 @@
+import type { Siret } from '@/libraries/insee'
 import { failure, type Result, success } from '@/libraries/result'
-import {
-  IdentiteEmployeuse,
-  identiteDepuisEtablissement,
-} from '../../../domain/identite-employeuse'
+import type { IdentiteEmployeuse } from '../../../domain/identite-employeuse'
+import type { UtilisateurId } from '../../../domain/utilisateur-id'
 import { employeuseExistante } from './employeuse-du-siret'
 import {
   type EchecDeRattacherAUneEmployeuse,
-  type EmployeuseIndisponible,
   IdentiteInexploitable,
+  type SireneIndisponible,
   UtilisateurIntrouvable,
 } from './errors'
+import type { EtablissementSirene } from './etablissement-sirene'
+import { MotifSansRattachement } from './motif-sans-rattachement'
 import type { LireLEtablissement, RattacherAUneEmployeusePorts } from './ports'
 import type { Rattachement } from './rattachement'
-import type {
-  SaisieEmployeuse,
-  SourceDuRattachement,
-} from './source-du-rattachement'
+import type { SourceDuRattachement } from './source-du-rattachement'
 
 type IdentiteRetenue = Result<
   IdentiteEmployeuse,
-  EmployeuseIndisponible | IdentiteInexploitable
+  SireneIndisponible | IdentiteInexploitable
 >
 
 const identiteRetenue = (
@@ -27,24 +25,28 @@ const identiteRetenue = (
 ): IdentiteRetenue =>
   identite === null ? failure(IdentiteInexploitable()) : success(identite)
 
-const identiteSaisie = (saisie: SaisieEmployeuse): IdentiteRetenue =>
-  identiteRetenue(IdentiteEmployeuse.safe(saisie))
+const identiteDeLEtablissement = (
+  etablissement: EtablissementSirene,
+): IdentiteRetenue =>
+  etablissement._tag === 'Ferme'
+    ? failure(IdentiteInexploitable())
+    : identiteRetenue(etablissement.identite)
 
 const identiteDuSiret = async (
   lireLEtablissement: LireLEtablissement,
-  siret: string,
+  siret: Siret,
 ): Promise<IdentiteRetenue> => {
   const etablissement = await lireLEtablissement(siret)
 
   return etablissement.success
-    ? identiteRetenue(identiteDepuisEtablissement(etablissement.data))
+    ? identiteDeLEtablissement(etablissement.data)
     : etablissement
 }
 
 export const rattacherAUneEmployeuse =
   ({
     lireLEtablissement,
-    estConseillerNumeriqueEnPoste,
+    lireLeStatutDeConseillerNumerique,
     lireLesEmployeusesDuSiret,
     creerLEmployeuse,
     enregistrerLeRattachement,
@@ -53,7 +55,7 @@ export const rattacherAUneEmployeuse =
     userId,
     source,
   }: {
-    readonly userId: string
+    readonly userId: UtilisateurId
     readonly source: SourceDuRattachement
   }): Promise<Result<Rattachement, EchecDeRattacherAUneEmployeuse>> => {
     const rattacher = async (
@@ -61,48 +63,43 @@ export const rattacherAUneEmployeuse =
     ): Promise<Result<Rattachement, EchecDeRattacherAUneEmployeuse>> => {
       if (!identite.success) return identite
 
-      const homonymes = await lireLesEmployeusesDuSiret(identite.data.siret)
-
-      if (!homonymes.success) return homonymes
-
       const existante = employeuseExistante(
-        homonymes.data,
+        await lireLesEmployeusesDuSiret(identite.data.siret),
         identite.data.denomination,
       )
-      const employeuse =
-        existante === null
-          ? await creerLEmployeuse(identite.data)
-          : success(existante)
+      const employeuseId = existante ?? (await creerLEmployeuse(identite.data))
 
-      if (!employeuse.success) return employeuse
-
-      await enregistrerLeRattachement({ userId, employeuseId: employeuse.data })
+      await enregistrerLeRattachement({ userId, employeuseId })
 
       return success({
         _tag: 'Rattachee',
         userId,
-        employeuseId: employeuse.data,
+        employeuseId,
         employeuseCreee: existante === null ? identite.data : null,
       })
     }
 
     if (source._tag === 'Saisie')
-      return rattacher(identiteSaisie(source.saisie))
+      return rattacher(identiteRetenue(source.identite))
 
     if (source._tag === 'Siret')
       return rattacher(await identiteDuSiret(lireLEtablissement, source.siret))
 
     if (source.siret === null)
-      return success({ _tag: 'SansRattachement', motif: 'SiretAbsent' })
-
-    const conseillerNumerique = await estConseillerNumeriqueEnPoste(userId)
-
-    if (conseillerNumerique === null) return failure(UtilisateurIntrouvable())
-
-    if (conseillerNumerique)
       return success({
         _tag: 'SansRattachement',
-        motif: 'ConseillerNumeriqueEnPoste',
+        motif: MotifSansRattachement('SiretAbsent'),
+      })
+
+    const statut = await lireLeStatutDeConseillerNumerique(userId)
+
+    if (statut._tag === 'CompteInconnu')
+      return failure(UtilisateurIntrouvable())
+
+    if (statut._tag === 'EnPoste')
+      return success({
+        _tag: 'SansRattachement',
+        motif: MotifSansRattachement('ConseillerNumeriqueEnPoste'),
       })
 
     return rattacher(await identiteDuSiret(lireLEtablissement, source.siret))

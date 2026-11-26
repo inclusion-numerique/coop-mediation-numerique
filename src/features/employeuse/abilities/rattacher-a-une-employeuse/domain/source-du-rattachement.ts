@@ -1,15 +1,10 @@
-export type SaisieEmployeuse = {
-  readonly siret: string
-  readonly denomination: string | null
-  readonly adresse: {
-    readonly voie: string | null
-    readonly commune: string
-    readonly codePostal: string | null
-    readonly codeInsee: string | null
-  }
-}
+import type { Siret } from '@/libraries/insee'
+import type { IdentiteEmployeuse } from '../../../domain/identite-employeuse'
 
 export type SourceDuRattachement =
-  | { readonly _tag: 'Saisie'; readonly saisie: SaisieEmployeuse }
-  | { readonly _tag: 'Siret'; readonly siret: string }
-  | { readonly _tag: 'ProConnect'; readonly siret: string | null }
+  | {
+      readonly _tag: 'Saisie'
+      readonly identite: IdentiteEmployeuse | null
+    }
+  | { readonly _tag: 'Siret'; readonly siret: Siret }
+  | { readonly _tag: 'ProConnect'; readonly siret: Siret | null }

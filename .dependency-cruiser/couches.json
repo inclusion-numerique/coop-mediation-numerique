@@ -193,6 +193,7 @@
     "employeuse/domain",
     "equipe/abilities/lister-les-membres/domain",
     "equipe/domain",
+    "inscription/abilities/initialiser-inscription/domain",
     "lieux-activite/abilities/lister-les-mediateurs-du-lieu/domain",
     "lieux-activite/abilities/mesurer-la-visibilite-sur-la-cartographie/domain",
     "mon-reseau/abilities/consulter-le-reseau-du-departement/domain",

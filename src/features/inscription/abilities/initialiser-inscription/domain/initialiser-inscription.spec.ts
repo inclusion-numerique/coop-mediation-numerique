@@ -5,6 +5,7 @@ import {
   ProfilInscription,
   UtilisateurId,
 } from '@/features/inscription/domain'
+import { Siret } from '@/libraries/insee'
 import { success } from '@/libraries/result'
 import { initialiserInscription } from './initialiser-inscription'
 import type { InscriptionInitialisee } from './inscription-initialisee'
@@ -165,7 +166,7 @@ describe('initialiser l’inscription', () => {
       await initialiserInscription({
         ...ports,
         lireLeSiretARattacher: async () => ({
-          siret: '13002526500013',
+          siret: Siret('13002526500013'),
           aUneEmployeuse: false,
         }),
       })({ userId }),
@@ -173,7 +174,7 @@ describe('initialiser l’inscription', () => {
       success({
         profilEnregistre: null,
         mediateurGaranti: false,
-        siretRattache: '13002526500013',
+        siretRattache: Siret('13002526500013'),
         nextStep: EtapeDInscription('choisir-role'),
       }),
     )
@@ -184,7 +185,7 @@ describe('initialiser l’inscription', () => {
       await initialiserInscription({
         ...ports,
         lireLeSiretARattacher: async () => ({
-          siret: '13002526500013',
+          siret: Siret('13002526500013'),
           aUneEmployeuse: true,
         }),
       })({ userId }),

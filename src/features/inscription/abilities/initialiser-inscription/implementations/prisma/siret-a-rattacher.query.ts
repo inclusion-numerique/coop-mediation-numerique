@@ -1,5 +1,6 @@
 import { prismaClient } from '@/configuration/prisma'
 import type { LireLeSiretARattacher } from '@/features/inscription/abilities/initialiser-inscription/domain'
+import { Siret } from '@/libraries/insee'
 
 export const lireLeSiretARattacher: LireLeSiretARattacher = async (userId) => {
   const user = await prismaClient.user.findUnique({
@@ -13,7 +14,7 @@ export const lireLeSiretARattacher: LireLeSiretARattacher = async (userId) => {
   })
 
   return {
-    siret: user?.siret || null,
+    siret: Siret.safe(user?.siret ?? ''),
     aUneEmployeuse: user?.personneMain?.employeuseActuelle != null,
   }
 }

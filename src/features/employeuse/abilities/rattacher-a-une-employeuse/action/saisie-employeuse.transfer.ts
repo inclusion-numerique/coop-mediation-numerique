@@ -1,20 +1,21 @@
-import type { SaisieEmployeuse } from '../domain/source-du-rattachement'
+import { IdentiteEmployeuse } from '../../../domain/identite-employeuse'
 import type { EmployeuseChoisie } from './renseigner-structure-employeuse.validation'
 
-export const saisieEmployeuse = ({
+export const identiteSaisie = ({
   siret,
   nom,
   adresse,
   commune,
   codePostal,
   codeInsee,
-}: EmployeuseChoisie): SaisieEmployeuse => ({
-  siret,
-  denomination: nom,
-  adresse: {
-    voie: adresse,
-    commune,
-    codePostal: codePostal || null,
-    codeInsee: codeInsee || null,
-  },
-})
+}: EmployeuseChoisie): IdentiteEmployeuse | null =>
+  IdentiteEmployeuse.safe({
+    siret,
+    denomination: nom,
+    adresse: {
+      voie: adresse,
+      commune,
+      codePostal: codePostal || null,
+      codeInsee: codeInsee || null,
+    },
+  })

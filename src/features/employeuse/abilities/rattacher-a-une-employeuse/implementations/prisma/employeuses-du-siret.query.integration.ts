@@ -1,7 +1,6 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { prismaClient } from '@/configuration/prisma'
 import { Siret } from '@/libraries/insee'
-import { success } from '@/libraries/result'
 import { lireLesEmployeusesDuSiret } from './employeuses-du-siret.query'
 
 describe('lire les employeuses d’un SIRET', () => {
@@ -36,21 +35,17 @@ describe('lire les employeuses d’un SIRET', () => {
   })
 
   it('rend toutes les lignes du SIRET avec leurs deux dénominations', async () => {
-    expect(
-      await lireLesEmployeusesDuSiret(() => undefined)(Siret(siret)),
-    ).toEqual(
-      success([
-        {
-          id: state.antenneId,
-          denominationAntenne: 'Antenne de Rennes',
-          denominationSirene: 'Association des tests',
-        },
-        {
-          id: state.sireneId,
-          denominationAntenne: null,
-          denominationSirene: 'Employeuse nommée par SIRENE',
-        },
-      ]),
-    )
+    expect(await lireLesEmployeusesDuSiret(Siret(siret))).toEqual([
+      {
+        id: state.antenneId,
+        denominationAntenne: 'Antenne de Rennes',
+        denominationSirene: 'Association des tests',
+      },
+      {
+        id: state.sireneId,
+        denominationAntenne: null,
+        denominationSirene: 'Employeuse nommée par SIRENE',
+      },
+    ])
   })
 })
