@@ -19,8 +19,7 @@ export const periodeDeMaintenance = (ligne: {
   id: ligne.id,
   debut: ligne.startedAt,
   fin: ligne.endedAt,
-  message:
-    ligne.message == null ? null : MessageDeMaintenance.safe(ligne.message),
+  message: ligne.message === null ? null : MessageDeMaintenance(ligne.message),
 })
 
 export const periodeEnCoursWhere = { endedAt: null } as const
