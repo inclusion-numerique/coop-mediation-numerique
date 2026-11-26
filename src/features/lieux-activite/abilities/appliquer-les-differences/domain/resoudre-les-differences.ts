@@ -1,8 +1,11 @@
+import type {
+  ChoixDesDifferences,
+  Difference,
+} from '../../../domain/differences'
 import type { Fiche } from '../../../domain/fiche'
 import type { UtilisateurId } from '../../../domain/identifiants/utilisateur-id'
 import type { Lieu } from '../../../domain/lieu'
 import { ModifieParUtilisateur } from '../../../domain/registre/tracabilite'
-import type { ChoixDesDifferences, Difference } from './differences'
 
 export const resoudreLesDifferences = ({
   lieu,

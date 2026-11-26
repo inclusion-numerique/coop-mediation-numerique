@@ -1,13 +1,13 @@
 import { prismaClient } from '@/configuration/prisma'
-import type { Lieu } from '../../../../domain/lieu'
-import { lieuFromDomain } from '../../../../implementations/prisma/lieu.transfer'
-import { ecrireAuRegistre } from '../../../../implementations/prisma/registre/ecrire-au-registre.mutation'
-import type { SectionDeLaFiche } from '../../domain/modification-lieu'
+import type { Lieu } from '../../domain/lieu'
+import type { SectionDeLaFiche } from '../../domain/section-de-la-fiche'
 import {
   type ColonnesDuLieu,
   colonnesDuLieuDesSections,
   colonnesDuRegistreDesSections,
 } from './colonnes-par-section.select'
+import { lieuFromDomain } from './lieu.transfer'
+import { ecrireAuRegistre } from './registre/ecrire-au-registre.mutation'
 
 const colonnesDeTracabilite = ({
   modification,

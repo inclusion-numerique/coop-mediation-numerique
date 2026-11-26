@@ -8,9 +8,9 @@ import { ModifierLaFicheDuLieuValidation } from '@/features/lieux-activite/abili
 import { depuisLaSaisie } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/action/saisie-de-la-fiche.transfer'
 import { modifierLaFicheDuLieu } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/domain/modifier-la-fiche-du-lieu'
 import { consulterLaFicheDuLieu } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/implementations/prisma/consulter-la-fiche-du-lieu.query'
-import { enregistrerLesSections } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/implementations/prisma/enregistrer-les-sections.mutation'
 import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
 import { UtilisateurId } from '@/features/lieux-activite/domain/identifiants/utilisateur-id'
+import { enregistrerLesSections } from '@/features/lieux-activite/implementations/prisma/enregistrer-les-sections.mutation'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { fromResult, withInput } from '@/libraries/nextjs'
 

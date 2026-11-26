@@ -1,11 +1,12 @@
 import { failure, type Result, success } from '@/libraries/result'
+import { FicheIntrouvable } from '../../../domain/errors'
 import type { LieuId } from '../../../domain/identifiants/lieu-id'
 import type { UtilisateurId } from '../../../domain/identifiants/utilisateur-id'
 import type { Lieu } from '../../../domain/lieu'
+import type { SectionsEnregistrees } from '../../../domain/sections-enregistrees'
 import { appliquerModification } from './appliquer-la-modification'
 import {
   type EchecDeModifierLaFicheDuLieu,
-  FicheIntrouvable,
   PublicationSansAdresse,
   PublicationSansService,
 } from './errors'
@@ -40,7 +41,7 @@ export const modifierLaFicheDuLieu =
     readonly modification: ModificationLieu
     readonly par: UtilisateurId
     readonly maintenant: Date
-  }): Promise<Result<Lieu, EchecDeModifierLaFicheDuLieu>> => {
+  }): Promise<Result<SectionsEnregistrees, EchecDeModifierLaFicheDuLieu>> => {
     const fiche = await consulter(id)
 
     if (fiche == null) return failure(FicheIntrouvable(id))
@@ -53,11 +54,17 @@ export const modifierLaFicheDuLieu =
 
     if (!verifie.success) return verifie
 
-    await enregistrer({
+    const enregistree: SectionsEnregistrees = {
+      _tag: 'Enregistree',
       lieu: verifie.data,
       sections: [modification.section],
+    }
+
+    await enregistrer({
+      lieu: enregistree.lieu,
+      sections: enregistree.sections,
       maintenant,
     })
 
-    return verifie
+    return success(enregistree)
   }

@@ -13,11 +13,11 @@ import {
 import { prismaClient } from '@/configuration/prisma'
 import { modifierLaFicheDuLieu } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/domain/modifier-la-fiche-du-lieu'
 import { consulterLaFicheDuLieu } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/implementations/prisma/consulter-la-fiche-du-lieu.query'
-import { enregistrerLesSections } from '@/features/lieux-activite/abilities/modifier-la-fiche-du-lieu/implementations/prisma/enregistrer-les-sections.mutation'
 import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
 import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
 import { UtilisateurId } from '@/features/lieux-activite/domain/identifiants/utilisateur-id'
 import { SERVICES_PAR_DEFAUT } from '@/features/lieux-activite/domain/registre/publication'
+import { enregistrerLesSections } from '@/features/lieux-activite/implementations/prisma/enregistrer-les-sections.mutation'
 import {
   ficheSemee,
   semerUneFicheDeLieu,

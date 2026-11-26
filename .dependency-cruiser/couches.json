@@ -11,6 +11,7 @@
     "lieux-activite/abilities/ajouter-des-lieux-activite/implementations/entrepot",
     "lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma",
     "lieux-activite/abilities/ajouter-des-lieux-activite/ui/presenters",
+    "lieux-activite/abilities/appliquer-les-differences/domain",
     "lieux-activite/abilities/creer-lieu-activite/action",
     "lieux-activite/abilities/creer-lieu-activite/domain",
     "lieux-activite/abilities/fusionner-des-lieux/domain",

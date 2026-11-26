@@ -15,3 +15,13 @@ export const LieuIntrouvable = (lieuId: LieuId): LieuIntrouvable => ({
   _tag: 'LieuIntrouvable',
   lieuId,
 })
+
+export type FicheIntrouvable = {
+  readonly _tag: 'FicheIntrouvable'
+  readonly id: LieuId
+}
+
+export const FicheIntrouvable = (id: LieuId): FicheIntrouvable => ({
+  _tag: 'FicheIntrouvable',
+  id,
+})

@@ -17,8 +17,8 @@ import {
   Typologies,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { describe, expect, it } from 'vitest'
-import type { Fiche } from '../../../domain/fiche'
 import { differences, sectionsConcernees } from './differences'
+import type { Fiche } from './fiche'
 
 const fiche: Fiche = {
   nom: Nom('Espace numérique'),

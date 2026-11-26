@@ -1,5 +1,5 @@
-import type { Fiche } from '../../../domain/fiche'
-import type { SectionDeLaFiche } from './modification-lieu'
+import type { Fiche } from './fiche'
+import type { SectionDeLaFiche } from './section-de-la-fiche'
 
 const CHAMPS = [
   { champ: 'nom', libelle: 'Nom', section: 'InformationsGenerales' },

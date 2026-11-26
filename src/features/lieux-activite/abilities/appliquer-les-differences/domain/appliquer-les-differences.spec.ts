@@ -24,19 +24,19 @@ import {
 import { describe, expect, it } from 'vitest'
 import type { Result } from '@/libraries/result'
 import { VisibiliteCartographie } from '../../../domain/cartographie-nationale/visibilite-cartographie'
+import type { ChoixDesDifferences } from '../../../domain/differences'
 import type { Fiche } from '../../../domain/fiche'
 import { LieuId } from '../../../domain/identifiants/lieu-id'
 import { UtilisateurId } from '../../../domain/identifiants/utilisateur-id'
 import type { Lieu } from '../../../domain/lieu'
-import { NombreDActivites, NombreDeMediateurs } from '../../../domain/nombres'
 import {
   ModificationInconnue,
   ModifieParUtilisateur,
 } from '../../../domain/registre/tracabilite'
 import { appliquerLesDifferences } from './appliquer-les-differences'
-import type { ChoixDesDifferences } from './differences'
-import type { EchecDeModifierLaFicheDuLieu } from './errors'
-import type { FicheDuLieu } from './fiche-du-lieu'
+import type { DifferencesAppliquees } from './differences-appliquees'
+import type { EchecDAppliquerLesDifferences } from './errors'
+import type { FichesAComparer } from './ports'
 
 const id = LieuId('550e8400-e29b-41d4-a716-446655440000')
 const maintenant = new Date('2026-09-11T11:00:00Z')
@@ -94,16 +94,7 @@ const lieu: Lieu = {
   },
 }
 
-const fiche: FicheDuLieu = {
-  lieu,
-  auteurDerniereModification: null,
-  derniereModificationCoop: new Date('2026-06-01T00:00:00Z'),
-  ficheCoop,
-  partage: {
-    autresMediateurs: NombreDeMediateurs(0),
-    activites: NombreDActivites(0),
-  },
-}
+const fiche: FichesAComparer = { lieu, ficheCoop }
 
 const resolu: Lieu['tracabilite'] = {
   ...lieu.tracabilite,
@@ -124,15 +115,15 @@ describe('appliquer les différences entre la fiche coop et celle du registre', 
 
   it.each<{
     cas: string
-    consultee: FicheDuLieu
+    consultee: FichesAComparer
     choix: ChoixDesDifferences
-    attendu: Result<Lieu, EchecDeModifierLaFicheDuLieu>
+    attendu: Result<DifferencesAppliquees, EchecDAppliquerLesDifferences>
   }>([
     {
-      cas: 'rend le lieu tel quel quand les deux fiches disent pareil',
+      cas: 'n’écrit rien quand les deux fiches disent pareil',
       consultee: { ...fiche, ficheCoop: ficheDuRegistre },
       choix: { nom: 'coop' },
-      attendu: { success: true, data: lieu },
+      attendu: { success: true, data: { _tag: 'SansEcart', lieu } },
     },
     {
       cas: 'reprend la valeur de la coop pour le champ qu’on lui confie',
@@ -140,14 +131,25 @@ describe('appliquer les différences entre la fiche coop et celle du registre', 
       choix: { nom: 'coop', horaires: 'coop' },
       attendu: {
         success: true,
-        data: { ...lieu, fiche: ficheCoop, tracabilite: resolu },
+        data: {
+          _tag: 'Enregistree',
+          lieu: { ...lieu, fiche: ficheCoop, tracabilite: resolu },
+          sections: ['InformationsGenerales', 'InformationsPratiques'],
+        },
       },
     },
     {
       cas: 'garde la valeur du registre pour le champ qu’on lui laisse',
       consultee: fiche,
       choix: { nom: 'registre', horaires: 'registre' },
-      attendu: { success: true, data: { ...lieu, tracabilite: resolu } },
+      attendu: {
+        success: true,
+        data: {
+          _tag: 'Enregistree',
+          lieu: { ...lieu, tracabilite: resolu },
+          sections: ['InformationsGenerales', 'InformationsPratiques'],
+        },
+      },
     },
     {
       cas: 'garde la valeur du registre pour le champ dont personne n’a tranché',
@@ -156,9 +158,36 @@ describe('appliquer les différences entre la fiche coop et celle du registre', 
       attendu: {
         success: true,
         data: {
-          ...lieu,
-          fiche: { ...ficheDuRegistre, nom: Nom('Espace numérique de Reims') },
-          tracabilite: resolu,
+          _tag: 'Enregistree',
+          lieu: {
+            ...lieu,
+            fiche: {
+              ...ficheDuRegistre,
+              nom: Nom('Espace numérique de Reims'),
+            },
+            tracabilite: resolu,
+          },
+          sections: ['InformationsGenerales', 'InformationsPratiques'],
+        },
+      },
+    },
+    {
+      cas: 'n’enregistre que les sections où les fiches diffèrent',
+      consultee: {
+        ...fiche,
+        ficheCoop: { ...ficheDuRegistre, horaires: ficheCoop.horaires },
+      },
+      choix: { horaires: 'coop' },
+      attendu: {
+        success: true,
+        data: {
+          _tag: 'Enregistree',
+          lieu: {
+            ...lieu,
+            fiche: { ...ficheDuRegistre, horaires: ficheCoop.horaires },
+            tracabilite: resolu,
+          },
+          sections: ['InformationsPratiques'],
         },
       },
     },
