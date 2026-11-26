@@ -1,7 +1,6 @@
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
 import type { Prisma } from '@/generated/prisma/client'
-import { failure, type Result, success } from '@/libraries/result'
 import { estPublie } from '../../../../domain/cartographie-nationale/visibilite-cartographie'
 import { LieuId } from '../../../../domain/identifiants/lieu-id'
 import type { MediateurId } from '../../../../domain/identifiants/mediateur-id'
@@ -16,7 +15,7 @@ import {
   toutesLesColonnes,
 } from '../../../../implementations/prisma/registre/colonnes-a-ecrire.select'
 import { ecrireAuRegistre } from '../../../../implementations/prisma/registre/ecrire-au-registre.mutation'
-import { type EchecDeCreation, MediateurRequis } from '../../domain/errors'
+import type { EnregistrerLieuActivite } from '../../domain/creer-lieu-activite'
 
 const rattacher = async (
   transaction: Prisma.TransactionClient,
@@ -66,15 +65,10 @@ const creerLaFiche = async (
   return cree
 }
 
-export const creerLieuActivite = async ({
+export const enregistrerLieuActivite: EnregistrerLieuActivite = async ({
   lieu,
   mediateurId,
-}: {
-  lieu: Lieu
-  mediateurId: MediateurId | null
-}): Promise<Result<{ readonly id: LieuId }, EchecDeCreation>> => {
-  if (mediateurId == null) return failure(MediateurRequis)
-
+}) => {
   const donnees = lieuFromDomain(lieu)
 
   const structureId = await prismaClient.$transaction(async (transaction) => {
@@ -99,5 +93,5 @@ export const creerLieuActivite = async ({
     return id
   })
 
-  return success({ id: LieuId(structureId) })
+  return LieuId(structureId)
 }

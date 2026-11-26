@@ -12,6 +12,7 @@
     "lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma",
     "lieux-activite/abilities/ajouter-des-lieux-activite/ui/presenters",
     "lieux-activite/abilities/creer-lieu-activite/action",
+    "lieux-activite/abilities/creer-lieu-activite/domain",
     "lieux-activite/abilities/fusionner-des-lieux/domain",
     "lieux-activite/abilities/fusionner-des-lieux/implementations/prisma",
     "lieux-activite/abilities/fusionner-des-lieux/ui/presenters",

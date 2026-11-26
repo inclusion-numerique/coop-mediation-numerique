@@ -7,7 +7,8 @@ import {
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { prismaClient } from '@/configuration/prisma'
 import { nouveauLieu } from '@/features/lieux-activite/abilities/creer-lieu-activite/action/saisie-du-lieu.transfer'
-import { creerLieuActivite } from '@/features/lieux-activite/abilities/creer-lieu-activite/implementations/prisma/creer-lieu-activite.mutation'
+import { creerLieuActivite } from '@/features/lieux-activite/abilities/creer-lieu-activite/domain/creer-lieu-activite'
+import { enregistrerLieuActivite } from '@/features/lieux-activite/abilities/creer-lieu-activite/implementations/prisma/enregistrer-lieu-activite.mutation'
 import type { CreerLieuActiviteData } from '@/features/lieux-activite/action/creer-lieu-activite.validation'
 import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
 import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
@@ -15,7 +16,7 @@ import { UtilisateurId } from '@/features/lieux-activite/domain/identifiants/uti
 import { horairesVides } from '@/features/lieux-activite/domain/saisie/horaires-d-ouverture'
 import { ficheSemee } from '@/features/lieux-activite/lieux-activite.cucumber'
 
-type Issue = Awaited<ReturnType<typeof creerLieuActivite>>
+type Issue = Awaited<ReturnType<ReturnType<typeof creerLieuActivite>>>
 
 const dernier: { creation?: Issue; lieuxCreesIds: string[] } = {
   lieuxCreesIds: [],
@@ -60,6 +61,8 @@ const creer = async (
   quoi: CreerLieuActiviteData = saisie,
 ) => {
   dernier.creation = await creerLieuActivite({
+    enregistrer: enregistrerLieuActivite,
+  })({
     lieu: nouveauLieu(
       quoi,
       UtilisateurId(ficheSemee().userIds[0] ?? ''),

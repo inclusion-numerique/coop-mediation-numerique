@@ -5,7 +5,8 @@ import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
 import { rattacherAuLieuDesire } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/rattacher-au-lieu-desire.mutation'
 import { nouveauLieu } from '@/features/lieux-activite/abilities/creer-lieu-activite/action/saisie-du-lieu.transfer'
-import { creerLieuActivite } from '@/features/lieux-activite/abilities/creer-lieu-activite/implementations/prisma/creer-lieu-activite.mutation'
+import { creerLieuActivite } from '@/features/lieux-activite/abilities/creer-lieu-activite/domain/creer-lieu-activite'
+import { enregistrerLieuActivite } from '@/features/lieux-activite/abilities/creer-lieu-activite/implementations/prisma/enregistrer-lieu-activite.mutation'
 import {
   type CreerLieuActiviteData,
   CreerLieuActiviteValidation,
@@ -385,7 +386,7 @@ const renseigner = (
   })
 
 const creerUnLieuDActivite = (saisie: CreerLieuActiviteData) =>
-  creerLieuActivite({
+  creerLieuActivite({ enregistrer: enregistrerLieuActivite })({
     lieu: nouveauLieu(
       saisie,
       UtilisateurId(utilisateurCourant()),
