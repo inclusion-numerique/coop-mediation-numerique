@@ -8,7 +8,7 @@ import type { Acceptation } from './acceptation'
 
 export type EnregistrerLAcceptation<Cle> = (
   enregistrement: Acceptation & { readonly cle: Cle },
-) => Promise<void>
+) => Promise<{ readonly adhesionEnregistree: boolean }>
 
 export type AccepterUneInvitationPorts<Cle> = {
   readonly lireUneInvitation: LireUneInvitation<Cle>

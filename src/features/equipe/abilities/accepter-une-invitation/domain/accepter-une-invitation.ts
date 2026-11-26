@@ -42,7 +42,7 @@ export const accepterUneInvitation =
     }
     const adhesion = adherer(paire, await lireLesAdhesionsDeLaPaire(paire))
 
-    const acceptation: Acceptation = {
+    const proposee: Acceptation = {
       reference,
       mediateurId: mediateur.data,
       auteurId,
@@ -50,7 +50,14 @@ export const accepterUneInvitation =
       adhesion: adhesion.success ? adhesion.data : null,
     }
 
-    await enregistrerLAcceptation({ cle: lue.cle, ...acceptation })
+    const { adhesionEnregistree } = await enregistrerLAcceptation({
+      cle: lue.cle,
+      ...proposee,
+    })
+
+    const acceptation: Acceptation = adhesionEnregistree
+      ? proposee
+      : { ...proposee, adhesion: null }
 
     const prevenance = prevenanceDe({
       coordinateur: await lireLeCoordinateur(reference.coordinateurId),

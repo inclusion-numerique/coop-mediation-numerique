@@ -90,7 +90,7 @@ describe('accepter une invitation', () => {
         cle: 1,
       }),
       lireLesAdhesionsDeLaPaire: async () => [],
-      enregistrerLAcceptation: async () => undefined,
+      enregistrerLAcceptation: async () => ({ adhesionEnregistree: true }),
       lireLeCoordinateur: async () => coordinateur,
       prevenirLeCoordinateur: async () => undefined,
     })
@@ -112,7 +112,7 @@ describe('accepter une invitation', () => {
         cle: 1,
       }),
       lireLesAdhesionsDeLaPaire: async () => [],
-      enregistrerLAcceptation: async () => undefined,
+      enregistrerLAcceptation: async () => ({ adhesionEnregistree: true }),
       lireLeCoordinateur: async () => coordinateur,
       prevenirLeCoordinateur: async () => undefined,
     })
@@ -134,7 +134,32 @@ describe('accepter une invitation', () => {
         cle: 1,
       }),
       lireLesAdhesionsDeLaPaire: async () => [adhesionActive],
-      enregistrerLAcceptation: async () => undefined,
+      enregistrerLAcceptation: async () => ({ adhesionEnregistree: false }),
+      lireLeCoordinateur: async () => coordinateur,
+      prevenirLeCoordinateur: async () => undefined,
+    })
+
+    expect(
+      await accepterLInvitation({
+        reference,
+        accepteur: invite,
+        auteurId,
+        maintenant,
+      }),
+    ).toEqual({
+      success: true,
+      data: { acceptation: { ...acceptation, adhesion: null }, prevenance },
+    })
+  })
+
+  it('accepte sans adhésion nouvelle quand l’adhésion est apparue entre la lecture et l’écriture', async () => {
+    const accepterLInvitation = accepterUneInvitation({
+      lireUneInvitation: async () => ({
+        invitation: invitationEnAttente,
+        cle: 1,
+      }),
+      lireLesAdhesionsDeLaPaire: async () => [],
+      enregistrerLAcceptation: async () => ({ adhesionEnregistree: false }),
       lireLeCoordinateur: async () => coordinateur,
       prevenirLeCoordinateur: async () => undefined,
     })
@@ -159,7 +184,7 @@ describe('accepter une invitation', () => {
         cle: 1,
       }),
       lireLesAdhesionsDeLaPaire: async () => [],
-      enregistrerLAcceptation: async () => undefined,
+      enregistrerLAcceptation: async () => ({ adhesionEnregistree: true }),
       lireLeCoordinateur: async () => null,
       prevenirLeCoordinateur: async () => undefined,
     })
@@ -178,7 +203,7 @@ describe('accepter une invitation', () => {
     const accepterLInvitation = accepterUneInvitation({
       lireUneInvitation: async () => null,
       lireLesAdhesionsDeLaPaire: async () => [],
-      enregistrerLAcceptation: async () => undefined,
+      enregistrerLAcceptation: async () => ({ adhesionEnregistree: true }),
       lireLeCoordinateur: async () => coordinateur,
       prevenirLeCoordinateur: async () => undefined,
     })
@@ -215,7 +240,7 @@ describe('accepter une invitation', () => {
         cle: 1,
       }),
       lireLesAdhesionsDeLaPaire: async () => [],
-      enregistrerLAcceptation: async () => undefined,
+      enregistrerLAcceptation: async () => ({ adhesionEnregistree: true }),
       lireLeCoordinateur: async () => coordinateur,
       prevenirLeCoordinateur: async () => undefined,
     })
@@ -232,7 +257,7 @@ describe('accepter une invitation', () => {
         cle: 1,
       }),
       lireLesAdhesionsDeLaPaire: async () => [],
-      enregistrerLAcceptation: async () => undefined,
+      enregistrerLAcceptation: async () => ({ adhesionEnregistree: true }),
       lireLeCoordinateur: async () => coordinateur,
       prevenirLeCoordinateur: async () => undefined,
     })
