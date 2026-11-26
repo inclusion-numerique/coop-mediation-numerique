@@ -4,11 +4,18 @@ import { type DataTable, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
 import { ModifierBeneficiaireValidation } from '@/features/beneficiaire/abilities/modifier-beneficiaire/action/modifier-beneficiaire.validation'
-import { modifierBeneficiaire } from '@/features/beneficiaire/abilities/modifier-beneficiaire/implementations/prisma/modifier-beneficiaire.mutation'
+import { modifierBeneficiaire as modifierBeneficiaireAvec } from '@/features/beneficiaire/abilities/modifier-beneficiaire/domain/modifier-beneficiaire'
+import { creationDuBeneficiaire } from '@/features/beneficiaire/abilities/modifier-beneficiaire/implementations/prisma/creation-du-beneficiaire.query'
+import { enregistrerLaModification } from '@/features/beneficiaire/abilities/modifier-beneficiaire/implementations/prisma/enregistrer-la-modification.mutation'
 import {
   seedBeneficiaire,
   testMediateurId,
 } from '@/features/beneficiaire/beneficiaire.cucumber'
+
+const modifierBeneficiaire = modifierBeneficiaireAvec({
+  creationDuBeneficiaire,
+  enregistrerLaModification,
+})
 
 type ModificationResult = Awaited<ReturnType<typeof modifierBeneficiaire>>
 
@@ -44,6 +51,7 @@ When(
     result = await modifierBeneficiaire({
       beneficiaire,
       mediateurId: testMediateurId,
+      maintenant: new Date(),
     })
   },
 )
@@ -57,6 +65,7 @@ When('je modifie un bénéficiaire inexistant', async () => {
   result = await modifierBeneficiaire({
     beneficiaire,
     mediateurId: testMediateurId,
+    maintenant: new Date(),
   })
 })
 

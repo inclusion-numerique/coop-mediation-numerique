@@ -1,18 +1,14 @@
 import type { AnneeNaissance } from '@/features/beneficiaire/domain/annee-naissance'
-import type { BeneficiaireIdentifie } from '@/features/beneficiaire/domain/beneficiaire'
 import type { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
 import type { CommuneResidence } from '@/features/beneficiaire/domain/commune-residence'
 import type { ContactTelephone } from '@/features/beneficiaire/domain/contact-telephone'
 import type { Email } from '@/features/beneficiaire/domain/email'
-import type { BeneficiaireNotFound } from '@/features/beneficiaire/domain/errors'
 import type { Genre } from '@/features/beneficiaire/domain/genre'
-import type { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
 import type { Nom } from '@/features/beneficiaire/domain/nom'
 import type { Notes } from '@/features/beneficiaire/domain/notes'
 import type { Prenom } from '@/features/beneficiaire/domain/prenom'
 import type { StatutSocial } from '@/features/beneficiaire/domain/statut-social'
 import type { TrancheAge } from '@/features/beneficiaire/domain/tranche-age'
-import type { Result } from '@/libraries/result'
 
 /**
  * Input validé pour modifier un bénéficiaire : les attributs éditables, plus
@@ -31,8 +27,3 @@ export type BeneficiaireAModifier = {
   readonly statutSocial: StatutSocial
   readonly notes: Notes | null
 }
-
-export type ModifierBeneficiaire = (input: {
-  beneficiaire: BeneficiaireAModifier
-  mediateurId: MediateurId
-}) => Promise<Result<BeneficiaireIdentifie, BeneficiaireNotFound>>
