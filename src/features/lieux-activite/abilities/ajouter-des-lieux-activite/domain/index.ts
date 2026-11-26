@@ -1,7 +1,7 @@
-export { demandeDAjout } from './demande-d-ajout'
+export type { AjoutDeLieux, LieuxAjoutes } from './ajout-de-lieux'
 export {
   AdresseNonValidee,
-  type EchecDAjout,
+  type EchecDeAjouterDesLieuxActivite,
 } from './errors'
 export { identifiantsCarto } from './identifiants-carto'
 export { type LieuCarto, lieuDepuisCarto } from './lieu-carto'
@@ -12,9 +12,9 @@ export {
   type LieuDemande,
   type LieuExistant,
 } from './lieu-demande'
-export { lieuxAMaterialiser } from './lieux-a-materialiser'
 export type {
   AjouterDesLieuxActivitePorts,
   LireLieuxDejaRattaches,
+  RattacherAuxLieux,
   TrouverStructuresCarto,
 } from './ports'

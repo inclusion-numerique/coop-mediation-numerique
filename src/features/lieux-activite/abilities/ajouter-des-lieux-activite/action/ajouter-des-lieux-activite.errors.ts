@@ -1,7 +1,7 @@
-import type { EchecDAjout } from '../domain'
+import type { EchecDeAjouterDesLieuxActivite } from '../domain'
 
 export const AJOUTER_DES_LIEUX_ACTIVITE_ERRORS: Record<
-  EchecDAjout['_tag'],
+  EchecDeAjouterDesLieuxActivite['_tag'],
   string
 > = {
   MediateurRequis:

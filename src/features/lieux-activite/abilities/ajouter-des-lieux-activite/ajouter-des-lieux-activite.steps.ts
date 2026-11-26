@@ -24,7 +24,8 @@ import type {
   LieuDemande,
   LieuExistant,
 } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/domain'
-import { ajouterDesLieuxActivite } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/ajouter-des-lieux-activite.mutation'
+import { ajouterDesLieuxActivite } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/domain/ajouter-des-lieux-activite'
+import { rattacherAuxLieux } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/ajouter-des-lieux-activite.mutation'
 import { lireLieuxDejaRattaches } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/lieux-deja-rattaches.query'
 import {
   detacherDuLieuDecrit,
@@ -48,7 +49,7 @@ import {
   utilisateurCourant,
 } from '@/features/lieux-activite/lieux-activite.cucumber'
 
-type Issue = Awaited<ReturnType<typeof ajouterDesLieuxActivite>>
+type Issue = Awaited<ReturnType<ReturnType<typeof ajouterDesLieuxActivite>>>
 
 const dernier: {
   ajout?: Issue
@@ -56,24 +57,24 @@ const dernier: {
 } = {}
 const lieuxDeTest: string[] = []
 
-const ports = {
-  lireLieuxDejaRattaches,
-  trouverStructuresCarto: async () => new Map(),
-}
-
 const ajouter = async (
   demandes: readonly LieuDemande[],
   mediateurId: string | null,
   structuresCarto: ReadonlyMap<string, LieuCarto> = new Map(),
 ) => {
   dernier.ajout = await ajouterDesLieuxActivite({
+    lireLieuxDejaRattaches,
+    trouverStructuresCarto: async () => structuresCarto,
+    rattacherAuxLieux,
+  })({
     demandes,
-    userId: UtilisateurId(lieuxSemes().userId),
+    utilisateurId: UtilisateurId(lieuxSemes().userId),
     mediateurId: mediateurId == null ? null : MediateurId(mediateurId),
-    ports: { ...ports, trouverStructuresCarto: async () => structuresCarto },
+    maintenant: new Date(),
   })
 
-  if (dernier.ajout.success) lieuxDeTest.push(...dernier.ajout.data.lieux)
+  if (dernier.ajout.success)
+    lieuxDeTest.push(...dernier.ajout.data.lieuxRattaches)
 }
 
 const lieuSaisi = (partie: Partial<LieuACreer> = {}): LieuACreer => ({
