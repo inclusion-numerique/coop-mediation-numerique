@@ -18,7 +18,9 @@ import { repartirLesAccompagnements } from '@/features/activites/abilities/repar
 import { repartitionPresentee } from '@/features/activites/abilities/repartir-les-accompagnements/ui/presenters/repartition.presenter'
 import { repartirLesAccompagnementsParTag } from '@/features/activites/abilities/repartir-les-accompagnements-par-tag/implementations/prisma/accompagnements-par-tag.query'
 import { parTagPresentes } from '@/features/activites/abilities/repartir-les-accompagnements-par-tag/ui/presenters/par-tag.presenter'
-import { presenceDeCrasV1 } from '@/features/activites/abilities/verifier-la-presence-de-cras-v1/implementations/prisma/presence-de-cras-v1.query'
+import { verifierLaPresenceDeCrasV1 } from '@/features/activites/abilities/verifier-la-presence-de-cras-v1/domain/verifier-la-presence-de-cras-v1'
+import { mediateurAvecCrasV1 } from '@/features/activites/abilities/verifier-la-presence-de-cras-v1/implementations/prisma/mediateur-avec-cras-v1.query'
+import { presenceDeCrasV1Presentee } from '@/features/activites/abilities/verifier-la-presence-de-cras-v1/ui/presenters/presence-de-cras-v1.presenter'
 import { criteresDesStatistiquesDepuisLURL } from '@/features/activites/fixtures/criteres-depuis-l-url'
 import { Prisma } from '@/generated/prisma/client'
 import type { QuantifiedShare } from '@/libraries/proportions'
@@ -78,7 +80,10 @@ const statistiquesDesActivites = statistiquesAvec({
     compterLesPersonnesAccompagneesParCommune,
     personnesParCommunePresentees,
   ),
-  hasCrasV1: presenceDeCrasV1,
+  hasCrasV1: (perimetre) =>
+    verifierLaPresenceDeCrasV1({ mediateurAvecCrasV1 })({ perimetre }).then(
+      presenceDeCrasV1Presentee,
+    ),
 })
 
 const SEL = '1d9df140-9e43-4fa3-b7a4-6656e475ba8d'

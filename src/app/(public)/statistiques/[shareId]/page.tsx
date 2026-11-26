@@ -45,7 +45,9 @@ import { TypesDActiviteImprimes } from '@/features/activites/abilities/repartir-
 import { repartirLesAccompagnementsParTag } from '@/features/activites/abilities/repartir-les-accompagnements-par-tag/implementations/prisma/accompagnements-par-tag.query'
 import { parTagPresentes } from '@/features/activites/abilities/repartir-les-accompagnements-par-tag/ui/presenters/par-tag.presenter'
 import { BlocDesTags } from '@/features/activites/abilities/repartir-les-accompagnements-par-tag/ui/slots/BlocDesTags.slot'
-import { presenceDeCrasV1 } from '@/features/activites/abilities/verifier-la-presence-de-cras-v1/implementations/prisma/presence-de-cras-v1.query'
+import { verifierLaPresenceDeCrasV1 } from '@/features/activites/abilities/verifier-la-presence-de-cras-v1/domain/verifier-la-presence-de-cras-v1'
+import { mediateurAvecCrasV1 } from '@/features/activites/abilities/verifier-la-presence-de-cras-v1/implementations/prisma/mediateur-avec-cras-v1.query'
+import { presenceDeCrasV1Presentee } from '@/features/activites/abilities/verifier-la-presence-de-cras-v1/ui/presenters/presence-de-cras-v1.presenter'
 import { RECHERCHER_DES_TAGS_DU_CRA_KEY } from '@/features/activites/action/rechercher-des-tags.key'
 import { RECHERCHER_LES_EMPLOYEUSES_DE_LA_LISTE_KEY } from '@/features/activites/action/rechercher-employeuses.key'
 import { RECHERCHER_LES_LIEUX_DES_ACTIVITES_KEY } from '@/features/activites/action/rechercher-les-lieux-des-activites.key'
@@ -93,7 +95,10 @@ const statistiquesDesActivites = statistiquesAvec({
     compterLesPersonnesAccompagneesParCommune,
     personnesParCommunePresentees,
   ),
-  hasCrasV1: presenceDeCrasV1,
+  hasCrasV1: (perimetre) =>
+    verifierLaPresenceDeCrasV1({ mediateurAvecCrasV1 })({ perimetre }).then(
+      presenceDeCrasV1Presentee,
+    ),
 })
 
 type PageProps = {
