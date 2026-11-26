@@ -1,15 +1,13 @@
 import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { prismaClient } from '@/configuration/prisma'
-import {
-  consulterUnActeur,
-  type QuiConsulte,
-} from '@/features/mon-reseau/abilities/consulter-un-acteur/domain'
+import { consulterUnActeur } from '@/features/mon-reseau/abilities/consulter-un-acteur/domain'
 import {
   lireLActeur,
   lireLesLiensDEquipe,
 } from '@/features/mon-reseau/abilities/consulter-un-acteur/implementations/prisma'
-import { Effectif } from '@/features/mon-reseau/domain'
+import { lecteurDeLaSession } from '@/features/mon-reseau/abilities/consulter-un-acteur/implementations/session/lecteur.transfer'
+import { ActeurId, Effectif } from '@/features/mon-reseau/domain'
 
 type Consultation = Awaited<ReturnType<ReturnType<typeof consulterUnActeur>>>
 
@@ -65,12 +63,12 @@ const semerAlexMartin = async (acteur: ActeurASemer = {}) => {
   })
 }
 
-const quiConsulte = (): QuiConsulte => {
+const lecteur = () => {
   const { userId, coordinateurId } = leLecteur()
-  return {
+  return lecteurDeLaSession({
     id: userId,
     coordinateur: coordinateurId === null ? null : { id: coordinateurId },
-  }
+  })
 }
 
 const consulter = async (acteurId: string) => {
@@ -82,7 +80,11 @@ const consulter = async (acteurId: string) => {
         ? { _tag: 'Jamais' }
         : { _tag: 'Le', date: etat.derniereActivite },
     lireLesStatistiquesSur30Jours: aucuneActiviteSur30Jours,
-  })({ quiConsulte: quiConsulte(), acteurId, maintenant: new Date() })
+  })({
+    lecteur: lecteur(),
+    acteurId: ActeurId.safe(acteurId),
+    maintenant: new Date(),
+  })
 }
 
 const coordonner = async (suppression: Date | null) => {

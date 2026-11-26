@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { CodeDepartement, CodeInsee } from '@/libraries/insee'
 import {
   DEPARTEMENT_PAR_DEFAUT,
+  departementConnu,
   departementDuCode,
   departementsDesCodesInsee,
 } from './departement'
@@ -20,6 +21,10 @@ describe('département', () => {
       success: false,
       error: { _tag: 'DepartementInconnu', code },
     })
+  })
+
+  it.each(['20', 'ZZ'])('ne connaît pas le département %s', (code) => {
+    expect(departementConnu(code)).toBeNull()
   })
 
   it('déduit les départements des codes INSEE, sans doublon', () => {

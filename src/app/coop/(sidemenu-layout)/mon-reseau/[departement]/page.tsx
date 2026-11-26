@@ -6,7 +6,8 @@ import { nombreDeLieuxDuDepartement } from '@/features/lieux-activite/abilities/
 import { consulterLeReseauDuDepartement } from '@/features/mon-reseau/abilities/consulter-le-reseau-du-departement/domain/consulter-le-reseau-du-departement'
 import { compterLesActeursDuDepartement } from '@/features/mon-reseau/abilities/consulter-le-reseau-du-departement/implementations/prisma'
 import { default as ReseauDuDepartementPage } from '@/features/mon-reseau/abilities/consulter-le-reseau-du-departement/ui/pages/ReseauDuDepartementPage'
-import { departementDuCode } from '@/libraries/departement'
+import { Effectif } from '@/features/mon-reseau/domain'
+import { departementConnu, departementDuCode } from '@/libraries/departement'
 
 type Parametres = { params: Promise<{ departement: string }> }
 
@@ -24,8 +25,9 @@ const Page = async ({ params }: Parametres) => {
   const user = await authenticateMediateurOrCoordinateur()
   const reseau = await consulterLeReseauDuDepartement({
     compterLesActeursDuDepartement,
-    nombreDeLieuxDuDepartement,
-  })({ code: (await params).departement })
+    nombreDeLieuxDuDepartement: async (departement) =>
+      Effectif(await nombreDeLieuxDuDepartement(departement)),
+  })({ departement: departementConnu((await params).departement) })
 
   return reseau.success ? (
     <ReseauDuDepartementPage

@@ -13,7 +13,7 @@ import {
 } from '../../../domain'
 import { consulterUnActeur } from './consulter-un-acteur'
 import type { RelationDEquipe } from './fiche-acteur'
-import type { QuiConsulte } from './lecteur'
+import type { Lecteur } from './lecteur'
 import type { ConsulterUnActeurPorts } from './ports'
 import type { AdhesionLue } from './relation-d-equipe'
 import type {
@@ -78,11 +78,15 @@ const ports: ConsulterUnActeurPorts = {
   lireLesStatistiquesSur30Jours: async () => statistiques,
 }
 
-const parUnMediateur: QuiConsulte = { id: lecteurId, coordinateur: null }
+const parUnMediateur: Lecteur = {
+  _tag: 'Mediateur',
+  acteurId: ActeurId(lecteurId),
+}
 
-const parUnCoordinateur: QuiConsulte = {
-  id: lecteurId,
-  coordinateur: { id: coordinateurDuLecteur },
+const parUnCoordinateur: Lecteur = {
+  _tag: 'Coordinateur',
+  acteurId: ActeurId(lecteurId),
+  coordinateurId: coordinateurDuLecteur,
 }
 
 const adhesionTerminee2025: AdhesionLue = {
@@ -98,29 +102,29 @@ const adhesionTerminee2026: AdhesionLue = {
 }
 
 describe('consulter un acteur', () => {
-  it('signale un acteur introuvable quand l’identifiant est invalide', async () => {
+  it('signale un acteur introuvable sans identifiant valide', async () => {
     expect(
       await consulterUnActeur(ports)({
-        quiConsulte: parUnMediateur,
-        acteurId: 'pas-un-identifiant',
+        lecteur: parUnMediateur,
+        acteurId: null,
         maintenant,
       }),
     ).toEqual({
       success: false,
-      error: { _tag: 'ActeurIntrouvable', acteurId: 'pas-un-identifiant' },
+      error: { _tag: 'ActeurIntrouvable' },
     })
   })
 
   it('signale un acteur introuvable quand il n’est pas visible', async () => {
     expect(
       await consulterUnActeur({ ...ports, lireLActeur: async () => null })({
-        quiConsulte: parUnMediateur,
+        lecteur: parUnMediateur,
         acteurId: mediateur.acteurId,
         maintenant,
       }),
     ).toEqual({
       success: false,
-      error: { _tag: 'ActeurIntrouvable', acteurId: mediateur.acteurId },
+      error: { _tag: 'ActeurIntrouvable' },
     })
   })
 
@@ -155,7 +159,7 @@ describe('consulter un acteur', () => {
           ...ports,
           lireLaDerniereActivite: async () => derniere,
         })({
-          quiConsulte: parUnMediateur,
+          lecteur: parUnMediateur,
           acteurId: mediateur.acteurId,
           maintenant,
         }),
@@ -244,7 +248,7 @@ describe('consulter un acteur', () => {
           lireLActeur: async () => ({ acteur, profilCreeLe }),
           lireLesLiensDEquipe: async () => ({ adhesions, invitationEnCours }),
         })({
-          quiConsulte: parUnCoordinateur,
+          lecteur: parUnCoordinateur,
           acteurId: acteur.acteurId,
           maintenant,
         }),

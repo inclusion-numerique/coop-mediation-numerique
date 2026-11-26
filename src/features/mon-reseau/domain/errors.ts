@@ -1,9 +1,11 @@
-export type ActeurIntrouvable = {
-  readonly _tag: 'ActeurIntrouvable'
-  readonly acteurId: string
-}
+export type ActeurIntrouvable = { readonly _tag: 'ActeurIntrouvable' }
 
-export const ActeurIntrouvable = (acteurId: string): ActeurIntrouvable => ({
+export const ActeurIntrouvable = (): ActeurIntrouvable => ({
   _tag: 'ActeurIntrouvable',
-  acteurId,
+})
+
+export type DepartementInconnu = { readonly _tag: 'DepartementInconnu' }
+
+export const DepartementInconnu = (): DepartementInconnu => ({
+  _tag: 'DepartementInconnu',
 })

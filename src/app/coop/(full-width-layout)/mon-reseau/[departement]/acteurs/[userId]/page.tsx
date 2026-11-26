@@ -37,6 +37,7 @@ import {
   lireLesLiensDEquipe,
 } from '@/features/mon-reseau/abilities/consulter-un-acteur/implementations/prisma'
 import { nomDeLActeur } from '@/features/mon-reseau/abilities/consulter-un-acteur/implementations/prisma/nom-de-l-acteur.query'
+import { lecteurDeLaSession } from '@/features/mon-reseau/abilities/consulter-un-acteur/implementations/session/lecteur.transfer'
 import { FicheActeurPage } from '@/features/mon-reseau/abilities/consulter-un-acteur/ui/pages/FicheActeurPage'
 import {
   ancienMembreDe,
@@ -44,6 +45,7 @@ import {
   encartDeLEmployeuse,
 } from '@/features/mon-reseau/abilities/consulter-un-acteur/ui/presenters/fiche-acteur.presenter'
 import { TitreDeSection } from '@/features/mon-reseau/abilities/consulter-un-acteur/ui/slots/TitreDeSection.slot'
+import { ActeurId } from '@/features/mon-reseau/domain'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/rdvs-des-activites.query'
 import { derniereActiviteDeLUtilisateur } from '@/features/utilisateurs/implementations/prisma/derniere-activite.query'
 import { departementDuCode } from '@/libraries/departement'
@@ -95,7 +97,11 @@ const Page = async ({ params }: Parametres) => {
     lireLesLiensDEquipe,
     lireLaDerniereActivite: derniereActiviteDeLUtilisateur,
     lireLesStatistiquesSur30Jours,
-  })({ quiConsulte, acteurId: userId, maintenant })
+  })({
+    lecteur: lecteurDeLaSession(quiConsulte),
+    acteurId: ActeurId.safe(userId),
+    maintenant,
+  })
 
   if (!departement.success || !consultation.success) return notFound()
 

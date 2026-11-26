@@ -1,3 +1,3 @@
-import type { DepartementInconnu } from '@/libraries/departement'
+import type { DepartementInconnu } from '../../../domain'
 
 export type EchecDeConsulterLeReseauDuDepartement = DepartementInconnu

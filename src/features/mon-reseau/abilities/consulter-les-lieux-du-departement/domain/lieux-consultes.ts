@@ -1,6 +1,6 @@
 import type { Departement } from '@/libraries/departement'
+import type { OptionDeCommune } from '../../../domain'
 import type { CriteresDesLieux } from './criteres-des-lieux'
-import type { OptionDeCommune } from './ports'
 
 export type LieuxConsultes<Lieux> = {
   readonly departement: Departement

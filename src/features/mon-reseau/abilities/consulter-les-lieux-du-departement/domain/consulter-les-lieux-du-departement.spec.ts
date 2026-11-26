@@ -1,7 +1,9 @@
 import { Page, PageSize, Search, Sort } from '@arckit/resultset'
 import { describe, expect, it } from 'vitest'
-import { DepartementInconnu } from '@/libraries/departement'
+import { type Departement, NomDepartement } from '@/libraries/departement'
+import { CodeDepartement } from '@/libraries/insee'
 import { failure, success } from '@/libraries/result'
+import { DepartementInconnu } from '../../../domain'
 import { consulterLesLieuxDuDepartement } from './consulter-les-lieux-du-departement'
 import type { CriteresDesLieux } from './criteres-des-lieux'
 
@@ -13,6 +15,11 @@ const criteres: CriteresDesLieux = {
   pageSize: PageSize(20),
 }
 
+const cantal: Departement = {
+  code: CodeDepartement('15'),
+  nom: NomDepartement('Cantal'),
+}
+
 const consulter = consulterLesLieuxDuDepartement({
   lieuxDuDepartement: async () => ['Médiathèque de Saint-Flour'],
   communesDesLieux: async () => ({
@@ -22,9 +29,9 @@ const consulter = consulterLesLieuxDuDepartement({
 
 describe('consulter les lieux du département', () => {
   it('présente les lieux du département avec les communes où ils se trouvent', async () => {
-    expect(await consulter({ code: '15', criteres })).toEqual(
+    expect(await consulter({ departement: cantal, criteres })).toEqual(
       success({
-        departement: { code: '15', nom: 'Cantal' },
+        departement: cantal,
         criteres,
         lieux: ['Médiathèque de Saint-Flour'],
         communes: [{ value: '15187', label: 'Saint-Flour' }],
@@ -33,8 +40,8 @@ describe('consulter les lieux du département', () => {
   })
 
   it('refuse un département inconnu', async () => {
-    expect(await consulter({ code: '00', criteres })).toEqual(
-      failure(DepartementInconnu('00')),
+    expect(await consulter({ departement: null, criteres })).toEqual(
+      failure(DepartementInconnu()),
     )
   })
 })

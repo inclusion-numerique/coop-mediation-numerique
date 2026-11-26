@@ -1,5 +1,6 @@
-import { departementDuCode } from '@/libraries/departement'
-import { type Result, success } from '@/libraries/result'
+import type { Departement } from '@/libraries/departement'
+import { failure, type Result, success } from '@/libraries/result'
+import { DepartementInconnu } from '../../../domain'
 import type { ActeursDuDepartement } from './acteurs-du-departement'
 import type { CriteresActeurs } from './criteres-acteurs'
 import type { EchecDeListerLesActeursDuDepartement } from './errors'
@@ -11,25 +12,23 @@ export const listerLesActeursDuDepartement =
     communesDesLieux,
   }: ListerLesActeursDuDepartementPorts) =>
   async ({
-    code,
+    departement,
     criteres,
   }: {
-    readonly code: string
+    readonly departement: Departement | null
     readonly criteres: CriteresActeurs
   }): Promise<
     Result<ActeursDuDepartement, EchecDeListerLesActeursDuDepartement>
   > => {
-    const departement = departementDuCode(code)
-
-    if (!departement.success) return departement
+    if (departement === null) return failure(DepartementInconnu())
 
     const [acteurs, { communesOptions }] = await Promise.all([
-      acteursDuDepartement(departement.data.code, criteres),
-      communesDesLieux({ departementCode: departement.data.code }),
+      acteursDuDepartement(departement.code, criteres),
+      communesDesLieux({ departementCode: departement.code }),
     ])
 
     return success({
-      departement: departement.data,
+      departement,
       criteres,
       acteurs,
       communes: communesOptions,

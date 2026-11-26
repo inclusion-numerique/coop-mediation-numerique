@@ -2,16 +2,18 @@ import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { consulterLeReseauDuDepartement } from '@/features/mon-reseau/abilities/consulter-le-reseau-du-departement/domain/consulter-le-reseau-du-departement'
 import { compterLesActeursDuDepartement } from '@/features/mon-reseau/abilities/consulter-le-reseau-du-departement/implementations/prisma'
+import { Effectif } from '@/features/mon-reseau/domain'
 import {
   type ActeurASemer,
   exercerDansLeLieu,
   semerUnActeur,
   semerUnLieu,
 } from '@/features/mon-reseau/mon-reseau.cucumber'
+import { departementConnu } from '@/libraries/departement'
 
 const LIEUX_DE_L_ANNUAIRE = 12
 
-const nombreDeLieuxDuDepartement = async () => LIEUX_DE_L_ANNUAIRE
+const nombreDeLieuxDuDepartement = async () => Effectif(LIEUX_DE_L_ANNUAIRE)
 
 const consulterEnBase = consulterLeReseauDuDepartement({
   compterLesActeursDuDepartement,
@@ -47,7 +49,9 @@ const semerUnMediateurDuCantal = async ({
 }
 
 Given('le réseau du Cantal tel qu’il est', async () => {
-  const consultation = await consulterEnBase({ code: '15' })
+  const consultation = await consulterEnBase({
+    departement: departementConnu('15'),
+  })
   etat.acteursAvant = consultation.success ? consultation.data.acteurs : 0
 })
 
@@ -74,13 +78,17 @@ Given(
 )
 
 When('on consulte le réseau du Cantal', async () => {
-  etat.consultation = await consulterEnBase({ code: '15' })
+  etat.consultation = await consulterEnBase({
+    departement: departementConnu('15'),
+  })
 })
 
 When(
   'on consulte le réseau du département « {word} »',
   async (code: string) => {
-    etat.consultation = await consulterEnBase({ code: code })
+    etat.consultation = await consulterEnBase({
+      departement: departementConnu(code),
+    })
   },
 )
 
@@ -95,7 +103,7 @@ Then('le réseau du Cantal compte les lieux de son annuaire', () => {
 Then('le département est inconnu', () => {
   assert.deepStrictEqual(etat.consultation, {
     success: false,
-    error: { _tag: 'DepartementInconnu', code: '20' },
+    error: { _tag: 'DepartementInconnu' },
   })
 })
 

@@ -1,5 +1,7 @@
 import { Page, PageSize, Search, Sort } from '@arckit/resultset'
 import { describe, expect, it } from 'vitest'
+import { type Departement, NomDepartement } from '@/libraries/departement'
+import { CodeDepartement } from '@/libraries/insee'
 import type { PageDActeurs } from './acteurs-du-departement'
 import type { CriteresActeurs } from './criteres-acteurs'
 import { listerLesActeursDuDepartement } from './lister-les-acteurs-du-departement'
@@ -20,6 +22,11 @@ const aucunActeur: PageDActeurs = {
   pageSize: PageSize(20),
 }
 
+const cantal: Departement = {
+  code: CodeDepartement('15'),
+  nom: NomDepartement('Cantal'),
+}
+
 const lister = listerLesActeursDuDepartement({
   acteursDuDepartement: async () => aucunActeur,
   communesDesLieux: async () => ({
@@ -29,10 +36,10 @@ const lister = listerLesActeursDuDepartement({
 
 describe('lister les acteurs du département', () => {
   it('présente les acteurs du département avec les communes de leurs lieux', async () => {
-    expect(await lister({ code: '15', criteres })).toEqual({
+    expect(await lister({ departement: cantal, criteres })).toEqual({
       success: true,
       data: {
-        departement: { code: '15', nom: 'Cantal' },
+        departement: cantal,
         criteres,
         acteurs: aucunActeur,
         communes: [{ value: '15014', label: 'Aurillac' }],
@@ -41,9 +48,9 @@ describe('lister les acteurs du département', () => {
   })
 
   it('refuse un département inconnu', async () => {
-    expect(await lister({ code: '00', criteres })).toEqual({
+    expect(await lister({ departement: null, criteres })).toEqual({
       success: false,
-      error: { _tag: 'DepartementInconnu', code: '00' },
+      error: { _tag: 'DepartementInconnu' },
     })
   })
 })

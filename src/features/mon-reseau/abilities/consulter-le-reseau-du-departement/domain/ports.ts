@@ -7,7 +7,7 @@ export type CompterLesActeursDuDepartement = (
 
 export type NombreDeLieuxDuDepartement = (
   departement: CodeDepartement,
-) => Promise<number>
+) => Promise<Effectif>
 
 export type ConsulterLeReseauDuDepartementPorts = {
   readonly compterLesActeursDuDepartement: CompterLesActeursDuDepartement

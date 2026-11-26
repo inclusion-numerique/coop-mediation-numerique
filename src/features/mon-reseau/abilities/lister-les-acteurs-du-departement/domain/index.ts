@@ -8,7 +8,4 @@ export {
   FiltreRole,
   filtresDeRole,
 } from './criteres-acteurs'
-export type {
-  CommunesDesLieux,
-  LireLesActeursDuDepartement,
-} from './ports'
+export type { LireLesActeursDuDepartement } from './ports'

@@ -2,6 +2,7 @@ import assert from 'node:assert'
 import { After, Then, When } from '@cucumber/cucumber'
 import { consulterLesLieuxDuDepartement } from '@/features/mon-reseau/abilities/consulter-les-lieux-du-departement/domain/consulter-les-lieux-du-departement'
 import type { ParametresDuReseau } from '@/features/mon-reseau/ui/filtres/reseau.filtre'
+import { departementConnu } from '@/libraries/departement'
 import { criteresDesLieuxDuReseau } from './ui/filtres/lieux-du-reseau.filtre'
 
 const AURILLAC = '15014'
@@ -26,7 +27,10 @@ const consulterLesLieux = (code: string, parametres: ParametresDuReseau) =>
   consulterLesLieuxDuDepartement({
     lieuxDuDepartement: annuaireVide,
     communesDesLieux: aucuneCommune,
-  })({ code, criteres: criteresDesLieuxDuReseau(parametres) })
+  })({
+    departement: departementConnu(code),
+    criteres: criteresDesLieuxDuReseau(parametres),
+  })
 
 const consulter = async (communes: string) => {
   etat.consultation = await consulterLesLieux('15', { communes })
@@ -61,7 +65,7 @@ Then('l’annuaire est demandé sans commune', () => {
 Then('l’annuaire des lieux est introuvable', () => {
   assert.deepStrictEqual(etat.consultation, {
     success: false,
-    error: { _tag: 'DepartementInconnu', code: '20' },
+    error: { _tag: 'DepartementInconnu' },
   })
 })
 

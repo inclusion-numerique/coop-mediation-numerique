@@ -17,6 +17,7 @@ import { RECHERCHER_DES_COMMUNES_DU_RESEAU_KEY } from '@/features/mon-reseau/act
 import type { ParametresDuReseau } from '@/features/mon-reseau/ui/filtres/reseau.filtre'
 import { barreDuReseau } from '@/features/mon-reseau/ui/presenters/barre-du-reseau.presenter'
 import { hrefDesActeurs } from '@/features/mon-reseau/ui/presenters/liens.presenter'
+import { departementConnu } from '@/libraries/departement'
 import { ClientBinder } from '@/libraries/nextjs/injection'
 
 export const metadata: Metadata = {
@@ -37,7 +38,10 @@ const Page = async ({
   const consultation = await listerLesActeursDuDepartement({
     acteursDuDepartement,
     communesDesLieux,
-  })({ code: departement, criteres: criteresDesActeursDuReseau(parametres) })
+  })({
+    departement: departementConnu(departement),
+    criteres: criteresDesActeursDuReseau(parametres),
+  })
 
   return consultation.success ? (
     <ClientBinder

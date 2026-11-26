@@ -33,9 +33,12 @@ export type LireLesLiensDEquipe = (
   readonly invitationEnCours: Date | null
 }>
 
-export type ConsulterUnActeurPorts = {
-  readonly lireLActeur: LireLActeur
+export type LecturesDuRegard = {
   readonly lireLesLiensDEquipe: LireLesLiensDEquipe
-  readonly lireLaDerniereActivite: LireLaDerniereActivite
   readonly lireLesStatistiquesSur30Jours: LireLesStatistiquesSur30Jours
+}
+
+export type ConsulterUnActeurPorts = LecturesDuRegard & {
+  readonly lireLActeur: LireLActeur
+  readonly lireLaDerniereActivite: LireLaDerniereActivite
 }

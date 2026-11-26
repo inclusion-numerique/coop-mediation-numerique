@@ -7,6 +7,7 @@ import {
   semerUnActeur,
   semerUnLieu,
 } from '@/features/mon-reseau/mon-reseau.cucumber'
+import { departementConnu } from '@/libraries/departement'
 import { criteresDesActeursDuReseau } from './ui/filtres/acteurs-du-reseau.filtre'
 
 const communesDesLieux = async () => ({ communesOptions: [] })
@@ -58,7 +59,7 @@ const consulter = async (parametres: Record<string, string>) => {
     acteursDuDepartement,
     communesDesLieux,
   })({
-    code: '15',
+    departement: departementConnu('15'),
     criteres: criteresDesActeursDuReseau({ lignes: '100', ...parametres }),
   })
 }
@@ -132,7 +133,10 @@ When(
     etat.consultation = await listerLesActeursDuDepartement({
       acteursDuDepartement,
       communesDesLieux,
-    })({ code: code, criteres: criteresDesActeursDuReseau({}) })
+    })({
+      departement: departementConnu(code),
+      criteres: criteresDesActeursDuReseau({}),
+    })
   },
 )
 
@@ -170,7 +174,7 @@ Then(
 Then('l’annuaire des acteurs est introuvable', () => {
   assert.deepStrictEqual(etat.consultation, {
     success: false,
-    error: { _tag: 'DepartementInconnu', code: '20' },
+    error: { _tag: 'DepartementInconnu' },
   })
 })
 

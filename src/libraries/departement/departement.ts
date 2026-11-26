@@ -40,12 +40,17 @@ const departementDuReferentiel = (
     : { code, nom: NomDepartement(departement.nom) }
 }
 
+export const departementConnu = (code: string): Departement | null => {
+  const codeDepartement = CodeDepartement.safe(code)
+  return codeDepartement === null
+    ? null
+    : departementDuReferentiel(codeDepartement)
+}
+
 export const departementDuCode = (
   code: string,
 ): Result<Departement, DepartementInconnu> => {
-  const codeDepartement = CodeDepartement.safe(code)
-  const departement =
-    codeDepartement === null ? null : departementDuReferentiel(codeDepartement)
+  const departement = departementConnu(code)
   return departement === null
     ? failure(DepartementInconnu(code))
     : success(departement)

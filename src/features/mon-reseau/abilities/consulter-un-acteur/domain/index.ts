@@ -5,7 +5,7 @@ export {
   type RelationDEquipe,
   type StatistiquesSur30Jours,
 } from './fiche-acteur'
-export type { Lecteur, QuiConsulte } from './lecteur'
+export type { Lecteur } from './lecteur'
 export type {
   ConsulterUnActeurPorts,
   LireLActeur,
