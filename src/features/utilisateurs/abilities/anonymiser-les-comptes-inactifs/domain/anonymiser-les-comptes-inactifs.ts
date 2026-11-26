@@ -50,7 +50,7 @@ const supprimer = async (
   })
   return suppression.success
     ? FAIT
-    : { issue: 'echec', cause: suppression.error._tag }
+    : { issue: 'echec', cause: suppression.error.motif }
 }
 
 const agir = (

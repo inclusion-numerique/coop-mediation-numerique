@@ -58,4 +58,14 @@ export const EffacementRefuse = (motif: string): EffacementRefuse => ({
   motif,
 })
 
+export type SuppressionRefusee = {
+  readonly _tag: 'SuppressionRefusee'
+  readonly motif: string
+}
+
+export const SuppressionRefusee = (motif: string): SuppressionRefusee => ({
+  _tag: 'SuppressionRefusee',
+  motif,
+})
+
 export type EchecDeRelance = EchecTechnique | EffacementRefuse

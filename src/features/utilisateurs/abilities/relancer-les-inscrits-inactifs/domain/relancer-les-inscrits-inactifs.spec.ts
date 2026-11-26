@@ -8,6 +8,7 @@ import {
   Prenom,
   Relance,
   rattachements,
+  SuppressionRefusee,
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
 import { EchecTechnique, failure, success } from '@/libraries/result'
@@ -114,7 +115,8 @@ describe('relancer les inscrits inactifs', () => {
     expect(
       await relancer({
         ...ports([aEffacer]),
-        supprimerLeCompte: async () => failure({ _tag: 'RoleProtege' }),
+        supprimerLeCompte: async () =>
+          failure(SuppressionRefusee('RoleProtege')),
       }),
     ).toEqual(
       success([

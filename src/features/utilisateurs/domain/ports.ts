@@ -1,4 +1,5 @@
 import type { EchecTechnique, Result } from '@/libraries/result'
+import type { SuppressionRefusee } from './errors'
 import type { AuteurId } from './identifiants/auteur-id'
 import type { UtilisateurId } from './identifiants/utilisateur-id'
 import type {
@@ -32,6 +33,11 @@ export type NoterLaRelance = (
   relance: Relance,
   suppressionAnnoncee: Date | null,
 ) => Promise<Result<void, EchecTechnique>>
+
+export type SupprimerLeCompte = (suppression: {
+  readonly utilisateurId: UtilisateurId
+  readonly maintenant: Date
+}) => Promise<Result<{ readonly id: UtilisateurId }, SuppressionRefusee>>
 
 export type LireLeCompteAReaffecter = (
   utilisateurId: UtilisateurId,

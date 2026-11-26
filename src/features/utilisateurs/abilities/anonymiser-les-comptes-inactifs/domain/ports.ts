@@ -1,6 +1,7 @@
 import type {
   AdresseCourriel,
   Prenom,
+  SupprimerLeCompte,
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
 import type { EchecTechnique, Result } from '@/libraries/result'
@@ -11,22 +12,6 @@ export type AvertirDeLaSuppression = (avertissement: {
   readonly prenom: Prenom | null
   readonly dateDeSuppression: Date
 }) => Promise<Result<void, EchecTechnique>>
-
-export type CompteSupprime = { readonly id: UtilisateurId }
-
-export type SuppressionRefusee = {
-  readonly _tag:
-    | 'CompteIntrouvable'
-    | 'CompteDejaSupprime'
-    | 'RoleProtege'
-    | 'SuppressionReserveeAuDispositif'
-    | 'AccesNonCoupe'
-}
-
-export type SupprimerLeCompte = (suppression: {
-  readonly utilisateurId: UtilisateurId
-  readonly maintenant: Date
-}) => Promise<Result<CompteSupprime, SuppressionRefusee>>
 
 export type LireLesComptesAExaminer = (
   maintenant: Date,

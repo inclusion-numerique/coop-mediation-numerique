@@ -22,6 +22,7 @@ export {
   EffacementRefuse,
   RoleNonVierge,
   RoleProtege,
+  SuppressionRefusee,
   UtilisateurIntrouvable,
 } from './errors'
 export { AuteurId } from './identifiants/auteur-id'
@@ -75,6 +76,7 @@ export type {
   LireLeCompteAReaffecter,
   LireLesComptesARelancer,
   NoterLaRelance,
+  SupprimerLeCompte,
 } from './ports'
 export {
   aProduit,

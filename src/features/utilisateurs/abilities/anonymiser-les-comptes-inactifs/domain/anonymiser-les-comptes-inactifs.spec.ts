@@ -6,6 +6,7 @@ import {
   jalon,
   Prenom,
   rattachements,
+  SuppressionRefusee,
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
 import { EchecTechnique, failure, success } from '@/libraries/result'
@@ -243,7 +244,8 @@ describe('anonymiser les comptes inactifs', () => {
             avertiLe: le('2026-09-01T01:00:00.000Z'),
           }),
         ]),
-        supprimerLeCompte: async () => failure({ _tag: 'RoleProtege' }),
+        supprimerLeCompte: async () =>
+          failure(SuppressionRefusee('RoleProtege')),
       }),
     ).toEqual(
       success([

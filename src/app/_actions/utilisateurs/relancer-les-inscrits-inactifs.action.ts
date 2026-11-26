@@ -48,10 +48,14 @@ import {
   effacementsAttrapes,
 } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/prisma/effacements-des-autres-features.adapter'
 import { logEffacementReport } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/prisma/log-effacement-report.mutation'
-import type { UtilisateurId } from '@/features/utilisateurs/domain'
+import {
+  SuppressionRefusee,
+  type UtilisateurId,
+} from '@/features/utilisateurs/domain'
 import { compterLesInscrits } from '@/features/utilisateurs/implementations/prisma/compter-les-inscrits.query'
 import { noterLaRelance } from '@/features/utilisateurs/implementations/prisma/noter-la-relance.mutation'
 import type { SynchroniserLaPersonne } from '@/features/utilisateurs/implementations/prisma/registre-des-personnes.mutation'
+import { failure } from '@/libraries/result'
 
 const revoquerLePartage = revoquerPartageStatistiques({ revoquerLesPartages })
 
@@ -78,14 +82,16 @@ const supprimerUnInscritJamaisActifAvec =
     effacements: EffacementsDesAutresFeatures,
     synchroniserLaPersonne: SynchroniserLaPersonne,
   ) =>
-  ({
+  async ({
     utilisateurId,
     maintenant,
   }: {
     readonly utilisateurId: UtilisateurId
     readonly maintenant: Date
-  }) =>
-    supprimerCompte(portsDeSuppression(effacements, synchroniserLaPersonne))({
+  }) => {
+    const suppression = await supprimerCompte(
+      portsDeSuppression(effacements, synchroniserLaPersonne),
+    )({
       cible: utilisateurId,
       auteur: {
         _tag: 'systeme',
@@ -93,6 +99,10 @@ const supprimerUnInscritJamaisActifAvec =
       },
       maintenant,
     })
+    return suppression.success
+      ? suppression
+      : failure(SuppressionRefusee(suppression.error._tag))
+  }
 
 const lancerLesRelancesDesInscrits = async (
   maintenant: Date,

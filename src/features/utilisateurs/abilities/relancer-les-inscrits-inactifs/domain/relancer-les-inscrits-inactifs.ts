@@ -30,7 +30,7 @@ export const relancerLesInscritsInactifs =
             maintenant,
           })
           if (!suppression.success)
-            return failure(EffacementRefuse(suppression.error._tag))
+            return failure(EffacementRefuse(suppression.error.motif))
 
           return envoyerLAvisDEffacement(destinataire)
         },
