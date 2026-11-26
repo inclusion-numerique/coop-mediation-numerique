@@ -19,16 +19,13 @@ export const lireUneInvitation: LireUneInvitation<CleDInvitation> = async ({
   })
   if (ligne === null) return null
 
-  const invitation = toInvitation(ligne)
-  return invitation === null
-    ? null
-    : {
-        invitation,
-        cle: {
-          email_coordinateurId: {
-            email: ligne.email,
-            coordinateurId: ligne.coordinateurId,
-          },
-        },
-      }
+  return {
+    invitation: toInvitation(ligne),
+    cle: {
+      email_coordinateurId: {
+        email: ligne.email,
+        coordinateurId: ligne.coordinateurId,
+      },
+    },
+  }
 }

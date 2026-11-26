@@ -1,3 +1,6 @@
+import { z } from 'zod'
+import { defineModel, type Model } from '@/libraries/model'
+
 export const SEUIL_INACTIVITE_EN_JOURS = 30
 
 type DerniereActivite =
@@ -15,4 +18,19 @@ export type StatutMembre =
     }
   | { readonly type: 'ProfilSupprime'; readonly le: Date }
 
-export type TypeDeStatut = StatutMembre['type']
+export const TypeDeStatut = defineModel(
+  z
+    .string()
+    .pipe(
+      z.enum([
+        'Invitation',
+        'Actif',
+        'Inactif',
+        'AncienMembre',
+        'ProfilSupprime',
+      ]),
+    )
+    .brand('TypeDeStatut'),
+)
+
+export type TypeDeStatut = Model.TypeOf<typeof TypeDeStatut>

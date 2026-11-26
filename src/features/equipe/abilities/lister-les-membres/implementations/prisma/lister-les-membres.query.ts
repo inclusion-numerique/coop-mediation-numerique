@@ -8,7 +8,7 @@ import {
   statistiquesEquipeSql,
   triEquipe,
 } from '../../../../implementations/prisma/ligne-equipe.sql'
-import { toLignesEquipe } from '../../../../implementations/prisma/ligne-equipe.transfer'
+import { toLigneEquipe } from '../../../../implementations/prisma/ligne-equipe.transfer'
 import type { StatistiquesEquipe } from '../../domain'
 import type { LireLesMembres } from '../../domain/ports'
 
@@ -84,7 +84,7 @@ export const lireLesMembres: LireLesMembres = async ({
   ])
 
   return {
-    items: [...toLignesEquipe(lignes)],
+    items: lignes.map(toLigneEquipe),
     statistiques,
     totalItems: comptage?.count ?? 0,
     currentPage: page,

@@ -158,9 +158,15 @@ describe('lecture d’une ligne de l’équipe', () => {
     ).toThrow()
   })
 
-  it('écarte un statut inconnu', () => {
-    expect(
+  it('refuse un statut inconnu', () => {
+    expect(() =>
       toLigneEquipe({ ...invitationSansCompte, statut: 'Autre' }),
-    ).toBeNull()
+    ).toThrow()
+  })
+
+  it('refuse un identifiant de médiateur illisible', () => {
+    expect(() =>
+      toLigneEquipe({ ...ancienMembreComplet, mediateur_id: 'illisible' }),
+    ).toThrow()
   })
 })

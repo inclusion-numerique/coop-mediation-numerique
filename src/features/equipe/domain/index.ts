@@ -69,6 +69,6 @@ export { RoleMembre, roleMembre } from './role-membre'
 export {
   SEUIL_INACTIVITE_EN_JOURS,
   type StatutMembre,
-  type TypeDeStatut,
+  TypeDeStatut,
 } from './statut-membre'
 export { Voie } from './voie'

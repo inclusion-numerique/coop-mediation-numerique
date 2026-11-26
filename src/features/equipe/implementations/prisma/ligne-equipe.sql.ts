@@ -6,7 +6,7 @@ import {
   type CoordinateurId,
   type CriteresEquipe,
   SEUIL_INACTIVITE_EN_JOURS,
-  type TypeDeStatut,
+  TypeDeStatut,
 } from '../../domain'
 
 export type LigneEquipeRow = {
@@ -139,10 +139,10 @@ lignes AS (
 )`
 
 const statutsDuFiltre = new Map<string, readonly TypeDeStatut[]>([
-  ['actifs', ['Actif']],
-  ['inactifs', ['Inactif']],
-  ['invitations', ['Invitation']],
-  ['archives', ['AncienMembre', 'ProfilSupprime']],
+  ['actifs', [TypeDeStatut('Actif')]],
+  ['inactifs', [TypeDeStatut('Inactif')]],
+  ['invitations', [TypeDeStatut('Invitation')]],
+  ['archives', [TypeDeStatut('AncienMembre'), TypeDeStatut('ProfilSupprime')]],
 ])
 
 const conditionDeRole = new Map<string, Prisma.Sql>([

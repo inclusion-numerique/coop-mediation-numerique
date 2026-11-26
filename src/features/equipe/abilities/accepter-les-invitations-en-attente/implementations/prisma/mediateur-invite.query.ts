@@ -31,8 +31,5 @@ export const lireLesInvitationsDe: LireLesInvitationsDe = async (email) => {
     select: invitationSelect,
   })
 
-  return lignes.flatMap((ligne) => {
-    const invitation = toInvitation(ligne)
-    return invitation === null ? [] : [invitation]
-  })
+  return lignes.map(toInvitation)
 }

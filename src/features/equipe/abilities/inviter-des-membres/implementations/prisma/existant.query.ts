@@ -40,10 +40,10 @@ export const lireLExistant: LireLExistant<EmailsStockes> = async ({
     }),
   ])
 
-  const lues = invitations.flatMap((ligne) => {
-    const invitation = toInvitation(ligne)
-    return invitation === null ? [] : [{ invitation, stocke: ligne.email }]
-  })
+  const lues = invitations.map((ligne) => ({
+    invitation: toInvitation(ligne),
+    stocke: ligne.email,
+  }))
 
   const existant: Existant = {
     invitations: lues.map(({ invitation }) => invitation),
