@@ -7,6 +7,7 @@ import {
   clientSeme,
   leSecretOuvreLAcces,
 } from '@/features/clients-api/clients-api.cucumber'
+import { ClientApiId } from '@/features/clients-api/domain'
 import { clientApiExiste } from '@/features/clients-api/implementations/prisma/client-api-existe.query'
 import { nouveauSecret } from '@/features/clients-api/implementations/secret/secret.adapter'
 
@@ -35,7 +36,7 @@ When(
       genererUnSecret: nouveauSecret,
       enregistrer: enregistrerLeSecret,
     })({
-      clientApiId: v4(),
+      clientApiId: ClientApiId(v4()),
     })
   },
 )

@@ -1,5 +1,5 @@
 import {
-  ClientApiId,
+  type ClientApiId,
   couvre,
   estValideLe,
   type PorteeApi,
@@ -24,13 +24,15 @@ export const authentifierUnClientApi =
     portees,
     maintenant,
   }: {
-    readonly clientApiId: string
+    readonly clientApiId: ClientApiId | null
     readonly secret: string
     readonly portees: readonly PorteeApi[]
     readonly maintenant: Date
   }): Promise<Result<ClientApiAuthentifie, EchecDAuthentifierUnClientApi>> => {
-    const id = ClientApiId.safe(clientApiId)
-    const client = id === null ? null : await lireLeClientApiAAuthentifier(id)
+    const client =
+      clientApiId === null
+        ? null
+        : await lireLeClientApiAAuthentifier(clientApiId)
 
     if (client === null || !verifierUnSecret(secret, client.secretHash))
       return failure(NonAuthentifie())

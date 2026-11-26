@@ -7,6 +7,7 @@ import {
   clientSeme,
   portees,
 } from '@/features/clients-api/clients-api.cucumber'
+import { ClientApiId } from '@/features/clients-api/domain'
 
 const consultation: {
   resultat?: Awaited<ReturnType<ReturnType<typeof consulterUnClientApi>>>
@@ -23,7 +24,7 @@ When(
 
 When("l'administration consulte un client API qui n'existe pas", async () => {
   consultation.resultat = await consulterUnClientApi({ lireLeClientApi })({
-    clientApiId: v4(),
+    clientApiId: ClientApiId(v4()),
   })
 })
 

@@ -1,11 +1,10 @@
 export type ClientApiIntrouvable = {
   readonly _tag: 'ClientApiIntrouvable'
-  readonly clientApiId: string
 }
 
-export const ClientApiIntrouvable = (
-  clientApiId: string,
-): ClientApiIntrouvable => ({ _tag: 'ClientApiIntrouvable', clientApiId })
+export const ClientApiIntrouvable = (): ClientApiIntrouvable => ({
+  _tag: 'ClientApiIntrouvable',
+})
 
 export type NomDejaPris = {
   readonly _tag: 'NomDejaPris'

@@ -1,5 +1,5 @@
 import {
-  ClientApiId,
+  type ClientApiId,
   ClientApiIntrouvable,
 } from '@/features/clients-api/domain'
 import { failure, type Result, success } from '@/libraries/result'
@@ -16,15 +16,13 @@ export const renouvelerLeSecret =
   async ({
     clientApiId,
   }: {
-    readonly clientApiId: string
+    readonly clientApiId: ClientApiId | null
   }): Promise<Result<SecretRenouvele, EchecDeRenouvelerLeSecret>> => {
-    const id = ClientApiId.safe(clientApiId)
-
-    if (id === null || !(await clientApiExiste(id)))
-      return failure(ClientApiIntrouvable(clientApiId))
+    if (clientApiId === null || !(await clientApiExiste(clientApiId)))
+      return failure(ClientApiIntrouvable())
 
     const { secret, secretHash } = genererUnSecret()
-    await enregistrer({ id, secretHash })
+    await enregistrer({ id: clientApiId, secretHash })
 
-    return success({ clientApiId: id, secret, secretHash })
+    return success({ clientApiId, secret, secretHash })
   }

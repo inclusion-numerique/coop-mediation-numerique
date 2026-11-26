@@ -1,6 +1,6 @@
 import {
   type ClientApi,
-  ClientApiId,
+  type ClientApiId,
   ClientApiIntrouvable,
   type DefinitionDuClientApi,
   NomDejaPris,
@@ -15,15 +15,15 @@ export const modifierUnClientApi =
     clientApiId,
     definition,
   }: {
-    readonly clientApiId: string
+    readonly clientApiId: ClientApiId | null
     readonly definition: DefinitionDuClientApi
   }): Promise<Result<ClientApi, EchecDeModifierUnClientApi>> => {
-    const id = ClientApiId.safe(clientApiId)
-
-    if (id === null || !(await clientApiExiste(id)))
-      return failure(ClientApiIntrouvable(clientApiId))
-    if (await leNomEstPris({ nom: definition.nom, saufClientApiId: id }))
+    if (clientApiId === null || !(await clientApiExiste(clientApiId)))
+      return failure(ClientApiIntrouvable())
+    if (
+      await leNomEstPris({ nom: definition.nom, saufClientApiId: clientApiId })
+    )
       return failure(NomDejaPris(definition.nom))
 
-    return success(await enregistrer({ id, definition }))
+    return success(await enregistrer({ id: clientApiId, definition }))
   }

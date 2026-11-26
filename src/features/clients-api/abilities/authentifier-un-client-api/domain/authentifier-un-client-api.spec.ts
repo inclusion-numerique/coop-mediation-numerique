@@ -7,12 +7,12 @@ import {
 import { authentifierUnClientApi } from './authentifier-un-client-api'
 import type { ClientApiAAuthentifier } from './ports'
 
-const clientApiId = 'a1b2c3d4-0000-4000-8000-000000000001'
+const clientApiId = ClientApiId('a1b2c3d4-0000-4000-8000-000000000001')
 
 const maintenant = new Date('2026-10-26T12:00:00Z')
 
 const client: ClientApiAAuthentifier = {
-  id: ClientApiId(clientApiId),
+  id: clientApiId,
   portees: [PorteeApi('Activites'), PorteeApi('Structures')],
   validite: { debut: new Date('2026-01-01'), fin: null },
   secretHash: 'empreinte',
@@ -34,7 +34,7 @@ describe('authentifier un client API', () => {
       })(demande),
     ).toEqual({
       success: true,
-      data: { clientApiId: ClientApiId(clientApiId) },
+      data: { clientApiId },
     })
   })
 
@@ -55,7 +55,7 @@ describe('authentifier un client API', () => {
       await authentifierUnClientApi({
         lireLeClientApiAAuthentifier: async () => client,
         verifierUnSecret: () => true,
-      })({ ...demande, clientApiId: 'inconnu' }),
+      })({ ...demande, clientApiId: null }),
     ).toEqual({ success: false, error: { _tag: 'NonAuthentifie' } })
   })
 
@@ -112,7 +112,7 @@ describe('authentifier un client API', () => {
       })(demande),
     ).toEqual({
       success: true,
-      data: { clientApiId: ClientApiId(clientApiId) },
+      data: { clientApiId },
     })
   })
 })

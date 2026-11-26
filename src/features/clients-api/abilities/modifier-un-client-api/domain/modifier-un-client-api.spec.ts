@@ -8,7 +8,7 @@ import {
 } from '@/features/clients-api/domain'
 import { modifierUnClientApi } from './modifier-un-client-api'
 
-const clientApiId = 'a1b2c3d4-0000-4000-8000-000000000001'
+const clientApiId = ClientApiId('a1b2c3d4-0000-4000-8000-000000000001')
 
 const definition: DefinitionDuClientApi = {
   nom: NomDuClientApi('Tableau de bord'),
@@ -18,7 +18,7 @@ const definition: DefinitionDuClientApi = {
 
 const client: ClientApi = {
   ...definition,
-  id: ClientApiId(clientApiId),
+  id: clientApiId,
   creeLe: new Date('2026-01-01T00:00:00.000Z'),
   modifieLe: new Date('2026-02-01T00:00:00.000Z'),
 }
@@ -30,7 +30,7 @@ const modifier = ({
 }: {
   existe: boolean
   nomPris: boolean
-  identifiant: string
+  identifiant: ClientApiId | null
 }) =>
   modifierUnClientApi({
     clientApiExiste: async () => existe,
@@ -58,8 +58,12 @@ describe('modifier un client API', () => {
     })
   })
 
-  it.each<{ cas: string; existe: boolean; identifiant: string }>([
-    { cas: 'l’identifiant est invalide', existe: true, identifiant: 'inconnu' },
+  it.each<{
+    cas: string
+    existe: boolean
+    identifiant: ClientApiId | null
+  }>([
+    { cas: 'l’identifiant est invalide', existe: true, identifiant: null },
     {
       cas: 'aucun client ne le porte',
       existe: false,
@@ -70,7 +74,7 @@ describe('modifier un client API', () => {
     async ({ existe, identifiant }) => {
       expect(await modifier({ existe, nomPris: false, identifiant })).toEqual({
         success: false,
-        error: { _tag: 'ClientApiIntrouvable', clientApiId: identifiant },
+        error: { _tag: 'ClientApiIntrouvable' },
       })
     },
   )

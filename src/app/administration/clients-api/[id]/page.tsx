@@ -10,6 +10,7 @@ import { MODIFIER_UN_CLIENT_API_ACTION_KEY } from '@/features/clients-api/abilit
 import { ModifierUnClientApi } from '@/features/clients-api/abilities/modifier-un-client-api/ui/slots/ModifierUnClientApi.slot'
 import { RENOUVELER_LE_SECRET_ACTION_KEY } from '@/features/clients-api/abilities/renouveler-le-secret/action/renouveler-le-secret.key'
 import { RenouvelerLeSecret } from '@/features/clients-api/abilities/renouveler-le-secret/ui/slots/RenouvelerLeSecret.slot'
+import { ClientApiId } from '@/features/clients-api/domain'
 import { ClientBinder } from '@/libraries/nextjs/injection'
 
 export const metadata = {
@@ -21,7 +22,7 @@ export const revalidate = 0
 const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
   await authenticateAdmin()
   const consultation = await consulterUnClientApi({ lireLeClientApi })({
-    clientApiId: (await params).id,
+    clientApiId: ClientApiId.safe((await params).id),
   })
 
   if (!consultation.success) return notFound()

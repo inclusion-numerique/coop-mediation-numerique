@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server'
-import type { PorteeApi } from '@/features/clients-api/domain'
+import { ClientApiId, type PorteeApi } from '@/features/clients-api/domain'
 import {
   apiV1AuthorizationHeader,
   apiV1AuthorizationScheme,
@@ -43,7 +43,7 @@ export const isAuthenticatedApiClientRequest =
     }
 
     return authentifier({
-      clientApiId: clientId,
+      clientApiId: ClientApiId.safe(clientId),
       secret: clientSecret,
       portees: scopes,
       maintenant: new Date(),

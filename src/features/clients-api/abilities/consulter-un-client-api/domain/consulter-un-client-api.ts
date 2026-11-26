@@ -1,6 +1,6 @@
 import {
   type ClientApi,
-  ClientApiId,
+  type ClientApiId,
   ClientApiIntrouvable,
 } from '@/features/clients-api/domain'
 import { failure, type Result, success } from '@/libraries/result'
@@ -12,12 +12,10 @@ export const consulterUnClientApi =
   async ({
     clientApiId,
   }: {
-    readonly clientApiId: string
+    readonly clientApiId: ClientApiId | null
   }): Promise<Result<ClientApi, EchecDeConsulterUnClientApi>> => {
-    const id = ClientApiId.safe(clientApiId)
-    const client = id === null ? null : await lireLeClientApi(id)
+    const client =
+      clientApiId === null ? null : await lireLeClientApi(clientApiId)
 
-    return client === null
-      ? failure(ClientApiIntrouvable(clientApiId))
-      : success(client)
+    return client === null ? failure(ClientApiIntrouvable()) : success(client)
   }

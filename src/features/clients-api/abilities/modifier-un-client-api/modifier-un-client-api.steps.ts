@@ -9,6 +9,7 @@ import {
   nomUnique,
   portees,
 } from '@/features/clients-api/clients-api.cucumber'
+import { ClientApiId } from '@/features/clients-api/domain'
 import { clientApiExiste } from '@/features/clients-api/implementations/prisma/client-api-existe.query'
 import { nomDejaPris } from '@/features/clients-api/implementations/prisma/nom-deja-pris.query'
 
@@ -58,7 +59,7 @@ When("l'administration modifie un client API qui n'existe pas", async () => {
     leNomEstPris: nomDejaPris,
     enregistrer: enregistrerLaModification,
   })({
-    clientApiId: v4(),
+    clientApiId: ClientApiId(v4()),
     definition: {
       nom: nomUnique('Fantôme'),
       portees: portees('Activites'),
