@@ -1,6 +1,7 @@
 import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
-import { consulterLeReseauDuDepartement } from '@/features/mon-reseau/abilities/consulter-le-reseau-du-departement/implementations/prisma/reseau-du-departement.query'
+import { consulterLeReseauDuDepartement } from '@/features/mon-reseau/abilities/consulter-le-reseau-du-departement/domain/consulter-le-reseau-du-departement'
+import { compterLesActeursDuDepartement } from '@/features/mon-reseau/abilities/consulter-le-reseau-du-departement/implementations/prisma'
 import {
   type ActeurASemer,
   exercerDansLeLieu,
@@ -12,7 +13,12 @@ const LIEUX_DE_L_ANNUAIRE = 12
 
 const nombreDeLieuxDuDepartement = async () => LIEUX_DE_L_ANNUAIRE
 
-type Consultation = Awaited<ReturnType<typeof consulterLeReseauDuDepartement>>
+const consulterEnBase = consulterLeReseauDuDepartement({
+  compterLesActeursDuDepartement,
+  nombreDeLieuxDuDepartement,
+})
+
+type Consultation = Awaited<ReturnType<typeof consulterEnBase>>
 
 const etat: {
   acteursAvant?: number
@@ -41,9 +47,7 @@ const semerUnMediateurDuCantal = async ({
 }
 
 Given('le réseau du Cantal tel qu’il est', async () => {
-  const consultation = await consulterLeReseauDuDepartement('15', {
-    nombreDeLieuxDuDepartement,
-  })
+  const consultation = await consulterEnBase({ code: '15' })
   etat.acteursAvant = consultation.success ? consultation.data.acteurs : 0
 })
 
@@ -70,17 +74,13 @@ Given(
 )
 
 When('on consulte le réseau du Cantal', async () => {
-  etat.consultation = await consulterLeReseauDuDepartement('15', {
-    nombreDeLieuxDuDepartement,
-  })
+  etat.consultation = await consulterEnBase({ code: '15' })
 })
 
 When(
   'on consulte le réseau du département « {word} »',
   async (code: string) => {
-    etat.consultation = await consulterLeReseauDuDepartement(code, {
-      nombreDeLieuxDuDepartement,
-    })
+    etat.consultation = await consulterEnBase({ code: code })
   },
 )
 

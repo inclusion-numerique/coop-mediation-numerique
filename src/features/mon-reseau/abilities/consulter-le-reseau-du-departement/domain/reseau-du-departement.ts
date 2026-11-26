@@ -1,5 +1,4 @@
 import type { Departement } from '@/libraries/departement'
-import type { CodeDepartement } from '@/libraries/insee'
 import type { Effectif } from '../../../domain'
 
 export type ReseauDuDepartement = {
@@ -7,11 +6,3 @@ export type ReseauDuDepartement = {
   readonly acteurs: Effectif
   readonly lieux: Effectif
 }
-
-export type CompterLesActeursDuDepartement = (
-  departement: CodeDepartement,
-) => Promise<Effectif>
-
-export type NombreDeLieuxDuDepartement = (
-  departement: CodeDepartement,
-) => Promise<number>

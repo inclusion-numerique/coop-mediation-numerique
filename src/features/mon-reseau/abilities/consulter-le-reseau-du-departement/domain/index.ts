@@ -1,5 +1,5 @@
 export type {
   CompterLesActeursDuDepartement,
   NombreDeLieuxDuDepartement,
-  ReseauDuDepartement,
-} from './reseau-du-departement'
+} from './ports'
+export type { ReseauDuDepartement } from './reseau-du-departement'
