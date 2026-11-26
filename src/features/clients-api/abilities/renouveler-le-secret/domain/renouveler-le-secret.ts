@@ -1,19 +1,30 @@
-import { prismaClient } from '@/configuration/prisma'
 import {
+  type ClientApiExiste,
   ClientApiId,
   ClientApiIntrouvable,
   type GenererUnSecret,
 } from '@/features/clients-api/domain'
 import { failure, type Result, success } from '@/libraries/result'
 
+export type EnregistrerLeSecret = (renouvellement: {
+  readonly id: ClientApiId
+  readonly secretHash: string
+}) => Promise<void>
+
 export const renouvelerLeSecret =
-  (nouveauSecret: GenererUnSecret) =>
+  ({
+    clientApiExiste,
+    genererUnSecret,
+    enregistrer,
+  }: {
+    readonly clientApiExiste: ClientApiExiste
+    readonly genererUnSecret: GenererUnSecret
+    readonly enregistrer: EnregistrerLeSecret
+  }) =>
   async ({
     clientApiId,
-    maintenant = new Date(),
   }: {
     readonly clientApiId: string
-    readonly maintenant?: Date
   }): Promise<
     Result<
       { readonly clientApiId: ClientApiId; readonly secret: string },
@@ -21,17 +32,12 @@ export const renouvelerLeSecret =
     >
   > => {
     const id = ClientApiId.safe(clientApiId)
-    const existe =
-      id !== null && (await prismaClient.apiClient.count({ where: { id } })) > 0
 
-    if (id === null || !existe)
+    if (id === null || !(await clientApiExiste(id)))
       return failure(ClientApiIntrouvable(clientApiId))
 
-    const { secret, secretHash } = nouveauSecret()
-    await prismaClient.apiClient.update({
-      where: { id },
-      data: { secretHash, updated: maintenant },
-    })
+    const { secret, secretHash } = genererUnSecret()
+    await enregistrer({ id, secretHash })
 
     return success({ clientApiId: id, secret })
   }

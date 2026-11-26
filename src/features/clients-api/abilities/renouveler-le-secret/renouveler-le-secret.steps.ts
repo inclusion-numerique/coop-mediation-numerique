@@ -1,11 +1,13 @@
 import assert from 'node:assert'
 import { Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { renouvelerLeSecret } from '@/features/clients-api/abilities/renouveler-le-secret/implementations/prisma/renouveler-le-secret.mutation'
+import { renouvelerLeSecret } from '@/features/clients-api/abilities/renouveler-le-secret/domain/renouveler-le-secret'
+import { enregistrerLeSecret } from '@/features/clients-api/abilities/renouveler-le-secret/implementations/prisma/enregistrer-le-secret.mutation'
 import {
   clientSeme,
   leSecretOuvreLAcces,
 } from '@/features/clients-api/clients-api.cucumber'
+import { clientApiExiste } from '@/features/clients-api/implementations/prisma/client-api-existe.query'
 import { nouveauSecret } from '@/features/clients-api/implementations/secret/secret.adapter'
 
 const renouvellement: {
@@ -15,7 +17,11 @@ const renouvellement: {
 When(
   "l'administration renouvelle le secret du client API {string}",
   async (nom: string) => {
-    renouvellement.resultat = await renouvelerLeSecret(nouveauSecret)({
+    renouvellement.resultat = await renouvelerLeSecret({
+      clientApiExiste,
+      genererUnSecret: nouveauSecret,
+      enregistrer: enregistrerLeSecret,
+    })({
       clientApiId: clientSeme(nom).id,
     })
   },
@@ -24,7 +30,11 @@ When(
 When(
   "l'administration renouvelle le secret d'un client API qui n'existe pas",
   async () => {
-    renouvellement.resultat = await renouvelerLeSecret(nouveauSecret)({
+    renouvellement.resultat = await renouvelerLeSecret({
+      clientApiExiste,
+      genererUnSecret: nouveauSecret,
+      enregistrer: enregistrerLeSecret,
+    })({
       clientApiId: v4(),
     })
   },
