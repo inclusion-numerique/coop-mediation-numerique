@@ -13,16 +13,16 @@ const criteres: CriteresDesLieux = {
   pageSize: PageSize(20),
 }
 
-const ports = {
+const consulter = consulterLesLieuxDuDepartement({
   lieuxDuDepartement: async () => ['Médiathèque de Saint-Flour'],
   communesDesLieux: async () => ({
     communesOptions: [{ value: '15187', label: 'Saint-Flour' }],
   }),
-}
+})
 
 describe('consulter les lieux du département', () => {
   it('présente les lieux du département avec les communes où ils se trouvent', async () => {
-    expect(await consulterLesLieuxDuDepartement('15', criteres, ports)).toEqual(
+    expect(await consulter({ code: '15', criteres })).toEqual(
       success({
         departement: { code: '15', nom: 'Cantal' },
         criteres,
@@ -33,7 +33,7 @@ describe('consulter les lieux du département', () => {
   })
 
   it('refuse un département inconnu', async () => {
-    expect(await consulterLesLieuxDuDepartement('00', criteres, ports)).toEqual(
+    expect(await consulter({ code: '00', criteres })).toEqual(
       failure(DepartementInconnu('00')),
     )
   })

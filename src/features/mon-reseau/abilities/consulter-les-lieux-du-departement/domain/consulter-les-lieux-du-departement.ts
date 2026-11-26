@@ -1,39 +1,37 @@
-import {
-  type DepartementInconnu,
-  departementDuCode,
-} from '@/libraries/departement'
-import { failure, success } from '@/libraries/result'
-import {
-  type CommunesDesLieux,
-  type CriteresDesLieux,
-  type LieuxDuDepartement,
-} from '.'
+import { departementDuCode } from '@/libraries/departement'
+import { type Result, success } from '@/libraries/result'
+import type { CriteresDesLieux } from './criteres-des-lieux'
+import type { EchecDeConsulterLesLieuxDuDepartement } from './errors'
+import type { LieuxConsultes } from './lieux-consultes'
+import type { ConsulterLesLieuxDuDepartementPorts } from './ports'
 
-export const consulterLesLieuxDuDepartement = async <Lieux>(
-  code: string,
-  criteres: CriteresDesLieux,
-  {
+export const consulterLesLieuxDuDepartement =
+  <Lieux>({
     lieuxDuDepartement,
     communesDesLieux,
-  }: {
-    lieuxDuDepartement: LieuxDuDepartement<Lieux>
-    communesDesLieux: CommunesDesLieux
-  },
-) => {
-  const departement = departementDuCode(code)
-
-  if (!departement.success)
-    return failure<DepartementInconnu>(departement.error)
-
-  const [lieux, { communesOptions }] = await Promise.all([
-    lieuxDuDepartement({ departementCode: departement.data.code, criteres }),
-    communesDesLieux({ departementCode: departement.data.code }),
-  ])
-
-  return success({
-    departement: departement.data,
+  }: ConsulterLesLieuxDuDepartementPorts<Lieux>) =>
+  async ({
+    code,
     criteres,
-    lieux,
-    communes: communesOptions,
-  })
-}
+  }: {
+    readonly code: string
+    readonly criteres: CriteresDesLieux
+  }): Promise<
+    Result<LieuxConsultes<Lieux>, EchecDeConsulterLesLieuxDuDepartement>
+  > => {
+    const departement = departementDuCode(code)
+
+    if (!departement.success) return departement
+
+    const [lieux, { communesOptions }] = await Promise.all([
+      lieuxDuDepartement({ departementCode: departement.data.code, criteres }),
+      communesDesLieux({ departementCode: departement.data.code }),
+    ])
+
+    return success({
+      departement: departement.data,
+      criteres,
+      lieux,
+      communes: communesOptions,
+    })
+  }

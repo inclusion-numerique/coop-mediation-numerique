@@ -23,10 +23,10 @@ const annuaireVide = async ({
 const aucuneCommune = async () => ({ communesOptions: [] })
 
 const consulterLesLieux = (code: string, parametres: ParametresDuReseau) =>
-  consulterLesLieuxDuDepartement(code, criteresDesLieuxDuReseau(parametres), {
+  consulterLesLieuxDuDepartement({
     lieuxDuDepartement: annuaireVide,
     communesDesLieux: aucuneCommune,
-  })
+  })({ code, criteres: criteresDesLieuxDuReseau(parametres) })
 
 const consulter = async (communes: string) => {
   etat.consultation = await consulterLesLieux('15', { communes })

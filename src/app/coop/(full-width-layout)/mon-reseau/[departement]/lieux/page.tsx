@@ -38,11 +38,10 @@ const Page = async ({
 
   const { departement } = await params
   const parametres = await searchParams
-  const consultation = await consulterLesLieuxDuDepartement(
-    departement,
-    criteresDesLieuxDuReseau(parametres),
-    { lieuxDuDepartement, communesDesLieux },
-  )
+  const consultation = await consulterLesLieuxDuDepartement({
+    lieuxDuDepartement,
+    communesDesLieux,
+  })({ code: departement, criteres: criteresDesLieuxDuReseau(parametres) })
 
   return consultation.success ? (
     <ClientBinder
