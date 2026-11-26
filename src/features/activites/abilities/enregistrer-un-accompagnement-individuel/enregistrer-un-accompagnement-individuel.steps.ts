@@ -4,12 +4,11 @@ import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
 import {
   type AccompagnementEnregistre,
-  type SaisieIndividuelle,
-} from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/domain/index'
-import {
   type EchecDEnregistrement,
   enregistrerUnAccompagnementIndividuel,
-} from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/implementations/prisma/enregistrer-un-accompagnement-individuel.mutation'
+  type SaisieIndividuelle,
+} from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/domain/index'
+import { beneficiaireDuMediateur } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/implementations/prisma/beneficiaire-du-mediateur.query'
 import {
   ActiviteId,
   BeneficiaireId,
@@ -24,6 +23,16 @@ import {
   TrancheDAge,
   UtilisateurId,
 } from '@/features/activites/domain'
+import {
+  creerLActiviteDeMediation,
+  modifierLActiviteDeMediation,
+} from '@/features/activites/implementations/prisma/activite-de-mediation.mutation'
+import {
+  activiteDeMediationDuMediateur,
+  nouvelIdentifiantDActivite,
+  rendezVousDejaSaisi,
+  rendezVousDUnAutreMediateur,
+} from '@/features/activites/implementations/prisma/saisie-de-mediation.query'
 import type { Result } from '@/libraries/result'
 
 type Mediateur = { readonly userId: string; readonly mediateurId: string }
@@ -115,13 +124,21 @@ const enregistrerPar = async (
   lieuOuvert = true,
 ) => {
   resultat = await enregistrerUnAccompagnementIndividuel({
-    saisie: saisieIndividuelle,
-    mediateurId: MediateurId(mediateur.mediateurId),
-    auteurId: UtilisateurId(mediateur.userId),
+    activiteDuMediateur: activiteDeMediationDuMediateur,
+    nouvelIdentifiant: nouvelIdentifiantDActivite,
+    beneficiaireDuMediateur,
     employeuseDeLaDate: async () => null,
     lieuUtilisable: async () => lieuOuvert,
     tagsUtilisables: async () => [],
     marquerLeRendezVousHonore: () => Promise.resolve(),
+    rendezVousDUnAutreMediateur,
+    rendezVousDejaSaisi,
+    creer: creerLActiviteDeMediation(UtilisateurId(mediateur.userId)),
+    modifier: modifierLActiviteDeMediation(UtilisateurId(mediateur.userId)),
+    maintenant: () => new Date(),
+  })({
+    saisie: saisieIndividuelle,
+    mediateurId: MediateurId(mediateur.mediateurId),
   })
 }
 

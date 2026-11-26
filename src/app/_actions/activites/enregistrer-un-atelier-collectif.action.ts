@@ -4,12 +4,23 @@ import { actionBuilder } from '@/configuration/nextjs'
 import { signaler } from '@/configuration/telemetry/serveur'
 import { ENREGISTRER_UN_ATELIER_COLLECTIF_ERRORS } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/action/enregistrer-un-atelier-collectif.errors'
 import { EnregistrerUnAtelierCollectifValidation } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/action/enregistrer-un-atelier-collectif.validation'
-import { enregistrerUnAtelierCollectif } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/implementations/prisma/enregistrer-un-atelier-collectif.mutation'
+import { enregistrerUnAtelierCollectif } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/domain/enregistrer-un-atelier-collectif'
+import { nombreDeSuivisDuMediateur } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/implementations/prisma/nombre-de-suivis-du-mediateur.query'
 import { MediateurId, UtilisateurId } from '@/features/activites/domain'
 import {
   employeuseDeLaDateDepuis,
   tagsUtilisablesDepuis,
 } from '@/features/activites/domain/fournisseurs-de-la-saisie'
+import {
+  creerLActiviteDeMediation,
+  modifierLActiviteDeMediation,
+} from '@/features/activites/implementations/prisma/activite-de-mediation.mutation'
+import {
+  activiteDeMediationDuMediateur,
+  nouvelIdentifiantDActivite,
+  rendezVousDejaSaisi,
+  rendezVousDUnAutreMediateur,
+} from '@/features/activites/implementations/prisma/saisie-de-mediation.query'
 import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { consulterEmployeuseAUneDate } from '@/features/employeuse/abilities/consulter-employeuse-a-une-date/implementations/prisma/consulter-employeuse-a-une-date.query'
@@ -54,10 +65,9 @@ export const enregistrerUnAtelierCollectifAction = actionBuilder()
     fromResult(
       async ({ user, input }) =>
         enregistrerUnAtelierCollectif({
-          saisie: input,
-          mediateurId:
-            user.mediateur == null ? null : MediateurId(user.mediateur.id),
-          auteurId: UtilisateurId(user.id),
+          activiteDuMediateur: activiteDeMediationDuMediateur,
+          nouvelIdentifiant: nouvelIdentifiantDActivite,
+          nombreDeSuivisDuMediateur,
           employeuseDeLaDate: employeuseDeLaDateDepuis((date) =>
             consulterEmployeuseAUneDate({ userId: user.id, date }),
           ),
@@ -65,10 +75,19 @@ export const enregistrerUnAtelierCollectifAction = actionBuilder()
           tagsUtilisables: tagsUtilisablesDepuis(
             tagsVisiblesPar(acteurDe(profilDeLaSession(user))),
           ),
+          rendezVousDUnAutreMediateur,
+          rendezVousDejaSaisi,
+          creer: creerLActiviteDeMediation(UtilisateurId(user.id)),
+          modifier: modifierLActiviteDeMediation(UtilisateurId(user.id)),
           marquerLeRendezVousHonore: marquerLeRendezVousHonore({
             mettreAJour: mettreAJourLeStatutDuRdv,
             signaler,
           })(UtilisateurCoopId(user.id)),
+          maintenant: () => new Date(),
+        })({
+          saisie: input,
+          mediateurId:
+            user.mediateur == null ? null : MediateurId(user.mediateur.id),
         }),
       { onError: ENREGISTRER_UN_ATELIER_COLLECTIF_ERRORS },
     ),

@@ -132,6 +132,22 @@ export {
 } from './mediation/activite-de-mediation'
 export { AdresseDuLieu } from './mediation/adresse-du-lieu'
 export { AUTONOMIES, Autonomie } from './mediation/autonomie'
+export {
+  type ActiviteDeMediationDuMediateur,
+  type ActiviteDeMediationExistante,
+  type ActiviteDeMediationPrecedente,
+  type CreerLActiviteDeMediation,
+  creationOuModification,
+  type DependancesDeLaSaisieDeMediation,
+  type EnregistrementDeMediation,
+  ecrireLActiviteDeMediation,
+  enregistrementDeMediation,
+  lieuVerifie,
+  type ModifierLActiviteDeMediation,
+  type RendezVousDejaSaisi,
+  type RendezVousDUnAutreMediateur,
+  rendezVousVerifie,
+} from './mediation/enregistrement-de-mediation'
 export { MATERIELS, Materiel } from './mediation/materiel'
 export { NIVEAUX_D_ATELIER, NiveauDAtelier } from './mediation/niveau-d-atelier'
 export { PrecisionDeDemarche } from './mediation/precision-de-demarche'

@@ -1,90 +1,77 @@
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
-import { failure, type Result, success } from '@/libraries/result'
 import {
+  type ActiviteDeMediationDuMediateur,
   ActiviteId,
-  ActiviteIntrouvable,
+  BeneficiaireId,
   IdentifiantCraV1,
   LieuActiviteId,
-  LieuInutilisable,
-  type LieuSaisi,
-  type LieuUtilisable,
-  type MediateurId,
-  type RdvId,
-  RendezVousIndisponible,
-  type TypeDActivite,
-  TypeDActiviteIncompatible,
+  type RendezVousDejaSaisi,
+  type RendezVousDUnAutreMediateur,
+  TypeDActivite,
 } from '../../domain'
-import {
-  type ActiviteDeMediationPrecedente,
-  lireLActiviteDeMediationPrecedente,
-} from './activite-de-mediation.mutation'
 
-export type EnregistrementDeMediation =
-  | { readonly _tag: 'Creation'; readonly id: ActiviteId }
-  | {
-      readonly _tag: 'Modification'
-      readonly id: ActiviteId
-      readonly creation: Date
-      readonly identifiantV1: IdentifiantCraV1 | null
-      readonly precedente: ActiviteDeMediationPrecedente
+export const nouvelIdentifiantDActivite = (): ActiviteId => ActiviteId(v4())
+
+const anonymesOrphelinsDe = (id: string) =>
+  prismaClient.$queryRaw<{ id: string }[]>`
+    SELECT accompagnement.beneficiaire_id AS id
+    FROM accompagnements accompagnement
+    INNER JOIN beneficiaires beneficiaire
+      ON beneficiaire.id = accompagnement.beneficiaire_id
+    WHERE accompagnement.activite_id = ${id}::uuid
+      AND beneficiaire.anonyme = true
+      AND NOT EXISTS (
+        SELECT 1 FROM accompagnements autre
+        WHERE autre.beneficiaire_id = accompagnement.beneficiaire_id
+          AND autre.activite_id <> ${id}::uuid
+      )
+  `
+
+export const activiteDeMediationDuMediateur: ActiviteDeMediationDuMediateur =
+  async ({ id, mediateurId }) => {
+    const activite = await prismaClient.activite.findFirst({
+      where: { id, mediateurId, suppression: null },
+      select: {
+        type: true,
+        structureId: true,
+        creation: true,
+        v1CraId: true,
+        accompagnements: {
+          select: {
+            beneficiaire: { select: { id: true, anonyme: true } },
+          },
+        },
+      },
+    })
+    if (activite === null) return null
+
+    const orphelins = await anonymesOrphelinsDe(id)
+
+    return {
+      type: TypeDActivite(activite.type),
+      creation: activite.creation,
+      identifiantV1:
+        activite.v1CraId === null ? null : IdentifiantCraV1(activite.v1CraId),
+      precedente: {
+        lieuActiviteId:
+          activite.structureId === null
+            ? null
+            : LieuActiviteId(activite.structureId),
+        suivis: activite.accompagnements
+          .filter(({ beneficiaire }) => !beneficiaire.anonyme)
+          .map(({ beneficiaire }) => BeneficiaireId(beneficiaire.id)),
+        anonymesOrphelins: orphelins.map((orphelin) =>
+          BeneficiaireId(orphelin.id),
+        ),
+      },
     }
-
-export const enregistrementDeMediation = async ({
-  id,
-  type,
-  mediateurId,
-}: {
-  readonly id: ActiviteId | null
-  readonly type: TypeDActivite
-  readonly mediateurId: MediateurId
-}): Promise<
-  Result<
-    EnregistrementDeMediation,
-    ActiviteIntrouvable | TypeDActiviteIncompatible
-  >
-> => {
-  if (id === null) {
-    return success({ _tag: 'Creation', id: ActiviteId(v4()) })
   }
-  const existante = await lireLActiviteDeMediationPrecedente({
-    id,
-    mediateurId,
-  })
-  if (existante === null) return failure(ActiviteIntrouvable())
-  if (existante.type !== type) return failure(TypeDActiviteIncompatible())
-  return success({
-    _tag: 'Modification',
-    id,
-    creation: existante.creation,
-    identifiantV1:
-      existante.identifiantV1 === null
-        ? null
-        : IdentifiantCraV1(existante.identifiantV1),
-    precedente: existante.precedente,
-  })
-}
 
-export const lieuVerifie = async (
-  lieu: LieuSaisi,
-  enregistrement: EnregistrementDeMediation,
-  lieuUtilisable: LieuUtilisable,
-): Promise<Result<null, LieuInutilisable>> => {
-  if (lieu._tag !== 'LieuActivite') return success(null)
-  const actuel =
-    enregistrement._tag === 'Modification' &&
-    enregistrement.precedente.lieuActiviteId !== null
-      ? LieuActiviteId(enregistrement.precedente.lieuActiviteId)
-      : null
-  return (await lieuUtilisable(lieu.lieuActiviteId, actuel))
-    ? success(null)
-    : failure(LieuInutilisable())
-}
-
-const rendezVousDUnAutreMediateur = async (
-  rdvId: RdvId,
-  mediateurId: string,
-): Promise<boolean> =>
+export const rendezVousDUnAutreMediateur: RendezVousDUnAutreMediateur = async ({
+  rdvId,
+  mediateurId,
+}) =>
   (await prismaClient.rdv.count({
     where: {
       id: rdvId,
@@ -92,39 +79,10 @@ const rendezVousDUnAutreMediateur = async (
     },
   })) > 0
 
-const rendezVousDejaSaisi = async (
-  rdvId: RdvId,
-  activiteId: ActiviteId,
-): Promise<boolean> =>
+export const rendezVousDejaSaisi: RendezVousDejaSaisi = async ({
+  rdvId,
+  activiteId,
+}) =>
   (await prismaClient.activite.count({
     where: { rdvId, suppression: null, id: { not: activiteId } },
   })) > 0
-
-export const rendezVousVerifie = async (
-  rdvId: RdvId | null,
-  activiteId: ActiviteId,
-  mediateurId: string,
-): Promise<Result<null, RendezVousIndisponible>> => {
-  if (rdvId === null) return success(null)
-  const [dUnAutre, dejaSaisi] = await Promise.all([
-    rendezVousDUnAutreMediateur(rdvId, mediateurId),
-    rendezVousDejaSaisi(rdvId, activiteId),
-  ])
-  return dUnAutre || dejaSaisi
-    ? failure(RendezVousIndisponible())
-    : success(null)
-}
-
-export const creationOuModification = (
-  enregistrement: EnregistrementDeMediation,
-  maintenant: Date,
-) => ({
-  creation:
-    enregistrement._tag === 'Modification'
-      ? enregistrement.creation
-      : maintenant,
-  identifiantV1:
-    enregistrement._tag === 'Modification'
-      ? enregistrement.identifiantV1
-      : null,
-})
