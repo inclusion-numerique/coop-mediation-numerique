@@ -1,6 +1,5 @@
 import type {
   AdresseCourriel,
-  EchecTechnique,
   EnvoyerLAvertissement,
   EnvoyerLAvisDEffacement,
   EnvoyerLaRelance,
@@ -8,7 +7,7 @@ import type {
   NoterLaRelance,
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
-import type { Result } from '@/libraries/result'
+import type { EchecTechnique, Result } from '@/libraries/result'
 
 export type EffacerLInscription = (
   utilisateurId: UtilisateurId,

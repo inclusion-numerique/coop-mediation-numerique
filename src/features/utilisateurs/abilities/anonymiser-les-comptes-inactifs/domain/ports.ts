@@ -1,10 +1,9 @@
 import type {
   AdresseCourriel,
-  EchecTechnique,
   Prenom,
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
-import type { Result } from '@/libraries/result'
+import type { EchecTechnique, Result } from '@/libraries/result'
 import type { CompteAExaminer } from './compte-a-examiner'
 
 export type AvertirDeLaSuppression = (avertissement: {

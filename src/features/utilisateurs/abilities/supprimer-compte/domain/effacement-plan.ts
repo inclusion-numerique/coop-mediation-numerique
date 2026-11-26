@@ -1,12 +1,11 @@
 import {
   type CompteASupprimer,
   coordinateurDe,
-  type EchecTechnique,
   identifiantsDe,
   type MediateurId,
   mediateurDe,
 } from '@/features/utilisateurs/domain'
-import { type Result, success } from '@/libraries/result'
+import { type EchecTechnique, type Result, success } from '@/libraries/result'
 import { EffacementStep, type NomEffacementStep } from './effacement-report'
 import type { EffacementsDuCompte } from './ports'
 

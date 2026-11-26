@@ -1,12 +1,4 @@
-export type EchecTechnique = {
-  readonly _tag: 'EchecTechnique'
-  readonly cause: unknown
-}
-
-export const EchecTechnique = (cause: unknown): EchecTechnique => ({
-  _tag: 'EchecTechnique',
-  cause,
-})
+import type { EchecTechnique } from '@/libraries/result'
 
 export type IdentiteIncomplete = {
   readonly _tag: 'IdentiteIncomplete'

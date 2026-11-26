@@ -2,13 +2,12 @@ import type {
   AdresseCourriel,
   CompteASupprimer,
   CourrielHash,
-  EchecTechnique,
   IdentifiantsRattaches,
   IdentiteAnonyme,
   MediateurId,
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
-import type { Result } from '@/libraries/result'
+import type { EchecTechnique, Result } from '@/libraries/result'
 import type { CompteSupprime } from './autoriser-la-suppression'
 
 export type AnonymiserPortefeuille = (input: {

@@ -6,14 +6,13 @@ import {
   CoordinateurId,
   CourrielHash,
   Dispositif,
-  EchecTechnique,
   identiteAnonyme,
   MediateurId,
   RoleUtilisateur,
   rattachements,
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
-import { failure, success } from '@/libraries/result'
+import { EchecTechnique, failure, success } from '@/libraries/result'
 import type { AuteurSuppression } from './auteur-suppression'
 import type { SupprimerComptePorts } from './ports'
 import { RetentionPolicy } from './retention-policy'

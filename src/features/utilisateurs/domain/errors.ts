@@ -1,3 +1,4 @@
+import type { EchecTechnique } from '@/libraries/result'
 import type { UtilisateurId } from './identifiants/utilisateur-id'
 import type { RoleUtilisateur } from './role-utilisateur'
 
@@ -32,16 +33,6 @@ export const RoleProtege = (
   utilisateurId: UtilisateurId,
   role: RoleUtilisateur,
 ): RoleProtege => ({ _tag: 'RoleProtege', utilisateurId, role })
-
-export type EchecTechnique = {
-  readonly _tag: 'EchecTechnique'
-  readonly cause: string
-}
-
-export const EchecTechnique = (cause: string): EchecTechnique => ({
-  _tag: 'EchecTechnique',
-  cause,
-})
 
 export type EffacementRefuse = {
   readonly _tag: 'EffacementRefuse'

@@ -1,7 +1,6 @@
 import type { DuplicateBeneficiaire } from '@/features/beneficiaire/domain/doublon-de-beneficiaire'
 import type { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
-import type { Result } from '@/libraries/result'
-import type { EchecTechnique } from './errors'
+import type { EchecTechnique, Result } from '@/libraries/result'
 import type {
   CommuneFields,
   DonneesDeFusion,

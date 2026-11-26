@@ -1,10 +1,15 @@
 import {
-  EchecTechnique,
   type IdentifiantsRattaches,
   type MediateurId,
   type UtilisateurId,
 } from '@/features/utilisateurs/domain'
-import { failure, type Result, success } from '@/libraries/result'
+import {
+  type EchecTechnique,
+  enEchecTechnique,
+  failure,
+  type Result,
+  success,
+} from '@/libraries/result'
 import type { EffacementsDuCompte } from '../../domain/ports'
 
 export type EffacementsDesAutresFeatures = {
@@ -43,11 +48,7 @@ const attraper =
     try {
       return success(await effacer(entree))
     } catch (erreur) {
-      return failure(
-        EchecTechnique(
-          erreur instanceof Error ? erreur.message : String(erreur),
-        ),
-      )
+      return failure(enEchecTechnique(erreur))
     }
   }
 

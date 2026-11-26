@@ -1,9 +1,5 @@
 import axios from 'axios'
-import {
-  AdresseCourriel,
-  EchecTechnique,
-  UtilisateurId,
-} from '@/features/utilisateurs/domain'
+import { AdresseCourriel, UtilisateurId } from '@/features/utilisateurs/domain'
 import {
   cleApiBrevo,
   listeDesUtilisateurs,
@@ -12,7 +8,12 @@ import { brevoApiThrottle } from '@/features/utilisateurs/implementations/brevo/
 import { deleteBrevoContact } from '@/features/utilisateurs/implementations/brevo/delete-brevo-contact.mutation'
 import { deleteBrevoContactIfOrphan } from '@/features/utilisateurs/implementations/brevo/delete-brevo-contact-if-orphan.mutation'
 import { removeBrevoContactFromList } from '@/features/utilisateurs/implementations/brevo/remove-brevo-contact-from-list.mutation'
-import { failure, success } from '@/libraries/result'
+import {
+  type EchecTechnique,
+  enEchecTechnique,
+  failure,
+  success,
+} from '@/libraries/result'
 import type { CompteDuContact, ContactBrevo } from '../../domain'
 import type {
   RetirerLeContactDeLaListe,
@@ -71,8 +72,7 @@ const lireAPartirDe = async (
     : [...contacts, ...(await lireAPartirDe(offset + TAILLE_DE_PAGE))]
 }
 
-const echecDe = (erreur: unknown): EchecTechnique =>
-  EchecTechnique(erreur instanceof Error ? erreur.message : String(erreur))
+const echecDe = (erreur: unknown): EchecTechnique => enEchecTechnique(erreur)
 
 export const listerLesContacts = (): Promise<readonly ContactBrevo[]> =>
   lireAPartirDe(0)

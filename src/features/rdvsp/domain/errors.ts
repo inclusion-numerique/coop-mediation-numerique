@@ -1,3 +1,4 @@
+import { messageDe } from '@/libraries/result'
 import type { OrganisationId } from './identifiants/organisation-id'
 import type { RdvAgentId } from './identifiants/rdv-agent-id'
 import type { RdvId } from './identifiants/rdv-id'
@@ -165,7 +166,5 @@ export const diagnosticErreur = (erreur: ErreurRdvApi): string => {
 export const messageDeLEchec = (echec: EchecDeSynchronisation): string => {
   if (echec._tag !== 'ErreurTechnique') return diagnosticErreur(echec)
 
-  return echec.erreur instanceof Error
-    ? echec.erreur.message
-    : String(echec.erreur)
+  return messageDe(echec.erreur)
 }

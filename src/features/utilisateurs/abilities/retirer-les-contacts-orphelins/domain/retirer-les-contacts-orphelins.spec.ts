@@ -1,10 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import {
-  AdresseCourriel,
-  EchecTechnique,
-  UtilisateurId,
-} from '@/features/utilisateurs/domain'
-import { failure, success } from '@/libraries/result'
+import { AdresseCourriel, UtilisateurId } from '@/features/utilisateurs/domain'
+import { EchecTechnique, failure, success } from '@/libraries/result'
 import type { ContactBrevo } from './contacts'
 import type { RetirerLesContactsOrphelinsPorts } from './ports'
 import { retirerLesContactsOrphelins } from './retirer-les-contacts-orphelins'

@@ -1,9 +1,11 @@
+import { coordinateurDe, mediateurDe } from '@/features/utilisateurs/domain'
 import {
-  coordinateurDe,
-  EchecTechnique,
-  mediateurDe,
-} from '@/features/utilisateurs/domain'
-import { failure, type Result, success } from '@/libraries/result'
+  type EchecTechnique,
+  enEchecTechnique,
+  failure,
+  type Result,
+  success,
+} from '@/libraries/result'
 import type { RelancerLesInscritsInactifsPorts } from '../../domain'
 import { envoyerBienDemarrer } from './envoyer-bien-demarrer.mutation'
 import { envoyerLAvertissementDeSuppression } from './envoyer-l-avertissement-de-suppression.mutation'
@@ -17,9 +19,7 @@ const attraper = async (
     await envoi()
     return success(undefined)
   } catch (erreur) {
-    return failure(
-      EchecTechnique(erreur instanceof Error ? erreur.message : String(erreur)),
-    )
+    return failure(enEchecTechnique(erreur))
   }
 }
 

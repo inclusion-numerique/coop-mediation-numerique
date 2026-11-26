@@ -1,4 +1,4 @@
-import { failure, success } from '@/libraries/result'
+import { failure, messageDe, success } from '@/libraries/result'
 import { RapprochementEchoue } from '../../domain/errors'
 import type { CreerOuFusionnerDepuisUsagersExternes } from '../../domain/ports'
 import type { RapprocherLesBeneficiaires } from '../../domain/rapprochement'
@@ -10,10 +10,5 @@ export const rapprocherLesBeneficiaires =
   async ({ usagers, mediateurId }) =>
     creerOuFusionner({ usagers: [...usagers], mediateurId }).then(
       ({ skipped }) => success({ ecartes: skipped.length }),
-      (erreur: unknown) =>
-        failure(
-          RapprochementEchoue(
-            erreur instanceof Error ? erreur.message : String(erreur),
-          ),
-        ),
+      (erreur: unknown) => failure(RapprochementEchoue(messageDe(erreur))),
     )

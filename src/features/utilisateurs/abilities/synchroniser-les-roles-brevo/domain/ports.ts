@@ -1,9 +1,8 @@
 import type {
   AdresseCourriel,
   ContactAImporter,
-  EchecTechnique,
 } from '@/features/utilisateurs/domain'
-import type { Result } from '@/libraries/result'
+import type { EchecTechnique, Result } from '@/libraries/result'
 import type { IdentifiantDImport } from './identifiant-d-import'
 import type { LectureDesInscrits } from './synchronisation'
 

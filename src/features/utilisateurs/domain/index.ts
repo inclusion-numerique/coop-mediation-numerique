@@ -17,7 +17,6 @@ export { Dispositif, dispositifDe, estEnPoste } from './dispositif'
 export {
   CompteSupprime,
   type EchecDeRelance,
-  EchecTechnique,
   EffacementRefuse,
   RoleProtege,
   UtilisateurIntrouvable,

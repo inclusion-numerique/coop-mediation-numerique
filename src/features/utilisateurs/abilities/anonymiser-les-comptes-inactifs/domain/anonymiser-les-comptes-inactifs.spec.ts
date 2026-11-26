@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
   AdresseCourriel,
-  EchecTechnique,
   JAMAIS,
   type Jalon,
   jalon,
@@ -9,7 +8,7 @@ import {
   rattachements,
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
-import { failure, success } from '@/libraries/result'
+import { EchecTechnique, failure, success } from '@/libraries/result'
 import { anonymiserLesComptesInactifs } from './anonymiser-les-comptes-inactifs'
 import type {
   CompteAExaminer,

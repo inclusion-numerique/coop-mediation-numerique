@@ -1,10 +1,13 @@
 import { prismaClient } from '@/configuration/prisma'
-import {
-  EchecTechnique,
-  type UtilisateurId,
-} from '@/features/utilisateurs/domain'
+import { type UtilisateurId } from '@/features/utilisateurs/domain'
 import type { RetirerDuRegistre } from '@/features/utilisateurs/implementations/prisma/registre-des-personnes.mutation'
-import { failure, type Result, success } from '@/libraries/result'
+import {
+  type EchecTechnique,
+  enEchecTechnique,
+  failure,
+  type Result,
+  success,
+} from '@/libraries/result'
 
 export const effacerLInscription =
   (retirerDuRegistre: RetirerDuRegistre) =>
@@ -49,10 +52,6 @@ export const effacerLInscription =
       })
       return success(undefined)
     } catch (erreur) {
-      return failure(
-        EchecTechnique(
-          erreur instanceof Error ? erreur.message : String(erreur),
-        ),
-      )
+      return failure(enEchecTechnique(erreur))
     }
   }

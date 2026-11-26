@@ -1,5 +1,10 @@
-import { EchecTechnique } from '@/features/utilisateurs/domain'
-import { failure, type Result, success } from '@/libraries/result'
+import {
+  type EchecTechnique,
+  enEchecTechnique,
+  failure,
+  type Result,
+  success,
+} from '@/libraries/result'
 import type { RelancerLesInscriptionsInacheveesPorts } from '../../domain'
 import { envoyerLAvertissementDeSuppression } from './envoyer-l-avertissement-de-suppression.mutation'
 import { envoyerLaRelance } from './envoyer-la-relance.mutation'
@@ -12,9 +17,7 @@ const attraper = async (
     await envoi()
     return success(undefined)
   } catch (erreur) {
-    return failure(
-      EchecTechnique(erreur instanceof Error ? erreur.message : String(erreur)),
-    )
+    return failure(enEchecTechnique(erreur))
   }
 }
 

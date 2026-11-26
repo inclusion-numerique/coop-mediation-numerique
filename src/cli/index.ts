@@ -13,6 +13,7 @@ import { getDatabasePasswordSecret } from '@/cli/commands/secrets/get-database-p
 import { setupDatabaseSecret } from '@/cli/commands/secrets/setup-database-secret'
 import { deleteSentryEnvironmentIssues } from '@/cli/commands/sentry/delete-sentry-environment-issues'
 import { outputError } from '@/libraries/console'
+import { messageDe } from '@/libraries/result'
 
 const main = async () => {
   const program = new Command()
@@ -34,6 +35,6 @@ const main = async () => {
 }
 
 main().catch((error) => {
-  outputError(error instanceof Error ? error.message : String(error))
+  outputError(messageDe(error))
   process.exit(1)
 })

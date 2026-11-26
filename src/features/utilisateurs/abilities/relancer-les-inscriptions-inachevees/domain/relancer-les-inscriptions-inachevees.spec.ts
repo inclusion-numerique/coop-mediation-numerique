@@ -4,14 +4,13 @@ import {
   AdresseCourriel,
   type CompteARelancer,
   type CoordinateurId,
-  EchecTechnique,
   type MediateurId,
   Prenom,
   Relance,
   rattachements,
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
-import { failure, success } from '@/libraries/result'
+import { EchecTechnique, failure, success } from '@/libraries/result'
 import type { RelancerLesInscriptionsInacheveesPorts } from './ports'
 import { relancerLesInscriptionsInachevees } from './relancer-les-inscriptions-inachevees'
 

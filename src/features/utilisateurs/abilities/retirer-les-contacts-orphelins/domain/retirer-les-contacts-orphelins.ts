@@ -1,8 +1,5 @@
-import type {
-  AdresseCourriel,
-  EchecTechnique,
-} from '@/features/utilisateurs/domain'
-import { type Result, success } from '@/libraries/result'
+import type { AdresseCourriel } from '@/features/utilisateurs/domain'
+import { type EchecTechnique, type Result, success } from '@/libraries/result'
 import {
   type ContactBrevo,
   comptesRattaches,

@@ -1,5 +1,10 @@
-import { failure, type Result, success } from '@/libraries/result'
-import { EchecTechnique } from '../../domain/errors'
+import {
+  type EchecTechnique,
+  enEchecTechnique,
+  failure,
+  type Result,
+  success,
+} from '@/libraries/result'
 
 export const sansException = async <T>(
   operation: () => Promise<T>,
@@ -7,6 +12,6 @@ export const sansException = async <T>(
   try {
     return success(await operation())
   } catch (cause) {
-    return failure(EchecTechnique(cause))
+    return failure(enEchecTechnique(cause))
   }
 }

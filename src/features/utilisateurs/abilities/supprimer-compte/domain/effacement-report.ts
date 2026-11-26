@@ -1,6 +1,6 @@
 import { z } from 'zod'
-import type { EchecTechnique } from '@/features/utilisateurs/domain'
 import { defineModel, type Model } from '@/libraries/model'
+import type { EchecTechnique } from '@/libraries/result'
 
 export const effacementSteps = [
   'PortefeuilleBeneficiaires',

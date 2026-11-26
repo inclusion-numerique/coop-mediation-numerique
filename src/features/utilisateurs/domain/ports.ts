@@ -1,5 +1,4 @@
-import type { Result } from '@/libraries/result'
-import type { EchecTechnique } from './errors'
+import type { EchecTechnique, Result } from '@/libraries/result'
 import type { UtilisateurId } from './identifiants/utilisateur-id'
 import type {
   CompteARelancer,

@@ -7,11 +7,15 @@ import {
   Prenom,
 } from '@/features/beneficiaire/domain/prenom'
 import { effectiveTrancheAge } from '@/features/beneficiaire/domain/tranche-age'
-import { failure, type Result, success } from '@/libraries/result'
+import {
+  type EchecTechnique,
+  failure,
+  type Result,
+  success,
+} from '@/libraries/result'
 import { Telephone } from '@/libraries/telephone'
 import {
   type EchecDeCreerOuFusionnerDepuisUsagerExterne,
-  type EchecTechnique,
   IdentiteIncomplete,
   type MotifDEcart,
 } from './errors'

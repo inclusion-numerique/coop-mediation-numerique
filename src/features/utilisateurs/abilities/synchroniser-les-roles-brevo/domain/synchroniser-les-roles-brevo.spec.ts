@@ -4,7 +4,6 @@ import {
   type ContactAImporter,
   type CoordinateurId,
   Dispositif,
-  EchecTechnique,
   type InscritDeLaListe,
   MediateurId,
   RoleBrevo,
@@ -13,7 +12,7 @@ import {
   situationDansLeDispositif,
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
-import { failure, success } from '@/libraries/result'
+import { EchecTechnique, failure, success } from '@/libraries/result'
 import { IdentifiantDImport } from './identifiant-d-import'
 import type { SynchroniserLesRolesBrevoPorts } from './ports'
 import { synchroniserLesRolesBrevo } from './synchroniser-les-roles-brevo'

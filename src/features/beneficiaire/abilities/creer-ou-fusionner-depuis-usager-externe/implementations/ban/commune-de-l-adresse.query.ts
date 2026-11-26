@@ -1,7 +1,6 @@
 import { instrument } from '@/configuration/telemetry/serveur'
 import { siIndisponible } from '@/libraries/ban'
-import { failure, success } from '@/libraries/result'
-import { EchecTechnique } from '../../domain/errors'
+import { enEchecTechnique, failure, success } from '@/libraries/result'
 import type { CommuneDeLAdresse } from '../../domain/ports'
 import type { CommuneFields } from '../../domain/usager-externe'
 import { champsDeCommuneDepuisLAdresse } from './champs-de-commune-depuis-l-adresse.transfer'
@@ -14,7 +13,7 @@ export const communeDeLAdresseAvec =
     try {
       return success(await rechercher(adresse).catch(siIndisponible(null)))
     } catch (cause) {
-      return failure(EchecTechnique(cause))
+      return failure(enEchecTechnique(cause))
     }
   }
 

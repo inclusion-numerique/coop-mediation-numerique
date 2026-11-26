@@ -1,12 +1,17 @@
 import { prismaClient } from '@/configuration/prisma'
 import {
-  EchecTechnique,
   type IdentiteAnonyme,
   type UtilisateurId,
 } from '@/features/utilisateurs/domain'
 import { identiteAnonymeFromDomain } from '@/features/utilisateurs/implementations/prisma/compte.transfer'
 import type { SynchroniserLaPersonne } from '@/features/utilisateurs/implementations/prisma/registre-des-personnes.mutation'
-import { failure, type Result, success } from '@/libraries/result'
+import {
+  type EchecTechnique,
+  enEchecTechnique,
+  failure,
+  type Result,
+  success,
+} from '@/libraries/result'
 
 export const couperAcces =
   (synchroniserLaPersonne: SynchroniserLaPersonne) =>
@@ -42,10 +47,6 @@ export const couperAcces =
       })
       return success(undefined)
     } catch (erreur) {
-      return failure(
-        EchecTechnique(
-          erreur instanceof Error ? erreur.message : String(erreur),
-        ),
-      )
+      return failure(enEchecTechnique(erreur))
     }
   }

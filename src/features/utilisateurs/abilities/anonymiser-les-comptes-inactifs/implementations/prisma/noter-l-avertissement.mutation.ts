@@ -1,9 +1,12 @@
 import { prismaClient } from '@/configuration/prisma'
+import { type UtilisateurId } from '@/features/utilisateurs/domain'
 import {
-  EchecTechnique,
-  type UtilisateurId,
-} from '@/features/utilisateurs/domain'
-import { failure, type Result, success } from '@/libraries/result'
+  type EchecTechnique,
+  enEchecTechnique,
+  failure,
+  type Result,
+  success,
+} from '@/libraries/result'
 
 export const noterLAvertissement = async (
   utilisateurId: UtilisateurId,
@@ -16,8 +19,6 @@ export const noterLAvertissement = async (
     })
     return success(undefined)
   } catch (erreur) {
-    return failure(
-      EchecTechnique(erreur instanceof Error ? erreur.message : String(erreur)),
-    )
+    return failure(enEchecTechnique(erreur))
   }
 }

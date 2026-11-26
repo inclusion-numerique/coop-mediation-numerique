@@ -1,17 +1,20 @@
-import { EchecTechnique } from '@/features/utilisateurs/domain'
 import {
   importerDansLaListe,
   retirerDeLaListe,
 } from '@/features/utilisateurs/implementations/brevo/liste-de-diffusion.mutation'
-import { failure, success } from '@/libraries/result'
+import {
+  type EchecTechnique,
+  enEchecTechnique,
+  failure,
+  success,
+} from '@/libraries/result'
 import {
   IdentifiantDImport,
   type SynchroniserLesRolesBrevoPorts,
   TailleDeLot,
 } from '../../domain'
 
-const echecDe = (erreur: unknown): EchecTechnique =>
-  EchecTechnique(erreur instanceof Error ? erreur.message : String(erreur))
+const echecDe = (erreur: unknown): EchecTechnique => enEchecTechnique(erreur)
 
 export const TAILLE_DES_IMPORTS_BREVO = TailleDeLot(1000)
 

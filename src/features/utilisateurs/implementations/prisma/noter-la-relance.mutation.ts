@@ -1,7 +1,12 @@
 import { prismaClient } from '@/configuration/prisma'
-import { failure, type Result, success } from '@/libraries/result'
 import {
-  EchecTechnique,
+  type EchecTechnique,
+  enEchecTechnique,
+  failure,
+  type Result,
+  success,
+} from '@/libraries/result'
+import {
   type PhaseDeRelance,
   type Relance,
   type UtilisateurId,
@@ -25,10 +30,6 @@ export const noterLaRelance =
       })
       return success(undefined)
     } catch (erreur) {
-      return failure(
-        EchecTechnique(
-          erreur instanceof Error ? erreur.message : String(erreur),
-        ),
-      )
+      return failure(enEchecTechnique(erreur))
     }
   }
