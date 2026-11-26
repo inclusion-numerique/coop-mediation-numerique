@@ -6,11 +6,6 @@ type UserRedirectionInfo = Pick<UtilisateurDeLaSession, 'role'> & {
   coordinateur: { id: string } | null
 }
 
-/**
- * L’inscription n’est réellement complète que si un profil de rôle existe :
- * un compte « validé » sans médiateur ni coordinateur ne peut rien faire
- * dans la coop et doit reprendre son parcours d’inscription.
- */
 export const aTermineSonInscription = (
   user: Pick<
     UserRedirectionInfo,

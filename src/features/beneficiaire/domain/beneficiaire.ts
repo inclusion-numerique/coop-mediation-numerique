@@ -43,12 +43,6 @@ export const estAnonyme = (
   beneficiaire: Beneficiaire,
 ): beneficiaire is BeneficiaireAnonyme => beneficiaire.anonyme
 
-/**
- * Libellé d'affichage à partir de la seule identité (prénom/nom). Primitive
- * basse altitude partagée : tolère les projections laxistes (`string | null`)
- * pour servir les frontières UI qui ne portent pas encore le `Beneficiaire`
- * brandé, et reste l'unique source de vérité dont dérive `beneficiaireDisplayName`.
- */
 export const nomAfficheDepuisLIdentite = ({
   prenom,
   nom,
@@ -74,13 +68,6 @@ export const beneficiaireAdresseString = (
     ? toAdressString(beneficiaire.communeResidence)
     : undefined
 
-/**
- * Construit un bénéficiaire identifié à partir de ses attributs éditables et
- * des données d'identité/horodatage fournies par l'appelant. Fonction pure :
- * fixe les invariants de l'entité (non anonyme, non supprimé) et dérive la
- * tranche d'âge. Le paramètre est dérivé de l'entité, donc accepte aussi bien
- * un input de création que de modification, sans dépendre d'aucune ability.
- */
 export const toBeneficiaireIdentifie = (
   attributs: Pick<
     BeneficiaireIdentifie,

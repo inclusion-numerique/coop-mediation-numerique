@@ -3,12 +3,6 @@ import type { DuplicateBeneficiaire } from '@/features/beneficiaire/domain/doubl
 import type { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
 import type { BeneficiaireDoublon } from './beneficiaire-doublon'
 
-/**
- * Détection des doublons d'un bénéficiaire déjà persisté, depuis son seul id :
- * l'ability lit elle-même son identité (owner-scopée) et la brande, pour qu'un
- * hub appelant n'ait qu'à fournir des identifiants. Sert l'alerte « doublon
- * potentiel » de la fiche de consultation.
- */
 export type DetecterLesDoublons = (input: {
   beneficiaireId: BeneficiaireId
   mediateurId: MediateurId

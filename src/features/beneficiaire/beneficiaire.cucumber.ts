@@ -6,12 +6,6 @@ import type { Prisma } from '@/generated/prisma/client'
 
 setDefaultTimeout(60_000)
 
-/**
- * Support Cucumber partagé pour la feature bénéficiaire.
- * Les hooks de cycle de vie vivent ici une seule fois ; les fichiers .steps.ts
- * ne définissent que Given/When/Then et s'appuient sur ces helpers, ce qui évite
- * les interférences entre hooks de plusieurs fichiers.
- */
 const UTILISATEUR_DE_TEST = 'e59fda11-a62a-4cc4-aadc-7c8ebf837026'
 
 export const testMediateurId = MediateurId(
@@ -54,7 +48,6 @@ let beneficiairesCountBefore = 0
 export const nombreDeBeneficiairesAuDebutDuScenario = (): number =>
   beneficiairesCountBefore
 
-/** Crée un bénéficiaire de test (suivi pour nettoyage). */
 export const seedBeneficiaire = async (
   data: Partial<Prisma.BeneficiaireUncheckedCreateInput> = {},
 ): Promise<string> => {
@@ -87,13 +80,6 @@ After(async () => {
   }
 })
 
-/**
- * Portefeuille isolé pour l'ability `anonymiser-portefeuille`.
- *
- * Elle efface TOUT le portefeuille d'un médiateur : elle ne peut donc pas
- * s'exercer sur le médiateur de fixtures que se partagent les autres scénarios.
- * Un compte jetable est créé pour chaque scénario, et retiré derrière lui.
- */
 type PortefeuilleSeme = {
   readonly userId: string
   readonly mediateurId: string

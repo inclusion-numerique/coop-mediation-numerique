@@ -89,7 +89,6 @@ Given(
       nom: 'Legacyexterne',
       email: 'legacy-externe@example.com',
     })
-    // Téléphone legacy hors validation stricte, injecté hors value object.
     await prismaClient.beneficiaire.update({
       where: { id: existingBeneficiaireId },
       data: { telephone: 'NUMERO-LEGACY-INVALIDE' },
@@ -107,9 +106,6 @@ Given(
 Given(
   'deux usagers externes dont un provoque une erreur d’infrastructure',
   async () => {
-    // 990_204 : rdv_user seedé → création OK. 990_299 : PAS de rdv_user seedé →
-    // violation de clé étrangère à la création → usager écarté (Skipped), sans
-    // bloquer le premier.
     await seedRdvUser(990_204)
     usagers = [
       externalUser(990_204, {

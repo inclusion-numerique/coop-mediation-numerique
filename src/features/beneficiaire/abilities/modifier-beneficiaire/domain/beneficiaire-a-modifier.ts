@@ -10,10 +10,6 @@ import type { Prenom } from '@/features/beneficiaire/domain/prenom'
 import type { StatutSocial } from '@/features/beneficiaire/domain/statut-social'
 import type { TrancheAge } from '@/features/beneficiaire/domain/tranche-age'
 
-/**
- * Input validé pour modifier un bénéficiaire : les attributs éditables, plus
- * l'identifiant de la cible. Propre à cette ability.
- */
 export type BeneficiaireAModifier = {
   readonly id: BeneficiaireId
   readonly prenom: Prenom

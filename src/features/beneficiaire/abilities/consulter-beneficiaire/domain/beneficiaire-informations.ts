@@ -2,11 +2,6 @@ import type { BeneficiaireEnregistre } from '@/features/beneficiaire/domain/bene
 import type { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
 import type { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
 
-/**
- * Projection de lecture des informations propres d'un bénéficiaire (les champs
- * affichés sur sa fiche). Les agrégats transverses (comptes d'activités,
- * thématiques) sont composés par le hub, pas par cette ability.
- */
 export type BeneficiaireInformations = Pick<
   BeneficiaireEnregistre,
   | 'id'

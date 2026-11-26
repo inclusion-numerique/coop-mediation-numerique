@@ -3,10 +3,6 @@ import { defineModel, type Model } from '@/libraries/model'
 
 export const genres = ['Masculin', 'Feminin', 'NonCommunique'] as const
 
-/**
- * Un genre absent vaut `NonCommunique` : l'absence est une valeur du domaine,
- * donc le constructeur est total (accepte aussi une valeur absente).
- */
 export const Genre = defineModel(
   z
     .enum(genres)

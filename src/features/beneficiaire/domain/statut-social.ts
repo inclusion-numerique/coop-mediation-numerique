@@ -1,8 +1,6 @@
 import { z } from 'zod'
 import { defineModel, type Model } from '@/libraries/model'
 
-// Ordre aligné sur `statutSocialLabels` (ordre d'affichage historique), pour que
-// les listes dérivées des valeurs et des libellés restent cohérentes.
 export const statutsSociaux = [
   'Retraite',
   'SansEmploi',
@@ -11,10 +9,6 @@ export const statutsSociaux = [
   'NonCommunique',
 ] as const
 
-/**
- * Un statut absent vaut `NonCommunique` : l'absence est une valeur du domaine,
- * donc le constructeur est total (accepte aussi une valeur absente).
- */
 export const StatutSocial = defineModel(
   z
     .enum(statutsSociaux)

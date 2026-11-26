@@ -27,11 +27,6 @@ const user: AuteurDExport = {
 
 let workbook: Workbook | undefined
 
-// Lit la colonne « Nom » des lignes de données : ce sont les lignes situées
-// sous l'en-tête du tableau. La cellule A de l'en-tête vaut "Nom", mais la
-// section métadonnées contient aussi un libellé "Nom" (le nom de l'exportateur)
-// en amont : on retient donc la DERNIÈRE occurrence, qui est l'en-tête du
-// tableau des bénéficiaires.
 const exportedNoms = (book: Workbook | undefined): string[] => {
   const worksheet = book?.getWorksheet('Bénéficiaires')
   if (!worksheet) return []
