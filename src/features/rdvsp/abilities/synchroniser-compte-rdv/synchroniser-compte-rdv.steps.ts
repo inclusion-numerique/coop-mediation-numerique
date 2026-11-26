@@ -58,6 +58,13 @@ const unChangement = { ...bilanVide, updated: 1 }
 
 const MEDIATEUR_ID = 'b6f1a6a2-3c4d-4e5f-8a9b-0c1d2e3f4a5b'
 
+/**
+ * Organisations auxquelles le compte est rattaché, et que RDV Service Public
+ * renvoie sauf scénario contraire : sans elles, la passe n'a aucun webhook à
+ * poser, et l'étape ne se constate pas.
+ */
+const ORGANISATIONS_DU_COMPTE = [101, 102]
+
 const synchroniser = synchroniserCompteRdv({
   reconcilierOrganisations: async () => {
     appels.push('organisations')
@@ -66,9 +73,10 @@ const synchroniser = synchroniserCompteRdv({
       ? failure(ApiIndisponible(503, 'service indisponible'))
       : success({
           bilan: unChangement,
-          organisationIdsRecues: organisationsRecues.map((id) =>
-            OrganisationId(id),
-          ),
+          organisationIdsRecues: (organisationsRecues.length > 0
+            ? organisationsRecues
+            : ORGANISATIONS_DU_COMPTE
+          ).map((id) => OrganisationId(id)),
         })
   },
   reconcilierRdvs: async ({ organisationIds }) => {
@@ -130,7 +138,10 @@ const compteUtilisable = async () => {
   const compte = compteRdvToDomain(row)
   assert.ok(estUtilisable(compte), 'Le compte devrait être utilisable')
 
-  return compte
+  return {
+    ...compte,
+    organisationIds: ORGANISATIONS_DU_COMPTE.map((id) => OrganisationId(id)),
+  }
 }
 
 const journauxDuCompte = async () =>
