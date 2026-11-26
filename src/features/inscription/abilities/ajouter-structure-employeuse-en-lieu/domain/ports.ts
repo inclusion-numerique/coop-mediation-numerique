@@ -34,7 +34,7 @@ export type ConsulterEmployeuseActuelle = (input: {
   readonly userId: UtilisateurId
 }) => Promise<{ readonly employeuse: EmployeuseLue } | null>
 
-type LieuDecrit = {
+export type LieuDecrit = {
   readonly nom: string
   readonly adresse: string
   readonly commune: string
@@ -52,7 +52,7 @@ type LieuDecrit = {
   readonly telephoneReferent: string | null
 }
 
-type TraceDeLEmployeuse = {
+export type TraceDeLEmployeuse = {
   readonly userId: UtilisateurId
   readonly structureId: number
 }
@@ -79,3 +79,11 @@ export type Geocodage =
   | { readonly _tag: 'ServiceIndisponible' }
 
 export type GeocoderLAdresse = (adresse: AdresseAGeocoder) => Promise<Geocodage>
+
+export type AjouterStructureEmployeuseEnLieuPorts = {
+  readonly consulterEmployeuseActuelle: ConsulterEmployeuseActuelle
+  readonly lireLAdresseDeLEmployeuse: LireLAdresseDeLEmployeuse
+  readonly geocoderLAdresse: GeocoderLAdresse
+  readonly rattacherAuLieuDecrit: RattacherAuLieuDecrit
+  readonly detacherDuLieuDecrit: DetacherDuLieuDecrit
+}

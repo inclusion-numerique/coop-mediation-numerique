@@ -15,6 +15,7 @@ import {
 } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/rattacher-au-lieu-decrit.mutation'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { fromResult, withInput } from '@/libraries/nextjs'
+import { success } from '@/libraries/result'
 
 export const ajouterStructureEmployeuseEnLieuAction = actionBuilder()
   .use(withAuth())
@@ -22,8 +23,8 @@ export const ajouterStructureEmployeuseEnLieuAction = actionBuilder()
   .use(withInput(StructureEmployeuseLieuValidation))
   .execute(
     fromResult(
-      async ({ user, input }) =>
-        ajouterStructureEmployeuseEnLieu({
+      async ({ user, input }) => {
+        const resultat = await ajouterStructureEmployeuseEnLieu({
           consulterEmployeuseActuelle,
           rattacherAuLieuDecrit,
           detacherDuLieuDecrit,
@@ -32,7 +33,11 @@ export const ajouterStructureEmployeuseEnLieuAction = actionBuilder()
         })({
           userId: UtilisateurId(user.id),
           estLieuActivite: input.estLieuActivite,
-        }),
+          maintenant: new Date(),
+        })
+
+        return resultat.success ? success(undefined) : resultat
+      },
       { onError: AJOUTER_STRUCTURE_EMPLOYEUSE_EN_LIEU_ERRORS },
     ),
   )

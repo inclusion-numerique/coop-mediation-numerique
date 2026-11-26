@@ -1,86 +1,74 @@
 import type { UtilisateurId } from '@/features/inscription/domain'
 import { failure, type Result, success } from '@/libraries/result'
+import type { EmployeuseEnLieu } from './employeuse-en-lieu'
 import { EmployeuseId } from './employeuse-id'
 import {
   AdresseNonReconnue,
-  type AjouterStructureEmployeuseEnLieuError,
+  type EchecDAjouterStructureEmployeuseEnLieu,
   EmployeuseIntrouvable,
   ServiceAdresseIndisponible,
 } from './errors'
 import { lieuDepuisEmployeuse } from './lieu-depuis-employeuse'
-import type {
-  ConsulterEmployeuseActuelle,
-  DetacherDuLieuDecrit,
-  Geocodage,
-  GeocoderLAdresse,
-  LireLAdresseDeLEmployeuse,
-  RattacherAuLieuDecrit,
-} from './ports'
-
-export type AjouterStructureEmployeuseEnLieuPorts = {
-  readonly lireLAdresseDeLEmployeuse: LireLAdresseDeLEmployeuse
-  readonly geocoderLAdresse: GeocoderLAdresse
-  readonly consulterEmployeuseActuelle: ConsulterEmployeuseActuelle
-  readonly rattacherAuLieuDecrit: RattacherAuLieuDecrit
-  readonly detacherDuLieuDecrit: DetacherDuLieuDecrit
-}
-
-const adresseDuLieuAMaterialiser = async (
-  structureEmployeuseId: EmployeuseId,
-  {
-    lireLAdresseDeLEmployeuse,
-    geocoderLAdresse,
-  }: AjouterStructureEmployeuseEnLieuPorts,
-): Promise<Geocodage> => {
-  const adresse = await lireLAdresseDeLEmployeuse(structureEmployeuseId)
-
-  return adresse == null
-    ? { _tag: 'AdresseInconnue' }
-    : geocoderLAdresse(adresse)
-}
+import type { AjouterStructureEmployeuseEnLieuPorts, Geocodage } from './ports'
 
 export const ajouterStructureEmployeuseEnLieu =
-  (ports: AjouterStructureEmployeuseEnLieuPorts) =>
+  ({
+    consulterEmployeuseActuelle,
+    lireLAdresseDeLEmployeuse,
+    geocoderLAdresse,
+    rattacherAuLieuDecrit,
+    detacherDuLieuDecrit,
+  }: AjouterStructureEmployeuseEnLieuPorts) =>
   async ({
     userId,
     estLieuActivite,
+    maintenant,
   }: {
     readonly userId: UtilisateurId
     readonly estLieuActivite: boolean
-  }): Promise<Result<void, AjouterStructureEmployeuseEnLieuError>> => {
-    const actuelle = await ports.consulterEmployeuseActuelle({ userId })
+    readonly maintenant: Date
+  }): Promise<
+    Result<EmployeuseEnLieu, EchecDAjouterStructureEmployeuseEnLieu>
+  > => {
+    const actuelle = await consulterEmployeuseActuelle({ userId })
 
     if (actuelle === null) return failure(EmployeuseIntrouvable(userId))
 
     const { employeuse } = actuelle
-    const structureEmployeuseId = EmployeuseId(employeuse.id)
+    const employeuseId = EmployeuseId(employeuse.id)
     const trace = { userId, structureId: employeuse.id }
 
     if (!estLieuActivite) {
-      await ports.detacherDuLieuDecrit({
-        userId,
-        lieu: lieuDepuisEmployeuse(employeuse),
-        trace,
+      const lieu = lieuDepuisEmployeuse({
+        employeuse,
+        adresseBan: null,
+        maintenant,
       })
-      return success<void>(undefined)
+
+      await detacherDuLieuDecrit({ userId, lieu, trace })
+
+      return success({ _tag: 'DetacheeDesLieux', lieu, trace })
     }
 
-    const geocodage = await adresseDuLieuAMaterialiser(
-      structureEmployeuseId,
-      ports,
-    )
+    const adresse = await lireLAdresseDeLEmployeuse(employeuseId)
+    const geocodage: Geocodage =
+      adresse === null
+        ? { _tag: 'AdresseInconnue' }
+        : await geocoderLAdresse(adresse)
 
     if (geocodage._tag === 'ServiceIndisponible')
-      return failure(ServiceAdresseIndisponible(structureEmployeuseId))
+      return failure(ServiceAdresseIndisponible(employeuseId))
 
     if (geocodage._tag === 'AdresseInconnue')
-      return failure(AdresseNonReconnue(structureEmployeuseId))
+      return failure(AdresseNonReconnue(employeuseId))
 
-    await ports.rattacherAuLieuDecrit({
-      userId,
-      lieu: lieuDepuisEmployeuse(employeuse, geocodage.adresse),
-      trace,
+    const lieu = lieuDepuisEmployeuse({
+      employeuse,
+      adresseBan: geocodage.adresse,
+      maintenant,
     })
 
-    return success<void>(undefined)
+    await rattacherAuLieuDecrit({ userId, lieu, trace })
+
+    return success({ _tag: 'RattacheeCommeLieu', lieu, trace })
   }

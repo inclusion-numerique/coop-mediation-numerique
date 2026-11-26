@@ -71,7 +71,11 @@ const declarer = async (estLieuActivite: boolean) => {
     detacherDuLieuDecrit: async ({ lieu }) => {
       etat.detaches.push(lieu)
     },
-  })({ userId: utilisateurDeLInscriptionEnCours(), estLieuActivite })
+  })({
+    userId: utilisateurDeLInscriptionEnCours(),
+    estLieuActivite,
+    maintenant: new Date(),
+  })
   etat.refus = resultat.success ? null : resultat.error._tag
 }
 

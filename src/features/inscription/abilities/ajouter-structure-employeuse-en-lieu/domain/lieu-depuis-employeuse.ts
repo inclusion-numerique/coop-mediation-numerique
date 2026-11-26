@@ -1,11 +1,11 @@
 import type { AdresseBanData } from '@/libraries/adresse'
-import type { EmployeuseLue } from '.'
+import type { EmployeuseLue, LieuDecrit } from './ports'
 
 const adresseRetenue = (
   { adresse }: EmployeuseLue,
-  adresseBan?: AdresseBanData,
+  adresseBan: AdresseBanData | null,
 ) =>
-  adresseBan == null
+  adresseBan === null
     ? {
         adresse: adresse?.voie ?? '',
         commune: adresse?.commune ?? '',
@@ -31,15 +31,20 @@ const referent = ({ contactReferent }: EmployeuseLue) =>
       }
     : { nomReferent: null, courrielReferent: null, telephoneReferent: null }
 
-export const lieuDepuisEmployeuse = (
-  employeuse: EmployeuseLue,
-  adresseBan?: AdresseBanData,
-) => ({
+export const lieuDepuisEmployeuse = ({
+  employeuse,
+  adresseBan,
+  maintenant,
+}: {
+  readonly employeuse: EmployeuseLue
+  readonly adresseBan: AdresseBanData | null
+  readonly maintenant: Date
+}): LieuDecrit => ({
   nom: employeuse.denomination ?? '',
   ...adresseRetenue(employeuse, adresseBan),
   complementAdresse: null,
   siret: employeuse.siret,
-  synchronisationSiret: employeuse.siret === null ? null : new Date(),
+  synchronisationSiret: employeuse.siret === null ? null : maintenant,
   rna: employeuse.rna,
   ...referent(employeuse),
 })
