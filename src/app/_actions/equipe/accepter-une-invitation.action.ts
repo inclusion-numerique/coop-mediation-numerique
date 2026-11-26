@@ -5,8 +5,9 @@ import type { UtilisateurDeLaSession } from '@/features/authentification/domain/
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { ACCEPTER_UNE_INVITATION_ERRORS } from '@/features/equipe/abilities/accepter-une-invitation/action/accepter-une-invitation.errors'
 import { AccepterUneInvitationValidation } from '@/features/equipe/abilities/accepter-une-invitation/action/accepter-une-invitation.validation'
+import { accepterUneInvitation } from '@/features/equipe/abilities/accepter-une-invitation/domain/accepter-une-invitation'
 import { type Accepteur } from '@/features/equipe/abilities/accepter-une-invitation/domain/index'
-import { accepterUneInvitation } from '@/features/equipe/abilities/accepter-une-invitation/implementations/prisma/accepter-une-invitation.mutation'
+import { enregistrerLAcceptation } from '@/features/equipe/abilities/accepter-une-invitation/implementations/prisma/enregistrer-l-acceptation.mutation'
 import {
   CoordinateurId,
   Courriel,
@@ -15,6 +16,8 @@ import {
   UtilisateurId,
 } from '@/features/equipe/domain'
 import { prevenirLeCoordinateur } from '@/features/equipe/implementations/email'
+import { lireLeCoordinateur } from '@/features/equipe/implementations/prisma/coordinateur.query'
+import { lireUneInvitation } from '@/features/equipe/implementations/prisma/invitation.query'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { fromResult, withInput } from '@/libraries/nextjs'
 
@@ -36,13 +39,19 @@ export const accepterUneInvitationAction = actionBuilder()
   .execute(
     fromResult(
       async ({ user, input }) =>
-        accepterUneInvitation({ prevenirLeCoordinateur })({
+        accepterUneInvitation({
+          lireUneInvitation,
+          enregistrerLAcceptation,
+          lireLeCoordinateur,
+          prevenirLeCoordinateur,
+        })({
           reference: ReferenceInvitation({
             email: Courriel(input.email),
             coordinateurId: CoordinateurId(input.coordinateurId),
           }),
           accepteur: accepteurDe(user),
           auteurId: UtilisateurId(user.id),
+          maintenant: new Date(),
         }),
       { onError: ACCEPTER_UNE_INVITATION_ERRORS },
     ),
