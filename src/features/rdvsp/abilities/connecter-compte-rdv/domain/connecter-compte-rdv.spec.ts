@@ -1,18 +1,28 @@
 import { describe, expect, it } from 'vitest'
-import type { CompteRdv } from '../../../domain/compte/compte-rdv'
+import { failure, success } from '@/libraries/result'
+import type { Agent } from '../../../domain/agent'
+import type { CompteRdv, CompteRdvLie } from '../../../domain/compte/compte-rdv'
 import { MessageErreurCompte } from '../../../domain/compte/compte-rdv'
 import {
   JetonAcces,
   type JetonsOAuth,
 } from '../../../domain/compte/jetons-oauth'
+import { ApiIndisponible, JetonRevoque } from '../../../domain/errors'
 import { OrganisationId } from '../../../domain/identifiants/organisation-id'
 import { RdvAgentId } from '../../../domain/identifiants/rdv-agent-id'
 import { UtilisateurCoopId } from '../../../domain/identifiants/utilisateur-coop-id'
-import { EmailExterne } from '../../../domain/identite'
+import {
+  EmailExterne,
+  NomExterne,
+  PrenomExterne,
+} from '../../../domain/identite'
+import { CodeAutorisation } from './code-autorisation'
 import {
   compteApresConnexion,
-  emailsCorrespondent,
+  connecterCompteRdv,
+  type DependancesConnecterCompteRdv,
 } from './connecter-compte-rdv'
+import { CodeAutorisationRefuse } from './errors'
 
 const utilisateurId = UtilisateurCoopId('d10844c6-b6de-402a-a68d-f8328b1d1b0c')
 const agentId = RdvAgentId(4242)
@@ -138,31 +148,97 @@ describe('compteApresConnexion', () => {
   })
 })
 
-describe('emailsCorrespondent', () => {
-  it('accepte deux adresses identiques', () => {
-    expect(
-      emailsCorrespondent(
-        EmailExterne('agent@coop-numerique.anct.gouv.fr'),
-        EmailExterne('agent@coop-numerique.anct.gouv.fr'),
-      ),
-    ).toBe(true)
+const agent: Agent = {
+  id: agentId,
+  email: EmailExterne('agent@coop-numerique.anct.gouv.fr'),
+  prenom: PrenomExterne('Camille'),
+  nom: NomExterne('Martin'),
+}
+
+const compteEnregistre: CompteRdvLie = {
+  ...compteBase,
+  _tag: 'lie',
+  jetons,
+}
+
+const dependances: DependancesConnecterCompteRdv = {
+  echangerCode: async () => success(jetons),
+  identifierAgent: async () => success(agent),
+  compteExistant: async () => null,
+  enregistrer: async () => compteEnregistre,
+  maintenant: () => maintenant,
+}
+
+const demande = {
+  utilisateurId,
+  emailUtilisateur: EmailExterne('agent@coop-numerique.anct.gouv.fr'),
+  code: CodeAutorisation('code-a-usage-unique'),
+}
+
+describe('connecterCompteRdv', () => {
+  it('rend le compte enregistré quand la liaison aboutit', async () => {
+    const resultat = await connecterCompteRdv(dependances)(demande)
+
+    expect(resultat).toEqual(success(compteEnregistre))
   })
 
-  it('ignore la casse et les espaces, normalisés par le value object', () => {
-    expect(
-      emailsCorrespondent(
-        EmailExterne('Agent@Coop-Numerique.anct.gouv.fr'),
-        EmailExterne('  agent@coop-numerique.anct.gouv.fr  '),
-      ),
-    ).toBe(true)
+  it('remonte le refus du code d’autorisation sans identifier l’agent', async () => {
+    const resultat = await connecterCompteRdv({
+      ...dependances,
+      echangerCode: async () =>
+        failure(CodeAutorisationRefuse('invalid_grant')),
+    })(demande)
+
+    expect(resultat).toEqual(
+      failure({ _tag: 'CodeAutorisationRefuse', detail: 'invalid_grant' }),
+    )
   })
 
-  it('refuse deux adresses distinctes', () => {
-    expect(
-      emailsCorrespondent(
-        EmailExterne('agent@coop-numerique.anct.gouv.fr'),
-        EmailExterne('autre@coop-numerique.anct.gouv.fr'),
-      ),
-    ).toBe(false)
+  it('remonte l’échec de l’identification de l’agent', async () => {
+    const resultat = await connecterCompteRdv({
+      ...dependances,
+      identifierAgent: async () => failure(JetonRevoque(null)),
+    })(demande)
+
+    expect(resultat).toEqual(failure({ _tag: 'JetonRevoque', agentId: null }))
+  })
+
+  it('remonte une indisponibilité de l’API pendant l’identification', async () => {
+    const resultat = await connecterCompteRdv({
+      ...dependances,
+      identifierAgent: async () => failure(ApiIndisponible(503, 'maintenance')),
+    })(demande)
+
+    expect(resultat).toEqual(
+      failure({
+        _tag: 'ApiIndisponible',
+        statusCode: 503,
+        message: 'maintenance',
+      }),
+    )
+  })
+
+  it('lie un agent dont l’adresse ne diffère que par la casse et les espaces', async () => {
+    const resultat = await connecterCompteRdv(dependances)({
+      ...demande,
+      emailUtilisateur: EmailExterne('  Agent@Coop-Numerique.anct.gouv.fr  '),
+    })
+
+    expect(resultat).toEqual(success(compteEnregistre))
+  })
+
+  it('refuse de lier un agent qui ne porte pas l’adresse du compte La Coop', async () => {
+    const resultat = await connecterCompteRdv(dependances)({
+      ...demande,
+      emailUtilisateur: EmailExterne('autre@coop-numerique.anct.gouv.fr'),
+    })
+
+    expect(resultat).toEqual(
+      failure({
+        _tag: 'EmailAgentDifferent',
+        emailCoop: 'autre@coop-numerique.anct.gouv.fr',
+        emailAgent: 'agent@coop-numerique.anct.gouv.fr',
+      }),
+    )
   })
 })

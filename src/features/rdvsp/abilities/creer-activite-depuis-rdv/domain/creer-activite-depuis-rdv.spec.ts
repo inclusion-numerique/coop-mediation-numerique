@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { failure, success } from '@/libraries/result'
 import type { CompteRdv } from '../../../domain/compte/compte-rdv'
 import {
   JetonAcces,
@@ -9,8 +10,16 @@ import { RdvId } from '../../../domain/identifiants/rdv-id'
 import { UsagerId } from '../../../domain/identifiants/usager-id'
 import { UtilisateurCoopId } from '../../../domain/identifiants/utilisateur-coop-id'
 import { StatutPresence } from '../../../domain/rdv/statut-presence'
-import { usagersPourActivite, verifierRdv } from './creer-activite-depuis-rdv'
-import type { ParticipationDuRdv, RdvPourActivite } from './rdv-pour-activite'
+import {
+  creerActiviteDepuisRdv,
+  type DependancesCreerActiviteDepuisRdv,
+  usagersPourActivite,
+} from './creer-activite-depuis-rdv'
+import {
+  MediateurRedacteurId,
+  type ParticipationDuRdv,
+  type RdvPourActivite,
+} from './rdv-pour-activite'
 
 const agentId = RdvAgentId(4242)
 const rdvId = RdvId(77)
@@ -139,50 +148,66 @@ describe('usagersPourActivite', () => {
   })
 })
 
-describe('verifierRdv', () => {
-  it('autorise le propriétaire du rendez-vous', () => {
-    const verifie = verifierRdv({ rdv: rdvAvec([]), compte, rdvId })
+const urlCreationCra = '/coop/mes-activites/creer/accompagnement?v=1'
 
-    expect(verifie.success).toBe(true)
-  })
+const dependances: DependancesCreerActiviteDepuisRdv = {
+  lireRdv: async () => rdvAvec([participation('seen', 1)]),
+  compteDuRedacteur: async () => compte,
+  creerOuFusionnerBeneficiaires: async () => [],
+  preparerUrlCreationCra: async () => urlCreationCra,
+}
 
-  it('refuse un rendez-vous rattaché à un autre agent', () => {
-    const verifie = verifierRdv({
-      rdv: { ...rdvAvec([]), agentId: RdvAgentId(9999) },
-      compte,
-      rdvId,
-    })
+const demande = {
+  utilisateurId: compte.utilisateurId,
+  mediateurId: MediateurRedacteurId('b6f1a6a2-3c4d-4e5f-8a9b-0c1d2e3f4a5b'),
+  rdvId,
+}
 
-    expect(verifie.success === false && verifie.error._tag).toBe(
-      'RdvNonAutorise',
+describe('creerActiviteDepuisRdv', () => {
+  it('rend le lien vers le CRA pré-rempli au propriétaire du rendez-vous', async () => {
+    expect(await creerActiviteDepuisRdv(dependances)(demande)).toEqual(
+      success({ urlCreationCra }),
     )
   })
 
-  it('refuse un rendez-vous inconnu de La Coop', () => {
-    const verifie = verifierRdv({ rdv: null, compte, rdvId })
+  it('refuse un rendez-vous rattaché à un autre agent', async () => {
+    const resultat = await creerActiviteDepuisRdv({
+      ...dependances,
+      lireRdv: async () => ({ ...rdvAvec([]), agentId: RdvAgentId(9999) }),
+    })(demande)
 
-    expect(verifie.success === false && verifie.error._tag).toBe(
-      'RdvIntrouvable',
-    )
+    expect(resultat).toEqual(failure({ _tag: 'RdvNonAutorise', rdvId }))
   })
 
-  it('refuse un médiateur sans compte RDV', () => {
-    const verifie = verifierRdv({ rdv: rdvAvec([]), compte: null, rdvId })
+  it('refuse un rendez-vous inconnu de La Coop', async () => {
+    const resultat = await creerActiviteDepuisRdv({
+      ...dependances,
+      lireRdv: async () => null,
+    })(demande)
 
-    expect(verifie.success === false && verifie.error._tag).toBe('CompteNonLie')
+    expect(resultat).toEqual(failure({ _tag: 'RdvIntrouvable', id: rdvId }))
   })
 
-  it('refuse avant même de considérer le rendez-vous quand le compte est délié', () => {
-    const verifie = verifierRdv({
-      rdv: null,
-      compte: {
+  it('refuse un médiateur sans compte RDV', async () => {
+    const resultat = await creerActiviteDepuisRdv({
+      ...dependances,
+      compteDuRedacteur: async () => null,
+    })(demande)
+
+    expect(resultat).toEqual(failure({ _tag: 'CompteNonLie', agentId: null }))
+  })
+
+  it('refuse avant même de considérer le rendez-vous quand le compte est délié', async () => {
+    const resultat = await creerActiviteDepuisRdv({
+      ...dependances,
+      lireRdv: async () => null,
+      compteDuRedacteur: async () => ({
         ...compte,
         _tag: 'deconnecte',
         deconnexion: new Date('2026-07-08T00:00:00.000Z'),
-      },
-      rdvId,
-    })
+      }),
+    })(demande)
 
-    expect(verifie.success === false && verifie.error._tag).toBe('CompteNonLie')
+    expect(resultat).toEqual(failure({ _tag: 'CompteNonLie', agentId }))
   })
 })

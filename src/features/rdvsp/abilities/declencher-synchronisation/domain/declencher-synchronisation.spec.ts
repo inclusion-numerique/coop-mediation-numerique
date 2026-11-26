@@ -2,9 +2,6 @@ import { describe, expect, it } from 'vitest'
 import {
   declencherSynchronisation,
   MESSAGE_ECHEC,
-  peutDeclencherPour,
-  peutRelancerUnCompteEnErreur,
-  porteePour,
 } from '@/features/rdvsp/abilities/declencher-synchronisation/domain/declencher-synchronisation'
 import type { CompteRdvLie } from '@/features/rdvsp/domain/compte/compte-rdv'
 import {
@@ -18,7 +15,7 @@ import {
 import { OrganisationId } from '@/features/rdvsp/domain/identifiants/organisation-id'
 import { RdvAgentId } from '@/features/rdvsp/domain/identifiants/rdv-agent-id'
 import { UtilisateurCoopId } from '@/features/rdvsp/domain/identifiants/utilisateur-coop-id'
-import { failure } from '@/libraries/result'
+import { failure, success } from '@/libraries/result'
 
 const moi = UtilisateurCoopId('d10844c6-b6de-402a-a68d-f8328b1d1b0c')
 const autrui = UtilisateurCoopId('9c858901-8a57-4791-81fe-4c455b099bc9')
@@ -61,69 +58,148 @@ const compteDeconnecte: CompteRdv = {
   organisationIdsSansWebhook: [OrganisationId(10)],
 }
 
-describe('peutDeclencherPour', () => {
-  it('autorise chacun pour lui-même', () => {
-    expect(peutDeclencherPour({ id: moi, role: 'User' }, moi)).toBe(true)
+const instant = new Date('2026-11-26T08:00:00.000Z')
+
+const declencher = (compteCible: CompteRdv | null) =>
+  declencherSynchronisation({
+    compteACible: async () => compteCible,
+    lancer: async () => ({ derive: 4 }),
+    maintenant: () => instant,
   })
 
-  it('refuse un médiateur pour le compte d’un autre', () => {
-    expect(peutDeclencherPour({ id: moi, role: 'User' }, autrui)).toBe(false)
+const synchronise = success({ derive: 4, synchroniseeLe: instant })
+const sansObjet = success({ derive: 0, synchroniseeLe: null })
+
+describe('qui peut déclencher', () => {
+  it('autorise chacun pour lui-même', async () => {
+    const resultat = await declencher(compte([10]))({
+      demandeur: { id: moi, role: 'User' },
+      utilisateurId: moi,
+      seulementSansWebhook: false,
+    })
+
+    expect(resultat).toEqual(synchronise)
   })
 
-  it('autorise un administrateur pour n’importe qui — la synchronisation est aussi un dépannage', () => {
-    expect(peutDeclencherPour({ id: moi, role: 'Admin' }, autrui)).toBe(true)
+  it('refuse un médiateur pour le compte d’un autre', async () => {
+    const resultat = await declencher(compte([10]))({
+      demandeur: { id: moi, role: 'User' },
+      utilisateurId: autrui,
+      seulementSansWebhook: false,
+    })
+
+    expect(resultat).toEqual(failure({ _tag: 'NonAutorise' }))
+  })
+
+  it('autorise un administrateur pour n’importe qui — la synchronisation est aussi un dépannage', async () => {
+    const resultat = await declencher(compte([10]))({
+      demandeur: { id: moi, role: 'Admin' },
+      utilisateurId: autrui,
+      seulementSansWebhook: false,
+    })
+
+    expect(resultat).toEqual(synchronise)
+  })
+
+  it('signale un utilisateur sans compte RDV', async () => {
+    const resultat = await declencher(null)({
+      demandeur: { id: moi, role: 'User' },
+      utilisateurId: moi,
+      seulementSansWebhook: false,
+    })
+
+    expect(resultat).toEqual(failure({ _tag: 'CompteRdvIntrouvable' }))
   })
 })
 
-describe('porteePour', () => {
-  it('parcourt toutes les organisations quand la synchronisation est demandée en entier', () => {
-    expect(porteePour(compte([10]), false, false)).toEqual({
-      _tag: 'toutesOrganisations',
+describe('portée de la passe', () => {
+  it.each<{
+    cas: string
+    compteCible: CompteRdv
+    role: 'User' | 'Admin'
+    seulementSansWebhook: boolean
+  }>([
+    {
+      cas: 'parcourt toutes les organisations quand la synchronisation est demandée en entier',
+      compteCible: compte([10]),
+      role: 'User',
+      seulementSansWebhook: false,
+    },
+    {
+      cas: 'rattrape les organisations sans webhook',
+      compteCible: compte([10, 20]),
+      role: 'User',
+      seulementSansWebhook: true,
+    },
+    {
+      cas: 'relance en entier un compte en erreur à la demande de l’assistance',
+      compteCible: compteEnErreur,
+      role: 'Admin',
+      seulementSansWebhook: false,
+    },
+  ])('$cas', async ({ compteCible, role, seulementSansWebhook }) => {
+    const resultat = await declencher(compteCible)({
+      demandeur: { id: moi, role },
+      utilisateurId: moi,
+      seulementSansWebhook,
     })
+
+    expect(resultat).toEqual(synchronise)
   })
 
-  it('restreint le rattrapage aux organisations sans webhook', () => {
-    expect(porteePour(compte([10, 20]), true, false)).toEqual({
-      _tag: 'organisations',
-      organisationIds: [10, 20],
+  it.each<{
+    cas: string
+    compteCible: CompteRdv
+    role: 'User' | 'Admin'
+    seulementSansWebhook: boolean
+  }>([
+    {
+      cas: 'ne rattrape rien quand tous les webhooks sont posés — une portée vide n’est pas une portée absente',
+      compteCible: compte([]),
+      role: 'User',
+      seulementSansWebhook: true,
+    },
+    {
+      cas: 'n’appelle pas l’API pour un compte délié, même en synchronisation complète',
+      compteCible: compteDeconnecte,
+      role: 'User',
+      seulementSansWebhook: false,
+    },
+    {
+      cas: 'ne synchronise plus un compte en erreur à la demande de son médiateur',
+      compteCible: compteEnErreur,
+      role: 'User',
+      seulementSansWebhook: false,
+    },
+    {
+      cas: 'ne rattrape pas un compte en erreur au chargement d’un écran, même pour l’assistance',
+      compteCible: compteEnErreur,
+      role: 'Admin',
+      seulementSansWebhook: true,
+    },
+  ])('$cas', async ({ compteCible, role, seulementSansWebhook }) => {
+    const resultat = await declencher(compteCible)({
+      demandeur: { id: moi, role },
+      utilisateurId: moi,
+      seulementSansWebhook,
     })
+
+    expect(resultat).toEqual(sansObjet)
   })
 
-  it('ne rattrape rien quand tous les webhooks sont posés — une portée vide n’est pas une portée absente', () => {
-    expect(porteePour(compte([]), true, false)).toEqual({ _tag: 'sansObjet' })
-  })
-
-  it('n’appelle pas l’API pour un compte délié, même en synchronisation complète', () => {
-    expect(porteePour(compteDeconnecte, false, false)).toEqual({
-      _tag: 'sansObjet',
+  it('date la synchronisation de l’instant présent sans horloge fournie', async () => {
+    const resultat = await declencherSynchronisation({
+      compteACible: async () => compte([10]),
+      lancer: async () => ({ derive: 4 }),
+    })({
+      demandeur: { id: moi, role: 'User' },
+      utilisateurId: moi,
+      seulementSansWebhook: false,
     })
-  })
-})
 
-describe('compte en erreur', () => {
-  it('n’est plus synchronisé à la demande de son médiateur', () => {
-    expect(porteePour(compteEnErreur, false, false)).toEqual({
-      _tag: 'sansObjet',
-    })
-  })
-
-  it('n’est pas rattrapé au chargement d’un écran', () => {
-    expect(porteePour(compteEnErreur, true, true)).toEqual({
-      _tag: 'sansObjet',
-    })
-  })
-
-  it('peut être relancé en entier par l’assistance', () => {
-    expect(porteePour(compteEnErreur, false, true)).toEqual({
-      _tag: 'toutesOrganisations',
-    })
-  })
-
-  it.each([
-    ['Admin', true],
-    ['User', false],
-  ] as const)('relance autorisée pour un profil %s : %s', (role, attendu) => {
-    expect(peutRelancerUnCompteEnErreur({ id: moi, role })).toBe(attendu)
+    expect(resultat).toEqual(
+      success({ derive: 4, synchroniseeLe: expect.any(Date) }),
+    )
   })
 })
 
@@ -179,6 +255,26 @@ describe('échec d’une synchronisation déclenchée', () => {
 
   it('marque le compte quand réessayer ne servirait à rien', async () => {
     const resultat = await declencherQuiEchoue(() => true)
+
+    expect(resultat).toEqual(
+      failure({
+        _tag: 'SynchronisationEchouee',
+        marquage: { agentId: compteLie.agentId, message: MESSAGE_ECHEC },
+      }),
+    )
+  })
+
+  it('marque le compte par défaut, faute de savoir distinguer l’échec', async () => {
+    const resultat = await declencherSynchronisation({
+      compteACible: async () => compteLie,
+      lancer: async () => {
+        throw new Error('API injoignable')
+      },
+    })({
+      demandeur: { id: UTILISATEUR, role: 'User' },
+      utilisateurId: UTILISATEUR,
+      seulementSansWebhook: false,
+    })
 
     expect(resultat).toEqual(
       failure({

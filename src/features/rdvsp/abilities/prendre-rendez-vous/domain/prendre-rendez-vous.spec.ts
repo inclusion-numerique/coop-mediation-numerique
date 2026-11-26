@@ -1,9 +1,11 @@
 import { describe, expect, it } from 'vitest'
+import { failure, success } from '@/libraries/result'
 import type { CompteRdv } from '../../../domain/compte/compte-rdv'
 import {
   JetonAcces,
   type JetonsOAuth,
 } from '../../../domain/compte/jetons-oauth'
+import { ApiIndisponible } from '../../../domain/errors'
 import { RdvAgentId } from '../../../domain/identifiants/rdv-agent-id'
 import { UsagerId } from '../../../domain/identifiants/usager-id'
 import { UtilisateurCoopId } from '../../../domain/identifiants/utilisateur-coop-id'
@@ -13,16 +15,21 @@ import {
   PrenomExterne,
   TelephoneExterne,
 } from '../../../domain/identite'
-import { UrlRetour } from '../../../domain/rdv/demande-rdv'
+import {
+  type DemandeRdvCreee,
+  DemandeRdvId,
+  UrlPriseRdv,
+  UrlRetour,
+} from '../../../domain/rdv/demande-rdv'
 import {
   type BeneficiaireCible,
   BeneficiaireCibleId,
   MediateurProprietaireId,
 } from './beneficiaire-cible'
 import {
+  type DependancesPrendreRendezVous,
   demandePourBeneficiaire,
-  verifierBeneficiaire,
-  verifierCompte,
+  prendreRendezVous,
 } from './prendre-rendez-vous'
 
 const mediateurId = MediateurProprietaireId(
@@ -123,67 +130,100 @@ describe('demandePourBeneficiaire', () => {
   })
 })
 
-describe('verifierBeneficiaire', () => {
-  it('accepte un bénéficiaire suivi par ce médiateur', () => {
-    const verifie = verifierBeneficiaire({
-      beneficiaire,
-      mediateurId,
-      beneficiaireId,
-    })
+const demandeCreee: DemandeRdvCreee = {
+  id: DemandeRdvId(31),
+  usagerId: UsagerId(9001),
+  url: UrlPriseRdv('https://rdv.anct.gouv.fr/prendre_rdv?invitation=31'),
+  rdvId: null,
+}
 
-    expect(verifie.success).toBe(true)
+const compteLie: CompteRdv = { ...compteBase, _tag: 'lie', jetons }
+
+const dependances: DependancesPrendreRendezVous = {
+  beneficiaireADemander: async () => beneficiaire,
+  compteDuMediateur: async () => compteLie,
+  creerDemandeRdv: async () => success(demandeCreee),
+  lierUsager: async () => undefined,
+  urlDossierBeneficiaire: () =>
+    'https://coop.fr/coop/mes-beneficiaires/3f2504e0-4f89-41d3-9a0c-0305e82c3301/accompagnements',
+}
+
+const demande = {
+  utilisateurId: compteBase.utilisateurId,
+  mediateurId,
+  beneficiaireId,
+}
+
+describe('prendreRendezVous', () => {
+  it('rend la demande créée pour un bénéficiaire suivi par ce médiateur', async () => {
+    expect(await prendreRendezVous(dependances)(demande)).toEqual(
+      success(demandeCreee),
+    )
   })
 
-  it('refuse un bénéficiaire suivi par un autre médiateur', () => {
-    const verifie = verifierBeneficiaire({
-      beneficiaire: {
+  it('refuse un bénéficiaire suivi par un autre médiateur', async () => {
+    const resultat = await prendreRendezVous({
+      ...dependances,
+      beneficiaireADemander: async () => ({
         ...beneficiaire,
         mediateurId: MediateurProprietaireId(
           '9c858901-8a57-4791-81fe-4c455b099bc9',
         ),
-      },
-      mediateurId,
-      beneficiaireId,
-    })
+      }),
+    })(demande)
 
-    expect(verifie.success === false && verifie.error._tag).toBe(
-      'BeneficiaireIntrouvable',
+    expect(resultat).toEqual(
+      failure({ _tag: 'BeneficiaireIntrouvable', id: beneficiaireId }),
     )
   })
 
-  it('rend la même erreur pour un bénéficiaire absent que pour celui d’autrui', () => {
-    const absent = verifierBeneficiaire({
-      beneficiaire: null,
-      mediateurId,
-      beneficiaireId,
-    })
+  it('rend la même erreur pour un bénéficiaire absent que pour celui d’autrui', async () => {
+    const resultat = await prendreRendezVous({
+      ...dependances,
+      beneficiaireADemander: async () => null,
+    })(demande)
 
-    expect(absent.success === false && absent.error._tag).toBe(
-      'BeneficiaireIntrouvable',
+    expect(resultat).toEqual(
+      failure({ _tag: 'BeneficiaireIntrouvable', id: beneficiaireId }),
     )
   })
-})
 
-describe('verifierCompte', () => {
-  it('accepte un compte lié', () => {
-    const compte: CompteRdv = { ...compteBase, _tag: 'lie', jetons }
+  it('refuse un médiateur sans compte', async () => {
+    const resultat = await prendreRendezVous({
+      ...dependances,
+      compteDuMediateur: async () => null,
+    })(demande)
 
-    expect(verifierCompte(compte).success).toBe(true)
+    expect(resultat).toEqual(failure({ _tag: 'CompteNonLie', agentId: null }))
   })
 
-  it('refuse un compte délié', () => {
-    const compte: CompteRdv = {
-      ...compteBase,
-      _tag: 'deconnecte',
-      deconnexion: new Date('2026-07-08T00:00:00.000Z'),
-    }
+  it('refuse un compte délié', async () => {
+    const resultat = await prendreRendezVous({
+      ...dependances,
+      compteDuMediateur: async () => ({
+        ...compteBase,
+        _tag: 'deconnecte',
+        deconnexion: new Date('2026-07-08T00:00:00.000Z'),
+      }),
+    })(demande)
 
-    const verifie = verifierCompte(compte)
-
-    expect(verifie.success === false && verifie.error._tag).toBe('CompteNonLie')
+    expect(resultat).toEqual(
+      failure({ _tag: 'CompteNonLie', agentId: compteBase.agentId }),
+    )
   })
 
-  it('refuse un médiateur sans compte', () => {
-    expect(verifierCompte(null).success).toBe(false)
+  it('remonte l’échec de RDV Service Public', async () => {
+    const resultat = await prendreRendezVous({
+      ...dependances,
+      creerDemandeRdv: async () => failure(ApiIndisponible(502, 'Bad Gateway')),
+    })(demande)
+
+    expect(resultat).toEqual(
+      failure({
+        _tag: 'ApiIndisponible',
+        statusCode: 502,
+        message: 'Bad Gateway',
+      }),
+    )
   })
 })
