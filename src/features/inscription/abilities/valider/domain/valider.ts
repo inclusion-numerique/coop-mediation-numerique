@@ -3,6 +3,7 @@ import { type Result, success } from '@/libraries/result'
 import type { EchecDeValider } from './errors'
 import type { ValiderPorts } from './ports'
 import {
+  acceptationDesInvitations,
   type InscriptionValidee,
   validerInscription,
 } from './valider-inscription'
@@ -13,7 +14,8 @@ export const valider =
     enregistrerValidation,
     lireLeContactAInscrire,
     inscrireALaListeDeDiffusion,
-    effetsApresValidation,
+    accepterLesInvitations,
+    signaler,
   }: ValiderPorts<Contact>) =>
   async ({
     userId,
@@ -35,7 +37,12 @@ export const valider =
     if (contactInscrit !== null)
       await inscrireALaListeDeDiffusion(contactInscrit)
 
-    await effetsApresValidation(userId)
+    const acceptation = await accepterLesInvitations(userId)
+    if (!acceptation.success) signaler(acceptation.error)
 
-    return success({ ...validation.data, contactInscrit })
+    return success({
+      ...validation.data,
+      contactInscrit,
+      acceptationDesInvitations: acceptationDesInvitations(acceptation),
+    })
   }

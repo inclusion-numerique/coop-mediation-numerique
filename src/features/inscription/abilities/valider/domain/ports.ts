@@ -1,4 +1,5 @@
 import type { UtilisateurId } from '@/features/inscription/domain'
+import type { EchecTechnique, Result } from '@/libraries/result'
 import type {
   FaitsInscription,
   ValidationAEnregistrer,
@@ -12,7 +13,11 @@ export type EnregistrerValidation = (
   validation: ValidationAEnregistrer,
 ) => Promise<void>
 
-export type EffetsApresValidation = (userId: UtilisateurId) => Promise<void>
+export type AccepterLesInvitations = (
+  userId: UtilisateurId,
+) => Promise<Result<void, EchecTechnique>>
+
+export type SignalerLEchec = (echec: EchecTechnique) => void
 
 export type LireLeContactAInscrire<Contact> = (
   userId: UtilisateurId,
@@ -27,5 +32,6 @@ export type ValiderPorts<Contact> = {
   readonly enregistrerValidation: EnregistrerValidation
   readonly lireLeContactAInscrire: LireLeContactAInscrire<Contact>
   readonly inscrireALaListeDeDiffusion: InscrireALaListeDeDiffusion<Contact>
-  readonly effetsApresValidation: EffetsApresValidation
+  readonly accepterLesInvitations: AccepterLesInvitations
+  readonly signaler: SignalerLEchec
 }

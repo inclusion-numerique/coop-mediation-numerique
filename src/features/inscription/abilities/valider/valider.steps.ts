@@ -3,7 +3,7 @@ import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
 import type { EchecDeValider } from '@/features/inscription/abilities/valider/domain/errors'
-import type { EffetsApresValidation } from '@/features/inscription/abilities/valider/domain/ports'
+import type { AccepterLesInvitations } from '@/features/inscription/abilities/valider/domain/ports'
 import { valider } from '@/features/inscription/abilities/valider/domain/valider'
 import type { InscriptionValidee } from '@/features/inscription/abilities/valider/domain/valider-inscription'
 import { enregistrerValidation } from '@/features/inscription/abilities/valider/implementations/prisma/enregistrer-validation.mutation'
@@ -13,15 +13,21 @@ import {
   seedProfilChoisi,
   utilisateurDeLInscriptionEnCours,
 } from '@/features/inscription/inscription.cucumber'
-import type { Result } from '@/libraries/result'
+import {
+  EchecTechnique,
+  failure,
+  type Result,
+  success,
+} from '@/libraries/result'
 
-const validerAvec = (effetsApresValidation: EffetsApresValidation) =>
+const validerAvec = (accepterLesInvitations: AccepterLesInvitations) =>
   valider({
     lireFaitsInscription,
     enregistrerValidation,
     lireLeContactAInscrire: async () => null,
     inscrireALaListeDeDiffusion: async () => undefined,
-    effetsApresValidation,
+    accepterLesInvitations,
+    signaler: () => undefined,
   })
 
 let resultat: Result<InscriptionValidee<never>, EchecDeValider>
@@ -57,11 +63,23 @@ Given('mon inscription est déjà validée', async () => {
 })
 
 When('je valide mon inscription', async () => {
-  resultat = await validerAvec(async () => undefined)({
+  resultat = await validerAvec(async () => success(undefined))({
     userId: utilisateurDeLInscriptionEnCours(),
     maintenant: new Date(),
   })
 })
+
+When(
+  'je valide mon inscription alors que mes invitations ne peuvent être acceptées',
+  async () => {
+    resultat = await validerAvec(async () =>
+      failure(EchecTechnique('Adresse électronique invalide')),
+    )({
+      userId: utilisateurDeLInscriptionEnCours(),
+      maintenant: new Date(),
+    })
+  },
+)
 
 Then('mon inscription est validée', async () => {
   assert.ok(resultat.success, 'La validation aurait dû réussir')
@@ -70,6 +88,14 @@ Then('mon inscription est validée', async () => {
     select: { inscriptionValidee: true },
   })
   assert.ok(user.inscriptionValidee, 'La date de validation n’a pas été posée')
+})
+
+Then('l’échec de l’acceptation de mes invitations est rapporté', () => {
+  assert.ok(resultat.success, 'La validation aurait dû réussir')
+  assert.strictEqual(
+    resultat.data.acceptationDesInvitations._tag,
+    'AcceptationEchouee',
+  )
 })
 
 Then('mes CGU sont acceptées', async () => {

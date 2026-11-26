@@ -1,6 +1,7 @@
 'use server'
 
 import { actionBuilder } from '@/configuration/nextjs'
+import { signaler } from '@/configuration/telemetry/serveur'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { accepterLesInvitationsEnAttente } from '@/features/equipe/abilities/accepter-les-invitations-en-attente/domain/accepter-les-invitations-en-attente'
 import { enregistrerLesAcceptations } from '@/features/equipe/abilities/accepter-les-invitations-en-attente/implementations/prisma/enregistrer-les-acceptations.mutation'
@@ -11,7 +12,7 @@ import {
 import { UtilisateurId as UtilisateurDeLEquipe } from '@/features/equipe/domain'
 import { VALIDER_ERRORS } from '@/features/inscription/abilities/valider/action/valider.errors'
 import { ValiderValidation } from '@/features/inscription/abilities/valider/action/valider.validation'
-import type { EffetsApresValidation } from '@/features/inscription/abilities/valider/domain/ports'
+import type { AccepterLesInvitations } from '@/features/inscription/abilities/valider/domain/ports'
 import { valider } from '@/features/inscription/abilities/valider/domain/valider'
 import { enregistrerValidation } from '@/features/inscription/abilities/valider/implementations/prisma/enregistrer-validation.mutation'
 import { lireFaitsInscription } from '@/features/inscription/abilities/valider/implementations/prisma/lire-faits-inscription.query'
@@ -21,26 +22,32 @@ import { inscrireLeContactALaListe } from '@/features/utilisateurs/abilities/act
 import { inscritAInscrire } from '@/features/utilisateurs/abilities/activer-la-mediation-numerique/implementations/prisma/inscrit-a-inscrire.query'
 import { contactAInscrire } from '@/features/utilisateurs/domain'
 import { fromResult, withInput } from '@/libraries/nextjs'
-import { success } from '@/libraries/result'
+import { enEchecTechnique, failure, success } from '@/libraries/result'
 
-const validerAvec = (effetsApresValidation: EffetsApresValidation) =>
+const validerAvec = (accepterLesInvitations: AccepterLesInvitations) =>
   valider({
     lireFaitsInscription,
     enregistrerValidation,
     lireLeContactAInscrire: async (userId) =>
       contactAInscrire(await inscritAInscrire(userId)),
     inscrireALaListeDeDiffusion: inscrireLeContactALaListe,
-    effetsApresValidation,
+    accepterLesInvitations,
+    signaler,
   })
 
-const accepterLesInvitationsDeLInscrit: EffetsApresValidation = async (
+const accepterLesInvitationsDeLInscrit: AccepterLesInvitations = async (
   userId,
 ) => {
-  await accepterLesInvitationsEnAttente({
-    lireLeMediateurInvite,
-    lireLesInvitationsDe,
-    enregistrerLesAcceptations,
-  })({ utilisateurId: UtilisateurDeLEquipe(userId), maintenant: new Date() })
+  try {
+    await accepterLesInvitationsEnAttente({
+      lireLeMediateurInvite,
+      lireLesInvitationsDe,
+      enregistrerLesAcceptations,
+    })({ utilisateurId: UtilisateurDeLEquipe(userId), maintenant: new Date() })
+    return success(undefined)
+  } catch (erreur) {
+    return failure(enEchecTechnique(erreur))
+  }
 }
 
 export const validerAction = actionBuilder()

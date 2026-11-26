@@ -3,7 +3,12 @@ import {
   ProfilNonChoisi,
   type UtilisateurId,
 } from '@/features/inscription/domain'
-import { failure, type Result, success } from '@/libraries/result'
+import {
+  type EchecTechnique,
+  failure,
+  type Result,
+  success,
+} from '@/libraries/result'
 import { CompteDeRoleIntrouvable, type EchecDeValider } from './errors'
 
 export type FaitsInscription = {
@@ -20,9 +25,21 @@ export type ValidationAEnregistrer = {
   readonly cguAPoser: Date | null
 }
 
+export type AcceptationDesInvitations =
+  | { readonly _tag: 'InvitationsAcceptees' }
+  | { readonly _tag: 'AcceptationEchouee'; readonly echec: EchecTechnique }
+
 export type InscriptionValidee<Contact> = ValidationAEnregistrer & {
   readonly contactInscrit: Contact | null
+  readonly acceptationDesInvitations: AcceptationDesInvitations
 }
+
+export const acceptationDesInvitations = (
+  acceptation: Result<void, EchecTechnique>,
+): AcceptationDesInvitations =>
+  acceptation.success
+    ? { _tag: 'InvitationsAcceptees' }
+    : { _tag: 'AcceptationEchouee', echec: acceptation.error }
 
 export const validerInscription = ({
   faits: {
