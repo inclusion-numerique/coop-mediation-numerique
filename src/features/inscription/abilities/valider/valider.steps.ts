@@ -24,13 +24,12 @@ const validerAvec = (accepterLesInvitations: AccepterLesInvitations) =>
   valider({
     lireFaitsInscription,
     enregistrerValidation,
-    lireLeContactAInscrire: async () => null,
-    inscrireALaListeDeDiffusion: async () => undefined,
+    inscrireALaListeDeDiffusion: async () => success(undefined),
     accepterLesInvitations,
     signaler: () => undefined,
   })
 
-let resultat: Result<InscriptionValidee<never>, EchecDeValider>
+let resultat: Result<InscriptionValidee<undefined>, EchecDeValider>
 
 Given('mon profil d’inscription est {string}', async (profil: string) => {
   await seedProfilChoisi(ProfilInscription.schema.parse(profil))

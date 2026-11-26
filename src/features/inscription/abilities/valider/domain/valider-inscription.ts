@@ -29,8 +29,8 @@ export type AcceptationDesInvitations =
   | { readonly _tag: 'InvitationsAcceptees' }
   | { readonly _tag: 'AcceptationEchouee'; readonly echec: EchecTechnique }
 
-export type InscriptionValidee<Contact> = ValidationAEnregistrer & {
-  readonly contactInscrit: Contact | null
+export type InscriptionValidee<Inscription> = ValidationAEnregistrer & {
+  readonly inscriptionALaListe: Inscription
   readonly acceptationDesInvitations: AcceptationDesInvitations
 }
 

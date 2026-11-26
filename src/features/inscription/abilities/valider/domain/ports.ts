@@ -13,25 +13,21 @@ export type EnregistrerValidation = (
   validation: ValidationAEnregistrer,
 ) => Promise<void>
 
-export type AccepterLesInvitations = (
-  userId: UtilisateurId,
-) => Promise<Result<void, EchecTechnique>>
+export type AccepterLesInvitations = (entree: {
+  readonly userId: UtilisateurId
+  readonly maintenant: Date
+}) => Promise<Result<void, EchecTechnique>>
 
 export type SignalerLEchec = (echec: EchecTechnique) => void
 
-export type LireLeContactAInscrire<Contact> = (
-  userId: UtilisateurId,
-) => Promise<Contact | null>
+export type InscrireALaListeDeDiffusion<Inscription> = (entree: {
+  readonly utilisateurId: UtilisateurId
+}) => Promise<Result<Inscription, never>>
 
-export type InscrireALaListeDeDiffusion<Contact> = (
-  contact: Contact,
-) => Promise<void>
-
-export type ValiderPorts<Contact> = {
+export type ValiderPorts<Inscription> = {
   readonly lireFaitsInscription: LireFaitsInscription
   readonly enregistrerValidation: EnregistrerValidation
-  readonly lireLeContactAInscrire: LireLeContactAInscrire<Contact>
-  readonly inscrireALaListeDeDiffusion: InscrireALaListeDeDiffusion<Contact>
+  readonly inscrireALaListeDeDiffusion: InscrireALaListeDeDiffusion<Inscription>
   readonly accepterLesInvitations: AccepterLesInvitations
   readonly signaler: SignalerLEchec
 }

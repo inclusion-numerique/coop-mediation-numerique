@@ -20,35 +20,40 @@ import { UtilisateurId } from '@/features/inscription/domain'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { inscrireLeContactALaListe } from '@/features/utilisateurs/abilities/activer-la-mediation-numerique/implementations/brevo/inscrire-le-contact-a-la-liste.mutation'
 import { inscritAInscrire } from '@/features/utilisateurs/abilities/activer-la-mediation-numerique/implementations/prisma/inscrit-a-inscrire.query'
-import { contactAInscrire } from '@/features/utilisateurs/domain'
+import { inscrireALaListeDeDiffusion } from '@/features/utilisateurs/abilities/inscrire-a-la-liste-de-diffusion/domain/inscrire-a-la-liste-de-diffusion'
+import { UtilisateurId as UtilisateurDeLaListe } from '@/features/utilisateurs/domain'
 import { fromResult, withInput } from '@/libraries/nextjs'
 import { enEchecTechnique, failure, success } from '@/libraries/result'
 
-const validerAvec = (accepterLesInvitations: AccepterLesInvitations) =>
-  valider({
-    lireFaitsInscription,
-    enregistrerValidation,
-    lireLeContactAInscrire: async (userId) =>
-      contactAInscrire(await inscritAInscrire(userId)),
-    inscrireALaListeDeDiffusion: inscrireLeContactALaListe,
-    accepterLesInvitations,
-    signaler,
-  })
+const inscrireALaListe = inscrireALaListeDeDiffusion({
+  lireLInscritAInscrire: inscritAInscrire,
+  importerLeContact: inscrireLeContactALaListe,
+})
 
-const accepterLesInvitationsDeLInscrit: AccepterLesInvitations = async (
+const accepterLesInvitationsDeLInscrit: AccepterLesInvitations = async ({
   userId,
-) => {
+  maintenant,
+}) => {
   try {
     await accepterLesInvitationsEnAttente({
       lireLeMediateurInvite,
       lireLesInvitationsDe,
       enregistrerLesAcceptations,
-    })({ utilisateurId: UtilisateurDeLEquipe(userId), maintenant: new Date() })
+    })({ utilisateurId: UtilisateurDeLEquipe(userId), maintenant })
     return success(undefined)
   } catch (erreur) {
     return failure(enEchecTechnique(erreur))
   }
 }
+
+const validerLInscription = valider({
+  lireFaitsInscription,
+  enregistrerValidation,
+  inscrireALaListeDeDiffusion: ({ utilisateurId }) =>
+    inscrireALaListe({ utilisateurId: UtilisateurDeLaListe(utilisateurId) }),
+  accepterLesInvitations: accepterLesInvitationsDeLInscrit,
+  signaler,
+})
 
 export const validerAction = actionBuilder()
   .use(withAuth())
@@ -57,7 +62,7 @@ export const validerAction = actionBuilder()
   .execute(
     fromResult(
       async ({ user }) => {
-        const resultat = await validerAvec(accepterLesInvitationsDeLInscrit)({
+        const resultat = await validerLInscription({
           userId: UtilisateurId(user.id),
           maintenant: new Date(),
         })

@@ -23,28 +23,31 @@ const inscriptionValidable: FaitsInscription = {
 
 const ACCEPTEES = success(undefined)
 
+const SANS_CONTACT = 'Sans contact à inscrire'
+
 const validerDepuis = (
   faits: FaitsInscription,
-  contactAInscrire: string | null,
+  inscriptionALaListe: string,
   acceptation: Result<void, EchecTechnique>,
 ) =>
   valider({
     lireFaitsInscription: async () => faits,
     enregistrerValidation: async () => undefined,
-    lireLeContactAInscrire: async () => contactAInscrire,
-    inscrireALaListeDeDiffusion: async () => undefined,
+    inscrireALaListeDeDiffusion: async () => success(inscriptionALaListe),
     accepterLesInvitations: async () => acceptation,
     signaler: () => undefined,
   })({ userId, maintenant })
 
 describe('valider l’inscription', () => {
   it('pose la date de validation sans toucher aux CGU déjà acceptées', async () => {
-    expect(await validerDepuis(inscriptionValidable, null, ACCEPTEES)).toEqual(
+    expect(
+      await validerDepuis(inscriptionValidable, SANS_CONTACT, ACCEPTEES),
+    ).toEqual(
       success({
         userId,
         inscriptionValidee: maintenant,
         cguAPoser: null,
-        contactInscrit: null,
+        inscriptionALaListe: SANS_CONTACT,
         acceptationDesInvitations: { _tag: 'InvitationsAcceptees' },
       }),
     )
@@ -54,7 +57,7 @@ describe('valider l’inscription', () => {
     expect(
       await validerDepuis(
         { ...inscriptionValidable, cguDejaAcceptee: false },
-        null,
+        SANS_CONTACT,
         ACCEPTEES,
       ),
     ).toEqual(
@@ -62,25 +65,7 @@ describe('valider l’inscription', () => {
         userId,
         inscriptionValidee: maintenant,
         cguAPoser: maintenant,
-        contactInscrit: null,
-        acceptationDesInvitations: { _tag: 'InvitationsAcceptees' },
-      }),
-    )
-  })
-
-  it('inscrit à la liste de diffusion le contact que l’inscrit y a', async () => {
-    expect(
-      await validerDepuis(
-        inscriptionValidable,
-        'camille@example.com',
-        ACCEPTEES,
-      ),
-    ).toEqual(
-      success({
-        userId,
-        inscriptionValidee: maintenant,
-        cguAPoser: null,
-        contactInscrit: 'camille@example.com',
+        inscriptionALaListe: SANS_CONTACT,
         acceptationDesInvitations: { _tag: 'InvitationsAcceptees' },
       }),
     )
@@ -90,7 +75,7 @@ describe('valider l’inscription', () => {
     expect(
       await validerDepuis(
         inscriptionValidable,
-        null,
+        SANS_CONTACT,
         failure(EchecTechnique('courriel invalide')),
       ),
     ).toEqual(
@@ -98,7 +83,7 @@ describe('valider l’inscription', () => {
         userId,
         inscriptionValidee: maintenant,
         cguAPoser: null,
-        contactInscrit: null,
+        inscriptionALaListe: SANS_CONTACT,
         acceptationDesInvitations: {
           _tag: 'AcceptationEchouee',
           echec: EchecTechnique('courriel invalide'),
@@ -124,8 +109,8 @@ describe('valider l’inscription', () => {
       erreur: 'CompteDeRoleIntrouvable',
     },
   ])('$cas', async ({ faits, erreur }) => {
-    expect(
-      await validerDepuis(faits, 'camille@example.com', ACCEPTEES),
-    ).toEqual(failure({ _tag: erreur, userId }))
+    expect(await validerDepuis(faits, SANS_CONTACT, ACCEPTEES)).toEqual(
+      failure({ _tag: erreur, userId }),
+    )
   })
 })

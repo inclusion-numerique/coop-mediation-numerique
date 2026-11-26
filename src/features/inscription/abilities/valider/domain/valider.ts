@@ -9,21 +9,20 @@ import {
 } from './valider-inscription'
 
 export const valider =
-  <Contact>({
+  <Inscription>({
     lireFaitsInscription,
     enregistrerValidation,
-    lireLeContactAInscrire,
     inscrireALaListeDeDiffusion,
     accepterLesInvitations,
     signaler,
-  }: ValiderPorts<Contact>) =>
+  }: ValiderPorts<Inscription>) =>
   async ({
     userId,
     maintenant,
   }: {
     readonly userId: UtilisateurId
     readonly maintenant: Date
-  }): Promise<Result<InscriptionValidee<Contact>, EchecDeValider>> => {
+  }): Promise<Result<InscriptionValidee<Inscription>, EchecDeValider>> => {
     const validation = validerInscription({
       faits: await lireFaitsInscription(userId),
       maintenant,
@@ -33,16 +32,16 @@ export const valider =
 
     await enregistrerValidation(validation.data)
 
-    const contactInscrit = await lireLeContactAInscrire(userId)
-    if (contactInscrit !== null)
-      await inscrireALaListeDeDiffusion(contactInscrit)
+    const { data: inscriptionALaListe } = await inscrireALaListeDeDiffusion({
+      utilisateurId: userId,
+    })
 
-    const acceptation = await accepterLesInvitations(userId)
+    const acceptation = await accepterLesInvitations({ userId, maintenant })
     if (!acceptation.success) signaler(acceptation.error)
 
     return success({
       ...validation.data,
-      contactInscrit,
+      inscriptionALaListe,
       acceptationDesInvitations: acceptationDesInvitations(acceptation),
     })
   }
