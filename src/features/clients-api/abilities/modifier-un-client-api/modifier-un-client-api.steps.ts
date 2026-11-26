@@ -1,22 +1,29 @@
 import assert from 'node:assert'
 import { Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { modifierUnClientApi } from '@/features/clients-api/abilities/modifier-un-client-api/implementations/prisma/modifier-un-client-api.mutation'
+import { modifierUnClientApi } from '@/features/clients-api/abilities/modifier-un-client-api/domain/modifier-un-client-api'
+import { enregistrerLaModification } from '@/features/clients-api/abilities/modifier-un-client-api/implementations/prisma/enregistrer-la-modification.mutation'
 import {
   clientSeme,
   jour,
   nomUnique,
   portees,
 } from '@/features/clients-api/clients-api.cucumber'
+import { clientApiExiste } from '@/features/clients-api/implementations/prisma/client-api-existe.query'
+import { nomDejaPris } from '@/features/clients-api/implementations/prisma/nom-deja-pris.query'
 
 const modification: {
-  resultat?: Awaited<ReturnType<typeof modifierUnClientApi>>
+  resultat?: Awaited<ReturnType<ReturnType<typeof modifierUnClientApi>>>
 } = {}
 
 When(
   "l'administration modifie le client API {string} avec les permissions {string} du {word} au {word}",
   async (nom: string, liste: string, debut: string, fin: string) => {
     modification.resultat = await modifierUnClientApi({
+      clientApiExiste,
+      leNomEstPris: nomDejaPris,
+      enregistrer: enregistrerLaModification,
+    })({
       clientApiId: clientSeme(nom).id,
       definition: {
         nom: nomUnique(nom),
@@ -31,6 +38,10 @@ When(
   "l'administration renomme le client API {string} en {string}",
   async (nom: string, nouveauNom: string) => {
     modification.resultat = await modifierUnClientApi({
+      clientApiExiste,
+      leNomEstPris: nomDejaPris,
+      enregistrer: enregistrerLaModification,
+    })({
       clientApiId: clientSeme(nom).id,
       definition: {
         nom: nomUnique(nouveauNom),
@@ -43,6 +54,10 @@ When(
 
 When("l'administration modifie un client API qui n'existe pas", async () => {
   modification.resultat = await modifierUnClientApi({
+    clientApiExiste,
+    leNomEstPris: nomDejaPris,
+    enregistrer: enregistrerLaModification,
+  })({
     clientApiId: v4(),
     definition: {
       nom: nomUnique('Fantôme'),
