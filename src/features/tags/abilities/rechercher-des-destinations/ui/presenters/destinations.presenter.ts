@@ -1,7 +1,14 @@
 import type { Acteur } from '../../../../domain'
-import { tagAffiche } from '../../../../ui/presenters/tag-affiche.presenter'
-import type { DestinationAffichee } from '../../action/rechercher-des-destinations.key'
+import {
+  type TagAffiche,
+  tagAffiche,
+} from '../../../../ui/presenters/tag-affiche.presenter'
 import type { DestinationDeFusion } from '../../domain'
+
+export type DestinationAffichee = {
+  readonly tag: TagAffiche
+  readonly accompagnements: number
+}
 
 export const destinationsAffichees = (
   acteur: Acteur,
