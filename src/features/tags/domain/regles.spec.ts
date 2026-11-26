@@ -63,7 +63,7 @@ const tag = (id: string, portee: Portee): Tag => ({
 })
 
 describe('peutGerer', () => {
-  it.each([
+  it.each<[string, Acteur, Portee, boolean]>([
     ['son tag personnel', mediateur, personnel(moi), true],
     [
       'le tag personnel d’un autre',
@@ -113,7 +113,7 @@ describe('peutGerer', () => {
 })
 
 describe('peutVoir', () => {
-  it.each([
+  it.each<[string, Acteur, Portee, boolean]>([
     [
       'un tag départemental de son département',
       mediateur,
