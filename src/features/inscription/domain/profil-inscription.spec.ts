@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { profilDInscription } from './profil-inscription'
+import { libelleDuProfil, profilDInscription } from './profil-inscription'
 
 describe('profilDInscription', () => {
   it('médiateur par défaut', () => {
@@ -33,5 +33,13 @@ describe('profilDInscription', () => {
     expect(
       profilDInscription({ isConseillerNumerique: true, isCoordinateur: true }),
     ).toBe('CoordinateurConseillerNumerique')
+  })
+})
+
+describe('libelleDuProfil', () => {
+  it('nomme le profil pour l’affichage', () => {
+    expect(libelleDuProfil('CoordinateurConseillerNumerique')).toBe(
+      'Coordinateur·rice de conseillers numériques',
+    )
   })
 })

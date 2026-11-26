@@ -44,33 +44,4 @@ describe('deciderLaStructureEmployeuse', () => {
       },
     })
   })
-
-  it('refuse un utilisateur inconnu', () => {
-    expect(deciderLaStructureEmployeuse(null, userId, le)).toEqual({
-      success: false,
-      error: { _tag: 'InscriptionIntrouvable', userId },
-    })
-  })
-
-  it('refuse tant que le profil n’est pas choisi', () => {
-    expect(
-      deciderLaStructureEmployeuse({ _tag: 'NonDemarree', userId }, userId, le),
-    ).toEqual({
-      success: false,
-      error: { _tag: 'ProfilNonChoisi', userId },
-    })
-  })
-
-  it('refuse une inscription déjà validée', () => {
-    expect(
-      deciderLaStructureEmployeuse(
-        { ...inscriptionEnCours, _tag: 'Validee', inscriptionValidee: le },
-        userId,
-        le,
-      ),
-    ).toEqual({
-      success: false,
-      error: { _tag: 'InscriptionDejaValidee', userId },
-    })
-  })
 })

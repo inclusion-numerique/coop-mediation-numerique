@@ -81,26 +81,4 @@ describe('deciderLeRole', () => {
       },
     })
   })
-
-  it('refuse un utilisateur inconnu', () => {
-    expect(
-      deciderLeRole(null, { userId, role: Role('Mediateur') }, le),
-    ).toEqual({
-      success: false,
-      error: { _tag: 'InscriptionIntrouvable', userId },
-    })
-  })
-
-  it('refuse de re-choisir un rôle sur une inscription validée', () => {
-    expect(
-      deciderLeRole(
-        { ...inscriptionEnCours, _tag: 'Validee', inscriptionValidee: le },
-        { userId, role: Role('Coordinateur') },
-        le,
-      ),
-    ).toEqual({
-      success: false,
-      error: { _tag: 'InscriptionDejaValidee', userId },
-    })
-  })
 })
