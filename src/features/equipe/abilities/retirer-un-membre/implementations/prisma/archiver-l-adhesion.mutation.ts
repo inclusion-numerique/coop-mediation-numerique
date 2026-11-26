@@ -1,12 +1,17 @@
-import { addMutationLog } from '@/configuration/prisma'
-import { enregistrerLArchivage } from '../../../../implementations/prisma/adhesion.query'
-import type { ArchiverLAdhesion } from '../../domain/retirer-un-membre'
+import { addMutationLog, prismaClient } from '@/configuration/prisma'
+import type { ArchiverLAdhesion } from '../../domain/ports'
 
 export const archiverLAdhesion: ArchiverLAdhesion = async ({
   adhesion,
   auteurId,
 }) => {
-  await enregistrerLArchivage(adhesion)
+  await prismaClient.mediateurCoordonne.update({
+    where: { id: adhesion.id },
+    data: {
+      suppression: adhesion.archiveeLe,
+      modification: adhesion.archiveeLe,
+    },
+  })
 
   addMutationLog({
     userId: auteurId,

@@ -15,6 +15,7 @@ import { lireLesAdhesionsDeLaPaire } from '@/features/equipe/implementations/pri
 import { gestionnaireDe } from '@/features/equipe/implementations/session'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { fromResult, withInput } from '@/libraries/nextjs'
+import { success } from '@/libraries/result'
 
 export const retirerUnMembreAction = actionBuilder()
   .use(withAuth())
@@ -22,14 +23,19 @@ export const retirerUnMembreAction = actionBuilder()
   .use(withInput(RetirerUnMembreValidation))
   .execute(
     fromResult(
-      async ({ user, input }) =>
-        retirerUnMembre({ lireLesAdhesionsDeLaPaire, archiverLAdhesion })({
+      async ({ user, input }) => {
+        const retrait = await retirerUnMembre({
+          lireLesAdhesionsDeLaPaire,
+          archiverLAdhesion,
+        })({
           mediateurId: MediateurId(input.mediateurId),
           coordinateurId: CoordinateurId(input.coordinateurId),
           gestionnaire: gestionnaireDe(user),
           auteurId: UtilisateurId(user.id),
           maintenant: new Date(),
-        }),
+        })
+        return retrait.success ? success(undefined) : retrait
+      },
       { onError: RETIRER_UN_MEMBRE_ERRORS },
     ),
   )

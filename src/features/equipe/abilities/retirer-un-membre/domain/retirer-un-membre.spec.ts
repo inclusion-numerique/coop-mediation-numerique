@@ -42,7 +42,17 @@ describe('retirer un membre', () => {
         auteurId,
         maintenant,
       }),
-    ).toEqual({ success: true, data: undefined })
+    ).toEqual({
+      success: true,
+      data: {
+        adhesion: {
+          ...adhesionActive,
+          statut: 'Archivee',
+          archiveeLe: maintenant,
+        },
+        auteurId,
+      },
+    })
   })
 
   it('est refusé à qui ne gère pas l’équipe', async () => {
