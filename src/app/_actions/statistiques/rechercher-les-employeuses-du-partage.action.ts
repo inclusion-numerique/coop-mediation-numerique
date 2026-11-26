@@ -18,9 +18,9 @@ import { withInput } from '@/libraries/nextjs'
 const rechercherDansLePartage = actionBuilder()
   .use(withInput(RechercherLesEmployeusesDuPartageValidation))
   .execute(async ({ input: { partage, recherche, exclues } }) => {
-    const lien = await resoudreUnLienDePartage({ lirePartage: lireLePartage })(
-      partage,
-    )
+    const lien = await resoudreUnLienDePartage({ lirePartage: lireLePartage })({
+      lien: partage,
+    })
     if (!lien.success) return []
     return optionsDEmployeuses(
       await rechercherLesEmployeusesDesActivites({

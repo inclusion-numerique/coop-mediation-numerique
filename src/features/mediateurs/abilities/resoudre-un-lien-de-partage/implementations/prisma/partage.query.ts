@@ -1,6 +1,6 @@
 import { prismaClient } from '@/configuration/prisma'
 import { CoordinateurId, MediateurId, UtilisateurId } from '../../../../domain'
-import type { LireLePartage } from '../../domain'
+import type { LireLePartage } from '../../domain/ports'
 
 const compteActif = { user: { deleted: null } }
 

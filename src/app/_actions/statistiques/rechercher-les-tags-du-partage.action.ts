@@ -15,9 +15,9 @@ import { withInput } from '@/libraries/nextjs'
 const rechercherDansLePartage = actionBuilder()
   .use(withInput(RechercherDesTagsDuPartageValidation))
   .execute(async ({ input: { partage, recherche, exclus } }) => {
-    const lien = await resoudreUnLienDePartage({ lirePartage: lireLePartage })(
-      partage,
-    )
+    const lien = await resoudreUnLienDePartage({ lirePartage: lireLePartage })({
+      lien: partage,
+    })
     if (!lien.success) return []
     const acteur = acteurDe(
       profilDeLaSession(

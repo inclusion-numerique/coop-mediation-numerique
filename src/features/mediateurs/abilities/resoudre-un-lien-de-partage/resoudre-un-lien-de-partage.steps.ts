@@ -13,7 +13,7 @@ const ouvrir = async (lien: string | undefined) => {
   if (lien === undefined) throw new Error('Aucun partage semé pour ce rôle')
   derniere.resolution = await resoudreUnLienDePartage({
     lirePartage: lireLePartage,
-  })(lien)
+  })({ lien: lien })
 }
 
 When('un internaute ouvre le lien de ce partage', async () => {

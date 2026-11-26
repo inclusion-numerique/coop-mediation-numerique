@@ -18,9 +18,9 @@ import { withInput } from '@/libraries/nextjs'
 const rechercherDansLePartage = actionBuilder()
   .use(withInput(RechercherLesLieuxDuPartageValidation))
   .execute(async ({ input: { partage, genre, recherche } }) => {
-    const lien = await resoudreUnLienDePartage({ lirePartage: lireLePartage })(
-      partage,
-    )
+    const lien = await resoudreUnLienDePartage({ lirePartage: lireLePartage })({
+      lien: partage,
+    })
     if (!lien.success) return []
     const perimetre = perimetreDeLUtilisateur(
       utilisateurDuPartage(

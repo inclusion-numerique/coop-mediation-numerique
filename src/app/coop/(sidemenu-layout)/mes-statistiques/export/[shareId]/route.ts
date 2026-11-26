@@ -118,7 +118,7 @@ export const GET = async (
 ) => {
   const shareId = (await params).shareId
   const partage = await resoudreUnLienDePartage({ lirePartage: lireLePartage })(
-    shareId,
+    { lien: shareId },
   )
   if (!partage.success) return notFound()
 

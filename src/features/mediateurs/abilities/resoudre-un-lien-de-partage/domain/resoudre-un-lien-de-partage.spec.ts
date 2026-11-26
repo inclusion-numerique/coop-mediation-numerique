@@ -4,10 +4,8 @@ import {
   MediateurId,
   UtilisateurId,
 } from '@/features/mediateurs/domain'
-import {
-  type PartageLu,
-  resoudreUnLienDePartage,
-} from './resoudre-un-lien-de-partage'
+import type { PartageLu } from './ports'
+import { resoudreUnLienDePartage } from './resoudre-un-lien-de-partage'
 
 const lien = 'a1b2c3d4-0000-4000-8000-000000000001'
 const mediateurId = MediateurId('a1b2c3d4-0000-4000-8000-000000000002')
@@ -20,7 +18,9 @@ const utilisateurDuCoordinateur = UtilisateurId(
 )
 
 const resoudre = (partage: PartageLu | null, lienPartage: string) =>
-  resoudreUnLienDePartage({ lirePartage: async () => partage })(lienPartage)
+  resoudreUnLienDePartage({ lirePartage: async () => partage })({
+    lien: lienPartage,
+  })
 
 describe('résoudre un lien de partage', () => {
   it('résout le lien d’un médiateur, même aussi coordinateur, vers sa médiation', async () => {

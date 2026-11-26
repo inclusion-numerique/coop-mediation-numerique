@@ -113,7 +113,7 @@ const Page = async ({ params, searchParams }: PageProps) => {
   const parametres = await searchParams
 
   const partage = await resoudreUnLienDePartage({ lirePartage: lireLePartage })(
-    shareId,
+    { lien: shareId },
   )
   if (!partage.success) return notFound()
 
