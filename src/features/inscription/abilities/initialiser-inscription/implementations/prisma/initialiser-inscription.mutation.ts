@@ -24,7 +24,7 @@ export const initialiserInscriptionAvecInfra = (
     readonly garantirLeRoleCoordinateur: GarantirLeRoleCoordinateur
     readonly synchroniserLaPersonne: SynchroniserLaPersonne
   },
-): Promise<{ readonly nextStep: EtapeDInscription | null }> =>
+): Promise<{ readonly nextStep: EtapeDInscription }> =>
   initialiserInscription(input, {
     appliquerDispositif: appliquerDispositif(
       garantirLeRoleCoordinateur,

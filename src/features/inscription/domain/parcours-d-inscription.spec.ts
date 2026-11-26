@@ -4,6 +4,7 @@ import {
   etapeSuivante,
   type InscriptionContexte,
   parcoursDInscription,
+  premiereEtape,
 } from './parcours-d-inscription'
 import { ProfilInscription } from './profil-inscription'
 import { TypeDeParcours } from './type-de-parcours'
@@ -38,9 +39,7 @@ describe('etapeSuivante — flow sans Dataspace (ou non conseiller numérique)',
   })
 
   it('initialize → choisir-role', () => {
-    expect(
-      etapeSuivante(EtapeDInscription('initialize'), withoutDataspace),
-    ).toBe('choisir-role')
+    expect(premiereEtape(withoutDataspace)).toBe('choisir-role')
   })
 
   it('choisir-role → verifier-informations pour un médiateur', () => {
@@ -102,7 +101,7 @@ describe('etapeSuivante — flow sans Dataspace (ou non conseiller numérique)',
 
   it('emprunte le flow complet même en Dataspace si non conseiller numérique', () => {
     expect(
-      etapeSuivante(EtapeDInscription('initialize'), {
+      premiereEtape({
         ...contexte({ flowType: TypeDeParcours('withDataspace') }),
         isConseillerNumerique: false,
       }),
@@ -118,7 +117,7 @@ describe('etapeSuivante — flow Dataspace (conseiller numérique)', () => {
 
   it('initialize → verifier-informations pour un conseiller numérique sans lieu', () => {
     expect(
-      etapeSuivante(EtapeDInscription('initialize'), {
+      premiereEtape({
         ...withDataspace,
         profil: ProfilInscription('ConseillerNumerique'),
         hasLieuxActivite: false,
@@ -128,7 +127,7 @@ describe('etapeSuivante — flow Dataspace (conseiller numérique)', () => {
 
   it('initialize → recapitulatif pour un conseiller numérique avec lieu', () => {
     expect(
-      etapeSuivante(EtapeDInscription('initialize'), {
+      premiereEtape({
         ...withDataspace,
         profil: ProfilInscription('ConseillerNumerique'),
         hasLieuxActivite: true,
@@ -138,7 +137,7 @@ describe('etapeSuivante — flow Dataspace (conseiller numérique)', () => {
 
   it('initialize → recapitulatif pour un coordinateur conseiller numérique', () => {
     expect(
-      etapeSuivante(EtapeDInscription('initialize'), {
+      premiereEtape({
         ...withDataspace,
         profil: ProfilInscription('CoordinateurConseillerNumerique'),
       }),
@@ -147,7 +146,7 @@ describe('etapeSuivante — flow Dataspace (conseiller numérique)', () => {
 
   it('initialize → choisir-role pour les autres profils', () => {
     expect(
-      etapeSuivante(EtapeDInscription('initialize'), {
+      premiereEtape({
         ...withDataspace,
         profil: ProfilInscription('Mediateur'),
       }),

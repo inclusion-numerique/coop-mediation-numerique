@@ -1,8 +1,8 @@
 import {
-  EtapeDInscription,
-  etapeSuivante,
+  type EtapeDInscription,
   type ProfilInscription,
   parcoursDInscription,
+  premiereEtape,
 } from '@/features/inscription/domain'
 
 /**
@@ -20,8 +20,8 @@ export const etapeApresInitialisation = ({
   readonly profil: ProfilInscription | null
   readonly hasLieuxActivite: boolean
   readonly isConseillerNumerique: boolean
-}): EtapeDInscription | null =>
-  etapeSuivante(EtapeDInscription('initialize'), {
+}): EtapeDInscription =>
+  premiereEtape({
     flowType: parcoursDInscription({ hasDataspaceData: connuDuDispositif }),
     profil,
     hasLieuxActivite,

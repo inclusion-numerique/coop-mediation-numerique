@@ -1,6 +1,5 @@
 export {
   type DispositifPersonne,
-  dispositifInconnu,
   profilDepuisDispositif,
 } from './dispositif-personne'
 
@@ -30,6 +29,7 @@ export type { InscriptionContexte } from './parcours-d-inscription'
 export {
   etapeSuivante,
   parcoursDInscription,
+  premiereEtape,
 } from './parcours-d-inscription'
 export { prochaineEtape } from './prochaine-etape'
 export {

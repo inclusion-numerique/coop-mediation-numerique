@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 import { geocoder } from '@/configuration/ban'
 import { metadataTitle } from '@/configuration/projet'
-import { errorReporter, signaler } from '@/configuration/telemetry/serveur'
+import { signaler } from '@/configuration/telemetry/serveur'
 import { aTermineSonInscription } from '@/features/authentification/domain/page-d-accueil'
 import { authenticateUser } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
 import { etablissementDepuisSiret } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/api-entreprise/etablissement-depuis-siret.query'
@@ -55,18 +55,7 @@ const InitialiserInscriptionPage = async () => {
     },
   )
 
-  // Redirect to next step or fallback
-  if (nextStep) {
-    redirect(cheminDeLEtape(nextStep))
-  }
-
-  // Capture sentry error if no next step determined
-  errorReporter.captureException({
-    error: new Error('No next step determined for inscription'),
-    attributes: { userId: user.id },
-  })
-  // Fallback if no next step determined
-  redirect('/coop')
+  redirect(cheminDeLEtape(nextStep))
 }
 
 export default InitialiserInscriptionPage

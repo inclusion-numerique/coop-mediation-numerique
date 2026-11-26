@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { Role } from '@/features/inscription/domain'
-import { rolesDisponibles } from '../domain/decider-le-role'
+
+const rolesDisponibles = ['Mediateur', 'Coordinateur'] as const
 
 /**
  * Forme du formulaire : le rôle choisi + l'acceptation obligatoire des CGU.

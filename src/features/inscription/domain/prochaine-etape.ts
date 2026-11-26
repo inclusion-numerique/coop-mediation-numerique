@@ -12,6 +12,7 @@ import { estFranchi } from './franchissement'
 import {
   etapeSuivante,
   type InscriptionContexte,
+  premiereEtape,
 } from './parcours-d-inscription'
 import type { TypeDeParcours } from './type-de-parcours'
 
@@ -60,13 +61,5 @@ export const prochaineEtape = (
     isConseillerNumerique: conseillerNumeriqueDeLInscription(etat),
   }
 
-  const premiere = etapeSuivante(EtapeDInscription('initialize'), contexte)
-  return premiere === null
-    ? EtapeDInscription('recapitulatif')
-    : avancer(premiere, etat, contexte)
+  return avancer(premiereEtape(contexte), etat, contexte)
 }
-
-export const peutValider = (
-  etat: InscriptionEtat,
-  contexte: ContexteParcours,
-): boolean => prochaineEtape(etat, contexte) === 'recapitulatif'

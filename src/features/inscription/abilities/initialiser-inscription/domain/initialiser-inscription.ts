@@ -8,7 +8,7 @@ import type { InitialiserInscriptionPorts } from './ports'
 export type InitialiserInscription = (
   input: { readonly userId: UtilisateurId },
   ports: InitialiserInscriptionPorts,
-) => Promise<{ readonly nextStep: EtapeDInscription | null }>
+) => Promise<{ readonly nextStep: EtapeDInscription }>
 
 /**
  * Orchestration pure de l'initialisation : applique ce que dit le dispositif,

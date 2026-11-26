@@ -2,10 +2,9 @@ import { describe, expect, it } from 'vitest'
 import type {
   InscriptionEnCours,
   InscriptionNonDemarree,
-  InscriptionValidee,
 } from './etat-de-l-inscription'
 import { Franchissement } from './franchissement'
-import { peutValider, prochaineEtape } from './prochaine-etape'
+import { prochaineEtape } from './prochaine-etape'
 import { Role } from './role'
 import { TypeDeParcours } from './type-de-parcours'
 import { UtilisateurId } from './utilisateur-id'
@@ -114,33 +113,5 @@ describe('prochaineEtape', () => {
         avecDataspace,
       ),
     ).toBe('recapitulatif')
-  })
-})
-
-describe('peutValider', () => {
-  it('refuse tant qu’une porte reste à franchir', () => {
-    expect(peutValider(enCours('Mediateur'), sansDataspace)).toBe(false)
-    expect(
-      peutValider(enCours('Mediateur', { structure: le }), sansDataspace),
-    ).toBe(false)
-  })
-
-  it('autorise dès que le parcours du profil est complet', () => {
-    expect(peutValider(enCours('Coordinateur'), sansDataspace)).toBe(true)
-    expect(
-      peutValider(
-        enCours('Mediateur', { structure: le, lieux: le }),
-        sansDataspace,
-      ),
-    ).toBe(true)
-  })
-
-  it('reste vrai sur une inscription déjà validée', () => {
-    const validee: InscriptionValidee = {
-      ...enCours('Mediateur', { structure: le, lieux: le }),
-      _tag: 'Validee',
-      inscriptionValidee: le,
-    }
-    expect(peutValider(validee, sansDataspace)).toBe(true)
   })
 })

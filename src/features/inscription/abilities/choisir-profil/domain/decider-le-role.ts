@@ -11,12 +11,6 @@ import { failure, type Result, success } from '@/libraries/result'
 import type { EnregistrerProfilChoisiInput } from './ports'
 import { rolesACreerPourRole } from './roles-a-creer'
 
-/**
- * Rôles choisissables à la première étape : le statut conseiller numérique ne se
- * choisit pas, il provient du Dataspace.
- */
-export const rolesDisponibles = ['Mediateur', 'Coordinateur'] as const
-
 export type RoleChoisi = {
   readonly userId: UtilisateurId
   readonly role: Role

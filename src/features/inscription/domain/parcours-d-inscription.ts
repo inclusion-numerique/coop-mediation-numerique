@@ -35,44 +35,52 @@ const premiereTransition = (
   return vers == null ? null : EtapeDInscription(vers)
 }
 
+type Parcours = {
+  readonly depart: (contexte: InscriptionContexte) => ValeurDEtapeDInscription
+  readonly transitions: readonly Transition[]
+}
+
 /** Parcours complet : flow sans Dataspace, ou pour un non-conseiller numérique. */
-const fluxStandard: readonly Transition[] = [
-  { de: 'initialize', vers: 'choisir-role' },
-  {
-    de: 'choisir-role',
-    si: (c) => c.profil === 'Coordinateur',
-    vers: 'recapitulatif',
-  },
-  { de: 'choisir-role', vers: 'verifier-informations' },
-  {
-    de: 'verifier-informations',
-    si: (c) => c.profil === 'Mediateur' || c.profil === 'ConseillerNumerique',
-    vers: 'lieux-activite',
-  },
-  { de: 'verifier-informations', vers: 'recapitulatif' },
-  { de: 'lieux-activite', vers: 'recapitulatif' },
-]
+const fluxStandard: Parcours = {
+  depart: () => 'choisir-role',
+  transitions: [
+    {
+      de: 'choisir-role',
+      si: (c) => c.profil === 'Coordinateur',
+      vers: 'recapitulatif',
+    },
+    { de: 'choisir-role', vers: 'verifier-informations' },
+    {
+      de: 'verifier-informations',
+      si: (c) => c.profil === 'Mediateur' || c.profil === 'ConseillerNumerique',
+      vers: 'lieux-activite',
+    },
+    { de: 'verifier-informations', vers: 'recapitulatif' },
+    { de: 'lieux-activite', vers: 'recapitulatif' },
+  ],
+}
+
+const departDataspace = ({
+  profil,
+  hasLieuxActivite,
+}: InscriptionContexte): ValeurDEtapeDInscription => {
+  if (profil === 'ConseillerNumerique')
+    return hasLieuxActivite ? 'recapitulatif' : 'verifier-informations'
+  return profil === 'CoordinateurConseillerNumerique'
+    ? 'recapitulatif'
+    : 'choisir-role'
+}
 
 /** Parcours raccourci du flow Dataspace pour un conseiller numérique. */
-const fluxDataspace: readonly Transition[] = [
-  {
-    de: 'initialize',
-    si: (c) => c.profil === 'ConseillerNumerique' && c.hasLieuxActivite,
-    vers: 'recapitulatif',
-  },
-  {
-    de: 'initialize',
-    si: (c) => c.profil === 'ConseillerNumerique',
-    vers: 'verifier-informations',
-  },
-  {
-    de: 'initialize',
-    si: (c) => c.profil === 'CoordinateurConseillerNumerique',
-    vers: 'recapitulatif',
-  },
-  { de: 'initialize', vers: 'choisir-role' },
-  { de: 'lieux-activite', vers: 'recapitulatif' },
-]
+const fluxDataspace: Parcours = {
+  depart: departDataspace,
+  transitions: [{ de: 'lieux-activite', vers: 'recapitulatif' }],
+}
+
+const parcoursDuContexte = (contexte: InscriptionContexte): Parcours =>
+  contexte.flowType === 'withoutDataspace' || !contexte.isConseillerNumerique
+    ? fluxStandard
+    : fluxDataspace
 
 /** Détermine le type de flow selon la présence de données Dataspace. */
 export const parcoursDInscription = ({
@@ -92,9 +100,12 @@ export const etapeSuivante = (
   contexte: InscriptionContexte,
 ): EtapeDInscription | null =>
   premiereTransition(
-    contexte.flowType === 'withoutDataspace' || !contexte.isConseillerNumerique
-      ? fluxStandard
-      : fluxDataspace,
+    parcoursDuContexte(contexte).transitions,
     courant,
     contexte,
   )
+
+export const premiereEtape = (
+  contexte: InscriptionContexte,
+): EtapeDInscription =>
+  EtapeDInscription(parcoursDuContexte(contexte).depart(contexte))

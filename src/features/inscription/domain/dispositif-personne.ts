@@ -14,12 +14,6 @@ export type DispositifPersonne = {
   readonly estCoordinateur: boolean
 }
 
-export const dispositifInconnu: DispositifPersonne = {
-  connue: false,
-  estConseillerNumerique: false,
-  estCoordinateur: false,
-}
-
 /**
  * Profil d'inscription déduit du dispositif — même table de décision que du
  * temps de l'API, sur des valeurs dérivées plutôt que recopiées. `null` quand le

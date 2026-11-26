@@ -1,8 +1,11 @@
 import { prismaClient } from '@/configuration/prisma'
-import {
-  type DispositifPersonne,
-  dispositifInconnu,
-} from '@/features/inscription/domain'
+import type { DispositifPersonne } from '@/features/inscription/domain'
+
+const dispositifInconnu: DispositifPersonne = {
+  connue: false,
+  estConseillerNumerique: false,
+  estCoordinateur: false,
+}
 
 type DispositifRow = {
   est_conseiller_numerique: boolean
