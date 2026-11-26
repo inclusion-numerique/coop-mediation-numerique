@@ -2,8 +2,10 @@ import { prismaClient } from '@/configuration/prisma'
 import { CodeDepartement } from '@/libraries/insee'
 import {
   type CoordinateurId,
+  coordinateurDe,
   DescriptionDuTag,
   MediateurId,
+  mediateurDe,
   NomDuTag,
   TagId,
 } from '../../../../domain'
@@ -55,13 +57,10 @@ const tagsDuCoordinateur = async (
         ),
       }))
 
-export const lireLesTagsDuCompte: LireLesTagsDuCompte = async ({
-  mediateurId,
-  coordinateurId,
-}) => {
+export const lireLesTagsDuCompte: LireLesTagsDuCompte = async (compte) => {
   const [duMediateur, duCoordinateur] = await Promise.all([
-    tagsDuMediateur(mediateurId),
-    tagsDuCoordinateur(coordinateurId),
+    tagsDuMediateur(mediateurDe(compte)),
+    tagsDuCoordinateur(coordinateurDe(compte)),
   ])
 
   return { duMediateur, duCoordinateur }

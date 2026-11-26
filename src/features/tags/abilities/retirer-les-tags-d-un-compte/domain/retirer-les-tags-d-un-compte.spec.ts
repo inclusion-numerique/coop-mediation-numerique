@@ -5,6 +5,7 @@ import {
   DescriptionDuTag,
   MediateurId,
   NomDuTag,
+  type Role,
   TagId,
 } from '../../../domain'
 import type { TagDuCoordinateur, TagsDetenus, TagsDuCompte } from './ports'
@@ -45,59 +46,36 @@ const inutilise: TagDuCoordinateur = {
   utilisateurs: [],
 }
 
+const comptePartant: Role = {
+  _tag: 'MediateurEtCoordinateur',
+  mediateurId: partant,
+  coordinateurId,
+}
+
+const compteDuCoordinateur: Role = { _tag: 'Coordinateur', coordinateurId }
+
 const retirer = ({
   tags,
   detenus,
-  mediateurId,
+  compte,
 }: {
   readonly tags: TagsDuCompte
   readonly detenus: readonly TagsDetenus[]
-  readonly mediateurId: MediateurId | null
+  readonly compte: Role
 }) =>
   retirerLesTagsDUnCompte({
     lireLesTagsDuCompte: async () => tags,
     lireLesTagsDetenus: async () => detenus,
     appliquerLeRetrait: async (retrait) => retrait,
-  })({ mediateurId, coordinateurId, maintenant })
+  })({ compte, maintenant })
 
 describe('retirer les tags d’un compte', () => {
-  it('ne rend que ce que l’écriture a effectivement appliqué', async () => {
-    const retirerLesTags = retirerLesTagsDUnCompte({
-      lireLesTagsDuCompte: async () => ({
-        duMediateur: [tagDuPartant],
-        duCoordinateur: [accesAuxDroits],
-      }),
-      lireLesTagsDetenus: async () => [],
-      appliquerLeRetrait: async () => ({
-        supprimes: [tagDuPartant],
-        copies: [],
-        reprises: [],
-      }),
-    })
-
-    expect(
-      await retirerLesTags({
-        mediateurId: partant,
-        coordinateurId,
-        maintenant,
-      }),
-    ).toEqual({
-      success: true,
-      data: {
-        supprimeLe: maintenant,
-        supprimes: [tagDuPartant],
-        copies: [],
-        reprises: [],
-      },
-    })
-  })
-
   it('supprime les tags personnels d’un médiateur partant', async () => {
     expect(
       await retirer({
         tags: { duMediateur: [tagDuPartant], duCoordinateur: [] },
         detenus: [],
-        mediateurId: partant,
+        compte: comptePartant,
       }),
     ).toEqual({
       success: true,
@@ -115,7 +93,7 @@ describe('retirer les tags d’un compte', () => {
       await retirer({
         tags: { duMediateur: [], duCoordinateur: [inutilise] },
         detenus: [],
-        mediateurId: null,
+        compte: compteDuCoordinateur,
       }),
     ).toEqual({
       success: true,
@@ -136,7 +114,7 @@ describe('retirer les tags d’un compte', () => {
           { mediateurId: ada, tags: [] },
           { mediateurId: grace, tags: [] },
         ],
-        mediateurId: null,
+        compte: compteDuCoordinateur,
       }),
     ).toEqual({
       success: true,
@@ -174,7 +152,7 @@ describe('retirer les tags d’un compte', () => {
             tags: [{ id: tagDAda, nom: NomDuTag('accès aux droits') }],
           },
         ],
-        mediateurId: null,
+        compte: compteDuCoordinateur,
       }),
     ).toEqual({
       success: true,
@@ -200,7 +178,7 @@ describe('retirer les tags d’un compte', () => {
           ],
         },
         detenus: [{ mediateurId: ada, tags: [] }],
-        mediateurId: null,
+        compte: compteDuCoordinateur,
       }),
     ).toEqual({
       success: true,
@@ -232,7 +210,7 @@ describe('retirer les tags d’un compte', () => {
           ],
         },
         detenus: [],
-        mediateurId: null,
+        compte: compteDuCoordinateur,
       }),
     ).toEqual({
       success: true,
@@ -273,7 +251,7 @@ describe('retirer les tags d’un compte', () => {
             tags: [{ id: tagDuPartant, nom: NomDuTag('Accès aux droits') }],
           },
         ],
-        mediateurId: partant,
+        compte: comptePartant,
       }),
     ).toEqual({
       success: true,

@@ -1,5 +1,5 @@
 import { type Result, success } from '@/libraries/result'
-import type { CoordinateurId, MediateurId } from '../../../domain'
+import { mediateurDe, type Role } from '../../../domain'
 import type { EchecDeRetirerLesTagsDUnCompte } from './errors'
 import { destinatairesDe, essaimageDes } from './essaimage'
 import type { RetirerLesTagsDUnComptePorts } from './ports'
@@ -12,23 +12,18 @@ export const retirerLesTagsDUnCompte =
     appliquerLeRetrait,
   }: RetirerLesTagsDUnComptePorts) =>
   async ({
-    mediateurId,
-    coordinateurId,
+    compte,
     maintenant,
   }: {
-    readonly mediateurId: MediateurId | null
-    readonly coordinateurId: CoordinateurId | null
+    readonly compte: Role
     readonly maintenant: Date
   }): Promise<Result<RetraitDesTags, EchecDeRetirerLesTagsDUnCompte>> => {
-    const { duMediateur, duCoordinateur } = await lireLesTagsDuCompte({
-      mediateurId,
-      coordinateurId,
-    })
+    const { duMediateur, duCoordinateur } = await lireLesTagsDuCompte(compte)
     const detenus = await lireLesTagsDetenus(destinatairesDe(duCoordinateur))
     const { copies, reprises } = essaimageDes({
       tags: duCoordinateur,
       detenus,
-      partant: mediateurId,
+      partant: mediateurDe(compte),
     })
 
     const applique = await appliquerLeRetrait({

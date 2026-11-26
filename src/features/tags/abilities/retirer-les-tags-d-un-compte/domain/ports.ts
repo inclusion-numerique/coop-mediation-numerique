@@ -1,9 +1,9 @@
 import type { CodeDepartement } from '@/libraries/insee'
 import type {
-  CoordinateurId,
   DescriptionDuTag,
   MediateurId,
   NomDuTag,
+  Role,
   TagId,
 } from '../../../domain'
 import type { RetraitApplique, RetraitDesTags } from './retrait-des-tags'
@@ -31,10 +31,7 @@ export type TagsDetenus = {
   readonly tags: readonly TagDetenu[]
 }
 
-export type LireLesTagsDuCompte = (compte: {
-  readonly mediateurId: MediateurId | null
-  readonly coordinateurId: CoordinateurId | null
-}) => Promise<TagsDuCompte>
+export type LireLesTagsDuCompte = (compte: Role) => Promise<TagsDuCompte>
 
 export type LireLesTagsDetenus = (
   mediateurIds: readonly MediateurId[],

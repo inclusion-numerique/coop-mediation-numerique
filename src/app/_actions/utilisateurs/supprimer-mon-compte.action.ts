@@ -32,6 +32,7 @@ import {
   lireLesTagsDetenus,
   lireLesTagsDuCompte,
 } from '@/features/tags/abilities/retirer-les-tags-d-un-compte/implementations/prisma/tags-du-compte.query'
+import { role } from '@/features/tags/domain'
 import { SUPPRIMER_COMPTE_ERRORS } from '@/features/utilisateurs/abilities/supprimer-compte/action/supprimer-compte.errors'
 import { supprimerCompte } from '@/features/utilisateurs/abilities/supprimer-compte/domain/supprimer-compte'
 import { retirerDesListesDeDiffusion } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/brevo/retirer-des-listes-de-diffusion.mutation'
@@ -98,7 +99,7 @@ const supprimerComptePorts: EffacementsDesAutresFeatures = {
   effacerEmpreinteRdv: effacerLEmpreinteRdv,
   retirerLesTagsDUnCompte: async (identifiants) => {
     const retrait = await retirerLesTags({
-      ...identifiants,
+      compte: role(identifiants.mediateurId, identifiants.coordinateurId),
       maintenant: new Date(),
     })
     return bilanDuRetrait(retrait.data)

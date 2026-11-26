@@ -1,7 +1,7 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { prismaClient } from '@/configuration/prisma'
-import { CoordinateurId, MediateurId } from '@/features/tags/domain'
+import { CoordinateurId, MediateurId, type Role } from '@/features/tags/domain'
 import {
   semerUnCoordinateur,
   semerUneActiviteTaguee,
@@ -24,11 +24,8 @@ const retirerEnBase = retirerLesTagsDUnCompte({
   appliquerLeRetrait: appliquerLeRetraitDesTags,
 })
 
-const retirer = async (compte: {
-  readonly mediateurId: MediateurId | null
-  readonly coordinateurId: CoordinateurId | null
-}): Promise<BilanDuRetrait> => {
-  const retrait = await retirerEnBase({ ...compte, maintenant: new Date() })
+const retirer = async (compte: Role): Promise<BilanDuRetrait> => {
+  const retrait = await retirerEnBase({ compte, maintenant: new Date() })
   return bilanDuRetrait(retrait.data)
 }
 
@@ -87,15 +84,15 @@ Given(
 
 When('on retire les tags de ce coordinateur', async () => {
   contexte.bilan = await retirer({
-    mediateurId: null,
+    _tag: 'Coordinateur',
     coordinateurId: CoordinateurId(valeur(contexte.coordinateurId)),
   })
 })
 
 When('on retire les tags de ce médiateur', async () => {
   contexte.bilan = await retirer({
+    _tag: 'Mediateur',
     mediateurId: MediateurId(valeur(contexte.mediateurId)),
-    coordinateurId: null,
   })
 })
 

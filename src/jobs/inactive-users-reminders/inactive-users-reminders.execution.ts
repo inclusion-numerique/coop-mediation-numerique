@@ -30,6 +30,7 @@ import {
   lireLesTagsDetenus,
   lireLesTagsDuCompte,
 } from '@/features/tags/abilities/retirer-les-tags-d-un-compte/implementations/prisma/tags-du-compte.query'
+import { role } from '@/features/tags/domain'
 import { relancerLesInscriptionsInachevees } from '@/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees/domain/relancer-les-inscriptions-inachevees'
 import { retirerDesListes } from '@/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees/implementations/brevo/retirer-des-listes.mutation'
 import { relancesDInscriptionParCourriel } from '@/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees/implementations/email/relances-d-inscription-par-courriel.adapter'
@@ -156,7 +157,7 @@ const supprimerComptePorts: EffacementsDesAutresFeatures = {
   effacerEmpreinteRdv: effacerLEmpreinteRdv,
   retirerLesTagsDUnCompte: async (identifiants) => {
     const retrait = await retirerLesTags({
-      ...identifiants,
+      compte: role(identifiants.mediateurId, identifiants.coordinateurId),
       maintenant: new Date(),
     })
     return bilanDuRetrait(retrait.data)
