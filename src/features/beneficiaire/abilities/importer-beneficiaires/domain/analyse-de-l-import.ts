@@ -160,43 +160,41 @@ const parseBeneficiaireRow = (
   const genre = getCellValueAsString(feuille, rowNumber, 9)
   const notesSupplementaires = getCellValueAsString(feuille, rowNumber, 10)
 
-  const errors: ParsedBeneficiaireRow['errors'] = {}
+  const commune = communeCodeInsee
+    ? communesClient.findCommuneByInsee(communeCodeInsee)
+    : null
 
-  let commune: Commune | null = null
-
-  if (!nom) {
-    errors.nom = 'Le nom est obligatoire'
-  }
-  if (!prenom) {
-    errors.prenom = 'Le prénom est obligatoire'
-  }
-
-  if (communeCodeInsee) {
-    commune = communesClient.findCommuneByInsee(communeCodeInsee)
-    if (commune) {
-      if (commune.codePostal !== communeCodePostal) {
-        errors.communeCodePostal =
-          'Le code postal de la commune ne correspond pas'
-      }
-      if (!designeLaCommune(communeNom, commune)) {
-        errors.communeNom = 'Le nom de la commune ne correspond pas'
-      }
-    } else {
-      errors.communeCodeInsee = 'Code commune non trouvé'
-    }
-  }
+  const erreursDeCommune = !communeCodeInsee
+    ? {}
+    : commune
+      ? {
+          ...(commune.codePostal === communeCodePostal
+            ? {}
+            : {
+                communeCodePostal:
+                  'Le code postal de la commune ne correspond pas',
+              }),
+          ...(designeLaCommune(communeNom, commune)
+            ? {}
+            : { communeNom: 'Le nom de la commune ne correspond pas' }),
+        }
+      : { communeCodeInsee: 'Code commune non trouvé' }
 
   const parsedGenre = parseGenre(genre)
-  if (parsedGenre.error) {
-    errors.genre = parsedGenre.error
-  }
 
   const parsedAnneeNaissance = parseAnneeNaissance(anneeNaissance, maintenant)
-  if (parsedAnneeNaissance.error) {
-    errors.anneeNaissance = parsedAnneeNaissance.error
+
+  const errors: NonNullable<ParsedBeneficiaireRow['errors']> = {
+    ...(nom ? {} : { nom: 'Le nom est obligatoire' }),
+    ...(prenom ? {} : { prenom: 'Le prénom est obligatoire' }),
+    ...erreursDeCommune,
+    ...(parsedGenre.error ? { genre: parsedGenre.error } : {}),
+    ...(parsedAnneeNaissance.error
+      ? { anneeNaissance: parsedAnneeNaissance.error }
+      : {}),
   }
 
-  const result: ParsedBeneficiaireRow = {
+  return {
     values: {
       nom,
       prenom,
@@ -214,12 +212,8 @@ const parseBeneficiaireRow = (
       commune,
       anneeNaissance: parsedAnneeNaissance.value ?? null,
     },
+    ...(Object.keys(errors).length > 0 ? { errors } : {}),
   }
-
-  if (Object.entries(errors).length > 0) {
-    result.errors = errors
-  }
-  return result
 }
 
 export const importBeneficiaireWorksheetName = 'Bénéficiaires'
