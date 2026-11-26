@@ -1,48 +1,40 @@
 import { failure, type Result, success } from '@/libraries/result'
-import type {
-  ActiviteDeCoordinationId,
-  CoordinateurId,
-  TypeDActiviteDeCoordination,
-} from '../../../domain'
 import {
   ActionNonAutorisee,
+  type ActiviteDeCoordinationId,
   ActiviteIntrouvable,
-  type EchecDeSuppression,
-} from './errors'
-
-export type ActiviteDeCoordinationASupprimer = {
-  readonly id: ActiviteDeCoordinationId
-  readonly type: TypeDActiviteDeCoordination
-  readonly coordinateurId: CoordinateurId
-}
-
-export type ActiviteDeCoordinationEnregistree = (
-  id: ActiviteDeCoordinationId,
-) => Promise<ActiviteDeCoordinationASupprimer | null>
-
-export type SupprimerLActiviteDeCoordination = (
-  activite: ActiviteDeCoordinationASupprimer,
-) => Promise<void>
+  type CoordinateurId,
+} from '../../../domain'
+import type { EchecDeSupprimerUneActiviteDeCoordination } from './errors'
+import type {
+  SuppressionDeLActiviteDeCoordination,
+  SupprimerUneActiviteDeCoordinationPorts,
+} from './ports'
 
 export const supprimerUneActiviteDeCoordination =
   ({
     activiteEnregistree,
     supprimer,
-  }: {
-    readonly activiteEnregistree: ActiviteDeCoordinationEnregistree
-    readonly supprimer: SupprimerLActiviteDeCoordination
-  }) =>
+  }: SupprimerUneActiviteDeCoordinationPorts) =>
   async ({
     activiteId,
     coordinateurId,
+    maintenant,
   }: {
     readonly activiteId: ActiviteDeCoordinationId
     readonly coordinateurId: CoordinateurId | null
-  }): Promise<Result<void, EchecDeSuppression>> => {
+    readonly maintenant: Date
+  }): Promise<
+    Result<
+      SuppressionDeLActiviteDeCoordination,
+      EchecDeSupprimerUneActiviteDeCoordination
+    >
+  > => {
     const activite = await activiteEnregistree(activiteId)
     if (activite === null) return failure(ActiviteIntrouvable())
     if (activite.coordinateurId !== coordinateurId)
       return failure(ActionNonAutorisee())
-    await supprimer(activite)
-    return success(undefined)
+    const suppression = { activite, suppression: maintenant }
+    await supprimer(suppression)
+    return success(suppression)
   }

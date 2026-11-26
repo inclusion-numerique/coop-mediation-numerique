@@ -1,11 +1,9 @@
-export {
-  ActionNonAutorisee,
-  ActiviteIntrouvable,
-  type EchecDeSuppression,
-} from './errors'
-export {
-  type ActiviteDeCoordinationASupprimer,
-  type ActiviteDeCoordinationEnregistree,
-  type SupprimerLActiviteDeCoordination,
-  supprimerUneActiviteDeCoordination,
-} from './supprimer-une-activite-de-coordination'
+export type { EchecDeSupprimerUneActiviteDeCoordination } from './errors'
+export type {
+  ActiviteDeCoordinationASupprimer,
+  ActiviteDeCoordinationEnregistree,
+  SuppressionDeLActiviteDeCoordination,
+  SupprimerLActiviteDeCoordination,
+  SupprimerUneActiviteDeCoordinationPorts,
+} from './ports'
+export { supprimerUneActiviteDeCoordination } from './supprimer-une-activite-de-coordination'

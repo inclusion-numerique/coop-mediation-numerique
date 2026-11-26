@@ -3,7 +3,8 @@ import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
 import {
-  type EchecDeSuppression,
+  type EchecDeSupprimerUneActiviteDeCoordination,
+  type SuppressionDeLActiviteDeCoordination,
   supprimerUneActiviteDeCoordination,
 } from '@/features/activites/abilities/supprimer-une-activite-de-coordination/domain/index'
 import { activiteDeCoordinationEnregistree } from '@/features/activites/abilities/supprimer-une-activite-de-coordination/implementations/prisma/activite-de-coordination-enregistree.query'
@@ -23,7 +24,12 @@ type Semis = {
 }
 
 let semis: Semis | undefined
-let resultat: Result<void, EchecDeSuppression> | undefined
+let resultat:
+  | Result<
+      SuppressionDeLActiviteDeCoordination,
+      EchecDeSupprimerUneActiviteDeCoordination
+    >
+  | undefined
 
 const semerUnCoordinateur = async () => {
   const userId = v4()
@@ -49,6 +55,7 @@ const supprimerPar = async (coordinateurId: string, userId: string) => {
   })({
     activiteId: ActiviteDeCoordinationId(semisCourant().activiteId),
     coordinateurId: CoordinateurId(coordinateurId),
+    maintenant: new Date(),
   })
 }
 

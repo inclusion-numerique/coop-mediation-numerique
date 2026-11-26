@@ -14,6 +14,7 @@ import {
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { fromResult, withInput } from '@/libraries/nextjs'
+import { success } from '@/libraries/result'
 
 export const supprimerUneActiviteDeCoordinationAction = actionBuilder()
   .use(withAuth())
@@ -21,8 +22,8 @@ export const supprimerUneActiviteDeCoordinationAction = actionBuilder()
   .use(withInput(SupprimerUneActiviteDeCoordinationValidation))
   .execute(
     fromResult(
-      async ({ user, input }) =>
-        supprimerUneActiviteDeCoordination({
+      async ({ user, input }) => {
+        const supprimee = await supprimerUneActiviteDeCoordination({
           activiteEnregistree: activiteDeCoordinationEnregistree,
           supprimer: supprimerLActiviteDeCoordination(UtilisateurId(user.id)),
         })({
@@ -31,7 +32,10 @@ export const supprimerUneActiviteDeCoordinationAction = actionBuilder()
             user.coordinateur == null
               ? null
               : CoordinateurId(user.coordinateur.id),
-        }),
+          maintenant: new Date(),
+        })
+        return supprimee.success ? success(undefined) : supprimee
+      },
       { onError: SUPPRIMER_UNE_ACTIVITE_DE_COORDINATION_ERRORS },
     ),
   )
