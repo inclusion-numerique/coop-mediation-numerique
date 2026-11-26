@@ -11,20 +11,31 @@ const tag = (rang: number, nom: string): Tag => ({
   portee: { _tag: 'National' },
 })
 
+const demarches = tag(1, 'Démarches en ligne')
+
 describe('recherche de tags', () => {
   it('trouve un tag par son nom, sans tenir compte des accents', () => {
     expect(
-      tagsRecherches(
-        [tag(1, 'Démarches en ligne'), tag(2, 'Parentalité')],
-        'demarche',
-      ).map(({ nom }) => nom),
-    ).toStrictEqual(['Démarches en ligne'])
+      tagsRecherches([demarches, tag(2, 'Parentalité')], 'demarche'),
+    ).toStrictEqual([demarches])
   })
 
   it('ne rend que les dix premiers', () => {
     expect(
       tagsRecherches(
-        Array.from({ length: 12 }, (_, rang) => tag(rang, `Tag ${rang}`)),
+        [
+          tag(0, 'Tag 0'),
+          tag(1, 'Tag 1'),
+          tag(2, 'Tag 2'),
+          tag(3, 'Tag 3'),
+          tag(4, 'Tag 4'),
+          tag(5, 'Tag 5'),
+          tag(6, 'Tag 6'),
+          tag(7, 'Tag 7'),
+          tag(8, 'Tag 8'),
+          tag(9, 'Tag 9'),
+          tag(10, 'Tag 10'),
+        ],
         'tag',
       ),
     ).toHaveLength(10)

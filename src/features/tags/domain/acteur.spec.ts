@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import { acteurDe, coordinateurDe, mediateurDe, role } from './acteur'
+import {
+  acteurDe,
+  coordinateurDe,
+  mediateurDe,
+  type Role,
+  role,
+} from './acteur'
 import { CoordinateurId } from './coordinateur-id'
 import { MediateurId } from './mediateur-id'
 
@@ -7,7 +13,7 @@ const mediateurId = MediateurId('00000000-0000-4000-8000-000000000001')
 const coordinateurId = CoordinateurId('00000000-0000-4000-8000-000000000002')
 
 describe('role', () => {
-  it.each([
+  it.each<[string, MediateurId | null, CoordinateurId | null, Role['_tag']]>([
     [
       'médiateur et coordinateur',
       mediateurId,
@@ -17,12 +23,9 @@ describe('role', () => {
     ['médiateur seulement', mediateurId, null, 'Mediateur'],
     ['coordinateur seulement', null, coordinateurId, 'Coordinateur'],
     ['sans rôle', null, null, 'SansRole'],
-  ] as const)(
-    'reconnaît un compte %s',
-    (_, mediateur, coordinateur, attendu) => {
-      expect(role(mediateur, coordinateur)._tag).toBe(attendu)
-    },
-  )
+  ])('reconnaît un compte %s', (_, mediateur, coordinateur, attendu) => {
+    expect(role(mediateur, coordinateur)._tag).toBe(attendu)
+  })
 
   it('retrouve les identifiants de chaque rôle', () => {
     const lesDeux = role(mediateurId, coordinateurId)
