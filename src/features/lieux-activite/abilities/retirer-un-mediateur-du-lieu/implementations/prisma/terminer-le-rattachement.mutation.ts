@@ -1,5 +1,5 @@
 import { prismaClient } from '@/configuration/prisma'
-import type { TerminerLeRattachement } from '../../domain/retirer-un-mediateur-du-lieu'
+import type { TerminerLeRattachement } from '../../domain/ports'
 
 export const terminerLeRattachement: TerminerLeRattachement = async ({
   id,

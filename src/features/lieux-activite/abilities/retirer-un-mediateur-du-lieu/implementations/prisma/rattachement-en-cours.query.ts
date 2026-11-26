@@ -1,6 +1,6 @@
 import { prismaClient } from '@/configuration/prisma'
 import { RattachementId } from '../../../../domain/identifiants/rattachement-id'
-import type { TrouverLeRattachementEnCours } from '../../domain/retirer-un-mediateur-du-lieu'
+import type { TrouverLeRattachementEnCours } from '../../domain/ports'
 
 export const trouverLeRattachementEnCours: TrouverLeRattachementEnCours =
   async ({ mediateurId, lieuId }) => {

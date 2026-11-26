@@ -1,52 +1,21 @@
 import { failure, type Result, success } from '@/libraries/result'
 import type { LieuId } from '../../../domain/identifiants/lieu-id'
 import type { MediateurId } from '../../../domain/identifiants/mediateur-id'
-import type { RattachementId } from '../../../domain/identifiants/rattachement-id'
-import type { UtilisateurId } from '../../../domain/identifiants/utilisateur-id'
-import type { EnvoyerLeRetraitDuLieu } from './envoi-du-retrait'
 import {
-  type EchecDeRetrait,
+  type EchecDeRetirerUnMediateurDuLieu,
   PasEnActiviteSurCeLieu,
   RetraitNonAutorise,
 } from './errors'
+import type { RetirerUnMediateurDuLieuPorts } from './ports'
 import { doitEtrePrevenu, peutRetirer, quiRetire } from './qui-retire'
-
-export type AuteurDuRetrait = {
-  readonly userId: UtilisateurId
-  readonly mediateurId: MediateurId | null
-  readonly estAdministrateur: boolean
-  readonly coordonneLeMediateurRetire: boolean
-  readonly nomAffiche: string
-}
-
-export type RattachementEnCours = {
-  readonly id: RattachementId
-  readonly nomDuLieu: string
-  readonly emailDuMediateur: string
-  readonly prenomDuMediateur: string | null
-}
-
-export type TrouverLeRattachementEnCours = (rattachement: {
-  readonly mediateurId: MediateurId
-  readonly lieuId: LieuId
-}) => Promise<RattachementEnCours | null>
-
-export type TerminerLeRattachement = (fin: {
-  readonly id: RattachementId
-  readonly par: UtilisateurId
-  readonly maintenant: Date
-}) => Promise<void>
+import type { AuteurDuRetrait, RetraitDuLieu } from './retrait-du-lieu'
 
 export const retirerUnMediateurDuLieu =
   ({
     trouverLeRattachementEnCours,
     envoyerLeRetraitDuLieu,
     terminerLeRattachement,
-  }: {
-    readonly trouverLeRattachementEnCours: TrouverLeRattachementEnCours
-    readonly envoyerLeRetraitDuLieu: EnvoyerLeRetraitDuLieu
-    readonly terminerLeRattachement: TerminerLeRattachement
-  }) =>
+  }: RetirerUnMediateurDuLieuPorts) =>
   async ({
     mediateurId,
     lieuId,
@@ -57,7 +26,7 @@ export const retirerUnMediateurDuLieu =
     readonly lieuId: LieuId
     readonly auteur: AuteurDuRetrait
     readonly maintenant: Date
-  }): Promise<Result<void, EchecDeRetrait>> => {
+  }): Promise<Result<RetraitDuLieu, EchecDeRetirerUnMediateurDuLieu>> => {
     const qui = quiRetire({
       mediateurRetire: mediateurId,
       mediateurDeLAuteur: auteur.mediateurId,
@@ -75,19 +44,21 @@ export const retirerUnMediateurDuLieu =
     if (rattachement == null)
       return failure(PasEnActiviteSurCeLieu(mediateurId, lieuId))
 
-    if (doitEtrePrevenu(qui))
-      await envoyerLeRetraitDuLieu({
-        mediateurEmail: rattachement.emailDuMediateur,
-        mediateurFirstname: rattachement.prenomDuMediateur,
-        structureNom: rattachement.nomDuLieu,
-        removedByName: auteur.nomAffiche,
-      })
+    const retrait: RetraitDuLieu = {
+      fin: { id: rattachement.id, par: auteur.userId, maintenant },
+      avis: doitEtrePrevenu(qui)
+        ? {
+            mediateurEmail: rattachement.emailDuMediateur,
+            mediateurFirstname: rattachement.prenomDuMediateur,
+            structureNom: rattachement.nomDuLieu,
+            removedByName: auteur.nomAffiche,
+          }
+        : null,
+    }
 
-    await terminerLeRattachement({
-      id: rattachement.id,
-      par: auteur.userId,
-      maintenant,
-    })
+    if (retrait.avis !== null) await envoyerLeRetraitDuLieu(retrait.avis)
 
-    return success(undefined)
+    await terminerLeRattachement(retrait.fin)
+
+    return success(retrait)
   }

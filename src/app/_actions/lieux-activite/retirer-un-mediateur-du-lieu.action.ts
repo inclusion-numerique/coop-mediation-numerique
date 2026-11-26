@@ -13,6 +13,7 @@ import { MediateurId } from '@/features/lieux-activite/domain/identifiants/media
 import { UtilisateurId } from '@/features/lieux-activite/domain/identifiants/utilisateur-id'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { fromResult, withInput } from '@/libraries/nextjs'
+import { success } from '@/libraries/result'
 
 /** Le nom sous lequel l'auteur du retrait apparaît dans l'e-mail envoyé. */
 const nomAffiche = (user: {
@@ -32,8 +33,8 @@ export const retirerUnMediateurDuLieuAction = actionBuilder()
   .use(withInput(RetirerUnMediateurDuLieuValidation))
   .execute(
     fromResult(
-      async ({ user, input }) =>
-        retirerUnMediateurDuLieu({
+      async ({ user, input }) => {
+        const retrait = await retirerUnMediateurDuLieu({
           trouverLeRattachementEnCours,
           envoyerLeRetraitDuLieu,
           terminerLeRattachement,
@@ -52,7 +53,10 @@ export const retirerUnMediateurDuLieuAction = actionBuilder()
             nomAffiche: nomAffiche(user),
           },
           maintenant: new Date(),
-        }),
+        })
+
+        return retrait.success ? success(undefined) : retrait
+      },
       { onError: RETIRER_UN_MEDIATEUR_DU_LIEU_ERRORS },
     ),
   )
