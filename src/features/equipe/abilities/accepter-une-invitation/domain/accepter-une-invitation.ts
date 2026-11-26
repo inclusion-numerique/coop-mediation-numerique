@@ -1,43 +1,24 @@
 import { failure, type Result, success } from '@/libraries/result'
 import {
-  type InvitationDejaTraitee,
+  adherer,
   InvitationIntrouvable,
-  type LireLeCoordinateur,
-  type LireUneInvitation,
-  type MediateurId,
-  type PrevenirLeCoordinateur,
+  prevenanceDe,
   type ReferenceInvitation,
   type UtilisateurId,
 } from '../../../domain'
-import { type Accepteur, accepter } from './accepter'
-import type { InscriptionNonValidee, MauvaisDestinataire } from './errors'
-
-export type EchecDAcceptation =
-  | InvitationIntrouvable
-  | InvitationDejaTraitee
-  | MauvaisDestinataire
-  | InscriptionNonValidee
-
-export type EnregistrerLAcceptation<Cle> = (acceptation: {
-  readonly cle: Cle
-  readonly reference: ReferenceInvitation
-  readonly mediateurId: MediateurId
-  readonly auteurId: UtilisateurId
-  readonly maintenant: Date
-}) => Promise<void>
+import type { Acceptation, AcceptationEnregistree } from './acceptation'
+import { type Accepteur, mediateurQuiAccepte } from './accepter'
+import type { EchecDAcceptation } from './errors'
+import type { AccepterUneInvitationPorts } from './ports'
 
 export const accepterUneInvitation =
   <Cle>({
     lireUneInvitation,
+    lireLesAdhesionsDeLaPaire,
     enregistrerLAcceptation,
     lireLeCoordinateur,
     prevenirLeCoordinateur,
-  }: {
-    readonly lireUneInvitation: LireUneInvitation<Cle>
-    readonly enregistrerLAcceptation: EnregistrerLAcceptation<Cle>
-    readonly lireLeCoordinateur: LireLeCoordinateur
-    readonly prevenirLeCoordinateur: PrevenirLeCoordinateur
-  }) =>
+  }: AccepterUneInvitationPorts<Cle>) =>
   async ({
     reference,
     accepteur,
@@ -48,28 +29,35 @@ export const accepterUneInvitation =
     readonly accepteur: Accepteur
     readonly auteurId: UtilisateurId
     readonly maintenant: Date
-  }): Promise<Result<void, EchecDAcceptation>> => {
+  }): Promise<Result<AcceptationEnregistree, EchecDAcceptation>> => {
     const lue = await lireUneInvitation(reference)
     if (lue === null) return failure(InvitationIntrouvable())
 
-    const acceptation = accepter(lue.invitation, accepteur)
-    if (!acceptation.success) return acceptation
+    const mediateur = mediateurQuiAccepte(lue.invitation, accepteur)
+    if (!mediateur.success) return mediateur
 
-    await enregistrerLAcceptation({
-      cle: lue.cle,
+    const paire = {
+      mediateurId: mediateur.data,
+      coordinateurId: reference.coordinateurId,
+    }
+    const adhesion = adherer(paire, await lireLesAdhesionsDeLaPaire(paire))
+
+    const acceptation: Acceptation = {
       reference,
-      mediateurId: acceptation.data.mediateurId,
+      mediateurId: mediateur.data,
       auteurId,
-      maintenant,
+      accepteeLe: maintenant,
+      adhesion: adhesion.success ? adhesion.data : null,
+    }
+
+    await enregistrerLAcceptation({ cle: lue.cle, ...acceptation })
+
+    const prevenance = prevenanceDe({
+      coordinateur: await lireLeCoordinateur(reference.coordinateurId),
+      reference,
+      reponse: 'Acceptee',
     })
+    if (prevenance !== null) await prevenirLeCoordinateur(prevenance)
 
-    const coordinateur = await lireLeCoordinateur(reference.coordinateurId)
-    if (coordinateur !== null)
-      await prevenirLeCoordinateur({
-        coordinateur: coordinateur.email,
-        invite: reference.email,
-        reponse: 'Acceptee',
-      })
-
-    return success(undefined)
+    return success({ acceptation, prevenance })
   }

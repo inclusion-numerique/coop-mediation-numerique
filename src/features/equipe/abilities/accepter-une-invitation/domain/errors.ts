@@ -1,3 +1,8 @@
+import type {
+  InvitationDejaTraitee,
+  InvitationIntrouvable,
+} from '../../../domain'
+
 export type MauvaisDestinataire = { readonly _tag: 'MauvaisDestinataire' }
 
 export const MauvaisDestinataire = (): MauvaisDestinataire => ({
@@ -9,3 +14,9 @@ export type InscriptionNonValidee = { readonly _tag: 'InscriptionNonValidee' }
 export const InscriptionNonValidee = (): InscriptionNonValidee => ({
   _tag: 'InscriptionNonValidee',
 })
+
+export type EchecDAcceptation =
+  | InvitationIntrouvable
+  | InvitationDejaTraitee
+  | MauvaisDestinataire
+  | InscriptionNonValidee

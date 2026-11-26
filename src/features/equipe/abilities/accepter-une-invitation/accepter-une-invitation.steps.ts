@@ -21,11 +21,13 @@ import {
   semerUnMediateurDEquipe,
 } from '@/features/equipe/equipe.cucumber'
 import { prevenirLeCoordinateur } from '@/features/equipe/implementations/email'
+import { lireLesAdhesionsDeLaPaire } from '@/features/equipe/implementations/prisma/adhesion.query'
 import { lireLeCoordinateur } from '@/features/equipe/implementations/prisma/coordinateur.query'
 import { lireUneInvitation } from '@/features/equipe/implementations/prisma/invitation.query'
 
 const accepterUneInvitation = accepterUneInvitationAvec({
   lireUneInvitation,
+  lireLesAdhesionsDeLaPaire,
   enregistrerLAcceptation,
   lireLeCoordinateur,
   prevenirLeCoordinateur,

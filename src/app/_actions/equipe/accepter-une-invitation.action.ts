@@ -16,10 +16,12 @@ import {
   UtilisateurId,
 } from '@/features/equipe/domain'
 import { prevenirLeCoordinateur } from '@/features/equipe/implementations/email'
+import { lireLesAdhesionsDeLaPaire } from '@/features/equipe/implementations/prisma/adhesion.query'
 import { lireLeCoordinateur } from '@/features/equipe/implementations/prisma/coordinateur.query'
 import { lireUneInvitation } from '@/features/equipe/implementations/prisma/invitation.query'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { fromResult, withInput } from '@/libraries/nextjs'
+import { success } from '@/libraries/result'
 
 const accepteurDe = (user: UtilisateurDeLaSession): Accepteur => {
   const email = Courriel(user.email)
@@ -38,9 +40,10 @@ export const accepterUneInvitationAction = actionBuilder()
   .use(withInput(AccepterUneInvitationValidation))
   .execute(
     fromResult(
-      async ({ user, input }) =>
-        accepterUneInvitation({
+      async ({ user, input }) => {
+        const acceptation = await accepterUneInvitation({
           lireUneInvitation,
+          lireLesAdhesionsDeLaPaire,
           enregistrerLAcceptation,
           lireLeCoordinateur,
           prevenirLeCoordinateur,
@@ -52,7 +55,9 @@ export const accepterUneInvitationAction = actionBuilder()
           accepteur: accepteurDe(user),
           auteurId: UtilisateurId(user.id),
           maintenant: new Date(),
-        }),
+        })
+        return acceptation.success ? success(undefined) : acceptation
+      },
       { onError: ACCEPTER_UNE_INVITATION_ERRORS },
     ),
   )

@@ -4,6 +4,7 @@ export {
   adherer,
   adhesionActive,
   archiver,
+  type NouvelleAdhesion,
 } from './adhesion'
 export { Commune } from './commune'
 export type { CoordinateurDeLEquipe } from './coordinateur-de-l-equipe'
