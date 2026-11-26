@@ -1,3 +1,5 @@
+import '@codegouvfr/react-dsfr/assets/dsfr_plus_icons.css'
+import '@codegouvfr/react-dsfr/dsfr/utility/colors/colors.min.css'
 import type { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime'
 import { AppRouterContext } from 'next/dist/shared/lib/app-router-context.shared-runtime'
 import type { DepartementDuReferentiel } from '@/libraries/departement'
@@ -150,7 +152,7 @@ describe('Liste des départements de Mon réseau', () => {
   it('cache l’icône du compteur qui la suit', () => {
     cy.viewport(500, 600)
     monterAvecLeCompteurDessous()
-    cy.get('button[aria-label="Ouvrir la liste des départements"]').click()
+    cy.get('button[aria-label="Afficher la liste des départements"]').click()
     cy.contains('[role="option"]', 'Ain · 01')
     pixelsDeLIconeVisiblesALEcran().should('equal', 0)
   })
@@ -159,11 +161,5 @@ describe('Liste des départements de Mon réseau', () => {
     cy.viewport(500, 600)
     monterAvecLeCompteurDessous()
     pixelsDeLIconeVisiblesALEcran().should('be.greaterThan', 0)
-  })
-
-  it('filtre les départements saisis sans tenir compte des accents', () => {
-    monterAvecLeCompteurDessous()
-    cy.get('input').clear().type('ardeche')
-    cy.get('[role="option"]').should('have.text', 'Ardèche · 07')
   })
 })

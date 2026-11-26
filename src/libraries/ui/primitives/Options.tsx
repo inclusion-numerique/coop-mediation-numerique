@@ -3,6 +3,7 @@
 import classNames from 'classnames'
 import { ReactNode, RefObject, useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
+import { statutDesOptions } from './statut-des-options'
 
 export type OptionsData<T> = {
   itemToKey: (item: T) => string
@@ -144,7 +145,20 @@ export const Options = <T,>({
     </div>
   )
 
-  return anchorRef && isMounted
-    ? createPortal(menuContent, document.body)
-    : menuContent
+  const statut = statutDesOptions({
+    ouverte: isOpen,
+    nombre: items.length,
+    messageSiVide: children != null,
+  })
+
+  return (
+    <>
+      <p role="status" className="fr-sr-only">
+        {statut}
+      </p>
+      {anchorRef && isMounted
+        ? createPortal(menuContent, document.body)
+        : menuContent}
+    </>
+  )
 }

@@ -4,7 +4,6 @@ export { CaseACocher } from './CaseACocher'
 export { ChoixEnLigne } from './ChoixEnLigne'
 export { ChoixEnPopover } from './ChoixEnPopover'
 
-export { rechercherParmi } from './combo-box-de-recherche'
 export { FiltresEnModale } from './FiltresEnModale'
 export { FiltresEnPopover } from './FiltresEnPopover'
 export { PeriodeEnPopover } from './PeriodeEnPopover'

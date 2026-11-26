@@ -1,6 +1,5 @@
 import type { ComboBoxData } from '@/libraries/formulaire/fields-components'
 import type { ServerActionResult } from '@/libraries/nextjs'
-import { contientSansAccent } from '@/libraries/texte'
 import type { SelectOption } from '@/libraries/ui'
 import type { OptionsData } from '@/libraries/ui/primitives'
 
@@ -60,13 +59,6 @@ export const comboBoxDeRecherche = (
     suggestions,
   ),
 })
-
-export const rechercherParmi =
-  (options: readonly SelectOption[]): Rechercher =>
-  async ({ recherche }) => ({
-    success: true,
-    data: options.filter(({ label }) => contientSansAccent(label, recherche)),
-  })
 
 export const messageDeLaRecherche = (
   etat: EtatDeLaRecherche,
