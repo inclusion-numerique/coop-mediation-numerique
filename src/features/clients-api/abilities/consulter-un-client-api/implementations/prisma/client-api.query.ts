@@ -1,28 +1,15 @@
 import { prismaClient } from '@/configuration/prisma'
 import {
-  type ClientApi,
-  ClientApiId,
-  ClientApiIntrouvable,
-} from '@/features/clients-api/domain'
-import {
   clientApiSelect,
   versClientApi,
 } from '@/features/clients-api/implementations/prisma/client-api.transfer'
-import { failure, type Result, success } from '@/libraries/result'
+import type { LireLeClientApi } from '../../domain/consulter-un-client-api'
 
-export const consulterUnClientApi = async (
-  clientApiId: string,
-): Promise<Result<ClientApi, ClientApiIntrouvable>> => {
-  const id = ClientApiId.safe(clientApiId)
-  const ligne =
-    id === null
-      ? null
-      : await prismaClient.apiClient.findUnique({
-          where: { id },
-          select: clientApiSelect,
-        })
+export const lireLeClientApi: LireLeClientApi = async (id) => {
+  const ligne = await prismaClient.apiClient.findUnique({
+    where: { id },
+    select: clientApiSelect,
+  })
 
-  return ligne === null
-    ? failure(ClientApiIntrouvable(clientApiId))
-    : success(versClientApi(ligne))
+  return ligne === null ? null : versClientApi(ligne)
 }
