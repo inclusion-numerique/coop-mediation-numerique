@@ -61,7 +61,8 @@ export const tagToDomain = (row: TagRow): Tag | null => {
     : {
         id: TagId(row.id),
         nom,
-        description: DescriptionDuTag.safe(row.description ?? ''),
+        description:
+          row.description === null ? null : DescriptionDuTag(row.description),
         portee,
       }
 }
