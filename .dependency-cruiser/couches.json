@@ -132,7 +132,6 @@
   ],
   "libraries/ban": [
     "activites/ui/forms",
-    "beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma",
     "beneficiaire/ui/forms",
     "employeuse/abilities/rattacher-a-une-employeuse/implementations/prisma",
     "lieux-activite/abilities/ajouter-des-lieux-activite/ui/forms",
@@ -222,6 +221,7 @@
     "employeuse/abilities/rattacher-a-une-employeuse/implementations/api-entreprise",
     "equipe/implementations/email",
     "authentification/abilities/se-deconnecter/implementations/proconnect",
+    "beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/ban",
     "clients-api/abilities/authentifier-un-client-api/implementations/api-v1",
     "inscription/abilities/renseigner-lieux-activite/action",
     "lieux-activite/abilities/ajouter-des-lieux-activite/action",
@@ -240,6 +240,7 @@
     "utilisateurs/ui/presenters"
   ],
   "libraries/telephone": [
+    "beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/domain",
     "beneficiaire/abilities/detecter-doublons/domain",
     "beneficiaire/abilities/exporter-beneficiaires/domain",
     "beneficiaire/abilities/importer-beneficiaires/action",
@@ -313,9 +314,7 @@
     "activites/abilities/enregistrer-une-activite-de-coordination/implementations/prisma",
     "activites/implementations/prisma",
     "authentification/implementations/prisma",
-    "beneficiaire/abilities/creer-beneficiaire/implementations/prisma",
     "beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma",
-    "beneficiaire/abilities/importer-beneficiaires/implementations/prisma",
     "inscription/abilities/choisir-profil/implementations/prisma",
     "lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma",
     "lieux-activite/abilities/creer-lieu-activite/implementations/prisma"

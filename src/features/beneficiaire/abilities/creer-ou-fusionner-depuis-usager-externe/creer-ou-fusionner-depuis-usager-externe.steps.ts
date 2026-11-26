@@ -1,20 +1,22 @@
 import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { prismaClient } from '@/configuration/prisma'
-import { type UsagerExterneAFusionner } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/domain/creer-ou-fusionner-depuis-usager-externe'
-import { creerOuFusionnerBeneficiairesDepuisUsagersExternes } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/creer-ou-fusionner-depuis-usager-externe.mutation'
+import { creerOuFusionnerDepuisUsagerExterne } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/domain/creer-ou-fusionner-depuis-usager-externe'
+import type { FusionDesUsagers } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/domain/fusion-des-usagers'
+import type { UsagerExterneAFusionner } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/domain/usager-externe'
+import { lireLeBeneficiaireLie } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/beneficiaire-lie.query'
+import { creerLeBeneficiaire } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/creer-le-beneficiaire.mutation'
+import { trouverUnDoublon } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/doublon-de-l-usager.query'
+import { mettreAJourLeBeneficiaire } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/mettre-a-jour-le-beneficiaire.mutation'
 import {
   seedBeneficiaire,
   suivreLeBeneficiaire,
   testMediateurId,
 } from '@/features/beneficiaire/beneficiaire.cucumber'
 import { NOM_MAX_LENGTH } from '@/features/beneficiaire/domain/nom'
+import { success } from '@/libraries/result'
 
-type PortResult = Awaited<
-  ReturnType<
-    ReturnType<typeof creerOuFusionnerBeneficiairesDepuisUsagersExternes>
-  >
->
+type PortResult = FusionDesUsagers
 
 const createdRdvUserIds = new Set<number>()
 
@@ -125,12 +127,19 @@ Given(
 )
 
 When('je crée ou fusionne les bénéficiaires depuis ces usagers', async () => {
-  result = await creerOuFusionnerBeneficiairesDepuisUsagersExternes({
-    communeDeLAdresse: async () => null,
+  const fusion = await creerOuFusionnerDepuisUsagerExterne({
+    lireLeBeneficiaireLie,
+    trouverUnDoublon,
+    communeDeLAdresse: async () => success(null),
+    mettreAJourLeBeneficiaire,
+    creerLeBeneficiaire,
   })({
     usagers,
     mediateurId: testMediateurId,
+    maintenant: new Date(),
   })
+  assert.ok(fusion.success, 'La fusion a échoué')
+  result = fusion.data
   for (const merge of result.merges) suivreLeBeneficiaire(merge.id)
 })
 

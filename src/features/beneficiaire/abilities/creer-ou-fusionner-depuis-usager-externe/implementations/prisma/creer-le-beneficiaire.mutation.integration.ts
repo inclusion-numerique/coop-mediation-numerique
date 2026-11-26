@@ -1,9 +1,18 @@
 import { v4 } from 'uuid'
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import { prismaClient } from '@/configuration/prisma'
+import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
 import { AdresseIndisponible } from '@/libraries/ban'
-import type { UsagerExterneAFusionner } from '../../domain/creer-ou-fusionner-depuis-usager-externe'
-import { creerOuFusionnerBeneficiairesDepuisUsagersExternes } from './creer-ou-fusionner-depuis-usager-externe.mutation'
+import { creerOuFusionnerDepuisUsagerExterne } from '../../domain/creer-ou-fusionner-depuis-usager-externe'
+import type {
+  CommuneFields,
+  UsagerExterneAFusionner,
+} from '../../domain/usager-externe'
+import { communeDeLAdresseAvec } from '../ban/commune-de-l-adresse.query'
+import { lireLeBeneficiaireLie } from './beneficiaire-lie.query'
+import { creerLeBeneficiaire } from './creer-le-beneficiaire.mutation'
+import { trouverUnDoublon } from './doublon-de-l-usager.query'
+import { mettreAJourLeBeneficiaire } from './mettre-a-jour-le-beneficiaire.mutation'
 
 const evreux = {
   commune: 'Évreux',
@@ -25,12 +34,28 @@ const usager: UsagerExterneAFusionner = {
   birthDate: null,
 }
 
-const fusionnerAvec = (
-  communeDeLAdresse: (adresse: string) => Promise<typeof evreux | null>,
-) =>
-  creerOuFusionnerBeneficiairesDepuisUsagersExternes({
-    communeDeLAdresse,
-  })
+const fusionnerAvec =
+  (rechercher: (adresse: string) => Promise<CommuneFields | null>) =>
+  async ({
+    usagers,
+    mediateurId,
+  }: {
+    usagers: UsagerExterneAFusionner[]
+    mediateurId: string
+  }) => {
+    const fusion = await creerOuFusionnerDepuisUsagerExterne({
+      lireLeBeneficiaireLie,
+      trouverUnDoublon,
+      communeDeLAdresse: communeDeLAdresseAvec(rechercher),
+      mettreAJourLeBeneficiaire,
+      creerLeBeneficiaire,
+    })({
+      usagers,
+      mediateurId: MediateurId(mediateurId),
+      maintenant: new Date(),
+    })
+    return fusion.success ? fusion.data : { merges: [], skipped: [] }
+  }
 
 const avecLaBan = fusionnerAvec(async (adresse) =>
   adresse === usager.adresse ? evreux : null,
@@ -81,7 +106,7 @@ const seedLinkedBeneficiaire = (commune: {
     .then(() => id)
 }
 
-describe('creerOuFusionnerBeneficiairesDepuisUsagersExternes — géocodage commune', () => {
+describe('créer ou fusionner depuis un usager externe — géocodage commune', () => {
   beforeAll(async () => {
     await prismaClient.user.create({
       data: {

@@ -1,6 +1,12 @@
 import { signaler } from '@/configuration/telemetry/serveur'
+import { creerOuFusionnerDepuisUsagerExterne } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/domain/creer-ou-fusionner-depuis-usager-externe'
+import type { UsagerExterneAFusionner } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/domain/usager-externe'
 import { communeDeLAdresse } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/ban/commune-de-l-adresse.query'
-import { creerOuFusionnerBeneficiairesDepuisUsagersExternes } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/creer-ou-fusionner-depuis-usager-externe.mutation'
+import { lireLeBeneficiaireLie } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/beneficiaire-lie.query'
+import { creerLeBeneficiaire } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/creer-le-beneficiaire.mutation'
+import { trouverUnDoublon } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/doublon-de-l-usager.query'
+import { mettreAJourLeBeneficiaire } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/mettre-a-jour-le-beneficiaire.mutation'
+import { MediateurId as MediateurDuBeneficiaire } from '@/features/beneficiaire/domain/mediateur-id'
 import { consignerLEchec } from '@/features/rdvsp/abilities/declencher-synchronisation/domain/consigner-l-echec'
 import { declencherSynchronisation } from '@/features/rdvsp/abilities/declencher-synchronisation/domain/declencher-synchronisation'
 import { compteACible } from '@/features/rdvsp/abilities/declencher-synchronisation/implementations/prisma/compte-a-cible.query'
@@ -41,6 +47,27 @@ import { jetonsCourants } from '@/features/rdvsp/implementations/prisma/jetons-d
 import { output } from '@/libraries/console'
 import type { SyncRdvspDataJob } from './sync-rdvsp-data.job'
 
+const creerOuFusionnerLesUsagers = async ({
+  usagers,
+  mediateurId,
+}: {
+  usagers: UsagerExterneAFusionner[]
+  mediateurId: string
+}) => {
+  const fusion = await creerOuFusionnerDepuisUsagerExterne({
+    lireLeBeneficiaireLie,
+    trouverUnDoublon,
+    communeDeLAdresse,
+    mettreAJourLeBeneficiaire,
+    creerLeBeneficiaire,
+  })({
+    usagers,
+    mediateurId: MediateurDuBeneficiaire(mediateurId),
+    maintenant: new Date(),
+  })
+  return fusion.success ? fusion.data : { merges: [], skipped: [] }
+}
+
 const rdvServicePublic = rdvServicePublicApi({
   ...configurationRdvServicePublic(),
   onJetonsRenouveles: enregistrerLesJetons,
@@ -68,10 +95,7 @@ const declencher = consignerLEchec(
             supprimerMotifsOrphelins,
             rapprocherBeneficiaires: rapprocherBeneficiaires({
               mediateurId,
-              creerOuFusionner:
-                creerOuFusionnerBeneficiairesDepuisUsagersExternes({
-                  communeDeLAdresse,
-                }),
+              creerOuFusionner: creerOuFusionnerLesUsagers,
             }),
           }),
         reconcilierWebhooks: reconcilierWebhooks({

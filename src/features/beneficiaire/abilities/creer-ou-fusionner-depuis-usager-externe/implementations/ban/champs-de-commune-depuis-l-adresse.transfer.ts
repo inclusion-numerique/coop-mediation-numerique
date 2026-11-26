@@ -3,7 +3,7 @@ import {
   type Feature,
   searchAdresse,
 } from '@/libraries/ban'
-import type { CommuneFields } from '../../domain/creer-ou-fusionner-depuis-usager-externe'
+import type { CommuneFields } from '../../domain/usager-externe'
 
 export const communeDuResultat = (
   feature: Feature | null,

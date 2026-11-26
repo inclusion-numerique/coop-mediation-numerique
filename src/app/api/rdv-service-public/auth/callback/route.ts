@@ -3,8 +3,14 @@ import { environnementServeur } from '@/configuration/environnement/serveur'
 import { signaler } from '@/configuration/telemetry/serveur'
 import { utilisateurDuJetonDeSession } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
 import { jetonDeSessionDesCookies } from '@/features/authentification/implementations/session/session-token-from-cookies.query'
+import { creerOuFusionnerDepuisUsagerExterne } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/domain/creer-ou-fusionner-depuis-usager-externe'
+import type { UsagerExterneAFusionner } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/domain/usager-externe'
 import { communeDeLAdresse } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/ban/commune-de-l-adresse.query'
-import { creerOuFusionnerBeneficiairesDepuisUsagersExternes } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/creer-ou-fusionner-depuis-usager-externe.mutation'
+import { lireLeBeneficiaireLie } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/beneficiaire-lie.query'
+import { creerLeBeneficiaire } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/creer-le-beneficiaire.mutation'
+import { trouverUnDoublon } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/doublon-de-l-usager.query'
+import { mettreAJourLeBeneficiaire } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/mettre-a-jour-le-beneficiaire.mutation'
+import { MediateurId as MediateurDuBeneficiaire } from '@/features/beneficiaire/domain/mediateur-id'
 import {
   CODE_AUTORISATION_MANQUANT,
   CONNECTER_COMPTE_RDV_ERRORS,
@@ -67,6 +73,27 @@ import {
   type EncodedState,
 } from '@/libraries/etat-encode'
 
+const creerOuFusionnerLesUsagers = async ({
+  usagers,
+  mediateurId,
+}: {
+  usagers: UsagerExterneAFusionner[]
+  mediateurId: string
+}) => {
+  const fusion = await creerOuFusionnerDepuisUsagerExterne({
+    lireLeBeneficiaireLie,
+    trouverUnDoublon,
+    communeDeLAdresse,
+    mettreAJourLeBeneficiaire,
+    creerLeBeneficiaire,
+  })({
+    usagers,
+    mediateurId: MediateurDuBeneficiaire(mediateurId),
+    maintenant: new Date(),
+  })
+  return fusion.success ? fusion.data : { merges: [], skipped: [] }
+}
+
 const rdvServicePublic = rdvServicePublicApi({
   ...configurationRdvServicePublic(),
   onJetonsRenouveles: enregistrerLesJetons,
@@ -94,10 +121,7 @@ const declencher = consignerLEchec(
             supprimerMotifsOrphelins,
             rapprocherBeneficiaires: rapprocherBeneficiaires({
               mediateurId,
-              creerOuFusionner:
-                creerOuFusionnerBeneficiairesDepuisUsagersExternes({
-                  communeDeLAdresse,
-                }),
+              creerOuFusionner: creerOuFusionnerLesUsagers,
             }),
           }),
         reconcilierWebhooks: reconcilierWebhooks({

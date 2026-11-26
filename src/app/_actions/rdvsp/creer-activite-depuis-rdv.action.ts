@@ -6,8 +6,14 @@ import { urlDeSaisieDepuisUnRendezVousAvec } from '@/features/activites/implemen
 import { cheminDeSaisieSelonLesDureesFrequentes } from '@/features/activites/ui/presenters/saisie/url-de-saisie-depuis-un-rendez-vous.presenter'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { withMediateur } from '@/features/authentification/middlewares/with-mediateur'
+import { creerOuFusionnerDepuisUsagerExterne } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/domain/creer-ou-fusionner-depuis-usager-externe'
+import type { UsagerExterneAFusionner } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/domain/usager-externe'
 import { communeDeLAdresse } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/ban/commune-de-l-adresse.query'
-import { creerOuFusionnerBeneficiairesDepuisUsagersExternes } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/creer-ou-fusionner-depuis-usager-externe.mutation'
+import { lireLeBeneficiaireLie } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/beneficiaire-lie.query'
+import { creerLeBeneficiaire } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/creer-le-beneficiaire.mutation'
+import { trouverUnDoublon } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/doublon-de-l-usager.query'
+import { mettreAJourLeBeneficiaire } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/mettre-a-jour-le-beneficiaire.mutation'
+import { MediateurId as MediateurDuBeneficiaire } from '@/features/beneficiaire/domain/mediateur-id'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { CREER_ACTIVITE_DEPUIS_RDV_ERRORS } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/action/creer-activite-depuis-rdv.errors'
 import { CreerActiviteDepuisRdvValidation } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/action/creer-activite-depuis-rdv.validation'
@@ -19,11 +25,32 @@ import { lireRdvPourActivite } from '@/features/rdvsp/abilities/creer-activite-d
 import { UtilisateurCoopId } from '@/features/rdvsp/domain/identifiants/utilisateur-coop-id'
 import { fromResult, withInput } from '@/libraries/nextjs'
 
+const creerOuFusionnerLesUsagers = async ({
+  usagers,
+  mediateurId,
+}: {
+  usagers: UsagerExterneAFusionner[]
+  mediateurId: string
+}) => {
+  const fusion = await creerOuFusionnerDepuisUsagerExterne({
+    lireLeBeneficiaireLie,
+    trouverUnDoublon,
+    communeDeLAdresse,
+    mettreAJourLeBeneficiaire,
+    creerLeBeneficiaire,
+  })({
+    usagers,
+    mediateurId: MediateurDuBeneficiaire(mediateurId),
+    maintenant: new Date(),
+  })
+  return fusion.success ? fusion.data : { merges: [], skipped: [] }
+}
+
 const creerUneActiviteDepuisUnRdv = creerActiviteDepuisRdv({
   lireRdv: lireRdvPourActivite,
   compteDuRedacteur,
   creerOuFusionnerBeneficiaires: creerOuFusionnerBeneficiaires(
-    creerOuFusionnerBeneficiairesDepuisUsagersExternes({ communeDeLAdresse }),
+    creerOuFusionnerLesUsagers,
   ),
   preparerUrlCreationCra: urlDeSaisieDepuisUnRendezVousAvec((saisie) =>
     getServerUrl(cheminDeSaisieSelonLesDureesFrequentes(saisie), {
