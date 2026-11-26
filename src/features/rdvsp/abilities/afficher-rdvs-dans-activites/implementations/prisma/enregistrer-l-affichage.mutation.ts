@@ -1,5 +1,5 @@
 import { prismaClient } from '@/configuration/prisma'
-import type { EnregistrerLAffichage } from '../../domain/afficher-rdvs-dans-activites'
+import type { EnregistrerLAffichage } from '../../domain/ports'
 
 export const enregistrerLAffichage: EnregistrerLAffichage = async ({
   utilisateurId,

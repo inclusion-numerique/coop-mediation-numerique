@@ -1,6 +1,7 @@
 import type { OrganisationId } from './identifiants/organisation-id'
 import type { RdvAgentId } from './identifiants/rdv-agent-id'
 import type { RdvId } from './identifiants/rdv-id'
+import type { UtilisateurCoopId } from './identifiants/utilisateur-coop-id'
 
 /**
  * Le client actuel réduit tout échec à `{ status: 'error', error: string }`, ce
@@ -94,6 +95,15 @@ export const AgentSupprime = (chemin: string): AgentSupprime => ({
   _tag: 'AgentSupprime',
   chemin,
 })
+
+export type CompteRdvIntrouvable = {
+  readonly _tag: 'CompteRdvIntrouvable'
+  readonly utilisateurId: UtilisateurCoopId
+}
+
+export const CompteRdvIntrouvable = (
+  utilisateurId: UtilisateurCoopId,
+): CompteRdvIntrouvable => ({ _tag: 'CompteRdvIntrouvable', utilisateurId })
 
 export type ErreurRdvApi =
   | JetonRevoque

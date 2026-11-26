@@ -10,6 +10,7 @@ import { compteRdvExiste } from '@/features/rdvsp/abilities/afficher-rdvs-dans-a
 import { enregistrerLAffichage } from '@/features/rdvsp/abilities/afficher-rdvs-dans-activites/implementations/prisma/enregistrer-l-affichage.mutation'
 import { UtilisateurCoopId } from '@/features/rdvsp/domain/identifiants/utilisateur-coop-id'
 import { fromResult, withInput } from '@/libraries/nextjs'
+import { success } from '@/libraries/result'
 
 const afficher = afficherRdvsDansActivites({
   compteRdvExiste,
@@ -22,11 +23,14 @@ export const afficherRdvsDansActivitesAction = actionBuilder()
   .use(withInput(AfficherRdvsDansActivitesValidation))
   .execute(
     fromResult(
-      async ({ user, input }) =>
-        afficher({
+      async ({ user, input }) => {
+        const affichage = await afficher({
           utilisateurId: UtilisateurCoopId(user.id),
           afficher: input.afficher,
-        }),
+        })
+
+        return affichage.success ? success(undefined) : affichage
+      },
       { onError: AFFICHER_RDVS_DANS_ACTIVITES_ERRORS },
     ),
   )

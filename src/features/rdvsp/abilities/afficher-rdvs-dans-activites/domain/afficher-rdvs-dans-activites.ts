@@ -1,49 +1,32 @@
 import { failure, type Result, success } from '@/libraries/result'
+import { CompteRdvIntrouvable } from '../../../domain/errors'
 import type { UtilisateurCoopId } from '../../../domain/identifiants/utilisateur-coop-id'
+import type { EchecDAfficherRdvsDansActivites } from './errors'
+import type { AfficherRdvsDansActivitesPorts } from './ports'
 
-export type ErreurAffichageRdvs = { readonly _tag: 'CompteRdvIntrouvable' }
-
-const CompteRdvIntrouvable = (): ErreurAffichageRdvs => ({
-  _tag: 'CompteRdvIntrouvable',
-})
-
-/**
- * Préférence d'affichage : les rendez-vous RDV Service Public apparaissent-ils
- * dans la liste des activités.
- *
- * Elle est portée par le compte RDV et non par l'utilisateur, ce qui la rend
- * indisponible tant qu'aucun compte n'est connecté — d'où l'échec explicite
- * plutôt qu'un silence.
- */
-export type AfficherRdvsDansActivites = (input: {
+export type AffichageDesRdvs = {
   readonly utilisateurId: UtilisateurCoopId
   readonly afficher: boolean
-}) => Promise<Result<void, ErreurAffichageRdvs>>
-
-export type CompteRdvExiste = (
-  utilisateurId: UtilisateurCoopId,
-) => Promise<boolean>
-
-export type EnregistrerLAffichage = (input: {
-  readonly utilisateurId: UtilisateurCoopId
-  readonly afficher: boolean
-}) => Promise<void>
-
-export type DependancesAfficherRdvsDansActivites = {
-  readonly compteRdvExiste: CompteRdvExiste
-  readonly enregistrerLAffichage: EnregistrerLAffichage
 }
 
 export const afficherRdvsDansActivites =
   ({
     compteRdvExiste,
     enregistrerLAffichage,
-  }: DependancesAfficherRdvsDansActivites): AfficherRdvsDansActivites =>
-  async ({ utilisateurId, afficher }) => {
+  }: AfficherRdvsDansActivitesPorts) =>
+  async ({
+    utilisateurId,
+    afficher,
+  }: {
+    readonly utilisateurId: UtilisateurCoopId
+    readonly afficher: boolean
+  }): Promise<Result<AffichageDesRdvs, EchecDAfficherRdvsDansActivites>> => {
     if (!(await compteRdvExiste(utilisateurId)))
-      return failure(CompteRdvIntrouvable())
+      return failure(CompteRdvIntrouvable(utilisateurId))
 
-    await enregistrerLAffichage({ utilisateurId, afficher })
+    const affichage: AffichageDesRdvs = { utilisateurId, afficher }
 
-    return success(undefined)
+    await enregistrerLAffichage(affichage)
+
+    return success(affichage)
   }

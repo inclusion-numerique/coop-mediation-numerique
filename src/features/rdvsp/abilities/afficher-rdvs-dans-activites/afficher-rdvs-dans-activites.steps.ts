@@ -1,9 +1,6 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
-import {
-  type AfficherRdvsDansActivites,
-  afficherRdvsDansActivites,
-} from '@/features/rdvsp/abilities/afficher-rdvs-dans-activites/domain/afficher-rdvs-dans-activites'
+import { afficherRdvsDansActivites } from '@/features/rdvsp/abilities/afficher-rdvs-dans-activites/domain/afficher-rdvs-dans-activites'
 import { compteRdvExiste } from '@/features/rdvsp/abilities/afficher-rdvs-dans-activites/implementations/prisma/compte-rdv-existe.query'
 import { enregistrerLAffichage } from '@/features/rdvsp/abilities/afficher-rdvs-dans-activites/implementations/prisma/enregistrer-l-affichage.mutation'
 import {
@@ -20,7 +17,7 @@ const regler = afficherRdvsDansActivites({
   enregistrerLAffichage,
 })
 
-let reglage: Awaited<ReturnType<AfficherRdvsDansActivites>> | undefined
+let reglage: Awaited<ReturnType<typeof regler>> | undefined
 
 Given('un compte RDV masquant les rendez-vous dans les activités', async () => {
   await seedCompteRdv({
