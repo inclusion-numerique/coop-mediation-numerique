@@ -1,7 +1,11 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
-import type { DeconnecterCompteRdv } from '@/features/rdvsp/abilities/deconnecter-compte-rdv/domain/deconnecter-compte-rdv'
-import { deconnecterCompteRdv } from '@/features/rdvsp/abilities/deconnecter-compte-rdv/implementations/prisma/deconnecter-compte-rdv.mutation'
+import {
+  type DeconnecterCompteRdv,
+  deconnecterCompteRdv,
+} from '@/features/rdvsp/abilities/deconnecter-compte-rdv/domain/deconnecter-compte-rdv'
+import { compteRdvDeLUtilisateur } from '@/features/rdvsp/abilities/deconnecter-compte-rdv/implementations/prisma/compte-rdv-de-l-utilisateur.query'
+import { enregistrerLeCompteDeconnecte } from '@/features/rdvsp/abilities/deconnecter-compte-rdv/implementations/prisma/enregistrer-le-compte-deconnecte.mutation'
 import {
   compteRdvEnBase,
   ID_TEST,
@@ -14,7 +18,11 @@ const MAINTENANT = new Date('2026-08-17T16:00:00.000Z')
 
 let resultat: Awaited<ReturnType<DeconnecterCompteRdv>> | undefined
 
-const deconnecter = deconnecterCompteRdv(() => MAINTENANT)
+const deconnecter = deconnecterCompteRdv({
+  compteDeLUtilisateur: compteRdvDeLUtilisateur,
+  enregistrer: enregistrerLeCompteDeconnecte,
+  maintenant: () => MAINTENANT,
+})
 
 Given('un compte RDV lié à déconnecter', async () => {
   await seedCompteRdv({

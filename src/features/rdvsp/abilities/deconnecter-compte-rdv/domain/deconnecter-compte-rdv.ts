@@ -1,14 +1,28 @@
-import type { Result } from '@/libraries/result'
+import { failure, type Result, success } from '@/libraries/result'
 import type {
   CompteRdv,
   CompteRdvDeconnecte,
 } from '../../../domain/compte/compte-rdv'
 import type { UtilisateurCoopId } from '../../../domain/identifiants/utilisateur-coop-id'
-import type { CompteRdvIntrouvable } from './errors'
+import { CompteRdvIntrouvable } from './errors'
 
 export type DeconnecterCompteRdv = (input: {
   readonly utilisateurId: UtilisateurCoopId
 }) => Promise<Result<CompteRdvDeconnecte, CompteRdvIntrouvable>>
+
+export type CompteRdvDeLUtilisateur = (
+  utilisateurId: UtilisateurCoopId,
+) => Promise<CompteRdv | null>
+
+export type EnregistrerLeCompteDeconnecte = (
+  compte: CompteRdvDeconnecte,
+) => Promise<CompteRdvDeconnecte>
+
+export type DependancesDeconnecterCompteRdv = {
+  readonly compteDeLUtilisateur: CompteRdvDeLUtilisateur
+  readonly enregistrer: EnregistrerLeCompteDeconnecte
+  readonly maintenant: () => Date
+}
 
 /**
  * État du compte après que le médiateur l'a délié.
@@ -22,7 +36,7 @@ export type DeconnecterCompteRdv = (input: {
  * Redéliér un compte déjà délié ne réécrit pas la date : c'est la première
  * déconnexion qui fait foi, la seconde n'étant qu'un clic sans objet.
  */
-export const compteApresDeconnexion = (
+const compteApresDeconnexion = (
   compte: CompteRdv,
   maintenant: Date,
 ): CompteRdvDeconnecte => ({
@@ -36,3 +50,19 @@ export const compteApresDeconnexion = (
   derniereSynchro: compte.derniereSynchro,
   inclureRdvsDansActivites: compte.inclureRdvsDansActivites,
 })
+
+export const deconnecterCompteRdv =
+  ({
+    compteDeLUtilisateur,
+    enregistrer,
+    maintenant,
+  }: DependancesDeconnecterCompteRdv): DeconnecterCompteRdv =>
+  async ({ utilisateurId }) => {
+    const compte = await compteDeLUtilisateur(utilisateurId)
+
+    if (compte === null) return failure(CompteRdvIntrouvable(utilisateurId))
+
+    return success(
+      await enregistrer(compteApresDeconnexion(compte, maintenant())),
+    )
+  }
