@@ -1,5 +1,5 @@
 import { prismaClient } from '@/configuration/prisma'
-import type { EnregistrerLaModification } from '../../domain/modifier-un-tag'
+import type { EnregistrerLaModification } from '../../domain/ports'
 
 export const enregistrerLaModification: EnregistrerLaModification = async ({
   tagId,

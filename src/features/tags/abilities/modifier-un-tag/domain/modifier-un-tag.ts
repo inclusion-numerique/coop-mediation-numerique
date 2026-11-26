@@ -3,30 +3,17 @@ import {
   type Acteur,
   ActionNonAutorisee,
   type DescriptionDuTag,
-  type LireUnTagActif,
   type NomDuTag,
   peutGerer,
   type Tag,
   type TagId,
   TagIntrouvable,
 } from '../../../domain'
-
-export type EchecDeModification = TagIntrouvable | ActionNonAutorisee
-
-export type EnregistrerLaModification = (modification: {
-  readonly tagId: TagId
-  readonly nom: NomDuTag
-  readonly description: DescriptionDuTag | null
-}) => Promise<void>
+import type { EchecDeModifierUnTag } from './errors'
+import type { ModifierUnTagPorts } from './ports'
 
 export const modifierUnTag =
-  ({
-    lireUnTagActif,
-    enregistrer,
-  }: {
-    readonly lireUnTagActif: LireUnTagActif
-    readonly enregistrer: EnregistrerLaModification
-  }) =>
+  ({ lireUnTagActif, enregistrer }: ModifierUnTagPorts) =>
   async ({
     tagId,
     acteur,
@@ -37,7 +24,7 @@ export const modifierUnTag =
     readonly acteur: Acteur
     readonly nom: NomDuTag
     readonly description: DescriptionDuTag | null
-  }): Promise<Result<Tag, EchecDeModification>> => {
+  }): Promise<Result<Tag, EchecDeModifierUnTag>> => {
     const tag = await lireUnTagActif(tagId)
 
     if (tag === null) return failure(TagIntrouvable())
