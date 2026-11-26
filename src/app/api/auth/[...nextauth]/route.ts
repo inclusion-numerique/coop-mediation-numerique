@@ -22,6 +22,7 @@ import {
   aLeRoleCoordinateur,
   coordonneDansLeDispositif,
 } from '@/features/utilisateurs/abilities/garantir-le-role-coordinateur-du-dispositif/implementations/prisma/role-coordinateur.query'
+import { UtilisateurId as IdentifiantDuCompte } from '@/features/utilisateurs/domain'
 import { Siret } from '@/libraries/insee'
 import { isFirewallUserAgent } from '@/libraries/nextjs'
 
@@ -48,7 +49,7 @@ const options = nextAuthOptions({
       aLeRoleCoordinateur,
       coordonneDansLeDispositif,
       creerLeRoleCoordinateur: creerLeRoleCoordinateur(synchroniserPersonne),
-    })({ utilisateurId }),
+    })({ utilisateurId: IdentifiantDuCompte(utilisateurId) }),
   importerLEmployeuseProConnect: ({ userId, siret }) =>
     rattacher({
       userId: UtilisateurId(userId),

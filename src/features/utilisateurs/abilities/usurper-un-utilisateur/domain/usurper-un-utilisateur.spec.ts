@@ -65,7 +65,7 @@ describe('usurper un utilisateur', () => {
   it('signale un utilisateur introuvable', async () => {
     expect(await usurper(null, PorteeUsurpation('TousLesComptes'))).toEqual({
       success: false,
-      error: { _tag: 'UtilisateurIntrouvable', utilisateurId },
+      error: { _tag: 'UtilisateurIntrouvable' },
     })
   })
 })

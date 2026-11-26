@@ -22,7 +22,7 @@ export const usurperUnUtilisateur =
     readonly portee: PorteeUsurpation
   }): Promise<Result<UsurpationOuverte, EchecDUsurperUnUtilisateur>> => {
     const cible = await lireLaCible(utilisateurId)
-    if (cible === null) return failure(UtilisateurIntrouvable(utilisateurId))
+    if (cible === null) return failure(UtilisateurIntrouvable())
 
     const autorisation = autoriserUsurpation(cible, portee)
     if (!autorisation.success) return autorisation

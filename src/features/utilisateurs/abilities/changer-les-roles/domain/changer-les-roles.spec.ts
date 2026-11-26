@@ -74,7 +74,7 @@ describe('changer les rôles', () => {
   it('signale un utilisateur introuvable', async () => {
     expect(await changerLesRolesDe(null)(demande(true, false))).toEqual({
       success: false,
-      error: { _tag: 'UtilisateurIntrouvable', utilisateurId },
+      error: { _tag: 'UtilisateurIntrouvable' },
     })
   })
 

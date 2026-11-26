@@ -4,12 +4,11 @@ import type { RoleUtilisateur } from './role-utilisateur'
 
 export type UtilisateurIntrouvable = {
   readonly _tag: 'UtilisateurIntrouvable'
-  readonly utilisateurId: string
 }
 
-export const UtilisateurIntrouvable = (
-  utilisateurId: string,
-): UtilisateurIntrouvable => ({ _tag: 'UtilisateurIntrouvable', utilisateurId })
+export const UtilisateurIntrouvable = (): UtilisateurIntrouvable => ({
+  _tag: 'UtilisateurIntrouvable',
+})
 
 export type CompteSupprime = {
   readonly _tag: 'CompteSupprime'

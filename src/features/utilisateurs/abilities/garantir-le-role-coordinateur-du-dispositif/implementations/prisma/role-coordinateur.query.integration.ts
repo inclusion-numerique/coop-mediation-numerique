@@ -1,6 +1,7 @@
 import { v4 } from 'uuid'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { prismaClient } from '@/configuration/prisma'
+import { UtilisateurId } from '@/features/utilisateurs/domain'
 import { enPosteWhere } from '@/features/utilisateurs/implementations/prisma/conseiller-numerique-en-poste.where'
 import { garantirLeRoleCoordinateurDuDispositif } from '../../domain/garantir-le-role-coordinateur-du-dispositif'
 import { creerLeRoleCoordinateur } from './creer-le-role-coordinateur.mutation'
@@ -14,7 +15,7 @@ const garantir = (utilisateurId: string) =>
     aLeRoleCoordinateur,
     coordonneDansLeDispositif,
     creerLeRoleCoordinateur: creerLeRoleCoordinateur(async () => undefined),
-  })({ utilisateurId })
+  })({ utilisateurId: UtilisateurId(utilisateurId) })
 
 describe('le rôle coordinateur et le filtre en poste, lus dans le dispositif', () => {
   const conseiller = v4()

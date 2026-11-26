@@ -1,10 +1,16 @@
-export type ALeRoleCoordinateur = (utilisateurId: string) => Promise<boolean>
+import type { UtilisateurId } from '@/features/utilisateurs/domain'
 
-export type CoordonneDansLeDispositif = (
-  utilisateurId: string,
+export type ALeRoleCoordinateur = (
+  utilisateurId: UtilisateurId,
 ) => Promise<boolean>
 
-export type CreerLeRoleCoordinateur = (utilisateurId: string) => Promise<void>
+export type CoordonneDansLeDispositif = (
+  utilisateurId: UtilisateurId,
+) => Promise<boolean>
+
+export type CreerLeRoleCoordinateur = (
+  utilisateurId: UtilisateurId,
+) => Promise<void>
 
 export type GarantirLeRoleCoordinateurDuDispositifPorts = {
   readonly aLeRoleCoordinateur: ALeRoleCoordinateur

@@ -28,6 +28,7 @@ import {
   aLeRoleCoordinateur,
   coordonneDansLeDispositif,
 } from '@/features/utilisateurs/abilities/garantir-le-role-coordinateur-du-dispositif/implementations/prisma/role-coordinateur.query'
+import { UtilisateurId as IdentifiantDuCompte } from '@/features/utilisateurs/domain'
 
 const rattacher = rattacherAUneEmployeuse({
   lireLEtablissement: etablissementDepuisSiret,
@@ -58,11 +59,12 @@ const InitialiserInscriptionPage = async () => {
   const initialisation = await initialiserInscription({
     lireLeDispositif: dispositifDepuisMain,
     enregistrerLeProfil,
-    garantirLeRoleCoordinateur: garantirLeRoleCoordinateurDuDispositif({
-      aLeRoleCoordinateur,
-      coordonneDansLeDispositif,
-      creerLeRoleCoordinateur: creerLeRoleCoordinateur(synchroniserPersonne),
-    }),
+    garantirLeRoleCoordinateur: ({ utilisateurId }) =>
+      garantirLeRoleCoordinateurDuDispositif({
+        aLeRoleCoordinateur,
+        coordonneDansLeDispositif,
+        creerLeRoleCoordinateur: creerLeRoleCoordinateur(synchroniserPersonne),
+      })({ utilisateurId: IdentifiantDuCompte(utilisateurId) }),
     garantirLeMediateur: garantirLeMediateur(synchroniserPersonne),
     lireLeSiretARattacher,
     rattacherDepuisSiret: ({ userId, siret }) =>

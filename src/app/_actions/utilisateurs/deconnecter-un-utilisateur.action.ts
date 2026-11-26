@@ -8,6 +8,7 @@ import { DeconnecterUnUtilisateurValidation } from '@/features/utilisateurs/abil
 import { deconnecterUnUtilisateur } from '@/features/utilisateurs/abilities/deconnecter-un-utilisateur/domain/deconnecter-un-utilisateur'
 import { compteExiste } from '@/features/utilisateurs/abilities/deconnecter-un-utilisateur/implementations/prisma/compte-existe.query'
 import { fermerLesSessions } from '@/features/utilisateurs/abilities/deconnecter-un-utilisateur/implementations/prisma/fermer-les-sessions.mutation'
+import { UtilisateurId } from '@/features/utilisateurs/domain'
 import { fromResult, withInput } from '@/libraries/nextjs'
 import { success } from '@/libraries/result'
 
@@ -21,7 +22,7 @@ export const deconnecterUnUtilisateurAction = actionBuilder()
         const resultat = await deconnecterUnUtilisateur({
           compteExiste,
           fermerLesSessions,
-        })({ utilisateurId: input.utilisateurId })
+        })({ utilisateurId: UtilisateurId.safe(input.utilisateurId) })
         return resultat.success
           ? success({ sessionsFermees: resultat.data.sessionsFermees })
           : resultat

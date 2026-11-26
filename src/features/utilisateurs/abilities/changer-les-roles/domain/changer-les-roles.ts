@@ -27,7 +27,7 @@ export const changerLesRoles =
     if (!demande.success) return demande
 
     const compte = await lireLeCompteAReaffecter(utilisateurId)
-    if (compte === null) return failure(UtilisateurIntrouvable(utilisateurId))
+    if (compte === null) return failure(UtilisateurIntrouvable())
 
     const plan = planDeChangement(compte, demande.data)
     if (!plan.success) return plan

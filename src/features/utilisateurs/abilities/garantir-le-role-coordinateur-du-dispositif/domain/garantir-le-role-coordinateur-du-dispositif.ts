@@ -1,10 +1,11 @@
+import type { UtilisateurId } from '@/features/utilisateurs/domain'
 import { type Result, success } from '@/libraries/result'
 import type { GarantirLeRoleCoordinateurDuDispositifPorts } from './ports'
 
 export type GarantieDuRoleCoordinateur =
   | { readonly _tag: 'DejaCoordinateur' }
   | { readonly _tag: 'HorsDuDispositif' }
-  | { readonly _tag: 'RoleCree'; readonly utilisateurId: string }
+  | { readonly _tag: 'RoleCree'; readonly utilisateurId: UtilisateurId }
 
 export const garantirLeRoleCoordinateurDuDispositif =
   ({
@@ -15,7 +16,7 @@ export const garantirLeRoleCoordinateurDuDispositif =
   async ({
     utilisateurId,
   }: {
-    readonly utilisateurId: string
+    readonly utilisateurId: UtilisateurId
   }): Promise<Result<GarantieDuRoleCoordinateur, never>> => {
     if (await aLeRoleCoordinateur(utilisateurId))
       return success({ _tag: 'DejaCoordinateur' })

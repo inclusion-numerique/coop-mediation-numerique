@@ -1,5 +1,5 @@
 import {
-  UtilisateurId,
+  type UtilisateurId,
   UtilisateurIntrouvable,
 } from '@/features/utilisateurs/domain'
 import { failure, type Result, success } from '@/libraries/result'
@@ -16,17 +16,15 @@ export const deconnecterUnUtilisateur =
   async ({
     utilisateurId,
   }: {
-    readonly utilisateurId: string
+    readonly utilisateurId: UtilisateurId | null
   }): Promise<
     Result<UtilisateurDeconnecte, EchecDeDeconnecterUnUtilisateur>
   > => {
-    const id = UtilisateurId.safe(utilisateurId)
-
-    if (id === null || !(await compteExiste(id)))
-      return failure(UtilisateurIntrouvable(utilisateurId))
+    if (utilisateurId === null || !(await compteExiste(utilisateurId)))
+      return failure(UtilisateurIntrouvable())
 
     return success({
-      utilisateurId: id,
-      sessionsFermees: await fermerLesSessions(id),
+      utilisateurId,
+      sessionsFermees: await fermerLesSessions(utilisateurId),
     })
   }

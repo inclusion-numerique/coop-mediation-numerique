@@ -122,7 +122,7 @@ describe('activer la médiation numérique', () => {
   it('signale un utilisateur introuvable', async () => {
     expect(await activerPour(null, null)).toEqual({
       success: false,
-      error: { _tag: 'UtilisateurIntrouvable', utilisateurId },
+      error: { _tag: 'UtilisateurIntrouvable' },
     })
   })
 })

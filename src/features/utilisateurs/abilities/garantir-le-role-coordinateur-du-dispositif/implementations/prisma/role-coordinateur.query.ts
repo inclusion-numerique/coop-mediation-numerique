@@ -1,10 +1,13 @@
 import { prismaClient } from '@/configuration/prisma'
+import type { UtilisateurId } from '@/features/utilisateurs/domain'
 
-export const aLeRoleCoordinateur = async (userId: string): Promise<boolean> =>
+export const aLeRoleCoordinateur = async (
+  userId: UtilisateurId,
+): Promise<boolean> =>
   (await prismaClient.coordinateur.count({ where: { userId } })) > 0
 
 export const coordonneDansLeDispositif = async (
-  userId: string,
+  userId: UtilisateurId,
 ): Promise<boolean> => {
   const [dispositif] = await prismaClient.$queryRaw<
     { doit_coordonner: boolean }[]

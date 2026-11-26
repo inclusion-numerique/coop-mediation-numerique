@@ -23,7 +23,7 @@ export const activerLaMediationNumerique =
     readonly utilisateurId: string
   }): Promise<Result<Activation, EchecDActiverLaMediationNumerique>> => {
     const compte = await lireLeCompteQuiActive(utilisateurId)
-    if (compte === null) return failure(UtilisateurIntrouvable(utilisateurId))
+    if (compte === null) return failure(UtilisateurIntrouvable())
 
     const activation = activationDe(
       rattachements(
