@@ -9,24 +9,31 @@ import {
 import { ProfilInscription } from './profil-inscription'
 import { TypeDeParcours } from './type-de-parcours'
 
-const contexte = (
-  override: Partial<InscriptionContexte> = {},
-): InscriptionContexte => ({
+const sansDataspace: InscriptionContexte = {
   flowType: TypeDeParcours('withoutDataspace'),
   profil: null,
   hasLieuxActivite: false,
   isConseillerNumerique: false,
-  ...override,
-})
+}
+
+const avecDataspaceNonConseillerNumerique: InscriptionContexte = {
+  ...sansDataspace,
+  flowType: TypeDeParcours('withDataspace'),
+}
+
+const avecDataspaceConseillerNumerique: InscriptionContexte = {
+  ...avecDataspaceNonConseillerNumerique,
+  isConseillerNumerique: true,
+}
 
 describe('parcoursDInscription', () => {
-  it('is withDataspace when Dataspace data is present', () => {
+  it('passe par Dataspace quand ses données sont présentes', () => {
     expect(parcoursDInscription({ hasDataspaceData: true })).toBe(
       'withDataspace',
     )
   })
 
-  it('is withoutDataspace when Dataspace data is absent', () => {
+  it('se passe de Dataspace quand ses données sont absentes', () => {
     expect(parcoursDInscription({ hasDataspaceData: false })).toBe(
       'withoutDataspace',
     )
@@ -34,134 +41,128 @@ describe('parcoursDInscription', () => {
 })
 
 describe('etapeSuivante — flow sans Dataspace (ou non conseiller numérique)', () => {
-  const withoutDataspace = contexte({
-    flowType: TypeDeParcours('withoutDataspace'),
+  it('commence au choix du rôle', () => {
+    expect(premiereEtape(sansDataspace)).toBe('choisir-role')
   })
 
-  it('initialize → choisir-role', () => {
-    expect(premiereEtape(withoutDataspace)).toBe('choisir-role')
-  })
-
-  it('choisir-role → verifier-informations pour un médiateur', () => {
+  it('mène un médiateur du choix du rôle à la vérification des informations', () => {
     expect(
       etapeSuivante(EtapeDInscription('choisir-role'), {
-        ...withoutDataspace,
+        ...sansDataspace,
         profil: ProfilInscription('Mediateur'),
       }),
     ).toBe('verifier-informations')
   })
 
-  it('choisir-role → recapitulatif pour un coordinateur (raccourci)', () => {
+  it('mène un coordinateur du choix du rôle directement au récapitulatif', () => {
     expect(
       etapeSuivante(EtapeDInscription('choisir-role'), {
-        ...withoutDataspace,
+        ...sansDataspace,
         profil: ProfilInscription('Coordinateur'),
       }),
     ).toBe('recapitulatif')
   })
 
-  it('verifier-informations → lieux-activite pour un médiateur', () => {
+  it('mène un médiateur de la vérification des informations aux lieux d’activité', () => {
     expect(
       etapeSuivante(EtapeDInscription('verifier-informations'), {
-        ...withoutDataspace,
+        ...sansDataspace,
         profil: ProfilInscription('Mediateur'),
       }),
     ).toBe('lieux-activite')
   })
 
-  it('verifier-informations → lieux-activite pour un conseiller numérique', () => {
+  it('mène un conseiller numérique de la vérification des informations aux lieux d’activité', () => {
     expect(
       etapeSuivante(EtapeDInscription('verifier-informations'), {
-        ...withoutDataspace,
+        ...sansDataspace,
         profil: ProfilInscription('ConseillerNumerique'),
       }),
     ).toBe('lieux-activite')
   })
 
-  it('verifier-informations → recapitulatif pour un coordinateur', () => {
+  it('mène un coordinateur de la vérification des informations au récapitulatif', () => {
     expect(
       etapeSuivante(EtapeDInscription('verifier-informations'), {
-        ...withoutDataspace,
+        ...sansDataspace,
         profil: ProfilInscription('Coordinateur'),
       }),
     ).toBe('recapitulatif')
   })
 
-  it('lieux-activite → recapitulatif', () => {
+  it('mène des lieux d’activité au récapitulatif', () => {
     expect(
-      etapeSuivante(EtapeDInscription('lieux-activite'), withoutDataspace),
+      etapeSuivante(EtapeDInscription('lieux-activite'), sansDataspace),
     ).toBe('recapitulatif')
   })
 
-  it('recapitulatif → null (terminal)', () => {
+  it('s’arrête au récapitulatif, étape terminale', () => {
     expect(
-      etapeSuivante(EtapeDInscription('recapitulatif'), withoutDataspace),
+      etapeSuivante(EtapeDInscription('recapitulatif'), sansDataspace),
     ).toBeNull()
   })
 
   it('emprunte le flow complet même en Dataspace si non conseiller numérique', () => {
-    expect(
-      premiereEtape({
-        ...contexte({ flowType: TypeDeParcours('withDataspace') }),
-        isConseillerNumerique: false,
-      }),
-    ).toBe('choisir-role')
+    expect(premiereEtape(avecDataspaceNonConseillerNumerique)).toBe(
+      'choisir-role',
+    )
   })
 })
 
 describe('etapeSuivante — flow Dataspace (conseiller numérique)', () => {
-  const withDataspace = contexte({
-    flowType: TypeDeParcours('withDataspace'),
-    isConseillerNumerique: true,
-  })
-
-  it('initialize → verifier-informations pour un conseiller numérique sans lieu', () => {
+  it('commence à la vérification des informations pour un conseiller numérique sans lieu', () => {
     expect(
       premiereEtape({
-        ...withDataspace,
+        ...avecDataspaceConseillerNumerique,
         profil: ProfilInscription('ConseillerNumerique'),
         hasLieuxActivite: false,
       }),
     ).toBe('verifier-informations')
   })
 
-  it('initialize → recapitulatif pour un conseiller numérique avec lieu', () => {
+  it('commence au récapitulatif pour un conseiller numérique avec lieu', () => {
     expect(
       premiereEtape({
-        ...withDataspace,
+        ...avecDataspaceConseillerNumerique,
         profil: ProfilInscription('ConseillerNumerique'),
         hasLieuxActivite: true,
       }),
     ).toBe('recapitulatif')
   })
 
-  it('initialize → recapitulatif pour un coordinateur conseiller numérique', () => {
+  it('commence au récapitulatif pour un coordinateur conseiller numérique', () => {
     expect(
       premiereEtape({
-        ...withDataspace,
+        ...avecDataspaceConseillerNumerique,
         profil: ProfilInscription('CoordinateurConseillerNumerique'),
       }),
     ).toBe('recapitulatif')
   })
 
-  it('initialize → choisir-role pour les autres profils', () => {
+  it('commence au choix du rôle pour les autres profils', () => {
     expect(
       premiereEtape({
-        ...withDataspace,
+        ...avecDataspaceConseillerNumerique,
         profil: ProfilInscription('Mediateur'),
       }),
     ).toBe('choisir-role')
   })
 
-  it('lieux-activite → recapitulatif', () => {
+  it('mène des lieux d’activité au récapitulatif', () => {
     expect(
-      etapeSuivante(EtapeDInscription('lieux-activite'), withDataspace),
+      etapeSuivante(
+        EtapeDInscription('lieux-activite'),
+        avecDataspaceConseillerNumerique,
+      ),
     ).toBe('recapitulatif')
   })
 
-  it('recapitulatif → null (terminal)', () => {
+  it('s’arrête au récapitulatif, étape terminale', () => {
     expect(
-      etapeSuivante(EtapeDInscription('recapitulatif'), withDataspace),
+      etapeSuivante(
+        EtapeDInscription('recapitulatif'),
+        avecDataspaceConseillerNumerique,
+      ),
     ).toBeNull()
   })
 })

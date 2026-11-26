@@ -2,13 +2,10 @@ import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { prismaClient } from '@/configuration/prisma'
 import { choisirProfil } from '@/features/inscription/abilities/choisir-profil/domain/choisir-profil'
-import { type ChoisirProfilError } from '@/features/inscription/abilities/choisir-profil/domain/decider-le-role'
+import type { EchecDeChoisirProfil } from '@/features/inscription/abilities/choisir-profil/domain/errors'
+import type { ProfilChoisi } from '@/features/inscription/abilities/choisir-profil/domain/profil-choisi'
 import { enregistrerProfilChoisi } from '@/features/inscription/abilities/choisir-profil/implementations/prisma/enregistrer-profil-choisi.mutation'
-import {
-  type EtapeDInscription,
-  ProfilInscription,
-  Role,
-} from '@/features/inscription/domain'
+import { ProfilInscription, Role } from '@/features/inscription/domain'
 import { getInscriptionEtat } from '@/features/inscription/implementations/prisma/get-inscription-etat.query'
 import type { SynchroniserLaPersonne } from '@/features/inscription/implementations/prisma/synchroniser-la-personne.mutation'
 import {
@@ -23,10 +20,7 @@ const choisirProfilAvec = (synchroniserLaPersonne: SynchroniserLaPersonne) =>
     enregistrerProfilChoisi: enregistrerProfilChoisi(synchroniserLaPersonne),
   })
 
-let resultat: Result<
-  { readonly role: Role; readonly etapeSuivante: EtapeDInscription },
-  ChoisirProfilError
->
+let resultat: Result<ProfilChoisi, EchecDeChoisirProfil>
 
 Given(
   'mon inscription est déjà validée avec le profil {string}',
@@ -36,13 +30,11 @@ Given(
 )
 
 When('je choisis le profil {string}', async (role: string) => {
-  resultat = await choisirProfilAvec(async () => undefined)(
-    {
-      userId: utilisateurDeLInscriptionEnCours(),
-      role: Role.schema.parse(role),
-    },
-    new Date(),
-  )
+  resultat = await choisirProfilAvec(async () => undefined)({
+    userId: utilisateurDeLInscriptionEnCours(),
+    role: Role.schema.parse(role),
+    maintenant: new Date(),
+  })
 })
 
 Then(
