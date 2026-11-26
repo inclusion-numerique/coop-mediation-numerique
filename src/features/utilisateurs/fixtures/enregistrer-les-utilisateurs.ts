@@ -1,30 +1,13 @@
 import type { Prisma } from '@/generated/prisma/client'
 import { enSerie, output } from '@/libraries/fixtures'
 
-/**
- * Upsert des utilisateurs de fixtures, tolérant aux comptes déjà présents.
- *
- * Sur une base vierge (CI, docker local), un upsert par `id` suffit. Sur une base restaurée depuis
- * la prod (`cli backup:locally-restore-latest-main`), l'email d'une fixture appartient souvent déjà
- * à un compte réel portant un AUTRE `id` : l'unicité de `email` fait alors échouer l'upsert (P2002).
- *
- * On réutilise donc l'`id` du compte existant au lieu d'en imposer un nouveau — sans jamais
- * réécrire cet `id`, qui est référencé par toutes les données réelles du compte.
- *
- * Exception : une fixture qui rattache un médiateur ou un coordinateur ne peut pas être greffée sur
- * un compte existant (`mediateurs.user_id` et `coordinateurs.user_id` sont uniques, et le compte
- * réel a déjà les siens, avec ses emplois et ses activités). Ces fixtures-là sont ignorées, avec
- * une trace : le compte réel, plus riche, reste intact.
- */
 export type UtilisateurAEnregistrer = Prisma.UserCreateInput & {
   id: string
   email: string
-  /** Intention de fixture, écartée avant l'écriture : voir `givenUser` et `seedPersonnesMain`. */
   isConseillerNumerique?: boolean
   employeDeLaStructureEmployeuse?: boolean
 }
 
-/** La ligne `coop.users` telle qu'elle s'écrit, sans le drapeau de fixture. */
 export const sansDrapeauDispositif = ({
   isConseillerNumerique: _drapeau,
   employeDeLaStructureEmployeuse: _employe,

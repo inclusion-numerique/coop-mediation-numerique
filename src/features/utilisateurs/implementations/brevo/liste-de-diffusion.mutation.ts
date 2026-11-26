@@ -35,8 +35,6 @@ export type ContactBrevoJson = {
   }
 }
 
-// AAAA-MM-JJ : dates stockées à minuit UTC, le slice garde le bon jour.
-// Date absente → '' : seule valeur qui efface une date dans Brevo (null est ignoré).
 const dateBrevo = (date: Date | null): string =>
   date?.toISOString().slice(0, 10) ?? ''
 

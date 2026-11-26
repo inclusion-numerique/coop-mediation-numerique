@@ -42,10 +42,6 @@ export const situationDansLeDispositif = (
         : 'ConseillerNumerique',
   )
 
-/**
- * Dates du contrat le plus récent, séparées car Brevo a un attribut pour chacune.
- * `null` = date absente (CDI, contrat non rompu, aucun contrat) : elle est effacée chez Brevo.
- */
 export type DatesDeContrat = {
   readonly fin: Date | null
   readonly rupture: Date | null

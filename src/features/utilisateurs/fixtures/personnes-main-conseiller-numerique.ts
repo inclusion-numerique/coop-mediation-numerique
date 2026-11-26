@@ -11,15 +11,6 @@ export type EmployeuseDeDemonstration = {
   readonly structureCoopId: string
 }
 
-/**
- * Les conseillers numériques de fixtures se déclaraient par `isConseillerNumerique: true` sur la
- * ligne `coop.users`. Cette colonne a disparu (ADR-002) : le dispositif se dérive de l'affectation
- * `idposte` active. Le drapeau de fixture pilote donc désormais ce semis — l'intention reste
- * déclarée dans chaque fixture, seule sa traduction change.
- *
- * Les quatre CN d'inscription restent listés à part : ils n'ont pas d'emploi coop seedé, donc rien
- * d'autre ne leur donnerait d'affectation.
- */
 const cnInscriptionUserIds = [
   conseillerInscriptionSansContrat.id,
   conseillerSansLieuInscription.id,
@@ -35,19 +26,6 @@ const idsConseillersNumeriques = (): string[] => [
   ]),
 ]
 
-/**
- * Garantit l'affectation `idposte` active d'un utilisateur de fixture — ce qui, depuis ADR-002, EST
- * le fait d'être conseiller numérique. Extrait pour être réutilisable par `resetFixtureUser` : un
- * test qui recrée une fixture CN doit lui rendre son dispositif, sinon la dérivation le voit sortir.
- */
-/**
- * Reflète le rôle coordinateur dans `main`, comme l'Entrepôt le fait en production.
- *
- * Les fixtures déclarent le coordinateur côté coop (`coordinateur: connectOrCreate`), mais depuis
- * ADR-002 c'est `main.personne.is_coordinateur` qui fait foi : sans ce reflet, un coordinateur de
- * fixture est vu comme un simple conseiller numérique et le parcours d'inscription l'envoie sur la
- * mauvaise étape.
- */
 export const refleterCoordinateurDansMain = async (
   transaction: Prisma.TransactionClient,
 ): Promise<void> => {
@@ -207,12 +185,10 @@ export const seedPersonnesMain = async (
     garantirAffectationEmployeuse(transaction, employeuse, coopId),
   )
 
-  // Passe 2 — affectation idposte vers la SA main de structureEmployeuse, pour tout CN de fixture.
   await enSerie(idsConseillersNumeriques().filter(estPresent), (coopId) =>
     garantirAffectationIdposte(transaction, employeuse, coopId),
   )
 
-  // Passe 3 — le rôle coordinateur, que la coop déclare et que `main` doit porter.
   await refleterCoordinateurDansMain(transaction)
 
   await enSerie(

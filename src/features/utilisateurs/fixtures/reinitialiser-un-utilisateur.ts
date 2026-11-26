@@ -87,21 +87,11 @@ export const reinitialiserUnUtilisateur = async (
     throw new Error(`User with id ${id} is not a fixture user`)
   }
 
-  let sessions: Session[] = []
+  const sessions: Session[] = user
+    ? await prismaClient.session.findMany({ where: { userId: user.id } })
+    : []
 
-  /** Delete all data related to the user if exists */
   if (user) {
-    /**
-     * We will re-create sessions after reset to avoid unneccessary re-login
-     * This is mostly useful in dev environment
-     */
-
-    sessions = await prismaClient.session.findMany({
-      where: {
-        userId: user.id,
-      },
-    })
-
     if (user.rdvAccount) {
       const duCompte = { rdvAccountId: user.rdvAccount.id }
       await prismaClient.rdv.deleteMany({ where: duCompte })
@@ -116,7 +106,6 @@ export const reinitialiserUnUtilisateur = async (
       })
     }
 
-    // Delete mediateur, mediateurEnActivite, mediateurCoordonne, conseillerNumerique
     const mediateurId = user.mediateur?.id
 
     if (mediateurId) {
@@ -171,7 +160,6 @@ export const reinitialiserUnUtilisateur = async (
       })
     }
 
-    // Delete coordinateur and mediateurs coordonnes
     if (user.coordinateur) {
       const coordinateurId = user.coordinateur.id
       await prismaClient.mediateurCoordonne.deleteMany({
@@ -201,14 +189,10 @@ export const reinitialiserUnUtilisateur = async (
   }
 
   const resetedUser = await prismaClient.user.create({
-    // Le drapeau `isConseillerNumerique` des fixtures n'est plus une colonne : il pilote le semis de
-    // l'affectation `idposte` dans `main` (voir `seedPersonnesMain`), pas la ligne `coop.users`.
     data: sansDrapeauDispositif(userFixture),
     select: compteSelect,
   })
 
-  // Le dispositif conseiller numérique n'est plus une colonne : une fixture CC recréée doit
-  // retrouver son affectation `idposte`, sans quoi la dérivation la voit hors dispositif.
   if (userFixture.isConseillerNumerique) {
     await garantirAffectationIdposte(
       prismaClient,
@@ -225,8 +209,6 @@ export const reinitialiserUnUtilisateur = async (
     )
   }
 
-  // Le rôle coordinateur vient de `main` depuis ADR-002 : une fixture qui le déclare côté coop doit
-  // le voir reflété, sinon le parcours d'inscription la prend pour un simple conseiller.
   await refleterCoordinateurDansMain(prismaClient)
 
   await garantirContratRompu(
@@ -239,9 +221,6 @@ export const reinitialiserUnUtilisateur = async (
     data: sessions,
   })
 
-  /**
-   * Re-create mediateur owned data
-   */
   if (isMediateur(resetedUser)) {
     const mediateurId = resetedUser.mediateur.id
     await demonstration.semerLesActivitesDansLesLieux(mediateurId)

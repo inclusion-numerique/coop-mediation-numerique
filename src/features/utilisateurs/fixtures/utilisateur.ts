@@ -30,12 +30,6 @@ export const utilisateur = <
   emailVerified: string | Date
   role: UserRole
   timezone: string
-  /**
-   * Intention de fixture, PAS une colonne : `coop.users.is_conseiller_numerique` a disparu, le
-   * dispositif se dérivant de l'affectation `idposte` (ADR-002). `seedPersonnesMain` lit ce drapeau
-   * pour semer l'affectation correspondante dans `main`, et `upsertUserFixture` l'écarte avant
-   * d'écrire la ligne.
-   */
   isConseillerNumerique: boolean
   employeDeLaStructureEmployeuse: boolean
 } => {

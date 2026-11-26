@@ -79,7 +79,6 @@ const contratsDesConseillers: Readonly<
       rupture: new Date('2026-06-30'),
     },
   ],
-  // Ligne « rupture seule » d'un poste antérieur, telle que l'Entrepôt la porte.
   'réembauché en CDI après une rupture': [
     { debut: null, fin: null, rupture: new Date('2024-01-02') },
     { debut: new Date('2024-01-03'), fin: null, rupture: null },

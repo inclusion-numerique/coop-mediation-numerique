@@ -165,7 +165,6 @@ describe('dates du contrat le plus récent', () => {
     expect(
       datesDuContratLePlusRecent([
         contrat({ id: 2, debut: '2025-01-01', fin: '2026-12-15' }),
-        // id plus petit : seule la règle de la rupture peut la faire gagner.
         contrat({
           id: 1,
           debut: '2025-01-01',
