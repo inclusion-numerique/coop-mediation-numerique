@@ -1,3 +1,4 @@
+import { signaler } from '@/configuration/telemetry/serveur'
 import {
   MessageDeMaintenance,
   type PeriodeDeMaintenance,
@@ -10,6 +11,16 @@ export const periodeDeMaintenanceSelect = {
   message: true,
 } as const
 
+const messageLu = (message: string | null): MessageDeMaintenance | null => {
+  if (message === null) return null
+
+  const lu = MessageDeMaintenance.schema.safeParse(message)
+  if (lu.success) return lu.data
+
+  signaler(lu.error)
+  return null
+}
+
 export const periodeDeMaintenance = (ligne: {
   id: string
   startedAt: Date
@@ -19,7 +30,7 @@ export const periodeDeMaintenance = (ligne: {
   id: ligne.id,
   debut: ligne.startedAt,
   fin: ligne.endedAt,
-  message: ligne.message === null ? null : MessageDeMaintenance(ligne.message),
+  message: messageLu(ligne.message),
 })
 
 export const periodeEnCoursWhere = { endedAt: null } as const

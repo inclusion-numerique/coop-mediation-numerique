@@ -91,6 +91,7 @@
     "clients-api/abilities/authentifier-un-client-api/implementations/api-v1",
     "equipe/implementations/email",
     "inscription/abilities/ajouter-structure-employeuse-en-lieu/implementations/ban",
+    "maintenance-mode/implementations/prisma",
     "rdvsp/abilities/effacer-empreinte-rdv/implementations/prisma",
     "rdvsp/abilities/mettre-a-jour-statut-rdv/implementations/activites",
     "registre-des-personnes/implementations/prisma",
