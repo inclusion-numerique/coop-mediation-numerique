@@ -7,13 +7,15 @@ import {
 } from '@/features/legal/legal.cucumber'
 import { lireLesAccompagnements } from './implementations/prisma/accompagnements.query'
 import { lireLesBeneficiaires } from './implementations/prisma/beneficiaires.query'
+import { suiviDesBeneficiaires } from './implementations/prisma/suivi-des-beneficiaires.query'
 
 const relever = async () => {
-  const [beneficiaires, accompagnements] = await Promise.all([
+  const [beneficiaires, accompagnements, suivi] = await Promise.all([
     lireLesBeneficiaires(),
     lireLesAccompagnements(),
+    suiviDesBeneficiaires(),
   ])
-  return { beneficiaires, accompagnements }
+  return { beneficiaires, accompagnements, suivi }
 }
 
 type Releve = Awaited<ReturnType<typeof relever>>
@@ -155,6 +157,17 @@ Then(
         byBeneficiairesAnonymes:
           cumul.byBeneficiairesAnonymes + mois.byBeneficiairesAnonymes,
       })),
+    )
+  },
+)
+
+Then(
+  'les médiateurs suivant des bénéficiaires ont augmenté de {int}',
+  (attendu: number) => {
+    assert.strictEqual(
+      releve('apres').suivi.mediateursAvecBeneficiaires.value -
+        releve('avant').suivi.mediateursAvecBeneficiaires.value,
+      attendu,
     )
   },
 )

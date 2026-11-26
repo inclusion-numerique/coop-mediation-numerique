@@ -66,3 +66,19 @@
 
 * Quand les statistiques publiques sont relevées
 * Alors chaque mois du cumul des bénéficiaires ajoute ceux du mois au cumul précédent
+
+## Règle: Un médiateur suit des bénéficiaires dès qu'un de ses bénéficiaires suivis a été accompagné lors d'une activité non supprimée
+
+### Scénario: Le médiateur qui accompagne un bénéficiaire suivi le suit
+
+* Étant donné les statistiques publiques relevées
+* Et une activité saisie qui accompagne un bénéficiaire suivi
+* Quand les statistiques publiques sont relevées à nouveau
+* Alors les médiateurs suivant des bénéficiaires ont augmenté de 1
+
+### Scénario: Un bénéficiaire suivi accompagné seulement lors d'une activité supprimée n'est pas suivi
+
+* Étant donné les statistiques publiques relevées
+* Et une activité supprimée qui accompagne un bénéficiaire suivi
+* Quand les statistiques publiques sont relevées à nouveau
+* Alors les médiateurs suivant des bénéficiaires ont augmenté de 0
