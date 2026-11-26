@@ -1,9 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import { AuteurId, MediateurId } from '@/features/mediateurs/domain'
+import {
+  AuteurId,
+  etatContrat,
+  type MediateurEtContrats,
+  MediateurId,
+} from '@/features/mediateurs/domain'
 import { choisirLaVisibiliteApresRupture } from './choisir-la-visibilite-apres-rupture'
-import type { MediateurEtContrats } from './ports'
 import { ReponseApresRupture } from './reponse-apres-rupture'
-import { etatContrat } from './rupture-en-attente'
 
 const mediateurId = MediateurId('a1b2c3d4-0000-4000-8000-000000000001')
 const auteurId = AuteurId('a1b2c3d4-0000-4000-8000-000000000002')

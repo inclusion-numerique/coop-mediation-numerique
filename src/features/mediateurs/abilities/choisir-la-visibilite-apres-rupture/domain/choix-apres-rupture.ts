@@ -1,6 +1,9 @@
-import type { AuteurId, MediateurId } from '@/features/mediateurs/domain'
+import type {
+  AuteurId,
+  MediateurId,
+  RuptureEnAttente,
+} from '@/features/mediateurs/domain'
 import type { ReponseApresRupture } from './reponse-apres-rupture'
-import type { RuptureEnAttente } from './rupture-en-attente'
 
 export type ChoixApresRupture = {
   readonly mediateurId: MediateurId

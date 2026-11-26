@@ -1,7 +1,9 @@
 import { prismaClient } from '@/configuration/prisma'
-import { MediateurId } from '@/features/mediateurs/domain'
-import type { LireMediateurEtContrats } from '../../domain/ports'
-import { etatContrat } from '../../domain/rupture-en-attente'
+import {
+  etatContrat,
+  type LireMediateurEtContrats,
+  MediateurId,
+} from '@/features/mediateurs/domain'
 
 export const lireMediateurEtContrats: LireMediateurEtContrats = async (
   mediateurId,

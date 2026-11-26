@@ -1,12 +1,10 @@
-import {
-  type MediateurId,
-  MediateurIntrouvable,
-} from '@/features/mediateurs/domain'
 import { failure, type Result, success } from '@/libraries/result'
 import {
   AucuneRuptureEnAttente,
-  type EchecDeConsulterLaRuptureEnAttente,
+  type EchecDeLaRuptureDuMediateur,
+  MediateurIntrouvable,
 } from './errors'
+import type { MediateurId } from './mediateur-id'
 import type { MediateurEtContrats } from './ports'
 import { type RuptureEnAttente, ruptureEnAttente } from './rupture-en-attente'
 
@@ -23,7 +21,7 @@ export const ruptureDuMediateur = ({
   readonly mediateurId: MediateurId
   readonly mediateur: MediateurEtContrats | null
   readonly maintenant: Date
-}): Result<RuptureDuMediateur, EchecDeConsulterLaRuptureEnAttente> => {
+}): Result<RuptureDuMediateur, EchecDeLaRuptureDuMediateur> => {
   if (mediateur === null) return failure(MediateurIntrouvable(mediateurId))
 
   const rupture = ruptureEnAttente({

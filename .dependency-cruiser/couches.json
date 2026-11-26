@@ -156,8 +156,8 @@
   "libraries/date": [
     "activites/domain",
     "clients-api/domain",
-    "mediateurs/abilities/choisir-la-visibilite-apres-rupture/domain",
     "mediateurs/abilities/consulter-le-contrat/domain",
+    "mediateurs/domain",
     "mon-reseau/abilities/consulter-un-acteur/domain",
     "utilisateurs/abilities/anonymiser-les-comptes-inactifs/domain"
   ],

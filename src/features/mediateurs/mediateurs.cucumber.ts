@@ -254,7 +254,7 @@ export const exConseillerSeme = (): ExConseillerSeme => {
   return exConseiller.seme
 }
 
-export const semerUnExConseiller = async ({
+const semerUnExConseiller = async ({
   visible,
   reglageLe,
 }: {
@@ -286,7 +286,7 @@ export const semerUnExConseiller = async ({
   return exConseiller.seme
 }
 
-export const semerUnContratDeLExConseiller = async ({
+const semerUnContratDeLExConseiller = async ({
   debut,
   rupture,
 }: {
@@ -315,3 +315,42 @@ After(async () => {
   await prismaClient.mediateur.deleteMany({ where: { id: seme.mediateurId } })
   await prismaClient.user.deleteMany({ where: { id: seme.userId } })
 })
+
+const date = (jour: string): Date => {
+  const [j, m, a] = jour.split('/')
+  return new Date(Date.UTC(Number(a), Number(m) - 1, Number(j)))
+}
+
+Given(
+  /^un ex-conseiller (visible|invisible) sur la cartographie, réglé le (\d{2}\/\d{2}\/\d{4})$/,
+  async (visibilite: string, jour: string) => {
+    await semerUnExConseiller({
+      visible: visibilite === 'visible',
+      reglageLe: date(jour),
+    })
+  },
+)
+
+Given(
+  'un ex-conseiller visible sur la cartographie, sans réglage de visibilité',
+  async () => {
+    await semerUnExConseiller({ visible: true, reglageLe: null })
+  },
+)
+
+Given(
+  /^son contrat débuté le (\d{2}\/\d{2}\/\d{4}) (?:a été|sera) rompu le (\d{2}\/\d{2}\/\d{4})$/,
+  async (debut: string, rupture: string) => {
+    await semerUnContratDeLExConseiller({
+      debut: date(debut),
+      rupture: date(rupture),
+    })
+  },
+)
+
+Given(
+  /^un nouveau contrat (?:a débuté|débutera) le (\d{2}\/\d{2}\/\d{4})$/,
+  async (debut: string) => {
+    await semerUnContratDeLExConseiller({ debut: date(debut), rupture: null })
+  },
+)

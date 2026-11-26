@@ -1,8 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import { MediateurId } from '@/features/mediateurs/domain'
+import {
+  type Contrat,
+  etatContrat,
+  type MediateurEtContrats,
+  MediateurId,
+} from '@/features/mediateurs/domain'
 import { consulterLaRuptureEnAttente } from './consulter-la-rupture-en-attente'
-import type { MediateurEtContrats } from './ports'
-import { type Contrat, etatContrat } from './rupture-en-attente'
 
 const mediateurId = MediateurId('a1b2c3d4-0000-4000-8000-000000000001')
 const maintenant = new Date('2026-10-20T09:00:00.000Z')

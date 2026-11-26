@@ -1,16 +1,17 @@
-import type { AuteurId, MediateurId } from '@/features/mediateurs/domain'
-import { failure, type Result, success } from '@/libraries/result'
-import type { ChoixApresRupture } from './choix-apres-rupture'
 import {
   AucuneRuptureEnAttente,
-  type EchecDeChoisirLaVisibiliteApresRupture,
-} from './errors'
+  type AuteurId,
+  type MediateurId,
+  ruptureDuMediateur,
+} from '@/features/mediateurs/domain'
+import { failure, type Result, success } from '@/libraries/result'
+import type { ChoixApresRupture } from './choix-apres-rupture'
+import type { EchecDeChoisirLaVisibiliteApresRupture } from './errors'
 import type { ChoisirLaVisibiliteApresRupturePorts } from './ports'
 import {
   type ReponseApresRupture,
   visibiliteApres,
 } from './reponse-apres-rupture'
-import { ruptureDuMediateur } from './rupture-du-mediateur'
 
 export const choisirLaVisibiliteApresRupture =
   ({

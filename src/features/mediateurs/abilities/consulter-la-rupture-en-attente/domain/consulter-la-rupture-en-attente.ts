@@ -1,9 +1,11 @@
-import type { MediateurId } from '@/features/mediateurs/domain'
+import {
+  type MediateurId,
+  type RuptureEnAttente,
+  ruptureDuMediateur,
+} from '@/features/mediateurs/domain'
 import { type Result, success } from '@/libraries/result'
 import type { EchecDeConsulterLaRuptureEnAttente } from './errors'
 import type { ConsulterLaRuptureEnAttentePorts } from './ports'
-import { ruptureDuMediateur } from './rupture-du-mediateur'
-import type { RuptureEnAttente } from './rupture-en-attente'
 
 export const consulterLaRuptureEnAttente =
   ({ lireMediateurEtContrats }: ConsulterLaRuptureEnAttentePorts) =>
