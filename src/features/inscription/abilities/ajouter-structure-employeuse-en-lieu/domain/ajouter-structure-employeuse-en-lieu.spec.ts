@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { UtilisateurId } from '@/features/inscription/domain'
+import { LieuId, UtilisateurId } from '@/features/inscription/domain'
 import type { AdresseBanData } from '@/libraries/adresse'
 import { failure, success } from '@/libraries/result'
 import { ajouterStructureEmployeuseEnLieu } from './ajouter-structure-employeuse-en-lieu'
+import { EmployeuseId } from './employeuse-id'
 import type {
   AjouterStructureEmployeuseEnLieuPorts,
   EmployeuseLue,
@@ -12,8 +13,12 @@ const userId = UtilisateurId('550e8400-e29b-41d4-a716-446655440000')
 
 const maintenant = new Date('2026-02-02T09:00:00.000Z')
 
+const employeuseId = EmployeuseId(42)
+
+const lieuCorrele = LieuId('7c9e6679-7425-40de-944b-e07fc1f90ae7')
+
 const employeuseSansAdresse: EmployeuseLue = {
-  id: 42,
+  id: employeuseId,
   denomination: null,
   siret: null,
   rna: null,
@@ -22,7 +27,7 @@ const employeuseSansAdresse: EmployeuseLue = {
 }
 
 const employeuseAdressee: EmployeuseLue = {
-  id: 42,
+  id: employeuseId,
   denomination: 'Association du numérique',
   siret: '13002526500013',
   rna: 'W691234567',
@@ -51,7 +56,7 @@ const adresseBan: AdresseBanData = {
   longitude: 4.834,
 }
 
-const trace = { userId, structureId: 42 }
+const trace = { userId, structureId: employeuseId }
 
 const ports: AjouterStructureEmployeuseEnLieuPorts<string> = {
   consulterEmployeuseActuelle: async () => ({ employeuse: employeuseAdressee }),
@@ -220,7 +225,7 @@ describe('ajouter la structure employeuse en lieu d’activité', () => {
         ...ports,
         geocoderLAdresse: async () => ({ _tag: 'ServiceIndisponible' }),
       })({ userId, estLieuActivite: true, maintenant }),
-    ).toEqual(failure({ _tag: 'ServiceAdresseIndisponible', employeuseId: 42 }))
+    ).toEqual(failure({ _tag: 'ServiceAdresseIndisponible', employeuseId }))
   })
 
   it('refuse quand l’adresse n’est pas reconnue', async () => {
@@ -229,7 +234,7 @@ describe('ajouter la structure employeuse en lieu d’activité', () => {
         ...ports,
         geocoderLAdresse: async () => ({ _tag: 'AdresseInconnue' }),
       })({ userId, estLieuActivite: true, maintenant }),
-    ).toEqual(failure({ _tag: 'AdresseNonReconnue', employeuseId: 42 }))
+    ).toEqual(failure({ _tag: 'AdresseNonReconnue', employeuseId }))
   })
 
   it('refuse quand l’employeuse n’a pas d’adresse à géocoder', async () => {
@@ -238,17 +243,17 @@ describe('ajouter la structure employeuse en lieu d’activité', () => {
         ...ports,
         lireLAdresseDeLEmployeuse: async () => null,
       })({ userId, estLieuActivite: true, maintenant }),
-    ).toEqual(failure({ _tag: 'AdresseNonReconnue', employeuseId: 42 }))
+    ).toEqual(failure({ _tag: 'AdresseNonReconnue', employeuseId }))
   })
 
   it('détache le médiateur du lieu de la coop corrélé à son employeuse', async () => {
     expect(
       await ajouterStructureEmployeuseEnLieu({
         ...ports,
-        lieuCorreleAuLieuDecrit: async () => success('lieu-correle'),
+        lieuCorreleAuLieuDecrit: async () => success(lieuCorrele),
       })({ userId, estLieuActivite: false, maintenant }),
     ).toMatchObject(
-      success({ _tag: 'DetacheeDesLieux', lieuDetache: 'lieu-correle' }),
+      success({ _tag: 'DetacheeDesLieux', lieuDetache: lieuCorrele }),
     )
   })
 
@@ -258,9 +263,9 @@ describe('ajouter la structure employeuse en lieu d’activité', () => {
         ...ports,
         rattacherAuLieuDecrit: async () => ({
           _tag: 'LieuDisparu',
-          lieuId: 'lieu-correle',
+          lieuId: lieuCorrele,
         }),
       })({ userId, estLieuActivite: true, maintenant }),
-    ).toEqual(failure({ _tag: 'LieuIntrouvable', lieuId: 'lieu-correle' }))
+    ).toEqual(failure({ _tag: 'LieuIntrouvable', lieuId: lieuCorrele }))
   })
 })

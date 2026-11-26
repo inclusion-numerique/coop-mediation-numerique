@@ -3,6 +3,7 @@ import {
   Franchissement,
   type InscriptionEnCours,
   type InscriptionEtat,
+  LieuId,
   Role,
   UtilisateurId,
 } from '@/features/inscription/domain'
@@ -109,6 +110,8 @@ const existant = (
 })
 
 const destinations = ['destination-1']
+
+const lieuIntrouvable = LieuId('7c9e6679-7425-40de-944b-e07fc1f90ae7')
 
 const ports: RenseignerLieuxActivitePorts<string, string> = {
   lireLEtat: async () => enCours,
@@ -367,12 +370,12 @@ describe('renseigner les lieux d’activité', () => {
       await renseignerLieuxActivite({
         ...ports,
         planifierLesRattachements: async () =>
-          failure({ _tag: 'LieuIntrouvable', lieuId: 'lieu-1' }),
+          failure({ _tag: 'LieuIntrouvable', lieuId: lieuIntrouvable }),
       })({
         command: { userId, lieuxActivite: [connu('lieu-1', 'Lieu 1')] },
         maintenant,
       }),
-    ).toEqual(failure({ _tag: 'LieuIntrouvable', lieuId: 'lieu-1' }))
+    ).toEqual(failure({ _tag: 'LieuIntrouvable', lieuId: lieuIntrouvable }))
   })
 
   it('refuse les lieux dont l’un a disparu avant l’enregistrement', async () => {
@@ -381,12 +384,12 @@ describe('renseigner les lieux d’activité', () => {
         ...ports,
         enregistrerReconciliation: async () => ({
           _tag: 'LieuDisparu',
-          lieuId: 'lieu-1',
+          lieuId: lieuIntrouvable,
         }),
       })({
         command: { userId, lieuxActivite: [connu('lieu-1', 'Lieu 1')] },
         maintenant,
       }),
-    ).toEqual(failure({ _tag: 'LieuIntrouvable', lieuId: 'lieu-1' }))
+    ).toEqual(failure({ _tag: 'LieuIntrouvable', lieuId: lieuIntrouvable }))
   })
 })

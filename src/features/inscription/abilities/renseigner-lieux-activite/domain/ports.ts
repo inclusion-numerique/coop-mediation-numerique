@@ -1,5 +1,6 @@
 import type {
   InscriptionEnCours,
+  LieuId,
   LieuIntrouvable,
   UtilisateurId,
 } from '@/features/inscription/domain'
@@ -23,7 +24,7 @@ export type PlanifierLesRattachements<StructureCarto, Destination> = (input: {
 
 export type ReconciliationEnregistree =
   | { readonly _tag: 'Enregistree' }
-  | { readonly _tag: 'LieuDisparu'; readonly lieuId: string }
+  | { readonly _tag: 'LieuDisparu'; readonly lieuId: LieuId }
 
 export type EnregistrerReconciliation<Destination> = (input: {
   readonly etatFranchi: InscriptionEnCours

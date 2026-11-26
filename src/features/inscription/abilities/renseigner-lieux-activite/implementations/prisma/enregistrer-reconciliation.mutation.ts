@@ -1,4 +1,5 @@
 import { prismaClient } from '@/configuration/prisma'
+import type { LieuId } from '@/features/inscription/domain'
 import { inscriptionEtatFromDomain } from '@/features/inscription/implementations/prisma/inscription-etat.transfer'
 import type { Prisma } from '@/generated/prisma/client'
 import type {
@@ -10,7 +11,7 @@ export type EcritureDesLieux<Destination> = {
   readonly lieuDisparu: (
     transaction: Prisma.TransactionClient,
     destinations: readonly Destination[],
-  ) => Promise<string | null>
+  ) => Promise<LieuId | null>
   readonly appliquerLesDestinations: (
     transaction: Prisma.TransactionClient,
     input: {

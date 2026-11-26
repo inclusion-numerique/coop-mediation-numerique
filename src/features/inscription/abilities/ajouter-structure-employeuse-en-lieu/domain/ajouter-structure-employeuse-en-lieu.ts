@@ -4,7 +4,6 @@ import {
 } from '@/features/inscription/domain'
 import { failure, type Result, success } from '@/libraries/result'
 import type { EmployeuseEnLieu } from './employeuse-en-lieu'
-import { EmployeuseId } from './employeuse-id'
 import {
   AdresseNonReconnue,
   type EchecDAjouterStructureEmployeuseEnLieu,
@@ -43,7 +42,7 @@ export const ajouterStructureEmployeuseEnLieu =
     if (actuelle === null) return failure(EmployeuseIntrouvable(userId))
 
     const { employeuse } = actuelle
-    const employeuseId = EmployeuseId(employeuse.id)
+    const employeuseId = employeuse.id
     const trace = { userId, structureId: employeuse.id }
 
     if (!estLieuActivite) {

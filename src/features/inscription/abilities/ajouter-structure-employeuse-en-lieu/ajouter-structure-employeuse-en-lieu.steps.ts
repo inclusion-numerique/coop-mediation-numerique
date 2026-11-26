@@ -5,7 +5,6 @@ import { prismaClient } from '@/configuration/prisma'
 import type {
   EmployeuseLue,
   Geocodage,
-  GeocoderLAdresse,
 } from '@/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/domain'
 import {
   seedEmployeuseMain,
@@ -14,6 +13,7 @@ import {
 import type { AdresseBanData } from '@/libraries/adresse'
 import { success } from '@/libraries/result'
 import { ajouterStructureEmployeuseEnLieu } from './domain/ajouter-structure-employeuse-en-lieu'
+import { EmployeuseId } from './domain/employeuse-id'
 import { lireLAdresseDeLEmployeuse } from './implementations/prisma/adresse-de-l-employeuse.query'
 
 const nomEmployeuse = 'Employeuse lieu d’activité'
@@ -35,54 +35,51 @@ const ADRESSE_RECONNUE_PAR_LA_BAN: Geocodage = {
   adresse: ADRESSE_RECONNUE,
 }
 
-type LieuConfie = {
-  readonly nom: string
-  readonly adresse: string
-  readonly banId?: string
-  readonly latitude?: number
-  readonly longitude?: number
-}
-
 const etat: {
   geocodage: Geocodage
-  employeuse?: EmployeuseLue
-  refus: string | null
-  rattaches: LieuConfie[]
-  detaches: LieuConfie[]
+  employeuse: { readonly employeuse: EmployeuseLue } | null
+  resultat: Awaited<ReturnType<ReturnType<typeof declarerAvec>>> | null
 } = {
   geocodage: ADRESSE_RECONNUE_PAR_LA_BAN,
-  refus: null,
-  rattaches: [],
-  detaches: [],
+  employeuse: null,
+  resultat: null,
 }
 
-const geocoderLAdresse: GeocoderLAdresse = async () => etat.geocodage
-
-const consulterEmployeuseActuelle = async () =>
-  etat.employeuse === undefined ? null : { employeuse: etat.employeuse }
+const declarerAvec = (
+  geocodage: Geocodage,
+  consultation: { readonly employeuse: EmployeuseLue } | null,
+) =>
+  ajouterStructureEmployeuseEnLieu({
+    lireLAdresseDeLEmployeuse,
+    geocoderLAdresse: async () => geocodage,
+    consulterEmployeuseActuelle: async () => consultation,
+    destinationDuLieuDecrit: async ({ lieu }) => success(lieu),
+    rattacherAuLieuDecrit: async () => ({ _tag: 'Rattaches' }),
+    lieuCorreleAuLieuDecrit: async () => success(null),
+    detacherDuLieu: async () => undefined,
+  })
 
 const declarer = async (estLieuActivite: boolean) => {
-  const resultat = await ajouterStructureEmployeuseEnLieu({
-    lireLAdresseDeLEmployeuse,
-    geocoderLAdresse,
-    consulterEmployeuseActuelle,
-    destinationDuLieuDecrit: async ({ lieu }) => success(lieu),
-    rattacherAuLieuDecrit: async ({ destination }) => {
-      etat.rattaches.push(destination)
-      return { _tag: 'Rattaches' }
-    },
-    lieuCorreleAuLieuDecrit: async ({ lieu }) => {
-      etat.detaches.push(lieu)
-      return success(null)
-    },
-    detacherDuLieu: async () => undefined,
-  })({
+  etat.resultat = await declarerAvec(
+    etat.geocodage,
+    etat.employeuse,
+  )({
     userId: utilisateurDeLInscriptionEnCours(),
     estLieuActivite,
     maintenant: new Date(),
   })
-  etat.refus = resultat.success ? null : resultat.error._tag
 }
+
+const lieuRattache = () => {
+  assert.ok(
+    etat.resultat?.success && etat.resultat.data._tag === 'RattacheeCommeLieu',
+    'Aucun lieu n’a été confié au rattachement',
+  )
+  return etat.resultat.data.destination
+}
+
+const refus = (): string | null =>
+  etat.resultat && !etat.resultat.success ? etat.resultat.error._tag : null
 
 Given('je suis médiateur', async () => {
   await prismaClient.mediateur.create({
@@ -93,17 +90,19 @@ Given('je suis médiateur', async () => {
 Given('j’ai une structure employeuse', async () => {
   const id = await seedEmployeuseMain({ nom: nomEmployeuse })
   etat.employeuse = {
-    id,
-    denomination: nomEmployeuse,
-    siret: null,
-    rna: null,
-    adresse: {
-      voie: '1 rue de la Paix',
-      commune: 'Paris',
-      codePostal: '75001',
-      codeInsee: '75101',
+    employeuse: {
+      id: EmployeuseId(id),
+      denomination: nomEmployeuse,
+      siret: null,
+      rna: null,
+      adresse: {
+        voie: '1 rue de la Paix',
+        commune: 'Paris',
+        codePostal: '75001',
+        codeInsee: '75101',
+      },
+      contactReferent: { _tag: 'nonRenseigne' },
     },
-    contactReferent: { _tag: 'nonRenseigne' },
   }
 })
 
@@ -130,34 +129,34 @@ When(
 )
 
 Then('ma structure employeuse est confiée au rattachement', () => {
-  assert.deepStrictEqual(
-    etat.rattaches.map(({ nom }) => nom),
-    [nomEmployeuse],
-  )
+  assert.strictEqual(lieuRattache().nom, nomEmployeuse)
 })
 
 Then('ma structure employeuse est confiée au détachement', () => {
-  assert.deepStrictEqual(
-    etat.detaches.map(({ nom }) => nom),
-    [nomEmployeuse],
+  assert.ok(
+    etat.resultat?.success && etat.resultat.data._tag === 'DetacheeDesLieux',
+    'La structure employeuse n’a pas été confiée au détachement',
   )
+  assert.strictEqual(etat.resultat.data.lieu.nom, nomEmployeuse)
 })
 
 Then('rien n’est confié au rattachement', () => {
-  assert.deepStrictEqual(etat.rattaches, [])
+  assert.ok(
+    etat.resultat && !etat.resultat.success,
+    'La déclaration aurait dû être refusée',
+  )
 })
 
 Then('la déclaration m’est refusée faute d’adresse reconnue', () => {
-  assert.strictEqual(etat.refus, 'AdresseNonReconnue')
+  assert.strictEqual(refus(), 'AdresseNonReconnue')
 })
 
 Then('la déclaration m’est refusée faute de service d’adresse', () => {
-  assert.strictEqual(etat.refus, 'ServiceAdresseIndisponible')
+  assert.strictEqual(refus(), 'ServiceAdresseIndisponible')
 })
 
 Then('le lieu confié porte l’adresse de la Base Adresse Nationale', () => {
-  const [lieu] = etat.rattaches
-  assert.ok(lieu, 'Aucun lieu n’a été confié au rattachement')
+  const lieu = lieuRattache()
   assert.strictEqual(lieu.adresse, ADRESSE_RECONNUE.nom)
   assert.strictEqual(lieu.banId, ADRESSE_RECONNUE.id)
   assert.strictEqual(lieu.latitude, ADRESSE_RECONNUE.latitude)
@@ -166,8 +165,6 @@ Then('le lieu confié porte l’adresse de la Base Adresse Nationale', () => {
 
 After(() => {
   etat.geocodage = ADRESSE_RECONNUE_PAR_LA_BAN
-  delete etat.employeuse
-  etat.refus = null
-  etat.rattaches = []
-  etat.detaches = []
+  etat.employeuse = null
+  etat.resultat = null
 })

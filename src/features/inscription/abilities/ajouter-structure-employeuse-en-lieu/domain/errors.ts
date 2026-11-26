@@ -2,6 +2,7 @@ import type {
   LieuIntrouvable,
   UtilisateurId,
 } from '@/features/inscription/domain'
+import type { EmployeuseId } from './employeuse-id'
 
 export type EmployeuseIntrouvable = {
   readonly _tag: 'EmployeuseIntrouvable'
@@ -17,11 +18,11 @@ export const EmployeuseIntrouvable = (
 
 export type AdresseNonReconnue = {
   readonly _tag: 'AdresseNonReconnue'
-  readonly employeuseId: number
+  readonly employeuseId: EmployeuseId
 }
 
 export const AdresseNonReconnue = (
-  employeuseId: number,
+  employeuseId: EmployeuseId,
 ): AdresseNonReconnue => ({
   _tag: 'AdresseNonReconnue',
   employeuseId,
@@ -29,11 +30,11 @@ export const AdresseNonReconnue = (
 
 export type ServiceAdresseIndisponible = {
   readonly _tag: 'ServiceAdresseIndisponible'
-  readonly employeuseId: number
+  readonly employeuseId: EmployeuseId
 }
 
 export const ServiceAdresseIndisponible = (
-  employeuseId: number,
+  employeuseId: EmployeuseId,
 ): ServiceAdresseIndisponible => ({
   _tag: 'ServiceAdresseIndisponible',
   employeuseId,

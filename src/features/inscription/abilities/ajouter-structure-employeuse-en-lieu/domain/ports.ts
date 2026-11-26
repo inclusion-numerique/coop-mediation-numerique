@@ -1,4 +1,4 @@
-import type { UtilisateurId } from '@/features/inscription/domain'
+import type { LieuId, UtilisateurId } from '@/features/inscription/domain'
 import type { AdresseBanData } from '@/libraries/adresse'
 import type { Result } from '@/libraries/result'
 import type { EmployeuseId } from './employeuse-id'
@@ -11,7 +11,7 @@ type AdresseAGeocoder = {
 }
 
 export type EmployeuseLue = {
-  readonly id: number
+  readonly id: EmployeuseId
   readonly denomination: string | null
   readonly siret: string | null
   readonly rna: string | null
@@ -55,7 +55,7 @@ export type LieuDecrit = {
 
 export type TraceDeLEmployeuse = {
   readonly userId: UtilisateurId
-  readonly structureId: number
+  readonly structureId: EmployeuseId
 }
 
 export type DestinationDuLieuDecrit<Destination> = (input: {
@@ -64,7 +64,7 @@ export type DestinationDuLieuDecrit<Destination> = (input: {
 
 export type RattachementAuLieuDecrit =
   | { readonly _tag: 'Rattaches' }
-  | { readonly _tag: 'LieuDisparu'; readonly lieuId: string }
+  | { readonly _tag: 'LieuDisparu'; readonly lieuId: LieuId }
 
 export type RattacherAuLieuDecrit<Destination> = (input: {
   readonly utilisateurId: UtilisateurId
@@ -75,11 +75,11 @@ export type RattacherAuLieuDecrit<Destination> = (input: {
 
 export type LieuCorreleAuLieuDecrit = (input: {
   readonly lieu: LieuDecrit
-}) => Promise<Result<string | null, never>>
+}) => Promise<Result<LieuId | null, never>>
 
 export type DetacherDuLieu = (input: {
   readonly utilisateurId: UtilisateurId
-  readonly lieuId: string
+  readonly lieuId: LieuId
   readonly trace: TraceDeLEmployeuse
   readonly maintenant: Date
 }) => Promise<void>

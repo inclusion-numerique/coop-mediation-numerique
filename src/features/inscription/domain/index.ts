@@ -26,6 +26,7 @@ export {
   estFranchi,
   Franchissement,
 } from './franchissement'
+export { LieuId } from './lieu-id'
 export type { InscriptionContexte } from './parcours-d-inscription'
 export {
   etapeSuivante,

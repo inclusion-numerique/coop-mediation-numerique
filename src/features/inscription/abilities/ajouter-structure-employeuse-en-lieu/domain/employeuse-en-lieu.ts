@@ -1,3 +1,4 @@
+import type { LieuId } from '@/features/inscription/domain'
 import type { LieuDecrit, TraceDeLEmployeuse } from './ports'
 
 export type EmployeuseEnLieu<Destination> =
@@ -11,5 +12,5 @@ export type EmployeuseEnLieu<Destination> =
       readonly _tag: 'DetacheeDesLieux'
       readonly lieu: LieuDecrit
       readonly trace: TraceDeLEmployeuse
-      readonly lieuDetache: string | null
+      readonly lieuDetache: LieuId | null
     }
