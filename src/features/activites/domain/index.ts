@@ -77,12 +77,10 @@ export { TypeDeStructurePartenaire } from './coordination/type-de-structure-part
 export {
   DateDActivite,
   dateDActiviteDuJour,
+  derniereDateDActivite,
   PREMIERE_DATE_D_ACTIVITE,
 } from './date-d-activite'
-export {
-  dateDActiviteBornee,
-  derniereDateDActivite,
-} from './derniere-date-d-activite'
+export { dateDActiviteBornee } from './date-d-activite-bornee'
 export { DureeEnMinutes } from './duree-en-minutes'
 export { Effectif } from './effectif'
 

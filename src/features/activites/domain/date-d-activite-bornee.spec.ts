@@ -1,25 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import { failure, success } from '@/libraries/result'
 import { DateDActivite } from './date-d-activite'
-import {
-  dateDActiviteBornee,
-  derniereDateDActivite,
-} from './derniere-date-d-activite'
+import { dateDActiviteBornee } from './date-d-activite-bornee'
 import { DateTropLointaine } from './errors'
 
-describe('dernière date d’activité', () => {
-  it('autorise une activité planifiée jusqu’à deux ans à l’avance', () => {
-    expect(derniereDateDActivite(DateDActivite('2026-11-10'))).toBe(
-      '2028-11-10',
-    )
-  })
-
-  it('ramène un 29 février au 28 février deux ans plus tard, comme la base', () => {
-    expect(derniereDateDActivite(DateDActivite('2028-02-29'))).toBe(
-      '2030-02-28',
-    )
-  })
-
+describe('date d’activité bornée', () => {
   it('accepte la dernière date autorisée', () => {
     expect(
       dateDActiviteBornee(
