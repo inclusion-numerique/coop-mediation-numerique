@@ -3,7 +3,6 @@ import type { Awaitable } from 'next-auth'
 import type { Adapter, AdapterAccount, AdapterUser } from 'next-auth/adapters'
 import { v4 } from 'uuid'
 import { extendedPrismaClient, prismaClient } from '@/configuration/prisma'
-import { proConnectProviderId } from '@/features/authentification/domain/fournisseur-proconnect'
 import type { SynchroniserLaPersonne } from '@/features/authentification/implementations/prisma/synchroniser-la-personne.mutation'
 
 /**
@@ -53,20 +52,23 @@ const removeNonStandardFields = <T extends AdapterAccount>(data: T): T => ({
   'not-before-policy': undefined,
 })
 
-export const nextAuthAdapter = (
-  synchroniserLaPersonne: SynchroniserLaPersonne,
-) =>
+export const nextAuthAdapter = ({
+  synchroniserLaPersonne,
+  fournisseurQuiVerifieLAdresse,
+}: {
+  synchroniserLaPersonne: SynchroniserLaPersonne
+  fournisseurQuiVerifieLAdresse: string
+}) =>
   ({
     ...prismaAdapter,
     createUser: async (user: Omit<AdapterUser, 'id'>) => {
       const { provider, ...rest } = user as Omit<AdapterUser, 'id'> & {
-        // We pass the provider along
-        provider: typeof proConnectProviderId
+        provider: string
       }
 
       const info = { id: v4(), ...rest }
 
-      if (provider === proConnectProviderId) {
+      if (provider === fournisseurQuiVerifieLAdresse) {
         return creerLeCompte(synchroniserLaPersonne)({
           ...info,
           emailVerified: new Date(),

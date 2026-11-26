@@ -6,9 +6,12 @@ import jwt from 'jsonwebtoken'
 import type { TokenEndpointHandler } from 'next-auth/providers/oauth'
 import { environnementServeur } from '@/configuration/environnement/serveur'
 import { getServerUrl } from '@/configuration/projet/serveur'
-import { proConnectProviderId } from '@/features/authentification/domain/fournisseur-proconnect'
 import { telephoneEnregistrable } from '@/libraries/telephone'
-import { proConnectClientId, proConnectHostname } from './proconnect.client'
+import {
+  proConnectClientId,
+  proConnectHostname,
+  proConnectProviderId,
+} from './proconnect.client'
 import { stateConcordant } from './state-concordant.middleware'
 
 const issuer = `https://${proConnectHostname}`

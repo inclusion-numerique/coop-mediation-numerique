@@ -1,8 +1,11 @@
 import type { NextRequest } from 'next/server'
 import NextAuth from 'next-auth'
 import { geocoder } from '@/configuration/ban'
+import { connexionParProConnect } from '@/configuration/projet/serveur'
 import { signaler } from '@/configuration/telemetry/serveur'
+import { moyenDeConnexionParCourriel } from '@/features/authentification/implementations/email/moyen-de-connexion-par-courriel.client'
 import { nextAuthOptions } from '@/features/authentification/implementations/next-auth/next-auth.client'
+import { moyenDeConnexionProConnect } from '@/features/authentification/implementations/proconnect/moyen-de-connexion-proconnect.client'
 import { rattacherAUneEmployeuse } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/domain/rattacher-a-une-employeuse'
 import { etablissementDepuisSiret } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/api-entreprise/etablissement-depuis-siret.query'
 import { estConseillerNumeriqueEnPoste } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/prisma/conseiller-numerique-en-poste.query'
@@ -36,6 +39,9 @@ export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
 const options = nextAuthOptions({
+  moyenDeConnexion: connexionParProConnect()
+    ? moyenDeConnexionProConnect
+    : moyenDeConnexionParCourriel,
   garantirLeRoleCoordinateur: (utilisateurId: string) =>
     garantirLeRoleCoordinateurDuDispositif({
       aLeRoleCoordinateur,

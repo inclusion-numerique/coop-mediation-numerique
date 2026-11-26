@@ -2,7 +2,9 @@ import type { Route } from 'next'
 import { contentId } from '@/libraries/liens-d-evitement'
 import { SkipLinksPortal } from '@/libraries/liens-d-evitement/composants'
 import { Breadcrumbs } from '@/libraries/ui/components'
-import SigninPanel, { type MoyenDeConnexion } from '../components/SigninPanel'
+import SigninPanel, {
+  type AffichageDeLaConnexion,
+} from '../components/SigninPanel'
 
 export const ConnexionPage = ({
   error,
@@ -11,7 +13,7 @@ export const ConnexionPage = ({
 }: {
   error?: string | undefined
   callbackUrl: Route
-  connexion: MoyenDeConnexion
+  connexion: AffichageDeLaConnexion
 }) => (
   <>
     <SkipLinksPortal />

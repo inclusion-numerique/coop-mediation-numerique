@@ -5,7 +5,7 @@ import { messageDErreurDeConnexion } from '@/features/authentification/abilities
 import { AuthCard } from '@/features/authentification/ui/components/AuthCard'
 import { LogoCoop } from '@/libraries/ui/components'
 
-export type MoyenDeConnexion =
+export type AffichageDeLaConnexion =
   | { readonly via: 'proconnect'; readonly fournisseur: string }
   | { readonly via: 'courriel'; readonly branchePreview: string | null }
 
@@ -16,7 +16,7 @@ const SigninPanel = ({
 }: {
   error?: string | undefined
   callbackUrl: Route
-  connexion: MoyenDeConnexion
+  connexion: AffichageDeLaConnexion
 }) => (
   <AuthCard>
     <div className="fr-flex fr-width-full fr-justify-content-center">

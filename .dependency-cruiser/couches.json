@@ -47,14 +47,16 @@
   ],
   "@hookform/resolvers": ["authentification/abilities/se-connecter/ui/forms"],
   "@scalar/api-reference-react": ["clients-api/ui/pages"],
-  "axios": ["authentification/implementations/proconnect"],
+  "axios": [
+    "authentification/abilities/se-deconnecter/implementations/proconnect",
+    "authentification/implementations/proconnect"
+  ],
   "change-case": [
     "activites/abilities/compter-les-thematiques-abordees/implementations/prisma",
     "activites/implementations/prisma"
   ],
   "configuration/environnement": [
     "authentification/implementations/email",
-    "authentification/implementations/next-auth",
     "authentification/implementations/proconnect",
     "clients-api/implementations/secret",
     "rdvsp/implementations/api",
@@ -66,7 +68,6 @@
     "accueil/abilities/consulter-l-accueil/ui/components",
     "authentification/abilities/se-connecter/ui/components",
     "authentification/abilities/se-connecter/ui/pages",
-    "authentification/implementations/next-auth",
     "authentification/implementations/proconnect",
     "beneficiaire/abilities/importer-beneficiaires/ui/components",
     "clients-api/abilities/lire-les-activites/implementations/api-v1",
@@ -83,9 +84,9 @@
     "rdvsp/implementations/oauth",
     "vitrine/ui/components"
   ],
-  "configuration/smtp": ["authentification/implementations/next-auth"],
   "configuration/telemetry": [
-    "authentification/implementations/next-auth",
+    "authentification/implementations/email",
+    "authentification/implementations/proconnect",
     "beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/ban",
     "clients-api/abilities/authentifier-un-client-api/implementations/api-v1",
     "equipe/implementations/email",
@@ -94,9 +95,6 @@
     "registre-des-personnes/implementations/prisma",
     "utilisateurs/abilities/fusionner-des-comptes/implementations/brevo",
     "utilisateurs/implementations/brevo"
-  ],
-  "features/authentification/implementations/email/send-verification-request.mutation.ts": [
-    "authentification/implementations/next-auth"
   ],
   "features/authentification/implementations/prisma/account-tokens.mutation.ts": [
     "authentification/implementations/next-auth"
@@ -113,7 +111,7 @@
   "features/authentification/implementations/prisma/synchroniser-la-personne.mutation.ts": [
     "authentification/implementations/next-auth"
   ],
-  "features/authentification/implementations/proconnect/proconnect-provider.client.ts": [
+  "features/authentification/implementations/proconnect/proconnect.client.ts": [
     "authentification/implementations/next-auth"
   ],
   "features/utilisateurs/fixtures/personas.ts": [
@@ -223,6 +221,7 @@
   "libraries/result": [
     "employeuse/abilities/rattacher-a-une-employeuse/implementations/api-entreprise",
     "equipe/implementations/email",
+    "authentification/abilities/se-deconnecter/implementations/proconnect",
     "clients-api/abilities/authentifier-un-client-api/implementations/api-v1",
     "inscription/abilities/renseigner-lieux-activite/action",
     "lieux-activite/abilities/ajouter-des-lieux-activite/action",
