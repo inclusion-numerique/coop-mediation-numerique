@@ -10,7 +10,7 @@ import {
   autoriserSuppression,
   type CompteSupprime,
 } from './autoriser-la-suppression'
-import { effacementPlan } from './effacement-plan'
+import { type EtapePlanifiee, effacementPlan } from './effacement-plan'
 import {
   ErasedCount,
   failureReasonOf,
@@ -22,17 +22,15 @@ import {
   CompteIntrouvable,
   type SupprimerCompteError,
 } from './errors'
-import { runnerDe } from './executeurs-d-etapes'
 import { motifDe } from './motif-suppression'
 import type { SupprimerCompteDependances, SupprimerComptePorts } from './ports'
 
-const runStep = async (
-  compte: CompteASupprimer,
-  ports: SupprimerComptePorts,
-  step: StepResult['step'],
-): Promise<StepResult> => {
+const runStep = async ({
+  step,
+  runner,
+}: EtapePlanifiee): Promise<StepResult> => {
   try {
-    const count = await runnerDe(step, compte, ports)()
+    const count = await runner()
 
     return count === 0
       ? { _tag: 'skipped', step }
@@ -46,11 +44,8 @@ const executerLePlan = (
   compte: CompteASupprimer,
   ports: SupprimerComptePorts,
 ): Promise<readonly StepResult[]> =>
-  effacementPlan(compte.rattachements).reduce<Promise<readonly StepResult[]>>(
-    async (precedents, step) => [
-      ...(await precedents),
-      await runStep(compte, ports, step),
-    ],
+  effacementPlan(compte, ports).reduce<Promise<readonly StepResult[]>>(
+    async (precedents, etape) => [...(await precedents), await runStep(etape)],
     Promise.resolve([]),
   )
 

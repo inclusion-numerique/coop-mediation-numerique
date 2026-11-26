@@ -56,7 +56,7 @@ export type {
   MediateurDeLaLigne,
 } from './liste/ligne-utilisateur'
 export { NomEmployeuse } from './nom-employeuse'
-export { OrigineCompte, origineDuCompte } from './origine-compte'
+export { OrigineCompte } from './origine-compte'
 export {
   aProduit,
   coordinateurEstVierge,

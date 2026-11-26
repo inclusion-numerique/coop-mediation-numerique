@@ -4,7 +4,7 @@ import {
   jalon,
   MediateurId,
   nomAffiche,
-  origineDuCompte,
+  OrigineCompte,
   rattachements,
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
@@ -38,7 +38,7 @@ export const cibleUsurpation = async (
     : {
         id,
         nom: nomAffiche(identiteToDomain(row)),
-        origine: origineDuCompte(row.isFixture),
+        origine: OrigineCompte(row.isFixture ? 'Fixture' : 'Reel'),
         role: roleLu(row.role),
         inscription: jalon(row.inscriptionValidee),
         rattachements: rattachements(

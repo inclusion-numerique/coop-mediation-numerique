@@ -64,6 +64,3 @@ export const report = (results: readonly StepResult[]): EffacementReport => {
     ? { _tag: 'complete', results }
     : { _tag: 'partial', results, failed }
 }
-
-export const isComplete = (effacementReport: EffacementReport): boolean =>
-  effacementReport._tag === 'complete'

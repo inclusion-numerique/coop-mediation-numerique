@@ -113,7 +113,6 @@ describe('relance enregistrée après une action', () => {
       'AvertissementJ90',
     ],
     [{ _tag: 'Reinitialiser' } as const, 'Aucune'],
-    [{ _tag: 'Effacer' } as const, null],
   ])('%o → %s', (actionFaite, attendue) => {
     expect(relanceApres(actionFaite)).toBe(attendue)
   })

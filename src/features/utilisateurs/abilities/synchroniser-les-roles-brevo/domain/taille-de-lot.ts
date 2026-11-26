@@ -11,10 +11,6 @@ export const enLots = <T>(
   elements: readonly T[],
   taille: TailleDeLot,
 ): readonly (readonly T[])[] =>
-  elements.reduce<readonly (readonly T[])[]>(
-    (lots, element, index) =>
-      index % taille === 0
-        ? [...lots, [element]]
-        : [...lots.slice(0, -1), [...(lots.at(-1) ?? []), element]],
-    [],
+  Array.from({ length: Math.ceil(elements.length / taille) }, (_, rang) =>
+    elements.slice(rang * taille, (rang + 1) * taille),
   )

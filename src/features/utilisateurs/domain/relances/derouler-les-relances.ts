@@ -50,13 +50,11 @@ const executer = async (
   if (action._tag === 'Relancer') await ports.relancer(compte, action.palier)
   if (action._tag === 'Avertir') await ports.avertir(compte, action)
 
-  const relance = relanceApres(action)
-  if (relance !== null)
-    await ports.noter(
-      compte.utilisateurId,
-      relance,
-      suppressionAnnonceeApres(action),
-    )
+  await ports.noter(
+    compte.utilisateurId,
+    relanceApres(action),
+    suppressionAnnonceeApres(action),
+  )
   return success(undefined)
 }
 

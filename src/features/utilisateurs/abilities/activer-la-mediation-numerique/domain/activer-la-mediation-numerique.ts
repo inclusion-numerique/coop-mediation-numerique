@@ -48,14 +48,14 @@ export const activerLaMediationNumerique =
           : CoordinateurId(compte.coordinateur.id),
       ),
     )
-    if (!activation.success || activation.data === 'DejaActivee')
-      return activation
+    if (!activation.success) return activation
+    if (activation.data._tag === 'DejaActivee') return success('DejaActivee')
 
     await activer({
       utilisateurId: compte.id,
-      coordinateurId: compte.coordinateur?.id ?? '',
+      coordinateurId: activation.data.coordinateurId,
     })
     await inscrireALaListeDeDiffusion(compte.id)
 
-    return success(activation.data)
+    return success('AActiver')
   }

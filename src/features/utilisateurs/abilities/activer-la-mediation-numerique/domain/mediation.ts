@@ -1,4 +1,5 @@
 import {
+  type CoordinateurId,
   coordinateurDe,
   mediateurDe,
   type RattachementsDuCompte,
@@ -9,12 +10,18 @@ export type NonCoordinateur = { readonly _tag: 'NonCoordinateur' }
 
 export type Activation = 'AActiver' | 'DejaActivee'
 
+type DecisionDActivation =
+  | { readonly _tag: 'DejaActivee' }
+  | { readonly _tag: 'AActiver'; readonly coordinateurId: CoordinateurId }
+
 export const activationDe = (
   rattachements: RattachementsDuCompte,
-): Result<Activation, NonCoordinateur> => {
-  if (coordinateurDe(rattachements) === null)
-    return failure({ _tag: 'NonCoordinateur' })
+): Result<DecisionDActivation, NonCoordinateur> => {
+  const coordinateurId = coordinateurDe(rattachements)
+  if (coordinateurId === null) return failure({ _tag: 'NonCoordinateur' })
   return success(
-    mediateurDe(rattachements) === null ? 'AActiver' : 'DejaActivee',
+    mediateurDe(rattachements) === null
+      ? { _tag: 'AActiver', coordinateurId }
+      : { _tag: 'DejaActivee' },
   )
 }

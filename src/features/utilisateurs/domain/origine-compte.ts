@@ -6,6 +6,3 @@ export const OrigineCompte = defineModel(
 )
 
 export type OrigineCompte = Model.TypeOf<typeof OrigineCompte>
-
-export const origineDuCompte = (estUneFixture: boolean): OrigineCompte =>
-  OrigineCompte(estUneFixture ? 'Fixture' : 'Reel')
