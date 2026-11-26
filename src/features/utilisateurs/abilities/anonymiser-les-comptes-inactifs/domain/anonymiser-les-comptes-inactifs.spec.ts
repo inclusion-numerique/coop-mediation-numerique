@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   AdresseCourriel,
+  EchecTechnique,
   JAMAIS,
   type Jalon,
   jalon,
@@ -8,13 +9,15 @@ import {
   rattachements,
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
+import { failure, success } from '@/libraries/result'
 import { anonymiserLesComptesInactifs } from './anonymiser-les-comptes-inactifs'
 import type {
   CompteAExaminer,
   PresenceCoordinateur,
   PresenceMediateur,
 } from './compte-a-examiner'
-import type { AnonymiserLesComptesInactifsDependances } from './ports'
+import type { EtapeInactivite } from './etape-inactivite'
+import type { AnonymiserLesComptesInactifsPorts } from './ports'
 
 const maintenant = new Date('2026-10-20T01:00:00.000Z')
 
@@ -51,11 +54,11 @@ const compte = ({
 
 const dependancesQuiReussissent = (
   comptes: readonly CompteAExaminer[],
-): AnonymiserLesComptesInactifsDependances => ({
+): AnonymiserLesComptesInactifsPorts => ({
   lireLesComptesAExaminer: async () => comptes,
-  avertirDeLaSuppression: async () => undefined,
-  noterLAvertissement: async () => undefined,
-  supprimerLeCompte: async () => undefined,
+  avertirDeLaSuppression: async () => success(undefined),
+  noterLAvertissement: async () => success(undefined),
+  supprimerLeCompte: async () => success(undefined),
 })
 
 const simuler = (comptes: readonly CompteAExaminer[]) =>
@@ -64,14 +67,14 @@ const simuler = (comptes: readonly CompteAExaminer[]) =>
     simuler: true,
   })
 
-const executer = (dependances: AnonymiserLesComptesInactifsDependances) =>
+const executer = (dependances: AnonymiserLesComptesInactifsPorts) =>
   anonymiserLesComptesInactifs(dependances)({ maintenant, simuler: false })
 
 describe('anonymiser les comptes inactifs', () => {
   it.each<{
     cas: string
     compteExamine: CompteAExaminer
-    etape: string
+    etape: EtapeInactivite
   }>([
     {
       cas: 'retient la plus récente du dernier compte rendu et de la dernière connexion d’un médiateur',
@@ -81,14 +84,14 @@ describe('anonymiser les comptes inactifs', () => {
           derniereConnexion: le('2025-05-01T00:00:00.000Z'),
         },
       }),
-      etape: 'actif',
+      etape: { _tag: 'actif' },
     },
     {
       cas: 'retient la dernière visite d’un coordinateur',
       compteExamine: compte({
         coordinateur: { derniereVisite: le('2026-01-01T00:00:00.000Z') },
       }),
-      etape: 'actif',
+      etape: { _tag: 'actif' },
     },
     {
       cas: 'retient la plus récente des traces d’un médiateur coordinateur',
@@ -96,7 +99,7 @@ describe('anonymiser les comptes inactifs', () => {
         mediateur: inactifDepuis2023,
         coordinateur: { derniereVisite: le('2026-01-01T00:00:00.000Z') },
       }),
-      etape: 'actif',
+      etape: { _tag: 'actif' },
     },
     {
       cas: 'se rabat sur l’inscription validée sans aucune autre trace',
@@ -104,12 +107,15 @@ describe('anonymiser les comptes inactifs', () => {
         inscritLe: new Date('2026-01-01T00:00:00.000Z'),
         mediateur: { dernierCompteRendu: JAMAIS, derniereConnexion: JAMAIS },
       }),
-      etape: 'actif',
+      etape: { _tag: 'actif' },
     },
     {
       cas: 'avertit un compte sans rôle inscrit depuis plus de 2 ans',
       compteExamine: compte({}),
-      etape: 'aAvertir',
+      etape: {
+        _tag: 'aAvertir',
+        dateDeSuppression: new Date('2026-11-19T01:00:00.000Z'),
+      },
     },
     {
       cas: 'attend la fin du préavis d’un compte déjà averti',
@@ -117,7 +123,10 @@ describe('anonymiser les comptes inactifs', () => {
         mediateur: inactifDepuis2023,
         avertiLe: le('2026-10-01T01:00:00.000Z'),
       }),
-      etape: 'enAttente',
+      etape: {
+        _tag: 'enAttente',
+        dateDeSuppression: new Date('2026-10-31T01:00:00.000Z'),
+      },
     },
     {
       cas: 'supprime un compte averti dont le préavis est écoulé',
@@ -125,12 +134,12 @@ describe('anonymiser les comptes inactifs', () => {
         mediateur: inactifDepuis2023,
         avertiLe: le('2026-09-01T01:00:00.000Z'),
       }),
-      etape: 'aSupprimer',
+      etape: { _tag: 'aSupprimer' },
     },
   ])('en simulation, $cas sans agir', async ({ compteExamine, etape }) => {
-    expect(await simuler([compteExamine])).toEqual([
-      { utilisateurId, etape, issue: 'simule' },
-    ])
+    expect(await simuler([compteExamine])).toEqual(
+      success([{ utilisateurId, etape, issue: 'simule' }]),
+    )
   })
 
   it('agit sur chaque compte examiné, dans l’ordre de lecture', async () => {
@@ -145,10 +154,23 @@ describe('anonymiser les comptes inactifs', () => {
           }),
         ]),
       ),
-    ).toEqual([
-      { utilisateurId, etape: 'aAvertir', issue: 'fait' },
-      { utilisateurId: autreUtilisateurId, etape: 'aSupprimer', issue: 'fait' },
-    ])
+    ).toEqual(
+      success([
+        {
+          utilisateurId,
+          etape: {
+            _tag: 'aAvertir',
+            dateDeSuppression: new Date('2026-11-19T01:00:00.000Z'),
+          },
+          issue: 'fait',
+        },
+        {
+          utilisateurId: autreUtilisateurId,
+          etape: { _tag: 'aSupprimer' },
+          issue: 'fait',
+        },
+      ]),
+    )
   })
 
   it('ne fait rien d’un compte encore actif', async () => {
@@ -160,29 +182,60 @@ describe('anonymiser les comptes inactifs', () => {
           }),
         ]),
       ),
-    ).toEqual([{ utilisateurId, etape: 'actif', issue: 'fait' }])
+    ).toEqual(
+      success([{ utilisateurId, etape: { _tag: 'actif' }, issue: 'fait' }]),
+    )
   })
 
-  it('rapporte l’échec d’un avertissement avec le message de l’erreur', async () => {
+  it('rapporte l’échec d’un avertissement avec sa cause', async () => {
     expect(
       await executer({
         ...dependancesQuiReussissent([
           compte({ mediateur: inactifDepuis2023 }),
         ]),
         avertirDeLaSuppression: async () =>
-          Promise.reject(new Error('Brevo indisponible')),
+          failure(EchecTechnique('Brevo indisponible')),
       }),
-    ).toEqual([
-      {
-        utilisateurId,
-        etape: 'aAvertir',
-        issue: 'echec',
-        cause: 'Brevo indisponible',
-      },
-    ])
+    ).toEqual(
+      success([
+        {
+          utilisateurId,
+          etape: {
+            _tag: 'aAvertir',
+            dateDeSuppression: new Date('2026-11-19T01:00:00.000Z'),
+          },
+          issue: 'echec',
+          cause: 'Brevo indisponible',
+        },
+      ]),
+    )
   })
 
-  it('rapporte l’échec d’une suppression rejetée sans erreur', async () => {
+  it('rapporte l’échec de la note d’un avertissement avec sa cause', async () => {
+    expect(
+      await executer({
+        ...dependancesQuiReussissent([
+          compte({ mediateur: inactifDepuis2023 }),
+        ]),
+        noterLAvertissement: async () =>
+          failure(EchecTechnique('base indisponible')),
+      }),
+    ).toEqual(
+      success([
+        {
+          utilisateurId,
+          etape: {
+            _tag: 'aAvertir',
+            dateDeSuppression: new Date('2026-11-19T01:00:00.000Z'),
+          },
+          issue: 'echec',
+          cause: 'base indisponible',
+        },
+      ]),
+    )
+  })
+
+  it('rapporte le refus d’une suppression par son motif', async () => {
     expect(
       await executer({
         ...dependancesQuiReussissent([
@@ -191,15 +244,62 @@ describe('anonymiser les comptes inactifs', () => {
             avertiLe: le('2026-09-01T01:00:00.000Z'),
           }),
         ]),
-        supprimerLeCompte: async () => Promise.reject('verrou en base'),
+        supprimerLeCompte: async () => failure({ _tag: 'RoleProtege' }),
       }),
-    ).toEqual([
-      {
-        utilisateurId,
-        etape: 'aSupprimer',
-        issue: 'echec',
-        cause: 'verrou en base',
+    ).toEqual(
+      success([
+        {
+          utilisateurId,
+          etape: { _tag: 'aSupprimer' },
+          issue: 'echec',
+          cause: 'RoleProtege',
+        },
+      ]),
+    )
+  })
+
+  it.each<{
+    cas: string
+    inscritLe: string
+    avertiLe: Jalon
+    etape: EtapeInactivite
+  }>([
+    {
+      cas: 'avertit 30 jours avant les 2 ans d’inactivité',
+      inscritLe: '2024-11-19T01:00:00.000Z',
+      avertiLe: JAMAIS,
+      etape: {
+        _tag: 'aAvertir',
+        dateDeSuppression: new Date('2026-11-19T01:00:00.000Z'),
       },
-    ])
+    },
+    {
+      cas: 'n’avertit pas la veille du préavis',
+      inscritLe: '2024-11-20T01:00:00.000Z',
+      avertiLe: JAMAIS,
+      etape: { _tag: 'actif' },
+    },
+    {
+      cas: 'n’avertit pas deux fois',
+      inscritLe: '2024-11-10T00:00:00.000Z',
+      avertiLe: le('2026-10-15T01:00:00.000Z'),
+      etape: {
+        _tag: 'enAttente',
+        dateDeSuppression: new Date('2026-11-14T01:00:00.000Z'),
+      },
+    },
+    {
+      cas: 'avertit de nouveau un compte revenu après un avertissement puis redevenu inactif',
+      inscritLe: '2024-11-10T00:00:00.000Z',
+      avertiLe: le('2024-09-01T00:00:00.000Z'),
+      etape: {
+        _tag: 'aAvertir',
+        dateDeSuppression: new Date('2026-11-19T01:00:00.000Z'),
+      },
+    },
+  ])('$cas', async ({ inscritLe, avertiLe, etape }) => {
+    expect(
+      await simuler([compte({ inscritLe: new Date(inscritLe), avertiLe })]),
+    ).toEqual(success([{ utilisateurId, etape, issue: 'simule' }]))
   })
 })

@@ -69,23 +69,24 @@ const supprimerComptePorts: EffacementsDesAutresFeatures = {
   revoquerPartageStatistiques,
 }
 
-const supprimerLeCompte =
-  (maintenant: Date) =>
-  async (utilisateurId: UtilisateurId): Promise<void> => {
-    const resultat = await supprimerCompteAvec(
-      supprimerComptePorts,
-      synchroniserPersonne,
-    )({
-      cible: utilisateurId,
-      auteur: {
-        _tag: 'systeme',
-        policy: RetentionPolicy('InactifDepuisDeuxAns'),
-      },
-      maintenant,
-    })
-
-    if (!resultat.success) throw new Error(resultat.error._tag)
-  }
+const supprimerLeCompte = ({
+  utilisateurId,
+  maintenant,
+}: {
+  readonly utilisateurId: UtilisateurId
+  readonly maintenant: Date
+}) =>
+  supprimerCompteAvec(
+    supprimerComptePorts,
+    synchroniserPersonne,
+  )({
+    cible: utilisateurId,
+    auteur: {
+      _tag: 'systeme',
+      policy: RetentionPolicy('InactifDepuisDeuxAns'),
+    },
+    maintenant,
+  })
 
 export const executeAnonymiserLesComptesInactifs: JobExecutor<
   'anonymiser-les-comptes-inactifs'
@@ -93,16 +94,19 @@ export const executeAnonymiserLesComptesInactifs: JobExecutor<
   const simuler = job.payload?.simuler ?? false
   const maintenant = new Date()
 
-  const comptes = await anonymiserLesComptesInactifs({
+  const resultat = await anonymiserLesComptesInactifs({
     avertirDeLaSuppression,
-    supprimerLeCompte: supprimerLeCompte(maintenant),
+    supprimerLeCompte,
     lireLesComptesAExaminer,
     noterLAvertissement,
   })({ maintenant, simuler })
+  if (!resultat.success) return resultat.error
+
+  const comptes = resultat.data
 
   const parEtape = (etape: string) =>
     comptes
-      .filter((compte) => compte.etape === etape)
+      .filter((compte) => compte.etape._tag === etape)
       .map((compte) => compte.utilisateurId)
 
   const echecs = comptes.filter((compte) => compte.issue === 'echec')
@@ -119,7 +123,7 @@ export const executeAnonymiserLesComptesInactifs: JobExecutor<
     enAttente: parEtape('enAttente').length,
     echecs: echecs.map(({ utilisateurId, etape, cause }) => ({
       utilisateurId,
-      etape,
+      etape: etape._tag,
       cause,
     })),
   }

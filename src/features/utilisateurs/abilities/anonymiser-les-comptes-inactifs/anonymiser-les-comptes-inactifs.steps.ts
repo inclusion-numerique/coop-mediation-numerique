@@ -5,6 +5,7 @@ import {
   type CompteInactifSeme,
   semerUnCompteInactif,
 } from '@/features/utilisateurs/utilisateurs.cucumber'
+import { success } from '@/libraries/result'
 import {
   anonymiserLesComptesInactifs,
   type CompteExamine,
@@ -34,7 +35,7 @@ const compte = (): CompteInactifSeme => {
 const examiner = async (simuler: boolean) => {
   etat.avertissements = []
   etat.suppressions = []
-  etat.examines = await anonymiserLesComptesInactifs({
+  const resultat = await anonymiserLesComptesInactifs({
     lireLesComptesAExaminer,
     noterLAvertissement,
     avertirDeLaSuppression: async ({ courriel, dateDeSuppression }) => {
@@ -42,11 +43,15 @@ const examiner = async (simuler: boolean) => {
         ...etat.avertissements,
         { courriel, dateDeSuppression },
       ]
+      return success(undefined)
     },
-    supprimerLeCompte: async (utilisateurId) => {
+    supprimerLeCompte: async ({ utilisateurId }) => {
       etat.suppressions = [...etat.suppressions, utilisateurId]
+      return success(undefined)
     },
   })({ maintenant, simuler })
+  assert.ok(resultat.success)
+  etat.examines = resultat.data
 }
 
 Given(
@@ -146,7 +151,7 @@ Then('ce compte est signalé comme à avertir', () => {
     ({ utilisateurId }) => utilisateurId === compte().userId,
   )
   assert.deepStrictEqual(
-    { etape: examine?.etape, issue: examine?.issue },
+    { etape: examine?.etape._tag, issue: examine?.issue },
     { etape: 'aAvertir', issue: 'simule' },
   )
 })

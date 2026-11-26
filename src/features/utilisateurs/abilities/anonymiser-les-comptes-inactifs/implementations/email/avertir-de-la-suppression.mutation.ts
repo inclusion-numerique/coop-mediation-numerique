@@ -5,8 +5,10 @@ import {
   throwOnSendMailFailure,
 } from '@/configuration/smtp'
 import { inactiviteProlongeeAvertissementEmail } from '@/features/utilisateurs/abilities/anonymiser-les-comptes-inactifs/implementations/email/avertissement-d-inactivite-prolongee.email'
+import { EchecTechnique } from '@/features/utilisateurs/domain'
 import { formatInTimeZone } from '@/libraries/date'
 import { compileMjml } from '@/libraries/emails/rendu'
+import { failure, success } from '@/libraries/result'
 import type { AvertirDeLaSuppression } from '../../domain'
 
 export const avertirDeLaSuppression: AvertirDeLaSuppression = async ({
@@ -23,16 +25,23 @@ export const avertirDeLaSuppression: AvertirDeLaSuppression = async ({
     ),
   }
 
-  const resultat = await emailTransport.sendMail({
-    to: courriel,
-    from: expediteur,
-    replyTo: contactEmail(),
-    subject: 'Votre compte va bientôt être supprimé ⚠️',
-    text: inactiviteProlongeeAvertissementEmail.text(contenu),
-    html: await compileMjml(
-      inactiviteProlongeeAvertissementEmail.mjml(contenu),
-    ),
-  })
+  try {
+    const resultat = await emailTransport.sendMail({
+      to: courriel,
+      from: expediteur,
+      replyTo: contactEmail(),
+      subject: 'Votre compte va bientôt être supprimé ⚠️',
+      text: inactiviteProlongeeAvertissementEmail.text(contenu),
+      html: await compileMjml(
+        inactiviteProlongeeAvertissementEmail.mjml(contenu),
+      ),
+    })
 
-  throwOnSendMailFailure(resultat)
+    throwOnSendMailFailure(resultat)
+    return success(undefined)
+  } catch (erreur) {
+    return failure(
+      EchecTechnique(erreur instanceof Error ? erreur.message : String(erreur)),
+    )
+  }
 }
