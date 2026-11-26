@@ -1,5 +1,5 @@
 import { prismaClient } from '@/configuration/prisma'
-import type { CreationDuBeneficiaire } from '../../domain/modifier-beneficiaire'
+import type { CreationDuBeneficiaire } from '../../domain/ports'
 
 export const creationDuBeneficiaire: CreationDuBeneficiaire = async ({
   id,

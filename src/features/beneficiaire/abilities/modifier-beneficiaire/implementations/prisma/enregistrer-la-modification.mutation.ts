@@ -1,6 +1,6 @@
 import { prismaClient } from '@/configuration/prisma'
 import { beneficiaireFromDomain } from '@/features/beneficiaire/implementations/prisma/beneficiaire.transfer'
-import type { EnregistrerLaModification } from '../../domain/modifier-beneficiaire'
+import type { EnregistrerLaModification } from '../../domain/ports'
 
 export const enregistrerLaModification: EnregistrerLaModification = async (
   beneficiaire,
