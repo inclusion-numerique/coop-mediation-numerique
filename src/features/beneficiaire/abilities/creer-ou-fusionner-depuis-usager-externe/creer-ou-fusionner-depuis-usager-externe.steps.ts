@@ -138,7 +138,6 @@ When('je crée ou fusionne les bénéficiaires depuis ces usagers', async () => 
     mediateurId: testMediateurId,
     maintenant: new Date(),
   })
-  assert.ok(fusion.success, 'La fusion a échoué')
   result = fusion.data
   for (const merge of result.merges) suivreLeBeneficiaire(merge.id)
 })

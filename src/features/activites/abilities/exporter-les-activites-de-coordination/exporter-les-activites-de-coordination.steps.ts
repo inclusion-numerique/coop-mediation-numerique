@@ -36,7 +36,6 @@ const exporter = async (
     coordinateurId: CoordinateurId(coordinationsSemees().coordinateurId),
     criteres,
   })
-  assert.ok(exportation.success)
   const { activites, tags } = exportation.data
   exportees = activites
   rappeles = tags

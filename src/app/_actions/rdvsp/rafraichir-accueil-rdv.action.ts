@@ -77,7 +77,7 @@ const creerOuFusionnerLesUsagers = async ({
     mediateurId: MediateurDuBeneficiaire(mediateurId),
     maintenant: new Date(),
   })
-  return fusion.success ? fusion.data : { merges: [], skipped: [] }
+  return fusion.data
 }
 
 const declencher = declencherSynchronisation({
@@ -160,8 +160,6 @@ export const rafraichirAccueilRdvAction = actionBuilder()
           utilisateurId,
           maintenant: new Date(),
         })
-
-        if (!consultation.success) return consultation
 
         return success<RafraichissementAccueil>({
           _tag: 'rafraichi',

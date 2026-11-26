@@ -31,7 +31,7 @@ const idTokenHintDeProConnect = async (
     lireLesJetonsProconnect: lireLesJetonsDuFournisseur(proConnectProviderId),
     rafraichirLIdToken: rafraichirLIdTokenProConnect,
   })({ utilisateurId, maintenant: new Date() })
-  return deconnexion.success && deconnexion.data._tag === 'AupresDeProConnect'
+  return deconnexion.data._tag === 'AupresDeProConnect'
     ? deconnexion.data.idTokenHint
     : null
 }

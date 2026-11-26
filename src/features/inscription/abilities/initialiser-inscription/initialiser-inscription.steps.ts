@@ -91,7 +91,6 @@ When('j’initialise l’inscription', async () => {
     rattacherDepuisSiret: async () => undefined,
     lireEtatPourEtapeSuivante,
   })({ userId: utilisateurDeLInscriptionEnCours() })
-  assert.ok(initialisation.success, 'L’initialisation aurait dû réussir')
   etapeSuivante = initialisation.data.nextStep
 })
 

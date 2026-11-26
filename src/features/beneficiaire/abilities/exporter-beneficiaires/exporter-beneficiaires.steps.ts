@@ -75,7 +75,6 @@ When(
       auteur: user,
       maintenant: new Date(),
     })
-    assert.ok(exportation.success, "L'export a échoué")
     workbook = exportation.data
   },
 )

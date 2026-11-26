@@ -17,6 +17,6 @@ When('je vérifie la présence de CRA v1 pour {string}', async (nom: string) => 
 })
 
 Then('les CRA v1 sont {string}', (attendue: string) => {
-  assert.ok(presence?.success)
+  assert.ok(presence)
   assert.strictEqual(presence.data, attendue)
 })

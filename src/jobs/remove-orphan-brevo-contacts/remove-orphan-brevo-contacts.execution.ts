@@ -19,7 +19,6 @@ export const executeRemoveOrphanBrevoContacts = async () => {
     supprimerLeContact,
     retirerLeContactDeLaListe,
   })({ contacts: await listerLesContacts() })
-  if (!resultat.success) return resultat.error
 
   const bilan = {
     contacts: resultat.data.contacts,

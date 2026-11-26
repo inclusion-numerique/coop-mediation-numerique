@@ -46,14 +46,10 @@ import {
   effacementsAttrapes,
 } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/prisma/effacements-des-autres-features.adapter'
 import { logEffacementReport } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/prisma/log-effacement-report.mutation'
-import type {
-  RelancesDeroulees,
-  UtilisateurId,
-} from '@/features/utilisateurs/domain'
+import type { UtilisateurId } from '@/features/utilisateurs/domain'
 import { compterLesInscrits } from '@/features/utilisateurs/implementations/prisma/compter-les-inscrits.query'
 import { noterLaRelance } from '@/features/utilisateurs/implementations/prisma/noter-la-relance.mutation'
 import type { SynchroniserLaPersonne } from '@/features/utilisateurs/implementations/prisma/registre-des-personnes.mutation'
-import type { Result } from '@/libraries/result'
 
 const revoquerLePartage = revoquerPartageStatistiques({ revoquerLesPartages })
 
@@ -62,10 +58,6 @@ const retirerLesTags = retirerLesTagsDUnCompte({
   lireLesTagsDetenus,
   appliquerLeRetrait: appliquerLeRetraitDesTags,
 })
-
-const donneesDe = (
-  resultat: Result<RelancesDeroulees, never>,
-): RelancesDeroulees => (resultat.success ? resultat.data : resultat.error)
 
 const portsDeSuppression = (
   effacements: EffacementsDesAutresFeatures,
@@ -104,14 +96,14 @@ const lancerLesRelancesDesInscrits = async (
   maintenant: Date,
   supprimerLeCompte: RelancerLesInscritsInactifsPorts['supprimerLeCompte'],
 ) =>
-  donneesDe(
+  (
     await relancerLesInscritsInactifs({
       ...relancesDesInscritsParCourriel(await compterLesInscrits()),
       lireLesComptesARelancer: inscritsSansProduction,
       noterLaRelance: noterLaRelance('Nouveau'),
       supprimerLeCompte,
-    })({ maintenant }),
-  )
+    })({ maintenant })
+  ).data
 
 const effacerLEmpreinteRdv = effacementPourLaSuppressionDeCompte(
   effacerEmpreinteRdv({
@@ -130,7 +122,7 @@ const detacherDesEquipes: EffacementsDesAutresFeatures['detacherDesEquipes'] =
       ...identifiants,
       maintenant: new Date(),
     })
-    return detachement.success ? detachement.data.bilan : detachement.error
+    return detachement.data.bilan
   }
 
 const supprimerComptePorts: EffacementsDesAutresFeatures = {
@@ -142,7 +134,7 @@ const supprimerComptePorts: EffacementsDesAutresFeatures = {
       ...identifiants,
       maintenant: new Date(),
     })
-    return retrait.success ? bilanDuRetrait(retrait.data) : retrait.error
+    return bilanDuRetrait(retrait.data)
   },
   detacherDesEquipes,
   retirerDesLieux,
@@ -151,9 +143,7 @@ const supprimerComptePorts: EffacementsDesAutresFeatures = {
       ...identifiants,
       maintenant: new Date(),
     })
-    return revocation.success
-      ? { partagesRevoques: revocation.data.partagesRevoques }
-      : revocation.error
+    return { partagesRevoques: revocation.data.partagesRevoques }
   },
 }
 

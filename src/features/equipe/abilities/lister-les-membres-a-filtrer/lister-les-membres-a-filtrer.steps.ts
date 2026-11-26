@@ -102,7 +102,6 @@ When('je liste les membres à filtrer de {string}', async (nom: string) => {
     demandeur: MediateurId(demandeur.mediateurId),
     recherche: null,
   })
-  assert.ok(membres.success)
   listes = membres.data
 })
 

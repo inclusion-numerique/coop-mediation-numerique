@@ -45,7 +45,6 @@ When("j'importe {int} bénéficiaires", async (count: number) => {
     mediateurId: testMediateurId,
     maintenant: new Date(),
   })
-  assert.ok(importation.success, "L'import a échoué")
   result = { importes: importation.data.beneficiaires.length }
 
   const created = await prismaClient.beneficiaire.findMany({

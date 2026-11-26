@@ -86,8 +86,6 @@ const Page = async () => {
     })({ utilisateurId: UtilisateurCoopId(user.id), maintenant: new Date() }),
   ])
 
-  if (!consultationRdv.success) return consultationRdv.error
-
   const rdv = consultationRdv.data
 
   return (

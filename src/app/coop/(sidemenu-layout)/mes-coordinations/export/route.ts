@@ -35,7 +35,6 @@ export const GET = async (request: NextRequest) => {
       tagsVisiblesPar(acteurDe(profilDeLaSession(user))),
     ),
   })({ coordinateurId: CoordinateurId(user.coordinateur.id), criteres })
-  if (!exportees.success) return new Response(null, { status: 500 })
   const { activites, tags } = exportees.data
   const classeur = classeurDeMesCoordinations({
     activites,

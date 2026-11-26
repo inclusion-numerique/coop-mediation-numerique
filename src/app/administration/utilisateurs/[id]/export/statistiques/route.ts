@@ -124,7 +124,7 @@ const optionsDesMembres = async (
     lireLeDemandeur,
     lireLesMembresAFiltrer,
   })({ ...demandeurDuFiltre(user), recherche: null })
-  return membres.success ? membres.data.map(optionDeMembre) : []
+  return membres.data.map(optionDeMembre)
 }
 
 export const dynamic = 'force-dynamic'

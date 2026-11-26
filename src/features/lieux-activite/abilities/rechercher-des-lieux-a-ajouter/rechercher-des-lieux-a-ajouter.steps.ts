@@ -101,7 +101,7 @@ When(
       limite: NombreDeLieux(100),
     })
 
-    scenario.suggestions = resultat.success ? resultat.data.suggestions : []
+    scenario.suggestions = resultat.data.suggestions
   },
 )
 

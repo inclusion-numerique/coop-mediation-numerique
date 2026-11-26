@@ -9,31 +9,23 @@ import { enregistrerLesBeneficiairesImportes } from '@/features/beneficiaire/abi
 import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
 import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
-import { fromResult, withInput } from '@/libraries/nextjs'
-import { success } from '@/libraries/result'
+import { withInput } from '@/libraries/nextjs'
 
 export const importerBeneficiairesAction = actionBuilder()
   .use(withAuth())
   .use(withMaintenance())
   .use(withMediateur())
   .use(withInput(ImporterBeneficiairesValidation))
-  .execute(
-    fromResult(
-      async ({ input, mediateur }) => {
-        const importation = await importerBeneficiaires({
-          enregistrerLesBeneficiairesImportes,
-        })({
-          lignes: input.beneficiaires.map((beneficiaire) => ({
-            id: BeneficiaireId(crypto.randomUUID()),
-            beneficiaire,
-          })),
-          mediateurId: MediateurId(mediateur.id),
-          maintenant: new Date(),
-        })
-        return importation.success
-          ? success({ importes: importation.data.beneficiaires.length })
-          : importation
-      },
-      { onError: {} },
-    ),
-  )
+  .execute(async ({ input, mediateur }) => {
+    const importation = await importerBeneficiaires({
+      enregistrerLesBeneficiairesImportes,
+    })({
+      lignes: input.beneficiaires.map((beneficiaire) => ({
+        id: BeneficiaireId(crypto.randomUUID()),
+        beneficiaire,
+      })),
+      mediateurId: MediateurId(mediateur.id),
+      maintenant: new Date(),
+    })
+    return { importes: importation.data.beneficiaires.length }
+  })

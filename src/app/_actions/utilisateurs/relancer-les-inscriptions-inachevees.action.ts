@@ -9,29 +9,23 @@ import { retirerDesListes } from '@/features/utilisateurs/abilities/relancer-les
 import { relancesDInscriptionParCourriel } from '@/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees/implementations/email/relances-d-inscription-par-courriel.adapter'
 import { effacerLInscription } from '@/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees/implementations/prisma'
 import { inscriptionsInachevees } from '@/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees/implementations/prisma/inscriptions-inachevees.query'
-import type { RelancesDeroulees } from '@/features/utilisateurs/domain'
 import { compterLesInscrits } from '@/features/utilisateurs/implementations/prisma/compter-les-inscrits.query'
 import { noterLaRelance } from '@/features/utilisateurs/implementations/prisma/noter-la-relance.mutation'
 import type { RetirerDuRegistre } from '@/features/utilisateurs/implementations/prisma/registre-des-personnes.mutation'
-import type { Result } from '@/libraries/result'
-
-const donneesDe = (
-  resultat: Result<RelancesDeroulees, never>,
-): RelancesDeroulees => (resultat.success ? resultat.data : resultat.error)
 
 const lancerLesRelancesDInscription = async (
   maintenant: Date,
   retirerDuRegistre: RetirerDuRegistre,
 ) =>
-  donneesDe(
+  (
     await relancerLesInscriptionsInachevees({
       ...relancesDInscriptionParCourriel(await compterLesInscrits()),
       lireLesComptesARelancer: inscriptionsInachevees,
       noterLaRelance: noterLaRelance('Inscription'),
       effacerLInscription: effacerLInscription(retirerDuRegistre),
       retirerDesListes,
-    })({ maintenant }),
-  )
+    })({ maintenant })
+  ).data
 
 export const relancerLesInscriptionsInacheveesAction = actionBuilder()
   .use(withAuth())

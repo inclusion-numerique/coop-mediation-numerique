@@ -100,7 +100,7 @@ When('je synchronise tous les comptes RDV', async () => {
   const synchronisation = await synchroniserTousLesComptesRdvAvec(declencher)({
     maintenant: MAINTENANT,
   })
-  etat.bilan = synchronisation.success ? synchronisation.data : undefined
+  etat.bilan = synchronisation.data
 })
 
 Then('ce compte a été synchronisé', () => {

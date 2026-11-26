@@ -36,5 +36,5 @@ export const rechercherDesLieuxAAjouterAction = actionBuilder()
       recherche: RechercheDeLieu(input.recherche),
       limite: LIMITE_DES_SUGGESTIONS,
     })
-    return recherche.success ? recherche.data : recherche.error
+    return recherche.data
   })

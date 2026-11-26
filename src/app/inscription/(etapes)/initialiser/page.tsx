@@ -71,10 +71,7 @@ const InitialiserInscriptionPage = async () => {
     lireEtatPourEtapeSuivante,
   })({ userId: UtilisateurId(user.id) })
 
-  if (initialisation.success)
-    redirect(cheminDeLEtape(initialisation.data.nextStep))
-
-  return null
+  redirect(cheminDeLEtape(initialisation.data.nextStep))
 }
 
 export default InitialiserInscriptionPage

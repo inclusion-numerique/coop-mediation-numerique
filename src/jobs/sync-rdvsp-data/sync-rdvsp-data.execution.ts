@@ -68,7 +68,7 @@ const creerOuFusionnerLesUsagers = async ({
     mediateurId: MediateurDuBeneficiaire(mediateurId),
     maintenant: new Date(),
   })
-  return fusion.success ? fusion.data : { merges: [], skipped: [] }
+  return fusion.data
 }
 
 const declencher = declencherSynchronisation({
@@ -116,8 +116,6 @@ export const executeSyncRdvspData = async (_job: SyncRdvspDataJob) => {
   const synchronisation = await synchroniserTousLesComptes({
     maintenant: new Date(),
   })
-
-  if (!synchronisation.success) return synchronisation.error
 
   const bilan = synchronisation.data
 

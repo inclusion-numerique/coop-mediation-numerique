@@ -89,7 +89,7 @@ const detacherDesEquipes: EffacementsDesAutresFeatures['detacherDesEquipes'] =
       ...identifiants,
       maintenant: new Date(),
     })
-    return detachement.success ? detachement.data.bilan : detachement.error
+    return detachement.data.bilan
   }
 
 const supprimerComptePorts: EffacementsDesAutresFeatures = {
@@ -101,7 +101,7 @@ const supprimerComptePorts: EffacementsDesAutresFeatures = {
       ...identifiants,
       maintenant: new Date(),
     })
-    return retrait.success ? bilanDuRetrait(retrait.data) : retrait.error
+    return bilanDuRetrait(retrait.data)
   },
   detacherDesEquipes,
   retirerDesLieux,
@@ -110,9 +110,7 @@ const supprimerComptePorts: EffacementsDesAutresFeatures = {
       ...identifiants,
       maintenant: new Date(),
     })
-    return revocation.success
-      ? { partagesRevoques: revocation.data.partagesRevoques }
-      : revocation.error
+    return { partagesRevoques: revocation.data.partagesRevoques }
   },
 }
 

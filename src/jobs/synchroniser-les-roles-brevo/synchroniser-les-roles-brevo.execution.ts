@@ -24,7 +24,6 @@ export const executeSynchroniserLesRolesBrevo = async () => {
     tailleDesImports: TAILLE_DES_IMPORTS_BREVO,
     tailleDesRetraits: TAILLE_DES_RETRAITS_BREVO,
   })
-  if (!resultat.success) return resultat.error
 
   const bilan = {
     inscrits: resultat.data.inscrits,

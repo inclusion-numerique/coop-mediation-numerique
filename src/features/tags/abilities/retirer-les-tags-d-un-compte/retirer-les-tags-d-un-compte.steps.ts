@@ -29,7 +29,7 @@ const retirer = async (compte: {
   readonly coordinateurId: CoordinateurId | null
 }): Promise<BilanDuRetrait> => {
   const retrait = await retirerEnBase({ ...compte, maintenant: new Date() })
-  return retrait.success ? bilanDuRetrait(retrait.data) : retrait.error
+  return bilanDuRetrait(retrait.data)
 }
 
 const contexte: {

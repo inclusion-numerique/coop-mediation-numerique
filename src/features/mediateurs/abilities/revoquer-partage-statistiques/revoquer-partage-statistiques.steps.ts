@@ -12,7 +12,7 @@ const revoquer = async (): Promise<number> => {
     ...rattachementsSemes(),
     maintenant: new Date(),
   })
-  return revoques.success ? revoques.data.partagesRevoques : revoques.error
+  return revoques.data.partagesRevoques
 }
 
 When('je révoque le partage de statistiques de ce compte', async () => {

@@ -21,7 +21,6 @@ export const executeRetirerLesRolesVacants = async () => {
   const resultat = await retirerLesRolesVacantsAvec(synchroniserPersonne)({
     maintenant: new Date(),
   })
-  if (!resultat.success) return resultat.error
 
   const coordinateursRetires = resultat.data.coordinateursRetires.length
   const mediateursRetires = resultat.data.mediateursRetires.length

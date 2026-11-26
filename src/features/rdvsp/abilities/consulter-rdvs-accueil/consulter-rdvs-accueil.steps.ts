@@ -101,7 +101,7 @@ When('je consulte l’accueil', async () => {
     maintenant: MAINTENANT,
   })
 
-  resultat = consultation.success ? consultation.data.widget : undefined
+  resultat = consultation.data.widget
 })
 
 const donnees = () => {

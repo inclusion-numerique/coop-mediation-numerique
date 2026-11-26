@@ -20,8 +20,6 @@ export const effacementPourLaSuppressionDeCompte =
       utilisateurId: UtilisateurCoopId(utilisateurId),
     })
 
-    if (!resultat.success) return resultat.error
-
     const empreinte = resultat.data
 
     if (empreinte._tag === 'aucunCompte')

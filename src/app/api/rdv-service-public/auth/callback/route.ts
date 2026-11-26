@@ -94,7 +94,7 @@ const creerOuFusionnerLesUsagers = async ({
     mediateurId: MediateurDuBeneficiaire(mediateurId),
     maintenant: new Date(),
   })
-  return fusion.success ? fusion.data : { merges: [], skipped: [] }
+  return fusion.data
 }
 
 const declencher = declencherSynchronisation({

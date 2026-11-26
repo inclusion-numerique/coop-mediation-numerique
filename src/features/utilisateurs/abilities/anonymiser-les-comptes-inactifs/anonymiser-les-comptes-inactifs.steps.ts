@@ -50,7 +50,6 @@ const examiner = async (simuler: boolean) => {
       return success(undefined)
     },
   })({ maintenant, simuler })
-  assert.ok(resultat.success)
   etat.examines = resultat.data
 }
 

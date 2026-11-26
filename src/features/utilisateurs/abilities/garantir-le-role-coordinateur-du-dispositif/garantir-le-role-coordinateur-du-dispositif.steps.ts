@@ -64,7 +64,6 @@ When('le rôle coordinateur du dispositif est garanti', async () => {
     coordonneDansLeDispositif,
     creerLeRoleCoordinateur: creerLeRoleCoordinateur(async () => undefined),
   })({ utilisateurId: utilisateurId() })
-  assert.ok(resultat.success)
   garantie.cree = resultat.data._tag === 'RoleCree'
 })
 

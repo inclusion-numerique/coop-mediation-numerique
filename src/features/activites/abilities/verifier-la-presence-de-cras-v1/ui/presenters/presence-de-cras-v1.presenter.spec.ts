@@ -19,9 +19,7 @@ describe('présence de CRA v1 présentée', () => {
       attendue: false,
     },
   ])('$cas', ({ presence, attendue }) => {
-    expect(
-      presenceDeCrasV1Presentee({ success: true, data: presence }),
-    ).toEqual({
+    expect(presenceDeCrasV1Presentee({ data: presence })).toEqual({
       hasCrasV1: attendue,
     })
   })

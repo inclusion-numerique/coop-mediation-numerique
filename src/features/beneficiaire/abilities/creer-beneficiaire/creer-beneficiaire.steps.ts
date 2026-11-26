@@ -24,7 +24,6 @@ const creer = async (form: Record<string, unknown>): Promise<void> => {
     mediateurId: testMediateurId,
     maintenant: new Date(),
   })
-  assert.ok(creation.success, 'La création a échoué')
   lastCreated = creation.data
   suivreLeBeneficiaire(lastCreated.id)
 }

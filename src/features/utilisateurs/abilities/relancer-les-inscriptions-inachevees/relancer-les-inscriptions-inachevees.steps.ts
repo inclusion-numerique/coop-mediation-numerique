@@ -72,7 +72,6 @@ When('les inscriptions inachevées sont relancées', async () => {
         : success(undefined),
     retirerDesListes: async () => success(undefined),
   })({ maintenant: new Date() })
-  assert.ok(resultat.success)
   relance.rapports = resultat.data
 })
 

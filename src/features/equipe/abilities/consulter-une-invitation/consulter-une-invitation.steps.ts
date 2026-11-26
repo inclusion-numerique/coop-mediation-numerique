@@ -81,7 +81,6 @@ const ouvrir = async (session: string | null) => {
     ),
     session: session === null ? null : Courriel(session),
   })
-  assert.ok(consultation.success)
   contexte.vue = consultation.data
 }
 

@@ -112,7 +112,7 @@ const lancerLesRelancesDesInscrits = async (
     noterLaRelance: noterLaRelance('Nouveau'),
     supprimerLeCompte,
   })({ maintenant })
-  return resultat.success ? resultat.data : resultat.error
+  return resultat.data
 }
 
 const lancerLesRelancesDInscription = async (
@@ -126,7 +126,7 @@ const lancerLesRelancesDInscription = async (
     effacerLInscription: effacerLInscription(retirerDuRegistre),
     retirerDesListes,
   })({ maintenant })
-  return resultat.success ? resultat.data : resultat.error
+  return resultat.data
 }
 
 const effacerLEmpreinteRdv = effacementPourLaSuppressionDeCompte(
@@ -146,7 +146,7 @@ const detacherDesEquipes: EffacementsDesAutresFeatures['detacherDesEquipes'] =
       ...identifiants,
       maintenant: new Date(),
     })
-    return detachement.success ? detachement.data.bilan : detachement.error
+    return detachement.data.bilan
   }
 
 const supprimerComptePorts: EffacementsDesAutresFeatures = {
@@ -158,7 +158,7 @@ const supprimerComptePorts: EffacementsDesAutresFeatures = {
       ...identifiants,
       maintenant: new Date(),
     })
-    return retrait.success ? bilanDuRetrait(retrait.data) : retrait.error
+    return bilanDuRetrait(retrait.data)
   },
   detacherDesEquipes,
   retirerDesLieux,
@@ -167,9 +167,7 @@ const supprimerComptePorts: EffacementsDesAutresFeatures = {
       ...identifiants,
       maintenant: new Date(),
     })
-    return revocation.success
-      ? { partagesRevoques: revocation.data.partagesRevoques }
-      : revocation.error
+    return { partagesRevoques: revocation.data.partagesRevoques }
   },
 }
 

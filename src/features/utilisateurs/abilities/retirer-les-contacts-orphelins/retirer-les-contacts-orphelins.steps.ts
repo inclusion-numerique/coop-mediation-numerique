@@ -77,7 +77,6 @@ When('les contacts orphelins sont retirés', async () => {
       return success({ _tag: 'Retire' })
     },
   })({ contacts: reconciliation.contacts })
-  assert.ok(resultat.success)
   reconciliation.bilan = resultat.data
 })
 

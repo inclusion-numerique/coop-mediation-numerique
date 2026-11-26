@@ -49,10 +49,6 @@ export const GET = async (request: NextRequest) => {
     maintenant: new Date(),
   })
 
-  if (!exportation.success) {
-    return new Response('Export impossible', { status: 500 })
-  }
-
   const data = await exportation.data.xlsx.writeBuffer()
   const filename = nomDuFichierDesBeneficiaires(new Date())
 

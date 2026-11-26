@@ -1,2 +1,2 @@
-export type { Failure, Result } from './result'
+export type { Failure, Result, Success } from './result'
 export { failure, success } from './result'

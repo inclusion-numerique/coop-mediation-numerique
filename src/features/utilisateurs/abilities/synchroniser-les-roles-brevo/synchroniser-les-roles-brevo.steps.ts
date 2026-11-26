@@ -228,7 +228,6 @@ When('les rôles Brevo sont synchronisés', async () => {
     tailleDesImports: TailleDeLot(synchro.tailleMax),
     tailleDesRetraits: TailleDeLot(150),
   })
-  assert.ok(resultat.success)
   synchro.bilan = resultat.data
 
   synchro.tailleMax = 1000

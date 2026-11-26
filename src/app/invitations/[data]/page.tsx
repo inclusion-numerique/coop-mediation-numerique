@@ -41,7 +41,6 @@ const InvitationPage = async (props: {
     reference: referenceDuCode(data),
     session: user == null ? null : Courriel.safe(user.email),
   })
-  if (!consultation.success) redirect('/')
   const vue = consultation.data
 
   if (vue.type === 'Illisible') redirect('/')

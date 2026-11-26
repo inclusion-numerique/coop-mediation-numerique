@@ -20,5 +20,5 @@ export const rechercherDesMembresAction = actionBuilder()
       lireLeDemandeur,
       lireLesMembresAFiltrer,
     })({ ...demandeurDuFiltre(user), recherche })
-    return membres.success ? membres.data.map(optionDeMembre) : []
+    return membres.data.map(optionDeMembre)
   })
