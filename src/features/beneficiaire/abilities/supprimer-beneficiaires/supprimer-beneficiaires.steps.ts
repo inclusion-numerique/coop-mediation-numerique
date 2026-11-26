@@ -6,6 +6,7 @@ import { supprimerBeneficiaires as supprimerBeneficiairesAvec } from '@/features
 import { anonymiserLesBeneficiaires } from '@/features/beneficiaire/abilities/supprimer-beneficiaires/implementations/prisma/anonymiser-les-beneficiaires.mutation'
 import { beneficiairesExistants } from '@/features/beneficiaire/abilities/supprimer-beneficiaires/implementations/prisma/beneficiaires-existants.query'
 import {
+  beneficiaireDUnAutreMediateur,
   nombreDeBeneficiairesAuDebutDuScenario,
   nombreDeBeneficiairesDuMediateur,
   seedBeneficiaire,
@@ -53,12 +54,8 @@ Given('un bénéficiaire de Nice enregistré pour ce médiateur', async () => {
 })
 
 Given('un bénéficiaire enregistré pour un autre médiateur', async () => {
-  const { mediateurId } = await semerPortefeuille()
-  const { id } = await prismaClient.beneficiaire.findFirstOrThrow({
-    where: { mediateurId, prenom: 'Paul1' },
-    select: { id: true },
-  })
-  suppression.autreId = id
+  await semerPortefeuille()
+  suppression.autreId = await beneficiaireDUnAutreMediateur()
 })
 
 When('je supprime ce bénéficiaire', async () => {

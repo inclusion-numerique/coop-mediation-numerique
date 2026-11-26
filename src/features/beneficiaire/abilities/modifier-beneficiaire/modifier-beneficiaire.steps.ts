@@ -8,9 +8,11 @@ import { modifierBeneficiaire as modifierBeneficiaireAvec } from '@/features/ben
 import { creationDuBeneficiaire } from '@/features/beneficiaire/abilities/modifier-beneficiaire/implementations/prisma/creation-du-beneficiaire.query'
 import { enregistrerLaModification } from '@/features/beneficiaire/abilities/modifier-beneficiaire/implementations/prisma/enregistrer-la-modification.mutation'
 import {
+  beneficiaireDUnAutreMediateur,
   seedBeneficiaire,
   testMediateurId,
 } from '@/features/beneficiaire/beneficiaire.cucumber'
+import { toBeneficiaireIdentifie } from '@/features/beneficiaire/domain/beneficiaire'
 
 const modifierBeneficiaire = modifierBeneficiaireAvec({
   creationDuBeneficiaire,
@@ -23,6 +25,7 @@ const contexte: {
   targetId?: string | undefined
   creationBefore?: Date | undefined
   result?: ModificationResult | undefined
+  ecritureRefusee?: boolean
 } = {}
 
 Given('un bénéficiaire {string} de ce médiateur', async (fullName: string) => {
@@ -69,6 +72,43 @@ When('je modifie un bénéficiaire inexistant', async () => {
     mediateurId: testMediateurId,
     maintenant: new Date(),
   })
+})
+
+const modificationDeLAutreBeneficiaire = async () =>
+  ModifierBeneficiaireValidation.parse({
+    id: await beneficiaireDUnAutreMediateur(),
+    prenom: 'Intrus',
+    nom: 'Intrus',
+  })
+
+When("je modifie le bénéficiaire de l'autre médiateur", async () => {
+  contexte.result = await modifierBeneficiaire({
+    beneficiaire: await modificationDeLAutreBeneficiaire(),
+    mediateurId: testMediateurId,
+    maintenant: new Date(),
+  })
+})
+
+When(
+  "l'écriture de la modification vise le bénéficiaire de l'autre médiateur au nom de ce médiateur",
+  async () => {
+    const beneficiaire = await modificationDeLAutreBeneficiaire()
+    contexte.ecritureRefusee = await enregistrerLaModification(
+      toBeneficiaireIdentifie(beneficiaire, {
+        id: beneficiaire.id,
+        mediateurId: testMediateurId,
+        creation: new Date(),
+        modification: new Date(),
+      }),
+    ).then(
+      () => false,
+      () => true,
+    )
+  },
+)
+
+Then("l'écriture de la modification est refusée", () => {
+  assert.strictEqual(contexte.ecritureRefusee, true)
 })
 
 Then('la modification réussit', () => {

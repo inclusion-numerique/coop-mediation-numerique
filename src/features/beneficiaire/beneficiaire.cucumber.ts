@@ -125,6 +125,14 @@ export const semerPortefeuille = async (): Promise<PortefeuilleSeme> => {
   return contexte.portefeuille
 }
 
+export const beneficiaireDUnAutreMediateur = async (): Promise<string> =>
+  (
+    await prismaClient.beneficiaire.findFirstOrThrow({
+      where: { mediateurId: portefeuilleSeme().mediateurId, prenom: 'Paul1' },
+      select: { id: true },
+    })
+  ).id
+
 After(async () => {
   const semé = contexte.portefeuille
   contexte.portefeuille = undefined

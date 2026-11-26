@@ -6,5 +6,8 @@ export const enregistrerLaModification: EnregistrerLaModification = async (
   beneficiaire,
 ) => {
   const { id, ...data } = beneficiaireFromDomain(beneficiaire)
-  await prismaClient.beneficiaire.update({ where: { id }, data })
+  await prismaClient.beneficiaire.update({
+    where: { id, mediateurId: beneficiaire.mediateurId, suppression: null },
+    data,
+  })
 }

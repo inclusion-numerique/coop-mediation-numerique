@@ -11,7 +11,7 @@ export const enregistrerLaFusion: EnregistrerLaFusion = async ({
 }) => {
   await prismaClient.$transaction(async (tx) => {
     await tx.beneficiaire.update({
-      where: { id: destinationId },
+      where: { id: destinationId, mediateurId, suppression: null },
       data: {
         ...donneesDeLaDestination,
         modification: now,
@@ -41,7 +41,7 @@ export const enregistrerLaFusion: EnregistrerLaFusion = async ({
     `
 
     await tx.beneficiaire.update({
-      where: { id: sourceId },
+      where: { id: sourceId, mediateurId, suppression: null },
       data: {
         suppression: now,
         modification: now,

@@ -8,6 +8,7 @@ import {
   lireLesBeneficiairesAFusionner,
 } from '@/features/beneficiaire/abilities/fusionner-beneficiaires/implementations/prisma/index'
 import {
+  beneficiaireDUnAutreMediateur,
   seedBeneficiaire,
   testMediateurId,
 } from '@/features/beneficiaire/beneficiaire.cucumber'
@@ -24,6 +25,7 @@ const contexte: {
   destinationId?: string | undefined
   sourceId?: string | undefined
   result?: FusionResult | undefined
+  ecritureRefusee?: boolean
 } = {}
 
 Given('un bénéficiaire destination sans email', async () => {
@@ -70,6 +72,41 @@ When('je fusionne la source dans une destination inexistante', async () => {
     mediateurId: testMediateurId,
     maintenant: new Date(),
   })
+})
+
+When(
+  "je fusionne le bénéficiaire de l'autre médiateur dans la destination",
+  async () => {
+    assert.ok(contexte.destinationId)
+    contexte.result = await fusionnerBeneficiaires({
+      sourceId: BeneficiaireId(await beneficiaireDUnAutreMediateur()),
+      destinationId: BeneficiaireId(contexte.destinationId),
+      mediateurId: testMediateurId,
+      maintenant: new Date(),
+    })
+  },
+)
+
+When(
+  "l'écriture de la fusion verse le bénéficiaire de l'autre médiateur dans la destination",
+  async () => {
+    assert.ok(contexte.destinationId)
+    contexte.ecritureRefusee = await enregistrerLaFusion({
+      sourceId: BeneficiaireId(await beneficiaireDUnAutreMediateur()),
+      destinationId: BeneficiaireId(contexte.destinationId),
+      mediateurId: testMediateurId,
+      donneesDeLaDestination: {},
+      creation: new Date(),
+      maintenant: new Date(),
+    }).then(
+      () => false,
+      () => true,
+    )
+  },
+)
+
+Then("l'écriture de la fusion est refusée", () => {
+  assert.strictEqual(contexte.ecritureRefusee, true)
 })
 
 Then('la fusion réussit', () => {
