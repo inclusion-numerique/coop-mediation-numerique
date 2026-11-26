@@ -33,6 +33,21 @@ export const RoleProtege = (
   role: RoleUtilisateur,
 ): RoleProtege => ({ _tag: 'RoleProtege', utilisateurId, role })
 
+export type RoleNonVierge = {
+  readonly _tag: 'RoleNonVierge'
+  readonly role: 'Mediateur' | 'Coordinateur'
+}
+
+export const RoleNonVierge = (role: RoleNonVierge['role']): RoleNonVierge => ({
+  _tag: 'RoleNonVierge',
+  role,
+})
+
+export type EchecDuChangementDeRoles =
+  | CompteSupprime
+  | RoleProtege
+  | RoleNonVierge
+
 export type EffacementRefuse = {
   readonly _tag: 'EffacementRefuse'
   readonly motif: string

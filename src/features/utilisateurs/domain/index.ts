@@ -18,7 +18,9 @@ export { Dispositif, dispositifDe, estEnPoste } from './dispositif'
 export {
   CompteSupprime,
   type EchecDeRelance,
+  type EchecDuChangementDeRoles,
   EffacementRefuse,
+  RoleNonVierge,
   RoleProtege,
   UtilisateurIntrouvable,
 } from './errors'
@@ -65,9 +67,12 @@ export type {
 export { NomEmployeuse } from './nom-employeuse'
 export { OrigineCompte } from './origine-compte'
 export type {
+  AppliquerLePlan,
   EnvoyerLAvertissement,
   EnvoyerLAvisDEffacement,
   EnvoyerLaRelance,
+  JournaliserLeChangement,
+  LireLeCompteAReaffecter,
   LireLesComptesARelancer,
   NoterLaRelance,
 } from './ports'
@@ -112,6 +117,16 @@ export {
   estRoleProtege,
   RoleUtilisateur,
 } from './role-utilisateur'
+export {
+  type CompteAReaffecter,
+  type CoordinateurAReaffecter,
+  type MediateurAReaffecter,
+  type OperationRole,
+  type PlanDeChangement,
+  planDeChangement,
+  type RolesChanges,
+  type RolesDemandes,
+} from './roles/plan-de-changement'
 export {
   type StatutCompte,
   statutDe,

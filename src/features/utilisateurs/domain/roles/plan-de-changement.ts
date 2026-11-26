@@ -1,23 +1,31 @@
+import { failure, type Result, success } from '@/libraries/result'
 import {
-  type AuteurId,
   CompteSupprime,
-  type CoordinateurId,
-  coordinateurDe,
+  type EchecDuChangementDeRoles,
+  RoleNonVierge,
+  RoleProtege,
+} from '../errors'
+import type { AuteurId } from '../identifiants/auteur-id'
+import type { CoordinateurId } from '../identifiants/coordinateur-id'
+import type { MediateurId } from '../identifiants/mediateur-id'
+import type { UtilisateurId } from '../identifiants/utilisateur-id'
+import {
   coordinateurEstVierge,
-  estRoleProtege,
-  type MediateurId,
-  mediateurDe,
   mediateurEstVierge,
   type ProductionCoordinateur,
   type ProductionMediateur,
+} from '../production'
+import {
+  coordinateurDe,
+  mediateurDe,
   type Rattachements,
-  RoleProtege,
-  type RoleUtilisateur,
-  type UtilisateurId,
-} from '@/features/utilisateurs/domain'
-import { failure, type Result, success } from '@/libraries/result'
-import { type EchecDeChangerLesRoles, RoleNonVierge } from './errors'
-import type { RolesDemandes } from './roles-demandes'
+} from '../rattachements'
+import { estRoleProtege, type RoleUtilisateur } from '../role-utilisateur'
+
+export type RolesDemandes =
+  | { readonly mediateur: true; readonly coordinateur: false }
+  | { readonly mediateur: false; readonly coordinateur: true }
+  | { readonly mediateur: true; readonly coordinateur: true }
 
 export type MediateurAReaffecter = ProductionMediateur & {
   readonly id: MediateurId
@@ -59,7 +67,7 @@ export type RolesChanges = {
 const operationsDuMediateur = (
   mediateur: MediateurAReaffecter | null,
   demande: RolesDemandes,
-): Result<readonly OperationRole[], EchecDeChangerLesRoles> => {
+): Result<readonly OperationRole[], EchecDuChangementDeRoles> => {
   if (demande.mediateur)
     return success(mediateur === null ? [{ _tag: 'AjouterMediateur' }] : [])
   if (mediateur === null) return success([])
@@ -70,7 +78,7 @@ const operationsDuMediateur = (
 const operationsDuCoordinateur = (
   coordinateur: CoordinateurAReaffecter | null,
   demande: RolesDemandes,
-): Result<readonly OperationRole[], EchecDeChangerLesRoles> => {
+): Result<readonly OperationRole[], EchecDuChangementDeRoles> => {
   if (demande.coordinateur)
     return success(
       coordinateur === null ? [{ _tag: 'AjouterCoordinateur' }] : [],
@@ -93,7 +101,7 @@ const ordre: Record<OperationRole['_tag'], number> = {
 export const planDeChangement = (
   compte: CompteAReaffecter,
   demande: RolesDemandes,
-): Result<PlanDeChangement, EchecDeChangerLesRoles> => {
+): Result<PlanDeChangement, EchecDuChangementDeRoles> => {
   if (estRoleProtege(compte.role))
     return failure(RoleProtege(compte.id, compte.role))
   if (compte.supprime) return failure(CompteSupprime(compte.id))

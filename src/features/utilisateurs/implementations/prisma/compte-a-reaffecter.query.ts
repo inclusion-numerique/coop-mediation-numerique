@@ -1,19 +1,16 @@
 import { prismaClient } from '@/configuration/prisma'
 import {
+  type CompteAReaffecter,
   CoordinateurId,
   MediateurId,
   rattachements,
-  UtilisateurId,
+  type UtilisateurId,
 } from '@/features/utilisateurs/domain'
-import { roleLu } from '../../../../implementations/prisma/role.transfer'
-import type { CompteAReaffecter } from '../../domain'
+import { roleLu } from './role.transfer'
 
 export const compteAReaffecter = async (
-  utilisateurId: string,
+  id: UtilisateurId,
 ): Promise<CompteAReaffecter | null> => {
-  const id = UtilisateurId.safe(utilisateurId)
-  if (id === null) return null
-
   const row = await prismaClient.user.findUnique({
     where: { id },
     select: {

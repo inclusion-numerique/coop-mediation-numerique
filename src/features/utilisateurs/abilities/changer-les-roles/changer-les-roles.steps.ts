@@ -2,14 +2,13 @@ import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
-import { changerLesRoles } from '@/features/utilisateurs/abilities/changer-les-roles/domain/changer-les-roles'
-import { appliquerLePlan } from '@/features/utilisateurs/abilities/changer-les-roles/implementations/prisma/appliquer-le-plan.mutation'
-import { compteAReaffecter } from '@/features/utilisateurs/abilities/changer-les-roles/implementations/prisma/compte-a-reaffecter.query'
-import { journaliserLeChangement } from '@/features/utilisateurs/abilities/changer-les-roles/implementations/prisma/journaliser-le-changement.mutation'
-import { AuteurId } from '@/features/utilisateurs/domain'
+import { AuteurId, UtilisateurId } from '@/features/utilisateurs/domain'
+import { appliquerLePlan } from '@/features/utilisateurs/implementations/prisma/appliquer-le-plan.mutation'
+import { compteAReaffecter } from '@/features/utilisateurs/implementations/prisma/compte-a-reaffecter.query'
+import { journaliserLeChangement } from '@/features/utilisateurs/implementations/prisma/journaliser-le-changement.mutation'
 import type { SynchroniserLaPersonne } from '@/features/utilisateurs/implementations/prisma/registre-des-personnes.mutation'
 import { semerUnCompteDeListe } from '@/features/utilisateurs/utilisateurs.cucumber'
-import { rolesVacants } from './implementations/prisma/roles-vacants.query'
+import { changerLesRoles } from './domain/changer-les-roles'
 
 const changerLesRolesAvec = (synchroniserLaPersonne: SynchroniserLaPersonne) =>
   changerLesRoles({
@@ -22,7 +21,6 @@ const changement: {
   utilisateurId?: string
   tagId?: string
   resultat?: Awaited<ReturnType<ReturnType<typeof changerLesRolesAvec>>>
-  vacants?: Awaited<ReturnType<typeof rolesVacants>>
 } = {}
 
 const UN_JOUR = 24 * 60 * 60 * 1000
@@ -35,32 +33,24 @@ const utilisateurId = (): string => {
 const semer = async ({
   mediateur,
   coordinateur,
-  role = 'User',
-  inscritIlYA = 1,
-  conseillerNumerique = false,
-  coordinateurDeclare = false,
+  role,
 }: {
   mediateur: boolean
   coordinateur: boolean
-  role?: 'User' | 'Admin'
-  inscritIlYA?: number
-  conseillerNumerique?: boolean
-  coordinateurDeclare?: boolean
+  role: 'User' | 'Admin'
 }) => {
   changement.utilisateurId = await semerUnCompteDeListe({
     prenom: 'Romane',
     marqueur: `Roles${v4().slice(0, 8)}`,
     role,
-    creeLe: new Date(Date.now() - (inscritIlYA + 1) * UN_JOUR),
-    inscritLe: new Date(Date.now() - inscritIlYA * UN_JOUR),
+    creeLe: new Date(Date.now() - 2 * UN_JOUR),
+    inscritLe: new Date(Date.now() - UN_JOUR),
     mediateur: mediateur
       ? { derniereActivite: null, dernierBeneficiaire: null }
       : null,
     coordinateur: coordinateur
       ? { aUneEquipe: false, aCoordonne: false }
       : null,
-    conseillerNumerique,
-    coordinateurDeclare,
   })
 }
 
@@ -82,7 +72,7 @@ const changer = async (mediateur: boolean, coordinateur: boolean) => {
     inscritLe: new Date('2026-01-01'),
   })
   changement.resultat = await changerLesRolesAvec(async () => undefined)({
-    utilisateurId: utilisateurId(),
+    utilisateurId: UtilisateurId.safe(utilisateurId()),
     mediateur,
     coordinateur,
     auteur: {
@@ -93,60 +83,16 @@ const changer = async (mediateur: boolean, coordinateur: boolean) => {
 }
 
 Given('un médiateur dont on change les rôles', async () => {
-  await semer({ mediateur: true, coordinateur: false })
+  await semer({ mediateur: true, coordinateur: false, role: 'User' })
 })
 
 Given('un médiateur coordinateur dont on change les rôles', async () => {
-  await semer({ mediateur: true, coordinateur: true })
+  await semer({ mediateur: true, coordinateur: true, role: 'User' })
 })
 
 Given('un administrateur dont on change les rôles', async () => {
   await semer({ mediateur: false, coordinateur: false, role: 'Admin' })
 })
-
-Given(
-  'un médiateur coordinateur hors dispositif inscrit depuis {int} jours',
-  async (jours: number) => {
-    await semer({ mediateur: true, coordinateur: true, inscritIlYA: jours })
-  },
-)
-
-Given(
-  'un médiateur coordinateur conseiller numérique inscrit depuis {int} jours',
-  async (jours: number) => {
-    await semer({
-      mediateur: true,
-      coordinateur: true,
-      inscritIlYA: jours,
-      conseillerNumerique: true,
-    })
-  },
-)
-
-Given(
-  'un coordinateur du dispositif médiateur inscrit depuis {int} jours',
-  async (jours: number) => {
-    await semer({
-      mediateur: true,
-      coordinateur: true,
-      inscritIlYA: jours,
-      conseillerNumerique: true,
-      coordinateurDeclare: true,
-    })
-  },
-)
-
-Given(
-  'un médiateur coordinateur déclaré coordinateur sans affectation au dispositif inscrit depuis {int} jours',
-  async (jours: number) => {
-    await semer({
-      mediateur: true,
-      coordinateur: true,
-      inscritIlYA: jours,
-      coordinateurDeclare: true,
-    })
-  },
-)
 
 Given('son rôle médiateur porte un tag', async () => {
   const { mediateur } = await roles()
@@ -203,10 +149,6 @@ When("l'administration lui retire tous ses rôles", async () => {
   await changer(false, false)
 })
 
-When('le système cherche les rôles vacants', async () => {
-  changement.vacants = await rolesVacants(new Date())
-})
-
 Then('le changement de rôles aboutit', () => {
   assert.ok(changement.resultat?.success, 'Le changement a échoué')
 })
@@ -229,34 +171,6 @@ Then("ce compte n'est plus que coordinateur", async () => {
   const { mediateur, coordinateur } = await roles()
   assert.strictEqual(mediateur, null)
   assert.ok(coordinateur)
-})
-
-Then('le rôle coordinateur de ce compte est repéré comme vacant', () => {
-  assert.ok(
-    changement.vacants?.coordinateursVacants.some(
-      (id) => id === utilisateurId(),
-    ),
-  )
-})
-
-Then("le rôle coordinateur de ce compte n'est pas repéré comme vacant", () => {
-  assert.ok(
-    !changement.vacants?.coordinateursVacants.some(
-      (id) => id === utilisateurId(),
-    ),
-  )
-})
-
-Then("aucun rôle de ce compte n'est repéré comme vacant", () => {
-  const estCeCompte = (id: string) => id === utilisateurId()
-  assert.ok(!changement.vacants?.coordinateursVacants.some(estCeCompte))
-  assert.ok(!changement.vacants?.mediateursVacants.some(estCeCompte))
-})
-
-Then("son rôle médiateur n'est pas repéré comme vacant", () => {
-  assert.ok(
-    !changement.vacants?.mediateursVacants.some((id) => id === utilisateurId()),
-  )
 })
 
 Then('le tag appartient désormais à son rôle coordinateur', async () => {

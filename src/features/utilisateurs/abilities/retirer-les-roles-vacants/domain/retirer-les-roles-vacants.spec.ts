@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest'
 import {
+  type CompteAReaffecter,
   CoordinateurId,
   MediateurId,
   RoleUtilisateur,
   rattachements,
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
-import type { CompteAReaffecter } from './plan-de-changement'
 import { retirerLesRolesVacants } from './retirer-les-roles-vacants'
 
 const maintenant = new Date('2026-11-26T08:00:00.000Z')
@@ -67,8 +67,17 @@ describe('retirer les rôles vacants', () => {
     })
   })
 
-  it('ne retient pas les rôles dont le retrait est refusé', async () => {
+  it('ne retient pas les rôles d’un compte introuvable', async () => {
     expect(await retirerAvec(null)).toEqual({
+      success: true,
+      data: { coordinateursRetires: [], mediateursRetires: [] },
+    })
+  })
+
+  it('ne retient pas les rôles dont le retrait est refusé', async () => {
+    expect(
+      await retirerAvec({ ...compteVacant, role: RoleUtilisateur('Admin') }),
+    ).toEqual({
       success: true,
       data: { coordinateursRetires: [], mediateursRetires: [] },
     })

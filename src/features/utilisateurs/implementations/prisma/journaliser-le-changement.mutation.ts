@@ -1,6 +1,9 @@
 import { addMutationLog } from '@/configuration/prisma'
-import type { AuteurId, UtilisateurId } from '@/features/utilisateurs/domain'
-import type { PlanDeChangement } from '../../domain'
+import type {
+  AuteurId,
+  PlanDeChangement,
+  UtilisateurId,
+} from '@/features/utilisateurs/domain'
 
 export const journaliserLeChangement = ({
   utilisateurId,

@@ -1,8 +1,12 @@
-import { UtilisateurIntrouvable } from '@/features/utilisateurs/domain'
+import {
+  planDeChangement,
+  type RolesChanges,
+  type UtilisateurId,
+  UtilisateurIntrouvable,
+} from '@/features/utilisateurs/domain'
 import { failure, type Result, success } from '@/libraries/result'
 import type { AuteurDuChangement } from './auteur-du-changement'
 import type { EchecDeChangerLesRoles } from './errors'
-import { planDeChangement, type RolesChanges } from './plan-de-changement'
 import type { ChangerLesRolesPorts } from './ports'
 import { rolesDemandes } from './roles-demandes'
 
@@ -18,13 +22,15 @@ export const changerLesRoles =
     coordinateur,
     auteur,
   }: {
-    readonly utilisateurId: string
+    readonly utilisateurId: UtilisateurId | null
     readonly mediateur: boolean
     readonly coordinateur: boolean
     readonly auteur: AuteurDuChangement
   }): Promise<Result<RolesChanges, EchecDeChangerLesRoles>> => {
     const demande = rolesDemandes({ mediateur, coordinateur })
     if (!demande.success) return demande
+
+    if (utilisateurId === null) return failure(UtilisateurIntrouvable())
 
     const compte = await lireLeCompteAReaffecter(utilisateurId)
     if (compte === null) return failure(UtilisateurIntrouvable())

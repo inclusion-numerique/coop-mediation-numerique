@@ -2,11 +2,12 @@ import { prismaClient } from '@/configuration/prisma'
 import type {
   CoordinateurId,
   MediateurId,
+  OperationRole,
+  PlanDeChangement,
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
 import type { SynchroniserLaPersonne } from '@/features/utilisateurs/implementations/prisma/registre-des-personnes.mutation'
 import type { Prisma } from '@/generated/prisma/client'
-import type { OperationRole, PlanDeChangement } from '../../domain'
 
 type Transaction = Prisma.TransactionClient
 

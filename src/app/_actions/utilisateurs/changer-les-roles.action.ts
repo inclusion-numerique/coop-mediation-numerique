@@ -7,10 +7,10 @@ import { synchroniserPersonne } from '@/features/registre-des-personnes/implemen
 import { CHANGER_LES_ROLES_ERRORS } from '@/features/utilisateurs/abilities/changer-les-roles/action/changer-les-roles.errors'
 import { ChangerLesRolesValidation } from '@/features/utilisateurs/abilities/changer-les-roles/action/changer-les-roles.validation'
 import { changerLesRoles } from '@/features/utilisateurs/abilities/changer-les-roles/domain/changer-les-roles'
-import { appliquerLePlan } from '@/features/utilisateurs/abilities/changer-les-roles/implementations/prisma/appliquer-le-plan.mutation'
-import { compteAReaffecter } from '@/features/utilisateurs/abilities/changer-les-roles/implementations/prisma/compte-a-reaffecter.query'
-import { journaliserLeChangement } from '@/features/utilisateurs/abilities/changer-les-roles/implementations/prisma/journaliser-le-changement.mutation'
-import { AuteurId } from '@/features/utilisateurs/domain'
+import { AuteurId, UtilisateurId } from '@/features/utilisateurs/domain'
+import { appliquerLePlan } from '@/features/utilisateurs/implementations/prisma/appliquer-le-plan.mutation'
+import { compteAReaffecter } from '@/features/utilisateurs/implementations/prisma/compte-a-reaffecter.query'
+import { journaliserLeChangement } from '@/features/utilisateurs/implementations/prisma/journaliser-le-changement.mutation'
 import type { SynchroniserLaPersonne } from '@/features/utilisateurs/implementations/prisma/registre-des-personnes.mutation'
 import { fromResult, withInput } from '@/libraries/nextjs'
 import { success } from '@/libraries/result'
@@ -30,7 +30,9 @@ export const changerLesRolesAction = actionBuilder()
     fromResult(
       async ({ input, user }) => {
         const resultat = await changerLesRolesAvec(synchroniserPersonne)({
-          ...input,
+          utilisateurId: UtilisateurId.safe(input.utilisateurId),
+          mediateur: input.mediateur,
+          coordinateur: input.coordinateur,
           auteur: {
             _tag: 'administrateur',
             administrateurId: AuteurId(user.id),

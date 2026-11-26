@@ -1,20 +1,18 @@
 import { describe, expect, it } from 'vitest'
 import {
   AuteurId,
+  type CompteAReaffecter,
+  type CoordinateurAReaffecter,
   CoordinateurId,
+  type MediateurAReaffecter,
   MediateurId,
+  type OperationRole,
   RoleUtilisateur,
   rattachements,
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
 import type { AuteurDuChangement } from './auteur-du-changement'
 import { changerLesRoles } from './changer-les-roles'
-import type {
-  CompteAReaffecter,
-  CoordinateurAReaffecter,
-  MediateurAReaffecter,
-  OperationRole,
-} from './plan-de-changement'
 
 const utilisateurId = UtilisateurId('0d1a1e7e-1f2b-4c3d-8e4f-5a6b7c8d9e0f')
 
@@ -69,6 +67,15 @@ describe('changer les rôles', () => {
         demande(false, false),
       ),
     ).toEqual({ success: false, error: { _tag: 'AucunRoleDemande' } })
+  })
+
+  it('signale un identifiant qui ne désigne aucun compte', async () => {
+    expect(
+      await changerLesRolesDe(compte(mediateurVierge, null))({
+        ...demande(true, false),
+        utilisateurId: null,
+      }),
+    ).toEqual({ success: false, error: { _tag: 'UtilisateurIntrouvable' } })
   })
 
   it('signale un utilisateur introuvable', async () => {
