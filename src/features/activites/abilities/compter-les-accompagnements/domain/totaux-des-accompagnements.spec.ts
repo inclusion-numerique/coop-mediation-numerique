@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { Effectif, Jour } from '../../../domain'
+import { Effectif, Jour, type PeriodeDesStatistiques } from '../../../domain'
 import {
   anonymes,
   nouvellesComptees,
@@ -25,11 +25,27 @@ describe('totaux des accompagnements', () => {
     expect(anonymes(totaux(7, 3))).toBe(4)
   })
 
-  it('ne compte les nouvelles personnes que sur une période bornée des deux côtés', () => {
-    expect(
-      nouvellesComptees({ du: Jour('2026-01-01'), au: Jour('2026-03-31') }),
-    ).toBe(true)
-    expect(nouvellesComptees({ du: Jour('2026-01-01'), au: null })).toBe(false)
-    expect(nouvellesComptees({ du: null, au: null })).toBe(false)
+  it.each<{
+    readonly cas: string
+    readonly periode: PeriodeDesStatistiques
+    readonly comptees: boolean
+  }>([
+    {
+      cas: 'compte les nouvelles personnes sur une période bornée des deux côtés',
+      periode: { du: Jour('2026-01-01'), au: Jour('2026-03-31') },
+      comptees: true,
+    },
+    {
+      cas: 'ne compte pas les nouvelles personnes sans fin de période',
+      periode: { du: Jour('2026-01-01'), au: null },
+      comptees: false,
+    },
+    {
+      cas: 'ne compte pas les nouvelles personnes sans période',
+      periode: { du: null, au: null },
+      comptees: false,
+    },
+  ])('$cas', ({ periode, comptees }) => {
+    expect(nouvellesComptees(periode)).toBe(comptees)
   })
 })

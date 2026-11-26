@@ -83,14 +83,14 @@ describe('périmètre de l’export', () => {
 })
 
 describe('codes postaux', () => {
-  it.each(['69002', '45100,45000', '06100, 06000, 06200'])(
+  it.each<string>(['69002', '45100,45000', '06100, 06000, 06200'])(
     'accepte « %s »',
     (valeur) => {
       expect(CodesPostaux.safe(valeur)).toBe(valeur)
     },
   )
 
-  it.each(['', ' ', '6900', 'Lyon'])('refuse « %s »', (valeur) => {
+  it.each<string>(['', ' ', '6900', 'Lyon'])('refuse « %s »', (valeur) => {
     expect(CodesPostaux.safe(valeur)).toBeNull()
   })
 })

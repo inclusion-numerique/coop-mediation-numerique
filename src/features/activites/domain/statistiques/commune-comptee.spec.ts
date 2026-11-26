@@ -11,7 +11,11 @@ describe('commune comptée', () => {
     })
   })
 
-  it.each([
+  it.each<{
+    readonly nom: string | null
+    readonly codePostal: string | null
+    readonly codeInsee: string | null
+  }>([
     { nom: null, codePostal: null, codeInsee: null },
     { nom: 'Amiens', codePostal: '', codeInsee: '80021' },
     { nom: 'Amiens', codePostal: '8000', codeInsee: '80021' },

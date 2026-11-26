@@ -17,6 +17,7 @@ import { BeneficiaireId } from '../identifiants/beneficiaire-id'
 import {
   aucuneParticipationAnonyme,
   equipementDe,
+  type ParticipantsAnonymes,
   participantsAnonymesDe,
   participantsDeLAtelier,
   thematiquesDe,
@@ -28,8 +29,11 @@ import { ThematiqueDeMediation } from './thematique-de-mediation'
 const beneficiaire = BeneficiaireId('5b2d0c4e-8f1a-4c3b-9d7e-2a6f1b3c4d5e')
 
 describe('durée', () => {
-  it('ne dépasse pas 23 h 59', () => {
+  it('accepte 23 h 59', () => {
     expect(DureeEnMinutes.safe(1439)).toBe(1439)
+  })
+
+  it('ne dépasse pas 23 h 59', () => {
     expect(DureeEnMinutes.safe(1440)).toBeNull()
   })
 })
@@ -122,14 +126,24 @@ describe('participants anonymes', () => {
   }
 
   it('range le reliquat de chaque répartition en non communiqué', () => {
-    const resultat = participantsAnonymesDe(saisie)
-    expect(resultat.success && resultat.data.genres).toEqual({
-      masculin: 3,
-      feminin: 5,
-      nonCommunique: 2,
-    })
-    expect(resultat.success && resultat.data.tranchesDAge.nonCommunique).toBe(
-      10,
+    expect(participantsAnonymesDe(saisie)).toEqual(
+      success({
+        total: Effectif(10),
+        dejaAccompagnes: Effectif(4),
+        genres: {
+          masculin: Effectif(3),
+          feminin: Effectif(5),
+          nonCommunique: Effectif(2),
+        },
+        tranchesDAge: {
+          ...aucuneParticipationAnonyme.tranchesDAge,
+          nonCommunique: Effectif(10),
+        },
+        statutsSociaux: {
+          ...aucuneParticipationAnonyme.statutsSociaux,
+          nonCommunique: Effectif(10),
+        },
+      }),
     )
   })
 
@@ -171,28 +185,41 @@ describe('participants anonymes', () => {
 })
 
 describe('participants d’un atelier', () => {
-  const sansAnonyme = participantsAnonymesDe(aucuneParticipationAnonyme)
-  const anonymes = sansAnonyme.success ? sansAnonyme.data : null
+  const anonymes: ParticipantsAnonymes = {
+    total: Effectif(0),
+    dejaAccompagnes: Effectif(0),
+    genres: {
+      ...aucuneParticipationAnonyme.genres,
+      nonCommunique: Effectif(0),
+    },
+    tranchesDAge: {
+      ...aucuneParticipationAnonyme.tranchesDAge,
+      nonCommunique: Effectif(0),
+    },
+    statutsSociaux: {
+      ...aucuneParticipationAnonyme.statutsSociaux,
+      nonCommunique: Effectif(0),
+    },
+  }
 
   it('exige au moins un participant', () => {
-    expect(
-      anonymes && participantsDeLAtelier({ suivis: [], anonymes }),
-    ).toEqual(failure(AtelierSansParticipant()))
+    expect(participantsDeLAtelier({ suivis: [], anonymes })).toEqual(
+      failure(AtelierSansParticipant()),
+    )
   })
 
   it('refuse un bénéficiaire suivi en double', () => {
     expect(
-      anonymes &&
-        participantsDeLAtelier({
-          suivis: [beneficiaire, beneficiaire],
-          anonymes,
-        }),
+      participantsDeLAtelier({
+        suivis: [beneficiaire, beneficiaire],
+        anonymes,
+      }),
     ).toEqual(failure(BeneficiaireEnDouble()))
   })
 
   it('accepte un bénéficiaire suivi seul', () => {
     expect(
-      anonymes && participantsDeLAtelier({ suivis: [beneficiaire], anonymes }),
+      participantsDeLAtelier({ suivis: [beneficiaire], anonymes }),
     ).toEqual(success({ suivis: [beneficiaire], anonymes }))
   })
 })
