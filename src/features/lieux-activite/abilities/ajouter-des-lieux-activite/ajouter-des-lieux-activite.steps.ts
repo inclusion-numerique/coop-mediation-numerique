@@ -35,7 +35,7 @@ import {
 } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/lieu-decrit.mutation'
 import { lireLieuxDejaRattaches } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/lieux-deja-rattaches.query'
 import {
-  estUnLieuActif,
+  etatDuLieu,
   lieuPorteurDeLaCarto,
   nouvelIdentifiantDeLieu,
 } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/situation-du-lieu.query'
@@ -73,7 +73,7 @@ const ajouter = async (
   dernier.ajout = await ajouterDesLieuxActivite({
     lireLieuxDejaRattaches,
     trouverStructuresCarto: async () => structuresCarto,
-    estUnLieuActif,
+    etatDuLieu,
     lieuPorteurDeLaCarto,
     lieuxAuMemeEndroit,
     nouvelIdentifiantDeLieu,

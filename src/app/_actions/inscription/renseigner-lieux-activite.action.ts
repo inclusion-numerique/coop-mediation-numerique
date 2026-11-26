@@ -15,7 +15,7 @@ import { activitesEnCoursDeLUtilisateur } from '@/features/lieux-activite/abilit
 import { appliquerLesDestinations } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/ajouter-des-lieux-activite.mutation'
 import { lieuDemandeDepuisLeLieuDesire } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/lieu-desire.transfer'
 import {
-  estUnLieuActif,
+  etatDuLieu,
   lieuPorteurDeLaCarto,
   nouvelIdentifiantDeLieu,
 } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/situation-du-lieu.query'
@@ -26,7 +26,7 @@ import { fromResult, withInput } from '@/libraries/nextjs'
 import { type Result, success } from '@/libraries/result'
 
 const planifier = planifierLesRattachements({
-  estUnLieuActif,
+  etatDuLieu,
   lieuPorteurDeLaCarto,
   lieuxAuMemeEndroit,
   nouvelIdentifiantDeLieu,

@@ -10,7 +10,7 @@ import {
   lieuDemandeDepuisLeLieuDesire,
 } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/lieu-desire.transfer'
 import {
-  estUnLieuActif,
+  etatDuLieu,
   lieuPorteurDeLaCarto,
   nouvelIdentifiantDeLieu,
 } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/situation-du-lieu.query'
@@ -384,7 +384,7 @@ const seedLieuActivite = async (
 const renseigner = async (lieux: readonly LieuDesire[]) => {
   const maintenant = new Date()
   const destinations = await planifierLesRattachements({
-    estUnLieuActif,
+    etatDuLieu,
     lieuPorteurDeLaCarto,
     lieuxAuMemeEndroit,
     nouvelIdentifiantDeLieu,
@@ -968,6 +968,25 @@ Then('le lieu supprimé n’a pas été relevé', async () => {
     null,
     'Le lieu supprimé a été relevé alors que la corrélation était faible',
   )
+})
+
+When('je renseigne ce lieu retiré en le désignant', async () => {
+  await renseigner([{ id: lieuSupprimeId, nom: nomDuNouveauLieu }])
+})
+
+Then('le lieu retiré est relevé et je l’ai rejoint', async () => {
+  const lieu = await prismaClient.lieuInclusion.findUniqueOrThrow({
+    where: { id: lieuSupprimeId },
+    select: { suppression: true },
+  })
+  assert.strictEqual(
+    lieu.suppression,
+    null,
+    'Le lieu désigné est resté supprimé',
+  )
+
+  const actives = await activitesActivesPour(lieuSupprimeId)
+  assert.strictEqual(actives.length, 1, 'Le médiateur n’a pas rejoint le lieu')
 })
 
 Then('ce lieu est un de mes lieux d’activité actifs', async () => {

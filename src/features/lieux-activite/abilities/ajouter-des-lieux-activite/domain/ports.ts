@@ -14,7 +14,9 @@ export type LireLieuxDejaRattaches = (
   mediateurId: MediateurId,
 ) => Promise<readonly LieuDejaRattache[]>
 
-export type EstUnLieuActif = (lieuId: LieuId) => Promise<boolean>
+export type EtatDuLieu = 'Actif' | 'Inactif'
+
+export type LireLEtatDuLieu = (lieuId: LieuId) => Promise<EtatDuLieu | null>
 
 export type LieuPorteurDeLaCarto = (
   identifiant: IdentifiantCartographie,
@@ -36,7 +38,7 @@ export type DestinationDuLieuDecritPorts = {
 }
 
 export type PlanifierLesRattachementsPorts = DestinationDuLieuDecritPorts & {
-  readonly estUnLieuActif: EstUnLieuActif
+  readonly etatDuLieu: LireLEtatDuLieu
   readonly lieuPorteurDeLaCarto: LieuPorteurDeLaCarto
 }
 

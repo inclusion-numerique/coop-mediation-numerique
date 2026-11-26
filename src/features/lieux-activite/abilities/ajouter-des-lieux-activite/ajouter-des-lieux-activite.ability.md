@@ -157,6 +157,21 @@ dénomination, à la même adresse, dans la même commune.
 * Quand je renseigne deux fois le nouveau lieu nommé "Maison France Services"
 * Alors un seul lieu d’activité nommé "Maison France Services" est créé et rattaché
 
+## Règle: Un lieu supprimé que le médiateur désigne est relevé
+
+> Le médiateur désigne le lieu par son id interne : il existe, seulement il
+> n’est plus actif. Le refuser comme introuvable laissait le médiateur sans lieu,
+> et le recréer en aurait fait un doublon. Le lieu est relevé, invisible de la
+> cartographie comme tout lieu relevé, et le médiateur y est rattaché.
+
+### Scénario: Désigner un lieu supprimé le relève et y rattache le médiateur
+
+* Étant donné je suis un médiateur
+* Et un lieu d’activité identique a été retiré de la cartographie par la modération
+* Quand je renseigne ce lieu retiré en le désignant
+* Alors le lieu retiré est relevé et je l’ai rejoint
+* Et je n’ai qu’un seul lieu d’activité actif
+
 ## Règle: Le SIRET ne dit pas où l’on se trouve
 
 Un SIRET identifie une entité juridique, pas un endroit. Une association dont le

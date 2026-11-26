@@ -23,9 +23,9 @@ export {
 export type {
   AjouterDesLieuxActivitePorts,
   DestinationDuLieuDecritPorts,
-  EstUnLieuActif,
   LieuCorreleAuLieuDecritPorts,
   LieuPorteurDeLaCarto,
+  LireLEtatDuLieu,
   LireLieuxDejaRattaches,
   NouvelIdentifiantDeLieu,
   PlanifierLesRattachementsPorts,

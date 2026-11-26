@@ -144,7 +144,7 @@ const supprimeLe = new Date('2026-01-15T10:00:00Z')
 const ports: AjouterDesLieuxActivitePorts = {
   lireLieuxDejaRattaches: async () => [],
   trouverStructuresCarto: async () => new Map(),
-  estUnLieuActif: async () => true,
+  etatDuLieu: async () => 'Actif',
   lieuPorteurDeLaCarto: async () => null,
   lieuxAuMemeEndroit: async () => [],
   nouvelIdentifiantDeLieu: () => NOUVEAU,
@@ -331,13 +331,20 @@ describe('ajouter des lieux d’activité', () => {
       cas: 'rattache au lieu porteur de la carto un lieu désigné qui n’est plus actif',
       lieuxRattaches: [PORTEUR],
       ports: {
-        estUnLieuActif: async () => false,
+        etatDuLieu: async () => 'Inactif',
         lieuPorteurDeLaCarto: async () => PORTEUR,
       },
       demandes: [
         connu({ id: LIEU_A, structureCartographieNationaleId: CARTO }),
       ],
       destinations: [{ _tag: 'LieuActif', id: PORTEUR }],
+    },
+    {
+      cas: 'relève et rattache un lieu désigné qui n’est plus actif et que la carto ne porte pas',
+      lieuxRattaches: [LIEU_A],
+      ports: { etatDuLieu: async () => 'Inactif' },
+      demandes: [connu({ id: LIEU_A })],
+      destinations: [{ _tag: 'LieuARelever', id: LIEU_A }],
     },
     {
       cas: 'rattache au lieu porteur de la carto un lieu à créer depuis la carto',
@@ -487,7 +494,7 @@ describe('ajouter des lieux d’activité', () => {
     expect(
       await ajouterDesLieuxActivite({
         ...ports,
-        estUnLieuActif: async () => false,
+        etatDuLieu: async () => null,
       })({
         demandes: [connu({ id: LIEU_A }), aCreer()],
         utilisateurId,

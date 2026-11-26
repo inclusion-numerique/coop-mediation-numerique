@@ -10,7 +10,7 @@ import { trouverStructuresCarto } from '@/features/lieux-activite/abilities/ajou
 import { rattacherAuxLieux } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/ajouter-des-lieux-activite.mutation'
 import { lireLieuxDejaRattaches } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/lieux-deja-rattaches.query'
 import {
-  estUnLieuActif,
+  etatDuLieu,
   lieuPorteurDeLaCarto,
   nouvelIdentifiantDeLieu,
 } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/situation-du-lieu.query'
@@ -40,7 +40,7 @@ export const ajouterDesLieuxActiviteAction = actionBuilder()
         const ajout = await ajouterDesLieuxActivite({
           lireLieuxDejaRattaches,
           trouverStructuresCarto,
-          estUnLieuActif,
+          etatDuLieu,
           lieuPorteurDeLaCarto,
           lieuxAuMemeEndroit,
           nouvelIdentifiantDeLieu,

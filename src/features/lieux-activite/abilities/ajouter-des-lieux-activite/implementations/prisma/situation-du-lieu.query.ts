@@ -2,18 +2,24 @@ import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
 import { LieuId } from '../../../../domain/identifiants/lieu-id'
 import type {
-  EstUnLieuActif,
   LieuPorteurDeLaCarto,
+  LireLEtatDuLieu,
   NouvelIdentifiantDeLieu,
 } from '../../domain'
 
 export const nouvelIdentifiantDeLieu: NouvelIdentifiantDeLieu = () =>
   LieuId(v4())
 
-export const estUnLieuActif: EstUnLieuActif = async (lieuId) =>
-  (await prismaClient.lieuInclusion.count({
-    where: { id: lieuId, suppression: null },
-  })) > 0
+export const etatDuLieu: LireLEtatDuLieu = async (lieuId) => {
+  const lieu = await prismaClient.lieuInclusion.findUnique({
+    where: { id: lieuId },
+    select: { suppression: true },
+  })
+
+  if (lieu === null) return null
+
+  return lieu.suppression === null ? 'Actif' : 'Inactif'
+}
 
 export const lieuPorteurDeLaCarto: LieuPorteurDeLaCarto = async (
   identifiant,

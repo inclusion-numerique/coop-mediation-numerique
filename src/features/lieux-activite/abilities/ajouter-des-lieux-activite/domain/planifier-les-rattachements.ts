@@ -61,7 +61,7 @@ const lieuDeLaCarto = (
 
 export const planifierLesRattachements =
   ({
-    estUnLieuActif,
+    etatDuLieu,
     lieuPorteurDeLaCarto,
     lieuxAuMemeEndroit,
     nouvelIdentifiantDeLieu,
@@ -83,7 +83,9 @@ export const planifierLesRattachements =
       plan: Plan,
       lieu: LieuDemande,
     ): Promise<Result<Plan, LieuIntrouvable>> => {
-      if (estExistant(lieu) && (await estUnLieuActif(lieu.id)))
+      const etat = estExistant(lieu) ? await etatDuLieu(lieu.id) : null
+
+      if (estExistant(lieu) && etat === 'Actif')
         return ajouter(plan, { _tag: 'LieuActif', id: lieu.id }, plan.prevus)
 
       const porteur =
@@ -93,6 +95,13 @@ export const planifierLesRattachements =
 
       if (porteur !== null)
         return ajouter(plan, { _tag: 'LieuActif', id: porteur }, plan.prevus)
+
+      if (estExistant(lieu) && etat === 'Inactif')
+        return ajouter(
+          plan,
+          { _tag: 'LieuARelever', id: lieu.id },
+          releve(plan.prevus, lieu.id),
+        )
 
       if (estExistant(lieu)) return failure(LieuIntrouvable(lieu.id))
 
