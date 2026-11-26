@@ -6,7 +6,6 @@ import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { synchroniserPersonne } from '@/features/registre-des-personnes/implementations/prisma/registre-personne.mutation'
 import { CHANGER_LES_ROLES_ERRORS } from '@/features/utilisateurs/abilities/changer-les-roles/action/changer-les-roles.errors'
 import { ChangerLesRolesValidation } from '@/features/utilisateurs/abilities/changer-les-roles/action/changer-les-roles.validation'
-import type { ChangerLesRoles } from '@/features/utilisateurs/abilities/changer-les-roles/domain/changer-les-roles'
 import { changerLesRoles } from '@/features/utilisateurs/abilities/changer-les-roles/domain/changer-les-roles'
 import { appliquerLePlan } from '@/features/utilisateurs/abilities/changer-les-roles/implementations/prisma/appliquer-le-plan.mutation'
 import { compteAReaffecter } from '@/features/utilisateurs/abilities/changer-les-roles/implementations/prisma/compte-a-reaffecter.query'
@@ -16,9 +15,7 @@ import type { SynchroniserLaPersonne } from '@/features/utilisateurs/implementat
 import { fromResult, withInput } from '@/libraries/nextjs'
 import { success } from '@/libraries/result'
 
-const changerLesRolesAvec = (
-  synchroniserLaPersonne: SynchroniserLaPersonne,
-): ChangerLesRoles =>
+const changerLesRolesAvec = (synchroniserLaPersonne: SynchroniserLaPersonne) =>
   changerLesRoles({
     lireLeCompteAReaffecter: compteAReaffecter,
     appliquerLePlan: appliquerLePlan(synchroniserLaPersonne),

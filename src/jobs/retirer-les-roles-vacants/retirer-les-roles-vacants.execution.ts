@@ -1,6 +1,4 @@
 import { synchroniserPersonne } from '@/features/registre-des-personnes/implementations/prisma/registre-personne.mutation'
-import type { ChangerLesRoles } from '@/features/utilisateurs/abilities/changer-les-roles/domain/changer-les-roles'
-import { changerLesRoles } from '@/features/utilisateurs/abilities/changer-les-roles/domain/changer-les-roles'
 import { retirerLesRolesVacants } from '@/features/utilisateurs/abilities/changer-les-roles/domain/retirer-les-roles-vacants'
 import { appliquerLePlan } from '@/features/utilisateurs/abilities/changer-les-roles/implementations/prisma/appliquer-le-plan.mutation'
 import { compteAReaffecter } from '@/features/utilisateurs/abilities/changer-les-roles/implementations/prisma/compte-a-reaffecter.query'
@@ -9,26 +7,24 @@ import { rolesVacants } from '@/features/utilisateurs/abilities/changer-les-role
 import type { SynchroniserLaPersonne } from '@/features/utilisateurs/implementations/prisma/registre-des-personnes.mutation'
 import { output } from '@/libraries/console'
 
-const changerLesRolesAvec = (
-  synchroniserLaPersonne: SynchroniserLaPersonne,
-): ChangerLesRoles =>
-  changerLesRoles({
-    lireLeCompteAReaffecter: compteAReaffecter,
-    appliquerLePlan: appliquerLePlan(synchroniserLaPersonne),
-    journaliserLeChangement,
-  })
-
 const retirerLesRolesVacantsAvec = (
   synchroniserLaPersonne: SynchroniserLaPersonne,
 ) =>
   retirerLesRolesVacants({
     lireLesRolesVacants: rolesVacants,
-    changerLesRoles: changerLesRolesAvec(synchroniserLaPersonne),
+    lireLeCompteAReaffecter: compteAReaffecter,
+    appliquerLePlan: appliquerLePlan(synchroniserLaPersonne),
+    journaliserLeChangement,
   })
 
 export const executeRetirerLesRolesVacants = async () => {
-  const { coordinateursRetires, mediateursRetires } =
-    await retirerLesRolesVacantsAvec(synchroniserPersonne)(new Date())
+  const resultat = await retirerLesRolesVacantsAvec(synchroniserPersonne)({
+    maintenant: new Date(),
+  })
+  if (!resultat.success) return resultat.error
+
+  const coordinateursRetires = resultat.data.coordinateursRetires.length
+  const mediateursRetires = resultat.data.mediateursRetires.length
 
   output(`${coordinateursRetires} rôles coordinateur vacants ont été retirés`)
   output(`${mediateursRetires} rôles médiateur vacants ont été retirés`)

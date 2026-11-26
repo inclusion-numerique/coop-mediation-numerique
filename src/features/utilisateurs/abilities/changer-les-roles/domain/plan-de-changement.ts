@@ -1,4 +1,5 @@
 import {
+  type AuteurId,
   CompteSupprime,
   type CoordinateurId,
   coordinateurDe,
@@ -10,11 +11,12 @@ import {
   type ProductionCoordinateur,
   type ProductionMediateur,
   type Rattachements,
+  RoleProtege,
   type RoleUtilisateur,
   type UtilisateurId,
 } from '@/features/utilisateurs/domain'
 import { failure, type Result, success } from '@/libraries/result'
-import { type ChangerLesRolesError, RoleNonVierge, RoleProtege } from './errors'
+import { type EchecDeChangerLesRoles, RoleNonVierge } from './errors'
 import type { RolesDemandes } from './roles-demandes'
 
 export type MediateurAReaffecter = ProductionMediateur & {
@@ -48,10 +50,16 @@ export type PlanDeChangement = {
   readonly operations: readonly OperationRole[]
 }
 
+export type RolesChanges = {
+  readonly utilisateurId: UtilisateurId
+  readonly auteurId: AuteurId | null
+  readonly plan: PlanDeChangement
+}
+
 const operationsDuMediateur = (
   mediateur: MediateurAReaffecter | null,
   demande: RolesDemandes,
-): Result<readonly OperationRole[], ChangerLesRolesError> => {
+): Result<readonly OperationRole[], EchecDeChangerLesRoles> => {
   if (demande.mediateur)
     return success(mediateur === null ? [{ _tag: 'AjouterMediateur' }] : [])
   if (mediateur === null) return success([])
@@ -62,7 +70,7 @@ const operationsDuMediateur = (
 const operationsDuCoordinateur = (
   coordinateur: CoordinateurAReaffecter | null,
   demande: RolesDemandes,
-): Result<readonly OperationRole[], ChangerLesRolesError> => {
+): Result<readonly OperationRole[], EchecDeChangerLesRoles> => {
   if (demande.coordinateur)
     return success(
       coordinateur === null ? [{ _tag: 'AjouterCoordinateur' }] : [],
@@ -85,7 +93,7 @@ const ordre: Record<OperationRole['_tag'], number> = {
 export const planDeChangement = (
   compte: CompteAReaffecter,
   demande: RolesDemandes,
-): Result<PlanDeChangement, ChangerLesRolesError> => {
+): Result<PlanDeChangement, EchecDeChangerLesRoles> => {
   if (estRoleProtege(compte.role))
     return failure(RoleProtege(compte.id, compte.role))
   if (compte.supprime) return failure(CompteSupprime(compte.id))

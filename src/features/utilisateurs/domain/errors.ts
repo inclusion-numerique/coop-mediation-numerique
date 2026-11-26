@@ -1,4 +1,5 @@
 import type { UtilisateurId } from './identifiants/utilisateur-id'
+import type { RoleUtilisateur } from './role-utilisateur'
 
 export type UtilisateurIntrouvable = {
   readonly _tag: 'UtilisateurIntrouvable'
@@ -20,3 +21,14 @@ export const CompteSupprime = (
   _tag: 'CompteSupprime',
   utilisateurId,
 })
+
+export type RoleProtege = {
+  readonly _tag: 'RoleProtege'
+  readonly utilisateurId: UtilisateurId
+  readonly role: RoleUtilisateur
+}
+
+export const RoleProtege = (
+  utilisateurId: UtilisateurId,
+  role: RoleUtilisateur,
+): RoleProtege => ({ _tag: 'RoleProtege', utilisateurId, role })

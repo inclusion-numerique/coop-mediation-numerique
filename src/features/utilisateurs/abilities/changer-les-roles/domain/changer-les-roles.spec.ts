@@ -31,9 +31,11 @@ const coordinateurVierge: CoordinateurAReaffecter = {
   invitationsEnAttente: false,
 }
 
+const administrateurId = AuteurId('7c6b5a4d-3e2f-4a1b-9c8d-7e6f5a4b3c2d')
+
 const administrateur: AuteurDuChangement = {
   _tag: 'administrateur',
-  administrateurId: AuteurId('7c6b5a4d-3e2f-4a1b-9c8d-7e6f5a4b3c2d'),
+  administrateurId,
 }
 
 const compte = (
@@ -147,10 +149,17 @@ describe('changer les rôles', () => {
   ])('$cas', async ({ compteLu, mediateur, coordinateur, operations }) => {
     expect(
       await changerLesRolesDe(compteLu)(demande(mediateur, coordinateur)),
-    ).toEqual({ success: true, data: { operations } })
+    ).toEqual({
+      success: true,
+      data: {
+        utilisateurId,
+        auteurId: administrateurId,
+        plan: { operations },
+      },
+    })
   })
 
-  it('applique les mêmes règles quand le système décide du changement', async () => {
+  it('applique les mêmes règles sans auteur quand le système décide du changement', async () => {
     expect(
       await changerLesRolesDe(compte(mediateurVierge, null))({
         utilisateurId,
@@ -160,7 +169,11 @@ describe('changer les rôles', () => {
       }),
     ).toEqual({
       success: true,
-      data: { operations: [{ _tag: 'AjouterCoordinateur' }] },
+      data: {
+        utilisateurId,
+        auteurId: null,
+        plan: { operations: [{ _tag: 'AjouterCoordinateur' }] },
+      },
     })
   })
 

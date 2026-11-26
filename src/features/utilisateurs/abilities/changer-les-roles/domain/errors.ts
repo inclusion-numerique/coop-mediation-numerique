@@ -1,7 +1,6 @@
 import type {
   CompteSupprime,
-  RoleUtilisateur,
-  UtilisateurId,
+  RoleProtege,
   UtilisateurIntrouvable,
 } from '@/features/utilisateurs/domain'
 
@@ -10,17 +9,6 @@ export type AucunRoleDemande = { readonly _tag: 'AucunRoleDemande' }
 export const AucunRoleDemande = (): AucunRoleDemande => ({
   _tag: 'AucunRoleDemande',
 })
-
-export type RoleProtege = {
-  readonly _tag: 'RoleProtege'
-  readonly utilisateurId: UtilisateurId
-  readonly role: RoleUtilisateur
-}
-
-export const RoleProtege = (
-  utilisateurId: UtilisateurId,
-  role: RoleUtilisateur,
-): RoleProtege => ({ _tag: 'RoleProtege', utilisateurId, role })
 
 export type RoleNonVierge = {
   readonly _tag: 'RoleNonVierge'
@@ -32,7 +20,7 @@ export const RoleNonVierge = (role: RoleNonVierge['role']): RoleNonVierge => ({
   role,
 })
 
-export type ChangerLesRolesError =
+export type EchecDeChangerLesRoles =
   | UtilisateurIntrouvable
   | CompteSupprime
   | AucunRoleDemande

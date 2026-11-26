@@ -2,7 +2,6 @@ import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
-import type { ChangerLesRoles } from '@/features/utilisateurs/abilities/changer-les-roles/domain/changer-les-roles'
 import { changerLesRoles } from '@/features/utilisateurs/abilities/changer-les-roles/domain/changer-les-roles'
 import { appliquerLePlan } from '@/features/utilisateurs/abilities/changer-les-roles/implementations/prisma/appliquer-le-plan.mutation'
 import { compteAReaffecter } from '@/features/utilisateurs/abilities/changer-les-roles/implementations/prisma/compte-a-reaffecter.query'
@@ -12,9 +11,7 @@ import type { SynchroniserLaPersonne } from '@/features/utilisateurs/implementat
 import { semerUnCompteDeListe } from '@/features/utilisateurs/utilisateurs.cucumber'
 import { rolesVacants } from './implementations/prisma/roles-vacants.query'
 
-const changerLesRolesAvec = (
-  synchroniserLaPersonne: SynchroniserLaPersonne,
-): ChangerLesRoles =>
+const changerLesRolesAvec = (synchroniserLaPersonne: SynchroniserLaPersonne) =>
   changerLesRoles({
     lireLeCompteAReaffecter: compteAReaffecter,
     appliquerLePlan: appliquerLePlan(synchroniserLaPersonne),
