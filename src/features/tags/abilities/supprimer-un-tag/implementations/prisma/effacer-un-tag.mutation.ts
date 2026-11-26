@@ -1,5 +1,5 @@
 import { prismaClient } from '@/configuration/prisma'
-import type { EffacerUnTag } from '../../domain/supprimer-un-tag'
+import type { EffacerUnTag } from '../../domain/ports'
 
 export const effacerUnTag: EffacerUnTag = async (tagId) => {
   await prismaClient.$transaction([

@@ -11,6 +11,7 @@ import { effacerUnTag } from '@/features/tags/abilities/supprimer-un-tag/impleme
 import { acteurDe, TagId } from '@/features/tags/domain'
 import { lireUnTagActif } from '@/features/tags/implementations/prisma/tag-actif.query'
 import { fromResult, withInput } from '@/libraries/nextjs'
+import { success } from '@/libraries/result'
 
 export const supprimerUnTagAction = actionBuilder()
   .use(withAuth())
@@ -18,11 +19,19 @@ export const supprimerUnTagAction = actionBuilder()
   .use(withInput(SupprimerUnTagValidation))
   .execute(
     fromResult(
-      async ({ user, input }) =>
-        supprimerUnTag({ lireUnTagActif, effacer: effacerUnTag })({
+      async ({ user, input }) => {
+        const suppression = await supprimerUnTag({
+          lireUnTagActif,
+          effacer: effacerUnTag,
+        })({
           tagId: TagId(input.tagId),
           acteur: acteurDe(profilDeLaSession(user)),
-        }),
+        })
+
+        return suppression.success
+          ? success({ nom: suppression.data.nom })
+          : suppression
+      },
       { onError: SUPPRIMER_UN_TAG_ERRORS },
     ),
   )

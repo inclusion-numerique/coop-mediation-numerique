@@ -2,38 +2,29 @@ import { failure, type Result, success } from '@/libraries/result'
 import {
   type Acteur,
   ActionNonAutorisee,
-  type LireUnTagActif,
-  type NomDuTag,
   peutGerer,
+  type Tag,
   type TagId,
   TagIntrouvable,
 } from '../../../domain'
-
-export type EchecDeSuppression = TagIntrouvable | ActionNonAutorisee
-
-export type EffacerUnTag = (tagId: TagId) => Promise<void>
+import type { EchecDeSupprimerUnTag } from './errors'
+import type { SupprimerUnTagPorts } from './ports'
 
 export const supprimerUnTag =
-  ({
-    lireUnTagActif,
-    effacer,
-  }: {
-    readonly lireUnTagActif: LireUnTagActif
-    readonly effacer: EffacerUnTag
-  }) =>
+  ({ lireUnTagActif, effacer }: SupprimerUnTagPorts) =>
   async ({
     tagId,
     acteur,
   }: {
     readonly tagId: TagId
     readonly acteur: Acteur
-  }): Promise<Result<{ readonly nom: NomDuTag }, EchecDeSuppression>> => {
+  }): Promise<Result<Tag, EchecDeSupprimerUnTag>> => {
     const tag = await lireUnTagActif(tagId)
 
     if (tag === null) return failure(TagIntrouvable())
     if (!peutGerer(acteur)(tag.portee)) return failure(ActionNonAutorisee())
 
-    await effacer(tagId)
+    await effacer(tag.id)
 
-    return success({ nom: tag.nom })
+    return success(tag)
   }

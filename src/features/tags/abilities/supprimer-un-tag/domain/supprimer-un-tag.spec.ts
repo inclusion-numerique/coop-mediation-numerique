@@ -39,10 +39,10 @@ const supprimer = (tagLu: Tag | null, acteur: Acteur) =>
   })({ tagId, acteur })
 
 describe('supprimer un tag', () => {
-  it('supprime un tag que l’acteur gère et rend son nom', async () => {
+  it('supprime un tag que l’acteur gère', async () => {
     expect(await supprimer(tagDEquipe, coordinateur)).toEqual({
       success: true,
-      data: { nom: 'Parentalité' },
+      data: tagDEquipe,
     })
   })
 
