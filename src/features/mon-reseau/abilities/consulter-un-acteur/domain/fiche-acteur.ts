@@ -1,15 +1,6 @@
-import type {
-  Acteur,
-  ActeurId,
-  CoordinateurId,
-  Effectif,
-  MediateurId,
-} from '../../../domain'
+import type { Acteur, CoordinateurId, Effectif } from '../../../domain'
 import type { LienDEquipe } from './relation-d-equipe'
-import type {
-  DerniereActivite,
-  StatutDActivitePublic,
-} from './statut-d-activite-public'
+import type { StatutDActivitePublic } from './statut-d-activite-public'
 
 export const FENETRE_DES_STATISTIQUES_EN_JOURS = 30
 
@@ -39,20 +30,3 @@ export type FicheActeur = {
   readonly statut: StatutDActivitePublic
   readonly regard: RegardDuLecteur
 }
-
-type ActeurLu = {
-  readonly acteur: Acteur
-  readonly profilCreeLe: Date
-}
-
-export type LireLActeur = (acteurId: ActeurId) => Promise<ActeurLu | null>
-
-export type LireLaDerniereActivite = (
-  acteurId: ActeurId,
-) => Promise<DerniereActivite>
-
-export type LireLesStatistiquesSur30Jours = (
-  coordinateurId: CoordinateurId,
-  mediateurId: MediateurId,
-  periode: { readonly du: string; readonly au: string },
-) => Promise<StatistiquesSur30Jours>

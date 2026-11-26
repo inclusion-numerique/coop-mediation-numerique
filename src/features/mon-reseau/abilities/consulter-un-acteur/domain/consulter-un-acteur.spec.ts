@@ -11,12 +11,10 @@ import {
   MediateurId,
   type Mediation,
 } from '../../../domain'
-import {
-  type ConsulterUnActeurPorts,
-  consulterUnActeur,
-  type QuiConsulte,
-} from './consulter-un-acteur'
+import { consulterUnActeur } from './consulter-un-acteur'
 import type { RelationDEquipe } from './fiche-acteur'
+import type { QuiConsulte } from './lecteur'
+import type { ConsulterUnActeurPorts } from './ports'
 import type { AdhesionLue } from './relation-d-equipe'
 import type {
   DerniereActivite,
