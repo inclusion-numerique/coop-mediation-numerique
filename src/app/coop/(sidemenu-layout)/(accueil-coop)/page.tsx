@@ -23,7 +23,7 @@ import { authenticateMediateurOrCoordinateur } from '@/features/authentification
 import { compterLesMembres } from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/lister-les-membres.query'
 import { ResumeDeLEquipe } from '@/features/equipe/abilities/lister-les-membres/ui/slots/ResumeDeLEquipe.slot'
 import { RAFRAICHIR_ACCUEIL_RDV_ACTION_KEY } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/action/rafraichir-accueil-rdv.key'
-import { blocRdvAccueil } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/domain/bloc-rdv-accueil'
+import { consulterRdvsAccueil } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/domain/consulter-rdvs-accueil'
 import { compteDuMediateur } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/implementations/prisma/compte-du-mediateur.query'
 import { lireDonneesAccueilRdv } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/implementations/prisma/donnees-accueil-rdv.query'
 import { RdvIntegrationErreurAlerte } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/ui/slots/RdvIntegrationErreurAlerte.slot'
@@ -47,7 +47,7 @@ const Page = async () => {
   const accueil = consulterLAccueil(visiteurDe(user))
   if (accueil === null) notFound()
 
-  const [{ equipe, activites }, rdv] = await Promise.all([
+  const [{ equipe, activites }, consultationRdv] = await Promise.all([
     selonLeProfil<Promise<SectionsDeLAccueil>>(accueil.profil, {
       Coordinateur: async ({ coordinateurId }) => {
         const [membres, activitesDeCoordination] = await Promise.all([
@@ -80,11 +80,15 @@ const Page = async () => {
         ),
       }),
     }),
-    blocRdvAccueil({ compteDuMediateur, lireDonnees: lireDonneesAccueilRdv })(
-      UtilisateurCoopId(user.id),
-      new Date(),
-    ),
+    consulterRdvsAccueil({
+      compteDuMediateur,
+      lireDonnees: lireDonneesAccueilRdv,
+    })({ utilisateurId: UtilisateurCoopId(user.id), maintenant: new Date() }),
   ])
+
+  if (!consultationRdv.success) return consultationRdv.error
+
+  const rdv = consultationRdv.data
 
   return (
     <ClientBinder

@@ -1,7 +1,7 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
-import type { ConsulterRdvsAccueil } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/domain/consulter-rdvs-accueil'
 import { consulterRdvsAccueil } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/domain/consulter-rdvs-accueil'
+import type { WidgetRdvAccueil } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/domain/widget-rdv'
 import { compteDuMediateur } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/implementations/prisma/compte-du-mediateur.query'
 import { lireDonneesAccueilRdv } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/implementations/prisma/donnees-accueil-rdv.query'
 import { StatutPresence } from '@/features/rdvsp/domain/rdv/statut-presence'
@@ -18,7 +18,7 @@ const MAINTENANT = new Date('2026-08-17T12:00:00.000Z')
 const JOUR_EN_MS = 24 * 60 * 60 * 1000
 
 let rdvsCrees = 0
-let resultat: Awaited<ReturnType<ConsulterRdvsAccueil>> | undefined
+let resultat: WidgetRdvAccueil | undefined
 
 const dans = (jours: number) =>
   new Date(MAINTENANT.getTime() + jours * JOUR_EN_MS)
@@ -96,10 +96,12 @@ Given(
 )
 
 When('je consulte l’accueil', async () => {
-  resultat = await consulter({
+  const consultation = await consulter({
     utilisateurId: testUtilisateurId,
     maintenant: MAINTENANT,
   })
+
+  resultat = consultation.success ? consultation.data.widget : undefined
 })
 
 const donnees = () => {

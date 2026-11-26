@@ -2,8 +2,8 @@ import { prismaClient } from '@/configuration/prisma'
 import { OrganisationId } from '../../../../domain/identifiants/organisation-id'
 import { RdvId } from '../../../../domain/identifiants/rdv-id'
 import { StatutPresence } from '../../../../domain/rdv/statut-presence'
-import type { LireDonneesAccueilRdv } from '../../domain/consulter-rdvs-accueil'
 import type { RdvEnUneLigne } from '../../domain/donnees-accueil-rdv'
+import type { LireDonneesAccueilRdv } from '../../domain/ports'
 
 const selectionRdv = {
   id: true,

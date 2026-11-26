@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { UtilisateurCoopId } from '@/features/rdvsp/domain/identifiants/utilisateur-coop-id'
+import { success } from '@/libraries/result'
 import {
   type CompteRdv,
   MessageErreurCompte,
@@ -10,7 +10,8 @@ import {
 } from '../../../domain/compte/jetons-oauth'
 import { OrganisationId } from '../../../domain/identifiants/organisation-id'
 import { RdvAgentId } from '../../../domain/identifiants/rdv-agent-id'
-import { blocRdvAccueil } from './bloc-rdv-accueil'
+import { UtilisateurCoopId } from '../../../domain/identifiants/utilisateur-coop-id'
+import { consulterRdvsAccueil } from './consulter-rdvs-accueil'
 import type { DonneesAccueilRdv } from './donnees-accueil-rdv'
 
 const utilisateurId = UtilisateurCoopId('8a0f6f2e-6d1c-4d1b-9a43-0d7e2f0c1b2a')
@@ -43,24 +44,28 @@ const donnees: DonneesAccueilRdv = {
 }
 
 const blocPour = (compte: CompteRdv | null) =>
-  blocRdvAccueil({
+  consulterRdvsAccueil({
     compteDuMediateur: async () => compte,
     lireDonnees: async () => donnees,
-  })(utilisateurId, maintenant)
+  })({ utilisateurId, maintenant })
 
-describe('blocRdvAccueil', () => {
+describe('consulter les rendez-vous de l’accueil', () => {
   it('affiche les données d’un compte lié', async () => {
-    expect(await blocPour({ ...base, _tag: 'lie', jetons })).toEqual({
-      widget: { _tag: 'donnees', donnees },
-      synchroniserAuChargement: false,
-    })
+    expect(await blocPour({ ...base, _tag: 'lie', jetons })).toEqual(
+      success({
+        widget: { _tag: 'donnees', donnees },
+        synchroniserAuChargement: false,
+      }),
+    )
   })
 
   it('masque la section pour un médiateur sans compte', async () => {
-    expect(await blocPour(null)).toEqual({
-      widget: { _tag: 'masque' },
-      synchroniserAuChargement: false,
-    })
+    expect(await blocPour(null)).toEqual(
+      success({
+        widget: { _tag: 'masque' },
+        synchroniserAuChargement: false,
+      }),
+    )
   })
 
   it('masque la section pour un compte délié, sans crier à l’erreur', async () => {
@@ -70,10 +75,12 @@ describe('blocRdvAccueil', () => {
       deconnexion: new Date('2026-07-08T00:00:00.000Z'),
     })
 
-    expect(bloc).toEqual({
-      widget: { _tag: 'masque' },
-      synchroniserAuChargement: false,
-    })
+    expect(bloc).toEqual(
+      success({
+        widget: { _tag: 'masque' },
+        synchroniserAuChargement: false,
+      }),
+    )
   })
 
   it('alerte sur un compte en erreur', async () => {
@@ -84,17 +91,21 @@ describe('blocRdvAccueil', () => {
       erreur: MessageErreurCompte('invalid_grant'),
     })
 
-    expect(bloc).toEqual({
-      widget: { _tag: 'alerte' },
-      synchroniserAuChargement: false,
-    })
+    expect(bloc).toEqual(
+      success({
+        widget: { _tag: 'alerte' },
+        synchroniserAuChargement: false,
+      }),
+    )
   })
 
   it('alerte sur un compte resté non lié', async () => {
-    expect(await blocPour({ ...base, _tag: 'nonLie' })).toEqual({
-      widget: { _tag: 'alerte' },
-      synchroniserAuChargement: false,
-    })
+    expect(await blocPour({ ...base, _tag: 'nonLie' })).toEqual(
+      success({
+        widget: { _tag: 'alerte' },
+        synchroniserAuChargement: false,
+      }),
+    )
   })
 
   it('rattrape au chargement les rendez-vous d’une organisation sans webhook', async () => {
@@ -105,9 +116,11 @@ describe('blocRdvAccueil', () => {
       organisationIdsSansWebhook: [OrganisationId(10)],
     })
 
-    expect(bloc).toEqual({
-      widget: { _tag: 'donnees', donnees },
-      synchroniserAuChargement: true,
-    })
+    expect(bloc).toEqual(
+      success({
+        widget: { _tag: 'donnees', donnees },
+        synchroniserAuChargement: true,
+      }),
+    )
   })
 })

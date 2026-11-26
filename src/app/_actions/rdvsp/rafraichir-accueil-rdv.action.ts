@@ -163,10 +163,17 @@ export const rafraichirAccueilRdvAction = actionBuilder()
           return success<RafraichissementAccueil>({ _tag: 'inchange' })
         }
 
+        const consultation = await consulter({
+          utilisateurId,
+          maintenant: new Date(),
+        })
+
+        if (!consultation.success) return consultation
+
         return success<RafraichissementAccueil>({
           _tag: 'rafraichi',
           derive: synchronisation.data.derive,
-          widget: await consulter({ utilisateurId, maintenant: new Date() }),
+          widget: consultation.data.widget,
         })
       },
       { onError: DECLENCHER_SYNCHRONISATION_ERRORS },
