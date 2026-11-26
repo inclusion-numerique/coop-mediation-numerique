@@ -14,7 +14,7 @@ import { profilDeLaSession } from '@/features/authentification/domain/profil-de-
 import { utilisateurDuJetonDeSession } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
 import { jetonDeSessionDesCookies } from '@/features/authentification/implementations/session/session-token-from-cookies.query'
 import { tagsVisiblesPar } from '@/features/tags/abilities/lire-les-tags-visibles/implementations/prisma/tags-visibles-par.query'
-import { acteurDe } from '@/features/tags/domain'
+import { acteurDe } from '@/features/tags/implementations/session/acteur.transfer'
 import { auteurDeLExport } from '@/features/utilisateurs/ui/presenters/auteur-de-l-export.presenter'
 
 export const dynamic = 'force-dynamic'

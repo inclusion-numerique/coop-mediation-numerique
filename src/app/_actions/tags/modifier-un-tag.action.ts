@@ -8,13 +8,9 @@ import { MODIFIER_UN_TAG_ERRORS } from '@/features/tags/abilities/modifier-un-ta
 import { ModifierUnTagValidation } from '@/features/tags/abilities/modifier-un-tag/action/modifier-un-tag.validation'
 import { modifierUnTag } from '@/features/tags/abilities/modifier-un-tag/domain/modifier-un-tag'
 import { enregistrerLaModification } from '@/features/tags/abilities/modifier-un-tag/implementations/prisma/enregistrer-la-modification.mutation'
-import {
-  acteurDe,
-  DescriptionDuTag,
-  NomDuTag,
-  TagId,
-} from '@/features/tags/domain'
+import { DescriptionDuTag, NomDuTag, TagId } from '@/features/tags/domain'
 import { lireUnTagActif } from '@/features/tags/implementations/prisma/tag-actif.query'
+import { acteurDe } from '@/features/tags/implementations/session/acteur.transfer'
 import { fromResult, withInput } from '@/libraries/nextjs'
 import { success } from '@/libraries/result'
 

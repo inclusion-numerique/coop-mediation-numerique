@@ -22,7 +22,7 @@ import RattacherEmployeuseForm from '@/features/employeuse/abilities/rattacher-a
 import { lieuxDuMediateur } from '@/features/lieux-activite/abilities/lister-les-options-de-lieux/implementations/prisma/options-de-lieux-du-mediateur.query'
 import { visibilitesProposees } from '@/features/tags/abilities/creer-un-tag/ui/presenters/visibilites.presenter'
 import { tagsInitiauxAvec } from '@/features/tags/abilities/rechercher-des-tags/implementations/prisma/tags-initiaux-par.query'
-import { acteurDe } from '@/features/tags/domain'
+import { acteurDe } from '@/features/tags/implementations/session/acteur.transfer'
 import { tagAffiche } from '@/features/tags/ui/presenters/tag-affiche.presenter'
 import { ClientBinder } from '@/libraries/nextjs/injection'
 

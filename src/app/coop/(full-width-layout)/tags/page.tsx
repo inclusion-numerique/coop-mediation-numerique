@@ -23,7 +23,7 @@ import { ModaleDeModification } from '@/features/tags/abilities/modifier-un-tag/
 import { SUPPRIMER_UN_TAG_ACTION_KEY } from '@/features/tags/abilities/supprimer-un-tag/action/supprimer-un-tag.key'
 import { BoutonSupprimer } from '@/features/tags/abilities/supprimer-un-tag/ui/slots/BoutonSupprimer.slot'
 import { ModaleDeSuppression } from '@/features/tags/abilities/supprimer-un-tag/ui/slots/ModaleDeSuppression.slot'
-import { acteurDe } from '@/features/tags/domain'
+import { acteurDe } from '@/features/tags/implementations/session/acteur.transfer'
 import { MenuDActionsDuTag } from '@/features/tags/ui/slots/MenuDActionsDuTag.slot'
 import { ClientBinder } from '@/libraries/nextjs/injection'
 

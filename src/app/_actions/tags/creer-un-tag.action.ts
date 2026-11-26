@@ -10,12 +10,12 @@ import { CreerUnTagValidation } from '@/features/tags/abilities/creer-un-tag/act
 import { creerUnTag } from '@/features/tags/abilities/creer-un-tag/domain/creer-un-tag'
 import { enregistrerUnTag } from '@/features/tags/abilities/creer-un-tag/implementations/prisma/enregistrer-un-tag.mutation'
 import {
-  acteurDe,
   CoordinateurId,
   DescriptionDuTag,
   NomDuTag,
   type VisibiliteChoisie,
 } from '@/features/tags/domain'
+import { acteurDe } from '@/features/tags/implementations/session/acteur.transfer'
 import { tagAffiche } from '@/features/tags/ui/presenters/tag-affiche.presenter'
 import { fromResult, withInput } from '@/libraries/nextjs'
 import { success } from '@/libraries/result'

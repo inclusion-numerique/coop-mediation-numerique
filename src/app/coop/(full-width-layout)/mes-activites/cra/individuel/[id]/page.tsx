@@ -24,7 +24,7 @@ import { lieuxDuMediateur } from '@/features/lieux-activite/abilities/lister-les
 import { rendezVousLies } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/rdvs-des-activites.query'
 import { visibilitesProposees } from '@/features/tags/abilities/creer-un-tag/ui/presenters/visibilites.presenter'
 import { tagsInitiauxAvec } from '@/features/tags/abilities/rechercher-des-tags/implementations/prisma/tags-initiaux-par.query'
-import { acteurDe } from '@/features/tags/domain'
+import { acteurDe } from '@/features/tags/implementations/session/acteur.transfer'
 import { tagAffiche } from '@/features/tags/ui/presenters/tag-affiche.presenter'
 import { ClientBinder } from '@/libraries/nextjs/injection'
 

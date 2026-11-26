@@ -9,7 +9,8 @@ import { FusionnerUnTagValidation } from '@/features/tags/abilities/fusionner-un
 import { fusionnerUnTag } from '@/features/tags/abilities/fusionner-un-tag/domain/fusionner-un-tag'
 import { reporterLeTag } from '@/features/tags/abilities/fusionner-un-tag/implementations/prisma/reporter-le-tag.mutation'
 import { lireLesTagsDeLaFusion } from '@/features/tags/abilities/fusionner-un-tag/implementations/prisma/tags-de-la-fusion.query'
-import { acteurDe, TagId } from '@/features/tags/domain'
+import { TagId } from '@/features/tags/domain'
+import { acteurDe } from '@/features/tags/implementations/session/acteur.transfer'
 import { fromResult, withInput } from '@/libraries/nextjs'
 import { success } from '@/libraries/result'
 

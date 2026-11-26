@@ -36,7 +36,7 @@ import { configurationRdvServicePublic } from '@/features/rdvsp/implementations/
 import { enregistrerLesJetons } from '@/features/rdvsp/implementations/prisma/jetons-du-compte.mutation'
 import { jetonsCourants } from '@/features/rdvsp/implementations/prisma/jetons-du-compte.query'
 import { tagsVisiblesPar } from '@/features/tags/abilities/lire-les-tags-visibles/implementations/prisma/tags-visibles-par.query'
-import { acteurDe } from '@/features/tags/domain'
+import { acteurDe } from '@/features/tags/implementations/session/acteur.transfer'
 import { fromResult, withInput } from '@/libraries/nextjs'
 import { success } from '@/libraries/result'
 

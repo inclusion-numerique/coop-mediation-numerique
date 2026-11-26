@@ -8,8 +8,9 @@ import { SUPPRIMER_UN_TAG_ERRORS } from '@/features/tags/abilities/supprimer-un-
 import { SupprimerUnTagValidation } from '@/features/tags/abilities/supprimer-un-tag/action/supprimer-un-tag.validation'
 import { supprimerUnTag } from '@/features/tags/abilities/supprimer-un-tag/domain/supprimer-un-tag'
 import { effacerUnTag } from '@/features/tags/abilities/supprimer-un-tag/implementations/prisma/effacer-un-tag.mutation'
-import { acteurDe, TagId } from '@/features/tags/domain'
+import { TagId } from '@/features/tags/domain'
 import { lireUnTagActif } from '@/features/tags/implementations/prisma/tag-actif.query'
+import { acteurDe } from '@/features/tags/implementations/session/acteur.transfer'
 import { fromResult, withInput } from '@/libraries/nextjs'
 import { success } from '@/libraries/result'
 

@@ -1,7 +1,7 @@
-import { CodeDepartement } from '@/libraries/insee'
-import { CoordinateurId } from './coordinateur-id'
-import { MediateurId } from './mediateur-id'
-import { NomDuCoordinateur } from './nom-du-coordinateur'
+import type { CodeDepartement } from '@/libraries/insee'
+import type { CoordinateurId } from './coordinateur-id'
+import type { MediateurId } from './mediateur-id'
+import type { NomDuCoordinateur } from './nom-du-coordinateur'
 
 export type Equipe = {
   readonly coordinateurId: CoordinateurId
@@ -43,39 +43,3 @@ export const coordinateurDe = (acteur: Role): CoordinateurId | null =>
   acteur._tag === 'Coordinateur' || acteur._tag === 'MediateurEtCoordinateur'
     ? acteur.coordinateurId
     : null
-
-export type ProfilDeLActeur = {
-  readonly mediateurId: string | null
-  readonly coordinateurId: string | null
-  readonly equipes: readonly {
-    readonly coordinateurId: string
-    readonly nom: string | null
-  }[]
-  readonly departement: string | null
-}
-
-const equipe = ({
-  coordinateurId,
-  nom,
-}: ProfilDeLActeur['equipes'][number]): Equipe => ({
-  coordinateurId: CoordinateurId(coordinateurId),
-  coordonneePar: NomDuCoordinateur.safe(nom ?? ''),
-})
-
-const sansDoublon = (equipes: readonly Equipe[]): readonly Equipe[] =>
-  equipes.filter(
-    ({ coordinateurId }, index) =>
-      equipes.findIndex((autre) => autre.coordinateurId === coordinateurId) ===
-      index,
-  )
-
-export const acteurDe = (profil: ProfilDeLActeur): Acteur => ({
-  ...role(
-    profil.mediateurId === null ? null : MediateurId(profil.mediateurId),
-    profil.coordinateurId === null
-      ? null
-      : CoordinateurId(profil.coordinateurId),
-  ),
-  equipes: sansDoublon(profil.equipes.map(equipe)),
-  departement: CodeDepartement.safe(profil.departement ?? ''),
-})

@@ -7,8 +7,9 @@ import { RechercherDesDestinationsValidation } from '@/features/tags/abilities/r
 import { rechercherDesDestinations } from '@/features/tags/abilities/rechercher-des-destinations/domain/rechercher-des-destinations'
 import { lireLesCandidatesALaFusion } from '@/features/tags/abilities/rechercher-des-destinations/implementations/prisma/destinations-de-fusion.query'
 import { destinationsAffichees } from '@/features/tags/abilities/rechercher-des-destinations/ui/presenters/destinations.presenter'
-import { acteurDe, TagId } from '@/features/tags/domain'
+import { TagId } from '@/features/tags/domain'
 import { lireUnTagActif } from '@/features/tags/implementations/prisma/tag-actif.query'
+import { acteurDe } from '@/features/tags/implementations/session/acteur.transfer'
 import { withInput } from '@/libraries/nextjs'
 
 export const rechercherDesDestinationsAction = actionBuilder()

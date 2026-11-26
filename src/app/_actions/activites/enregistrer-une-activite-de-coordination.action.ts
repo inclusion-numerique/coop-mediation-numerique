@@ -17,7 +17,7 @@ import { profilDeLaSession } from '@/features/authentification/domain/profil-de-
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { tagsVisiblesPar } from '@/features/tags/abilities/lire-les-tags-visibles/implementations/prisma/tags-visibles-par.query'
-import { acteurDe } from '@/features/tags/domain'
+import { acteurDe } from '@/features/tags/implementations/session/acteur.transfer'
 import { fromResult, withInput } from '@/libraries/nextjs'
 import { success } from '@/libraries/result'
 
