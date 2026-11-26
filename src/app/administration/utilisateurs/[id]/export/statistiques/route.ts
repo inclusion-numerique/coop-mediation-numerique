@@ -40,7 +40,12 @@ import {
   utilisateurDuJetonDeSession,
 } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
 import { jetonDeSessionDesCookies } from '@/features/authentification/implementations/session/session-token-from-cookies.query'
-import { membresAFiltrerDuDemandeur } from '@/features/equipe/abilities/lister-les-membres-a-filtrer/implementations/prisma/membres-a-filtrer-du-demandeur.query'
+import { listerLesMembresAFiltrer } from '@/features/equipe/abilities/lister-les-membres-a-filtrer/domain/lister-les-membres-a-filtrer'
+import {
+  lireLeDemandeur,
+  lireLesMembresAFiltrer,
+} from '@/features/equipe/abilities/lister-les-membres-a-filtrer/implementations/prisma/membres-a-filtrer.query'
+import { demandeurDuFiltre } from '@/features/equipe/abilities/lister-les-membres-a-filtrer/implementations/session/demandeur-du-filtre.query'
 import { optionDeMembre } from '@/features/equipe/abilities/lister-les-membres-a-filtrer/ui/presenters/options-de-membres.presenter'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/rdvs-des-activites.query'
 import { classeurDesStatistiques } from '@/features/statistiques/implementations/excel/classeur-des-statistiques.classeur'
@@ -112,6 +117,16 @@ const classeurDuPerimetre = async (
   return { statistiques, etiquettes: barre.etiquettes }
 }
 
+const optionsDesMembres = async (
+  user: Parameters<typeof demandeurDuFiltre>[0],
+) => {
+  const membres = await listerLesMembresAFiltrer({
+    lireLeDemandeur,
+    lireLesMembresAFiltrer,
+  })({ ...demandeurDuFiltre(user), recherche: null })
+  return membres.success ? membres.data.map(optionDeMembre) : []
+}
+
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
@@ -139,8 +154,7 @@ export const GET = async (
       ...(await classeurDuPerimetre(
         perimetre,
         filtresDesStatistiques.charger(request.nextUrl.searchParams),
-        async () =>
-          (await membresAFiltrerDuDemandeur(user)).map(optionDeMembre),
+        async () => optionsDesMembres(user),
       )),
       auteur: auteurDeLExport(administrateur),
       fuseau: user.timezone,

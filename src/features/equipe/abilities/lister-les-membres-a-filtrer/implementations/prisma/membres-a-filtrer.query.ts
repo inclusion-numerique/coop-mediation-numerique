@@ -1,16 +1,14 @@
 import { prismaClient } from '@/configuration/prisma'
 import type { Prisma } from '@/generated/prisma/client'
-import type { CoordinateurId } from '../../../../domain/identifiants/coordinateur-id'
 import { MediateurId } from '../../../../domain/identifiants/mediateur-id'
 import { Courriel } from '../../../../domain/identite/courriel'
 import { Nom } from '../../../../domain/identite/nom'
 import { NomAffiche, nomAffiche } from '../../../../domain/identite/nom-affiche'
 import { Prenom } from '../../../../domain/identite/prenom'
-import {
-  type MembreAFiltrer,
-  type MembreLu,
-  membresDansLOrdre,
-} from '../../domain'
+import type {
+  LireLeDemandeur,
+  LireLesMembresAFiltrer,
+} from '../../domain/ports'
 
 const colonnesDeLUtilisateur = {
   firstName: true,
@@ -46,41 +44,33 @@ const identiteDe = (id: string, utilisateur: Utilisateur) => {
   }
 }
 
-export const listerLesMembresAFiltrer = async ({
+export const lireLeDemandeur: LireLeDemandeur = async (mediateurId) => {
+  const demandeur = await prismaClient.mediateur.findUnique({
+    where: { id: mediateurId },
+    select: { id: true, user: { select: colonnesDeLUtilisateur } },
+  })
+  return demandeur === null
+    ? null
+    : identiteDe(demandeur.id, demandeur.user).membre
+}
+
+export const lireLesMembresAFiltrer: LireLesMembresAFiltrer = async ({
   coordinateurId,
-  demandeur,
   membres,
-}: {
-  readonly coordinateurId: CoordinateurId
-  readonly demandeur: MediateurId | null
-  readonly membres: readonly MediateurId[]
-}): Promise<readonly MembreAFiltrer[]> => {
-  const [deLuiMeme, lus] = await Promise.all([
-    demandeur === null
-      ? null
-      : prismaClient.mediateur.findUnique({
-          where: { id: demandeur },
-          select: { id: true, user: { select: colonnesDeLUtilisateur } },
-        }),
-    prismaClient.mediateur.findMany({
-      where: { id: { in: [...membres] } },
-      select: {
-        id: true,
-        user: { select: colonnesDeLUtilisateur },
-        coordinations: {
-          where: { coordinateurId },
-          select: { suppression: true },
-        },
+}) => {
+  const lus = await prismaClient.mediateur.findMany({
+    where: { id: { in: [...membres] } },
+    select: {
+      id: true,
+      user: { select: colonnesDeLUtilisateur },
+      coordinations: {
+        where: { coordinateurId },
+        select: { suppression: true },
       },
-    }),
-  ])
-  return membresDansLOrdre(
-    deLuiMeme === null ? null : identiteDe(deLuiMeme.id, deLuiMeme.user).membre,
-    lus.map(
-      ({ id, user, coordinations }): MembreLu => ({
-        ...identiteDe(id, user),
-        departs: coordinations.map(({ suppression }) => suppression),
-      }),
-    ),
-  )
+    },
+  })
+  return lus.map(({ id, user, coordinations }) => ({
+    ...identiteDe(id, user),
+    departs: coordinations.map(({ suppression }) => suppression),
+  }))
 }

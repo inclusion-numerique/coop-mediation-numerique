@@ -1,3 +1,4 @@
+import type { CoordinateurId } from '../../../domain/identifiants/coordinateur-id'
 import type { MediateurId } from '../../../domain/identifiants/mediateur-id'
 import type { Courriel } from '../../../domain/identite/courriel'
 import type { Nom } from '../../../domain/identite/nom'
@@ -13,11 +14,18 @@ export type MembreAFiltrer = {
   readonly situation: SituationDuMembre
 }
 
+export type IdentiteDuMembre = Omit<MembreAFiltrer, 'situation'>
+
 export type MembreLu = {
-  readonly membre: Omit<MembreAFiltrer, 'situation'>
+  readonly membre: IdentiteDuMembre
   readonly prenom: Prenom | null
   readonly nomDeFamille: Nom | null
   readonly departs: readonly (Date | null)[]
+}
+
+export type EquipeAFiltrer = {
+  readonly coordinateurId: CoordinateurId
+  readonly membres: readonly MediateurId[]
 }
 
 const situationDe = (departs: readonly (Date | null)[]): SituationDuMembre =>
@@ -33,7 +41,7 @@ const parNom = (a: MembreLu, b: MembreLu): number =>
   enMinuscules(a.prenom).localeCompare(enMinuscules(b.prenom))
 
 export const membresDansLOrdre = (
-  demandeur: Omit<MembreAFiltrer, 'situation'> | null,
+  demandeur: IdentiteDuMembre | null,
   membres: readonly MembreLu[],
 ): readonly MembreAFiltrer[] => {
   const ranges = [...membres].sort(parNom).map(({ membre, departs }) => ({

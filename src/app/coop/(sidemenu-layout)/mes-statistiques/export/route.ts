@@ -37,7 +37,12 @@ import { filtresDesStatistiques } from '@/features/activites/ui/filtres/statisti
 import { barreDesStatistiquesAvec } from '@/features/activites/ui/presenters/barre-des-statistiques.presenter'
 import { utilisateurDuJetonDeSession } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
 import { jetonDeSessionDesCookies } from '@/features/authentification/implementations/session/session-token-from-cookies.query'
-import { membresAFiltrerDuDemandeur } from '@/features/equipe/abilities/lister-les-membres-a-filtrer/implementations/prisma/membres-a-filtrer-du-demandeur.query'
+import { listerLesMembresAFiltrer } from '@/features/equipe/abilities/lister-les-membres-a-filtrer/domain/lister-les-membres-a-filtrer'
+import {
+  lireLeDemandeur,
+  lireLesMembresAFiltrer,
+} from '@/features/equipe/abilities/lister-les-membres-a-filtrer/implementations/prisma/membres-a-filtrer.query'
+import { demandeurDuFiltre } from '@/features/equipe/abilities/lister-les-membres-a-filtrer/implementations/session/demandeur-du-filtre.query'
 import { optionDeMembre } from '@/features/equipe/abilities/lister-les-membres-a-filtrer/ui/presenters/options-de-membres.presenter'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/rdvs-des-activites.query'
 import { exportInterdit } from '@/features/statistiques/domain/export-interdit'
@@ -109,6 +114,16 @@ const classeurDuPerimetre = async (
   return { statistiques, etiquettes: barre.etiquettes }
 }
 
+const optionsDesMembres = async (
+  user: Parameters<typeof demandeurDuFiltre>[0],
+) => {
+  const membres = await listerLesMembresAFiltrer({
+    lireLeDemandeur,
+    lireLesMembresAFiltrer,
+  })({ ...demandeurDuFiltre(user), recherche: null })
+  return membres.success ? membres.data.map(optionDeMembre) : []
+}
+
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
@@ -133,7 +148,7 @@ export const GET = async (request: NextRequest) => {
 
   const statistiquesWorksheetInput = entreeDuClasseur({
     ...(await classeurDuPerimetre(perimetre, valeurs, async () =>
-      (await membresAFiltrerDuDemandeur(user)).map(optionDeMembre),
+      optionsDesMembres(user),
     )),
     auteur: auteurDeLExport(user),
     fuseau: user.timezone,

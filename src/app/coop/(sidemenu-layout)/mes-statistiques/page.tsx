@@ -68,7 +68,12 @@ import { filtresDesStatistiques } from '@/features/activites/ui/filtres/statisti
 import { barreDesStatistiquesAvec } from '@/features/activites/ui/presenters/barre-des-statistiques.presenter'
 import { BarreDesStatistiques } from '@/features/activites/ui/slots/BarreDesStatistiques.slot'
 import { authenticateMediateurOrCoordinateur } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
-import { membresAFiltrerDuDemandeur } from '@/features/equipe/abilities/lister-les-membres-a-filtrer/implementations/prisma/membres-a-filtrer-du-demandeur.query'
+import { listerLesMembresAFiltrer } from '@/features/equipe/abilities/lister-les-membres-a-filtrer/domain/lister-les-membres-a-filtrer'
+import {
+  lireLeDemandeur,
+  lireLesMembresAFiltrer,
+} from '@/features/equipe/abilities/lister-les-membres-a-filtrer/implementations/prisma/membres-a-filtrer.query'
+import { demandeurDuFiltre } from '@/features/equipe/abilities/lister-les-membres-a-filtrer/implementations/session/demandeur-du-filtre.query'
 import { optionDeMembre } from '@/features/equipe/abilities/lister-les-membres-a-filtrer/ui/presenters/options-de-membres.presenter'
 import { consulterMesLiensDePartage } from '@/features/mediateurs/abilities/consulter-mes-liens-de-partage/implementations/prisma/consulter-mes-liens-de-partage.query'
 import { REGLER_LE_PARTAGE_STATISTIQUES_ACTION_KEY } from '@/features/mediateurs/abilities/regler-le-partage-statistiques/action/regler-le-partage-statistiques.key'
@@ -83,6 +88,16 @@ import {
   sectionGenerale,
 } from '@/features/statistiques/ui/slots/SectionsDesStatistiques.slot'
 import { ClientBinder } from '@/libraries/nextjs/injection'
+
+const optionsDesMembres = async (
+  user: Parameters<typeof demandeurDuFiltre>[0],
+) => {
+  const membres = await listerLesMembresAFiltrer({
+    lireLeDemandeur,
+    lireLesMembresAFiltrer,
+  })({ ...demandeurDuFiltre(user), recherche: null })
+  return membres.success ? membres.data.map(optionDeMembre) : []
+}
 
 const statistiquesDesActivites = statistiquesAvec({
   totalCounts: source(compterLesAccompagnements, totauxPresentes),
@@ -151,8 +166,7 @@ const Page = async (props: {
     tagsChoisis,
     employeuses: async () =>
       employeusesEnOptions(activitesDuPerimetre.employeuses),
-    mediateurs: async () =>
-      (await membresAFiltrerDuDemandeur(user)).map(optionDeMembre),
+    mediateurs: async () => optionsDesMembres(user),
   })({ chemin: '/coop/mes-statistiques', parametres }, valeurs)
 
   const jour = (date: Date | null) => date?.toISOString().slice(0, 10)

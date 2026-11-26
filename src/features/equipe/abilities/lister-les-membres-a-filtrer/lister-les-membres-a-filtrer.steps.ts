@@ -5,7 +5,16 @@ import { prismaClient } from '@/configuration/prisma'
 import { CoordinateurId } from '../../domain/identifiants/coordinateur-id'
 import { MediateurId } from '../../domain/identifiants/mediateur-id'
 import { type MembreAFiltrer } from './domain/index'
-import { listerLesMembresAFiltrer } from './implementations/prisma/membres-a-filtrer.query'
+import { listerLesMembresAFiltrer as listerLesMembresAFiltrerAvec } from './domain/lister-les-membres-a-filtrer'
+import {
+  lireLeDemandeur,
+  lireLesMembresAFiltrer,
+} from './implementations/prisma/membres-a-filtrer.query'
+
+const listerLesMembresAFiltrer = listerLesMembresAFiltrerAvec({
+  lireLeDemandeur,
+  lireLesMembresAFiltrer,
+})
 
 type Seme = { userId: string; mediateurId: string; coordinateurId?: string }
 
@@ -83,13 +92,18 @@ Given('{string} a quitté son équipe', async (nom: string) => {
 When('je liste les membres à filtrer de {string}', async (nom: string) => {
   const demandeur = semes[nom]
   assert.ok(demandeur, `${nom} n'est pas semé`)
-  listes = await listerLesMembresAFiltrer({
-    coordinateurId: CoordinateurId(coordinateurId()),
+  const membres = await listerLesMembresAFiltrer({
+    equipe: {
+      coordinateurId: CoordinateurId(coordinateurId()),
+      membres: Object.entries(semes)
+        .filter(([cle]) => cle !== nom)
+        .map(([, { mediateurId }]) => MediateurId(mediateurId)),
+    },
     demandeur: MediateurId(demandeur.mediateurId),
-    membres: Object.entries(semes)
-      .filter(([cle]) => cle !== nom)
-      .map(([, { mediateurId }]) => MediateurId(mediateurId)),
+    recherche: null,
   })
+  assert.ok(membres.success)
+  listes = membres.data
 })
 
 Then('les membres à filtrer sont {string}', (attendus: string) => {
