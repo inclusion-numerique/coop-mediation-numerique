@@ -1,12 +1,15 @@
 import { describe, expect, it } from 'vitest'
 import { failure, type Result, success } from '@/libraries/result'
 import {
+  ActionNonAutorisee,
+  type ActiviteDeCoordination,
   ActiviteDeCoordinationId,
   ActiviteIntrouvable,
   CoordinateurId,
   DateDActivite,
   DateTropLointaine,
   Effectif,
+  type Evenement,
   NomDeTag,
   Organisateur,
   TagId,
@@ -15,26 +18,30 @@ import {
   TypeDActiviteIncompatible,
   TypeDEvenement,
 } from '../../../domain'
-import {
-  type DependancesDeLaSaisieDeCoordination,
-  type EchecDEnregistrement,
-  enregistrerUneActiviteDeCoordination,
-} from './enregistrer-une-activite-de-coordination'
-import { ActionNonAutorisee } from './errors'
+import { enregistrerUneActiviteDeCoordination } from './enregistrer-une-activite-de-coordination'
+import type { EchecDEnregistrerUneActiviteDeCoordination } from './errors'
+import type { EnregistrerUneActiviteDeCoordinationPorts } from './ports'
 import type {
-  ActiviteEnregistree,
+  EcritureDeCoordination,
   SaisieDeCoordination,
 } from './saisie-de-coordination'
 
 type Cas = {
   readonly cas: string
-  readonly dependances: DependancesDeLaSaisieDeCoordination
+  readonly ports: EnregistrerUneActiviteDeCoordinationPorts
   readonly entree: {
     readonly saisie: SaisieDeCoordination
     readonly coordinateurId: CoordinateurId | null
   }
-  readonly attendu: Result<ActiviteEnregistree, EchecDEnregistrement>
+  readonly attendu: Result<
+    EcritureDeCoordination,
+    EchecDEnregistrerUneActiviteDeCoordination
+  >
 }
+
+const maintenant = new Date('2026-11-10T08:00:00Z')
+
+const creationExistante = new Date('2026-11-01T08:00:00Z')
 
 const nouvelId = ActiviteDeCoordinationId(
   'b0000000-0000-4000-8000-000000000001',
@@ -51,17 +58,23 @@ const reseau = {
   nom: NomDeTag('Réseau'),
 }
 
-const dependances: DependancesDeLaSaisieDeCoordination = {
+const ports: EnregistrerUneActiviteDeCoordinationPorts = {
   activiteDuCoordinateur: async () => ({
     type: TypeDActiviteDeCoordination('Evenement'),
-    creation: new Date('2026-11-01T08:00:00Z'),
+    creation: creationExistante,
   }),
   nouvelIdentifiant: () => nouvelId,
   tagsUtilisables: async () => [reseau],
   creer: async () => undefined,
   modifier: async () => undefined,
-  maintenant: () => new Date('2026-11-10T08:00:00Z'),
 }
+
+const typeDEvenement = {
+  _tag: 'Liste',
+  valeur: TypeDEvenement('NecLocal'),
+} satisfies Evenement['typeDEvenement']
+
+const organisateurs = { valeurs: [Organisateur('Commune')], autre: null }
 
 const saisie: SaisieDeCoordination = {
   _tag: 'Evenement',
@@ -70,8 +83,8 @@ const saisie: SaisieDeCoordination = {
   tags: [reseau.id],
   notes: null,
   nom: null,
-  typeDEvenement: { _tag: 'Liste', valeur: TypeDEvenement('NecLocal') },
-  organisateurs: { valeurs: [Organisateur('Commune')], autre: null },
+  typeDEvenement,
+  organisateurs,
   echelon: null,
   participants: Effectif(40),
 }
@@ -81,27 +94,43 @@ const enModification: SaisieDeCoordination = {
   id: activiteModifiee,
 }
 
+const evenement: ActiviteDeCoordination = {
+  _tag: 'Evenement',
+  id: nouvelId,
+  coordinateurId,
+  date: DateDActivite('2026-11-05'),
+  tags: [reseau],
+  notes: null,
+  nom: null,
+  typeDEvenement,
+  organisateurs,
+  echelon: null,
+  participants: Effectif(40),
+  creation: maintenant,
+  modification: maintenant,
+}
+
 describe('enregistrer une activité de coordination', () => {
   it.each<Cas>([
     {
       cas: 'refuse un utilisateur qui n’est pas coordinateur',
-      dependances,
+      ports,
       entree: { saisie, coordinateurId: null },
       attendu: failure(ActionNonAutorisee()),
     },
     {
       cas: 'refuse de modifier une activité introuvable chez le coordinateur',
-      dependances: { ...dependances, activiteDuCoordinateur: async () => null },
+      ports: { ...ports, activiteDuCoordinateur: async () => null },
       entree: { saisie: enModification, coordinateurId },
       attendu: failure(ActiviteIntrouvable()),
     },
     {
       cas: 'refuse de modifier une animation en événement',
-      dependances: {
-        ...dependances,
+      ports: {
+        ...ports,
         activiteDuCoordinateur: async () => ({
           type: TypeDActiviteDeCoordination('Animation'),
-          creation: new Date('2026-11-01T08:00:00Z'),
+          creation: creationExistante,
         }),
       },
       entree: { saisie: enModification, coordinateurId },
@@ -109,13 +138,13 @@ describe('enregistrer une activité de coordination', () => {
     },
     {
       cas: 'refuse un tag que le coordinateur ne peut pas utiliser',
-      dependances: { ...dependances, tagsUtilisables: async () => [] },
+      ports: { ...ports, tagsUtilisables: async () => [] },
       entree: { saisie, coordinateurId },
       attendu: failure(TagInutilisable()),
     },
     {
       cas: 'refuse une date au-delà de deux ans',
-      dependances,
+      ports,
       entree: {
         saisie: { ...saisie, date: DateDActivite('2029-01-01') },
         coordinateurId,
@@ -123,20 +152,30 @@ describe('enregistrer une activité de coordination', () => {
       attendu: failure(DateTropLointaine(DateDActivite('2028-11-10'))),
     },
     {
-      cas: 'crée l’activité sous un nouvel identifiant',
-      dependances,
+      cas: 'crée l’activité taguée sous un nouvel identifiant',
+      ports,
       entree: { saisie, coordinateurId },
-      attendu: success({ id: nouvelId, type: 'Evenement' }),
+      attendu: success({ _tag: 'Creation', activite: evenement }),
     },
     {
-      cas: 'modifie l’activité sous son identifiant',
-      dependances,
+      cas: 'modifie l’activité sous son identifiant, à sa date de création',
+      ports,
       entree: { saisie: enModification, coordinateurId },
-      attendu: success({ id: activiteModifiee, type: 'Evenement' }),
+      attendu: success({
+        _tag: 'Modification',
+        activite: {
+          ...evenement,
+          id: activiteModifiee,
+          creation: creationExistante,
+        },
+      }),
     },
-  ])('$cas', async ({ dependances, entree, attendu }) => {
+  ])('$cas', async ({ ports, entree, attendu }) => {
     expect(
-      await enregistrerUneActiviteDeCoordination(dependances)(entree),
+      await enregistrerUneActiviteDeCoordination(ports)({
+        ...entree,
+        maintenant,
+      }),
     ).toEqual(attendu)
   })
 })

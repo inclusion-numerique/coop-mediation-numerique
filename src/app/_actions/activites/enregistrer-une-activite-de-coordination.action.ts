@@ -2,6 +2,7 @@
 
 import { actionBuilder } from '@/configuration/nextjs'
 import { ENREGISTRER_UNE_ACTIVITE_DE_COORDINATION_ERRORS } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/action/enregistrer-une-activite-de-coordination.errors'
+import { activiteEnregistree } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/action/enregistrer-une-activite-de-coordination.transfer'
 import { EnregistrerUneActiviteDeCoordinationValidation } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/action/enregistrer-une-activite-de-coordination.validation'
 import { enregistrerUneActiviteDeCoordination } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/domain/enregistrer-une-activite-de-coordination'
 import { activiteDeCoordinationDuCoordinateur } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/implementations/prisma/activite-de-coordination-du-coordinateur.query'
@@ -18,6 +19,7 @@ import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-ma
 import { tagsVisiblesPar } from '@/features/tags/abilities/lire-les-tags-visibles/implementations/prisma/tags-visibles-par.query'
 import { acteurDe } from '@/features/tags/domain'
 import { fromResult, withInput } from '@/libraries/nextjs'
+import { success } from '@/libraries/result'
 
 export const enregistrerUneActiviteDeCoordinationAction = actionBuilder()
   .use(withAuth())
@@ -25,8 +27,8 @@ export const enregistrerUneActiviteDeCoordinationAction = actionBuilder()
   .use(withInput(EnregistrerUneActiviteDeCoordinationValidation))
   .execute(
     fromResult(
-      async ({ user, input }) =>
-        enregistrerUneActiviteDeCoordination({
+      async ({ user, input }) => {
+        const enregistree = await enregistrerUneActiviteDeCoordination({
           activiteDuCoordinateur: activiteDeCoordinationDuCoordinateur,
           nouvelIdentifiant: nouvelIdentifiantDeCoordination,
           tagsUtilisables: tagsUtilisablesDepuis(
@@ -34,14 +36,18 @@ export const enregistrerUneActiviteDeCoordinationAction = actionBuilder()
           ),
           creer: creerLActiviteDeCoordination(UtilisateurId(user.id)),
           modifier: modifierLActiviteDeCoordination(UtilisateurId(user.id)),
-          maintenant: () => new Date(),
         })({
           saisie: input,
           coordinateurId:
             user.coordinateur == null
               ? null
               : CoordinateurId(user.coordinateur.id),
-        }),
+          maintenant: new Date(),
+        })
+        return enregistree.success
+          ? success(activiteEnregistree(enregistree.data))
+          : enregistree
+      },
       { onError: ENREGISTRER_UNE_ACTIVITE_DE_COORDINATION_ERRORS },
     ),
   )

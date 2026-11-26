@@ -1,52 +1,23 @@
 import { failure, type Result, success } from '@/libraries/result'
 import {
-  type ActiviteDeCoordination,
+  ActionNonAutorisee,
   type ActiviteDeCoordinationId,
   ActiviteIntrouvable,
   type CoordinateurId,
-  type DateTropLointaine,
-  type TagInutilisable,
-  type TagsUtilisables,
-  type TypeDActiviteDeCoordination,
   TypeDActiviteIncompatible,
   tagsDeLaSaisie,
 } from '../../../domain'
-import { ActionNonAutorisee } from './errors'
+import type { EchecDEnregistrerUneActiviteDeCoordination } from './errors'
+import type {
+  ActiviteDeCoordinationDuCoordinateur,
+  EnregistrerUneActiviteDeCoordinationPorts,
+  NouvelIdentifiantDeCoordination,
+} from './ports'
 import {
-  type ActiviteEnregistree,
   activiteDeLaSaisie,
+  type EcritureDeCoordination,
   type SaisieDeCoordination,
 } from './saisie-de-coordination'
-
-export type EchecDEnregistrement =
-  | ActionNonAutorisee
-  | ActiviteIntrouvable
-  | TypeDActiviteIncompatible
-  | TagInutilisable
-  | DateTropLointaine
-
-export type ActiviteDeCoordinationExistante = {
-  readonly type: TypeDActiviteDeCoordination
-  readonly creation: Date
-}
-
-export type ActiviteDeCoordinationDuCoordinateur = (criteres: {
-  readonly id: ActiviteDeCoordinationId
-  readonly coordinateurId: CoordinateurId
-}) => Promise<ActiviteDeCoordinationExistante | null>
-
-export type EcrireLActiviteDeCoordination = (
-  activite: ActiviteDeCoordination,
-) => Promise<void>
-
-export type DependancesDeLaSaisieDeCoordination = {
-  readonly activiteDuCoordinateur: ActiviteDeCoordinationDuCoordinateur
-  readonly nouvelIdentifiant: () => ActiviteDeCoordinationId
-  readonly tagsUtilisables: TagsUtilisables
-  readonly creer: EcrireLActiviteDeCoordination
-  readonly modifier: EcrireLActiviteDeCoordination
-  readonly maintenant: () => Date
-}
 
 type Enregistrement =
   | { readonly _tag: 'Creation'; readonly id: ActiviteDeCoordinationId }
@@ -57,10 +28,10 @@ type Enregistrement =
     }
 
 const enregistrementDe =
-  ({
-    activiteDuCoordinateur,
-    nouvelIdentifiant,
-  }: DependancesDeLaSaisieDeCoordination) =>
+  (
+    activiteDuCoordinateur: ActiviteDeCoordinationDuCoordinateur,
+    nouvelIdentifiant: NouvelIdentifiantDeCoordination,
+  ) =>
   async (
     saisie: SaisieDeCoordination,
     coordinateurId: CoordinateurId,
@@ -85,29 +56,35 @@ const enregistrementDe =
   }
 
 export const enregistrerUneActiviteDeCoordination =
-  (dependances: DependancesDeLaSaisieDeCoordination) =>
+  ({
+    activiteDuCoordinateur,
+    nouvelIdentifiant,
+    tagsUtilisables,
+    creer,
+    modifier,
+  }: EnregistrerUneActiviteDeCoordinationPorts) =>
   async ({
     saisie,
     coordinateurId,
+    maintenant,
   }: {
     readonly saisie: SaisieDeCoordination
     readonly coordinateurId: CoordinateurId | null
-  }): Promise<Result<ActiviteEnregistree, EchecDEnregistrement>> => {
+    readonly maintenant: Date
+  }): Promise<
+    Result<EcritureDeCoordination, EchecDEnregistrerUneActiviteDeCoordination>
+  > => {
     if (coordinateurId === null) return failure(ActionNonAutorisee())
 
-    const enregistrement = await enregistrementDe(dependances)(
-      saisie,
-      coordinateurId,
-    )
+    const enregistrement = await enregistrementDe(
+      activiteDuCoordinateur,
+      nouvelIdentifiant,
+    )(saisie, coordinateurId)
     if (!enregistrement.success) return enregistrement
 
-    const tags = tagsDeLaSaisie(
-      saisie.tags,
-      await dependances.tagsUtilisables(saisie.tags),
-    )
+    const tags = tagsDeLaSaisie(saisie.tags, await tagsUtilisables(saisie.tags))
     if (!tags.success) return tags
 
-    const maintenant = dependances.maintenant()
     const activite = activiteDeLaSaisie({
       saisie,
       id: enregistrement.data.id,
@@ -121,9 +98,13 @@ export const enregistrerUneActiviteDeCoordination =
     })
     if (!activite.success) return activite
 
-    await (enregistrement.data._tag === 'Creation'
-      ? dependances.creer(activite.data)
-      : dependances.modifier(activite.data))
+    const ecriture: EcritureDeCoordination = {
+      _tag: enregistrement.data._tag,
+      activite: activite.data,
+    }
+    await (ecriture._tag === 'Creation'
+      ? creer(ecriture.activite)
+      : modifier(ecriture.activite))
 
-    return success({ id: activite.data.id, type: activite.data._tag })
+    return success(ecriture)
   }

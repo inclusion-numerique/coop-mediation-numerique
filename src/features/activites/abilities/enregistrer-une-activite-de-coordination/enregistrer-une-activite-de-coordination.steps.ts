@@ -3,8 +3,8 @@ import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
 import {
-  type ActiviteEnregistree,
-  type EchecDEnregistrement,
+  type EchecDEnregistrerUneActiviteDeCoordination,
+  type EcritureDeCoordination,
   enregistrerUneActiviteDeCoordination,
   type SaisieDeCoordination,
 } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/domain/index'
@@ -41,7 +41,9 @@ type Semis = {
 }
 
 let semis: Semis | undefined
-let resultat: Result<ActiviteEnregistree, EchecDEnregistrement> | undefined
+let resultat:
+  | Result<EcritureDeCoordination, EchecDEnregistrerUneActiviteDeCoordination>
+  | undefined
 
 const semerUnCoordinateur = async (): Promise<Coordinateur> => {
   const userId = v4()
@@ -119,13 +121,13 @@ const enregistrerPar = async (
     tagsUtilisables: tagsDuCoordinateur(coordinateur?.coordinateurId ?? ''),
     creer: creerLActiviteDeCoordination(auteurId),
     modifier: modifierLActiviteDeCoordination(auteurId),
-    maintenant: () => new Date(),
   })({
     saisie,
     coordinateurId:
       coordinateur === null
         ? null
         : CoordinateurId(coordinateur.coordinateurId),
+    maintenant: new Date(),
   })
 }
 
@@ -261,7 +263,7 @@ Then(
   async (duree: number, nom: string) => {
     assert.ok(resultat?.success)
     const activite = await prismaClient.activiteCoordination.findUniqueOrThrow({
-      where: { id: resultat.data.id },
+      where: { id: resultat.data.activite.id },
       select: {
         type: true,
         duree: true,
