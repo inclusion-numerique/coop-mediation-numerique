@@ -1,2 +1,5 @@
-export { essaimageDesTagsDuCoordinateur } from './essaimage'
-export { type TagDetenu, tagDAccueil } from './tag-d-accueil'
+export {
+  type BilanDuRetrait,
+  bilanDuRetrait,
+  type RetraitDesTags,
+} from './retrait-des-tags'

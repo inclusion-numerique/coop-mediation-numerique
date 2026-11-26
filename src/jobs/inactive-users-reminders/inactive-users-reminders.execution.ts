@@ -11,7 +11,13 @@ import {
   retirerDuRegistre,
   synchroniserPersonne,
 } from '@/features/registre-des-personnes/implementations/prisma/registre-personne.mutation'
-import { retirerLesTagsDUnCompte } from '@/features/tags/abilities/retirer-les-tags-d-un-compte/implementations/prisma/retirer-les-tags-d-un-compte.mutation'
+import { bilanDuRetrait } from '@/features/tags/abilities/retirer-les-tags-d-un-compte/domain'
+import { retirerLesTagsDUnCompte } from '@/features/tags/abilities/retirer-les-tags-d-un-compte/domain/retirer-les-tags-d-un-compte'
+import { appliquerLeRetraitDesTags } from '@/features/tags/abilities/retirer-les-tags-d-un-compte/implementations/prisma/retirer-les-tags-d-un-compte.mutation'
+import {
+  lireLesTagsDetenus,
+  lireLesTagsDuCompte,
+} from '@/features/tags/abilities/retirer-les-tags-d-un-compte/implementations/prisma/tags-du-compte.query'
 import { relancerLesInscriptionsInachevees } from '@/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees/domain/relancer-les-inscriptions-inachevees'
 import { retirerDesListes } from '@/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees/implementations/brevo/retirer-des-listes.mutation'
 import { relancesDInscriptionParCourriel } from '@/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees/implementations/email/relances-d-inscription-par-courriel.adapter'
@@ -43,6 +49,12 @@ import type {
   SynchroniserLaPersonne,
 } from '@/features/utilisateurs/implementations/prisma/registre-des-personnes.mutation'
 import { output } from '@/libraries/console'
+
+const retirerLesTags = retirerLesTagsDUnCompte({
+  lireLesTagsDuCompte,
+  lireLesTagsDetenus,
+  appliquerLeRetrait: appliquerLeRetraitDesTags,
+})
 
 const portsDeSuppression = (
   effacements: EffacementsDesAutresFeatures,
@@ -121,7 +133,13 @@ const supprimerComptePorts: EffacementsDesAutresFeatures = {
   anonymiserPortefeuille,
   effacerNotes,
   effacerEmpreinteRdv,
-  retirerLesTagsDUnCompte,
+  retirerLesTagsDUnCompte: async (identifiants) => {
+    const retrait = await retirerLesTags({
+      ...identifiants,
+      maintenant: new Date(),
+    })
+    return retrait.success ? bilanDuRetrait(retrait.data) : retrait.error
+  },
   detacherDesEquipes,
   retirerDesLieux,
   revoquerPartageStatistiques,

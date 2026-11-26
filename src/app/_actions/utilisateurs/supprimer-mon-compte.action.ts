@@ -13,7 +13,13 @@ import { effacerEmpreinteRdvAvec } from '@/features/rdvsp/abilities/effacer-empr
 import { configurationOAuthRdvsp } from '@/features/rdvsp/implementations/api/rdv-service-public-configuration.client'
 import { revoquerJetons } from '@/features/rdvsp/implementations/api/revoquer-jetons.mutation'
 import { synchroniserPersonne } from '@/features/registre-des-personnes/implementations/prisma/registre-personne.mutation'
-import { retirerLesTagsDUnCompte } from '@/features/tags/abilities/retirer-les-tags-d-un-compte/implementations/prisma/retirer-les-tags-d-un-compte.mutation'
+import { bilanDuRetrait } from '@/features/tags/abilities/retirer-les-tags-d-un-compte/domain'
+import { retirerLesTagsDUnCompte } from '@/features/tags/abilities/retirer-les-tags-d-un-compte/domain/retirer-les-tags-d-un-compte'
+import { appliquerLeRetraitDesTags } from '@/features/tags/abilities/retirer-les-tags-d-un-compte/implementations/prisma/retirer-les-tags-d-un-compte.mutation'
+import {
+  lireLesTagsDetenus,
+  lireLesTagsDuCompte,
+} from '@/features/tags/abilities/retirer-les-tags-d-un-compte/implementations/prisma/tags-du-compte.query'
 import { SUPPRIMER_COMPTE_ERRORS } from '@/features/utilisateurs/abilities/supprimer-compte/action/supprimer-compte.errors'
 import { supprimerCompte } from '@/features/utilisateurs/abilities/supprimer-compte/domain/supprimer-compte'
 import { retirerDesListesDeDiffusion } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/brevo/retirer-des-listes-de-diffusion.mutation'
@@ -28,6 +34,12 @@ import { logEffacementReport } from '@/features/utilisateurs/abilities/supprimer
 import { UtilisateurId } from '@/features/utilisateurs/domain'
 import type { SynchroniserLaPersonne } from '@/features/utilisateurs/implementations/prisma/registre-des-personnes.mutation'
 import { fromResult } from '@/libraries/nextjs'
+
+const retirerLesTags = retirerLesTagsDUnCompte({
+  lireLesTagsDuCompte,
+  lireLesTagsDetenus,
+  appliquerLeRetrait: appliquerLeRetraitDesTags,
+})
 
 const portsDeSuppression = (
   effacements: EffacementsDesAutresFeatures,
@@ -63,7 +75,13 @@ const supprimerComptePorts: EffacementsDesAutresFeatures = {
   anonymiserPortefeuille,
   effacerNotes,
   effacerEmpreinteRdv,
-  retirerLesTagsDUnCompte,
+  retirerLesTagsDUnCompte: async (identifiants) => {
+    const retrait = await retirerLesTags({
+      ...identifiants,
+      maintenant: new Date(),
+    })
+    return retrait.success ? bilanDuRetrait(retrait.data) : retrait.error
+  },
   detacherDesEquipes,
   retirerDesLieux,
   revoquerPartageStatistiques,

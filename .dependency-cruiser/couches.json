@@ -197,6 +197,7 @@
     "mon-reseau/abilities/lister-les-acteurs-du-departement/domain",
     "mon-reseau/domain",
     "tags/abilities/creer-un-tag/domain",
+    "tags/abilities/retirer-les-tags-d-un-compte/domain",
     "tags/domain",
     "utilisateurs/abilities/consulter-un-utilisateur/domain",
     "utilisateurs/domain"

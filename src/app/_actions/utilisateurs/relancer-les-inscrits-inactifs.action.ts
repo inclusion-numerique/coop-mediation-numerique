@@ -13,7 +13,13 @@ import { effacerEmpreinteRdvAvec } from '@/features/rdvsp/abilities/effacer-empr
 import { configurationOAuthRdvsp } from '@/features/rdvsp/implementations/api/rdv-service-public-configuration.client'
 import { revoquerJetons } from '@/features/rdvsp/implementations/api/revoquer-jetons.mutation'
 import { synchroniserPersonne } from '@/features/registre-des-personnes/implementations/prisma/registre-personne.mutation'
-import { retirerLesTagsDUnCompte } from '@/features/tags/abilities/retirer-les-tags-d-un-compte/implementations/prisma/retirer-les-tags-d-un-compte.mutation'
+import { bilanDuRetrait } from '@/features/tags/abilities/retirer-les-tags-d-un-compte/domain'
+import { retirerLesTagsDUnCompte } from '@/features/tags/abilities/retirer-les-tags-d-un-compte/domain/retirer-les-tags-d-un-compte'
+import { appliquerLeRetraitDesTags } from '@/features/tags/abilities/retirer-les-tags-d-un-compte/implementations/prisma/retirer-les-tags-d-un-compte.mutation'
+import {
+  lireLesTagsDetenus,
+  lireLesTagsDuCompte,
+} from '@/features/tags/abilities/retirer-les-tags-d-un-compte/implementations/prisma/tags-du-compte.query'
 import type { RelancerLesInscritsInactifsPorts } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/domain'
 import { relancerLesInscritsInactifs } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/domain/relancer-les-inscrits-inactifs'
 import { relancesDesInscritsParCourriel } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/implementations/email/relances-des-inscrits-par-courriel.adapter'
@@ -37,6 +43,12 @@ import { compterLesInscrits } from '@/features/utilisateurs/implementations/pris
 import { noterLaRelance } from '@/features/utilisateurs/implementations/prisma/noter-la-relance.mutation'
 import type { SynchroniserLaPersonne } from '@/features/utilisateurs/implementations/prisma/registre-des-personnes.mutation'
 import type { Result } from '@/libraries/result'
+
+const retirerLesTags = retirerLesTagsDUnCompte({
+  lireLesTagsDuCompte,
+  lireLesTagsDetenus,
+  appliquerLeRetrait: appliquerLeRetraitDesTags,
+})
 
 const donneesDe = (
   resultat: Result<RelancesDeroulees, never>,
@@ -105,7 +117,13 @@ const supprimerComptePorts: EffacementsDesAutresFeatures = {
   anonymiserPortefeuille,
   effacerNotes,
   effacerEmpreinteRdv,
-  retirerLesTagsDUnCompte,
+  retirerLesTagsDUnCompte: async (identifiants) => {
+    const retrait = await retirerLesTags({
+      ...identifiants,
+      maintenant: new Date(),
+    })
+    return retrait.success ? bilanDuRetrait(retrait.data) : retrait.error
+  },
   detacherDesEquipes,
   retirerDesLieux,
   revoquerPartageStatistiques,
