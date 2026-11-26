@@ -1,6 +1,6 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
-import type { EmployeuseConsultee } from '@/features/employeuse/abilities/consulter-employeuse/domain/consulter-employeuse'
+import type { EmployeuseConsultee } from '@/features/employeuse/abilities/consulter-employeuse/domain/employeuse-consultee'
 import { consulterEmployeuse } from '@/features/employeuse/abilities/consulter-employeuse/implementations/prisma/consulter-employeuse.query'
 import { EmployeuseId } from '@/features/employeuse/domain/employeuse-id'
 import {

@@ -1,10 +1,15 @@
-import { EmployeuseId } from '../../../../domain'
-import { consulterEmployeuse } from './consulter-employeuse.query'
+import { prismaClient } from '@/configuration/prisma'
+import {
+  employeuseSelect,
+  employeuseToDomain,
+} from '../../../../implementations/prisma/employeuse.transfer'
+import type { NomDeLEmployeuse } from '../../domain/ports'
 
-export const nomDeLEmployeuse = async (id: number): Promise<string | null> => {
-  const consultee = await consulterEmployeuse({
-    employeuseId: EmployeuseId(id),
+export const nomDeLEmployeuse: NomDeLEmployeuse = async (id) => {
+  const ligne = await prismaClient.structureAdministrativeMain.findFirst({
+    where: { id, deletedAt: null },
+    select: employeuseSelect,
   })
 
-  return consultee === null ? null : (consultee.employeuse.denomination ?? '')
+  return ligne === null ? null : (employeuseToDomain(ligne).denomination ?? '')
 }

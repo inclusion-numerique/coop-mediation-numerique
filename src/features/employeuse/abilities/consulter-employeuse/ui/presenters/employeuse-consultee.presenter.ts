@@ -2,7 +2,7 @@ import { employeuseAffichage } from '../../../../ui/presenters/employeuse.presen
 import type {
   EmployeuseConsultee,
   PersonneEmployee,
-} from '../../domain/consulter-employeuse'
+} from '../../domain/employeuse-consultee'
 
 export type EmployeuseConsulteeAffichage = {
   nom: string
