@@ -2,12 +2,21 @@ import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
-import { fusionnerBeneficiaires } from '@/features/beneficiaire/abilities/fusionner-beneficiaires/implementations/prisma/index'
+import { fusionnerBeneficiaires as fusionnerBeneficiairesAvec } from '@/features/beneficiaire/abilities/fusionner-beneficiaires/domain/fusionner-beneficiaires'
+import {
+  enregistrerLaFusion,
+  lireLesBeneficiairesAFusionner,
+} from '@/features/beneficiaire/abilities/fusionner-beneficiaires/implementations/prisma/index'
 import {
   seedBeneficiaire,
   testMediateurId,
 } from '@/features/beneficiaire/beneficiaire.cucumber'
 import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
+
+const fusionnerBeneficiaires = fusionnerBeneficiairesAvec({
+  lireLesBeneficiairesAFusionner,
+  enregistrerLaFusion,
+})
 
 type FusionResult = Awaited<ReturnType<typeof fusionnerBeneficiaires>>
 
@@ -33,6 +42,7 @@ When('je fusionne la source dans la destination', async () => {
     sourceId: BeneficiaireId(sourceId),
     destinationId: BeneficiaireId(destinationId),
     mediateurId: testMediateurId,
+    maintenant: new Date(),
   })
 })
 
@@ -42,6 +52,7 @@ When('je fusionne une source inexistante dans la destination', async () => {
     sourceId: BeneficiaireId(v4()),
     destinationId: BeneficiaireId(destinationId),
     mediateurId: testMediateurId,
+    maintenant: new Date(),
   })
 })
 
@@ -51,6 +62,7 @@ When('je fusionne la source dans une destination inexistante', async () => {
     sourceId: BeneficiaireId(sourceId),
     destinationId: BeneficiaireId(v4()),
     mediateurId: testMediateurId,
+    maintenant: new Date(),
   })
 })
 

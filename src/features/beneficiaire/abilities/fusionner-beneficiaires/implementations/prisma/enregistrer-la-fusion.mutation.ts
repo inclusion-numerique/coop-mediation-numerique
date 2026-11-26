@@ -1,46 +1,17 @@
 import { prismaClient } from '@/configuration/prisma'
-import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
-import { failure, success } from '@/libraries/result'
-import {
-  BeneficiaireDestinationIntrouvable,
-  BeneficiaireSourceIntrouvable,
-} from '../../domain/errors'
-import type { FusionnerBeneficiaires } from '../../domain/fusionner-beneficiaires'
+import type { EnregistrerLaFusion } from '../../domain/fusionner-beneficiaires'
 import { mergeBeneficiaireFields } from '../../domain/merge-beneficiaire-fields'
 
 const earliestDate = (a: Date, b: Date) => (a < b ? a : b)
 
-export const fusionnerBeneficiaires: FusionnerBeneficiaires = async ({
+export const enregistrerLaFusion: EnregistrerLaFusion = async ({
   sourceId,
   destinationId,
+  source: sourceBeneficiaire,
+  destination: destinationBeneficiaire,
   mediateurId,
+  maintenant: now,
 }) => {
-  const now = new Date()
-
-  const [sourceBeneficiaire, destinationBeneficiaire] = await Promise.all([
-    prismaClient.beneficiaire.findFirst({
-      where: {
-        id: sourceId,
-        mediateurId,
-        suppression: null,
-        anonyme: false,
-      },
-    }),
-    prismaClient.beneficiaire.findFirst({
-      where: {
-        id: destinationId,
-        mediateurId,
-        suppression: null,
-        anonyme: false,
-      },
-    }),
-  ])
-
-  if (!sourceBeneficiaire)
-    return failure(BeneficiaireSourceIntrouvable(sourceId))
-  if (!destinationBeneficiaire)
-    return failure(BeneficiaireDestinationIntrouvable(destinationId))
-
   await prismaClient.$transaction(async (tx) => {
     const mergedData = mergeBeneficiaireFields(
       sourceBeneficiaire,
@@ -59,7 +30,6 @@ export const fusionnerBeneficiaires: FusionnerBeneficiaires = async ({
       },
     })
 
-    // Supprimer les accompagnements en doublon (même activité)
     await tx.$executeRaw`
       DELETE FROM accompagnements a
       USING accompagnements b
@@ -68,13 +38,11 @@ export const fusionnerBeneficiaires: FusionnerBeneficiaires = async ({
       AND a.activite_id = b.activite_id
     `
 
-    // Transférer les accompagnements restants
     await tx.accompagnement.updateMany({
       where: { beneficiaireId: sourceId },
       data: { beneficiaireId: destinationId },
     })
 
-    // Rediriger les fusions successives
     await tx.$executeRaw`
       UPDATE beneficiaires
       SET fusion_vers_id = ${destinationId}::uuid
@@ -83,7 +51,6 @@ export const fusionnerBeneficiaires: FusionnerBeneficiaires = async ({
       AND anonyme = false
     `
 
-    // Marquer le source comme fusionné
     await tx.beneficiaire.update({
       where: { id: sourceId },
       data: {
@@ -94,7 +61,6 @@ export const fusionnerBeneficiaires: FusionnerBeneficiaires = async ({
       },
     })
 
-    // Recalculer le premier accompagnement
     await tx.$executeRaw`
       UPDATE accompagnements
       SET premier_accompagnement = false
@@ -115,6 +81,4 @@ export const fusionnerBeneficiaires: FusionnerBeneficiaires = async ({
       )
     `
   })
-
-  return success({ beneficiaireFusionneId: BeneficiaireId(destinationId) })
 }
