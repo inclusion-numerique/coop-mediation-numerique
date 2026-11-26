@@ -81,4 +81,17 @@ describe('dernierContrat', () => {
         ?.echeance,
     ).toBe('FinProchaine')
   })
+
+  it('préfère un contrat daté à ceux dont le début est inconnu', () => {
+    expect(
+      dernierContrat(
+        [
+          ligne({ type: TypeDeContrat('CDI'), debut: null }),
+          ligne({ type: TypeDeContrat('CDD'), debut: new Date('2022-01-01') }),
+          ligne({ type: TypeDeContrat('CDI'), debut: null }),
+        ],
+        maintenant,
+      ),
+    ).toMatchObject({ type: TypeDeContrat('CDD') })
+  })
 })
