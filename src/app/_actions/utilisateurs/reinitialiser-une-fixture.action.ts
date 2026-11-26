@@ -20,6 +20,7 @@ import {
 } from '@/features/utilisateurs/abilities/reinitialiser-une-fixture/implementations/prisma/reinitialiser.mutation'
 import { mediateursDesPersonas } from '@/features/utilisateurs/fixtures/personas'
 import { fromResult, withInput } from '@/libraries/nextjs'
+import { success } from '@/libraries/result'
 
 const reinitialiserUneFixture = reinitialiserLaFixture({
   estUneFixture,
@@ -32,22 +33,26 @@ export const reinitialiserUneFixtureAction = actionBuilder()
   .use(withInput(ReinitialiserUneFixtureValidation))
   .execute(
     fromResult(
-      ({ input }) =>
-        reinitialiserUneFixture(input.utilisateurId, {
-          employeuse: { structureCoopId: structureEmployeuse.id },
-          semerLesActivitesDansLesLieux: semerLesActivitesDuPersonaDansLesLieux(
-            mediateursDesPersonas,
-          ),
-          semerLesBeneficiaires: semerLesBeneficiairesDeDemonstration(
-            mediateursDesPersonas,
-          ),
-          semerLesCras: semerLesCrasDeDemonstration({
-            mediateurs: mediateursDesPersonas,
-            beneficiaires: referencesDesBeneficiaires,
-            lieux: { mediateque },
-          }),
-          semerLesCoordinations: semerLesCoordinationsDeDemonstration,
-        }),
+      async ({ input }) => {
+        const resultat = await reinitialiserUneFixture({
+          utilisateurId: input.utilisateurId,
+          demonstration: {
+            employeuse: { structureCoopId: structureEmployeuse.id },
+            semerLesActivitesDansLesLieux:
+              semerLesActivitesDuPersonaDansLesLieux(mediateursDesPersonas),
+            semerLesBeneficiaires: semerLesBeneficiairesDeDemonstration(
+              mediateursDesPersonas,
+            ),
+            semerLesCras: semerLesCrasDeDemonstration({
+              mediateurs: mediateursDesPersonas,
+              beneficiaires: referencesDesBeneficiaires,
+              lieux: { mediateque },
+            }),
+            semerLesCoordinations: semerLesCoordinationsDeDemonstration,
+          },
+        })
+        return resultat.success ? success({ nom: resultat.data.nom }) : resultat
+      },
       {
         onError: {
           CompteNonFixture: 'Seul un utilisateur de test se réinitialise',

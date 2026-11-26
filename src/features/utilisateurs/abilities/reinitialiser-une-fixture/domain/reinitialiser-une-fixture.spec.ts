@@ -12,8 +12,8 @@ describe('réinitialiser une fixture', () => {
       await reinitialiserUneFixture({
         estUneFixture: async () => true,
         reinitialiser: async () => nom,
-      })(utilisateurId, 'mediateur'),
-    ).toEqual({ success: true, data: { nom } })
+      })({ utilisateurId, demonstration: 'mediateur' }),
+    ).toEqual({ success: true, data: { utilisateurId, nom } })
   })
 
   it('refuse de réinitialiser un compte réel', async () => {
@@ -21,7 +21,7 @@ describe('réinitialiser une fixture', () => {
       await reinitialiserUneFixture({
         estUneFixture: async () => false,
         reinitialiser: async () => nom,
-      })(utilisateurId, 'mediateur'),
+      })({ utilisateurId, demonstration: 'mediateur' }),
     ).toEqual({ success: false, error: { _tag: 'CompteNonFixture' } })
   })
 })
