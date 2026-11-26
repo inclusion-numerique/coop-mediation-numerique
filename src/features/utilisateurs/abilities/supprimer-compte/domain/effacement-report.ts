@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import type { EchecTechnique } from '@/features/utilisateurs/domain'
 import { defineModel, type Model } from '@/libraries/model'
 
 export const effacementSteps = [
@@ -28,11 +29,8 @@ export const FailureReason = defineModel(
 )
 export type FailureReason = Model.TypeOf<typeof FailureReason>
 
-export const failureReasonOf = (erreur: unknown): FailureReason =>
-  FailureReason(
-    (erreur instanceof Error ? erreur.message : String(erreur)).slice(0, 500) ||
-      'Erreur sans message',
-  )
+export const failureReasonOf = ({ cause }: EchecTechnique): FailureReason =>
+  FailureReason(cause.slice(0, 500) || 'Erreur sans message')
 
 export type StepResult =
   | {

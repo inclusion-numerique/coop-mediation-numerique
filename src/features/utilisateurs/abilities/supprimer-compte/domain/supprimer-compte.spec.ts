@@ -6,13 +6,16 @@ import {
   CoordinateurId,
   CourrielHash,
   Dispositif,
+  EchecTechnique,
+  identiteAnonyme,
   MediateurId,
   RoleUtilisateur,
   rattachements,
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
+import { failure, success } from '@/libraries/result'
 import type { AuteurSuppression } from './auteur-suppression'
-import type { SupprimerCompteDependances } from './ports'
+import type { SupprimerComptePorts } from './ports'
 import { RetentionPolicy } from './retention-policy'
 import { supprimerCompte } from './supprimer-compte'
 
@@ -74,34 +77,29 @@ const administrateurDeLaCoop: CompteASupprimer = {
   role: RoleUtilisateur('Admin'),
 }
 
+const identite = identiteAnonyme(CourrielHash('abcdefghijkl'))
+
 const dependances = (
   compte: CompteASupprimer | null,
-): SupprimerCompteDependances => ({
+): SupprimerComptePorts => ({
   lireLeCompteASupprimer: async () => compte,
-  couperLAcces: async () => undefined,
+  couperLAcces: async () => success(undefined),
   journaliserLEffacement: () => undefined,
   hash: () => CourrielHash('abcdefghijkl'),
-  anonymiserPortefeuille: async () => ({ anonymises: 4 }),
-  effacerEmpreinteRdv: async () => ({
-    compteDelie: true,
-    rdvsExpurges: 2,
-    usagersSupprimes: 1,
-  }),
-  effacerNotes: async () => ({ effacees: 5 }),
-  retirerLesTagsDUnCompte: async () => ({ transferes: 1, supprimes: 1 }),
-  detacherDesEquipes: async () => ({
-    invitationsSupprimees: 1,
-    appartenancesRetirees: 1,
-  }),
-  retirerDesLieux: async () => ({ rattachementsSupprimes: 2 }),
-  revoquerPartageStatistiques: async () => ({ partagesRevoques: 1 }),
-  retirerDesListesDeDiffusion: async () => true,
+  anonymiserPortefeuille: async () => success({ anonymises: 4 }),
+  effacerEmpreinteRdv: async () =>
+    success({ compteDelie: true, rdvsExpurges: 2, usagersSupprimes: 1 }),
+  effacerNotes: async () => success({ effacees: 5 }),
+  retirerLesTagsDUnCompte: async () => success({ transferes: 1, supprimes: 1 }),
+  detacherDesEquipes: async () =>
+    success({ invitationsSupprimees: 1, appartenancesRetirees: 1 }),
+  retirerDesLieux: async () => success({ rattachementsSupprimes: 2 }),
+  revoquerPartageStatistiques: async () => success({ partagesRevoques: 1 }),
+  retirerDesListesDeDiffusion: async () => success(true),
 })
 
-const supprimer = (
-  deps: SupprimerCompteDependances,
-  auteur: AuteurSuppression,
-) => supprimerCompte(deps)({ cible: utilisateurId, auteur, maintenant })
+const supprimer = (deps: SupprimerComptePorts, auteur: AuteurSuppression) =>
+  supprimerCompte(deps)({ cible: utilisateurId, auteur, maintenant })
 
 describe('supprimer un compte', () => {
   it('efface tout ce que portent un médiateur et un coordinateur, portefeuille avant RDV Service Public et listes de diffusion en dernier', async () => {
@@ -113,6 +111,8 @@ describe('supprimer un compte', () => {
         id: utilisateurId,
         motif: 'DecisionAdministrateur',
         supprimeLe: maintenant,
+        identite,
+        dejaAnonymise: false,
         report: {
           _tag: 'complete',
           results: [
@@ -156,6 +156,8 @@ describe('supprimer un compte', () => {
         id: utilisateurId,
         motif: 'DemandeDuTitulaire',
         supprimeLe: maintenant,
+        identite,
+        dejaAnonymise: false,
         report: {
           _tag: 'complete',
           results: [
@@ -172,7 +174,7 @@ describe('supprimer un compte', () => {
       await supprimer(
         {
           ...dependances(compteOrdinaire),
-          retirerDesListesDeDiffusion: async () => false,
+          retirerDesListesDeDiffusion: async () => success(false),
         },
         titulaire,
       ),
@@ -190,35 +192,30 @@ describe('supprimer un compte', () => {
     })
   })
 
-  it.each<{ cas: string; rejet: unknown; cause: string }>([
+  it.each<{ cas: string; echec: string; cause: string }>([
     {
-      cas: 'le message d’une erreur',
-      rejet: new Error('API injoignable'),
+      cas: 'le message de l’échec',
+      echec: 'API injoignable',
       cause: 'API injoignable',
     },
     {
-      cas: 'un rejet qui n’est pas une erreur',
-      rejet: 'rupture de connexion',
-      cause: 'rupture de connexion',
-    },
-    {
       cas: 'un message tronqué à la longueur du modèle',
-      rejet: new Error('x'.repeat(600)),
+      echec: 'x'.repeat(600),
       cause: 'x'.repeat(500),
     },
     {
-      cas: 'un texte de repli quand le rejet n’en porte aucun',
-      rejet: '',
+      cas: 'un texte de repli quand l’échec n’en porte aucun',
+      echec: '',
       cause: 'Erreur sans message',
     },
   ])(
     'poursuit après l’échec d’une étape et en retient pour cause $cas',
-    async ({ rejet, cause }) => {
+    async ({ echec, cause }) => {
       expect(
         await supprimer(
           {
             ...dependances(compteOrdinaire),
-            effacerEmpreinteRdv: async () => Promise.reject(rejet),
+            effacerEmpreinteRdv: async () => failure(EchecTechnique(echec)),
           },
           titulaire,
         ),
@@ -237,6 +234,27 @@ describe('supprimer un compte', () => {
       })
     },
   )
+
+  it('retient l’échec du détachement des équipes quand le retrait des tags échoue', async () => {
+    expect(
+      await supprimer(
+        {
+          ...dependances(coordinateurSeul),
+          retirerLesTagsDUnCompte: async () =>
+            failure(EchecTechnique('tags verrouillés')),
+        },
+        administrateur,
+      ),
+    ).toMatchObject({
+      success: true,
+      data: {
+        report: {
+          _tag: 'partial',
+          failed: ['AppartenancesEquipe'],
+        },
+      },
+    })
+  })
 
   it.each<{ cas: string; auteur: AuteurSuppression; motif: string }>([
     { cas: 'au titulaire', auteur: titulaire, motif: 'DemandeDuTitulaire' },
@@ -341,8 +359,7 @@ describe('supprimer un compte', () => {
       await supprimer(
         {
           ...dependances(compteOrdinaire),
-          couperLAcces: async () =>
-            Promise.reject(new Error('base verrouillée')),
+          couperLAcces: async () => failure(EchecTechnique('base verrouillée')),
         },
         titulaire,
       ),

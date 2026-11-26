@@ -7,11 +7,9 @@ import {
   type CompteSeme,
   semerCompte,
 } from '@/features/utilisateurs/utilisateurs.cucumber'
-import {
-  type AuteurSuppression,
-  RetentionPolicy,
-  type SupprimerComptePorts,
-} from './domain'
+import { success } from '@/libraries/result'
+import { type AuteurSuppression, RetentionPolicy } from './domain'
+import type { EffacementsDuCompte, Hash } from './domain/ports'
 import { supprimerCompte } from './domain/supprimer-compte'
 import { hash } from './implementations/crypto/hash.adapter'
 import { compteASupprimer } from './implementations/prisma/compte-a-supprimer.query'
@@ -26,33 +24,35 @@ const demandes: {
   empreinteRdv: string[]
 } = { portefeuille: [], notes: [], lieux: [], partage: [], empreinteRdv: [] }
 
-const ports: SupprimerComptePorts = {
+const ports: EffacementsDuCompte & { readonly hash: Hash } = {
   anonymiserPortefeuille: async ({ mediateurId }) => {
     demandes.portefeuille.push(mediateurId)
-    return { anonymises: 0 }
+    return success({ anonymises: 0 })
   },
   effacerNotes: async ({ mediateurId }) => {
     demandes.notes.push(mediateurId)
-    return { effacees: 0 }
+    return success({ effacees: 0 })
   },
   effacerEmpreinteRdv: async ({ utilisateurId }) => {
     demandes.empreinteRdv.push(utilisateurId)
-    return { compteDelie: false, rdvsExpurges: 0, usagersSupprimes: 0 }
+    return success({
+      compteDelie: false,
+      rdvsExpurges: 0,
+      usagersSupprimes: 0,
+    })
   },
-  retirerLesTagsDUnCompte: async () => ({ transferes: 0, supprimes: 0 }),
-  detacherDesEquipes: async () => ({
-    invitationsSupprimees: 0,
-    appartenancesRetirees: 0,
-  }),
+  retirerLesTagsDUnCompte: async () => success({ transferes: 0, supprimes: 0 }),
+  detacherDesEquipes: async () =>
+    success({ invitationsSupprimees: 0, appartenancesRetirees: 0 }),
   retirerDesLieux: async ({ mediateurId }) => {
     demandes.lieux.push(mediateurId)
-    return { rattachementsSupprimes: 0 }
+    return success({ rattachementsSupprimes: 0 })
   },
   revoquerPartageStatistiques: async ({ mediateurId }) => {
     demandes.partage.push(mediateurId)
-    return { partagesRevoques: 0 }
+    return success({ partagesRevoques: 0 })
   },
-  retirerDesListesDeDiffusion: async () => false,
+  retirerDesListesDeDiffusion: async () => success(false),
   hash,
 }
 

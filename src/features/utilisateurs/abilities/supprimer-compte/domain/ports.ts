@@ -1,56 +1,87 @@
 import type {
   AdresseCourriel,
   CompteASupprimer,
+  CourrielHash,
+  EchecTechnique,
   IdentifiantsRattaches,
   IdentiteAnonyme,
   MediateurId,
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
+import type { Result } from '@/libraries/result'
 import type { CompteSupprime } from './autoriser-la-suppression'
 
-type AnonymiserPortefeuille = (input: {
+export type AnonymiserPortefeuille = (input: {
   readonly mediateurId: MediateurId
-}) => Promise<{ readonly anonymises: number }>
+}) => Promise<Result<{ readonly anonymises: number }, EchecTechnique>>
 
-type EffacerNotes = (
+export type EffacerNotes = (
   input: IdentifiantsRattaches,
-) => Promise<{ readonly effacees: number }>
+) => Promise<Result<{ readonly effacees: number }, EchecTechnique>>
 
-type EffacerEmpreinteRdv = (input: {
+export type EffacerEmpreinteRdv = (input: {
   readonly utilisateurId: UtilisateurId
-}) => Promise<{
-  readonly compteDelie: boolean
-  readonly rdvsExpurges: number
-  readonly usagersSupprimes: number
-}>
+}) => Promise<
+  Result<
+    {
+      readonly compteDelie: boolean
+      readonly rdvsExpurges: number
+      readonly usagersSupprimes: number
+    },
+    EchecTechnique
+  >
+>
 
-type RetirerLesTagsDUnCompte = (input: IdentifiantsRattaches) => Promise<{
-  readonly transferes: number
-  readonly supprimes: number
-}>
+export type RetirerLesTagsDUnCompte = (input: IdentifiantsRattaches) => Promise<
+  Result<
+    {
+      readonly transferes: number
+      readonly supprimes: number
+    },
+    EchecTechnique
+  >
+>
 
-type DetacherDesEquipes = (input: IdentifiantsRattaches) => Promise<{
-  readonly invitationsSupprimees: number
-  readonly appartenancesRetirees: number
-}>
+export type DetacherDesEquipes = (input: IdentifiantsRattaches) => Promise<
+  Result<
+    {
+      readonly invitationsSupprimees: number
+      readonly appartenancesRetirees: number
+    },
+    EchecTechnique
+  >
+>
 
-type RetirerDesLieux = (input: {
+export type RetirerDesLieux = (input: {
   readonly mediateurId: MediateurId
-}) => Promise<{ readonly rattachementsSupprimes: number }>
+}) => Promise<
+  Result<{ readonly rattachementsSupprimes: number }, EchecTechnique>
+>
 
-type RevoquerPartageStatistiques = (
+export type RevoquerPartageStatistiques = (
   input: IdentifiantsRattaches,
-) => Promise<{ readonly partagesRevoques: number }>
+) => Promise<Result<{ readonly partagesRevoques: number }, EchecTechnique>>
 
 export type RetirerDesListesDeDiffusion = (
   courriel: AdresseCourriel,
-) => Promise<boolean>
+) => Promise<Result<boolean, EchecTechnique>>
 
-export type Hash = (
-  seed: string,
-) => import('@/features/utilisateurs/domain').CourrielHash
+export type Hash = (seed: string) => CourrielHash
 
-export type SupprimerComptePorts = {
+export type LireLeCompteASupprimer = (
+  utilisateurId: UtilisateurId,
+) => Promise<CompteASupprimer | null>
+
+export type CouperLAcces = (input: {
+  readonly utilisateurId: UtilisateurId
+  readonly identite: IdentiteAnonyme
+  readonly supprimeLe: Date
+  readonly dejaAnonymise: boolean
+}) => Promise<Result<void, EchecTechnique>>
+
+export type JournaliserLEffacement = (compte: CompteSupprime) => void
+
+export type EffacementsDuCompte = {
   readonly anonymiserPortefeuille: AnonymiserPortefeuille
   readonly effacerNotes: EffacerNotes
   readonly effacerEmpreinteRdv: EffacerEmpreinteRdv
@@ -59,29 +90,11 @@ export type SupprimerComptePorts = {
   readonly retirerDesLieux: RetirerDesLieux
   readonly revoquerPartageStatistiques: RevoquerPartageStatistiques
   readonly retirerDesListesDeDiffusion: RetirerDesListesDeDiffusion
-  readonly hash: Hash
 }
 
-type LireLeCompteASupprimer = (
-  utilisateurId: UtilisateurId,
-) => Promise<CompteASupprimer | null>
-
-type CouperLAcces = (input: {
-  readonly utilisateurId: UtilisateurId
-  readonly identite: IdentiteAnonyme
-  readonly supprimeLe: Date
-  readonly dejaAnonymise: boolean
-}) => Promise<void>
-
-type JournaliserLEffacement = (compte: CompteSupprime) => void
-
-export type SupprimerCompteDependances = SupprimerComptePorts & {
+export type SupprimerComptePorts = EffacementsDuCompte & {
+  readonly hash: Hash
   readonly lireLeCompteASupprimer: LireLeCompteASupprimer
   readonly couperLAcces: CouperLAcces
   readonly journaliserLEffacement: JournaliserLEffacement
 }
-
-export type EffacementsDesAutresFeatures = Omit<
-  SupprimerComptePorts,
-  'hash' | 'retirerDesListesDeDiffusion'
->

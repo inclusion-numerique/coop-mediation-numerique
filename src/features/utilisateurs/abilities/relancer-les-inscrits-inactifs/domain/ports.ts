@@ -29,7 +29,7 @@ export type RelancerLesInscritsInactifsPorts = {
   ) => Promise<void>
   readonly supprimerLeCompte: (
     utilisateurId: UtilisateurId,
-  ) => Promise<Result<void, EffacementImpossible>>
+  ) => Promise<Result<unknown, EffacementImpossible>>
   readonly lireLesComptesARelancer: () => Promise<readonly CompteARelancer[]>
   readonly noterLaRelance: NoterLaRelance
 }

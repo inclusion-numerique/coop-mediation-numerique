@@ -20,17 +20,21 @@ import type { RelancerLesInscritsInactifsPorts } from '@/features/utilisateurs/a
 import { relancerLesInscritsInactifs } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/domain/relancer-les-inscrits-inactifs'
 import { relancesDesInscritsParCourriel } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/implementations/email/relances-des-inscrits-par-courriel.adapter'
 import { inscritsSansProduction } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/implementations/prisma/inscrits-sans-production.query'
-import type {
-  EffacementsDesAutresFeatures,
-  SupprimerCompteDependances,
-} from '@/features/utilisateurs/abilities/supprimer-compte/domain/ports'
-import { supprimerUnInscritJamaisActif } from '@/features/utilisateurs/abilities/supprimer-compte/domain/supprimer-un-inscrit-jamais-actif'
+import { RetentionPolicy } from '@/features/utilisateurs/abilities/supprimer-compte/domain/index'
+import { supprimerCompte } from '@/features/utilisateurs/abilities/supprimer-compte/domain/supprimer-compte'
 import { retirerDesListesDeDiffusion } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/brevo/retirer-des-listes-de-diffusion.mutation'
 import { hash } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/crypto/hash.adapter'
 import { compteASupprimer } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/prisma/compte-a-supprimer.query'
 import { couperAcces } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/prisma/couper-acces.mutation'
+import {
+  type EffacementsDesAutresFeatures,
+  effacementsAttrapes,
+} from '@/features/utilisateurs/abilities/supprimer-compte/implementations/prisma/effacements-des-autres-features.adapter'
 import { logEffacementReport } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/prisma/log-effacement-report.mutation'
-import type { RapportDeRelance } from '@/features/utilisateurs/domain'
+import type {
+  RapportDeRelance,
+  UtilisateurId,
+} from '@/features/utilisateurs/domain'
 import { removeBrevoUserContact } from '@/features/utilisateurs/implementations/brevo/remove-brevo-user-contact.mutation'
 import { compterLesInscrits } from '@/features/utilisateurs/implementations/prisma/compter-les-inscrits.query'
 import { noterLaRelance } from '@/features/utilisateurs/implementations/prisma/noter-la-relance.mutation'
@@ -40,11 +44,11 @@ import type {
 } from '@/features/utilisateurs/implementations/prisma/registre-des-personnes.mutation'
 import { output } from '@/libraries/console'
 
-const dependancesDe = (
+const portsDeSuppression = (
   effacements: EffacementsDesAutresFeatures,
   synchroniserLaPersonne: SynchroniserLaPersonne,
-): SupprimerCompteDependances => ({
-  ...effacements,
+) => ({
+  ...effacementsAttrapes(effacements),
   retirerDesListesDeDiffusion,
   hash,
   lireLeCompteASupprimer: compteASupprimer,
@@ -52,15 +56,21 @@ const dependancesDe = (
   journaliserLEffacement: logEffacementReport,
 })
 
-const supprimerUnInscritJamaisActifAvec = (
-  effacements: EffacementsDesAutresFeatures,
-  maintenant: Date,
-  synchroniserLaPersonne: SynchroniserLaPersonne,
-) =>
-  supprimerUnInscritJamaisActif(
-    dependancesDe(effacements, synchroniserLaPersonne),
-    maintenant,
-  )
+const supprimerUnInscritJamaisActifAvec =
+  (
+    effacements: EffacementsDesAutresFeatures,
+    maintenant: Date,
+    synchroniserLaPersonne: SynchroniserLaPersonne,
+  ) =>
+  async (utilisateurId: UtilisateurId) =>
+    supprimerCompte(portsDeSuppression(effacements, synchroniserLaPersonne))({
+      cible: utilisateurId,
+      auteur: {
+        _tag: 'systeme',
+        policy: RetentionPolicy('InscritJamaisActif'),
+      },
+      maintenant,
+    })
 
 const lancerLesRelancesDesInscrits = async (
   maintenant: Date,

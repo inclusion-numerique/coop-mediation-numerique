@@ -16,25 +16,25 @@ import { synchroniserPersonne } from '@/features/registre-des-personnes/implemen
 import { retirerLesTagsDUnCompte } from '@/features/tags/abilities/retirer-les-tags-d-un-compte/implementations/prisma/retirer-les-tags-d-un-compte.mutation'
 import { SUPPRIMER_COMPTE_ERRORS } from '@/features/utilisateurs/abilities/supprimer-compte/action/supprimer-compte.errors'
 import { SupprimerCompteValidation } from '@/features/utilisateurs/abilities/supprimer-compte/action/supprimer-compte.validation'
-import type {
-  EffacementsDesAutresFeatures,
-  SupprimerCompteDependances,
-} from '@/features/utilisateurs/abilities/supprimer-compte/domain/ports'
 import { supprimerCompte } from '@/features/utilisateurs/abilities/supprimer-compte/domain/supprimer-compte'
 import { retirerDesListesDeDiffusion } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/brevo/retirer-des-listes-de-diffusion.mutation'
 import { hash } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/crypto/hash.adapter'
 import { compteASupprimer } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/prisma/compte-a-supprimer.query'
 import { couperAcces } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/prisma/couper-acces.mutation'
+import {
+  type EffacementsDesAutresFeatures,
+  effacementsAttrapes,
+} from '@/features/utilisateurs/abilities/supprimer-compte/implementations/prisma/effacements-des-autres-features.adapter'
 import { logEffacementReport } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/prisma/log-effacement-report.mutation'
 import { AuteurId, UtilisateurId } from '@/features/utilisateurs/domain'
 import type { SynchroniserLaPersonne } from '@/features/utilisateurs/implementations/prisma/registre-des-personnes.mutation'
 import { fromResult, withInput } from '@/libraries/nextjs'
 
-const dependancesDe = (
+const portsDeSuppression = (
   effacements: EffacementsDesAutresFeatures,
   synchroniserLaPersonne: SynchroniserLaPersonne,
-): SupprimerCompteDependances => ({
-  ...effacements,
+) => ({
+  ...effacementsAttrapes(effacements),
   retirerDesListesDeDiffusion,
   hash,
   lireLeCompteASupprimer: compteASupprimer,
@@ -45,7 +45,7 @@ const dependancesDe = (
 const supprimerCompteAvec = (
   effacements: EffacementsDesAutresFeatures,
   synchroniserLaPersonne: SynchroniserLaPersonne,
-) => supprimerCompte(dependancesDe(effacements, synchroniserLaPersonne))
+) => supprimerCompte(portsDeSuppression(effacements, synchroniserLaPersonne))
 
 const effacerEmpreinteRdv = effacerEmpreinteRdvAvec(
   revoquerJetons(configurationOAuthRdvsp()),
