@@ -71,15 +71,34 @@ export type TagsUtilisables = (
   tagIds: readonly TagId[],
 ) => Promise<readonly TagDeLActivite[]>
 
-export type SaisieDeMediationPorts = {
+export type EnregistrementDeMediationPorts = {
   readonly activiteDuMediateur: ActiviteDeMediationDuMediateur
   readonly nouvelIdentifiant: NouvelIdentifiantDActivite
+}
+
+export type LieuVerifiePorts = {
   readonly lieuUtilisable: LieuUtilisable
-  readonly tagsUtilisables: TagsUtilisables
+}
+
+export type RendezVousVerifiePorts = {
   readonly rendezVousDUnAutreMediateur: RendezVousDUnAutreMediateur
   readonly rendezVousDejaSaisi: RendezVousDejaSaisi
-  readonly employeuseDeLaDate: EmployeuseDeLaDate
+}
+
+export type EcritureDeMediationPorts = {
   readonly creer: CreerLActiviteDeMediation
   readonly modifier: ModifierLActiviteDeMediation
+}
+
+export type RendezVousHonorePorts = {
   readonly marquerLeRendezVousHonore: MarquerLeRendezVousHonore
 }
+
+export type SaisieDeMediationPorts = EnregistrementDeMediationPorts &
+  LieuVerifiePorts &
+  RendezVousVerifiePorts &
+  EcritureDeMediationPorts &
+  RendezVousHonorePorts & {
+    readonly tagsUtilisables: TagsUtilisables
+    readonly employeuseDeLaDate: EmployeuseDeLaDate
+  }

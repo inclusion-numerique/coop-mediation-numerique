@@ -13,7 +13,11 @@ import type { RdvId } from '../identifiants/rdv-id'
 import type {
   ActiviteDeMediationExistante,
   ActiviteDeMediationPrecedente,
-  SaisieDeMediationPorts,
+  EcritureDeMediationPorts,
+  EnregistrementDeMediationPorts,
+  LieuVerifiePorts,
+  RendezVousHonorePorts,
+  RendezVousVerifiePorts,
 } from '../ports'
 import type { ActiviteDeMediation } from './activite-de-mediation'
 import type { LieuSaisi } from './saisie-de-mediation'
@@ -38,10 +42,7 @@ export const enregistrementDeMediation =
   ({
     activiteDuMediateur,
     nouvelIdentifiant,
-  }: Pick<
-    SaisieDeMediationPorts,
-    'activiteDuMediateur' | 'nouvelIdentifiant'
-  >) =>
+  }: EnregistrementDeMediationPorts) =>
   async ({
     id,
     type,
@@ -79,7 +80,7 @@ const lieuActuel = (
     : null
 
 export const lieuVerifie =
-  ({ lieuUtilisable }: Pick<SaisieDeMediationPorts, 'lieuUtilisable'>) =>
+  ({ lieuUtilisable }: LieuVerifiePorts) =>
   async ({
     lieu,
     enregistrement,
@@ -100,10 +101,7 @@ export const rendezVousVerifie =
   ({
     rendezVousDUnAutreMediateur,
     rendezVousDejaSaisi,
-  }: Pick<
-    SaisieDeMediationPorts,
-    'rendezVousDUnAutreMediateur' | 'rendezVousDejaSaisi'
-  >) =>
+  }: RendezVousVerifiePorts) =>
   async ({
     rdvId,
     activiteId,
@@ -146,16 +144,14 @@ export const ecritureDe = <Activite extends ActiviteDeMediation>(
     : { _tag: 'Modification', activite, precedente: enregistrement.precedente }
 
 export const ecrireLActiviteDeMediation =
-  ({ creer, modifier }: Pick<SaisieDeMediationPorts, 'creer' | 'modifier'>) =>
+  ({ creer, modifier }: EcritureDeMediationPorts) =>
   (ecriture: EcritureDeMediation<ActiviteDeMediation>): Promise<void> =>
     ecriture._tag === 'Creation'
       ? creer(ecriture.activite)
       : modifier(ecriture.activite, ecriture.precedente)
 
 export const rendezVousHonore =
-  ({
-    marquerLeRendezVousHonore,
-  }: Pick<SaisieDeMediationPorts, 'marquerLeRendezVousHonore'>) =>
+  ({ marquerLeRendezVousHonore }: RendezVousHonorePorts) =>
   async (rdvId: RdvId | null): Promise<RdvId | null> => {
     if (rdvId === null) return null
     await marquerLeRendezVousHonore(rdvId)
