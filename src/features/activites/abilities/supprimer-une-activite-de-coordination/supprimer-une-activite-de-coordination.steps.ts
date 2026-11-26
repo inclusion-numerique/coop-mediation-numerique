@@ -23,13 +23,13 @@ type Semis = {
   readonly activiteId: string
 }
 
-let semis: Semis | undefined
-let resultat:
-  | Result<
-      SuppressionDeLActiviteDeCoordination,
-      EchecDeSupprimerUneActiviteDeCoordination
-    >
-  | undefined
+const etat: {
+  semis?: Semis
+  resultat?: Result<
+    SuppressionDeLActiviteDeCoordination,
+    EchecDeSupprimerUneActiviteDeCoordination
+  >
+} = {}
 
 const semerUnCoordinateur = async () => {
   const userId = v4()
@@ -44,12 +44,12 @@ const semerUnCoordinateur = async () => {
 }
 
 const semisCourant = (): Semis => {
-  if (!semis) throw new Error('Aucune activité semée')
-  return semis
+  if (!etat.semis) throw new Error('Aucune activité semée')
+  return etat.semis
 }
 
 const supprimerPar = async (coordinateurId: string, userId: string) => {
-  resultat = await supprimerUneActiviteDeCoordination({
+  etat.resultat = await supprimerUneActiviteDeCoordination({
     activiteEnregistree: activiteDeCoordinationEnregistree,
     supprimer: supprimerLActiviteDeCoordination(UtilisateurId(userId)),
   })({
@@ -77,7 +77,7 @@ Given(
       },
       select: { id: true },
     })
-    semis = {
+    etat.semis = {
       userIds: [auteur.userId, autre.userId],
       coordinateurIds: [auteur.coordinateurId, autre.coordinateurId],
       tagId: tag.id,
@@ -97,12 +97,12 @@ When('un autre coordinateur supprime cette activité', async () => {
 })
 
 Then("la suppression de l'activité réussit", () => {
-  assert.strictEqual(resultat?.success, true)
+  assert.strictEqual(etat.resultat?.success, true)
 })
 
 Then("la suppression de l'activité échoue avec {string}", (attendu: string) => {
   assert.strictEqual(
-    resultat?.success === false ? resultat.error._tag : null,
+    etat.resultat?.success === false ? etat.resultat.error._tag : null,
     attendu,
   )
 })
@@ -133,9 +133,9 @@ Then("l'activité n'a plus de tag", async () => {
 })
 
 After(async () => {
-  const seme = semis
-  semis = undefined
-  resultat = undefined
+  const seme = etat.semis
+  delete etat.semis
+  delete etat.resultat
   if (!seme) return
 
   await prismaClient.activitesCoordinationTags.deleteMany({

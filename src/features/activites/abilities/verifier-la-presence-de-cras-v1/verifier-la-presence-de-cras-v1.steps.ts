@@ -8,15 +8,17 @@ import {
 } from './domain/index'
 import { mediateurAvecCrasV1 } from './implementations/prisma/mediateur-avec-cras-v1.query'
 
-let presence: Result<PresenceDeCrasV1, never> | undefined
+const etat: {
+  presence?: Result<PresenceDeCrasV1, never>
+} = {}
 
 When('je vérifie la présence de CRA v1 pour {string}', async (nom: string) => {
-  presence = await verifierLaPresenceDeCrasV1({ mediateurAvecCrasV1 })({
+  etat.presence = await verifierLaPresenceDeCrasV1({ mediateurAvecCrasV1 })({
     perimetre: perimetreDe(nom),
   })
 })
 
 Then('les CRA v1 sont {string}', (attendue: string) => {
-  assert.ok(presence)
-  assert.strictEqual(presence.data, attendue)
+  assert.ok(etat.presence)
+  assert.strictEqual(etat.presence.data, attendue)
 })

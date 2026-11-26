@@ -14,8 +14,13 @@ import {
 } from '@/features/activites/domain'
 import { criteresDesCoordinationsDepuisLURL } from '@/features/activites/fixtures/criteres-depuis-l-url'
 
-let exportees: readonly ActiviteDeCoordination[] = []
-let rappeles: readonly TagDeLActivite[] = []
+const etat: {
+  exportees: readonly ActiviteDeCoordination[]
+  rappeles: readonly TagDeLActivite[]
+} = {
+  exportees: [],
+  rappeles: [],
+}
 
 const tagsEnBase: TagsUtilisables = async (tagIds) =>
   (
@@ -37,8 +42,8 @@ const exporter = async (
     criteres,
   })
   const { activites, tags } = exportation.data
-  exportees = activites
-  rappeles = tags
+  etat.exportees = activites
+  etat.rappeles = tags
 }
 
 When("j'exporte mes activités de coordination", async () => {
@@ -50,12 +55,12 @@ When("j'exporte mes activités de coordination taguées « Réseau »", async ()
 })
 
 Then('{int} activités de coordination sont exportées', (attendu: number) => {
-  assert.strictEqual(exportees.length, attendu)
+  assert.strictEqual(etat.exportees.length, attendu)
 })
 
 Then("le tag « Réseau » est rappelé dans les filtres de l'export", () => {
   assert.deepStrictEqual(
-    rappeles.map(({ id }) => id),
+    etat.rappeles.map(({ id }) => id),
     [coordinationsSemees().tags.reseau],
   )
 })

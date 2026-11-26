@@ -13,8 +13,10 @@ import { listerMesActivites } from './implementations/prisma/chronologie.query'
 
 type Semis = { readonly userIds: string[]; readonly mediateurId: string }
 
-let semis: Semis | undefined
-let chronologie: ChronologieDesActivites | undefined
+const etat: {
+  semis?: Semis
+  chronologie?: ChronologieDesActivites
+} = {}
 
 const semerUnMediateur = async (): Promise<{
   userId: string
@@ -54,8 +56,8 @@ const semerUneActivite = (
   })
 
 const semisCourant = (): Semis => {
-  if (!semis) throw new Error('Aucun médiateur semé')
-  return semis
+  if (!etat.semis) throw new Error('Aucun médiateur semé')
+  return etat.semis
 }
 
 const MARS = { 3: 'Individuel', 5: 'Collectif', 9: 'Individuel' } as const
@@ -64,7 +66,7 @@ Given(
   'un médiateur ayant enregistré des activités les 3, 5 et 9 mars 2026',
   async () => {
     const { userId, mediateurId } = await semerUnMediateur()
-    semis = { userIds: [userId], mediateurId }
+    etat.semis = { userIds: [userId], mediateurId }
     await Promise.all(
       Object.entries(MARS).map(([jour, type]) =>
         semerUneActivite(
@@ -91,7 +93,7 @@ Given(
   'un autre médiateur a enregistré une activité le 7 mars 2026',
   async () => {
     const autre = await semerUnMediateur()
-    semis = {
+    etat.semis = {
       ...semisCourant(),
       userIds: [...semisCourant().userIds, autre.userId],
     }
@@ -107,7 +109,7 @@ Given(
   'un médiateur ayant enregistré {int} activités en avril 2026',
   async (nombre: number) => {
     const { userId, mediateurId } = await semerUnMediateur()
-    semis = { userIds: [userId], mediateurId }
+    etat.semis = { userIds: [userId], mediateurId }
     await Promise.all(
       Array.from({ length: nombre }, (_, rang) =>
         semerUneActivite(
@@ -124,7 +126,7 @@ Given(
   'un médiateur ayant accompagné le 3 mars 2026 un bénéficiaire de Nice, anonymisé depuis',
   async () => {
     const { userId, mediateurId } = await semerUnMediateur()
-    semis = { userIds: [userId], mediateurId }
+    etat.semis = { userIds: [userId], mediateurId }
     await prismaClient.activite.create({
       data: {
         mediateurId,
@@ -154,7 +156,7 @@ Given(
 
 const lister = async (parametres: Record<string, string>) => {
   const criteres = criteresDesActivitesDepuisLURL(parametres)
-  chronologie = await listerMesActivites({
+  etat.chronologie = await listerMesActivites({
     mediateurId: MediateurId(semisCourant().mediateurId),
     criteres,
     ...lectureDeLaPagination(parametres),
@@ -179,7 +181,7 @@ const jourEnFrancais = (jour: string): string => {
 
 Then('les activités listées sont celles du {string}', (attendues: string) => {
   assert.strictEqual(
-    chronologie?.elements
+    etat.chronologie?.elements
       .flatMap((element) =>
         element._tag === 'Activite'
           ? [jourEnFrancais(element.activite.activite.date)]
@@ -194,20 +196,20 @@ Then(
   '{int} activités sont comptées sur {int} page(s)',
   (activites: number, pages: number) => {
     assert.deepStrictEqual(
-      [chronologie?.total.activites, chronologie?.pages],
+      [etat.chronologie?.total.activites, etat.chronologie?.pages],
       [activites, pages],
     )
   },
 )
 
 Then('{int} activités sont listées', (attendu: number) => {
-  assert.strictEqual(chronologie?.elements.length, attendu)
+  assert.strictEqual(etat.chronologie?.elements.length, attendu)
 })
 
 After(async () => {
-  const seme = semis
-  semis = undefined
-  chronologie = undefined
+  const seme = etat.semis
+  delete etat.semis
+  delete etat.chronologie
   if (!seme) return
   const mediateurs = await prismaClient.mediateur.findMany({
     where: { userId: { in: seme.userIds } },

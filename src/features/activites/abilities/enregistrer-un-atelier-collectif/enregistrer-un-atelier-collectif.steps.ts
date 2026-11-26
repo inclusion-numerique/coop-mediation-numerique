@@ -42,10 +42,13 @@ type Semis = {
   readonly activiteId: string | null
 }
 
-let semis: Semis | undefined
-let resultat:
-  | Result<AtelierCollectifEnregistre, EchecDEnregistrerUnAtelierCollectif>
-  | undefined
+const etat: {
+  semis?: Semis
+  resultat?: Result<
+    AtelierCollectifEnregistre,
+    EchecDEnregistrerUnAtelierCollectif
+  >
+} = {}
 
 const semerUnMediateur = async (): Promise<Mediateur> => {
   const userId = v4()
@@ -78,8 +81,8 @@ const semerLeContexte = async (): Promise<Semis> => {
 }
 
 const semisCourant = (): Semis => {
-  if (!semis) throw new Error('Aucun médiateur semé')
-  return semis
+  if (!etat.semis) throw new Error('Aucun médiateur semé')
+  return etat.semis
 }
 
 const anonymes = (total: number, femmes: number, dejaAccompagnes: number) => {
@@ -116,7 +119,7 @@ const enregistrerPar = async (
   mediateur: Mediateur,
   saisieCollective: SaisieCollective,
 ) => {
-  resultat = await enregistrerUnAtelierCollectif({
+  etat.resultat = await enregistrerUnAtelierCollectif({
     activiteDuMediateur: activiteDeMediationDuMediateur,
     nouvelIdentifiant: nouvelIdentifiantDActivite,
     nombreDeSuivisDuMediateur,
@@ -136,20 +139,20 @@ const enregistrerPar = async (
 }
 
 const atelierEnregistre = (): string => {
-  assert.ok(resultat?.success)
-  return resultat.data.ecriture.activite.id
+  assert.ok(etat.resultat?.success)
+  return etat.resultat.data.ecriture.activite.id
 }
 
 Given('un médiateur ayant {int} bénéficiaires suivis', async (_: number) => {
-  semis = await semerLeContexte()
+  etat.semis = await semerLeContexte()
 })
 
 Given(
   'un médiateur ayant enregistré un atelier pour ses 2 bénéficiaires suivis et 3 anonymes',
   async () => {
-    semis = await semerLeContexte()
+    etat.semis = await semerLeContexte()
     await enregistrerPar(semisCourant().auteur, saisie())
-    semis = { ...semisCourant(), activiteId: atelierEnregistre() }
+    etat.semis = { ...semisCourant(), activiteId: atelierEnregistre() }
   },
 )
 
@@ -183,7 +186,7 @@ Given(
         })
         .then(({ id }) => id)
     const [premier] = await Promise.all([atelier('02'), atelier('03')])
-    semis = {
+    etat.semis = {
       ...contexte,
       suivis: [...contexte.suivis, anonymise.id],
       activiteId: premier,
@@ -209,7 +212,7 @@ Given(
       },
       select: { id: true },
     })
-    semis = { ...contexte, activiteId: id }
+    etat.semis = { ...contexte, activiteId: id }
   },
 )
 
@@ -281,14 +284,14 @@ When(
 )
 
 Then("l'enregistrement de l'atelier collectif réussit", () => {
-  assert.strictEqual(resultat?.success, true)
+  assert.strictEqual(etat.resultat?.success, true)
 })
 
 Then(
   "l'enregistrement de l'atelier collectif échoue avec {string}",
   (attendu: string) => {
     assert.strictEqual(
-      resultat?.success === false ? resultat.error._tag : null,
+      etat.resultat?.success === false ? etat.resultat.error._tag : null,
       attendu,
     )
   },
@@ -392,9 +395,9 @@ Then(
 )
 
 After(async () => {
-  const seme = semis
-  semis = undefined
-  resultat = undefined
+  const seme = etat.semis
+  delete etat.semis
+  delete etat.resultat
   if (!seme) return
 
   const mediateurIds = [seme.auteur.mediateurId, seme.autre.mediateurId]

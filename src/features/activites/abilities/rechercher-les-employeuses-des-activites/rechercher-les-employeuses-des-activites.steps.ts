@@ -15,8 +15,13 @@ type Semis = {
   readonly employeuses: Readonly<Record<string, number>>
 }
 
-let semis: Semis = { userIds: [], mediateurIds: [], employeuses: {} }
-let trouvees: readonly EmployeuseDesActivites[] = []
+const etat: {
+  semis: Semis
+  trouvees: readonly EmployeuseDesActivites[]
+} = {
+  semis: { userIds: [], mediateurIds: [], employeuses: {} },
+  trouvees: [],
+}
 
 const semerUnMediateur = async () => {
   const userId = v4()
@@ -30,10 +35,10 @@ const semerUnMediateur = async () => {
     data: { userId },
     select: { id: true },
   })
-  semis = {
-    ...semis,
-    userIds: [...semis.userIds, userId],
-    mediateurIds: [...semis.mediateurIds, mediateurId],
+  etat.semis = {
+    ...etat.semis,
+    userIds: [...etat.semis.userIds, userId],
+    mediateurIds: [...etat.semis.mediateurIds, mediateurId],
   }
   return mediateurId
 }
@@ -43,7 +48,10 @@ const semerUneEmployeuse = async (nom: string) => {
     data: { denominationAntenne: nom },
     select: { id: true },
   })
-  semis = { ...semis, employeuses: { ...semis.employeuses, [nom]: id } }
+  etat.semis = {
+    ...etat.semis,
+    employeuses: { ...etat.semis.employeuses, [nom]: id },
+  }
   return id
 }
 
@@ -70,19 +78,21 @@ const semerUneActivite = async ({
   })
 
 const mediateurCourant = (): string => {
-  const mediateurId = semis.mediateurIds[0]
+  const mediateurId = etat.semis.mediateurIds[0]
   if (mediateurId === undefined) throw new Error('Aucun médiateur semé')
   return mediateurId
 }
 
 const rechercher = async (recherche: string, exclues: readonly string[]) => {
-  trouvees = await rechercherLesEmployeusesDesActivites({
+  etat.trouvees = await rechercherLesEmployeusesDesActivites({
     perimetre: {
       mediateurs: [MediateurId(mediateurCourant())],
       coordinateurId: null,
     },
     recherche,
-    exclues: exclues.map((nom) => EmployeuseId(semis.employeuses[nom] ?? 0)),
+    exclues: exclues.map((nom) =>
+      EmployeuseId(etat.semis.employeuses[nom] ?? 0),
+    ),
   })
 }
 
@@ -134,13 +144,13 @@ When(
 )
 
 Then('les employeuses trouvées sont {string}', (attendues: string) => {
-  assert.strictEqual(trouvees.map(({ nom }) => nom).join(', '), attendues)
+  assert.strictEqual(etat.trouvees.map(({ nom }) => nom).join(', '), attendues)
 })
 
 After(async () => {
-  const seme = semis
-  semis = { userIds: [], mediateurIds: [], employeuses: {} }
-  trouvees = []
+  const seme = etat.semis
+  etat.semis = { userIds: [], mediateurIds: [], employeuses: {} }
+  etat.trouvees = []
   if (seme.mediateurIds.length === 0) return
   await prismaClient.activite.deleteMany({
     where: { mediateurId: { in: [...seme.mediateurIds] } },

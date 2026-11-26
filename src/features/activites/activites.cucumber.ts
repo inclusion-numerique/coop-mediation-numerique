@@ -10,11 +10,14 @@ type ComptesRendusSemes = {
   readonly coordinateurId: string
 }
 
-let comptesRendus: ComptesRendusSemes | undefined
+const etat: {
+  comptesRendus?: ComptesRendusSemes
+  coordinations?: CoordinationsSemees
+} = {}
 
 export const comptesRendusSemes = (): ComptesRendusSemes => {
-  if (!comptesRendus) throw new Error('Aucun compte rendu semé')
-  return comptesRendus
+  if (!etat.comptesRendus) throw new Error('Aucun compte rendu semé')
+  return etat.comptesRendus
 }
 
 export const semerComptesRendus = async (): Promise<ComptesRendusSemes> => {
@@ -53,18 +56,18 @@ export const semerComptesRendus = async (): Promise<ComptesRendusSemes> => {
     },
   })
 
-  comptesRendus = {
+  etat.comptesRendus = {
     userId,
     mediateurId: mediateur.id,
     coordinateurId: coordinateur.id,
   }
 
-  return comptesRendus
+  return etat.comptesRendus
 }
 
 After(async () => {
-  const semé = comptesRendus
-  comptesRendus = undefined
+  const semé = etat.comptesRendus
+  delete etat.comptesRendus
   if (!semé) return
 
   await prismaClient.activite.deleteMany({
@@ -189,11 +192,9 @@ type CoordinationsSemees = {
   readonly tags: { readonly reseau: string; readonly elus: string }
 }
 
-let coordinations: CoordinationsSemees | undefined
-
 export const coordinationsSemees = (): CoordinationsSemees => {
-  if (!coordinations) throw new Error('Aucune coordination semée')
-  return coordinations
+  if (!etat.coordinations) throw new Error('Aucune coordination semée')
+  return etat.coordinations
 }
 
 const semerUnCoordinateur = async (userId: string) => {
@@ -296,18 +297,18 @@ export const semerDesCoordinations = async (): Promise<CoordinationsSemees> => {
     ],
   })
 
-  coordinations = {
+  etat.coordinations = {
     userIds,
     coordinateurId,
     autreCoordinateurId,
     tags: { reseau: reseau.id, elus: elus.id },
   }
-  return coordinations
+  return etat.coordinations
 }
 
 After(async () => {
-  const semees = coordinations
-  coordinations = undefined
+  const semees = etat.coordinations
+  delete etat.coordinations
   if (!semees) return
 
   const coordinateurIds = [semees.coordinateurId, semees.autreCoordinateurId]

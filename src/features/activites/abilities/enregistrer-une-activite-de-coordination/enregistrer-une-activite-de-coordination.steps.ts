@@ -40,10 +40,13 @@ type Semis = {
   readonly evenementId: string | null
 }
 
-let semis: Semis | undefined
-let resultat:
-  | Result<EcritureDeCoordination, EchecDEnregistrerUneActiviteDeCoordination>
-  | undefined
+const etat: {
+  semis?: Semis
+  resultat?: Result<
+    EcritureDeCoordination,
+    EchecDEnregistrerUneActiviteDeCoordination
+  >
+} = {}
 
 const semerUnCoordinateur = async (): Promise<Coordinateur> => {
   const userId = v4()
@@ -58,8 +61,8 @@ const semerUnCoordinateur = async (): Promise<Coordinateur> => {
 }
 
 const semisCourant = (): Semis => {
-  if (!semis) throw new Error('Aucun coordinateur semé')
-  return semis
+  if (!etat.semis) throw new Error('Aucun coordinateur semé')
+  return etat.semis
 }
 
 const tagsDuCoordinateur =
@@ -115,7 +118,7 @@ const enregistrerPar = async (
   const auteurId = UtilisateurId(
     coordinateur?.userId ?? semisCourant().auteur.userId,
   )
-  resultat = await enregistrerUneActiviteDeCoordination({
+  etat.resultat = await enregistrerUneActiviteDeCoordination({
     activiteDuCoordinateur: activiteDeCoordinationDuCoordinateur,
     nouvelIdentifiant: nouvelIdentifiantDeCoordination,
     tagsUtilisables: tagsDuCoordinateur(coordinateur?.coordinateurId ?? ''),
@@ -151,7 +154,12 @@ Given('un coordinateur disposant du tag {string}', async (nom: string) => {
     data: { nom: `${nom} ${v4()}`, coordinateurId: auteur.coordinateurId },
     select: { id: true },
   })
-  semis = { auteur, autre, tags: new Map([[nom, tag.id]]), evenementId: null }
+  etat.semis = {
+    auteur,
+    autre,
+    tags: new Map([[nom, tag.id]]),
+    evenementId: null,
+  }
 })
 
 Given(
@@ -169,7 +177,7 @@ Given(
       },
       select: { id: true },
     })
-    semis = { auteur, autre, tags: new Map(), evenementId: id }
+    etat.semis = { auteur, autre, tags: new Map(), evenementId: id }
   },
 )
 
@@ -229,7 +237,7 @@ When(
       },
       select: { id: true },
     })
-    semis = {
+    etat.semis = {
       ...semisCourant(),
       tags: new Map([...semisCourant().tags, ['étranger', etranger.id]]),
     }
@@ -245,14 +253,14 @@ When(
 )
 
 Then("l'enregistrement de l'activité de coordination réussit", () => {
-  assert.strictEqual(resultat?.success, true)
+  assert.strictEqual(etat.resultat?.success, true)
 })
 
 Then(
   "l'enregistrement de l'activité de coordination échoue avec {string}",
   (attendu: string) => {
     assert.strictEqual(
-      resultat?.success === false ? resultat.error._tag : null,
+      etat.resultat?.success === false ? etat.resultat.error._tag : null,
       attendu,
     )
   },
@@ -261,9 +269,9 @@ Then(
 Then(
   "l'activité de coordination enregistrée est une animation de {int} minutes taguée {string}",
   async (duree: number, nom: string) => {
-    assert.ok(resultat?.success)
+    assert.ok(etat.resultat?.success)
     const activite = await prismaClient.activiteCoordination.findUniqueOrThrow({
-      where: { id: resultat.data.activite.id },
+      where: { id: etat.resultat.data.activite.id },
       select: {
         type: true,
         duree: true,
@@ -289,9 +297,9 @@ Then("l'évènement compte {int} participants", async (attendu: number) => {
 })
 
 After(async () => {
-  const seme = semis
-  semis = undefined
-  resultat = undefined
+  const seme = etat.semis
+  delete etat.semis
+  delete etat.resultat
   if (!seme) return
 
   const coordinateurIds = [

@@ -16,15 +16,17 @@ import { CoordinateurId } from '@/features/activites/domain'
 import { criteresDesCoordinationsDepuisLURL } from '@/features/activites/fixtures/criteres-depuis-l-url'
 import { dateAsIsoDay } from '@/libraries/date'
 
-let listees: ActivitesDeCoordinationListees | undefined
-let options: OptionsDeFiltre | undefined
+const etat: {
+  listees?: ActivitesDeCoordinationListees
+  options?: OptionsDeFiltre
+} = {}
 
 const lister = async (
   parametres: Parameters<typeof criteresDesCoordinationsDepuisLURL>[0],
   page = 1,
   lignesParPage = 50,
 ) => {
-  listees = await listerLesActivitesDeCoordination({
+  etat.listees = await listerLesActivitesDeCoordination({
     coordinateurId: CoordinateurId(coordinationsSemees().coordinateurId),
     criteres: criteresDesCoordinationsDepuisLURL(parametres),
     pagination: {
@@ -35,8 +37,8 @@ const lister = async (
 }
 
 Given('des activités de coordination enregistrées', async () => {
-  listees = undefined
-  options = undefined
+  delete etat.listees
+  delete etat.options
   await semerDesCoordinations()
 })
 
@@ -79,39 +81,39 @@ When(
 When(
   'je consulte les options de filtre de mes activités de coordination',
   async () => {
-    options = await optionsDeFiltre({
+    etat.options = await optionsDeFiltre({
       coordinateurId: CoordinateurId(coordinationsSemees().coordinateurId),
     })
   },
 )
 
 Then('{int} activités de coordination sont listées', (attendu: number) => {
-  assert.strictEqual(listees?.activites.length, attendu)
+  assert.strictEqual(etat.listees?.activites.length, attendu)
 })
 
 Then(
   '{int} activités de coordination sont comptées sur {int} pages',
   (total: number, pages: number) => {
-    assert.strictEqual(listees?.total, total)
-    assert.strictEqual(listees?.pages, pages)
+    assert.strictEqual(etat.listees?.total, total)
+    assert.strictEqual(etat.listees?.pages, pages)
   },
 )
 
 Then('les types listés sont {string}', (attendus: string) => {
   assert.strictEqual(
-    listees?.activites.map(({ _tag }) => _tag).join(', '),
+    etat.listees?.activites.map(({ _tag }) => _tag).join(', '),
     attendus,
   )
 })
 
 Then('{int} tags sont proposés', (attendu: number) => {
-  assert.strictEqual(options?.tags.length, attendu)
+  assert.strictEqual(etat.options?.tags.length, attendu)
 })
 
 Then(
   'la période couverte va du {string} au {string}',
   (du: string, au: string) => {
-    const periode = options?.periodeCouverte
+    const periode = etat.options?.periodeCouverte
     assert.deepStrictEqual(
       periode == null
         ? null

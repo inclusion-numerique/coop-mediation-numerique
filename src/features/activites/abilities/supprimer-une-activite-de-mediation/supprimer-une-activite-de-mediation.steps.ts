@@ -28,13 +28,13 @@ type Semis = {
   readonly anonymes: readonly string[]
 }
 
-let semis: Semis | undefined
-let resultat:
-  | Result<
-      SuppressionDeLActiviteDeMediation,
-      EchecDeSupprimerUneActiviteDeMediation
-    >
-  | undefined
+const etat: {
+  semis?: Semis
+  resultat?: Result<
+    SuppressionDeLActiviteDeMediation,
+    EchecDeSupprimerUneActiviteDeMediation
+  >
+} = {}
 
 const semerUnMediateur = async (): Promise<Mediateur> => {
   const userId = v4()
@@ -96,8 +96,8 @@ const semerDesAnonymes = (mediateurId: string, nombre: number) =>
   )
 
 const semisCourant = (): Semis => {
-  if (!semis) throw new Error('Aucune activité de médiation semée')
-  return semis
+  if (!etat.semis) throw new Error('Aucune activité de médiation semée')
+  return etat.semis
 }
 
 const activiteSemee = (libelle: string): string => {
@@ -107,7 +107,7 @@ const activiteSemee = (libelle: string): string => {
 }
 
 const supprimerPar = async (mediateur: Mediateur, activiteId: string) => {
-  resultat = await supprimerUneActiviteDeMediation({
+  etat.resultat = await supprimerUneActiviteDeMediation({
     activiteDuMediateur: activiteDeMediationDuMediateur,
     supprimer: supprimerLActiviteDeMediation(UtilisateurId(mediateur.userId)),
   })({
@@ -141,7 +141,7 @@ Given(
       },
       select: { id: true },
     })
-    semis = {
+    etat.semis = {
       ...contexte,
       activites: { principale: activite.id },
       suivis: [],
@@ -178,7 +178,7 @@ Given(
       },
       select: { id: true },
     })
-    semis = {
+    etat.semis = {
       ...contexte,
       activites: { principale: activite.id },
       suivis,
@@ -243,7 +243,7 @@ const semerUnSuiviAccompagne = async (
       }),
     ]),
   )
-  semis = {
+  etat.semis = {
     ...contexte,
     activites: Object.fromEntries(activites),
     suivis: [suivi],
@@ -293,14 +293,14 @@ When("le médiateur supprime l'accompagnement du 3 mars", async () => {
 })
 
 Then("la suppression de l'activité de médiation réussit", () => {
-  assert.strictEqual(resultat?.success, true)
+  assert.strictEqual(etat.resultat?.success, true)
 })
 
 Then(
   "la suppression de l'activité de médiation échoue avec {string}",
   (attendu: string) => {
     assert.strictEqual(
-      resultat?.success === false ? resultat.error._tag : null,
+      etat.resultat?.success === false ? etat.resultat.error._tag : null,
       attendu,
     )
   },
@@ -412,9 +412,9 @@ Then(
 )
 
 After(async () => {
-  const seme = semis
-  semis = undefined
-  resultat = undefined
+  const seme = etat.semis
+  delete etat.semis
+  delete etat.resultat
   if (!seme) return
 
   const mediateurIds = [seme.auteur.mediateurId, seme.autre.mediateurId]
