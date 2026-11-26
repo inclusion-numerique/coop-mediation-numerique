@@ -8,13 +8,13 @@ import { enregistrerUnAtelierCollectif } from '@/features/activites/abilities/en
 import { nombreDeSuivisDuMediateur } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/implementations/prisma/nombre-de-suivis-du-mediateur.query'
 import { MediateurId, UtilisateurId } from '@/features/activites/domain'
 import {
-  employeuseDeLaDateDepuis,
-  tagsUtilisablesDepuis,
-} from '@/features/activites/domain/fournisseurs-de-la-saisie'
-import {
   creerLActiviteDeMediation,
   modifierLActiviteDeMediation,
 } from '@/features/activites/implementations/prisma/activite-de-mediation.mutation'
+import {
+  employeuseDeLaDateDepuis,
+  tagsUtilisablesDepuis,
+} from '@/features/activites/implementations/prisma/fournisseurs-de-la-saisie.transfer'
 import {
   activiteDeMediationDuMediateur,
   nouvelIdentifiantDActivite,

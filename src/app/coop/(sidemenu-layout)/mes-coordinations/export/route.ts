@@ -5,7 +5,7 @@ import { exporterLesActivitesDeCoordination } from '@/features/activites/abiliti
 import { lignesDesCoordinations } from '@/features/activites/abilities/exporter-les-activites-de-coordination/ui/presenters/lignes-des-coordinations.presenter'
 import { nomDuFichierDesCoordinations } from '@/features/activites/abilities/exporter-les-activites-de-coordination/ui/presenters/nom-du-fichier.presenter'
 import { CoordinateurId } from '@/features/activites/domain'
-import { tagsUtilisablesDepuis } from '@/features/activites/domain/fournisseurs-de-la-saisie'
+import { tagsUtilisablesDepuis } from '@/features/activites/implementations/prisma/fournisseurs-de-la-saisie.transfer'
 import {
   criteresDesFiltresDeCoordination,
   filtresDesCoordinations,

@@ -6,57 +6,25 @@ import {
   TypeDActiviteIncompatible,
 } from '../errors'
 import type { ActiviteId } from '../identifiants/activite-id'
-import type { BeneficiaireId } from '../identifiants/beneficiaire-id'
 import type { IdentifiantCraV1 } from '../identifiants/identifiant-cra-v1'
 import type { LieuActiviteId } from '../identifiants/lieu-activite-id'
 import type { MediateurId } from '../identifiants/mediateur-id'
 import type { RdvId } from '../identifiants/rdv-id'
-import type { TagsUtilisables } from '../tags/tags-utilisables'
-import type { ActiviteDeMediation } from './activite-de-mediation'
 import type {
+  ActiviteDeMediationDuMediateur,
+  ActiviteDeMediationExistante,
+  CreerLActiviteDeMediation,
   EmployeuseDeLaDate,
-  LieuSaisi,
   LieuUtilisable,
   MarquerLeRendezVousHonore,
-} from './saisie-de-mediation'
+  ModifierLActiviteDeMediation,
+  RendezVousDejaSaisi,
+  RendezVousDUnAutreMediateur,
+  TagsUtilisables,
+} from '../ports'
+import type { ActiviteDeMediation } from './activite-de-mediation'
+import type { LieuSaisi } from './saisie-de-mediation'
 import type { TypeDActivite } from './type-d-activite'
-
-export type ActiviteDeMediationPrecedente = {
-  readonly lieuActiviteId: LieuActiviteId | null
-  readonly suivis: readonly BeneficiaireId[]
-  readonly anonymesOrphelins: readonly BeneficiaireId[]
-}
-
-export type ActiviteDeMediationExistante = {
-  readonly type: TypeDActivite
-  readonly creation: Date
-  readonly identifiantV1: IdentifiantCraV1 | null
-  readonly precedente: ActiviteDeMediationPrecedente
-}
-
-export type ActiviteDeMediationDuMediateur = (criteres: {
-  readonly id: ActiviteId
-  readonly mediateurId: MediateurId
-}) => Promise<ActiviteDeMediationExistante | null>
-
-export type RendezVousDUnAutreMediateur = (criteres: {
-  readonly rdvId: RdvId
-  readonly mediateurId: MediateurId
-}) => Promise<boolean>
-
-export type RendezVousDejaSaisi = (criteres: {
-  readonly rdvId: RdvId
-  readonly activiteId: ActiviteId
-}) => Promise<boolean>
-
-export type CreerLActiviteDeMediation = (
-  activite: ActiviteDeMediation,
-) => Promise<void>
-
-export type ModifierLActiviteDeMediation = (
-  activite: ActiviteDeMediation,
-  precedente: ActiviteDeMediationPrecedente,
-) => Promise<void>
 
 export type DependancesDeLaSaisieDeMediation = {
   readonly activiteDuMediateur: ActiviteDeMediationDuMediateur

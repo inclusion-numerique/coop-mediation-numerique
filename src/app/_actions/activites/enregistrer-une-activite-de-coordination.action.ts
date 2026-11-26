@@ -11,7 +11,7 @@ import {
   nouvelIdentifiantDeCoordination,
 } from '@/features/activites/abilities/enregistrer-une-activite-de-coordination/implementations/prisma/enregistrer-une-activite-de-coordination.mutation'
 import { CoordinateurId, UtilisateurId } from '@/features/activites/domain'
-import { tagsUtilisablesDepuis } from '@/features/activites/domain/fournisseurs-de-la-saisie'
+import { tagsUtilisablesDepuis } from '@/features/activites/implementations/prisma/fournisseurs-de-la-saisie.transfer'
 import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'

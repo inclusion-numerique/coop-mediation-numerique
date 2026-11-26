@@ -5,7 +5,7 @@ import {
   NomDeTag,
   TagId,
   type TagsUtilisables,
-} from '.'
+} from '../../domain'
 
 type TagFourni = { readonly id: string; readonly nom: string }
 

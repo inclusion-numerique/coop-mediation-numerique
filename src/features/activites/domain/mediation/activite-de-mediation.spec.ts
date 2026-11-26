@@ -1,11 +1,5 @@
 import { describe, expect, it } from 'vitest'
 import { failure, success } from '@/libraries/result'
-import {
-  DateDActivite,
-  DateTropLointaine,
-  dateDActiviteBornee,
-  derniereDateDActivite,
-} from '../date-d-activite'
 import { DureeEnMinutes } from '../duree-en-minutes'
 import { Effectif } from '../effectif'
 import {
@@ -32,46 +26,6 @@ import { ThematiqueAdministrative } from './thematique-administrative'
 import { ThematiqueDeMediation } from './thematique-de-mediation'
 
 const beneficiaire = BeneficiaireId('5b2d0c4e-8f1a-4c3b-9d7e-2a6f1b3c4d5e')
-
-describe('date d’activité', () => {
-  it('refuse une date antérieure au 17 novembre 2020', () => {
-    expect(DateDActivite.safe('2020-11-16')).toBeNull()
-  })
-
-  it('refuse une date mal formée', () => {
-    expect(DateDActivite.safe('0006-03-12T00:00')).toBeNull()
-  })
-
-  it('autorise une activité planifiée jusqu’à deux ans à l’avance', () => {
-    expect(derniereDateDActivite(DateDActivite('2026-11-10'))).toBe(
-      '2028-11-10',
-    )
-  })
-
-  it('ramène un 29 février au 28 février deux ans plus tard, comme la base', () => {
-    expect(derniereDateDActivite(DateDActivite('2028-02-29'))).toBe(
-      '2030-02-28',
-    )
-  })
-
-  it('accepte la dernière date autorisée', () => {
-    expect(
-      dateDActiviteBornee(
-        DateDActivite('2028-11-10'),
-        DateDActivite('2026-11-10'),
-      ),
-    ).toEqual(success('2028-11-10'))
-  })
-
-  it('refuse une date au-delà de deux ans', () => {
-    expect(
-      dateDActiviteBornee(
-        DateDActivite('2525-01-01'),
-        DateDActivite('2026-11-10'),
-      ),
-    ).toEqual(failure(DateTropLointaine(DateDActivite('2028-11-10'))))
-  })
-})
 
 describe('durée', () => {
   it('ne dépasse pas 23 h 59', () => {

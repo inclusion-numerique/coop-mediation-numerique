@@ -76,20 +76,23 @@ export { TypeDEvenement } from './coordination/type-d-evenement'
 export { TypeDeStructurePartenaire } from './coordination/type-de-structure-partenaire'
 export {
   DateDActivite,
-  DateTropLointaine,
-  dateDActiviteBornee,
   dateDActiviteDuJour,
-  derniereDateDActivite,
   PREMIERE_DATE_D_ACTIVITE,
 } from './date-d-activite'
+export {
+  dateDActiviteBornee,
+  derniereDateDActivite,
+} from './derniere-date-d-activite'
 export { DureeEnMinutes } from './duree-en-minutes'
 export { Effectif } from './effectif'
 
 export {
+  ActionNonAutorisee,
   ActiviteIntrouvable,
   AtelierSansParticipant,
   BeneficiaireEnDouble,
   BeneficiaireIntrouvable,
+  DateTropLointaine,
   LieuInutilisable,
   RendezVousIndisponible,
   TagInutilisable,
@@ -133,31 +136,20 @@ export {
 export { AdresseDuLieu } from './mediation/adresse-du-lieu'
 export { AUTONOMIES, Autonomie } from './mediation/autonomie'
 export {
-  type ActiviteDeMediationDuMediateur,
-  type ActiviteDeMediationExistante,
-  type ActiviteDeMediationPrecedente,
-  type CreerLActiviteDeMediation,
   creationOuModification,
   type DependancesDeLaSaisieDeMediation,
   type EnregistrementDeMediation,
   ecrireLActiviteDeMediation,
   enregistrementDeMediation,
   lieuVerifie,
-  type ModifierLActiviteDeMediation,
-  type RendezVousDejaSaisi,
-  type RendezVousDUnAutreMediateur,
   rendezVousVerifie,
 } from './mediation/enregistrement-de-mediation'
 export { MATERIELS, Materiel } from './mediation/materiel'
 export { NIVEAUX_D_ATELIER, NiveauDAtelier } from './mediation/niveau-d-atelier'
 export { PrecisionDeDemarche } from './mediation/precision-de-demarche'
 export {
-  type EmployeuseALaDate,
-  type EmployeuseDeLaDate,
   type LieuSaisi,
-  type LieuUtilisable,
   lieuDeLaSaisie,
-  type MarquerLeRendezVousHonore,
   origineDeLaSaisie,
 } from './mediation/saisie-de-mediation'
 export {
@@ -188,6 +180,21 @@ export {
 export { NomDeCommune } from './nom-de-commune'
 export { NomDeStructure } from './nom-de-structure'
 export { Notes, NotesSaisies, notesDe } from './notes'
+export type {
+  ActiviteDeMediationDuMediateur,
+  ActiviteDeMediationExistante,
+  ActiviteDeMediationPrecedente,
+  CreerLActiviteDeMediation,
+  EmployeuseALaDate,
+  EmployeuseDeLaDate,
+  LieuUtilisable,
+  MarquerLeRendezVousHonore,
+  ModifierLActiviteDeMediation,
+  NouvelIdentifiantDActivite,
+  RendezVousDejaSaisi,
+  RendezVousDUnAutreMediateur,
+  TagsUtilisables,
+} from './ports'
 export { Precision } from './precision'
 export { LienAgent } from './rendez-vous/lien-agent'
 export { NomDuMotif } from './rendez-vous/nom-du-motif'
@@ -224,4 +231,4 @@ export {
 } from './statistiques/repartition'
 export { NomDeTag } from './tags/nom-de-tag'
 export { TAGS_PROPOSES_PAR_LE_CRA } from './tags/tags-proposes-par-le-cra'
-export { type TagsUtilisables, tagsDeLaSaisie } from './tags/tags-utilisables'
+export { tagsDeLaSaisie } from './tags/tags-utilisables'

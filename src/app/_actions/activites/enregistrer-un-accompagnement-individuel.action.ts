@@ -8,13 +8,13 @@ import { enregistrerUnAccompagnementIndividuel } from '@/features/activites/abil
 import { beneficiaireDuMediateur } from '@/features/activites/abilities/enregistrer-un-accompagnement-individuel/implementations/prisma/beneficiaire-du-mediateur.query'
 import { MediateurId, UtilisateurId } from '@/features/activites/domain'
 import {
-  employeuseDeLaDateDepuis,
-  tagsUtilisablesDepuis,
-} from '@/features/activites/domain/fournisseurs-de-la-saisie'
-import {
   creerLActiviteDeMediation,
   modifierLActiviteDeMediation,
 } from '@/features/activites/implementations/prisma/activite-de-mediation.mutation'
+import {
+  employeuseDeLaDateDepuis,
+  tagsUtilisablesDepuis,
+} from '@/features/activites/implementations/prisma/fournisseurs-de-la-saisie.transfer'
 import {
   activiteDeMediationDuMediateur,
   nouvelIdentifiantDActivite,

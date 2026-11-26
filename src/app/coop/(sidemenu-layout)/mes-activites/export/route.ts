@@ -5,7 +5,7 @@ import { exporterMesAccompagnements } from '@/features/activites/abilities/expor
 import { nomsDesFiltresExportes } from '@/features/activites/abilities/exporter-mes-accompagnements/implementations/prisma/noms-des-filtres-exportes.query'
 import { classeurPresenteAvec } from '@/features/activites/abilities/exporter-mes-accompagnements/ui/presenters/export.presenter'
 import { nomDuFichierDesAccompagnements } from '@/features/activites/abilities/exporter-mes-accompagnements/ui/presenters/nom-du-fichier.presenter'
-import { tagsUtilisablesDepuis } from '@/features/activites/domain/fournisseurs-de-la-saisie'
+import { tagsUtilisablesDepuis } from '@/features/activites/implementations/prisma/fournisseurs-de-la-saisie.transfer'
 import { criteresDesFiltres } from '@/features/activites/ui/filtres/activites.filtre'
 import { filtresDeToutesLesActivites } from '@/features/activites/ui/filtres/toutes-les-activites.filtre'
 import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'

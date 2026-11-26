@@ -3,10 +3,6 @@ import type { TagDeLActivite } from '../coordination/activite-de-coordination'
 import { TagInutilisable } from '../errors'
 import type { TagId } from '../identifiants/tag-id'
 
-export type TagsUtilisables = (
-  tagIds: readonly TagId[],
-) => Promise<readonly TagDeLActivite[]>
-
 export const tagsDeLaSaisie = (
   choisis: readonly TagId[],
   utilisables: readonly TagDeLActivite[],

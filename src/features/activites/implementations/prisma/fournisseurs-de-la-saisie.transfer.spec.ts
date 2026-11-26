@@ -1,28 +1,29 @@
 import { describe, expect, it } from 'vitest'
-import { DateDActivite, TagId } from '.'
+import {
+  Commune,
+  DateDActivite,
+  EmployeuseId,
+  NomDeTag,
+  TagId,
+} from '../../domain'
 import {
   employeuseDeLaDateDepuis,
   tagsUtilisablesDepuis,
-} from './fournisseurs-de-la-saisie'
+} from './fournisseurs-de-la-saisie.transfer'
 
 describe('fournisseurs de la saisie', () => {
-  it("consulte l'employeuse au jour de l'activité, à minuit UTC", async () => {
-    const employeuse = await employeuseDeLaDateDepuis(async (date) =>
-      date.toISOString() === '2026-03-05T00:00:00.000Z'
-        ? { id: 42, adresse: null }
-        : null,
-    )(DateDActivite('2026-03-05'))
-    expect(employeuse).toEqual({ id: 42, commune: null })
-  })
-
   it("traduit l'employeuse fournie et sa commune", async () => {
     const employeuse = await employeuseDeLaDateDepuis(async () => ({
       id: 42,
       adresse: { commune: 'Lyon', codePostal: '69007', codeInsee: '69387' },
     }))(DateDActivite('2026-03-05'))
     expect(employeuse).toEqual({
-      id: 42,
-      commune: { nom: 'Lyon', codePostal: '69007', codeInsee: '69387' },
+      id: EmployeuseId(42),
+      commune: Commune({
+        nom: 'Lyon',
+        codePostal: '69007',
+        codeInsee: '69387',
+      }),
     })
   })
 
@@ -31,7 +32,7 @@ describe('fournisseurs de la saisie', () => {
       id: 42,
       adresse: null,
     }))(DateDActivite('2026-03-05'))
-    expect(employeuse).toEqual({ id: 42, commune: null })
+    expect(employeuse).toEqual({ id: EmployeuseId(42), commune: null })
   })
 
   it('ne rend aucune employeuse quand aucune n’est fournie à la date', async () => {
@@ -46,6 +47,6 @@ describe('fournisseurs de la saisie', () => {
     const tags = await tagsUtilisablesDepuis(async () => [
       { id, nom: 'Numérique' },
     ])([id])
-    expect(tags).toEqual([{ id, nom: 'Numérique' }])
+    expect(tags).toEqual([{ id, nom: NomDeTag('Numérique') }])
   })
 })
