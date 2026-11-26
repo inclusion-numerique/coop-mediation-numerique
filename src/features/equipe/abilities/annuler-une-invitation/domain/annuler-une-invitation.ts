@@ -3,33 +3,20 @@ import {
   ActionNonAutorisee,
   exigerEnAttente,
   type Gestionnaire,
-  type InvitationDejaTraitee,
   InvitationIntrouvable,
-  type LireUneInvitation,
   peutGererLEquipe,
   type ReferenceInvitation,
   type UtilisateurId,
 } from '../../../domain'
-
-export type EchecDAnnulation =
-  | ActionNonAutorisee
-  | InvitationIntrouvable
-  | InvitationDejaTraitee
-
-export type SupprimerLInvitation<Cle> = (suppression: {
-  readonly cle: Cle
-  readonly reference: ReferenceInvitation
-  readonly auteurId: UtilisateurId
-}) => Promise<void>
+import type { Annulation } from './annulation'
+import type { EchecDAnnulation } from './errors'
+import type { AnnulerUneInvitationPorts } from './ports'
 
 export const annulerUneInvitation =
   <Cle>({
     lireUneInvitation,
     supprimerLInvitation,
-  }: {
-    readonly lireUneInvitation: LireUneInvitation<Cle>
-    readonly supprimerLInvitation: SupprimerLInvitation<Cle>
-  }) =>
+  }: AnnulerUneInvitationPorts<Cle>) =>
   async ({
     reference,
     gestionnaire,
@@ -38,7 +25,7 @@ export const annulerUneInvitation =
     readonly reference: ReferenceInvitation
     readonly gestionnaire: Gestionnaire
     readonly auteurId: UtilisateurId
-  }): Promise<Result<void, EchecDAnnulation>> => {
+  }): Promise<Result<Annulation, EchecDAnnulation>> => {
     if (!peutGererLEquipe(gestionnaire)(reference.coordinateurId))
       return failure(ActionNonAutorisee())
 
@@ -48,7 +35,9 @@ export const annulerUneInvitation =
     const enAttente = exigerEnAttente(lue.invitation)
     if (!enAttente.success) return enAttente
 
-    await supprimerLInvitation({ cle: lue.cle, reference, auteurId })
+    const annulation: Annulation = { reference, auteurId }
 
-    return success(undefined)
+    await supprimerLInvitation({ cle: lue.cle, ...annulation })
+
+    return success(annulation)
   }

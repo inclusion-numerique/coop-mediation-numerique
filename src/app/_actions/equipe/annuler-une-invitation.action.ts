@@ -16,6 +16,7 @@ import { lireUneInvitation } from '@/features/equipe/implementations/prisma/invi
 import { gestionnaireDe } from '@/features/equipe/implementations/session'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { fromResult, withInput } from '@/libraries/nextjs'
+import { success } from '@/libraries/result'
 
 export const annulerUneInvitationAction = actionBuilder()
   .use(withAuth())
@@ -23,15 +24,20 @@ export const annulerUneInvitationAction = actionBuilder()
   .use(withInput(AnnulerUneInvitationValidation))
   .execute(
     fromResult(
-      async ({ user, input }) =>
-        annulerUneInvitation({ lireUneInvitation, supprimerLInvitation })({
+      async ({ user, input }) => {
+        const annulation = await annulerUneInvitation({
+          lireUneInvitation,
+          supprimerLInvitation,
+        })({
           reference: ReferenceInvitation({
             email: Courriel(input.email),
             coordinateurId: CoordinateurId(input.coordinateurId),
           }),
           gestionnaire: gestionnaireDe(user),
           auteurId: UtilisateurId(user.id),
-        }),
+        })
+        return annulation.success ? success(undefined) : annulation
+      },
       { onError: ANNULER_UNE_INVITATION_ERRORS },
     ),
   )

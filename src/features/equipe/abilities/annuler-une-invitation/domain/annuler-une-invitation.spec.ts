@@ -54,7 +54,7 @@ describe('annuler une invitation', () => {
 
     expect(
       await annuler({ reference, gestionnaire: coordinateur, auteurId }),
-    ).toEqual({ success: true, data: undefined })
+    ).toEqual({ success: true, data: { reference, auteurId } })
   })
 
   it('est refusé à qui ne gère pas l’équipe', async () => {

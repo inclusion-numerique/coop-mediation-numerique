@@ -1,6 +1,6 @@
 import { addMutationLog, prismaClient } from '@/configuration/prisma'
 import type { CleDInvitation } from '../../../../implementations/prisma/invitation.query'
-import type { SupprimerLInvitation } from '../../domain/annuler-une-invitation'
+import type { SupprimerLInvitation } from '../../domain/ports'
 
 export const supprimerLInvitation: SupprimerLInvitation<
   CleDInvitation
