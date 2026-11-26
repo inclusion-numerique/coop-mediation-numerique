@@ -21,8 +21,7 @@ Given('un médiateur coordonné par un seul coordinateur', async () => {
 
 When('je détache ce médiateur de ses équipes', async () => {
   await detacherDesEquipesAvec({ retirerDesEquipes })({
-    mediateurId: MediateurId(porteur()),
-    coordinateurId: null,
+    compte: { _tag: 'Mediateur', mediateurId: MediateurId(porteur()) },
     maintenant: new Date(),
   })
 })

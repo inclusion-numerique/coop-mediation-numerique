@@ -1,16 +1,20 @@
 import { prismaClient } from '@/configuration/prisma'
+import type { CompteRattache } from '../../domain/detachement'
 import type { RetirerDesEquipes } from '../../domain/ports'
 
-export const retirerDesEquipes: RetirerDesEquipes = ({
-  mediateurId,
-  coordinateurId,
-  retireesLe,
-}) =>
+const proprietairesDu = (compte: CompteRattache) => {
+  if (compte._tag === 'Mediateur') return [{ mediateurId: compte.mediateurId }]
+  if (compte._tag === 'Coordinateur')
+    return [{ coordinateurId: compte.coordinateurId }]
+  return [
+    { mediateurId: compte.mediateurId },
+    { coordinateurId: compte.coordinateurId },
+  ]
+}
+
+export const retirerDesEquipes: RetirerDesEquipes = ({ compte, retireesLe }) =>
   prismaClient.$transaction(async (transaction) => {
-    const proprietaires = [
-      ...(mediateurId === null ? [] : [{ mediateurId }]),
-      ...(coordinateurId === null ? [] : [{ coordinateurId }]),
-    ]
+    const proprietaires = proprietairesDu(compte)
 
     const invitations = await transaction.invitationEquipe.deleteMany({
       where: { OR: proprietaires },

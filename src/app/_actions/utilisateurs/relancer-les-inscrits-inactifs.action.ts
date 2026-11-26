@@ -5,6 +5,7 @@ import { effacerNotes } from '@/features/activites/abilities/effacer-notes/imple
 import { withAdmin } from '@/features/authentification/middlewares/with-admin'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { anonymiserPortefeuille } from '@/features/beneficiaire/abilities/anonymiser-portefeuille/implementations/prisma/anonymiser-portefeuille.mutation'
+import { compteADetacher } from '@/features/equipe/abilities/detacher-des-equipes/domain/detachement'
 import { detacherDesEquipes as detacherDesEquipesAvec } from '@/features/equipe/abilities/detacher-des-equipes/domain/detacher-des-equipes'
 import { retirerDesEquipes } from '@/features/equipe/abilities/detacher-des-equipes/implementations/prisma/retirer-des-equipes.mutation'
 import { retirerDesLieux } from '@/features/lieux-activite/abilities/retirer-des-lieux/implementations/prisma/retirer-des-lieux.mutation'
@@ -119,7 +120,7 @@ const effacerLEmpreinteRdv = effacementPourLaSuppressionDeCompte(
 const detacherDesEquipes: EffacementsDesAutresFeatures['detacherDesEquipes'] =
   async (identifiants) => {
     const detachement = await detacherDesEquipesAvec({ retirerDesEquipes })({
-      ...identifiants,
+      compte: compteADetacher(identifiants),
       maintenant: new Date(),
     })
     return detachement.data.bilan
