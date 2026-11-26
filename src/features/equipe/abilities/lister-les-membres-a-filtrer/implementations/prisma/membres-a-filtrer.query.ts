@@ -5,6 +5,7 @@ import { Courriel } from '../../../../domain/identite/courriel'
 import { Nom } from '../../../../domain/identite/nom'
 import { NomAffiche, nomAffiche } from '../../../../domain/identite/nom-affiche'
 import { Prenom } from '../../../../domain/identite/prenom'
+import { facultative } from '../../../../implementations/prisma/lue.transfer'
 import type {
   LireLeDemandeur,
   LireLesMembresAFiltrer,
@@ -25,8 +26,8 @@ type Utilisateur = {
 }
 
 const identiteDe = (id: string, utilisateur: Utilisateur) => {
-  const prenom = Prenom.safe(utilisateur.firstName ?? '')
-  const nomDeFamille = Nom.safe(utilisateur.lastName ?? '')
+  const prenom = facultative(Prenom, utilisateur.firstName)
+  const nomDeFamille = facultative(Nom, utilisateur.lastName)
   const email = Courriel(utilisateur.email)
   return {
     membre: {
@@ -34,7 +35,7 @@ const identiteDe = (id: string, utilisateur: Utilisateur) => {
       nom: nomAffiche({
         prenom,
         nom: nomDeFamille,
-        nomComplet: NomAffiche.safe(utilisateur.name ?? ''),
+        nomComplet: facultative(NomAffiche, utilisateur.name),
         email,
       }),
       email,

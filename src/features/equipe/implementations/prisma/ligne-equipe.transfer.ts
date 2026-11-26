@@ -19,7 +19,7 @@ import {
   Voie,
 } from '../../domain'
 import type { LigneEquipeRow } from './ligne-equipe.sql'
-import { lue } from './lue.transfer'
+import { facultative, lue } from './lue.transfer'
 
 const statuts: Readonly<
   Record<TypeDeStatut, (row: LigneEquipeRow) => StatutMembre>
@@ -62,9 +62,9 @@ const toPersonne = (row: LigneEquipeRow): PersonneDeLEquipe => {
         mediateurId,
         profil: {
           utilisateurId,
-          prenom: lue(Prenom, row.first_name),
-          nom: lue(Nom, row.last_name),
-          telephone: lue(Telephone, row.phone),
+          prenom: facultative(Prenom, row.first_name),
+          nom: facultative(Nom, row.last_name),
+          telephone: facultative(Telephone, row.phone),
           role: roleMembre(row.is_conseiller_numerique === true),
         },
       }
@@ -95,17 +95,15 @@ const toStructureEmployeuse = (
     : { type: 'Connue', nom, adresse }
 }
 
-export const toLigneEquipe = (row: LigneEquipeRow): LigneEquipe | null => {
-  const email = Courriel.safe(row.email)
-  return email !== null && estUnStatut(row.statut)
+export const toLigneEquipe = (row: LigneEquipeRow): LigneEquipe | null =>
+  estUnStatut(row.statut)
     ? {
-        email,
+        email: Courriel(row.email),
         statut: statuts[row.statut](row),
         personne: toPersonne(row),
         structureEmployeuse: toStructureEmployeuse(row),
       }
     : null
-}
 
 export const toLignesEquipe = (
   rows: readonly LigneEquipeRow[],

@@ -34,9 +34,9 @@ const toInvite = (mediateurId: string | null): Invite | null => {
 }
 
 export const toInvitation = (row: InvitationRow): Invitation | null => {
-  const email = Courriel.safe(row.email)
+  const email = Courriel(row.email)
   const coordinateurId = CoordinateurId.safe(row.coordinateurId)
-  if (email === null || coordinateurId === null) return null
+  if (coordinateurId === null) return null
 
   const invite = toInvite(row.mediateurId)
   if (invite === null) return null

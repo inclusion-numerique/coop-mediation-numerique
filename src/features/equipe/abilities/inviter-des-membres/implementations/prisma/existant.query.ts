@@ -48,18 +48,14 @@ export const lireLExistant: LireLExistant<EmailsStockes> = async ({
   const existant: Existant = {
     invitations: lues.map(({ invitation }) => invitation),
     membresActifs: new Set(
-      membres.flatMap(({ mediateur }) => {
-        const email = Courriel.safe(mediateur.user.email)
-        return email === null ? [] : [email]
-      }),
+      membres.map(({ mediateur }) => Courriel(mediateur.user.email)),
     ),
     mediateursConnus: new Map(
-      mediateurs.flatMap(({ email, mediateur }) => {
-        const canonique = Courriel.safe(email)
-        return canonique === null || mediateur === null
+      mediateurs.flatMap(({ email, mediateur }) =>
+        mediateur === null
           ? []
-          : [[canonique, MediateurId(mediateur.id)] as const]
-      }),
+          : [[Courriel(email), MediateurId(mediateur.id)] as const],
+      ),
     ),
   }
 

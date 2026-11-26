@@ -8,7 +8,7 @@ import {
   nomAffiche,
   Prenom,
 } from '../../domain'
-import { lue } from './lue.transfer'
+import { facultative } from './lue.transfer'
 
 export const lireLeCoordinateur: LireLeCoordinateur = async (
   coordinateurId,
@@ -30,18 +30,16 @@ export const lireLeCoordinateur: LireLeCoordinateur = async (
   if (coordinateur === null) return null
 
   const { user } = coordinateur
-  const email = Courriel.safe(user.email)
+  const email = Courriel(user.email)
 
-  return email === null
-    ? null
-    : {
-        nom: nomAffiche({
-          prenom: lue(Prenom, user.firstName),
-          nom: lue(Nom, user.lastName),
-          nomComplet: lue(NomAffiche, user.name),
-          email,
-        }),
-        email,
-        telephone: lue(Telephone, user.phone),
-      }
+  return {
+    nom: nomAffiche({
+      prenom: facultative(Prenom, user.firstName),
+      nom: facultative(Nom, user.lastName),
+      nomComplet: facultative(NomAffiche, user.name),
+      email,
+    }),
+    email,
+    telephone: facultative(Telephone, user.phone),
+  }
 }

@@ -67,9 +67,9 @@ describe('transfert d’une invitation', () => {
     expect(invitation?.statut).toBe('Acceptee')
   })
 
-  it('écarte une ligne dont l’email est inexploitable', () => {
-    expect(
+  it('refuse une ligne dont l’email est inexploitable', () => {
+    expect(() =>
       toInvitation({ ...fromInvitation(invitationEnAttente), email: 'x' }),
-    ).toBeNull()
+    ).toThrow()
   })
 })

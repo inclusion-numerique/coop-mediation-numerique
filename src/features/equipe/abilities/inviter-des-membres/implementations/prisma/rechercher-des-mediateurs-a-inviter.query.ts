@@ -10,7 +10,7 @@ import {
   Prenom,
   roleMembre,
 } from '../../../../domain'
-import { lue } from '../../../../implementations/prisma/lue.transfer'
+import { facultative } from '../../../../implementations/prisma/lue.transfer'
 import type { MediateursAInviter } from '../../domain'
 
 const NOMBRE_DE_PROPOSITIONS = 50
@@ -64,25 +64,19 @@ export const rechercherDesMediateursAInviter = async ({
   ])
 
   return {
-    mediateurs: trouves.flatMap(({ id, user }) => {
-      const email = Courriel.safe(user.email)
-      return email === null
-        ? []
-        : [
-            {
-              mediateurId: MediateurId(id),
-              nom: nomAffiche({
-                prenom: lue(Prenom, user.firstName),
-                nom: lue(Nom, user.lastName),
-                nomComplet: lue(NomAffiche, user.name),
-                email,
-              }),
-              email,
-              role: roleMembre(
-                user.personneMain?.conseillerNumeriqueEnPoste != null,
-              ),
-            },
-          ]
+    mediateurs: trouves.map(({ id, user }) => {
+      const email = Courriel(user.email)
+      return {
+        mediateurId: MediateurId(id),
+        nom: nomAffiche({
+          prenom: facultative(Prenom, user.firstName),
+          nom: facultative(Nom, user.lastName),
+          nomComplet: facultative(NomAffiche, user.name),
+          email,
+        }),
+        email,
+        role: roleMembre(user.personneMain?.conseillerNumeriqueEnPoste != null),
+      }
     }),
     total,
   }

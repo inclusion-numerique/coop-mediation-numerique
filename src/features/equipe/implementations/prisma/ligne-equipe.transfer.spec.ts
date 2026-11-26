@@ -110,16 +110,26 @@ describe('lecture d’une ligne de l’équipe', () => {
     ).toBe('+33102030405')
   })
 
-  it('tient pour absents un téléphone inexploitable et un nom vide', () => {
+  it('tient pour absents un téléphone et un prénom non renseignés', () => {
     const ligne = toLigneEquipe({
       ...ancienMembreComplet,
-      phone: 'inconnu',
-      first_name: '  ',
+      phone: null,
+      first_name: null,
     })
 
     expect(
       ligne?.personne.type === 'Inscrite' && ligne.personne.profil,
     ).toMatchObject({ prenom: null, telephone: null })
+  })
+
+  it.each<[string, Partial<LigneEquipeRow>]>([
+    ['un téléphone inexploitable', { phone: 'inconnu' }],
+    ['un prénom vide', { first_name: '  ' }],
+    ['un nom vide', { last_name: '  ' }],
+  ])('refuse une ligne dont le profil porte %s', (_, invalide) => {
+    expect(() =>
+      toLigneEquipe({ ...ancienMembreComplet, ...invalide }),
+    ).toThrow()
   })
 
   it('connaît une structure sans nom par sa seule adresse', () => {
@@ -142,10 +152,10 @@ describe('lecture d’une ligne de l’équipe', () => {
     })
   })
 
-  it('écarte une ligne dont l’email est inexploitable', () => {
-    expect(
+  it('refuse une ligne dont l’email est inexploitable', () => {
+    expect(() =>
       toLigneEquipe({ ...invitationSansCompte, email: 'pas-un-email' }),
-    ).toBeNull()
+    ).toThrow()
   })
 
   it('écarte un statut inconnu', () => {

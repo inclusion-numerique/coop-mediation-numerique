@@ -11,7 +11,7 @@ type ContratRow = {
 }
 
 const toLigneContrat = (row: ContratRow): LigneContrat => ({
-  type: TypeContrat.safe(row.type) ?? TypeContrat('NonCommunique'),
+  type: TypeContrat(row.type),
   debut: row.dateDebut,
   fin: row.dateFin,
   rompuLe: row.dateRupture,
