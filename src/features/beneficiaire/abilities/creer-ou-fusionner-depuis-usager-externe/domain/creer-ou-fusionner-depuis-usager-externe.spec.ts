@@ -52,12 +52,12 @@ const usagerSansDonnees: UsagerExterneAFusionner = {
 }
 
 const lie: MergedBeneficiaire = {
-  id: 'beneficiaire-lie',
+  id: BeneficiaireId('1c2d3e4f-5a6b-4c7d-8e9f-0a1b2c3d4e5f'),
   nom: null,
   prenom: null,
   email: null,
   telephone: null,
-  mediateurId: '8a1b2c3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d',
+  mediateurId,
   adresse: null,
   anneeNaissance: null,
   commune: null,
@@ -73,7 +73,10 @@ const lieComplet: MergedBeneficiaire = {
   commune: 'Évreux',
 }
 
-const ecrit: MergedBeneficiaire = { ...lie, id: 'beneficiaire-ecrit' }
+const ecrit: MergedBeneficiaire = {
+  ...lie,
+  id: BeneficiaireId('2d3e4f5a-6b7c-4d8e-9f0a-1b2c3d4e5f60'),
+}
 
 const doublon: DuplicateBeneficiaire = {
   id: BeneficiaireId('5f0c7a52-1b9e-4c3a-9d2e-7a8b6c5d4e3f'),
@@ -248,7 +251,8 @@ describe('créer ou fusionner des bénéficiaires depuis des usagers externes', 
         ecritures: [
           {
             _tag: 'MiseAJour',
-            id: 'beneficiaire-lie',
+            id: lie.id,
+            mediateurId,
             donnees: {
               email: Email('lea@example.fr'),
               telephone: Telephone('0102030405'),
@@ -278,7 +282,8 @@ describe('créer ou fusionner des bénéficiaires depuis des usagers externes', 
         ecritures: [
           {
             _tag: 'MiseAJour',
-            id: 'beneficiaire-lie',
+            id: lie.id,
+            mediateurId,
             donnees: { adresse },
           },
         ],
@@ -300,6 +305,7 @@ describe('créer ou fusionner des bénéficiaires depuis des usagers externes', 
           {
             _tag: 'MiseAJour',
             id: doublon.id,
+            mediateurId,
             donnees: {
               rdvUserId: 42,
               email: Email('lea@example.fr'),
@@ -337,6 +343,7 @@ describe('créer ou fusionner des bénéficiaires depuis des usagers externes', 
           {
             _tag: 'MiseAJour',
             id: doublon.id,
+            mediateurId,
             donnees: {
               rdvUserId: 42,
               email: Email('lea@example.fr'),

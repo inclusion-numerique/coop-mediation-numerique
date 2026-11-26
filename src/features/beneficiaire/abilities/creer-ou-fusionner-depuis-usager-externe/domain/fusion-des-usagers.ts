@@ -1,3 +1,5 @@
+import type { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
+import type { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
 import type { MotifDEcart } from './errors'
 import type {
   DonneesDeFusion,
@@ -13,7 +15,8 @@ export type UsagerEcarte = {
 export type EcritureDUnUsager =
   | {
       readonly _tag: 'MiseAJour'
-      readonly id: string
+      readonly id: BeneficiaireId
+      readonly mediateurId: MediateurId
       readonly donnees: DonneesDeFusion
     }
   | { readonly _tag: 'Creation'; readonly beneficiaire: NouveauBeneficiaire }

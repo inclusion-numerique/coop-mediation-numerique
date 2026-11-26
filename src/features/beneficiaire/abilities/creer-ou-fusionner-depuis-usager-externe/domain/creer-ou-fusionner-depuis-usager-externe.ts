@@ -165,7 +165,7 @@ const traiterUnUsager =
         commune: commune.data,
         maintenant,
       })
-      const miseAJour = { id: beneficiaireLie.id, donnees }
+      const miseAJour = { id: beneficiaireLie.id, mediateurId, donnees }
       return Object.keys(donnees).length > 0
         ? ecrit({ _tag: 'MiseAJour', ...miseAJour })(
             await mettreAJourLeBeneficiaire(miseAJour),
@@ -188,6 +188,7 @@ const traiterUnUsager =
       if (!commune.success) return commune
       const miseAJour = {
         id,
+        mediateurId,
         donnees: donneesDeFusion({
           usager,
           existant: doublon.data,
