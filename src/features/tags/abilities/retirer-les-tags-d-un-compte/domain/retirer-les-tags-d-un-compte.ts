@@ -31,14 +31,12 @@ export const retirerLesTagsDUnCompte =
       partant: mediateurId,
     })
 
-    const retrait: RetraitDesTags = {
+    const applique = await appliquerLeRetrait({
       supprimeLe: maintenant,
       supprimes: [...duMediateur, ...duCoordinateur.map(({ id }) => id)],
       copies,
       reprises,
-    }
+    })
 
-    await appliquerLeRetrait(retrait)
-
-    return success(retrait)
+    return success({ supprimeLe: maintenant, ...applique })
   }

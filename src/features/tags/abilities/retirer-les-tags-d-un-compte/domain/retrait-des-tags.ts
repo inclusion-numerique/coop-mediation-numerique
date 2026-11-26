@@ -20,11 +20,14 @@ export type RepriseDeTag = {
   readonly vers: TagId
 }
 
-export type RetraitDesTags = {
-  readonly supprimeLe: Date
+export type RetraitApplique = {
   readonly supprimes: readonly TagId[]
   readonly copies: readonly CopieDeTag[]
   readonly reprises: readonly RepriseDeTag[]
+}
+
+export type RetraitDesTags = RetraitApplique & {
+  readonly supprimeLe: Date
 }
 
 export type BilanDuRetrait = {

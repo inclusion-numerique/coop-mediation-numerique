@@ -57,10 +57,41 @@ const retirer = ({
   retirerLesTagsDUnCompte({
     lireLesTagsDuCompte: async () => tags,
     lireLesTagsDetenus: async () => detenus,
-    appliquerLeRetrait: async () => undefined,
+    appliquerLeRetrait: async (retrait) => retrait,
   })({ mediateurId, coordinateurId, maintenant })
 
 describe('retirer les tags d’un compte', () => {
+  it('ne rend que ce que l’écriture a effectivement appliqué', async () => {
+    const retirerLesTags = retirerLesTagsDUnCompte({
+      lireLesTagsDuCompte: async () => ({
+        duMediateur: [tagDuPartant],
+        duCoordinateur: [accesAuxDroits],
+      }),
+      lireLesTagsDetenus: async () => [],
+      appliquerLeRetrait: async () => ({
+        supprimes: [tagDuPartant],
+        copies: [],
+        reprises: [],
+      }),
+    })
+
+    expect(
+      await retirerLesTags({
+        mediateurId: partant,
+        coordinateurId,
+        maintenant,
+      }),
+    ).toEqual({
+      success: true,
+      data: {
+        supprimeLe: maintenant,
+        supprimes: [tagDuPartant],
+        copies: [],
+        reprises: [],
+      },
+    })
+  })
+
   it('supprime les tags personnels d’un médiateur partant', async () => {
     expect(
       await retirer({

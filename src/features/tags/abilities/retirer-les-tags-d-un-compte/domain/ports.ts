@@ -6,7 +6,7 @@ import type {
   NomDuTag,
   TagId,
 } from '../../../domain'
-import type { RetraitDesTags } from './retrait-des-tags'
+import type { RetraitApplique, RetraitDesTags } from './retrait-des-tags'
 
 export type TagDuCoordinateur = {
   readonly id: TagId
@@ -42,7 +42,7 @@ export type LireLesTagsDetenus = (
 
 export type AppliquerLeRetraitDesTags = (
   retrait: RetraitDesTags,
-) => Promise<void>
+) => Promise<RetraitApplique>
 
 export type RetirerLesTagsDUnComptePorts = {
   readonly lireLesTagsDuCompte: LireLesTagsDuCompte
