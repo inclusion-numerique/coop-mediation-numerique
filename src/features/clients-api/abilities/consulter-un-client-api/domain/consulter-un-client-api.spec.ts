@@ -21,9 +21,9 @@ const client: ClientApi = {
 describe('consulter un client API', () => {
   it('rend le client API demandé', async () => {
     expect(
-      await consulterUnClientApi({ lireLeClientApi: async () => client })(
+      await consulterUnClientApi({ lireLeClientApi: async () => client })({
         clientApiId,
-      ),
+      }),
     ).toEqual({ success: true, data: client })
   })
 
@@ -34,9 +34,9 @@ describe('consulter un client API', () => {
     'signale un client API introuvable quand $cas',
     async ({ lu, identifiant }) => {
       expect(
-        await consulterUnClientApi({ lireLeClientApi: async () => lu })(
-          identifiant,
-        ),
+        await consulterUnClientApi({ lireLeClientApi: async () => lu })({
+          clientApiId: identifiant,
+        }),
       ).toEqual({
         success: false,
         error: { _tag: 'ClientApiIntrouvable', clientApiId: identifiant },

@@ -20,9 +20,9 @@ export const revalidate = 0
 
 const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
   await authenticateAdmin()
-  const consultation = await consulterUnClientApi({ lireLeClientApi })(
-    (await params).id,
-  )
+  const consultation = await consulterUnClientApi({ lireLeClientApi })({
+    clientApiId: (await params).id,
+  })
 
   if (!consultation.success) return notFound()
 

@@ -4,14 +4,16 @@ import {
   ClientApiIntrouvable,
 } from '@/features/clients-api/domain'
 import { failure, type Result, success } from '@/libraries/result'
-
-export type LireLeClientApi = (id: ClientApiId) => Promise<ClientApi | null>
+import type { EchecDeConsulterUnClientApi } from './errors'
+import type { ConsulterUnClientApiPorts } from './ports'
 
 export const consulterUnClientApi =
-  ({ lireLeClientApi }: { readonly lireLeClientApi: LireLeClientApi }) =>
-  async (
-    clientApiId: string,
-  ): Promise<Result<ClientApi, ClientApiIntrouvable>> => {
+  ({ lireLeClientApi }: ConsulterUnClientApiPorts) =>
+  async ({
+    clientApiId,
+  }: {
+    readonly clientApiId: string
+  }): Promise<Result<ClientApi, EchecDeConsulterUnClientApi>> => {
     const id = ClientApiId.safe(clientApiId)
     const client = id === null ? null : await lireLeClientApi(id)
 

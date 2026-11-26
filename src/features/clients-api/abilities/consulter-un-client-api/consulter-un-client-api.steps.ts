@@ -15,14 +15,16 @@ const consultation: {
 When(
   "l'administration consulte le client API {string}",
   async (nom: string) => {
-    consultation.resultat = await consulterUnClientApi({ lireLeClientApi })(
-      clientSeme(nom).id,
-    )
+    consultation.resultat = await consulterUnClientApi({ lireLeClientApi })({
+      clientApiId: clientSeme(nom).id,
+    })
   },
 )
 
 When("l'administration consulte un client API qui n'existe pas", async () => {
-  consultation.resultat = await consulterUnClientApi({ lireLeClientApi })(v4())
+  consultation.resultat = await consulterUnClientApi({ lireLeClientApi })({
+    clientApiId: v4(),
+  })
 })
 
 Then('la fiche présente les permissions {string}', (liste: string) => {
