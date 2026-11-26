@@ -58,12 +58,11 @@ const InitialiserInscriptionPage = async () => {
   const initialisation = await initialiserInscription({
     lireLeDispositif: dispositifDepuisMain,
     enregistrerLeProfil,
-    garantirLeRoleCoordinateur: (utilisateurId: string) =>
-      garantirLeRoleCoordinateurDuDispositif({
-        aLeRoleCoordinateur,
-        coordonneDansLeDispositif,
-        creerLeRoleCoordinateur: creerLeRoleCoordinateur(synchroniserPersonne),
-      })({ utilisateurId }),
+    garantirLeRoleCoordinateur: garantirLeRoleCoordinateurDuDispositif({
+      aLeRoleCoordinateur,
+      coordonneDansLeDispositif,
+      creerLeRoleCoordinateur: creerLeRoleCoordinateur(synchroniserPersonne),
+    }),
     garantirLeMediateur: garantirLeMediateur(synchroniserPersonne),
     lireLeSiretARattacher,
     rattacherDepuisSiret: ({ userId, siret }) =>

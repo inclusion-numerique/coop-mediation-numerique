@@ -6,7 +6,7 @@ import {
   UtilisateurId,
 } from '@/features/inscription/domain'
 import { Siret } from '@/libraries/insee'
-import { success } from '@/libraries/result'
+import { failure, success } from '@/libraries/result'
 import { initialiserInscription } from './initialiser-inscription'
 import type { InscriptionInitialisee } from './inscription-initialisee'
 import type { InitialiserInscriptionPorts } from './ports'
@@ -19,13 +19,14 @@ const inconnu: DispositifPersonne = {
   estCoordinateur: false,
 }
 
-const ports: InitialiserInscriptionPorts = {
+const ports: InitialiserInscriptionPorts<string, string> = {
   lireLeDispositif: async () => inconnu,
   enregistrerLeProfil: async () => undefined,
-  garantirLeRoleCoordinateur: async () => undefined,
+  garantirLeRoleCoordinateur: async () => success({ _tag: 'HorsDuDispositif' }),
   garantirLeMediateur: async () => undefined,
   lireLeSiretARattacher: async () => ({ siret: null, aUneEmployeuse: false }),
-  rattacherDepuisSiret: async () => undefined,
+  rattacherDepuisSiret: async () =>
+    success('Rattachée à l’employeuse du SIRET'),
   lireEtatPourEtapeSuivante: async () => ({
     profil: null,
     hasLieuxActivite: false,
@@ -38,7 +39,7 @@ describe('initialiser l’inscription', () => {
     dispositif: DispositifPersonne
     profil: ProfilInscription | null
     hasLieuxActivite: boolean
-    attendu: InscriptionInitialisee
+    attendu: InscriptionInitialisee<string, string>
   }>([
     {
       cas: 'une personne inconnue du dispositif choisit son rôle, sans profil enregistré',
@@ -47,8 +48,9 @@ describe('initialiser l’inscription', () => {
       hasLieuxActivite: false,
       attendu: {
         profilEnregistre: null,
+        roleCoordinateur: { _tag: 'HorsDuDispositif' },
         mediateurGaranti: false,
-        siretRattache: null,
+        rattachementParSiret: { _tag: 'SansSiret' },
         nextStep: EtapeDInscription('choisir-role'),
       },
     },
@@ -63,8 +65,9 @@ describe('initialiser l’inscription', () => {
       hasLieuxActivite: false,
       attendu: {
         profilEnregistre: ProfilInscription('Mediateur'),
+        roleCoordinateur: { _tag: 'HorsDuDispositif' },
         mediateurGaranti: false,
-        siretRattache: null,
+        rattachementParSiret: { _tag: 'SansSiret' },
         nextStep: EtapeDInscription('choisir-role'),
       },
     },
@@ -79,8 +82,9 @@ describe('initialiser l’inscription', () => {
       hasLieuxActivite: false,
       attendu: {
         profilEnregistre: ProfilInscription('Coordinateur'),
+        roleCoordinateur: { _tag: 'HorsDuDispositif' },
         mediateurGaranti: false,
-        siretRattache: null,
+        rattachementParSiret: { _tag: 'SansSiret' },
         nextStep: EtapeDInscription('choisir-role'),
       },
     },
@@ -95,8 +99,9 @@ describe('initialiser l’inscription', () => {
       hasLieuxActivite: false,
       attendu: {
         profilEnregistre: ProfilInscription('ConseillerNumerique'),
+        roleCoordinateur: { _tag: 'HorsDuDispositif' },
         mediateurGaranti: true,
-        siretRattache: null,
+        rattachementParSiret: { _tag: 'SansSiret' },
         nextStep: EtapeDInscription('verifier-informations'),
       },
     },
@@ -111,8 +116,9 @@ describe('initialiser l’inscription', () => {
       hasLieuxActivite: true,
       attendu: {
         profilEnregistre: ProfilInscription('ConseillerNumerique'),
+        roleCoordinateur: { _tag: 'HorsDuDispositif' },
         mediateurGaranti: true,
-        siretRattache: null,
+        rattachementParSiret: { _tag: 'SansSiret' },
         nextStep: EtapeDInscription('recapitulatif'),
       },
     },
@@ -127,8 +133,9 @@ describe('initialiser l’inscription', () => {
       hasLieuxActivite: false,
       attendu: {
         profilEnregistre: ProfilInscription('CoordinateurConseillerNumerique'),
+        roleCoordinateur: { _tag: 'HorsDuDispositif' },
         mediateurGaranti: false,
-        siretRattache: null,
+        rattachementParSiret: { _tag: 'SansSiret' },
         nextStep: EtapeDInscription('recapitulatif'),
       },
     },
@@ -154,8 +161,9 @@ describe('initialiser l’inscription', () => {
     ).toEqual(
       success({
         profilEnregistre: null,
+        roleCoordinateur: { _tag: 'HorsDuDispositif' },
         mediateurGaranti: false,
-        siretRattache: null,
+        rattachementParSiret: { _tag: 'SansSiret' },
         nextStep: EtapeDInscription('choisir-role'),
       }),
     )
@@ -173,8 +181,38 @@ describe('initialiser l’inscription', () => {
     ).toEqual(
       success({
         profilEnregistre: null,
+        roleCoordinateur: { _tag: 'HorsDuDispositif' },
         mediateurGaranti: false,
-        siretRattache: Siret('13002526500013'),
+        rattachementParSiret: {
+          _tag: 'Rattache',
+          siret: Siret('13002526500013'),
+          rattachement: 'Rattachée à l’employeuse du SIRET',
+        },
+        nextStep: EtapeDInscription('choisir-role'),
+      }),
+    )
+  })
+
+  it('poursuit l’initialisation quand le rattachement par SIRET échoue, et en porte l’échec', async () => {
+    expect(
+      await initialiserInscription({
+        ...ports,
+        lireLeSiretARattacher: async () => ({
+          siret: Siret('13002526500013'),
+          aUneEmployeuse: false,
+        }),
+        rattacherDepuisSiret: async () => failure('SIRENE indisponible'),
+      })({ userId }),
+    ).toEqual(
+      success({
+        profilEnregistre: null,
+        roleCoordinateur: { _tag: 'HorsDuDispositif' },
+        mediateurGaranti: false,
+        rattachementParSiret: {
+          _tag: 'NonRattache',
+          siret: Siret('13002526500013'),
+          echec: 'SIRENE indisponible',
+        },
         nextStep: EtapeDInscription('choisir-role'),
       }),
     )
@@ -192,8 +230,26 @@ describe('initialiser l’inscription', () => {
     ).toEqual(
       success({
         profilEnregistre: null,
+        roleCoordinateur: { _tag: 'HorsDuDispositif' },
         mediateurGaranti: false,
-        siretRattache: null,
+        rattachementParSiret: { _tag: 'EmployeuseDejaConnue' },
+        nextStep: EtapeDInscription('choisir-role'),
+      }),
+    )
+  })
+
+  it('porte la création du rôle de coordinateur du dispositif', async () => {
+    expect(
+      await initialiserInscription({
+        ...ports,
+        garantirLeRoleCoordinateur: async () => success({ _tag: 'RoleCree' }),
+      })({ userId }),
+    ).toEqual(
+      success({
+        profilEnregistre: null,
+        roleCoordinateur: { _tag: 'RoleCree' },
+        mediateurGaranti: false,
+        rattachementParSiret: { _tag: 'SansSiret' },
         nextStep: EtapeDInscription('choisir-role'),
       }),
     )

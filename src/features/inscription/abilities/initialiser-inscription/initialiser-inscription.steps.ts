@@ -13,6 +13,7 @@ import {
   seedLieuActivite,
   utilisateurDeLInscriptionEnCours,
 } from '@/features/inscription/inscription.cucumber'
+import { success } from '@/libraries/result'
 
 // Seuls les ports à effets (dispositif, SIRET) sont fakés ; la lecture d'état
 // passe par l'adapteur Prisma RÉEL sur la base seedée (BDD hybride).
@@ -85,10 +86,11 @@ When('j’initialise l’inscription', async () => {
   const initialisation = await initialiserInscription({
     lireLeDispositif: async () => dispositif,
     enregistrerLeProfil: async () => undefined,
-    garantirLeRoleCoordinateur: async () => undefined,
+    garantirLeRoleCoordinateur: async () =>
+      success({ _tag: 'HorsDuDispositif' }),
     garantirLeMediateur: async () => undefined,
     lireLeSiretARattacher: async () => ({ siret: null, aUneEmployeuse: false }),
-    rattacherDepuisSiret: async () => undefined,
+    rattacherDepuisSiret: async () => success(undefined),
     lireEtatPourEtapeSuivante,
   })({ userId: utilisateurDeLInscriptionEnCours() })
   etapeSuivante = initialisation.data.nextStep
