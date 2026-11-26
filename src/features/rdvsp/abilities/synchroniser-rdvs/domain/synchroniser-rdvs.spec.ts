@@ -254,6 +254,22 @@ describe('échecs techniques', () => {
   })
 })
 
+describe('échec au milieu des lots', () => {
+  it('n’écrit plus rien après le lot en échec', async () => {
+    expect(
+      await synchroniserRdvs({
+        ...dependances,
+        listerRdvs: async () =>
+          success([
+            synchronise(rdvFixture(1, {})),
+            synchronise(rdvFixture(2, {})),
+          ]),
+        etatConnuDuLot: async () => failure(panne),
+      })({ ...passe, tailleLot: 1 }),
+    ).toEqual(failure(panne))
+  })
+})
+
 describe('rapprochement des bénéficiaires', () => {
   it('rapproche les usagers créés ou mis à jour par chaque lot', async () => {
     expect(
