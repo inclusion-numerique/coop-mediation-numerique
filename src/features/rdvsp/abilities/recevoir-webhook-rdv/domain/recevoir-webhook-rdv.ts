@@ -1,5 +1,8 @@
 import type { RdvId } from '@/features/rdvsp/domain/identifiants/rdv-id'
-import type { Rapprochement } from '@/features/rdvsp/domain/rapprochement'
+import {
+  type Rapprochement,
+  rapprocherLesUsagers,
+} from '@/features/rdvsp/domain/rapprochement'
 import type { Rdv } from '@/features/rdvsp/domain/rdv/rdv'
 import type { EvenementWebhook } from '@/features/rdvsp/domain/webhook/evenement-webhook'
 import { type Result, success } from '@/libraries/result'
@@ -79,29 +82,17 @@ export const recevoirWebhookRdv =
 
     await enregistrer({ rdv, brut: payload })
 
-    const usagerIds = rdv.participations.map(
-      (participation) => participation.usagerId,
-    )
-
-    if (compte.mediateurId === null || usagerIds.length === 0) {
-      return success({
-        _tag: 'enregistre',
-        rdv,
-        rapprochement: { _tag: 'sansObjet' },
-      })
-    }
-
-    const demande = {
-      usagers: await lireLesUsagersARapprocher(usagerIds),
-      mediateurId: compte.mediateurId,
-    }
-    const rapprochement = await rapprocherLesBeneficiaires(demande)
-
     return success({
       _tag: 'enregistre',
       rdv,
-      rapprochement: rapprochement.success
-        ? { _tag: 'reussi', ...demande, ecartes: rapprochement.data.ecartes }
-        : { _tag: 'echoue', ...demande, message: rapprochement.error.message },
+      rapprochement: await rapprocherLesUsagers(
+        { lireLesUsagersARapprocher, rapprocherLesBeneficiaires },
+        {
+          usagerIds: rdv.participations.map(
+            (participation) => participation.usagerId,
+          ),
+          mediateurId: compte.mediateurId,
+        },
+      ),
     })
   }

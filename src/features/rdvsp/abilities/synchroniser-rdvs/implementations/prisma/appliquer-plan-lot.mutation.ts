@@ -9,11 +9,12 @@ import {
   participationFromDomain,
   rdvFromDomain,
 } from '../../../../implementations/prisma/rdv.transfer'
+import { tenter } from '../../../../implementations/prisma/tenter.adapter'
 import type {
   AppliquerPlanLot,
   SupprimerMotifsOrphelins,
   SupprimerRdvs,
-} from '../../domain/synchroniser-rdvs'
+} from '../../domain/ports'
 
 /**
  * Un rendez-vous et ses participations forment un tout : les participations sont
@@ -51,64 +52,66 @@ const ecrireRdv = async (rdv: Rdv, brut: unknown) =>
  * L'ordre est imposé par les clés étrangères : usagers, lieux et motifs
  * existent avant les rendez-vous qui les désignent.
  */
-export const appliquerPlanLot: AppliquerPlanLot = async ({ plan, bruts }) => {
-  await prismaClient.rdvUser.createMany({
-    data: plan.usagers.aCreer.map(usagerFromDomain),
-    skipDuplicates: true,
-  })
+export const appliquerPlanLot: AppliquerPlanLot = tenter(
+  async ({ plan, bruts }) => {
+    await prismaClient.rdvUser.createMany({
+      data: plan.usagers.aCreer.map(usagerFromDomain),
+      skipDuplicates: true,
+    })
 
-  await Promise.all(
-    plan.usagers.aMettreAJour.map((usager) =>
-      prismaClient.rdvUser.update({
-        where: { id: usager.id },
-        data: usagerFromDomain(usager),
-      }),
-    ),
-  )
+    await Promise.all(
+      plan.usagers.aMettreAJour.map((usager) =>
+        prismaClient.rdvUser.update({
+          where: { id: usager.id },
+          data: usagerFromDomain(usager),
+        }),
+      ),
+    )
 
-  await prismaClient.rdvLieu.createMany({
-    data: plan.lieux.aCreer.map(lieuFromDomain),
-    skipDuplicates: true,
-  })
+    await prismaClient.rdvLieu.createMany({
+      data: plan.lieux.aCreer.map(lieuFromDomain),
+      skipDuplicates: true,
+    })
 
-  await Promise.all(
-    plan.lieux.aMettreAJour.map((lieu) =>
-      prismaClient.rdvLieu.update({
-        where: { id: lieu.id },
-        data: lieuFromDomain(lieu),
-      }),
-    ),
-  )
+    await Promise.all(
+      plan.lieux.aMettreAJour.map((lieu) =>
+        prismaClient.rdvLieu.update({
+          where: { id: lieu.id },
+          data: lieuFromDomain(lieu),
+        }),
+      ),
+    )
 
-  await prismaClient.rdvMotif.createMany({
-    data: plan.motifs.aCreer.map(motifFromDomain),
-    skipDuplicates: true,
-  })
+    await prismaClient.rdvMotif.createMany({
+      data: plan.motifs.aCreer.map(motifFromDomain),
+      skipDuplicates: true,
+    })
 
-  await Promise.all(
-    plan.motifs.aMettreAJour.map((motif) =>
-      prismaClient.rdvMotif.update({
-        where: { id: motif.id },
-        data: motifFromDomain(motif),
-      }),
-    ),
-  )
+    await Promise.all(
+      plan.motifs.aMettreAJour.map((motif) =>
+        prismaClient.rdvMotif.update({
+          where: { id: motif.id },
+          data: motifFromDomain(motif),
+        }),
+      ),
+    )
 
-  // Séquentiel : deux rendez-vous d'un même lot peuvent partager un lieu ou un
-  // motif tout juste créés, et leurs transactions se disputeraient les lignes.
-  await [...plan.rdvs.aCreer, ...plan.rdvs.aMettreAJour].reduce(
-    async (precedent, rdv) => {
-      await precedent
-      await ecrireRdv(rdv, bruts.get(rdv.id) ?? {})
-    },
-    Promise.resolve(),
-  )
-}
+    // Séquentiel : deux rendez-vous d'un même lot peuvent partager un lieu ou un
+    // motif tout juste créés, et leurs transactions se disputeraient les lignes.
+    await [...plan.rdvs.aCreer, ...plan.rdvs.aMettreAJour].reduce(
+      async (precedent, rdv) => {
+        await precedent
+        await ecrireRdv(rdv, bruts.get(rdv.id) ?? {})
+      },
+      Promise.resolve(),
+    )
+  },
+)
 
 /** La suppression d'un rendez-vous emporte ses participations, en cascade. */
-export const supprimerRdvs: SupprimerRdvs = async (rdvIds) => {
+export const supprimerRdvs: SupprimerRdvs = tenter(async (rdvIds) => {
   await prismaClient.rdv.deleteMany({ where: { id: { in: [...rdvIds] } } })
-}
+})
 
 /**
  * Ramasse les motifs qu'aucun rendez-vous ne référence plus.
@@ -120,15 +123,15 @@ export const supprimerRdvs: SupprimerRdvs = async (rdvIds) => {
  * Une liste vide ne supprime donc rien, ce qui est le comportement voulu — une
  * passe sans organisation n'a rien parcouru et n'a rien à ramasser.
  */
-export const supprimerMotifsOrphelins: SupprimerMotifsOrphelins = async (
-  organisationIds,
-) => {
-  const { count } = await prismaClient.rdvMotif.deleteMany({
-    where: {
-      rdvs: { none: {} },
-      organisationId: { in: [...organisationIds] },
-    },
-  })
+export const supprimerMotifsOrphelins: SupprimerMotifsOrphelins = tenter(
+  async (organisationIds) => {
+    const { count } = await prismaClient.rdvMotif.deleteMany({
+      where: {
+        rdvs: { none: {} },
+        organisationId: { in: [...organisationIds] },
+      },
+    })
 
-  return count
-}
+    return count
+  },
+)

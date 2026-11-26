@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { OrganisationId } from '../identifiants/organisation-id'
 import {
   AbonnementWebhook,
+  abonnementsDeLaCoop,
   estAJour,
   WebhookId,
   type WebhookInstalle,
@@ -38,7 +39,7 @@ describe('estAJour', () => {
       false,
     ],
   ])('juge à jour un webhook portant %s : %s', (_, abonnements, attendu) => {
-    expect(estAJour(webhook(abonnements))).toBe(attendu)
+    expect(estAJour(webhook(abonnements), abonnementsDeLaCoop)).toBe(attendu)
   })
 
   it('compare aux abonnements attendus quand ils sont précisés', () => {

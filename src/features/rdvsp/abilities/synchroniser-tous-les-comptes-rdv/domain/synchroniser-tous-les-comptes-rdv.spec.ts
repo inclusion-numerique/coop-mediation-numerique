@@ -69,55 +69,51 @@ const comptes = async () => [
   deconnecte,
 ]
 
-describe('synchroniserTousLesComptesRdv', () => {
+describe('synchroniser tous les comptes RDV', () => {
   it('ne synchronise que les comptes opérationnels ou au jeton renouvelable', async () => {
     const bilan = await synchroniserTousLesComptesRdv({
       lireLesComptes: comptes,
       declencher: async () => success({ derive: 0 }),
-    })(maintenant)
+    })({ maintenant })
 
-    expect(bilan).toEqual({
-      comptes: 5,
-      eligibles: 2,
-      synchronises: 2,
-      echecs: [],
-    })
+    expect(bilan).toEqual(
+      success({ comptes: 5, eligibles: 2, synchronises: 2, echecs: [] }),
+    )
   })
 
   it('consigne l’échec de chaque compte sans interrompre les suivants', async () => {
     const bilan = await synchroniserTousLesComptesRdv({
       lireLesComptes: comptes,
       declencher: async () => failure({ _tag: 'SynchronisationEchouee' }),
-    })(maintenant)
+    })({ maintenant })
 
-    expect(bilan).toEqual({
-      comptes: 5,
-      eligibles: 2,
-      synchronises: 0,
-      echecs: [
-        {
-          utilisateurId: operationnel.utilisateurId,
-          raison: 'SynchronisationEchouee',
-        },
-        {
-          utilisateurId: jetonExpire.utilisateurId,
-          raison: 'SynchronisationEchouee',
-        },
-      ],
-    })
+    expect(bilan).toEqual(
+      success({
+        comptes: 5,
+        eligibles: 2,
+        synchronises: 0,
+        echecs: [
+          {
+            utilisateurId: operationnel.utilisateurId,
+            raison: 'SynchronisationEchouee',
+          },
+          {
+            utilisateurId: jetonExpire.utilisateurId,
+            raison: 'SynchronisationEchouee',
+          },
+        ],
+      }),
+    )
   })
 
   it('rend un bilan vide quand aucun compte n’existe', async () => {
     const bilan = await synchroniserTousLesComptesRdv({
       lireLesComptes: async () => [],
       declencher: async () => success({ derive: 0 }),
-    })(maintenant)
+    })({ maintenant })
 
-    expect(bilan).toEqual({
-      comptes: 0,
-      eligibles: 0,
-      synchronises: 0,
-      echecs: [],
-    })
+    expect(bilan).toEqual(
+      success({ comptes: 0, eligibles: 0, synchronises: 0, echecs: [] }),
+    )
   })
 })

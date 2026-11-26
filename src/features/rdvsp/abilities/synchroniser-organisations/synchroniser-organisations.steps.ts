@@ -1,6 +1,5 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
-import type { SynchroniserOrganisations } from '@/features/rdvsp/abilities/synchroniser-organisations/domain/synchroniser-organisations'
 import { synchroniserOrganisations } from '@/features/rdvsp/abilities/synchroniser-organisations/domain/synchroniser-organisations'
 import { appliquerPlanOrganisations } from '@/features/rdvsp/abilities/synchroniser-organisations/implementations/prisma/appliquer-plan-organisations.mutation'
 import { etatOrganisations } from '@/features/rdvsp/abilities/synchroniser-organisations/implementations/prisma/etat-organisations.query'
@@ -29,7 +28,7 @@ const AGENT_ID = ID_TEST.compte + 8
 
 let recues: Organisation[] = []
 let apiRefuse = false
-let resultat: Awaited<ReturnType<SynchroniserOrganisations>> | undefined
+let resultat: Awaited<ReturnType<typeof synchroniser>> | undefined
 
 const listerOrganisationsDouble: RdvServicePublicApi['listerOrganisations'] =
   async () =>
@@ -99,7 +98,7 @@ Given('RDV Service Public refusera de lister les organisations', () => {
 })
 
 When('je synchronise les organisations', async () => {
-  resultat = await synchroniser(await compteUtilisable())
+  resultat = await synchroniser({ compte: await compteUtilisable() })
 })
 
 Then(

@@ -64,6 +64,7 @@ export const planifierLot = ({
     connus: connu.rdvs,
     cle: (rdv) => rdv.id,
     modifie: rdvModifie,
+    dejaTraites: new Set(),
   }),
   motifs: planifierModele({
     recus: motifsDe(recus),

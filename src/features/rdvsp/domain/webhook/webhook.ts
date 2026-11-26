@@ -64,7 +64,7 @@ export type WebhookInstalle = {
  */
 export const estAJour = (
   webhook: WebhookInstalle,
-  attendus: readonly AbonnementWebhook[] = abonnementsDeLaCoop,
+  attendus: readonly AbonnementWebhook[],
 ): boolean =>
   webhook.abonnements.length === attendus.length &&
   attendus.every((attendu) => webhook.abonnements.includes(attendu))

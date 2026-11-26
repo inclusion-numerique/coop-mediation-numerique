@@ -12,7 +12,7 @@ import {
 } from '@/features/rdvsp/rdvsp.cucumber'
 import { failure, success } from '@/libraries/result'
 import type { BilanDeSynchronisation } from './domain/bilan'
-import type { DeclencherLaSynchronisation } from './domain/synchroniser-tous-les-comptes-rdv'
+import type { DeclencherLaSynchronisation } from './domain/ports'
 
 const synchroniserTousLesComptesRdvAvec = (
   declencher: DeclencherLaSynchronisation,
@@ -97,7 +97,10 @@ Given('la synchronisation de ce compte échoue', () => {
 })
 
 When('je synchronise tous les comptes RDV', async () => {
-  etat.bilan = await synchroniserTousLesComptesRdvAvec(declencher)(MAINTENANT)
+  const synchronisation = await synchroniserTousLesComptesRdvAvec(declencher)({
+    maintenant: MAINTENANT,
+  })
+  etat.bilan = synchronisation.success ? synchronisation.data : undefined
 })
 
 Then('ce compte a été synchronisé', () => {

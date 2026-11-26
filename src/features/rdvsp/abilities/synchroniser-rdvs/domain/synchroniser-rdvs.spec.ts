@@ -2,11 +2,17 @@ import { describe, expect, it } from 'vitest'
 import { failure, success } from '@/libraries/result'
 import type { CompteRdvLie } from '../../../domain/compte/compte-rdv'
 import { JetonAcces } from '../../../domain/compte/jetons-oauth'
-import { AccesRefuse, ApiIndisponible } from '../../../domain/errors'
+import {
+  AccesRefuse,
+  ApiIndisponible,
+  ErreurTechnique,
+} from '../../../domain/errors'
 import { MotifId } from '../../../domain/identifiants/motif-id'
 import { OrganisationId } from '../../../domain/identifiants/organisation-id'
+import { ParticipationId } from '../../../domain/identifiants/participation-id'
 import { RdvAgentId } from '../../../domain/identifiants/rdv-agent-id'
 import { RdvId } from '../../../domain/identifiants/rdv-id'
+import { RdvUuid } from '../../../domain/identifiants/rdv-uuid'
 import { UsagerId } from '../../../domain/identifiants/usager-id'
 import { UtilisateurCoopId } from '../../../domain/identifiants/utilisateur-coop-id'
 import {
@@ -20,29 +26,99 @@ import { AdresseRdv } from '../../../domain/rdv/adresse-rdv'
 import { DureeEnMinutes } from '../../../domain/rdv/duree-en-minutes'
 import { type Lieu, LieuId, NomLieu } from '../../../domain/rdv/lieu'
 import { CategorieMotifId, type Motif } from '../../../domain/rdv/motif'
+import type { Participation } from '../../../domain/rdv/participation'
 import type { Rdv, RdvSynchronise } from '../../../domain/rdv/rdv'
 import { StatutPresence } from '../../../domain/rdv/statut-presence'
+import { UrlAgent } from '../../../domain/url-agent'
 import type { Usager } from '../../../domain/usager'
-import {
-  lieuFixture,
-  motifFixture,
-  participationFixture,
-  rdvFixture,
-  usagerFixture,
-} from './fixtures'
 import type { EtatConnu } from './plan-rdvs'
+import type { SynchroniserRdvsPorts } from './ports'
 import { synchroniserRdvs } from './synchroniser-rdvs'
 
-/**
- * Portée du ramassage des motifs orphelins.
- *
- * Le port l'exigeait naguère facultative, et l'absence valait « pas de filtre » :
- * la passe d'un compte supprimait alors les motifs de tous les autres, se les
- * imputait au bilan, et pouvait effacer un motif qu'une passe concurrente venait
- * de créer sans avoir encore écrit le rendez-vous qui le porte — la clé étrangère
- * faisait échouer cette passe-là. Une passe complète l'est pour son compte, pas
- * pour la base.
- */
+const usagerFixture = (id: number, surcharge: Partial<Usager>): Usager => ({
+  id: UsagerId(id),
+  prenom: PrenomExterne('Jean'),
+  nom: NomExterne('Dupont'),
+  email: EmailExterne('jean.dupont@example.com'),
+  telephone: null,
+  telephoneFormate: null,
+  creation: null,
+  invitationCreee: null,
+  invitationAcceptee: null,
+  dateNaissance: null,
+  coordonnees: {
+    adresse: null,
+    complementAdresse: null,
+    numeroAllocataire: null,
+    caisseAffiliation: null,
+    nomNaissance: null,
+  },
+  responsableId: null,
+  notifierParEmail: false,
+  notifierParSms: false,
+  ...surcharge,
+})
+
+const motifFixture = (id: number, surcharge: Partial<Motif>): Motif => ({
+  id: MotifId(id),
+  nom: NomMotif('Accompagnement numérique'),
+  collectif: false,
+  organisationId: OrganisationId(7),
+  suivi: false,
+  instruction: null,
+  typeDeLieu: null,
+  categorieId: null,
+  ...surcharge,
+})
+
+const lieuFixture = (id: number, surcharge: Partial<Lieu>): Lieu => ({
+  id: LieuId(id),
+  nom: NomLieu('Médiathèque'),
+  adresse: AdresseRdv('1 place du Marché, 44000 Nantes'),
+  organisationId: OrganisationId(7),
+  telephone: null,
+  usageUnique: false,
+  ...surcharge,
+})
+
+const participationFixture = (
+  id: number,
+  usager: Usager,
+  surcharge: Partial<Participation>,
+): Participation => ({
+  id: ParticipationId(id),
+  usagerId: usager.id,
+  usager,
+  statutPresence: StatutPresence('unknown'),
+  notificationRappel: false,
+  notificationsCycleDeVie: false,
+  ...surcharge,
+})
+
+const rdvFixture = (
+  id: number,
+  surcharge: Partial<Extract<Rdv, { collectif: false }>>,
+): Rdv => ({
+  id: RdvId(id),
+  uuid: RdvUuid(`00000000-0000-4000-8000-${String(id).padStart(12, '0')}`),
+  agentId: RdvAgentId(4242),
+  organisationId: OrganisationId(7),
+  adresse: AdresseRdv('12 rue de la Paix, 75002 Paris'),
+  debut: new Date('2026-08-18T09:00:00.000Z'),
+  fin: new Date('2026-08-18T10:00:00.000Z'),
+  duree: DureeEnMinutes(60),
+  statutPresence: StatutPresence('unknown'),
+  urlAgent: UrlAgent(`https://rdv.anct.gouv.fr/admin/rdvs/${id}`),
+  nombreParticipants: 1,
+  contexte: null,
+  creeParId: null,
+  annulation: null,
+  motif: motifFixture(3, {}),
+  lieu: lieuFixture(11, {}),
+  participations: [participationFixture(100, usagerFixture(200, {}), {})],
+  collectif: false,
+  ...surcharge,
+})
 
 const compte: CompteRdvLie = {
   _tag: 'lie',
@@ -63,111 +139,135 @@ const compte: CompteRdvLie = {
 
 const accessible = OrganisationId(3089)
 const inaccessible = OrganisationId(3090)
+const mediateurId = '11111111-1111-4111-8111-111111111112'
+const panne = ErreurTechnique(new Error('connexion perdue'))
 
-const motifsOrphelinsEnBase = new Map([
-  [accessible, 2],
-  [inaccessible, 5],
-])
-
-const rdvsEnBase = new Map([
-  [accessible, [RdvId(1)]],
-  [inaccessible, [RdvId(2)]],
-])
-
-const dependances = {
-  listerRdvs: async () => success([]),
-  rdvsDejaImportes: async ({
-    organisationIds,
-  }: {
-    readonly organisationIds?: readonly OrganisationId[]
-  }) =>
-    (organisationIds ?? compte.organisationIds).flatMap(
-      (organisationId) => rdvsEnBase.get(organisationId) ?? [],
-    ),
-  etatConnuDuLot: async () => ({
-    rdvs: new Map(),
-    motifs: new Map(),
-    lieux: new Map(),
-    usagers: new Map(),
-  }),
-  appliquerPlan: async () => undefined,
-  supprimerRdvs: async () => undefined,
-  supprimerMotifsOrphelins: async (
-    organisationIds: readonly OrganisationId[],
-  ) =>
-    organisationIds.reduce(
-      (total, organisationId) =>
-        total + (motifsOrphelinsEnBase.get(organisationId) ?? 0),
-      0,
-    ),
-  rapprocherBeneficiaires: async () => undefined,
+const etatInconnu: EtatConnu = {
+  rdvs: new Map(),
+  motifs: new Map(),
+  lieux: new Map(),
+  usagers: new Map(),
 }
+
+const dependances: SynchroniserRdvsPorts = {
+  listerRdvs: async () => success([]),
+  rdvsDejaImportes: async () => success([RdvId(1)]),
+  etatConnuDuLot: async () => success(etatInconnu),
+  appliquerPlan: async () => success(undefined),
+  supprimerRdvs: async () => success(undefined),
+  supprimerMotifsOrphelins: async () => success(2),
+  lireLesUsagersARapprocher: async () => success([]),
+  rapprocherLesBeneficiaires: async () => success({ ecartes: 0 }),
+}
+
+const passe = { compte, mediateurId, tailleLot: 250 }
 
 describe('ramassage des motifs orphelins', () => {
   it('se borne aux organisations du compte quand la passe est complète', async () => {
-    const resultat = await synchroniserRdvs(dependances)({ compte })
-
-    expect(resultat.success ? resultat.data.motifs.deleted : null).toBe(7)
+    expect(await synchroniserRdvs(dependances)(passe)).toMatchObject(
+      success({
+        motifsOrphelinsDans: [accessible, inaccessible],
+        motifs: { deleted: 2 },
+      }),
+    )
   })
 
   it('se borne à la portée demandée quand la passe est restreinte', async () => {
-    const resultat = await synchroniserRdvs(dependances)({
-      compte,
-      organisationIds: [inaccessible],
-    })
-
-    expect(resultat.success ? resultat.data.motifs.deleted : null).toBe(5)
+    expect(
+      await synchroniserRdvs(dependances)({
+        ...passe,
+        organisationIds: [accessible],
+      }),
+    ).toMatchObject(success({ motifsOrphelinsDans: [accessible] }))
   })
 })
 
 describe('organisation devenue inaccessible pendant un rattrapage', () => {
-  const listerRdvsRefusant = async (
-    _compte: unknown,
-    filtres?: { organisationIds?: readonly OrganisationId[] },
-  ) =>
-    filtres?.organisationIds?.includes(inaccessible)
-      ? failure(AccesRefuse('/rdvs', inaccessible))
-      : success([])
-
-  it('écarte l’organisation refusée et poursuit la passe sur les autres', async () => {
-    const resultat = await synchroniserRdvs({
-      ...dependances,
-      listerRdvs: listerRdvsRefusant,
-    })({ compte, organisationIds: [accessible, inaccessible] })
-
+  it('écarte l’organisation refusée et poursuit la passe sans elle', async () => {
     expect(
-      resultat.success
-        ? {
-            inaccessibles: resultat.data.organisationIdsInaccessibles,
-            rdvsSupprimes: resultat.data.rdvs.deleted,
-            motifsSupprimes: resultat.data.motifs.deleted,
-          }
-        : null,
-    ).toEqual({
-      inaccessibles: [inaccessible],
-      rdvsSupprimes: 1,
-      motifsSupprimes: 2,
-    })
+      await synchroniserRdvs({
+        ...dependances,
+        listerRdvs: async () => failure(AccesRefuse('/rdvs', inaccessible)),
+      })({ ...passe, organisationIds: [inaccessible] }),
+    ).toMatchObject(
+      success({
+        organisationIdsInaccessibles: [inaccessible],
+        motifsOrphelinsDans: [],
+        rdvsSupprimes: [RdvId(1)],
+      }),
+    )
   })
 
   it('échoue quand une organisation échoue pour une autre raison qu’un refus d’accès', async () => {
-    const resultat = await synchroniserRdvs({
-      ...dependances,
-      listerRdvs: async () =>
-        failure(ApiIndisponible(503, 'service indisponible')),
-    })({ compte, organisationIds: [accessible, inaccessible] })
-
-    expect(resultat.success ? null : resultat.error._tag).toBe(
-      'ApiIndisponible',
+    expect(
+      await synchroniserRdvs({
+        ...dependances,
+        listerRdvs: async () =>
+          failure(ApiIndisponible(503, 'service indisponible')),
+      })({ ...passe, organisationIds: [accessible, inaccessible] }),
+    ).toEqual(
+      failure({
+        _tag: 'ApiIndisponible',
+        statusCode: 503,
+        message: 'service indisponible',
+      }),
     )
   })
 
   it('ne connaît aucune organisation inaccessible sur une passe complète', async () => {
-    const resultat = await synchroniserRdvs(dependances)({ compte })
+    expect(await synchroniserRdvs(dependances)(passe)).toMatchObject(
+      success({ organisationIdsInaccessibles: [] }),
+    )
+  })
+})
 
+describe('échecs techniques', () => {
+  it.each<{ cas: string; ports: Partial<SynchroniserRdvsPorts> }>([
+    {
+      cas: 'la lecture des rendez-vous détenus',
+      ports: { rdvsDejaImportes: async () => failure(panne) },
+    },
+    {
+      cas: 'la lecture de l’état connu d’un lot',
+      ports: { etatConnuDuLot: async () => failure(panne) },
+    },
+    {
+      cas: 'l’écriture d’un lot',
+      ports: { appliquerPlan: async () => failure(panne) },
+    },
+    {
+      cas: 'la suppression des rendez-vous disparus',
+      ports: { supprimerRdvs: async () => failure(panne) },
+    },
+    {
+      cas: 'le ramassage des motifs orphelins',
+      ports: { supprimerMotifsOrphelins: async () => failure(panne) },
+    },
+  ])('rend l’échec de $cas', async ({ ports }) => {
     expect(
-      resultat.success ? resultat.data.organisationIdsInaccessibles : null,
-    ).toEqual([])
+      await synchroniserRdvs({
+        ...dependances,
+        listerRdvs: async () => success([synchronise(rdvFixture(1, {}))]),
+        ...ports,
+      })(passe),
+    ).toEqual(failure(panne))
+  })
+})
+
+describe('rapprochement des bénéficiaires', () => {
+  it('rapproche les usagers créés ou mis à jour par chaque lot', async () => {
+    expect(
+      await synchroniserRdvs({
+        ...dependances,
+        listerRdvs: async () => success([synchronise(rdvFixture(1, {}))]),
+      })(passe),
+    ).toMatchObject(
+      success({
+        rapprochements: [
+          { _tag: 'reussi', usagers: [], mediateurId, ecartes: 0 },
+        ],
+      }),
+    )
   })
 })
 
@@ -176,39 +276,34 @@ const compteSuivi: CompteRdvLie = {
   synchroniserDepuis: new Date('2026-01-15T00:00:00.000Z'),
 }
 
-const etatVide: EtatConnu = {
-  rdvs: new Map(),
-  motifs: new Map(),
-  lieux: new Map(),
-  usagers: new Map(),
-}
+const etatVide: EtatConnu = etatInconnu
 
 const synchronise = (rdv: Rdv): RdvSynchronise => ({
   rdv,
   brut: { id: rdv.id },
 })
 
-const synchroniserLot = ({
-  recus,
-  connu = etatVide,
-  enBase = [],
-  tailleLot = 250,
-}: {
+const synchroniserLot = (surcharge: {
   readonly recus: readonly RdvSynchronise[]
   readonly connu?: EtatConnu
   readonly enBase?: readonly RdvId[]
   readonly tailleLot?: number
-}) =>
-  synchroniserRdvs({
+}) => {
+  const { recus, connu, enBase, tailleLot } = {
+    connu: etatVide,
+    enBase: [],
+    tailleLot: 250,
+    ...surcharge,
+  }
+
+  return synchroniserRdvs({
+    ...dependances,
     listerRdvs: async () => success(recus),
-    rdvsDejaImportes: async () => enBase,
-    etatConnuDuLot: async () => connu,
-    appliquerPlan: async () => undefined,
-    supprimerRdvs: async () => undefined,
-    supprimerMotifsOrphelins: async () => 0,
-    rapprocherBeneficiaires: async () => undefined,
-    tailleLot,
-  })({ compte: compteSuivi })
+    rdvsDejaImportes: async () => success(enBase),
+    etatConnuDuLot: async () => success(connu),
+    supprimerMotifsOrphelins: async () => success(0),
+  })({ compte: compteSuivi, mediateurId, tailleLot })
+}
 
 const rdvConnu = (rdv: Rdv): EtatConnu => ({
   ...etatVide,
@@ -231,7 +326,7 @@ const usagerConnu = (usager: Usager): EtatConnu => ({
 })
 
 const atelier = (nom: string): Rdv => ({
-  ...rdvFixture(1),
+  ...rdvFixture(1, {}),
   collectif: true,
   nom: NomAtelier(nom),
   participantsMax: null,
@@ -240,10 +335,10 @@ const atelier = (nom: string): Rdv => ({
 describe('plan d’un lot de rendez-vous', () => {
   it('crée tout ce que La Coop ne connaît pas', async () => {
     const resultat = await synchroniserLot({
-      recus: [synchronise(rdvFixture(1))],
+      recus: [synchronise(rdvFixture(1, {}))],
     })
 
-    expect(resultat).toEqual(
+    expect(resultat).toMatchObject(
       success({
         rdvs: { noop: 0, created: 1, updated: 0, deleted: 0, count: 1 },
         usagers: { noop: 0, created: 1, updated: 0, deleted: 0, count: 1 },
@@ -257,7 +352,7 @@ describe('plan d’un lot de rendez-vous', () => {
   it('écarte les rendez-vous qui n’ont pas de motif', async () => {
     const resultat = await synchroniserLot({
       recus: [
-        synchronise(rdvFixture(1)),
+        synchronise(rdvFixture(1, {})),
         synchronise(rdvFixture(2, { motif: null })),
       ],
     })
@@ -270,7 +365,7 @@ describe('plan d’un lot de rendez-vous', () => {
   it('écarte les rendez-vous qui n’ont pas de lieu', async () => {
     const resultat = await synchroniserLot({
       recus: [
-        synchronise(rdvFixture(1)),
+        synchronise(rdvFixture(1, {})),
         synchronise(rdvFixture(2, { lieu: null })),
       ],
     })
@@ -284,8 +379,8 @@ describe('plan d’un lot de rendez-vous', () => {
         synchronise(
           rdvFixture(1, {
             participations: [
-              participationFixture(100, usagerFixture(200)),
-              participationFixture(101, usagerFixture(201)),
+              participationFixture(100, usagerFixture(200, {}), {}),
+              participationFixture(101, usagerFixture(201, {}), {}),
             ],
           }),
         ),
@@ -299,7 +394,7 @@ describe('plan d’un lot de rendez-vous', () => {
 
   it('dédoublonne un motif, un lieu et un usager portés par plusieurs rendez-vous', async () => {
     const resultat = await synchroniserLot({
-      recus: [synchronise(rdvFixture(1)), synchronise(rdvFixture(2))],
+      recus: [synchronise(rdvFixture(1, {})), synchronise(rdvFixture(2, {}))],
     })
 
     expect(resultat).toMatchObject(
@@ -314,7 +409,7 @@ describe('plan d’un lot de rendez-vous', () => {
 
   it('écarte ce qu’un lot précédent a déjà créé', async () => {
     const resultat = await synchroniserLot({
-      recus: [synchronise(rdvFixture(1)), synchronise(rdvFixture(2))],
+      recus: [synchronise(rdvFixture(1, {})), synchronise(rdvFixture(2, {}))],
       tailleLot: 1,
     })
 
@@ -330,12 +425,12 @@ describe('plan d’un lot de rendez-vous', () => {
 
   it('écarte ce qu’un lot précédent a déjà trouvé inchangé', async () => {
     const resultat = await synchroniserLot({
-      recus: [synchronise(rdvFixture(1)), synchronise(rdvFixture(2))],
+      recus: [synchronise(rdvFixture(1, {})), synchronise(rdvFixture(2, {}))],
       connu: {
         rdvs: new Map(),
-        motifs: new Map([[MotifId(3), motifFixture(3)]]),
-        lieux: new Map([[LieuId(11), lieuFixture(11)]]),
-        usagers: new Map([[UsagerId(200), usagerFixture(200)]]),
+        motifs: new Map([[MotifId(3), motifFixture(3, {})]]),
+        lieux: new Map([[LieuId(11), lieuFixture(11, {})]]),
+        usagers: new Map([[UsagerId(200), usagerFixture(200, {})]]),
       },
       tailleLot: 1,
     })
@@ -351,7 +446,7 @@ describe('plan d’un lot de rendez-vous', () => {
 
   it('écarte ce qu’un lot précédent a déjà mis à jour', async () => {
     const resultat = await synchroniserLot({
-      recus: [synchronise(rdvFixture(1)), synchronise(rdvFixture(2))],
+      recus: [synchronise(rdvFixture(1, {})), synchronise(rdvFixture(2, {}))],
       connu: {
         rdvs: new Map(),
         motifs: new Map([
@@ -378,11 +473,11 @@ describe('plan d’un lot de rendez-vous', () => {
 
   it('laisse tranquille un rendez-vous identique à ce qui est connu', async () => {
     const resultat = await synchroniserLot({
-      recus: [synchronise(rdvFixture(1))],
+      recus: [synchronise(rdvFixture(1, {}))],
       connu: {
         ...etatVide,
-        rdvs: new Map([[RdvId(1), rdvFixture(1)]]),
-        motifs: new Map([[MotifId(3), motifFixture(3)]]),
+        rdvs: new Map([[RdvId(1), rdvFixture(1, {})]]),
+        motifs: new Map([[MotifId(3), motifFixture(3, {})]]),
       },
     })
 
@@ -400,7 +495,7 @@ describe('plan d’un lot de rendez-vous', () => {
           }),
         ),
       ],
-      connu: lieuConnu(lieuFixture(11)),
+      connu: lieuConnu(lieuFixture(11, {})),
     })
 
     expect(resultat).toMatchObject(
@@ -412,7 +507,7 @@ describe('plan d’un lot de rendez-vous', () => {
 describe('rendez-vous disparus', () => {
   it('supprime ce que La Coop détient et que l’API ne renvoie plus', async () => {
     const resultat = await synchroniserLot({
-      recus: [synchronise(rdvFixture(1)), synchronise(rdvFixture(3))],
+      recus: [synchronise(rdvFixture(1, {})), synchronise(rdvFixture(3, {}))],
       enBase: [RdvId(1), RdvId(2), RdvId(3)],
     })
 
@@ -421,7 +516,7 @@ describe('rendez-vous disparus', () => {
 
   it('ne supprime rien quand tout est confirmé', async () => {
     const resultat = await synchroniserLot({
-      recus: [synchronise(rdvFixture(1))],
+      recus: [synchronise(rdvFixture(1, {}))],
       enBase: [RdvId(1)],
     })
 
@@ -438,8 +533,8 @@ describe('rendez-vous disparus', () => {
 describe('changement d’un motif', () => {
   it('ne voit rien changer entre deux copies', async () => {
     const resultat = await synchroniserLot({
-      recus: [synchronise(rdvFixture(1))],
-      connu: motifConnu(motifFixture(3)),
+      recus: [synchronise(rdvFixture(1, {}))],
+      connu: motifConnu(motifFixture(3, {})),
     })
 
     expect(resultat).toMatchObject(success({ motifs: { noop: 1 } }))
@@ -458,7 +553,7 @@ describe('changement d’un motif', () => {
       recus: [
         synchronise(rdvFixture(1, { motif: motifFixture(3, changement) })),
       ],
-      connu: motifConnu(motifFixture(3)),
+      connu: motifConnu(motifFixture(3, {})),
     })
 
     expect(resultat).toMatchObject(success({ motifs: { updated: 1 } }))
@@ -468,8 +563,8 @@ describe('changement d’un motif', () => {
 describe('changement d’un lieu', () => {
   it('ne voit rien changer entre deux copies', async () => {
     const resultat = await synchroniserLot({
-      recus: [synchronise(rdvFixture(1))],
-      connu: lieuConnu(lieuFixture(11)),
+      recus: [synchronise(rdvFixture(1, {}))],
+      connu: lieuConnu(lieuFixture(11, {})),
     })
 
     expect(resultat).toMatchObject(success({ lieux: { noop: 1 } }))
@@ -486,7 +581,7 @@ describe('changement d’un lieu', () => {
       recus: [
         synchronise(rdvFixture(1, { lieu: lieuFixture(11, changement) })),
       ],
-      connu: lieuConnu(lieuFixture(11)),
+      connu: lieuConnu(lieuFixture(11, {})),
     })
 
     expect(resultat).toMatchObject(success({ lieux: { updated: 1 } }))
@@ -503,12 +598,13 @@ describe('changement d’un usager', () => {
               participationFixture(
                 100,
                 usagerFixture(200, { notifierParSms: true }),
+                {},
               ),
             ],
           }),
         ),
       ],
-      connu: usagerConnu(usagerFixture(200)),
+      connu: usagerConnu(usagerFixture(200, {})),
     })
 
     expect(resultat).toMatchObject(success({ usagers: { noop: 1 } }))
@@ -524,12 +620,12 @@ describe('changement d’un usager', () => {
         synchronise(
           rdvFixture(1, {
             participations: [
-              participationFixture(100, usagerFixture(200, changement)),
+              participationFixture(100, usagerFixture(200, changement), {}),
             ],
           }),
         ),
       ],
-      connu: usagerConnu(usagerFixture(200)),
+      connu: usagerConnu(usagerFixture(200, {})),
     })
 
     expect(resultat).toMatchObject(success({ usagers: { updated: 1 } }))
@@ -538,7 +634,7 @@ describe('changement d’un usager', () => {
 
 describe('changement d’un rendez-vous', () => {
   it.each<[string, Rdv, Rdv]>([
-    ['deux copies', rdvFixture(1), rdvFixture(1)],
+    ['deux copies', rdvFixture(1, {}), rdvFixture(1, {})],
     [
       'deux copies sans lieu',
       rdvFixture(1, { lieu: null }),
@@ -546,10 +642,10 @@ describe('changement d’un rendez-vous', () => {
     ],
     [
       'des préférences de notification d’une participation',
-      rdvFixture(1),
+      rdvFixture(1, {}),
       rdvFixture(1, {
         participations: [
-          participationFixture(100, usagerFixture(200), {
+          participationFixture(100, usagerFixture(200, {}), {
             notificationRappel: true,
           }),
         ],
@@ -557,12 +653,13 @@ describe('changement d’un rendez-vous', () => {
     ],
     [
       'l’identité d’un usager, réconciliée par ailleurs',
-      rdvFixture(1),
+      rdvFixture(1, {}),
       rdvFixture(1, {
         participations: [
           participationFixture(
             100,
             usagerFixture(200, { nom: NomExterne('Durand') }),
+            {},
           ),
         ],
       }),
@@ -585,9 +682,9 @@ describe('changement d’un rendez-vous', () => {
     ],
     ['la fin', rdvFixture(1, { fin: new Date('2026-08-18T11:00:00.000Z') })],
     ['l’organisation', rdvFixture(1, { organisationId: OrganisationId(9) })],
-    ['le motif', rdvFixture(1, { motif: motifFixture(4) })],
+    ['le motif', rdvFixture(1, { motif: motifFixture(4, {}) })],
     ['la disparition du motif', rdvFixture(1, { motif: null })],
-    ['le lieu', rdvFixture(1, { lieu: lieuFixture(12) })],
+    ['le lieu', rdvFixture(1, { lieu: lieuFixture(12, {}) })],
     ['la disparition du lieu', rdvFixture(1, { lieu: null })],
     [
       'un lieu retouché derrière un rendez-vous par ailleurs identique',
@@ -599,28 +696,28 @@ describe('changement d’un rendez-vous', () => {
       'un participant en plus',
       rdvFixture(1, {
         participations: [
-          participationFixture(100, usagerFixture(200)),
-          participationFixture(101, usagerFixture(201)),
+          participationFixture(100, usagerFixture(200, {}), {}),
+          participationFixture(101, usagerFixture(201, {}), {}),
         ],
       }),
     ],
     [
       'un participant remplacé à identifiant de participation égal',
       rdvFixture(1, {
-        participations: [participationFixture(100, usagerFixture(999))],
+        participations: [participationFixture(100, usagerFixture(999, {}), {})],
       }),
     ],
     [
       'une participation remplacée par une autre',
       rdvFixture(1, {
-        participations: [participationFixture(102, usagerFixture(200))],
+        participations: [participationFixture(102, usagerFixture(200, {}), {})],
       }),
     ],
     [
       'la présence d’un participant',
       rdvFixture(1, {
         participations: [
-          participationFixture(100, usagerFixture(200), {
+          participationFixture(100, usagerFixture(200, {}), {
             statutPresence: StatutPresence('seen'),
           }),
         ],
@@ -630,7 +727,7 @@ describe('changement d’un rendez-vous', () => {
   ])('détecte un changement sur %s', async (_, recu) => {
     const resultat = await synchroniserLot({
       recus: [synchronise(recu)],
-      connu: rdvConnu(rdvFixture(1)),
+      connu: rdvConnu(rdvFixture(1, {})),
     })
 
     expect(resultat).toMatchObject(success({ rdvs: { updated: 1 } }))
@@ -638,7 +735,7 @@ describe('changement d’un rendez-vous', () => {
 
   it('détecte l’apparition d’un motif', async () => {
     const resultat = await synchroniserLot({
-      recus: [synchronise(rdvFixture(1))],
+      recus: [synchronise(rdvFixture(1, {}))],
       connu: rdvConnu(rdvFixture(1, { motif: null })),
     })
 
@@ -660,7 +757,7 @@ describe('lecture des rendez-vous', () => {
     const resultat = await synchroniserRdvs({
       ...dependances,
       listerRdvs: async () => failure(ApiIndisponible(503, 'maintenance')),
-    })({ compte })
+    })(passe)
 
     expect(resultat).toEqual(
       failure({
@@ -674,8 +771,8 @@ describe('lecture des rendez-vous', () => {
   it('planifie les rendez-vous d’une passe restreinte à une organisation', async () => {
     const resultat = await synchroniserRdvs({
       ...dependances,
-      listerRdvs: async () => success([synchronise(rdvFixture(1))]),
-    })({ compte, organisationIds: [accessible] })
+      listerRdvs: async () => success([synchronise(rdvFixture(1, {}))]),
+    })({ ...passe, organisationIds: [accessible] })
 
     expect(resultat).toMatchObject(
       success({

@@ -75,7 +75,7 @@ export const bilanSynchronisationVide: BilanSynchronisation = {
  */
 export const derive = (
   bilan: BilanModele,
-  suppressionEstUnEcart = true,
+  suppressionEstUnEcart: boolean,
 ): number =>
   bilan.created + bilan.updated + (suppressionEstUnEcart ? bilan.deleted : 0)
 

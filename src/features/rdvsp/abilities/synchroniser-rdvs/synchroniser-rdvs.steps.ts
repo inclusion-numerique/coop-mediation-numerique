@@ -1,6 +1,5 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
-import type { SynchroniserRdvs } from '@/features/rdvsp/abilities/synchroniser-rdvs/domain/synchroniser-rdvs'
 import { synchroniserRdvs } from '@/features/rdvsp/abilities/synchroniser-rdvs/domain/synchroniser-rdvs'
 import {
   appliquerPlanLot,
@@ -28,6 +27,7 @@ import { AdresseRdv } from '@/features/rdvsp/domain/rdv/adresse-rdv'
 import { DureeEnMinutes } from '@/features/rdvsp/domain/rdv/duree-en-minutes'
 import type { Rdv, RdvSynchronise } from '@/features/rdvsp/domain/rdv/rdv'
 import { StatutPresence } from '@/features/rdvsp/domain/rdv/statut-presence'
+import { TAILLE_DES_LOTS_DE_RDVS } from '@/features/rdvsp/domain/rdv/taille-des-lots'
 import { UrlAgent } from '@/features/rdvsp/domain/url-agent'
 import type { Usager } from '@/features/rdvsp/domain/usager'
 import { compteRdvToDomain } from '@/features/rdvsp/implementations/prisma/compte-rdv.transfer'
@@ -51,7 +51,7 @@ const PARTICIPATION_ID = ID_TEST.participation + 300
 
 let recus: RdvSynchronise[] = []
 let apiRefuse = false
-let resultat: Awaited<ReturnType<SynchroniserRdvs>> | undefined
+let resultat: Awaited<ReturnType<typeof synchroniser>> | undefined
 
 const usager: Usager = {
   id: UsagerId(USAGER_ID),
@@ -118,11 +118,8 @@ const synchroniser = synchroniserRdvs({
   appliquerPlan: appliquerPlanLot,
   supprimerRdvs,
   supprimerMotifsOrphelins,
-  // Le rapprochement des bénéficiaires a ses propres scénarios : ici on éprouve
-  // la réconciliation des rendez-vous, pas ce qu'elle déclenche ensuite.
-  rapprocherBeneficiaires: async () => {
-    // Volontairement inerte.
-  },
+  lireLesUsagersARapprocher: async () => success([]),
+  rapprocherLesBeneficiaires: async () => success({ ecartes: 0 }),
 })
 
 const compteUtilisable = async (): Promise<CompteRdvUtilisable> => {
@@ -182,7 +179,11 @@ Given('RDV Service Public refusera de lister les rendez-vous', () => {
 })
 
 When('je synchronise les rendez-vous', async () => {
-  resultat = await synchroniser({ compte: await compteUtilisable() })
+  resultat = await synchroniser({
+    compte: await compteUtilisable(),
+    mediateurId: 'b6f1a6a2-3c4d-4e5f-8a9b-0c1d2e3f4a5b',
+    tailleLot: TAILLE_DES_LOTS_DE_RDVS,
+  })
 })
 
 const bilan = () => {

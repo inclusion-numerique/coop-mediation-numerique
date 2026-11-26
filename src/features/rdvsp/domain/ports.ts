@@ -2,13 +2,13 @@ import type { Result } from '@/libraries/result'
 import type { Agent } from './agent'
 import type { CompteRdvUtilisable } from './compte/compte-rdv'
 import type { JetonsOAuth } from './compte/jetons-oauth'
-import type { ErreurRdvApi, RapprochementEchoue } from './errors'
+import type { ErreurRdvApi } from './errors'
 import type { OrganisationId } from './identifiants/organisation-id'
 import type { RdvAgentId } from './identifiants/rdv-agent-id'
 import type { RdvId } from './identifiants/rdv-id'
 import type { UsagerId } from './identifiants/usager-id'
 import type { Organisation } from './organisation'
-import type { DemandeDeRapprochement, UsagerExterne } from './rapprochement'
+import type { UsagerExterne } from './rapprochement'
 import type { DemandeRdv, DemandeRdvCreee } from './rdv/demande-rdv'
 import type { RdvSynchronise } from './rdv/rdv'
 import type {
@@ -134,14 +134,6 @@ export type CreerOuFusionnerDepuisUsagersExternes<Fusionne = unknown> =
     merges: readonly Fusionne[]
     skipped: readonly { readonly rdvUserId: number; readonly reason: unknown }[]
   }>
-
-export type LireLesUsagersARapprocher = (
-  usagerIds: readonly UsagerId[],
-) => Promise<readonly UsagerExterne[]>
-
-export type RapprocherLesBeneficiaires = (
-  demande: DemandeDeRapprochement,
-) => Promise<Result<{ readonly ecartes: number }, RapprochementEchoue>>
 
 export type RevoquerJetons = (
   jetons: JetonsOAuth,

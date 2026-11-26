@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { failure, success } from '@/libraries/result'
 import {
+  ErreurTechnique,
   PayloadInexploitable,
   RapprochementEchoue,
 } from '../../../domain/errors'
@@ -148,7 +149,7 @@ const dependances: RecevoirWebhookRdvPorts = {
   organisationConnue: async () => true,
   enregistrer: async () => undefined,
   supprimer: async () => undefined,
-  lireLesUsagersARapprocher: async () => [usagerExterne],
+  lireLesUsagersARapprocher: async () => success([usagerExterne]),
   rapprocherLesBeneficiaires: async () => success({ ecartes: 0 }),
 }
 
@@ -214,9 +215,31 @@ describe('recevoir une notification portant sur un rendez-vous', () => {
         rdv: avecParticipant,
         rapprochement: {
           _tag: 'echoue',
-          usagers: [usagerExterne],
+          usagerIds: [UsagerId(200)],
           mediateurId,
           message: 'adresse illisible',
+        },
+      }),
+    )
+  })
+
+  it('garde le rendez-vous enregistré quand les usagers à rapprocher ne peuvent être lus', async () => {
+    const resultat = await recevoirWebhookRdv({
+      ...dependances,
+      lireLesUsagersARapprocher: async () =>
+        failure(ErreurTechnique(new Error('connexion perdue'))),
+      lireNotification: recu(avecParticipant),
+    })(misAJour)
+
+    expect(resultat).toEqual(
+      success({
+        _tag: 'enregistre',
+        rdv: avecParticipant,
+        rapprochement: {
+          _tag: 'echoue',
+          usagerIds: [UsagerId(200)],
+          mediateurId,
+          message: 'connexion perdue',
         },
       }),
     )

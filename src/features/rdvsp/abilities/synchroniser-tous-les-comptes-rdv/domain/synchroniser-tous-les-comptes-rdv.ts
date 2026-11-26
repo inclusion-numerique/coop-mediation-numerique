@@ -1,32 +1,23 @@
 import type { CompteRdv } from '@/features/rdvsp/domain/compte/compte-rdv'
-import type { UtilisateurCoopId } from '@/features/rdvsp/domain/identifiants/utilisateur-coop-id'
-import type { Result } from '@/libraries/result'
+import { type Result, success } from '@/libraries/result'
 import {
   type BilanDeSynchronisation,
+  type CompteEnEchec,
   comptesEligibles,
-  type EchecDeSynchronisation,
 } from './bilan'
-
-export type LireLesComptesRdv = () => Promise<readonly CompteRdv[]>
-
-export type DeclencherLaSynchronisation = (input: {
-  readonly demandeur: {
-    readonly id: UtilisateurCoopId
-    readonly role: 'User'
-  }
-  readonly utilisateurId: UtilisateurCoopId
-  readonly seulementSansWebhook: false
-}) => Promise<Result<unknown, { readonly _tag: string }>>
+import type {
+  DeclencherLaSynchronisation,
+  SynchroniserTousLesComptesRdvPorts,
+} from './ports'
 
 const synchroniser =
-  (declencher: DeclencherLaSynchronisation) =>
-  async ({
-    utilisateurId,
-  }: CompteRdv): Promise<EchecDeSynchronisation | null> => {
+  (declencher: DeclencherLaSynchronisation, maintenant: Date) =>
+  async ({ utilisateurId }: CompteRdv): Promise<CompteEnEchec | null> => {
     const resultat = await declencher({
       demandeur: { id: utilisateurId, role: 'User' },
       utilisateurId,
       seulementSansWebhook: false,
+      maintenant,
     })
 
     return resultat.success
@@ -35,29 +26,28 @@ const synchroniser =
   }
 
 export const synchroniserTousLesComptesRdv =
-  ({
-    lireLesComptes,
-    declencher,
+  ({ lireLesComptes, declencher }: SynchroniserTousLesComptesRdvPorts) =>
+  async ({
+    maintenant,
   }: {
-    readonly lireLesComptes: LireLesComptesRdv
-    readonly declencher: DeclencherLaSynchronisation
-  }) =>
-  async (maintenant: Date): Promise<BilanDeSynchronisation> => {
+    readonly maintenant: Date
+  }): Promise<Result<BilanDeSynchronisation, never>> => {
     const comptes = await lireLesComptes()
     const eligibles = comptesEligibles(comptes, maintenant)
 
-    const echecs = await eligibles.reduce<
-      Promise<readonly EchecDeSynchronisation[]>
-    >(async (precedents, compte) => {
-      const acquis = await precedents
-      const echec = await synchroniser(declencher)(compte)
-      return echec === null ? acquis : [...acquis, echec]
-    }, Promise.resolve([]))
+    const echecs = await eligibles.reduce<Promise<readonly CompteEnEchec[]>>(
+      async (precedents, compte) => {
+        const acquis = await precedents
+        const echec = await synchroniser(declencher, maintenant)(compte)
+        return echec === null ? acquis : [...acquis, echec]
+      },
+      Promise.resolve([]),
+    )
 
-    return {
+    return success({
       comptes: comptes.length,
       eligibles: eligibles.length,
       synchronises: eligibles.length - echecs.length,
       echecs,
-    }
+    })
   }

@@ -130,6 +130,18 @@ export type ErreurRdvApi =
   | CompteNonLie
   | RdvIntrouvable
 
+export type ErreurTechnique = {
+  readonly _tag: 'ErreurTechnique'
+  readonly erreur: unknown
+}
+
+export const ErreurTechnique = (erreur: unknown): ErreurTechnique => ({
+  _tag: 'ErreurTechnique',
+  erreur,
+})
+
+export type EchecDeSynchronisation = ErreurRdvApi | ErreurTechnique
+
 const detailErreur = (erreur: ErreurRdvApi): string | null => {
   if (erreur._tag === 'AccesRefuse' || erreur._tag === 'AgentSupprime') {
     return erreur.chemin
@@ -148,4 +160,12 @@ export const diagnosticErreur = (erreur: ErreurRdvApi): string => {
   const detail = detailErreur(erreur)
 
   return detail === null ? erreur._tag : `${erreur._tag} : ${detail}`
+}
+
+export const messageDeLEchec = (echec: EchecDeSynchronisation): string => {
+  if (echec._tag !== 'ErreurTechnique') return diagnosticErreur(echec)
+
+  return echec.erreur instanceof Error
+    ? echec.erreur.message
+    : String(echec.erreur)
 }

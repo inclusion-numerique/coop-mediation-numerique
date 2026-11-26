@@ -5,7 +5,7 @@ import type { RdvId } from '../../../domain/identifiants/rdv-id'
 import type {
   LireLesUsagersARapprocher,
   RapprocherLesBeneficiaires,
-} from '../../../domain/ports'
+} from '../../../domain/rapprochement'
 import type { Rdv } from '../../../domain/rdv/rdv'
 import type { RdvConnu } from './decision-webhook'
 import type { EchecDeRecevoirWebhookRdv } from './errors'

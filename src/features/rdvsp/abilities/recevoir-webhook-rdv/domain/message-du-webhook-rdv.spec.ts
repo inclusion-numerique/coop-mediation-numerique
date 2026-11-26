@@ -66,7 +66,8 @@ describe('message du webhook rendez-vous', () => {
         rdv,
         rapprochement: {
           _tag: 'echoue',
-          ...demande,
+          usagerIds: [],
+          mediateurId: demande.mediateurId,
           message: 'adresse illisible',
         },
       }),

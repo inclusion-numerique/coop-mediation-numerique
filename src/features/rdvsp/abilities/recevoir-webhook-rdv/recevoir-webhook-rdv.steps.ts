@@ -38,7 +38,7 @@ const recevoir = recevoirWebhookRdv({
   organisationConnue,
   enregistrer: enregistrerRdvDeLaNotification,
   supprimer: supprimerRdvDeLaNotification,
-  lireLesUsagersARapprocher: async () => [],
+  lireLesUsagersARapprocher: async () => success([]),
   rapprocherLesBeneficiaires: async () => success({ ecartes: 0 }),
 })
 

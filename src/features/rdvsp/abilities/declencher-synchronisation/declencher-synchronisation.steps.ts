@@ -1,13 +1,10 @@
 import assert from 'node:assert'
 import { Before, Given, Then, When } from '@cucumber/cucumber'
-import { consignerLEchec } from '@/features/rdvsp/abilities/declencher-synchronisation/domain/consigner-l-echec'
-import type {
-  DeclencherSynchronisation,
-  LancerSynchronisation,
-} from '@/features/rdvsp/abilities/declencher-synchronisation/domain/declencher-synchronisation'
 import { declencherSynchronisation } from '@/features/rdvsp/abilities/declencher-synchronisation/domain/declencher-synchronisation'
+import type { SynchroniserLeCompte } from '@/features/rdvsp/abilities/declencher-synchronisation/domain/ports'
 import { compteACible } from '@/features/rdvsp/abilities/declencher-synchronisation/implementations/prisma/compte-a-cible.query'
 import { marquerEchecDeSynchronisation } from '@/features/rdvsp/abilities/declencher-synchronisation/implementations/prisma/marquer-echec.mutation'
+import { JetonRevoque } from '@/features/rdvsp/domain/errors'
 import type { OrganisationId } from '@/features/rdvsp/domain/identifiants/organisation-id'
 import { UtilisateurCoopId } from '@/features/rdvsp/domain/identifiants/utilisateur-coop-id'
 import {
@@ -16,6 +13,7 @@ import {
   seedCompteRdv,
   testUtilisateurId,
 } from '@/features/rdvsp/rdvsp.cucumber'
+import { failure, success } from '@/libraries/result'
 
 const AGENT_ID = ID_TEST.compte + 8
 const MAINTENANT = new Date('2026-08-17T16:00:00.000Z')
@@ -26,26 +24,23 @@ const ADMINISTRATEUR = UtilisateurCoopId('d0f9a5b2-1d2f-4d0f-9a7c-6b0f2a1c4e88')
 /** Ce que la passe doublée a reçu — `undefined` tant qu'elle n'a pas été lancée. */
 let portee: { organisationIds?: readonly OrganisationId[] } | undefined
 let echoue = false
-let resultat: Awaited<ReturnType<DeclencherSynchronisation>> | undefined
+let resultat: Awaited<ReturnType<typeof declencher>> | undefined
 
-const lancer: LancerSynchronisation = async ({ organisationIds }) => {
+const synchroniser: SynchroniserLeCompte = async ({
+  compte,
+  organisationIds,
+}) => {
   portee = organisationIds === undefined ? {} : { organisationIds }
 
-  if (echoue) {
-    throw new Error('RDV Service Public a renvoyé une 500')
-  }
-
-  return { derive: 3 }
+  return echoue ? failure(JetonRevoque(compte.agentId)) : success({ derive: 3 })
 }
 
-const declencher = consignerLEchec(
-  declencherSynchronisation({
-    compteACible,
-    lancer,
-    maintenant: () => MAINTENANT,
-  }),
-  marquerEchecDeSynchronisation(() => MAINTENANT),
-)
+const declencher = declencherSynchronisation({
+  compteACible,
+  synchroniser,
+  marquerEchec: marquerEchecDeSynchronisation,
+  signaler: () => undefined,
+})
 
 Before(() => {
   portee = undefined
@@ -97,6 +92,7 @@ When('je déclenche une synchronisation complète pour moi-même', async () => {
     demandeur: { id: testUtilisateurId, role: 'User' },
     utilisateurId: testUtilisateurId,
     seulementSansWebhook: false,
+    maintenant: MAINTENANT,
   })
 })
 
@@ -107,6 +103,7 @@ When(
       demandeur: { id: testUtilisateurId, role: 'User' },
       utilisateurId: AUTRUI,
       seulementSansWebhook: false,
+      maintenant: MAINTENANT,
     })
   },
 )
@@ -118,6 +115,7 @@ When(
       demandeur: { id: ADMINISTRATEUR, role: 'Admin' },
       utilisateurId: testUtilisateurId,
       seulementSansWebhook: false,
+      maintenant: MAINTENANT,
     })
   },
 )
@@ -127,6 +125,7 @@ When('je déclenche un rattrapage pour moi-même', async () => {
     demandeur: { id: testUtilisateurId, role: 'User' },
     utilisateurId: testUtilisateurId,
     seulementSansWebhook: true,
+    maintenant: MAINTENANT,
   })
 })
 

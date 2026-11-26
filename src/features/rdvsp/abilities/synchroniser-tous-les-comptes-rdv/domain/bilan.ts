@@ -5,7 +5,7 @@ import {
 } from '@/features/rdvsp/domain/compte/sante-compte'
 import type { UtilisateurCoopId } from '@/features/rdvsp/domain/identifiants/utilisateur-coop-id'
 
-export type EchecDeSynchronisation = {
+export type CompteEnEchec = {
   readonly utilisateurId: UtilisateurCoopId
   readonly raison: string
 }
@@ -14,7 +14,7 @@ export type BilanDeSynchronisation = {
   readonly comptes: number
   readonly eligibles: number
   readonly synchronises: number
-  readonly echecs: readonly EchecDeSynchronisation[]
+  readonly echecs: readonly CompteEnEchec[]
 }
 
 export const comptesEligibles = (

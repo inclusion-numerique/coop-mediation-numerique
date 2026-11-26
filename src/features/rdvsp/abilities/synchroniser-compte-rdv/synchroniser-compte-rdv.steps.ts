@@ -4,14 +4,12 @@ import { prismaClient } from '@/configuration/prisma'
 import { failure, success } from '@/libraries/result'
 import { bilanVide } from '../../domain/compte/bilan-synchronisation'
 import { estUtilisable } from '../../domain/compte/compte-rdv'
-import { ApiIndisponible } from '../../domain/errors'
+import { ApiIndisponible, ErreurTechnique } from '../../domain/errors'
 import { OrganisationId } from '../../domain/identifiants/organisation-id'
+import { abonnementsDeLaCoop, WebhookId } from '../../domain/webhook/webhook'
 import { compteRdvToDomain } from '../../implementations/prisma/compte-rdv.transfer'
 import { compteRdvEnBase, ID_TEST, seedCompteRdv } from '../../rdvsp.cucumber'
-import type {
-  ResultatSynchronisation,
-  SynchroniserCompteRdv,
-} from './domain/synchroniser-compte-rdv'
+import type { ResultatSynchronisation } from './domain/resultat-synchronisation'
 import { synchroniserCompteRdv } from './domain/synchroniser-compte-rdv'
 import {
   cloturerJournal,
@@ -31,7 +29,7 @@ const organisationsRefusees: number[] = []
 const organisationsDetachees: number[] = []
 const webhooksVises: {
   organisationsDuCompte: readonly number[]
-  portee: readonly number[] | undefined
+  organisation: number
 }[] = []
 let organisationIdsRecusParLesRdvs: readonly number[] | undefined
 let organisationsSansWebhook: readonly number[] | undefined
@@ -58,7 +56,9 @@ const reinitialiser = () => {
  */
 const unChangement = { ...bilanVide, updated: 1 }
 
-const synchroniser: SynchroniserCompteRdv = synchroniserCompteRdv({
+const MEDIATEUR_ID = 'b6f1a6a2-3c4d-4e5f-8a9b-0c1d2e3f4a5b'
+
+const synchroniser = synchroniserCompteRdv({
   reconcilierOrganisations: async () => {
     appels.push('organisations')
 
@@ -76,7 +76,7 @@ const synchroniser: SynchroniserCompteRdv = synchroniserCompteRdv({
     organisationIdsRecusParLesRdvs = organisationIds
 
     if (exceptions.has('rendez-vous')) {
-      throw new Error('la réconciliation a levé')
+      return failure(ErreurTechnique(new Error('la réconciliation a levé')))
     }
 
     return echecs.has('rendez-vous')
@@ -91,26 +91,36 @@ const synchroniser: SynchroniserCompteRdv = synchroniserCompteRdv({
             .map((id) => OrganisationId(id)),
         })
   },
-  reconcilierWebhooks: async ({ compte, organisationIds }) => {
-    appels.push('webhooks')
+  listerWebhooksDeLaCoop: async (compte, organisationId) => {
+    if (appels.at(-1) !== 'webhooks') appels.push('webhooks')
     webhooksVises.push({
       organisationsDuCompte: compte.organisationIds,
-      portee: organisationIds,
+      organisation: organisationId,
     })
 
-    return {
-      bilan: bilanVide,
-      organisationIdsSansWebhook: organisationsSansWebhook?.map((id) =>
-        OrganisationId(id),
-      ),
-    }
+    return organisationsSansWebhook?.includes(organisationId)
+      ? failure(ApiIndisponible(503, 'service indisponible'))
+      : success([
+          {
+            id: WebhookId(1),
+            organisationId,
+            abonnements: abonnementsDeLaCoop,
+          },
+        ])
   },
+  poserWebhook: async () => failure(ApiIndisponible(503, 'inattendu')),
+  relireWebhooksDeLaCoop: async () => success([]),
+  reconfigurerWebhook: async () => failure(ApiIndisponible(503, 'inattendu')),
+  destinationDesWebhooksJoignable: () => false,
+  noterLesWebhooksInvalides: async () => success(undefined),
   detacherOrganisations: async ({ organisationIds }) => {
     organisationsDetachees.push(...organisationIds)
+    return success(undefined)
   },
   ouvrirJournal,
   cloturerJournal,
   echouerJournal,
+  noterLaSynchronisationReussie: async () => success(undefined),
 })
 
 const compteUtilisable = async () => {
@@ -173,21 +183,28 @@ Given(
 )
 
 When('je synchronise tout le compte', async () => {
-  const reponse = await synchroniser({ compte: await compteUtilisable() })
+  const reponse = await synchroniser({
+    compte: await compteUtilisable(),
+    mediateurId: MEDIATEUR_ID,
+  })
 
   echoue = !reponse.success
   resultat = reponse.success ? reponse.data : undefined
 })
 
 When('je synchronise tout le compte en rattrapant l’exception', async () => {
-  await synchroniser({ compte: await compteUtilisable() }).catch(() => {
-    echoue = true
+  const reponse = await synchroniser({
+    compte: await compteUtilisable(),
+    mediateurId: MEDIATEUR_ID,
   })
+
+  echoue = !reponse.success
 })
 
 When('je synchronise une portée vide', async () => {
   const reponse = await synchroniser({
     compte: await compteUtilisable(),
+    mediateurId: MEDIATEUR_ID,
     organisationIds: [],
   })
 
@@ -198,6 +215,7 @@ When('je synchronise une portée vide', async () => {
 When('je synchronise les organisations {string}', async (ids: string) => {
   const reponse = await synchroniser({
     compte: await compteUtilisable(),
+    mediateurId: MEDIATEUR_ID,
     organisationIds: ids.split(',').map((id) => OrganisationId(Number(id))),
   })
 
@@ -259,7 +277,7 @@ Then(
   'les webhooks ont été réconciliés sur les organisations {string}',
   (ids: string) => {
     assert.deepEqual(
-      webhooksVises[0]?.portee?.map(Number),
+      webhooksVises.map(({ organisation }) => organisation),
       ids.split(',').map(Number),
     )
   },

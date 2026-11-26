@@ -23,13 +23,13 @@ export const planifierModele = <T, Id>({
   connus,
   cle,
   modifie,
-  dejaTraites = new Set<Id>(),
+  dejaTraites,
 }: {
   recus: readonly T[]
   connus: ReadonlyMap<Id, T>
   cle: (element: T) => Id
   modifie: (connu: T, recu: T) => boolean
-  dejaTraites?: ReadonlySet<Id>
+  dejaTraites: ReadonlySet<Id>
 }): PlanModele<T> => {
   const uniques = [
     ...recus
@@ -61,12 +61,9 @@ export {
   cumulerBilans,
 } from '../../../domain/compte/bilan-synchronisation'
 
-export const bilanDuPlan = <T>(
-  plan: PlanModele<T>,
-  supprimes = 0,
-): BilanModele => ({
+export const bilanDuPlan = <T>(plan: PlanModele<T>): BilanModele => ({
   noop: plan.inchanges.length,
   created: plan.aCreer.length,
   updated: plan.aMettreAJour.length,
-  deleted: supprimes,
+  deleted: 0,
 })

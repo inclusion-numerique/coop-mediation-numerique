@@ -1,9 +1,7 @@
 import { failure, success } from '@/libraries/result'
 import { RapprochementEchoue } from '../../domain/errors'
-import type {
-  CreerOuFusionnerDepuisUsagersExternes,
-  RapprocherLesBeneficiaires,
-} from '../../domain/ports'
+import type { CreerOuFusionnerDepuisUsagersExternes } from '../../domain/ports'
+import type { RapprocherLesBeneficiaires } from '../../domain/rapprochement'
 
 export const rapprocherLesBeneficiaires =
   (

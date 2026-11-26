@@ -3,7 +3,8 @@ import { OrganisationId } from '../../../../domain/identifiants/organisation-id'
 import { EmailExterne, TelephoneExterne } from '../../../../domain/identite'
 import { NomOrganisation } from '../../../../domain/libelle'
 import type { Organisation } from '../../../../domain/organisation'
-import type { EtatOrganisations } from '../../domain/synchroniser-organisations'
+import { tenter } from '../../../../implementations/prisma/tenter.adapter'
+import type { EtatOrganisations } from '../../domain/ports'
 
 /**
  * Les organisations connues sont lues sur les seuls identifiants reçus — c'est
@@ -12,42 +13,41 @@ import type { EtatOrganisations } from '../../domain/synchroniser-organisations'
  * des liens du compte à la réponse de l'API qu'on peut voir qu'il en reste un de
  * trop.
  */
-export const etatOrganisations: EtatOrganisations = async ({
-  compte,
-  idsRecus,
-}) => {
-  const [connues, rattachements] = await Promise.all([
-    prismaClient.rdvOrganisation.findMany({
-      where: { id: { in: [...idsRecus] } },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        phoneNumber: true,
-        verticale: true,
-      },
-    }),
-    prismaClient.rdvAccountOrganisation.findMany({
-      where: { accountId: compte.agentId },
-      select: { organisationId: true },
-    }),
-  ])
-
-  return {
-    connues: connues.map(
-      (row): Organisation => ({
-        id: OrganisationId(row.id),
-        nom: NomOrganisation(row.name),
-        email: row.email === null ? null : EmailExterne.safe(row.email),
-        telephone:
-          row.phoneNumber === null
-            ? null
-            : TelephoneExterne.safe(row.phoneNumber),
-        verticale: row.verticale,
+export const etatOrganisations: EtatOrganisations = tenter(
+  async ({ compte, idsRecus }) => {
+    const [connues, rattachements] = await Promise.all([
+      prismaClient.rdvOrganisation.findMany({
+        where: { id: { in: [...idsRecus] } },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          phoneNumber: true,
+          verticale: true,
+        },
       }),
-    ),
-    rattachements: rattachements.map(({ organisationId }) =>
-      OrganisationId(organisationId),
-    ),
-  }
-}
+      prismaClient.rdvAccountOrganisation.findMany({
+        where: { accountId: compte.agentId },
+        select: { organisationId: true },
+      }),
+    ])
+
+    return {
+      connues: connues.map(
+        (row): Organisation => ({
+          id: OrganisationId(row.id),
+          nom: NomOrganisation(row.name),
+          email: row.email === null ? null : EmailExterne.safe(row.email),
+          telephone:
+            row.phoneNumber === null
+              ? null
+              : TelephoneExterne.safe(row.phoneNumber),
+          verticale: row.verticale,
+        }),
+      ),
+      rattachements: rattachements.map(({ organisationId }) =>
+        OrganisationId(organisationId),
+      ),
+    }
+  },
+)
