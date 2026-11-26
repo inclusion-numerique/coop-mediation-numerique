@@ -2,7 +2,9 @@ import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
-import { supprimerUneActiviteDeMediation } from '@/features/activites/abilities/supprimer-une-activite-de-mediation/implementations/prisma/supprimer-une-activite-de-mediation.mutation'
+import { supprimerUneActiviteDeMediation } from '@/features/activites/abilities/supprimer-une-activite-de-mediation/domain/index'
+import { activiteDeMediationDuMediateur } from '@/features/activites/abilities/supprimer-une-activite-de-mediation/implementations/prisma/activite-de-mediation-du-mediateur.query'
+import { supprimerLActiviteDeMediation } from '@/features/activites/abilities/supprimer-une-activite-de-mediation/implementations/prisma/supprimer-une-activite-de-mediation.mutation'
 import {
   ActiviteId,
   type ActiviteIntrouvable,
@@ -98,9 +100,11 @@ const activiteSemee = (libelle: string): string => {
 
 const supprimerPar = async (mediateur: Mediateur, activiteId: string) => {
   resultat = await supprimerUneActiviteDeMediation({
+    activiteDuMediateur: activiteDeMediationDuMediateur,
+    supprimer: supprimerLActiviteDeMediation(UtilisateurId(mediateur.userId)),
+  })({
     activiteId: ActiviteId(activiteId),
     mediateurId: MediateurId(mediateur.mediateurId),
-    auteurId: UtilisateurId(mediateur.userId),
   })
 }
 
