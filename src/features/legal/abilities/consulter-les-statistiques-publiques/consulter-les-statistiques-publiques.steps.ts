@@ -3,6 +3,7 @@ import { Given, Then, When } from '@cucumber/cucumber'
 import {
   type BeneficiaireAccompagne,
   type EtatDeLActivite,
+  semerUnBeneficiaireSansAccompagnement,
   semerUneActivite,
 } from '@/features/legal/legal.cucumber'
 import { lireLesAccompagnements } from './implementations/prisma/accompagnements.query'
@@ -91,6 +92,10 @@ Given(
   },
 )
 
+Given("un bénéficiaire suivi qui n'a jamais été accompagné", async () => {
+  await semerUnBeneficiaireSansAccompagnement({ accompagne: 'suivi' })
+})
+
 When('les statistiques publiques sont relevées à nouveau', async () => {
   releves.apres = await relever()
 })
@@ -160,6 +165,24 @@ Then(
     )
   },
 )
+
+Then('le dernier mois du cumul des bénéficiaires égale leur total', () => {
+  const { series, runningTotalPerMonth } = releve('apres').beneficiaires
+  const dernierMois = runningTotalPerMonth.at(-1)
+  assert.deepStrictEqual(
+    {
+      byBeneficiairesSuivis: dernierMois?.byBeneficiairesSuivis,
+      byBeneficiairesAnonymes: dernierMois?.byBeneficiairesAnonymes,
+    },
+    {
+      byBeneficiairesSuivis: valeurDeLaSerie(series, 'byBeneficiairesSuivis'),
+      byBeneficiairesAnonymes: valeurDeLaSerie(
+        series,
+        'byBeneficiairesAnonymes',
+      ),
+    },
+  )
+})
 
 Then(
   'les médiateurs suivant des bénéficiaires ont augmenté de {int}',

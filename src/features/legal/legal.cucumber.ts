@@ -65,6 +65,22 @@ export const semerUneActivite = async ({
   })
 }
 
+export const semerUnBeneficiaireSansAccompagnement = async ({
+  accompagne,
+}: {
+  readonly accompagne: BeneficiaireAccompagne
+}): Promise<void> => {
+  const { id: mediateurId } = await prismaClient.mediateur.create({
+    data: {
+      user: { create: { email: `${v4()}${domaineDesComptesSemes}` } },
+    },
+    select: { id: true },
+  })
+  await prismaClient.beneficiaire.create({
+    data: { mediateurId, ...beneficiaires[accompagne] },
+  })
+}
+
 const semes = {
   mediateur: { user: { email: { endsWith: domaineDesComptesSemes } } },
 }

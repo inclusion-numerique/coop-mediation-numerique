@@ -29,7 +29,6 @@ export type ChartCardDataProps = {
   perMonth: DonneesDuGraphique[]
   runningTotalPerMonth?: DonneesDuGraphique[]
   total: number
-  showCumulativeToggle?: boolean
 }
 
 export type ChartCardProps = ChartCardUIProps & ChartCardDataProps
@@ -45,7 +44,6 @@ export const ChartCard = ({
   series,
   perMonth,
   runningTotalPerMonth,
-  showCumulativeToggle = true,
 }: ChartCardProps) => (
   <div
     className={classNames(
@@ -83,7 +81,6 @@ export const ChartCard = ({
         counts={perMonth}
         runningTotal={runningTotalPerMonth}
         series={series}
-        showCumulativeToggle={showCumulativeToggle}
       />
     </div>
     <div className="fr-flex fr-flex-gap-6v fr-mt-6v fr-direction-column fr-direction-lg-row">

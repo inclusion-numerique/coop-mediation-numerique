@@ -67,6 +67,13 @@
 * Quand les statistiques publiques sont relevées
 * Alors chaque mois du cumul des bénéficiaires ajoute ceux du mois au cumul précédent
 
+### Scénario: Le cumul des bénéficiaires finit sur leur total
+
+* Étant donné un bénéficiaire suivi qui n'a jamais été accompagné
+* Et une activité supprimée qui accompagne un bénéficiaire suivi
+* Quand les statistiques publiques sont relevées
+* Alors le dernier mois du cumul des bénéficiaires égale leur total
+
 ## Règle: Un médiateur suit des bénéficiaires dès qu'un de ses bénéficiaires suivis a été accompagné lors d'une activité non supprimée
 
 ### Scénario: Le médiateur qui accompagne un bénéficiaire suivi le suit
