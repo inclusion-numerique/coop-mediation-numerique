@@ -1,8 +1,10 @@
 import assert from 'node:assert'
 import { assertMatchesDataTable } from '@arckit/cucumber'
 import { type DataTable, Then, When } from '@cucumber/cucumber'
+import { v4 } from 'uuid'
 import { CreerBeneficiaireValidation } from '@/features/beneficiaire/abilities/creer-beneficiaire/action/creer-beneficiaire.validation'
-import { creerBeneficiaire } from '@/features/beneficiaire/abilities/creer-beneficiaire/implementations/prisma/creer-beneficiaire.mutation'
+import { creerBeneficiaire } from '@/features/beneficiaire/abilities/creer-beneficiaire/domain/creer-beneficiaire'
+import { enregistrerLeBeneficiaire } from '@/features/beneficiaire/abilities/creer-beneficiaire/implementations/prisma/creer-beneficiaire.mutation'
 import {
   nombreDeBeneficiairesAuDebutDuScenario,
   nombreDeBeneficiairesDuMediateur,
@@ -10,15 +12,20 @@ import {
   testMediateurId,
 } from '@/features/beneficiaire/beneficiaire.cucumber'
 import type { BeneficiaireIdentifie } from '@/features/beneficiaire/domain/beneficiaire'
+import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
 
 let lastCreated: BeneficiaireIdentifie | undefined
 
 const creer = async (form: Record<string, unknown>): Promise<void> => {
   const beneficiaire = CreerBeneficiaireValidation.parse(form)
-  lastCreated = await creerBeneficiaire({
+  const creation = await creerBeneficiaire({ enregistrerLeBeneficiaire })({
     beneficiaire,
+    beneficiaireId: BeneficiaireId(v4()),
     mediateurId: testMediateurId,
+    maintenant: new Date(),
   })
+  assert.ok(creation.success, 'La création a échoué')
+  lastCreated = creation.data
   suivreLeBeneficiaire(lastCreated.id)
 }
 

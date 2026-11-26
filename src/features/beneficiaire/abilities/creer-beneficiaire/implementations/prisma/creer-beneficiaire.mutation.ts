@@ -1,31 +1,17 @@
-import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
-import { toBeneficiaireIdentifie } from '@/features/beneficiaire/domain/beneficiaire'
-import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
 import { beneficiaireFromDomain } from '@/features/beneficiaire/implementations/prisma/beneficiaire.transfer'
-import type { CreerBeneficiaire } from '../../domain/creer-beneficiaire'
+import type { EnregistrerLeBeneficiaire } from '../../domain/ports'
 
-export const creerBeneficiaire: CreerBeneficiaire = async ({
+export const enregistrerLeBeneficiaire: EnregistrerLeBeneficiaire = async (
   beneficiaire,
-  mediateurId,
-}) => {
-  const now = new Date()
-  const entity = toBeneficiaireIdentifie(beneficiaire, {
-    id: BeneficiaireId(v4()),
-    mediateurId,
-    creation: now,
-    modification: now,
-  })
-
+) => {
   await prismaClient.$transaction(async (tx) => {
-    await tx.beneficiaire.create({ data: beneficiaireFromDomain(entity) })
+    await tx.beneficiaire.create({ data: beneficiaireFromDomain(beneficiaire) })
     await tx.mediateur.update({
-      where: { id: mediateurId },
+      where: { id: beneficiaire.mediateurId },
       data: {
-        derniereCreationBeneficiaire: now,
+        derniereCreationBeneficiaire: beneficiaire.creation,
       },
     })
   })
-
-  return entity
 }

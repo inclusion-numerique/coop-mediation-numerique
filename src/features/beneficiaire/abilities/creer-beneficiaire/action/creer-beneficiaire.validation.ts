@@ -2,7 +2,7 @@ import { beneficiaireFormShape } from '@/features/beneficiaire/action/champs-du-
 import { ContactTelephone } from '@/features/beneficiaire/domain/contact-telephone'
 import { Genre } from '@/features/beneficiaire/domain/genre'
 import { StatutSocial } from '@/features/beneficiaire/domain/statut-social'
-import type { BeneficiaireACreer } from '../domain/creer-beneficiaire'
+import type { BeneficiaireACreer } from '../domain/beneficiaire-a-creer'
 
 export const CreerBeneficiaireValidation = beneficiaireFormShape.transform(
   (form): BeneficiaireACreer => ({
