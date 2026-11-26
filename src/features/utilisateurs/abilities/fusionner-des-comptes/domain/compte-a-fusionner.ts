@@ -2,15 +2,16 @@ import { z } from 'zod'
 import {
   type AdresseCourriel,
   estRoleProtege,
+  RoleProtege,
   type RoleUtilisateur,
+  UtilisateurId,
 } from '@/features/utilisateurs/domain'
 import { defineModel, type Model } from '@/libraries/model'
 import { failure, type Result, success } from '@/libraries/result'
 import {
   CibleSupprimee,
-  type FusionnerError,
+  type EchecDeFusionnerDesComptes,
   FusionSurLeMemeCompte,
-  RoleProtege,
 } from './errors'
 
 export const SourceFusionId = defineModel(z.guid().brand('SourceFusionId'))
@@ -37,10 +38,12 @@ const memeCompte = (source: SourceFusionId, cible: CibleFusionId): boolean =>
 export const autoriserFusion = (
   source: CompteAFusionner<SourceFusionId>,
   cible: CompteAFusionner<CibleFusionId>,
-): Result<FusionAutorisee, FusionnerError> => {
+): Result<FusionAutorisee, EchecDeFusionnerDesComptes> => {
   if (memeCompte(source.id, cible.id)) return failure(FusionSurLeMemeCompte())
   if (cible.supprime) return failure(CibleSupprimee())
-  if (estRoleProtege(source.role) || estRoleProtege(cible.role))
-    return failure(RoleProtege())
+  if (estRoleProtege(source.role))
+    return failure(RoleProtege(UtilisateurId(source.id), source.role))
+  if (estRoleProtege(cible.role))
+    return failure(RoleProtege(UtilisateurId(cible.id), cible.role))
   return success({ source, cible })
 }

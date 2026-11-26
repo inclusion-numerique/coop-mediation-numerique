@@ -2,7 +2,7 @@ import { failure, type Result, success } from '@/libraries/result'
 import { autoriserFusion, type FusionAutorisee } from './compte-a-fusionner'
 import {
   CibleIntrouvable,
-  type FusionnerError,
+  type EchecDeFusionnerDesComptes,
   SourceIntrouvable,
 } from './errors'
 import type { FusionnerDesComptesPorts } from './ports'
@@ -13,11 +13,17 @@ export const fusionnerDesComptes =
     fusionner,
     retirerLaSourceDesListes,
   }: FusionnerDesComptesPorts) =>
-  async (ids: {
+  async ({
+    sourceId,
+    cibleId,
+  }: {
     readonly sourceId: string
     readonly cibleId: string
-  }): Promise<Result<FusionAutorisee, FusionnerError>> => {
-    const { source, cible } = await lireLesComptesAFusionner(ids)
+  }): Promise<Result<FusionAutorisee, EchecDeFusionnerDesComptes>> => {
+    const { source, cible } = await lireLesComptesAFusionner({
+      sourceId,
+      cibleId,
+    })
 
     if (source === null) return failure(SourceIntrouvable())
     if (cible === null) return failure(CibleIntrouvable())

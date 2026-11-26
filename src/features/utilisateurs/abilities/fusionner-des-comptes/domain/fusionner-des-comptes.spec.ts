@@ -2,12 +2,14 @@ import { describe, expect, it } from 'vitest'
 import {
   AdresseCourriel,
   RoleUtilisateur,
+  UtilisateurId,
 } from '@/features/utilisateurs/domain'
 import {
   CibleFusionId,
   type CompteAFusionner,
   SourceFusionId,
 } from './compte-a-fusionner'
+import type { EchecDeFusionnerDesComptes } from './errors'
 import { fusionnerDesComptes } from './fusionner-des-comptes'
 
 const UN = '0d1a1e7e-1f2b-4c3d-8e4f-5a6b7c8d9e0f'
@@ -59,48 +61,56 @@ describe('fusionner des comptes', () => {
     cas: string
     sourceLue: CompteAFusionner<SourceFusionId> | null
     cibleLue: CompteAFusionner<CibleFusionId> | null
-    erreur: string
+    erreur: EchecDeFusionnerDesComptes
   }>([
     {
       cas: 'signale une source introuvable',
       sourceLue: null,
       cibleLue: cible,
-      erreur: 'SourceIntrouvable',
+      erreur: { _tag: 'SourceIntrouvable' },
     },
     {
       cas: 'signale une cible introuvable',
       sourceLue: source,
       cibleLue: null,
-      erreur: 'CibleIntrouvable',
+      erreur: { _tag: 'CibleIntrouvable' },
     },
     {
       cas: 'refuse de fusionner un compte avec lui-même',
       sourceLue: source,
       cibleLue: { ...cible, id: CibleFusionId(UN) },
-      erreur: 'FusionSurLeMemeCompte',
+      erreur: { _tag: 'FusionSurLeMemeCompte' },
     },
     {
       cas: 'refuse une cible supprimée',
       sourceLue: source,
       cibleLue: { ...cible, supprime: true },
-      erreur: 'CibleSupprimee',
+      erreur: { _tag: 'CibleSupprimee' },
     },
     {
       cas: 'refuse une source administratrice',
       sourceLue: { ...source, role: RoleUtilisateur('Admin') },
       cibleLue: cible,
-      erreur: 'RoleProtege',
+      erreur: {
+        _tag: 'RoleProtege',
+        utilisateurId: UtilisateurId(UN),
+        role: RoleUtilisateur('Admin'),
+      },
     },
     {
       cas: 'refuse une cible administratrice',
       sourceLue: source,
       cibleLue: { ...cible, role: RoleUtilisateur('Admin') },
-      erreur: 'RoleProtege',
+      erreur: {
+        _tag: 'RoleProtege',
+        utilisateurId: UtilisateurId(DEUX),
+        role: RoleUtilisateur('Admin'),
+      },
     },
   ])('$cas', async ({ sourceLue, cibleLue, erreur }) => {
     expect(await fusionnerEntre(sourceLue, cibleLue)).toEqual({
       success: false,
-      error: { _tag: erreur },
+      error: erreur,
     })
   })
 })

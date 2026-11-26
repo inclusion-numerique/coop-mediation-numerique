@@ -6,16 +6,22 @@ import type {
   SourceFusionId,
 } from './compte-a-fusionner'
 
+export type LireLesComptesAFusionner = (ids: {
+  readonly sourceId: string
+  readonly cibleId: string
+}) => Promise<{
+  readonly source: CompteAFusionner<SourceFusionId> | null
+  readonly cible: CompteAFusionner<CibleFusionId> | null
+}>
+
+export type Fusionner = (fusion: FusionAutorisee) => Promise<void>
+
+export type RetirerLaSourceDesListes = (
+  courriel: AdresseCourriel,
+) => Promise<void>
+
 export type FusionnerDesComptesPorts = {
-  readonly lireLesComptesAFusionner: (ids: {
-    readonly sourceId: string
-    readonly cibleId: string
-  }) => Promise<{
-    readonly source: CompteAFusionner<SourceFusionId> | null
-    readonly cible: CompteAFusionner<CibleFusionId> | null
-  }>
-  readonly fusionner: (fusion: FusionAutorisee) => Promise<void>
-  readonly retirerLaSourceDesListes: (
-    courriel: AdresseCourriel,
-  ) => Promise<void>
+  readonly lireLesComptesAFusionner: LireLesComptesAFusionner
+  readonly fusionner: Fusionner
+  readonly retirerLaSourceDesListes: RetirerLaSourceDesListes
 }
