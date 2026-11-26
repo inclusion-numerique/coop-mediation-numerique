@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import { success } from '@/libraries/result'
-import type { LieuCandidatCoop } from '../../../domain/destination-du-lieu'
-import { LieuId } from '../../../domain/identifiants/lieu-id'
-import type { LieuAMaterialiser } from '../../../domain/lieu-identite'
+import type { LieuCandidatCoop } from './destination-du-lieu'
+import { LieuId } from './identifiants/lieu-id'
 import { lieuCorreleAuLieuDecrit } from './lieu-correle-au-lieu-decrit'
+import type { LieuAMaterialiser } from './lieu-identite'
 
 const CANDIDAT = LieuId('8d9e2f4a-5b6c-4d7e-8f90-1a2b3c4d5e6f')
 const supprimeLe = new Date('2026-01-15T10:00:00Z')

@@ -22,12 +22,9 @@ export {
 } from './lieu-demande'
 export type {
   AjouterDesLieuxActivitePorts,
-  DestinationDuLieuDecritPorts,
-  LieuCorreleAuLieuDecritPorts,
   LieuPorteurDeLaCarto,
   LireLEtatDuLieu,
   LireLieuxDejaRattaches,
-  NouvelIdentifiantDeLieu,
   PlanifierLesRattachementsPorts,
   RattachementAuxLieux,
   RattacherAuxLieux,

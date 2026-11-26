@@ -1,11 +1,8 @@
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
 import { LieuId } from '../../../../domain/identifiants/lieu-id'
-import type {
-  LieuPorteurDeLaCarto,
-  LireLEtatDuLieu,
-  NouvelIdentifiantDeLieu,
-} from '../../domain'
+import type { NouvelIdentifiantDeLieu } from '../../../../domain/ports'
+import type { LieuPorteurDeLaCarto, LireLEtatDuLieu } from '../../domain'
 
 export const nouvelIdentifiantDeLieu: NouvelIdentifiantDeLieu = () =>
   LieuId(v4())

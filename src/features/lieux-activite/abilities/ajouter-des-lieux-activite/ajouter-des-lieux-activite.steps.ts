@@ -25,8 +25,6 @@ import type {
   LieuExistant,
 } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/domain'
 import { ajouterDesLieuxActivite } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/domain/ajouter-des-lieux-activite'
-import { destinationDuLieuDecrit } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/domain/destination-du-lieu-decrit'
-import { lieuCorreleAuLieuDecrit } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/domain/lieu-correle-au-lieu-decrit'
 import { rattacherAuxLieux } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/ajouter-des-lieux-activite.mutation'
 import {
   detacherDuLieu,
@@ -43,11 +41,13 @@ import {
   IdentifiantCartographie,
   IdsCartographieNationale,
 } from '@/features/lieux-activite/domain/cartographie-nationale/ids-cartographie-nationale'
+import { destinationDuLieuDecrit } from '@/features/lieux-activite/domain/destination-du-lieu-decrit'
 import type { Fiche } from '@/features/lieux-activite/domain/fiche'
 import { BanId } from '@/features/lieux-activite/domain/identifiants/ban-id'
 import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
 import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
 import { UtilisateurId } from '@/features/lieux-activite/domain/identifiants/utilisateur-id'
+import { lieuCorreleAuLieuDecrit } from '@/features/lieux-activite/domain/lieu-correle-au-lieu-decrit'
 import { lieuxAuMemeEndroit } from '@/features/lieux-activite/implementations/prisma/lieux-au-meme-endroit.query'
 import {
   effacerDuRegistre,
