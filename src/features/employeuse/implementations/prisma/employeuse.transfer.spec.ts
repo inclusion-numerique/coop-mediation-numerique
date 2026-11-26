@@ -9,13 +9,6 @@ import {
 type AffectationRow = PersonneEmployeusePayload['affectationsEmploi'][number]
 type EmployeuseRow = AffectationRow['structureAdministrative']
 
-/**
- * Ce transfer est en lecture seule : l'employeuse n'est pas écrite par cette
- * ability (les écritures arrivent avec `renseigner-employeuse`), donc pas de
- * round-trip possible. On couvre à la place les deux extrêmes de la ligne — la
- * plus complète et la plus dépouillée — puisque c'est là que les nullités de
- * `main` se transforment en états du domaine.
- */
 const ligneComplete: EmployeuseRow = {
   id: 42,
   createdAt: new Date('2020-01-01'),
@@ -97,8 +90,6 @@ describe('employeuseToDomain', () => {
     ).toBe('ASSOCIATION DES TESTS')
   })
 
-  // La donnée de `main` est produite par d'autres : un SIRET illisible ne doit
-  // pas faire échouer la lecture de toute l'employeuse.
   it('écarte un SIRET hors format sans perdre le reste', () => {
     const employeuse = employeuseToDomain({
       ...ligneComplete,
@@ -110,12 +101,7 @@ describe('employeuseToDomain', () => {
 })
 
 describe('contratsToDomain', () => {
-  // Deux contrats successifs chez le même employeur restent deux périodes : c'est
-  // ce qui permet de savoir laquelle couvre une date passée.
   it('conserve chaque contrat, y compris chez la même employeuse', () => {
-    // Horloge explicite : le classement d'un contrat dépend désormais de la date
-    // à laquelle on le regarde, et un test ne doit pas dépendre du jour où il
-    // s'exécute.
     const contrats = contratsToDomain(
       [
         {

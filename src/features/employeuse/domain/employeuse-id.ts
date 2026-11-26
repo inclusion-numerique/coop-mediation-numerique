@@ -1,12 +1,6 @@
 import { z } from 'zod'
 import { defineModel, type Model } from '@/libraries/model'
 
-/**
- * Identifiant d'une employeuse dans `main.structure_administrative` (entier
- * auto-incrémenté, possédé par l'Entrepôt). La coop ne le fabrique jamais, elle
- * le lit : un id non entier positif est une incohérence de base, pas une donnée
- * métier absente — d'où un constructeur strict.
- */
 export const EmployeuseId = defineModel(
   z.number().int().positive().brand('EmployeuseId'),
 )

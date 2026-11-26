@@ -1,12 +1,6 @@
 import { prismaClient } from '@/configuration/prisma'
 import type { LireFaitsInscription } from '../../domain/ports'
 
-/**
- * Lit les faits d'inscription bruts requis par `valider`. Distinct de
- * `getInscriptionEtat` : ne collapse pas « profil posé, CGU absentes » en
- * `NonDemarree`, car dans le flow Dataspace les CGU sont posées à la validation.
- * La présence d'un compte de rôle est lue ici pour la garde anti-fantôme.
- */
 export const lireFaitsInscription: LireFaitsInscription = async (userId) => {
   const row = await prismaClient.user.findUnique({
     where: { id: userId },

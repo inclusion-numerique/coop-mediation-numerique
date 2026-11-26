@@ -9,8 +9,6 @@ import {
   seedUtilisateur,
 } from '@/features/employeuse/employeuse.cucumber'
 
-// État local à cette ability : les phrasés Cucumber sont globaux, et une ability
-// ne s'appuie pas sur les steps d'une autre (duplication découplée assumée).
 const contexte: {
   utilisateurId: string
   employeuseALaDate: Employeuse | null

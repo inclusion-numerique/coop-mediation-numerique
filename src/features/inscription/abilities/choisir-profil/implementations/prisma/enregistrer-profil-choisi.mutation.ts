@@ -4,12 +4,6 @@ import { inscriptionEtatFromDomain } from '@/features/inscription/implementation
 import type { SynchroniserLaPersonne } from '@/features/inscription/implementations/prisma/synchroniser-la-personne.mutation'
 import type { EnregistrerProfilChoisi } from '../../domain'
 
-/**
- * Projette l'état d'inscription sur la ligne `user` et garantit le compte de
- * rôle correspondant (idempotent via `connectOrCreate`) — un seul update, donc
- * jamais de profil posé sans son compte de rôle. Les colonnes d'inscription
- * viennent toutes du transfer : l'implémentation n'en compose aucune à la main.
- */
 export const enregistrerProfilChoisi =
   (synchroniserLaPersonne: SynchroniserLaPersonne): EnregistrerProfilChoisi =>
   async ({ etat, roles }) => {

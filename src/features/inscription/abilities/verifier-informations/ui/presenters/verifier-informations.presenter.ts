@@ -9,9 +9,6 @@ import {
 import type { ProfilInscriptionValue } from '@/features/inscription/domain/profil-inscription'
 import { cheminDeLEtape } from '@/features/inscription/ui/presenters/chemin-de-l-etape.presenter'
 
-// Une employeuse peut n'avoir aucune dénomination en base, mais la carte attend
-// un libellé : la projection porte le contrat d'affichage et décide du repli,
-// plutôt que de laisser l'absence voyager jusqu'au composant.
 type StructureDeLEmploi = {
   readonly nom: string | null
   readonly codeInsee: string | null
@@ -38,13 +35,6 @@ export type VerifierInformationsPageData = {
   readonly nextStepPath: string
 }
 
-/**
- * Projette l'utilisateur de la session vers les données de la page de vérification. Pure :
- * dérive l'étape suivante via le domaine (le « suivant » depuis verifier-informations
- * est identique dans les deux flows, d'où `withoutDataspace`) et applique le cas
- * spécial lieux-activité → structure-employeuse/renseigner. Toute la logique de
- * cet écran read/nav vit ici, laissant la route-hub minimale.
- */
 export const donneesDeVerifierInformations = (
   user: InscritAVerifier,
 ): VerifierInformationsPageData => {

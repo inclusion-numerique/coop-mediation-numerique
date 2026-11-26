@@ -6,19 +6,10 @@ import type { OptionsData } from '@/libraries/ui/primitives'
 import { RECHERCHER_STRUCTURE_EMPLOYEUSE_ACTION_KEY } from '../../action/rechercher-structure-employeuse.key'
 import type { StructureTrouvee } from '../../domain/structure-trouvee'
 
-/**
- * Le SIRET identifie le choix : c'est la clé que les deux sources — structures
- * enregistrées et annuaire des entreprises — ont en commun.
- */
 const itemToKey = (item: StructureTrouvee): string => item.siret
 
 const itemToString = (item: StructureTrouvee | null): string => item?.nom ?? ''
 
-/**
- * L'annuaire des entreprises peut être indisponible : la recherche se rabat
- * alors sur les seules structures déjà enregistrées, et l'appelant en est
- * averti pour le dire à l'utilisateur.
- */
 const loadSuggestions =
   (onApiUnavailable: (indisponible: boolean) => void) =>
   async (input: string): Promise<{ items: StructureTrouvee[] }> => {

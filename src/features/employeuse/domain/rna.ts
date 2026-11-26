@@ -1,11 +1,6 @@
 import { z } from 'zod'
 import { defineModel, type Model } from '@/libraries/model'
 
-/**
- * Numéro RNA (répertoire national des associations) : un `W` suivi de 9
- * chiffres. Porté par les employeuses associatives, en alternative au SIRET.
- * Comme le SIRET, il est lu depuis `main` via la forme totale (`.safe`).
- */
 export const Rna = defineModel(
   z
     .string()

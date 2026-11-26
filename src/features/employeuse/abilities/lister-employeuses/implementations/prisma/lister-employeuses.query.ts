@@ -8,10 +8,6 @@ import {
 import type { ColonneDesEmployeuses } from '../../domain/employeuse-listee'
 import type { ListerEmployeuses } from '../../domain/ports'
 
-/**
- * Mêmes conditions que l'autocomplétion — la règle de recherche est unique, seul
- * le mode de restitution change (pages et tri, plutôt qu'une poignée de choix).
- */
 const conditionsDeRecherche = (
   recherche: string,
 ): Prisma.StructureAdministrativeMainWhereInput => ({

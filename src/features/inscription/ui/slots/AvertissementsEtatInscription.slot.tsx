@@ -11,20 +11,6 @@ export type EtatInscriptionUtilisateur = {
   coordinateur: { id: string } | null
 }
 
-/**
- * Les deux façons dont une inscription peut rester impraticable, dites à qui
- * administre. Elles s'excluent, et ne se confondent pas :
- *
- * - **restée à la première étape** : ni validée, ni compte de rôle — l'utilisateur
- *   n'est jamais allé au bout, il faut le relancer ;
- * - **validée sans compte de rôle** : l'état fantôme de l'incident des comptes
- *   sans rôle. Le compte a dépassé la première étape mais ne peut rien faire dans
- *   la coop, et `pageDAccueil` le renvoie indéfiniment vers l'inscription. Le
- *   remède fut une reprise en base, jouée le 08/07/2026, pas une relance.
- *
- * Le second échappe à `inscriptionEnCours`, qui ne regarde que
- * `inscriptionValidee` : c'est pourquoi il a sa propre condition.
- */
 export const AvertissementsEtatInscription = ({
   user,
 }: {

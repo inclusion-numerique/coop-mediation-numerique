@@ -4,9 +4,6 @@ import { banFeatureToAdresseBanData } from '@/libraries/ban'
 import { CodePostal } from '@/libraries/code-postal'
 import { CodeInsee } from '@/libraries/insee'
 
-// Sous-ensemble d'adresse suffisant pour géocoder et persister une `main.adresse`. `SireneIdentity`
-// (API Entreprise) en est un sur-ensemble, mais le chemin d'écriture au fil de l'eau fournit ces
-// champs directement (payload Dataspace / saisie) sans passer par l'API — d'où ce type dédié.
 export type AdresseSource = {
   adresse: string
   codePostal: string
@@ -14,12 +11,6 @@ export type AdresseSource = {
   commune: string
 }
 
-// Résolution et persistance d'une `main.adresse` à partir d'une identité SIRENE, partagées entre le
-// job de complétion/couverture et le chemin d'écriture (ADR-002). L'adresse de l'API Entreprise est
-// géocodée via la BAN : au-dessus du seuil on garde le résultat BAN (structuré + `code_ban` +
-// coordonnées `geom`), sinon on garde l'adresse de l'API Entreprise.
-
-// Au-dessus de ce score, on considère que la BAN a trouvé la bonne adresse et on l'utilise.
 const BAN_SCORE_THRESHOLD = 0.9
 
 export type ResolvedAdresseMain = {
@@ -34,12 +25,6 @@ export type ResolvedAdresseMain = {
   source: 'ban' | 'api-entreprise'
 }
 
-// `main.adresse.code_postal` et `code_insee` sont des `varchar(5)` NOT NULL, et aucune source amont
-// ne garantit le format : pour un établissement non diffusible, l'API Recherche d'entreprises rend
-// littéralement `[NON-DIFFUSIBLE]` dans `code_postal` — 16 caractères, INSERT en échec `22001`. Les
-// value objects du domaine tranchent ici, au seul point où l'adresse entre en base : ce qui n'est
-// pas un code valide devient `''`, la colonne restant renseignée. Le reste de l'adresse (commune,
-// code INSEE) est juste dans ce cas et n'est pas perdu.
 const codePostalAdressable = (value: string): string =>
   CodePostal.safe(value) ?? ''
 
@@ -65,8 +50,6 @@ export const adresseMainDepuis = (
       codePostal: codePostalAdressable(ban.codePostal),
       codeInsee: codeInseeAdressable(ban.codeInsee),
       nomCommune: ban.commune,
-      // `main.adresse.code_ban` est un `uuid` : on prend le `banId` (uuid), PAS `ban.id` (clé
-      // "codeInsee_voie_numero"), sinon le cast `::uuid` de l'INSERT échoue.
       codeBan: feature.properties.banId ?? null,
       longitude: ban.longitude,
       latitude: ban.latitude,
@@ -88,12 +71,6 @@ export const adresseMainDepuis = (
   }
 }
 
-// Réutilise une adresse existante pour ne violer AUCUNE des deux contraintes d'unicité de
-// `main.adresse` : la clé COMPOSANT `(code_postal, nom_commune, nom_voie, numero_voie, repetition)`
-// ET `code_ban` (uuid). On cherche par les DEUX (OR) : un même lieu peut déjà exister en base
-// (données Entrepôt) avec un `code_ban` différent ou absent — chercher seulement par `code_ban`
-// manquait la ligne existante et l'INSERT violait la clé composant (bug révélé par l'e2e inscription
-// CN : adresse ANCT "20 Avenue de Ségur" déjà présente).
 export const idDeLAdresseMain = (resolved: ResolvedAdresseMain) =>
   prismaClient.adresseMain.findFirst({
     where: {
@@ -111,8 +88,6 @@ export const idDeLAdresseMain = (resolved: ResolvedAdresseMain) =>
     select: { id: true },
   })
 
-// Crée une `main.adresse` en SQL brut : `geom` (postgis) n'est pas écrivable par le client typé.
-// `ST_MakePoint` reçoit des `NULL` quand la BAN n'a pas tranché -> `geom` NULL (adresse API).
 export const insertAdresseMain = async (
   resolved: ResolvedAdresseMain,
 ): Promise<number> => {

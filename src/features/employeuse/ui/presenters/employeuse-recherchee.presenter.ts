@@ -2,12 +2,6 @@ import { toTitleCase } from '@/libraries/texte'
 import type { Employeuse } from '../../domain/employeuse'
 import { employeuseAffichage } from './employeuse.presenter'
 
-/**
- * Résultat de recherche affichable. Les adresses de SIRENE arrivent en
- * capitales : on les remet en casse de titre pour l'affichage, sans toucher à
- * la donnée. La dénomination, elle, reste telle quelle — c'est une raison
- * sociale, et la recasser produit des noms faux (« Pimms De Bordeaux »).
- */
 export type EmployeuseRecherchee = {
   id: string
   nom: string

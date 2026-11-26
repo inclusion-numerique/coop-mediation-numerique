@@ -56,11 +56,6 @@ const erreurEnregistrement = () =>
       'Une erreur est survenue lors de l’enregistrement, veuillez réessayer ultérieurement.',
   })
 
-/**
- * Écran de choix du rôle. Composant client pur : la route lie la server action
- * `save` ; le formulaire reste découplé de l'ability. À la sauvegarde, l'action
- * renvoie l'étape suivante (dérivée de l'état persisté) et on y navigue.
- */
 const defaultValues: DefaultValues<ChoisirProfilFormData> = {
   cguAcceptee: false,
 }
@@ -90,8 +85,6 @@ const ChoisirRolePage = ({ save }: { save: EnregistrerProfil }) => {
   const isSubmitting = useSelector(form.store, (state) => state.isSubmitting)
   const isHydrated = useHydrated()
 
-  // Champs désactivés tant que la page n'est pas interactive : sans cela, un
-  // clic trop précoce est silencieusement effacé par l'hydratation.
   const isPending = isSubmitting || !isHydrated
 
   return (

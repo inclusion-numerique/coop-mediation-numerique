@@ -16,7 +16,6 @@ import {
 } from '@/features/employeuse/employeuse.cucumber'
 import { failure } from '@/libraries/result'
 
-// État local à cette ability (les phrasés Cucumber sont globaux).
 const contexte: {
   inscritId: string
 } = {
@@ -25,9 +24,6 @@ const contexte: {
 
 const employeuses = new Map<string, { id: number; siret: string }>()
 
-// Les employeuses sont enregistrées AVANT le rattachement, avec le SIRET et la dénomination que
-// l'identité portera : la garantie les retrouve alors par leur clé métier, sans géocodage — donc
-// sans appel réseau, et le scénario reste déterministe.
 const identitePour = (nom: string): IdentiteEmployeuse => {
   const employeuse = employeuses.get(nom)
   assert.ok(employeuse, `L'employeuse « ${nom} » n'a pas été enregistrée`)

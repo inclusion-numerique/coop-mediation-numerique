@@ -75,7 +75,6 @@ describe('rattacher une employeuse depuis ProConnect', () => {
   const state = { proconnectMainId: 0, otherMainId: 0 }
 
   beforeAll(async () => {
-    // Résidu d'un run précédent interrompu : la clé (siret, dénomination) est unique.
     await prismaClient.personneAffectationEmploiMain.deleteMany({
       where: {
         structureAdministrative: {

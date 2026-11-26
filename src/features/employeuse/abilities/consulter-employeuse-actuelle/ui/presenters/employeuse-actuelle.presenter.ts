@@ -8,11 +8,6 @@ import {
   employeuseAffichage,
 } from '../../../../ui/presenters/employeuse.presenter'
 
-/**
- * L'employeuse courante à plat : la structure elle-même, plus ce que cette
- * ability sait en propre — la source qui fait autorité, et la période d'emploi
- * quand un contrat la renseigne.
- */
 export type EmployeuseActuelleAffichage = EmployeuseAffichage & {
   debut: Date | null
   fin: Date | null

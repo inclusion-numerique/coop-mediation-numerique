@@ -3,10 +3,6 @@ import { Role } from '@/features/inscription/domain'
 
 const rolesDisponibles = ['Mediateur', 'Coordinateur'] as const
 
-/**
- * Forme du formulaire : le rôle choisi + l'acceptation obligatoire des CGU.
- * Sert de validateur du côté client (`useAppForm`).
- */
 export const choisirProfilFormShape = z.object({
   role: z.enum(rolesDisponibles, {
     error: 'Veuillez choisir un poste',
@@ -22,11 +18,6 @@ export const choisirProfilFormShape = z.object({
 
 export type ChoisirProfilFormData = z.infer<typeof choisirProfilFormShape>
 
-/**
- * Contrat d'input de la server action : valide la forme du formulaire (CGU
- * comprises) puis projette vers l'input domaine (rôle brandé). L'acceptation
- * des CGU est une garde, pas une donnée transmise en aval.
- */
 export const ChoisirProfilValidation = choisirProfilFormShape.transform(
   ({ role }) => ({ role: Role(role) }),
 )

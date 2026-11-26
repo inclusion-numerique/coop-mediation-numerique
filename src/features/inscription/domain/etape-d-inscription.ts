@@ -16,5 +16,4 @@ export const EtapeDInscription = defineModel(
 
 export type EtapeDInscription = Model.TypeOf<typeof EtapeDInscription>
 
-/** Union des valeurs brutes (non brandées) — clés de mapping (URLs, etc.). */
 export type ValeurDEtapeDInscription = (typeof inscriptionSteps)[number]

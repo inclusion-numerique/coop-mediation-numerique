@@ -54,8 +54,6 @@ export const rechercheStructureEmployeuseAvec =
 
     const { data: apiResult, unavailable: apiUnavailable } = apiResponse
 
-    // Le SIRET identifie le choix : une employeuse enregistrée qui n'en a pas ne
-    // peut pas être proposée.
     const dbStructures: StructureTrouvee[] = dbResult.employeuses
       .map(employeuseRecherchee)
       .filter((structure) => structure.siret)
@@ -67,8 +65,6 @@ export const rechercheStructureEmployeuseAvec =
         codePostal: structure.codePostal,
         codeInsee: structure.codeInsee ?? '',
         siret: structure.siret as string,
-        // L'employeuse enregistrée n'en porte pas : `main.structure_administrative`
-        // ne range aucune typologie. Seul l'annuaire sait la déduire.
         typologie: null,
         source: 'database' as const,
       }))

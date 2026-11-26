@@ -4,14 +4,6 @@ import type { EmployeuseListee } from '../../domain/employeuse-listee'
 
 const INCONNUE = new Date(0)
 
-/**
- * Ligne de la liste d'administration.
- *
- * Les colonnes non nullables reflètent le gabarit du tableau, pas le domaine :
- * un tableau affiche une cellule vide, pas une absence. Les horodatages
- * manquants — `main` les rend optionnels — retombent sur l'époque, seule valeur
- * qui trie sans mentir sur l'ordre.
- */
 export type EmployeuseAffichee = {
   id: string
   nom: string
@@ -32,8 +24,6 @@ export const employeuseAffichee = ({
 
   return {
     id: String(affichage.id),
-    // La dénomination n'est pas remise en casse de titre : c'est une raison
-    // sociale, elle s'affiche telle que la source la porte.
     nom: affichage.nom ?? '',
     siret: affichage.siret,
     adresse: toTitleCase(affichage.adresse ?? '', { noUpper: true }),

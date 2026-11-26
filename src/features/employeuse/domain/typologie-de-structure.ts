@@ -1,9 +1,3 @@
-/**
- * Les seules typologies que l'API Recherche d'entreprises permet de déduire —
- * d'une nature juridique ou d'un complément (association, ESS, SIAE). Les
- * libellés reprennent mot pour mot ceux du formulaire de lieu : c'est la même
- * nomenclature, vue par une source qui n'en connaît qu'une poignée.
- */
 export const typologiesStructure = {
   ACIPHC: 'SIAE — Atelier chantier d’insertion premières heures en chantier',
   ASSO: 'Associations',

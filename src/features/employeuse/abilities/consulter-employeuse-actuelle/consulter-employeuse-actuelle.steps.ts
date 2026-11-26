@@ -93,9 +93,6 @@ Given(
   },
 )
 
-// Libellé volontairement distinct de celui de `consulter-historique-employeuses`
-// : le registre des steps est global à toute la suite, et deux abilities qui
-// nomment pareil se rendent leurs scénarios ambigus l'une l'autre.
 Given(
   'un contrat chez {string} courant du {string} au {string}',
   async (nom: string, debut: string, fin: string) => {

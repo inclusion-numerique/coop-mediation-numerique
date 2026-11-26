@@ -2,11 +2,6 @@ import { prismaClient } from '@/configuration/prisma'
 import type { LireLEtatDeLInscription } from '../../domain/ports'
 import { inscriptionEtatToDomain } from './inscription-etat.transfer'
 
-/**
- * Reconstruit l'état d'inscription d'un utilisateur depuis sa ligne `user`.
- * Socle partagé par les abilities du parcours plutôt que dupliqué dans chacune :
- * la forme de ligne et le mapper vivent déjà ici.
- */
 export const getInscriptionEtat: LireLEtatDeLInscription = async (userId) => {
   const row = await prismaClient.user.findUnique({
     where: { id: userId },

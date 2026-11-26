@@ -59,8 +59,6 @@ const EmployeusePage = ({
           <LigneDefinition label="Code INSEE" valeur={employeuse.codeInsee} />
         </section>
 
-        {/* 7 325 employeuses sur 11 607 n'ont aucun contact : le titre seul, suivi
-            de rien, valait mieux être tu. */}
         {employeuse.aUnReferent && (
           <section className="fr-col-12 fr-col-lg-6">
             <h2 className="fr-h5">Référent</h2>

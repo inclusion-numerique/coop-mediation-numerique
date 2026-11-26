@@ -51,8 +51,6 @@ const StructureEmployeuseLieuActivitePage = ({
     }
   }
 
-  // La navigation suit un succès : l'état de soumission reste posé (spinner
-  // maintenu) jusqu'au changement de page, et n'est remis à zéro qu'en cas d'erreur.
   const isNonLoading = submittedEstLieuActivite === false
   const isOuiLoading = submittedEstLieuActivite === true
   const isHydrated = useHydrated()

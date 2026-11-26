@@ -10,11 +10,5 @@ const stepPaths = {
   recapitulatif: '/inscription/recapitulatif',
 } as const satisfies Record<ValeurDEtapeDInscription, `/inscription/${string}`>
 
-/**
- * Chemin d'URL d'une étape. Accepte la valeur brute (`InscriptionStepValue`) —
- * donc aussi une `InscriptionStep` brandée, structurellement assignable — pour
- * rester un drop-in du `getStepPath` legacy tant que le parcours n'est pas
- * entièrement migré.
- */
 export const cheminDeLEtape = (step: ValeurDEtapeDInscription) =>
   stepPaths[step]

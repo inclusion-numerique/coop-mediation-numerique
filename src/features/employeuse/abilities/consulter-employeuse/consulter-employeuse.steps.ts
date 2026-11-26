@@ -56,9 +56,6 @@ Given(
   async (nom: string, sources: number) => {
     employeuses.set(nom, await seedEmployeuseMain(nom))
     const userId = await seedUtilisateur()
-    // Séquentiel et non parallèle : les trois `seedAffectation` créent la MÊME
-    // `main.personne`, et les lancer de front les fait se marcher dessus sur la
-    // clé d'unicité.
     await (['coop', 'idposte', 'aidants-connect'] as const)
       .slice(0, sources)
       .reduce(

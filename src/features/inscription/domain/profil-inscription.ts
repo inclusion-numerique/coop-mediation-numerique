@@ -14,7 +14,6 @@ export const ProfilInscription = defineModel(
 
 export type ProfilInscription = Model.TypeOf<typeof ProfilInscription>
 
-/** Union des valeurs brutes (non brandées) — clés des tables de libellés/slugs. */
 export type ProfilInscriptionValue = (typeof profilsInscription)[number]
 
 export const profilInscriptionLabels: Record<ProfilInscriptionValue, string> = {
@@ -28,12 +27,6 @@ export const profilInscriptionLabels: Record<ProfilInscriptionValue, string> = {
 export const libelleDuProfil = (profil: ProfilInscriptionValue): string =>
   profilInscriptionLabels[profil]
 
-/**
- * Dérive le profil d'inscription à partir des seuls signaux de rôle de
- * l'utilisateur. Fonction domaine pure : la présence d'un coordinateur prime,
- * puis le statut conseiller numérique départage. Reprend la règle historique de
- * `computeUserProfile` sans dépendre de `SessionUser`.
- */
 export const profilDInscription = ({
   isConseillerNumerique,
   isCoordinateur,

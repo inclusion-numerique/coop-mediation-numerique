@@ -9,8 +9,6 @@ import {
   seedUtilisateur,
 } from '@/features/employeuse/employeuse.cucumber'
 
-// État local à cette ability (les phrasés Cucumber sont globaux, et une ability
-// ne s'appuie pas sur les steps d'une autre).
 const contexte: {
   compteId: string
   historique: EmployeuseHistorique[]
@@ -38,8 +36,6 @@ const entree = (nom: string): EmployeuseHistorique => {
   return trouvee
 }
 
-// Deux rattachements distincts sur la même employeuse ne peuvent pas partager la
-// source (clé d'unicité en base) : on varie la source à chaque appel.
 const rattacher = async (nom: string, active: boolean, source: string) => {
   await seedAffectation({
     userId: contexte.compteId,

@@ -13,8 +13,6 @@ describe('adresseCompleteAffichage', () => {
     ).toBe('Rue du Bourg, 26220 Dieulefit')
   })
 
-  // Cas de production : 216 employeuses n'ont pas de voie côté Entrepôt. La
-  // composition à virgule fixe rendait « , 66300 Thuir ».
   it('n’ouvre pas sur une virgule quand la voie manque', () => {
     expect(
       adresseCompleteAffichage({
@@ -37,7 +35,6 @@ describe('adresseCompleteAffichage', () => {
     ).toBe('12 bis rue du Général Leclerc (4e étage), 51100 Reims')
   })
 
-  // Un complément sans voie produisait « null (4e étage) ».
   it('ne fabrique pas de voie à partir du seul complément', () => {
     expect(
       adresseCompleteAffichage({

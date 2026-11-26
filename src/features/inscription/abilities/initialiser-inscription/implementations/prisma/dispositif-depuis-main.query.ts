@@ -13,13 +13,6 @@ type DispositifRow = {
   est_coordinateur: boolean
 }
 
-/**
- * Ce que le dispositif dit d'une personne, lu dans `main` au lieu d'être demandé
- * à l'API Dataspace : « connue du dispositif » y remplace « trouvée dans l'API ».
- *
- * `main.*` est qualifié explicitement : le `search_path` (`coop,public`) ne
- * l'inclut pas.
- */
 export const dispositifDepuisMain: LireLeDispositif = async (userId) => {
   const [row] = await prismaClient.$queryRaw<DispositifRow[]>`
     SELECT

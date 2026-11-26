@@ -9,7 +9,6 @@ export const consulterEmployeuse: ConsulterEmployeuse = async ({
   employeuseId,
 }) => {
   const ligne = await prismaClient.structureAdministrativeMain.findFirst({
-    // Une employeuse supprimée côté Entrepôt ne se consulte plus.
     where: { id: employeuseId, deletedAt: null },
     select: {
       ...employeuseSelect,
@@ -36,14 +35,6 @@ export const consulterEmployeuse: ConsulterEmployeuse = async ({
 
   if (!ligne) return null
 
-  // Les affectations dont la personne n'a pas de compte coop sont écartées : elles appartiennent à
-  // d'autres produits de l'Entrepôt.
-  //
-  // Et on dédoublonne par utilisateur : la question posée est « qui cette employeuse emploie-t-elle »,
-  // or une même personne porte une affectation ACTIVE par source (`coop`, `idposte`,
-  // `aidants-connect`). Parcourir les affectations la faisait donc apparaître autant de fois —
-  // 1 392 employeuses de production sur 3 188 étaient concernées, jusqu'à 22 lignes en trop pour la
-  // pire, et le compteur « Emplois (33) » en annonçait trois fois trop.
   const personnesEmployees = [
     ...new Map(
       ligne.affectationsEmploi.flatMap(({ personne }) =>

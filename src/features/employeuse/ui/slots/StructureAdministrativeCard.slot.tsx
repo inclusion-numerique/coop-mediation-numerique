@@ -2,18 +2,6 @@ import classNames from 'classnames'
 import type { ReactNode } from 'react'
 import { addresseFromParts } from '@/libraries/adresse'
 
-/**
- * Ce que la carte montre d'une structure administrative : comment elle
- * s'appelle, où elle est, sous quel numéro elle est immatriculée.
- *
- * Pas de typologie : une employeuse est une personne morale, décrite par son
- * immatriculation et sa forme juridique — ce qu'un lieu accueille du public ne
- * la concerne pas. C'est ce qui distingue cette carte de celle du lieu, qu'elle
- * ne fait que ressembler.
- *
- * Le nom peut manquer : quatorze employeuses de production n'en portent pas,
- * et l'annuaire des entreprises masque celui des établissements non diffusibles.
- */
 type StructureAdministrativeAffichee = {
   readonly nom: string | null
   readonly adresse?: string | null
@@ -32,9 +20,6 @@ const StructureAdministrativeCard = ({
   structure: StructureAdministrativeAffichee
   topRight?: ReactNode
 }) => {
-  // Une structure peut n'avoir aucune adresse exploitable (établissement non
-  // diffusible) : on masque alors la ligne entière plutôt que d'afficher une
-  // épingle sans rien à côté.
   const adresseAffichee = addresseFromParts({ adresse, codePostal, commune })
 
   return (

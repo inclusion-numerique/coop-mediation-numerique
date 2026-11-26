@@ -20,15 +20,6 @@ import {
   StructureEmployeuseOptions,
 } from '../forms/StructureEmployeuseComboBox'
 
-/**
- * Choix d'une structure employeuse, puis rattachement.
- *
- * Deux contextes l'utilisent, et c'est `nextStepPath` qui les distingue :
- * l'inscription enchaîne sur l'étape suivante, tandis que la garde d'une page
- * qui exige une employeuse (la saisie d'un CRA) passe `null` — il n'y a alors
- * nulle part où aller, la page demandée s'affiche d'elle-même une fois la
- * garde levée, et un simple rafraîchissement suffit à la révéler.
- */
 const RattacherEmployeuseForm = ({
   nextStepPath,
 }: {
@@ -57,10 +48,6 @@ const RattacherEmployeuseForm = ({
           },
         )
 
-        // `rattachee: false` = l'employeuse n'a pas pu être garantie côté
-        // Entrepôt (géocodage ou API indisponible). Rien n'a été enregistré :
-        // on le dit et on laisse l'utilisateur réessayer plutôt que de
-        // l'avancer sans employeuse.
         if (!result.success || !result.data.rattachee) {
           erreurEnregistrement()
           return
@@ -75,8 +62,6 @@ const RattacherEmployeuseForm = ({
   })
 
   const isPending = useSelector(form.store, (state) => state.isSubmitting)
-  // La carte récapitulative n'apparaît qu'une fois le choix fait : c'est aussi
-  // ce qui autorise la soumission.
   const structureChoisie = useSelector(
     form.store,
     (state) => state.values.structure,
