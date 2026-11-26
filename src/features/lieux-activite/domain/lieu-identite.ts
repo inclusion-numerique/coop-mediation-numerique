@@ -1,5 +1,5 @@
 import {
-  type Comparaison,
+  type ComparaisonMesuree,
   comparer,
   type LieuPrepare,
   preparer,
@@ -114,13 +114,17 @@ export type Correle = {
 
 type CandidatJuge = {
   readonly candidat: LieuCandidat
-  readonly comparaison: Comparaison
+  readonly comparaison: ComparaisonMesuree
 }
 
-const retenu = ({ comparaison }: CandidatJuge): boolean =>
-  comparaison.vetos.length === 0 &&
-  'score' in comparaison &&
-  comparaison.score > SCORE_MINIMAL
+const juger =
+  (aReconnaitre: LieuPrepare) =>
+  (candidat: LieuCandidat): readonly CandidatJuge[] => {
+    const comparaison = comparer(auStandard(candidat), aReconnaitre)
+    return 'score' in comparaison && comparaison.score > SCORE_MINIMAL
+      ? [{ candidat, comparaison }]
+      : []
+  }
 
 /**
  * Départage les candidats retenus : un lieu actif d'abord — un lieu supprimé l'a
@@ -128,10 +132,8 @@ const retenu = ({ comparaison }: CandidatJuge): boolean =>
  * (les candidats arrivent triés).
  */
 const meilleur = (juges: readonly CandidatJuge[]): CandidatJuge | null => {
-  const note = ({ comparaison }: CandidatJuge): number =>
-    'score' in comparaison ? comparaison.score : 0
   const parNoteDecroissante = (un: CandidatJuge, autre: CandidatJuge): number =>
-    note(autre) - note(un)
+    autre.comparaison.score - un.comparaison.score
 
   const actifs = juges.filter(({ candidat }) => candidat.suppression === null)
 
@@ -152,13 +154,7 @@ export const correler = (
   candidats: readonly LieuCandidat[],
   lieu: LieuAMaterialiser,
 ): Correle | null => {
-  const aReconnaitre = auStandard(lieu)
-  const juges = candidats
-    .map((candidat) => ({
-      candidat,
-      comparaison: comparer(auStandard(candidat), aReconnaitre),
-    }))
-    .filter(retenu)
+  const juges = candidats.flatMap(juger(auStandard(lieu)))
 
   const elu = meilleur(juges)
 
@@ -167,6 +163,6 @@ export const correler = (
   return {
     id: elu.candidat.id,
     suppression: elu.candidat.suppression,
-    forte: 'nom' in elu.comparaison && elu.comparaison.nom === NOM_IDENTIQUE,
+    forte: elu.comparaison.nom === NOM_IDENTIQUE,
   }
 }

@@ -105,15 +105,7 @@ const trie = (valeur: object): unknown =>
   Object.fromEntries(
     Object.entries(valeur)
       .filter(([, contenu]) => contenu != null)
-      .sort(([une], [autre]) => une.localeCompare(autre))
-      .map(([clef, contenu]) => [
-        clef,
-        contenu != null &&
-        typeof contenu === 'object' &&
-        !Array.isArray(contenu)
-          ? trie(contenu)
-          : contenu,
-      ]),
+      .sort(([une], [autre]) => une.localeCompare(autre)),
   )
 
 export const differences = (

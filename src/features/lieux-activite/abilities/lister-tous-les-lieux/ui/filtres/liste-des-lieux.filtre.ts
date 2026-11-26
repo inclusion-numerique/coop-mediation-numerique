@@ -6,11 +6,18 @@ import {
   rechercheLibre,
   triParmi,
 } from '@/libraries/etat-d-url'
-import {
-  COLONNES_TRIABLES,
-  type CriteresDeLaListe,
+import type {
+  ColonneTriable,
+  CriteresDeLaListe,
 } from '../../domain/criteres-de-la-liste'
 import type { PageDeLieux } from '../../domain/ligne-de-la-liste'
+
+const COLONNES_TRIABLES = [
+  'nom',
+  'creation',
+  'modification',
+  'mediateursEnActivite',
+] as const satisfies readonly ColonneTriable[]
 
 const CHEMIN_DES_LIEUX = '/administration/lieux-activite'
 
