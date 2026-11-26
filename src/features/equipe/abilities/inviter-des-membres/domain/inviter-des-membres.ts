@@ -3,7 +3,6 @@ import {
   ActionNonAutorisee,
   CoordinateurIntrouvable,
   type Courriel,
-  type EnvoyerUneInvitation,
   type InvitationEnAttente,
   type NomAffiche,
   type UtilisateurId,
@@ -15,16 +14,11 @@ import type {
 } from './invitations-envoyees'
 import type { Inviteur } from './inviteur'
 import { planifier } from './planifier'
-import type { InviterDesMembresPorts } from './ports'
+import type { EnvoiDesInvitationsPorts, InviterDesMembresPorts } from './ports'
 
 const envoyerAvec =
-  ({
-    envoyerUneInvitation,
-    de,
-  }: {
-    readonly envoyerUneInvitation: EnvoyerUneInvitation
-    readonly de: NomAffiche
-  }) =>
+  ({ envoyerUneInvitation }: EnvoiDesInvitationsPorts) =>
+  (de: NomAffiche) =>
   async (invitation: InvitationEnAttente): Promise<Courriel | null> =>
     (await envoyerUneInvitation({ invitation, de })).success
       ? null
@@ -82,7 +76,7 @@ export const inviterDesMembres =
     const de = coordinateur.nom
 
     const echecs = (
-      await Promise.all(aEnvoyer.map(envoyerAvec({ envoyerUneInvitation, de })))
+      await Promise.all(aEnvoyer.map(envoyerAvec({ envoyerUneInvitation })(de)))
     ).filter((email): email is Courriel => email !== null)
 
     return success({

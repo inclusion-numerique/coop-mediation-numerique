@@ -16,9 +16,12 @@ export type EnregistrerLesInvitations<Cles> = (
   enregistrement: EnregistrementDesInvitations & { readonly cles: Cles },
 ) => Promise<void>
 
-export type InviterDesMembresPorts<Cles> = {
+export type EnvoiDesInvitationsPorts = {
+  readonly envoyerUneInvitation: EnvoyerUneInvitation
+}
+
+export type InviterDesMembresPorts<Cles> = EnvoiDesInvitationsPorts & {
   readonly lireLeCoordinateur: LireLeCoordinateur
   readonly lireLExistant: LireLExistant<Cles>
   readonly enregistrerLesInvitations: EnregistrerLesInvitations<Cles>
-  readonly envoyerUneInvitation: EnvoyerUneInvitation
 }
