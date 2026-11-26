@@ -1,67 +1,33 @@
 import { prismaClient } from '@/configuration/prisma'
-import type { EtatDeMaintenance } from '@/features/maintenance-mode/domain'
-import { consulterLaMaintenance } from '@/features/maintenance-mode/implementations/prisma/etat-de-maintenance.query'
-import { periodeEnCoursWhere } from '@/features/maintenance-mode/implementations/prisma/periode-de-maintenance.select'
-import {
-  type DemandeDeReglage,
-  type Reglage,
-  reglageDeLaMaintenance,
-} from '../../domain'
+import type {
+  ChangerLeMessage,
+  CloreLaPeriode,
+  OuvrirUnePeriode,
+} from '../../domain/ports'
 
-const appliquer = async ({
-  reglage,
+export const ouvrirUnePeriode: OuvrirUnePeriode = async ({
+  message,
   auteurId,
-  maintenant,
-}: {
-  reglage: Reglage
-  auteurId: string
-  maintenant: Date
-}): Promise<void> => {
-  if (reglage._tag === 'Ouvrir') {
-    await prismaClient.maintenance.create({
-      data: {
-        message: reglage.message,
-        createdBy: auteurId,
-        startedAt: maintenant,
-      },
-    })
-    return
-  }
-  if (reglage._tag === 'ChangerLeMessage') {
-    await prismaClient.maintenance.update({
-      where: { id: reglage.periodeId },
-      data: { message: reglage.message },
-    })
-    return
-  }
-  if (reglage._tag === 'Clore') {
-    await prismaClient.maintenance.update({
-      where: { id: reglage.periodeId },
-      data: { endedAt: maintenant },
-    })
-  }
+  debut,
+}) => {
+  await prismaClient.maintenance.create({
+    data: { message, createdBy: auteurId, startedAt: debut },
+  })
 }
 
-export const reglerLaMaintenance = async ({
-  demande,
-  auteurId,
-  maintenant = new Date(),
-}: {
-  readonly demande: DemandeDeReglage
-  readonly auteurId: string
-  readonly maintenant?: Date
-}): Promise<EtatDeMaintenance> => {
-  const periodeEnCours = await prismaClient.maintenance.findFirst({
-    where: periodeEnCoursWhere,
-    orderBy: { startedAt: 'desc' },
-    select: { id: true },
+export const changerLeMessage: ChangerLeMessage = async ({
+  periodeId,
+  message,
+}) => {
+  await prismaClient.maintenance.update({
+    where: { id: periodeId },
+    data: { message },
   })
+}
 
-  await appliquer({
-    reglage: reglageDeLaMaintenance({ periodeEnCours, demande }),
-    auteurId,
-    maintenant,
+export const cloreLaPeriode: CloreLaPeriode = async ({ periodeId, fin }) => {
+  await prismaClient.maintenance.update({
+    where: { id: periodeId },
+    data: { endedAt: fin },
   })
-
-  return consulterLaMaintenance()
 }
