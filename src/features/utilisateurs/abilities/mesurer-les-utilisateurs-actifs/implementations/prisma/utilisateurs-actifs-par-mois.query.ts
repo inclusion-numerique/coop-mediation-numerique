@@ -57,44 +57,46 @@ export const utilisateursActifsParMois = async (): Promise<
         '1 month'
       ) AS month
     ),
+    activites_de_la_periode AS (
+      SELECT DISTINCT date_trunc('month', date) AS month, mediateur_id
+      FROM activites
+      WHERE suppression IS NULL
+        AND date >= date_trunc('month', CURRENT_DATE - INTERVAL '11 months')
+    ),
     mediateurs_actifs AS (
       SELECT
-        date_trunc('month', a.date) AS month,
+        a.month,
         'mediateurs' AS role,
         COUNT(DISTINCT a.mediateur_id)::int AS value
       FROM users u
       JOIN mediateurs m ON u.id = m.user_id
-      LEFT JOIN coordinateurs c ON u.id = c.user_id
-      JOIN activites a ON a.mediateur_id = m.id
-      WHERE a.suppression IS NULL
-        AND NOT EXISTS (
+      JOIN activites_de_la_periode a ON a.mediateur_id = m.id
+      WHERE NOT EXISTS (
           SELECT 1
           FROM main.conseiller_numerique_en_poste cn
           JOIN main.personne p ON p.id = cn.personne_id
           WHERE p.coop_id = u.id
         )
-        AND c.id IS NULL
+        AND NOT EXISTS (SELECT 1 FROM coordinateurs c WHERE c.user_id = u.id)
         AND u.deleted IS NULL
         AND u.inscription_validee IS NOT NULL
       GROUP BY 1
     ),
     conseillers_actifs AS (
       SELECT
-        date_trunc('month', a.date) AS month,
+        a.month,
         'conseillers' AS role,
         COUNT(DISTINCT m.id)::int AS value
       FROM users u
       JOIN mediateurs m ON u.id = m.user_id
-      LEFT JOIN coordinateurs c ON u.id = c.user_id
-      JOIN activites a ON a.mediateur_id = m.id
-      WHERE a.suppression IS NULL
-        AND EXISTS (
+      JOIN activites_de_la_periode a ON a.mediateur_id = m.id
+      WHERE EXISTS (
           SELECT 1
           FROM main.conseiller_numerique_en_poste cn
           JOIN main.personne p ON p.id = cn.personne_id
           WHERE p.coop_id = u.id
         )
-        AND c.id IS NULL
+        AND NOT EXISTS (SELECT 1 FROM coordinateurs c WHERE c.user_id = u.id)
         AND u.deleted IS NULL
         AND u.inscription_validee IS NOT NULL
       GROUP BY 1
