@@ -8,7 +8,7 @@ export type DemandeurDeLExport = {
   } | null
 }
 
-const idsDes = (mediateurs: readonly MediateurCoordonne[] = []) =>
+const idsDes = (mediateurs: readonly MediateurCoordonne[]) =>
   mediateurs.map(({ mediateurId }) => mediateurId)
 
 export const exportInterdit = (
@@ -18,8 +18,8 @@ export const exportInterdit = (
   if (mediateursExportes === undefined) return false
   const autorises = [
     ...(mediateur ? [mediateur.id] : []),
-    ...idsDes(coordinateur?.mediateursCoordonnes),
-    ...idsDes(coordinateur?.ancienMediateursCoordonnes),
+    ...idsDes(coordinateur?.mediateursCoordonnes ?? []),
+    ...idsDes(coordinateur?.ancienMediateursCoordonnes ?? []),
   ]
   return !mediateursExportes.every((id) => autorises.includes(id))
 }

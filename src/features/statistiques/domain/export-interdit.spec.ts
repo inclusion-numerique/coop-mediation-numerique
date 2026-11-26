@@ -16,6 +16,8 @@ const mediateurCoordinateur = {
 
 const coordinateurSeul = { ...mediateurCoordinateur, mediateur: null }
 
+const mediateurSeul = { ...mediateurCoordinateur, coordinateur: null }
+
 describe('export interdit', () => {
   it("autorise l'export sans médiateur demandé", () => {
     expect(exportInterdit(mediateurCoordinateur, undefined)).toBe(false)
@@ -39,6 +41,14 @@ describe('export interdit', () => {
 
   it("interdit l'export qui mêle un médiateur autorisé et un autre", () => {
     expect(exportInterdit(mediateurCoordinateur, [coordonne, autre])).toBe(true)
+  })
+
+  it('autorise un médiateur sans coordination à exporter ses statistiques', () => {
+    expect(exportInterdit(mediateurSeul, [moi])).toBe(false)
+  })
+
+  it("interdit à un médiateur sans coordination d'exporter un autre médiateur", () => {
+    expect(exportInterdit(mediateurSeul, [coordonne])).toBe(true)
   })
 
   it('autorise un coordinateur à exporter un médiateur coordonné', () => {
