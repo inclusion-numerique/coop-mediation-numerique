@@ -1,14 +1,10 @@
 import { prismaClient } from '@/configuration/prisma'
-import type { CoordinateurId, MediateurId } from '../../../../domain'
-import type { AdhesionLue } from '../../domain'
+import type { AdhesionLue, LireLesLiensDEquipe } from '../../domain'
 
-export const lireLesLiensDEquipe = async (
-  coordinateurId: CoordinateurId,
-  mediateurId: MediateurId,
-): Promise<{
-  readonly adhesions: readonly AdhesionLue[]
-  readonly invitationEnCours: Date | null
-}> => {
+export const lireLesLiensDEquipe: LireLesLiensDEquipe = async (
+  coordinateurId,
+  mediateurId,
+) => {
   const [adhesions, invitation] = await Promise.all([
     prismaClient.mediateurCoordonne.findMany({
       where: { coordinateurId, mediateurId },
@@ -22,10 +18,11 @@ export const lireLesLiensDEquipe = async (
   ])
 
   return {
-    adhesions: adhesions.map(({ creation, suppression }) =>
-      suppression === null
-        ? { _tag: 'EnCours' }
-        : { _tag: 'Terminee', debut: creation, fin: suppression },
+    adhesions: adhesions.map(
+      ({ creation, suppression }): AdhesionLue =>
+        suppression === null
+          ? { _tag: 'EnCours' }
+          : { _tag: 'Terminee', debut: creation, fin: suppression },
     ),
     invitationEnCours: invitation?.creation ?? null,
   }

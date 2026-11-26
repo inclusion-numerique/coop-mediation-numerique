@@ -34,12 +34,7 @@ export const lienDEquipe = ({
   adhesions: readonly AdhesionLue[]
   invitationEnCours: Date | null
 }): LienDEquipe => {
-  if (
-    acteur.profil.mediation === null ||
-    acteur.acteurId === lecteur.acteurId
-  ) {
-    return { _tag: 'NonCoordonnable' }
-  }
+  if (acteur.acteurId === lecteur.acteurId) return { _tag: 'NonCoordonnable' }
   if (adhesions.some(({ _tag }) => _tag === 'EnCours'))
     return { _tag: 'Membre' }
   if (invitationEnCours !== null) {

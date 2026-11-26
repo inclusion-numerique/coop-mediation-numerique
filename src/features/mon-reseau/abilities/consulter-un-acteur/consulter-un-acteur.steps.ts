@@ -4,16 +4,21 @@ import { prismaClient } from '@/configuration/prisma'
 import {
   consulterUnActeur,
   type QuiConsulte,
-} from '@/features/mon-reseau/abilities/consulter-un-acteur/implementations/prisma/acteur-consulte.query'
+} from '@/features/mon-reseau/abilities/consulter-un-acteur/domain'
+import {
+  lireLActeur,
+  lireLesLiensDEquipe,
+} from '@/features/mon-reseau/abilities/consulter-un-acteur/implementations/prisma'
 import { Effectif } from '@/features/mon-reseau/domain'
+
+type Consultation = Awaited<ReturnType<ReturnType<typeof consulterUnActeur>>>
+
 import {
   type ActeurASemer,
   type ActeurSeme,
   semerUnActeur,
 } from '@/features/mon-reseau/mon-reseau.cucumber'
 import { subDays } from '@/libraries/date'
-
-type Consultation = Awaited<ReturnType<typeof consulterUnActeur>>
 
 const aucuneActiviteSur30Jours = async () => ({
   beneficiairesAccompagnes: Effectif(0),
@@ -70,15 +75,14 @@ const quiConsulte = (): QuiConsulte => {
 
 const consulter = async (acteurId: string) => {
   etat.consultation = await consulterUnActeur({
-    quiConsulte: quiConsulte(),
-    acteurId,
+    lireLActeur,
+    lireLesLiensDEquipe,
     lireLaDerniereActivite: async () =>
       etat.derniereActivite === undefined
         ? { _tag: 'Jamais' }
         : { _tag: 'Le', date: etat.derniereActivite },
     lireLesStatistiquesSur30Jours: aucuneActiviteSur30Jours,
-    maintenant: new Date(),
-  })
+  })({ quiConsulte: quiConsulte(), acteurId, maintenant: new Date() })
 }
 
 const coordonner = async (suppression: Date | null) => {

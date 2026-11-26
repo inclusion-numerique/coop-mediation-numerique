@@ -30,7 +30,11 @@ import {
   INVITER_L_ACTEUR_DANS_L_EQUIPE_KEY,
   RETIRER_L_ACTEUR_DE_L_EQUIPE_KEY,
 } from '@/features/mon-reseau/abilities/consulter-un-acteur/action/actions-sur-l-acteur.key'
-import { consulterUnActeur } from '@/features/mon-reseau/abilities/consulter-un-acteur/implementations/prisma/acteur-consulte.query'
+import { consulterUnActeur } from '@/features/mon-reseau/abilities/consulter-un-acteur/domain'
+import {
+  lireLActeur,
+  lireLesLiensDEquipe,
+} from '@/features/mon-reseau/abilities/consulter-un-acteur/implementations/prisma'
 import { nomDeLActeur } from '@/features/mon-reseau/abilities/consulter-un-acteur/implementations/prisma/nom-de-l-acteur.query'
 import { FicheActeurPage } from '@/features/mon-reseau/abilities/consulter-un-acteur/ui/pages/FicheActeurPage'
 import {
@@ -86,12 +90,11 @@ const Page = async ({ params }: Parametres) => {
   const departement = departementDuCode(code)
   const maintenant = new Date()
   const consultation = await consulterUnActeur({
-    quiConsulte,
-    acteurId: userId,
+    lireLActeur,
+    lireLesLiensDEquipe,
     lireLaDerniereActivite: derniereActiviteDeLUtilisateur,
     lireLesStatistiquesSur30Jours,
-    maintenant,
-  })
+  })({ quiConsulte, acteurId: userId, maintenant })
 
   if (!departement.success || !consultation.success) return notFound()
 
