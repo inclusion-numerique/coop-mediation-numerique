@@ -1,8 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import {
+  type ActionDecidee,
   AdresseCourriel,
   type CompteARelancer,
   type CoordinateurId,
+  EchecTechnique,
   MediateurId,
   Prenom,
   Relance,
@@ -14,13 +16,18 @@ import type { RelancerLesInscritsInactifsPorts } from './ports'
 import { relancerLesInscritsInactifs } from './relancer-les-inscrits-inactifs'
 
 const maintenant = new Date('2026-10-21T00:00:00.000Z')
+const UN_JOUR = 24 * 60 * 60 * 1000
+
+const ilYA = (jours: number): Date =>
+  new Date(maintenant.getTime() - jours * UN_JOUR)
 
 const utilisateurId = UtilisateurId('0d1a1e7e-1f2b-4c3d-8e4f-5a6b7c8d9e0f')
 
 const compte = (
-  depuis: string,
+  jours: number,
   relance: Relance,
   suppressionAnnoncee: Date | null,
+  aProduit: boolean,
 ): CompteARelancer => ({
   utilisateurId,
   courriel: AdresseCourriel('jeanne.martin@example.com'),
@@ -31,72 +38,113 @@ const compte = (
   ),
   situation: {
     phase: 'Nouveau',
-    depuis: new Date(depuis),
+    depuis: ilYA(jours),
     relance,
     suppressionAnnoncee,
-    aProduit: false,
+    aProduit,
   },
 })
 
-const aEffacer = compte(
-  '2026-07-07T00:00:00.000Z',
-  Relance('AvertissementJ90'),
-  new Date('2026-10-20T00:00:00.000Z'),
-)
+const aEffacer = compte(106, Relance('AvertissementJ90'), ilYA(1), false)
 
 const ports = (
   comptes: readonly CompteARelancer[],
 ): RelancerLesInscritsInactifsPorts => ({
   lireLesComptesARelancer: async () => comptes,
-  envoyerLaRelance: async () => undefined,
-  envoyerLAvertissement: async () => undefined,
-  envoyerLAvisDEffacement: async () => undefined,
+  envoyerLaRelance: async () => success(undefined),
+  envoyerLAvertissement: async () => success(undefined),
+  envoyerLAvisDEffacement: async () => success(undefined),
   supprimerLeCompte: async () => success(undefined),
-  noterLaRelance: async () => undefined,
+  noterLaRelance: async () => success(undefined),
 })
 
+const relancer = (portsDeLaRelance: RelancerLesInscritsInactifsPorts) =>
+  relancerLesInscritsInactifs(portsDeLaRelance)({ maintenant })
+
 describe('relancer les inscrits inactifs', () => {
-  it.each<{ cas: string; compteARelancer: CompteARelancer; action: string }>([
+  it.each<{ cas: string; compteLu: CompteARelancer; action: ActionDecidee }>([
+    {
+      cas: 'relance à J+7 un inscrit jamais relancé',
+      compteLu: compte(8, Relance('Aucune'), null, false),
+      action: { _tag: 'Relancer', palier: 7 },
+    },
+    {
+      cas: 'relance à J+30 un inscrit ancien jamais relancé',
+      compteLu: compte(40, Relance('Aucune'), null, false),
+      action: { _tag: 'Relancer', palier: 30 },
+    },
+    {
+      cas: 'relance à J+60 un inscrit relancé à J+30',
+      compteLu: compte(61, Relance('J30'), null, false),
+      action: { _tag: 'Relancer', palier: 60 },
+    },
     {
       cas: 'avertit un inscrit inactif depuis 90 jours',
-      compteARelancer: compte('2026-07-21T00:00:00.000Z', Relance('J60'), null),
-      action: 'Avertir',
+      compteLu: compte(91, Relance('J60'), null, false),
+      action: {
+        _tag: 'Avertir',
+        suppressionLe: new Date('2026-11-04T00:00:00.000Z'),
+        joursRestants: 14,
+      },
     },
     {
       cas: 'repart de zéro avec un inscrit revenu depuis moins d’une semaine',
-      compteARelancer: compte('2026-10-18T00:00:00.000Z', Relance('J7'), null),
-      action: 'Reinitialiser',
+      compteLu: compte(3, Relance('J7'), null, false),
+      action: { _tag: 'Reinitialiser' },
     },
     {
       cas: 'supprime un inscrit dont la suppression annoncée est échue',
-      compteARelancer: aEffacer,
-      action: 'Effacer',
+      compteLu: aEffacer,
+      action: { _tag: 'Effacer' },
     },
-  ])('$cas', async ({ compteARelancer, action }) => {
-    expect(
-      await relancerLesInscritsInactifs({
-        maintenant,
-        ports: ports([compteARelancer]),
-      }),
-    ).toEqual([{ utilisateurId, action, issue: 'fait' }])
+  ])('$cas', async ({ compteLu, action }) => {
+    expect(await relancer(ports([compteLu]))).toEqual(
+      success([{ utilisateurId, action, issue: 'fait' }]),
+    )
   })
 
-  it('rapporte une suppression refusée avec sa cause', async () => {
+  it('ne relance jamais un inscrit qui a produit', async () => {
     expect(
-      await relancerLesInscritsInactifs({
-        maintenant,
-        ports: {
-          ...ports([aEffacer]),
-          supprimerLeCompte: async () => failure({ _tag: 'RoleProtege' }),
-        },
+      await relancer(
+        ports([compte(106, Relance('AvertissementJ90'), ilYA(1), true)]),
+      ),
+    ).toEqual(success([]))
+  })
+
+  it('rapporte une suppression refusée avec son motif', async () => {
+    expect(
+      await relancer({
+        ...ports([aEffacer]),
+        supprimerLeCompte: async () => failure({ _tag: 'RoleProtege' }),
       }),
-    ).toEqual([
-      {
-        utilisateurId,
-        action: 'Effacer',
-        issue: 'echec',
-        cause: 'RoleProtege',
-      },
-    ])
+    ).toEqual(
+      success([
+        {
+          utilisateurId,
+          action: { _tag: 'Effacer' },
+          issue: 'echec',
+          cause: 'RoleProtege',
+        },
+      ]),
+    )
+  })
+
+  it('rapporte l’échec de l’avis de suppression avec sa cause', async () => {
+    expect(
+      await relancer({
+        ...ports([aEffacer]),
+        envoyerLAvisDEffacement: async () =>
+          failure(EchecTechnique('SMTP indisponible')),
+      }),
+    ).toEqual(
+      success([
+        {
+          utilisateurId,
+          action: { _tag: 'Effacer' },
+          issue: 'echec',
+          cause: 'SMTP indisponible',
+        },
+      ]),
+    )
   })
 })

@@ -24,6 +24,7 @@ const utilisateurId = (): string => {
 const consigner = (destinataire: string, evenement: string) => {
   if (destinataire === relance.utilisateurId)
     relance.evenements = [...relance.evenements, evenement]
+  return success(undefined)
 }
 
 Given(
@@ -52,22 +53,17 @@ Given(
 
 When('les inscrits inactifs sont relancés', async () => {
   await relancerLesInscritsInactifs({
-    maintenant: new Date(),
-    ports: {
-      lireLesComptesARelancer: inscritsSansProduction,
-      noterLaRelance: noterLaRelance('Nouveau'),
-      envoyerLaRelance: async ({ utilisateurId: id }, palier) =>
-        consigner(id, `relance J+${palier}`),
-      envoyerLAvertissement: async ({ utilisateurId: id }) =>
-        consigner(id, 'avertissement'),
-      envoyerLAvisDEffacement: async ({ utilisateurId: id }) =>
-        consigner(id, 'avis de suppression'),
-      supprimerLeCompte: async (id) => {
-        consigner(id, 'suppression')
-        return success(undefined)
-      },
-    },
-  })
+    lireLesComptesARelancer: inscritsSansProduction,
+    noterLaRelance: noterLaRelance('Nouveau'),
+    envoyerLaRelance: async ({ utilisateurId: id }, palier) =>
+      consigner(id, `relance J+${palier}`),
+    envoyerLAvertissement: async ({ utilisateurId: id }) =>
+      consigner(id, 'avertissement'),
+    envoyerLAvisDEffacement: async ({ utilisateurId: id }) =>
+      consigner(id, 'avis de suppression'),
+    supprimerLeCompte: async ({ utilisateurId: id }) =>
+      consigner(id, 'suppression'),
+  })({ maintenant: new Date() })
 })
 
 Then(/^cet inscrit reçoit la relance de J\+(\d+)$/, (palier: string) => {

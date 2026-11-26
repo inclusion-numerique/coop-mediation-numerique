@@ -29,10 +29,18 @@ import {
   effacementsAttrapes,
 } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/prisma/effacements-des-autres-features.adapter'
 import { logEffacementReport } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/prisma/log-effacement-report.mutation'
-import type { UtilisateurId } from '@/features/utilisateurs/domain'
+import type {
+  RelancesDeroulees,
+  UtilisateurId,
+} from '@/features/utilisateurs/domain'
 import { compterLesInscrits } from '@/features/utilisateurs/implementations/prisma/compter-les-inscrits.query'
 import { noterLaRelance } from '@/features/utilisateurs/implementations/prisma/noter-la-relance.mutation'
 import type { SynchroniserLaPersonne } from '@/features/utilisateurs/implementations/prisma/registre-des-personnes.mutation'
+import type { Result } from '@/libraries/result'
+
+const donneesDe = (
+  resultat: Result<RelancesDeroulees, never>,
+): RelancesDeroulees => (resultat.success ? resultat.data : resultat.error)
 
 const portsDeSuppression = (
   effacements: EffacementsDesAutresFeatures,
@@ -49,10 +57,15 @@ const portsDeSuppression = (
 const supprimerUnInscritJamaisActifAvec =
   (
     effacements: EffacementsDesAutresFeatures,
-    maintenant: Date,
     synchroniserLaPersonne: SynchroniserLaPersonne,
   ) =>
-  async (utilisateurId: UtilisateurId) =>
+  ({
+    utilisateurId,
+    maintenant,
+  }: {
+    readonly utilisateurId: UtilisateurId
+    readonly maintenant: Date
+  }) =>
     supprimerCompte(portsDeSuppression(effacements, synchroniserLaPersonne))({
       cible: utilisateurId,
       auteur: {
@@ -66,15 +79,14 @@ const lancerLesRelancesDesInscrits = async (
   maintenant: Date,
   supprimerLeCompte: RelancerLesInscritsInactifsPorts['supprimerLeCompte'],
 ) =>
-  relancerLesInscritsInactifs({
-    maintenant,
-    ports: {
+  donneesDe(
+    await relancerLesInscritsInactifs({
       ...relancesDesInscritsParCourriel(await compterLesInscrits()),
       lireLesComptesARelancer: inscritsSansProduction,
       noterLaRelance: noterLaRelance('Nouveau'),
       supprimerLeCompte,
-    },
-  })
+    })({ maintenant }),
+  )
 
 const effacerEmpreinteRdv = effacerEmpreinteRdvAvec(
   revoquerJetons(configurationOAuthRdvsp()),
@@ -111,7 +123,6 @@ export const relancerLesInscritsInactifsAction = actionBuilder()
           maintenant,
           supprimerUnInscritJamaisActifAvec(
             supprimerComptePorts,
-            maintenant,
             synchroniserPersonne,
           ),
         )

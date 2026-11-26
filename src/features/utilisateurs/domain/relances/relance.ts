@@ -147,7 +147,7 @@ export const actionDeRelance = (
     : { _tag: 'Rien' }
 }
 
-export type ActionANoter = Extract<
+type ActionANoter = Extract<
   ActionDeRelance,
   { readonly _tag: 'Relancer' | 'Avertir' | 'Reinitialiser' }
 >

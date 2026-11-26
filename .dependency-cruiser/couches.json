@@ -227,6 +227,9 @@
     "lieux-activite/abilities/ajouter-des-lieux-activite/ui/forms",
     "rdvsp/abilities/consulter-rdvs-accueil/ui/slots",
     "utilisateurs/abilities/anonymiser-les-comptes-inactifs/implementations/email",
+    "utilisateurs/abilities/relancer-les-inscriptions-inachevees/implementations/brevo",
+    "utilisateurs/abilities/relancer-les-inscriptions-inachevees/implementations/email",
+    "utilisateurs/abilities/relancer-les-inscrits-inactifs/implementations/email",
     "utilisateurs/abilities/retirer-les-contacts-orphelins/implementations/brevo",
     "utilisateurs/abilities/supprimer-compte/implementations/brevo",
     "utilisateurs/abilities/synchroniser-les-roles-brevo/implementations/brevo"

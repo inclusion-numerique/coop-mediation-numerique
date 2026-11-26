@@ -1,35 +1,25 @@
 import type {
-  CompteARelancer,
-  DestinataireDeRelance,
-  EffacementImpossible,
-  PalierDeRelance,
-  Relance,
+  EnvoyerLAvertissement,
+  EnvoyerLAvisDEffacement,
+  EnvoyerLaRelance,
+  LireLesComptesARelancer,
+  NoterLaRelance,
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
-
-type NoterLaRelance = (
-  utilisateurId: UtilisateurId,
-  relance: Relance,
-  suppressionAnnoncee: Date | null,
-) => Promise<void>
-
 import type { Result } from '@/libraries/result'
 
+export type SuppressionRefusee = { readonly _tag: string }
+
+export type SupprimerLeCompte = (suppression: {
+  readonly utilisateurId: UtilisateurId
+  readonly maintenant: Date
+}) => Promise<Result<unknown, SuppressionRefusee>>
+
 export type RelancerLesInscritsInactifsPorts = {
-  readonly envoyerLaRelance: (
-    destinataire: DestinataireDeRelance,
-    palier: PalierDeRelance,
-  ) => Promise<void>
-  readonly envoyerLAvertissement: (
-    destinataire: DestinataireDeRelance,
-    echeance: { readonly suppressionLe: Date; readonly joursRestants: number },
-  ) => Promise<void>
-  readonly envoyerLAvisDEffacement: (
-    destinataire: DestinataireDeRelance,
-  ) => Promise<void>
-  readonly supprimerLeCompte: (
-    utilisateurId: UtilisateurId,
-  ) => Promise<Result<unknown, EffacementImpossible>>
-  readonly lireLesComptesARelancer: () => Promise<readonly CompteARelancer[]>
+  readonly lireLesComptesARelancer: LireLesComptesARelancer
+  readonly envoyerLaRelance: EnvoyerLaRelance
+  readonly envoyerLAvertissement: EnvoyerLAvertissement
+  readonly envoyerLAvisDEffacement: EnvoyerLAvisDEffacement
+  readonly supprimerLeCompte: SupprimerLeCompte
   readonly noterLaRelance: NoterLaRelance
 }

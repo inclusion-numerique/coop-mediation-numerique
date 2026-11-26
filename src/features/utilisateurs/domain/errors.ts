@@ -42,3 +42,15 @@ export const EchecTechnique = (cause: string): EchecTechnique => ({
   _tag: 'EchecTechnique',
   cause,
 })
+
+export type EffacementRefuse = {
+  readonly _tag: 'EffacementRefuse'
+  readonly motif: string
+}
+
+export const EffacementRefuse = (motif: string): EffacementRefuse => ({
+  _tag: 'EffacementRefuse',
+  motif,
+})
+
+export type EchecDeRelance = EchecTechnique | EffacementRefuse

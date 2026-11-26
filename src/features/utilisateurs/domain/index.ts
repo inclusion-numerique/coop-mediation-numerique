@@ -16,7 +16,9 @@ export {
 export { Dispositif, dispositifDe, estEnPoste } from './dispositif'
 export {
   CompteSupprime,
+  type EchecDeRelance,
   EchecTechnique,
+  EffacementRefuse,
   RoleProtege,
   UtilisateurIntrouvable,
 } from './errors'
@@ -62,6 +64,13 @@ export type {
 } from './liste/ligne-utilisateur'
 export { NomEmployeuse } from './nom-employeuse'
 export { OrigineCompte } from './origine-compte'
+export type {
+  EnvoyerLAvertissement,
+  EnvoyerLAvisDEffacement,
+  EnvoyerLaRelance,
+  LireLesComptesARelancer,
+  NoterLaRelance,
+} from './ports'
 export {
   aProduit,
   coordinateurEstVierge,
@@ -84,14 +93,13 @@ export {
   cycleDeVie,
   inscription,
 } from './relances/cycle-de-vie'
-export {
-  type CompteARelancer,
-  deroulerLesRelances,
-  type EffacementImpossible,
-} from './relances/derouler-les-relances'
+export { deroulerLesRelances } from './relances/derouler-les-relances'
 export type {
+  ActionDecidee,
+  CompteARelancer,
   DestinataireDeRelance,
   RapportDeRelance,
+  RelancesDeroulees,
 } from './relances/destinataire-de-relance'
 export { JAMAIS, type Jalon, jalon } from './relances/jalon'
 export {

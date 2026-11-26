@@ -13,6 +13,7 @@ import {
 } from '@/features/registre-des-personnes/implementations/prisma/registre-personne.mutation'
 import { retirerLesTagsDUnCompte } from '@/features/tags/abilities/retirer-les-tags-d-un-compte/implementations/prisma/retirer-les-tags-d-un-compte.mutation'
 import { relancerLesInscriptionsInachevees } from '@/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees/domain/relancer-les-inscriptions-inachevees'
+import { retirerDesListes } from '@/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees/implementations/brevo/retirer-des-listes.mutation'
 import { relancesDInscriptionParCourriel } from '@/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees/implementations/email/relances-d-inscription-par-courriel.adapter'
 import { effacerLInscription } from '@/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees/implementations/prisma'
 import { inscriptionsInachevees } from '@/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees/implementations/prisma/inscriptions-inachevees.query'
@@ -35,7 +36,6 @@ import type {
   RapportDeRelance,
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
-import { removeBrevoUserContact } from '@/features/utilisateurs/implementations/brevo/remove-brevo-user-contact.mutation'
 import { compterLesInscrits } from '@/features/utilisateurs/implementations/prisma/compter-les-inscrits.query'
 import { noterLaRelance } from '@/features/utilisateurs/implementations/prisma/noter-la-relance.mutation'
 import type {
@@ -59,10 +59,15 @@ const portsDeSuppression = (
 const supprimerUnInscritJamaisActifAvec =
   (
     effacements: EffacementsDesAutresFeatures,
-    maintenant: Date,
     synchroniserLaPersonne: SynchroniserLaPersonne,
   ) =>
-  async (utilisateurId: UtilisateurId) =>
+  ({
+    utilisateurId,
+    maintenant,
+  }: {
+    readonly utilisateurId: UtilisateurId
+    readonly maintenant: Date
+  }) =>
     supprimerCompte(portsDeSuppression(effacements, synchroniserLaPersonne))({
       cible: utilisateurId,
       auteur: {
@@ -75,33 +80,29 @@ const supprimerUnInscritJamaisActifAvec =
 const lancerLesRelancesDesInscrits = async (
   maintenant: Date,
   supprimerLeCompte: RelancerLesInscritsInactifsPorts['supprimerLeCompte'],
-) =>
-  relancerLesInscritsInactifs({
-    maintenant,
-    ports: {
-      ...relancesDesInscritsParCourriel(await compterLesInscrits()),
-      lireLesComptesARelancer: inscritsSansProduction,
-      noterLaRelance: noterLaRelance('Nouveau'),
-      supprimerLeCompte,
-    },
-  })
+) => {
+  const resultat = await relancerLesInscritsInactifs({
+    ...relancesDesInscritsParCourriel(await compterLesInscrits()),
+    lireLesComptesARelancer: inscritsSansProduction,
+    noterLaRelance: noterLaRelance('Nouveau'),
+    supprimerLeCompte,
+  })({ maintenant })
+  return resultat.success ? resultat.data : resultat.error
+}
 
 const lancerLesRelancesDInscription = async (
   maintenant: Date,
   retirerDuRegistre: RetirerDuRegistre,
-) =>
-  relancerLesInscriptionsInachevees({
-    maintenant,
-    ports: {
-      ...relancesDInscriptionParCourriel(await compterLesInscrits()),
-      lireLesComptesARelancer: inscriptionsInachevees,
-      noterLaRelance: noterLaRelance('Inscription'),
-      effacerLInscription: effacerLInscription(retirerDuRegistre),
-      retirerDesListes: async (courriel) => {
-        await removeBrevoUserContact(courriel)
-      },
-    },
-  })
+) => {
+  const resultat = await relancerLesInscriptionsInachevees({
+    ...relancesDInscriptionParCourriel(await compterLesInscrits()),
+    lireLesComptesARelancer: inscriptionsInachevees,
+    noterLaRelance: noterLaRelance('Inscription'),
+    effacerLInscription: effacerLInscription(retirerDuRegistre),
+    retirerDesListes,
+  })({ maintenant })
+  return resultat.success ? resultat.data : resultat.error
+}
 
 const effacerEmpreinteRdv = effacerEmpreinteRdvAvec(
   revoquerJetons(configurationOAuthRdvsp()),
@@ -133,7 +134,7 @@ const resume = (rapports: readonly RapportDeRelance[]) => ({
       ? [
           {
             utilisateurId: rapport.utilisateurId,
-            action: rapport.action,
+            action: rapport.action._tag,
             cause: rapport.cause,
           },
         ]
@@ -153,7 +154,6 @@ export const executeInactiveUsersReminders = async () => {
       maintenant,
       supprimerUnInscritJamaisActifAvec(
         supprimerComptePorts,
-        maintenant,
         synchroniserPersonne,
       ),
     ),

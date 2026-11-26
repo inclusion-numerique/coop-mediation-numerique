@@ -1,102 +1,102 @@
 import { type Result, success } from '@/libraries/result'
-import type { UtilisateurId } from '../identifiants/utilisateur-id'
+import type { EchecDeRelance } from '../errors'
 import type {
+  EnvoyerLAvertissement,
+  EnvoyerLaRelance,
+  NoterLaRelance,
+} from '../ports'
+import type {
+  ActionDecidee,
+  CompteARelancer,
   DestinataireDeRelance,
   RapportDeRelance,
 } from './destinataire-de-relance'
 import {
-  type ActionDeRelance,
   actionDeRelance,
-  type PalierDeRelance,
-  type Relance,
   relanceApres,
-  type SituationDeRelance,
   suppressionAnnonceeApres,
 } from './relance'
 
-export type CompteARelancer = DestinataireDeRelance & {
-  readonly situation: SituationDeRelance
-}
-
 export type PortsDeRelance = {
-  readonly relancer: (
-    destinataire: DestinataireDeRelance,
-    palier: PalierDeRelance,
-  ) => Promise<void>
-  readonly avertir: (
-    destinataire: DestinataireDeRelance,
-    echeance: { readonly suppressionLe: Date; readonly joursRestants: number },
-  ) => Promise<void>
+  readonly relancer: EnvoyerLaRelance
+  readonly avertir: EnvoyerLAvertissement
   readonly effacer: (
     destinataire: DestinataireDeRelance,
-  ) => Promise<Result<void, EffacementImpossible>>
-  readonly noter: (
-    utilisateurId: UtilisateurId,
-    relance: Relance,
-    suppressionAnnoncee: Date | null,
-  ) => Promise<void>
+  ) => Promise<Result<unknown, EchecDeRelance>>
+  readonly noter: NoterLaRelance
 }
 
-export type EffacementImpossible = { readonly _tag: string }
-
-type ActionAgissante = Exclude<ActionDeRelance, { _tag: 'Rien' }>
+const envoyer = (
+  compte: CompteARelancer,
+  action: Exclude<ActionDecidee, { readonly _tag: 'Effacer' }>,
+  { relancer, avertir }: PortsDeRelance,
+): Promise<Result<unknown, EchecDeRelance>> => {
+  if (action._tag === 'Relancer') return relancer(compte, action.palier)
+  if (action._tag === 'Avertir') return avertir(compte, action)
+  return Promise.resolve(success(undefined))
+}
 
 const executer = async (
   compte: CompteARelancer,
-  action: ActionAgissante,
+  action: ActionDecidee,
   ports: PortsDeRelance,
-): Promise<Result<void, EffacementImpossible>> => {
+): Promise<Result<unknown, EchecDeRelance>> => {
   if (action._tag === 'Effacer') return ports.effacer(compte)
-  if (action._tag === 'Relancer') await ports.relancer(compte, action.palier)
-  if (action._tag === 'Avertir') await ports.avertir(compte, action)
 
-  await ports.noter(
+  const envoi = await envoyer(compte, action, ports)
+  if (!envoi.success) return envoi
+
+  return ports.noter(
     compte.utilisateurId,
     relanceApres(action),
     suppressionAnnonceeApres(action),
   )
-  return success(undefined)
 }
+
+const causeDe = (echec: EchecDeRelance): string =>
+  echec._tag === 'EchecTechnique' ? echec.cause : echec.motif
 
 const rapporter = async (
   compte: CompteARelancer,
-  action: ActionAgissante,
+  action: ActionDecidee,
   ports: PortsDeRelance,
-): Promise<RapportDeRelance> =>
-  executer(compte, action, ports).then(
-    (resultat): RapportDeRelance =>
-      resultat.success
-        ? {
-            utilisateurId: compte.utilisateurId,
-            action: action._tag,
-            issue: 'fait',
-          }
-        : {
-            utilisateurId: compte.utilisateurId,
-            action: action._tag,
-            issue: 'echec',
-            cause: resultat.error._tag,
-          },
-    (erreur: unknown): RapportDeRelance => ({
-      utilisateurId: compte.utilisateurId,
-      action: action._tag,
-      issue: 'echec',
-      cause: erreur instanceof Error ? erreur.message : String(erreur),
-    }),
-  )
+): Promise<RapportDeRelance> => {
+  const resultat = await executer(compte, action, ports)
 
-export const deroulerLesRelances = (
-  comptes: readonly CompteARelancer[],
-  ports: PortsDeRelance,
-  maintenant: Date,
-): Promise<readonly RapportDeRelance[]> =>
-  comptes.reduce<Promise<readonly RapportDeRelance[]>>(
-    async (precedents, compte) => {
-      const rapports = await precedents
-      const action = actionDeRelance(compte.situation, maintenant)
-      return action._tag === 'Rien'
-        ? rapports
-        : [...rapports, await rapporter(compte, action, ports)]
-    },
-    Promise.resolve([]),
-  )
+  return resultat.success
+    ? { utilisateurId: compte.utilisateurId, action, issue: 'fait' }
+    : {
+        utilisateurId: compte.utilisateurId,
+        action,
+        issue: 'echec',
+        cause: causeDe(resultat.error),
+      }
+}
+
+export const deroulerLesRelances =
+  ({ relancer, avertir, effacer, noter }: PortsDeRelance) =>
+  ({
+    comptes,
+    maintenant,
+  }: {
+    readonly comptes: readonly CompteARelancer[]
+    readonly maintenant: Date
+  }): Promise<readonly RapportDeRelance[]> =>
+    comptes.reduce<Promise<readonly RapportDeRelance[]>>(
+      async (precedents, compte) => {
+        const rapports = await precedents
+        const action = actionDeRelance(compte.situation, maintenant)
+        return action._tag === 'Rien'
+          ? rapports
+          : [
+              ...rapports,
+              await rapporter(compte, action, {
+                relancer,
+                avertir,
+                effacer,
+                noter,
+              }),
+            ]
+      },
+      Promise.resolve([]),
+    )

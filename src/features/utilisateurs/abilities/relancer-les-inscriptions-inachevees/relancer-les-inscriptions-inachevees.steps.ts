@@ -6,6 +6,7 @@ import type { RapportDeRelance } from '@/features/utilisateurs/domain'
 import { noterLaRelance } from '@/features/utilisateurs/implementations/prisma/noter-la-relance.mutation'
 import { semerUnCompteDeListe } from '@/features/utilisateurs/utilisateurs.cucumber'
 import { OnboardingStatus } from '@/generated/prisma/client'
+import { success } from '@/libraries/result'
 import { relancerLesInscriptionsInachevees } from './domain/relancer-les-inscriptions-inachevees'
 import { effacerLInscription } from './implementations/prisma/effacer-l-inscription.mutation'
 import { inscriptionsInachevees } from './implementations/prisma/inscriptions-inachevees.query'
@@ -26,6 +27,7 @@ const utilisateurId = (): string => {
 const consigner = (destinataire: string, evenement: string) => {
   if (destinataire === relance.utilisateurId)
     relance.evenements = [...relance.evenements, evenement]
+  return success(undefined)
 }
 
 Given(
@@ -55,24 +57,23 @@ Given(
 )
 
 When('les inscriptions inachevées sont relancées', async () => {
-  relance.rapports = await relancerLesInscriptionsInachevees({
-    maintenant: new Date(),
-    ports: {
-      lireLesComptesARelancer: inscriptionsInachevees,
-      noterLaRelance: noterLaRelance('Inscription'),
-      envoyerLaRelance: async ({ utilisateurId: id }, palier) =>
-        consigner(id, `relance J+${palier}`),
-      envoyerLAvertissement: async ({ utilisateurId: id }) =>
-        consigner(id, 'avertissement'),
-      envoyerLAvisDEffacement: async ({ utilisateurId: id }) =>
-        consigner(id, 'avis d’effacement'),
-      effacerLInscription: async (id) => {
-        if (id === relance.utilisateurId)
-          await effacerLInscription(async () => undefined)(id)
-      },
-      retirerDesListes: async () => undefined,
-    },
-  })
+  const resultat = await relancerLesInscriptionsInachevees({
+    lireLesComptesARelancer: inscriptionsInachevees,
+    noterLaRelance: noterLaRelance('Inscription'),
+    envoyerLaRelance: async ({ utilisateurId: id }, palier) =>
+      consigner(id, `relance J+${palier}`),
+    envoyerLAvertissement: async ({ utilisateurId: id }) =>
+      consigner(id, 'avertissement'),
+    envoyerLAvisDEffacement: async ({ utilisateurId: id }) =>
+      consigner(id, 'avis d’effacement'),
+    effacerLInscription: async (id) =>
+      id === relance.utilisateurId
+        ? effacerLInscription(async () => undefined)(id)
+        : success(undefined),
+    retirerDesListes: async () => success(undefined),
+  })({ maintenant: new Date() })
+  assert.ok(resultat.success)
+  relance.rapports = resultat.data
 })
 
 Then(/^cette inscription reçoit la relance de J\+(\d+)$/, (palier: string) => {

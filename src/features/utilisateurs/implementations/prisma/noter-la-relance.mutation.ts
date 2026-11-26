@@ -1,5 +1,11 @@
 import { prismaClient } from '@/configuration/prisma'
-import type { PhaseDeRelance, Relance, UtilisateurId } from '../../domain'
+import { failure, type Result, success } from '@/libraries/result'
+import {
+  EchecTechnique,
+  type PhaseDeRelance,
+  type Relance,
+  type UtilisateurId,
+} from '../../domain'
 import { relanceFromDomain } from './relance.transfer'
 
 export const noterLaRelance =
@@ -8,12 +14,21 @@ export const noterLaRelance =
     utilisateurId: UtilisateurId,
     relance: Relance,
     suppressionAnnoncee: Date | null,
-  ): Promise<void> => {
-    await prismaClient.user.update({
-      where: { id: utilisateurId },
-      data: {
-        onboardingStatus: relanceFromDomain(phase, relance),
-        suppressionAnnonceeLe: suppressionAnnoncee,
-      },
-    })
+  ): Promise<Result<void, EchecTechnique>> => {
+    try {
+      await prismaClient.user.update({
+        where: { id: utilisateurId },
+        data: {
+          onboardingStatus: relanceFromDomain(phase, relance),
+          suppressionAnnonceeLe: suppressionAnnoncee,
+        },
+      })
+      return success(undefined)
+    } catch (erreur) {
+      return failure(
+        EchecTechnique(
+          erreur instanceof Error ? erreur.message : String(erreur),
+        ),
+      )
+    }
   }
