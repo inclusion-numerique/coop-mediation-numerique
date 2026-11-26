@@ -23,20 +23,11 @@ export type ContactReferent =
       readonly telephone: string | null
     }
 
-/**
- * Forme attendue du jsonb. Chaque champ est tolérant (`.catch`) : un producteur
- * qui enverrait un `courriels` malformé ne doit pas emporter le nom avec lui.
- * C'est ce que masquait le `contact as MainContact` précédent, qui promettait
- * une forme sans jamais la vérifier.
- */
-const contactSchema = z
-  .object({
-    nom: z.string().optional().catch(undefined),
-    prenom: z.string().optional().catch(undefined),
-    telephone: z.string().optional().catch(undefined),
-    courriels: z.record(z.string(), z.string()).optional().catch(undefined),
-  })
-  .catch({})
+const lu = <T>(schema: z.ZodType<T>, valeur: unknown): T | undefined =>
+  schema.safeParse(valeur).data
+
+const champsDuContact = (contact: unknown): Record<string, unknown> =>
+  lu(z.record(z.string(), z.unknown()), contact) ?? {}
 
 const texte = (value: string | undefined): string | null =>
   value?.trim() ? value.trim() : null
@@ -68,12 +59,16 @@ const courrielReferent = (
     .find((courriel) => courriel !== null) ?? null
 
 export const ContactReferent = (contact: unknown): ContactReferent => {
-  const parsed = contactSchema.parse(contact ?? {})
-  // Prénom puis nom : l'ordre de lecture courant. Le jsonb les livre en deux
-  // champs, l'ordre d'affichage nous appartient.
-  const nom = texte([parsed.prenom, parsed.nom].filter(Boolean).join(' '))
-  const courriel = courrielReferent(parsed.courriels)
-  const telephone = texte(parsed.telephone)
+  const champs = champsDuContact(contact)
+  const nom = texte(
+    [lu(z.string(), champs['prenom']), lu(z.string(), champs['nom'])]
+      .filter(Boolean)
+      .join(' '),
+  )
+  const courriel = courrielReferent(
+    lu(z.record(z.string(), z.string()), champs['courriels']),
+  )
+  const telephone = texte(lu(z.string(), champs['telephone']))
 
   if (!nom && !courriel && !telephone) return { _tag: 'nonRenseigne' }
   return { _tag: 'renseigne', nom, courriel, telephone }
