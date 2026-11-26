@@ -191,6 +191,18 @@ describe('participants anonymes', () => {
     ).toEqual(failure(RepartitionExcedeLeTotal('statutSocial')))
   })
 
+  it('refuse une répartition par tranche d’âge qui dépasse le total', () => {
+    expect(
+      participantsAnonymesDe({
+        ...saisie,
+        tranchesDAge: {
+          ...saisie.tranchesDAge,
+          soixanteDixPlus: Effectif(11),
+        },
+      }),
+    ).toEqual(failure(RepartitionExcedeLeTotal('trancheDAge')))
+  })
+
   it('refuse plus de personnes déjà accompagnées que de participants', () => {
     expect(
       participantsAnonymesDe({ ...saisie, dejaAccompagnes: Effectif(11) }),
