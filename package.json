@@ -18,7 +18,7 @@
     "build:jobs": "pnpm --silent with-env node scripts/build-jobs.mjs",
     "lint": "biome check . && pnpm --silent lint:api && pnpm --silent lint:structure && pnpm --silent lint:imports",
     "lint:structure": "alint check --no-spawn",
-    "lint:imports": "depcruise src e2e next.config.ts cypress.config.ts vitest.config.ts prisma.config.ts prisma/entrepot/prisma.config.ts",
+    "lint:imports": "depcruise src e2e next.config.ts cypress.config.ts vitest.config.ts vitest.domaine.config.ts prisma.config.ts prisma/entrepot/prisma.config.ts",
     "lint:imports:tables": "node scripts/regenerer-imports-admis.mjs",
     "docs:collect": "node scripts/collecter-la-documentation.mjs",
     "docs:build": "node scripts/collecter-la-documentation.mjs && astro build --root docs/site --config ../astro.config.mjs && cp -r docs/site/annexes docs/site/dist/annexes",

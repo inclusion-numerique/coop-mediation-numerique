@@ -20,7 +20,8 @@
   },
   "racine-du-depot-admise": {
     "^cypress[.]config[.]ts$": ["^e2e/support/task-manager[.]ts$"],
-    "^vitest[.]config[.]ts$": ["^scripts/couverture/perimetre[.]mjs$"]
+    "^vitest[.]config[.]ts$": ["^scripts/couverture/perimetre[.]mjs$"],
+    "^vitest[.]domaine[.]config[.]ts$": ["^vitest[.]config[.]ts$"]
   },
   "app-admise-dans-une-feature": {
     "^src/features/clients-api/abilities/[^/]+/[^/]+[.]steps[.]ts$": [
