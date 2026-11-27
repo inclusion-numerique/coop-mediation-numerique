@@ -1,4 +1,8 @@
-import type { NomAffiche, UtilisateurId } from '@/features/utilisateurs/domain'
+import type {
+  NomAffiche,
+  RoleUtilisateur,
+  UtilisateurId,
+} from '@/features/utilisateurs/domain'
 import { failure, type Result, success } from '@/libraries/result'
 import {
   AucuneUsurpationEnCours,
@@ -13,7 +17,7 @@ export type SessionCourante = {
     | {
         readonly _tag: 'EnCours'
         readonly usurpateurId: UtilisateurId
-        readonly usurpateurEstAdministrateur: boolean
+        readonly usurpateurRole: RoleUtilisateur
       }
 }
 
@@ -27,7 +31,7 @@ export const usurpateurARetrouver = ({
   usurpation,
 }: SessionCourante): Result<UtilisateurId, EchecDeTerminerLUsurpation> => {
   if (usurpation._tag === 'Aucune') return failure(AucuneUsurpationEnCours())
-  if (!usurpation.usurpateurEstAdministrateur)
+  if (usurpation.usurpateurRole !== 'Admin')
     return failure(UsurpateurNonAdministrateur())
   return success(usurpation.usurpateurId)
 }

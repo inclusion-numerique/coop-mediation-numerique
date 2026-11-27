@@ -1,5 +1,6 @@
 import { prismaClient } from '@/configuration/prisma'
 import { UtilisateurId } from '@/features/utilisateurs/domain'
+import { roleLu } from '@/features/utilisateurs/implementations/prisma/role.transfer'
 import type { SessionCourante } from '../../domain'
 
 export const sessionCourante = async (
@@ -20,7 +21,7 @@ export const sessionCourante = async (
         : {
             _tag: 'EnCours',
             usurpateurId: UtilisateurId(session.usurper.id),
-            usurpateurEstAdministrateur: session.usurper.role === 'Admin',
+            usurpateurRole: roleLu(session.usurper.role),
           },
   }
 }

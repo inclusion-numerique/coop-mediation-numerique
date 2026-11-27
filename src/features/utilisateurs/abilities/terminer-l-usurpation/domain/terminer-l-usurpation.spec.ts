@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { NomAffiche, UtilisateurId } from '@/features/utilisateurs/domain'
+import {
+  NomAffiche,
+  RoleUtilisateur,
+  UtilisateurId,
+} from '@/features/utilisateurs/domain'
 import type { SessionCourante } from './session-courante'
 import { terminerLUsurpation } from './terminer-l-usurpation'
 
@@ -21,7 +25,7 @@ describe('terminer une usurpation', () => {
         usurpation: {
           _tag: 'EnCours',
           usurpateurId: administrateur,
-          usurpateurEstAdministrateur: true,
+          usurpateurRole: RoleUtilisateur('Admin'),
         },
       }),
     ).toEqual({
@@ -48,7 +52,7 @@ describe('terminer une usurpation', () => {
         usurpation: {
           _tag: 'EnCours',
           usurpateurId: administrateur,
-          usurpateurEstAdministrateur: false,
+          usurpateurRole: RoleUtilisateur('User'),
         },
       },
       erreur: 'UsurpateurNonAdministrateur',
