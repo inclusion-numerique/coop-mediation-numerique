@@ -1,13 +1,20 @@
 import { prismaClient } from '@/configuration/prisma'
 
+const estUnInstantEnMillisecondes = (expiresIn: number): boolean =>
+  expiresIn > 1_000_000_000_000
+
+const estUnInstantEnSecondes = (expiresIn: number): boolean =>
+  expiresIn > 1_000_000_000
+
+const dansSecondes = (delaiEnSecondes: number): number =>
+  Math.floor(Date.now() / 1000) + delaiEnSecondes
+
 const computeExpiresAt = (expiresIn?: number): number | undefined => {
   if (expiresIn === undefined) return undefined
-  // If provider gave a timestamp in milliseconds
-  if (expiresIn > 1_000_000_000_000) return Math.floor(expiresIn / 1000)
-  // If provider gave an absolute epoch seconds timestamp
-  if (expiresIn > 1_000_000_000) return Math.floor(expiresIn)
-  // Otherwise it's a delta in seconds
-  return Math.floor(Date.now() / 1000) + expiresIn
+  if (estUnInstantEnMillisecondes(expiresIn))
+    return Math.floor(expiresIn / 1000)
+  if (estUnInstantEnSecondes(expiresIn)) return Math.floor(expiresIn)
+  return dansSecondes(expiresIn)
 }
 
 export const updateAccountTokens = async ({

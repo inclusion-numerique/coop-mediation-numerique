@@ -12,13 +12,6 @@ import {
   getSessionUser,
 } from '@/features/authentification/middlewares/with-utilisateur-de-la-session'
 
-/**
- * This gets the session user from request cache and redirects to login
- * with correct callback url if user is not found
- *
- * This should be called in Layout and Page components and be the first
- * call in those components for better readability of authentication logic.
- */
 export const authenticateUser = async (redirectTo: Route = '/connexion') => {
   try {
     return await getAuthenticatedSessionUser()

@@ -20,10 +20,6 @@ const emploisDeLaSession = (
       ]
     : []
 
-/**
- * This is the session user that will be publicly sent to the client.
- * DO NOT INCLUDE ANY SECRET DATA IN THIS OBJECT
- */
 export const serializePrismaSessionUser = (
   prismaSessionUser: UtilisateurDeLaSessionRow,
   usurper?: PrismaSessionUsupper,

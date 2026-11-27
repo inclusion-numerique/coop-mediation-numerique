@@ -25,7 +25,6 @@ export const EmailSigninForm = ({ callbackUrl }: { callbackUrl: Route }) => {
   })
 
   const onSubmit = ({ email }: SigninFormData) => {
-    // Set the email in a cookie for usage in Verify page as redirections resets memory
     Cookies.set('email-signin', email, { sameSite: 'strict' })
     return signIn('email', { email, callbackUrl })
   }

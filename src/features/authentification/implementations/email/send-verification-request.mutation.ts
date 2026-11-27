@@ -9,7 +9,6 @@ const debugMagicLink = environnementServeur().NODE_ENV === 'development'
 
 export const sendVerificationRequest: EmailConfig['sendVerificationRequest'] =
   async ({ url, provider, identifier }) => {
-    // For quicker dev UX, display url in console in dev environment
     if (debugMagicLink) {
       // biome-ignore lint/suspicious/noConsole: needed for dev / debug
       console.log(`[AUTH] Magic link for ${identifier}: ${url}`)
