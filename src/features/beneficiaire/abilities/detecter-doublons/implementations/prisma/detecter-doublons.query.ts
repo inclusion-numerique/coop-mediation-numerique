@@ -5,6 +5,7 @@ import { Nom } from '@/features/beneficiaire/domain/nom'
 import { Prenom } from '@/features/beneficiaire/domain/prenom'
 import { Prisma } from '@/generated/prisma/client'
 import { Telephone } from '@/libraries/telephone'
+import { IdentifiantDeDoublon } from '../../domain/beneficiaire-doublon'
 import type { DetecterDoublons } from '../../domain/lectures-des-doublons'
 
 export const detecterDoublons: DetecterDoublons = async ({
@@ -109,7 +110,7 @@ export const detecterDoublons: DetecterDoublons = async ({
       b_email,
       b_creation,
     }) => ({
-      id: `${a_id}-${b_id}`,
+      id: IdentifiantDeDoublon(`${a_id}-${b_id}`),
       a: toDoublonEntry({
         id: a_id,
         nom: a_nom,

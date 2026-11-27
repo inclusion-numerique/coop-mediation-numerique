@@ -1,5 +1,11 @@
 import { prismaClient } from '@/configuration/prisma'
 import { Prisma } from '@/generated/prisma/client'
+import {
+  ActiviteId,
+  LieuActiviteId,
+  MediateurId,
+  UtilisateurId,
+} from '../../../../domain'
 import type {
   ActiviteExposee,
   CriteresDExposition,
@@ -109,5 +115,17 @@ export const activitesExposees = async ({
     `,
   ])
 
-  return { activites, total: comptes.at(0)?.count ?? 0 }
+  return {
+    activites: activites.map((activite) => ({
+      ...activite,
+      id: ActiviteId(activite.id),
+      structureId:
+        activite.structureId === null
+          ? null
+          : LieuActiviteId(activite.structureId),
+      mediateurId: MediateurId(activite.mediateurId),
+      mediateur: { userId: UtilisateurId(activite.mediateur.userId) },
+    })),
+    total: comptes.at(0)?.count ?? 0,
+  }
 }

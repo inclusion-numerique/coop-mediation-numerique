@@ -1,6 +1,12 @@
 import { prismaClient } from '@/configuration/prisma'
 import type { Prisma } from '@/generated/prisma/client'
-import type { CraV1Expose, Horodatage } from '../../domain'
+import {
+  ConseillerNumeriqueV1Id,
+  type CraV1Expose,
+  CraV1Id,
+  type Horodatage,
+  StructureV1Id,
+} from '../../domain'
 
 const craV1ExposeSelect = {
   id: true,
@@ -74,5 +80,16 @@ export const crasV1Exposes = async ({
     prismaClient.craConseillerNumeriqueV1.count(),
   ])
 
-  return { cras, total }
+  return {
+    cras: cras.map((cra) => ({
+      ...cra,
+      id: CraV1Id(cra.id),
+      v1ConseillerNumeriqueId: ConseillerNumeriqueV1Id(
+        cra.v1ConseillerNumeriqueId,
+      ),
+      structureId:
+        cra.structureId === null ? null : StructureV1Id(cra.structureId),
+    })),
+    total,
+  }
 }

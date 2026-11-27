@@ -1,11 +1,16 @@
 import { describe, expect, it } from 'vitest'
-import type { CraV1Expose } from '../../domain'
+import {
+  ConseillerNumeriqueV1Id,
+  type CraV1Expose,
+  CraV1Id,
+  StructureV1Id,
+} from '../../domain'
 import { craV1Expose } from './cra-v1-expose.transfer'
 
 const cra: CraV1Expose = {
-  id: 'cra-v1-1',
+  id: CraV1Id('cra-v1-1'),
   importedAt: new Date('2024-03-01T08:00:00.000Z'),
-  v1ConseillerNumeriqueId: 'conseiller-v1-7',
+  v1ConseillerNumeriqueId: ConseillerNumeriqueV1Id('conseiller-v1-7'),
   canal: 'rattachement',
   activite: 'individuel',
   nbParticipants: 1,
@@ -38,7 +43,7 @@ const cra: CraV1Expose = {
   annotation: 'Première visite',
   createdAt: new Date('2023-11-14T10:00:00.000Z'),
   updatedAt: new Date('2023-11-15T10:00:00.000Z'),
-  structureId: 'structure-v1-3',
+  structureId: StructureV1Id('structure-v1-3'),
   structureIdPg: 3,
   structureType: 'PUBLIC',
   structureStatut: 'VALIDATION_COSELEC',
