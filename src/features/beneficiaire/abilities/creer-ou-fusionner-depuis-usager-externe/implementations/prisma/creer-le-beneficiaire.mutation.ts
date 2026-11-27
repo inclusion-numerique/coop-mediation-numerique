@@ -12,5 +12,6 @@ export const creerLeBeneficiaire: CreerLeBeneficiaire =
         data: { id: v4(), ...beneficiaire, anonyme: false },
         select: beneficiaireFusionneSelect,
       }),
+      new Date(),
     ),
   )

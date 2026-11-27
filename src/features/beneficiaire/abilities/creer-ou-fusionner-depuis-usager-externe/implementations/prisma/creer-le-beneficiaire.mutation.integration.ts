@@ -1,24 +1,25 @@
 import { v4 } from 'uuid'
 import { afterAll, afterEach, beforeAll, describe, expect, test } from 'vitest'
 import { prismaClient } from '@/configuration/prisma'
+import { CommuneResidence } from '@/features/beneficiaire/domain/commune-residence'
 import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
 import { AdresseIndisponible } from '@/libraries/ban'
 import { creerOuFusionnerDepuisUsagerExterne } from '../../domain/creer-ou-fusionner-depuis-usager-externe'
-import type {
-  CommuneFields,
-  UsagerExterneAFusionner,
-} from '../../domain/usager-externe'
 import { communeDeLAdresseAvec } from '../ban/commune-de-l-adresse.query'
+import {
+  demandeNormalisee,
+  type UsagerExterneAFusionner,
+} from '../rdv-service-public/usager-externe.transfer'
 import { lireLeBeneficiaireLie } from './beneficiaire-lie.query'
 import { creerLeBeneficiaire } from './creer-le-beneficiaire.mutation'
 import { trouverUnDoublon } from './doublon-de-l-usager.query'
 import { mettreAJourLeBeneficiaire } from './mettre-a-jour-le-beneficiaire.mutation'
 
-const evreux = {
+const evreux = CommuneResidence({
   commune: 'Évreux',
-  communeCodePostal: '27000',
-  communeCodeInsee: '27229',
-}
+  codePostal: '27000',
+  codeInsee: '27229',
+})
 
 const rdvUserId = 990_101
 const utilisateurId = '45661444-bbca-4961-9944-32cfa9695a4a'
@@ -35,7 +36,7 @@ const usager: UsagerExterneAFusionner = {
 }
 
 const fusionnerAvec =
-  (rechercher: (adresse: string) => Promise<CommuneFields | null>) =>
+  (rechercher: (adresse: string) => Promise<CommuneResidence | null>) =>
   async ({
     usagers,
     mediateurId,
@@ -49,11 +50,13 @@ const fusionnerAvec =
       communeDeLAdresse: communeDeLAdresseAvec(rechercher),
       mettreAJourLeBeneficiaire,
       creerLeBeneficiaire,
-    })({
-      usagers,
-      mediateurId: MediateurId(mediateurId),
-      maintenant: new Date(),
-    })
+    })(
+      demandeNormalisee({
+        usagers,
+        mediateurId: MediateurId(mediateurId),
+        maintenant: new Date(),
+      }),
+    )
     return fusion.data
   }
 
@@ -66,13 +69,6 @@ const sansCommuneTrouvee = fusionnerAvec(async () => null)
 const banIndisponible = fusionnerAvec(async () => {
   throw new AdresseIndisponible('HTTP 503')
 })
-
-const createdBeneficiaireIds: string[] = []
-
-const trackBeneficiaire = (id: string) => {
-  createdBeneficiaireIds.push(id)
-  return id
-}
 
 const seedRdvUser = () =>
   prismaClient.rdvUser.create({
@@ -90,7 +86,7 @@ const seedLinkedBeneficiaire = (commune: {
   communeCodePostal: string | null
   communeCodeInsee: string | null
 }) => {
-  const id = trackBeneficiaire(v4())
+  const id = v4()
   return prismaClient.beneficiaire
     .create({
       data: {
@@ -124,10 +120,7 @@ describe('créer ou fusionner depuis un usager externe — géocodage commune', 
   })
 
   afterEach(async () => {
-    await prismaClient.beneficiaire.deleteMany({
-      where: { id: { in: createdBeneficiaireIds } },
-    })
-    createdBeneficiaireIds.length = 0
+    await prismaClient.beneficiaire.deleteMany({ where: { mediateurId } })
     await prismaClient.rdvUser.deleteMany({ where: { id: rdvUserId } })
   })
 
@@ -138,7 +131,6 @@ describe('créer ou fusionner depuis un usager externe — géocodage commune', 
       usagers: [usager],
       mediateurId,
     })
-    trackBeneficiaire(merges[0]?.id ?? '')
 
     const beneficiaire = await prismaClient.beneficiaire.findUniqueOrThrow({
       where: { id: merges[0]?.id ?? '' },
@@ -156,7 +148,6 @@ describe('créer ou fusionner depuis un usager externe — géocodage commune', 
       usagers: [usager],
       mediateurId,
     })
-    trackBeneficiaire(merges[0]?.id ?? '')
 
     const beneficiaire = await prismaClient.beneficiaire.findUniqueOrThrow({
       where: { id: merges[0]?.id ?? '' },
@@ -226,7 +217,6 @@ describe('créer ou fusionner depuis un usager externe — géocodage commune', 
       ],
       mediateurId,
     })
-    trackBeneficiaire(merges[0]?.id ?? '')
 
     const beneficiaire = await prismaClient.beneficiaire.findUniqueOrThrow({
       where: { id: merges[0]?.id ?? '' },
@@ -251,7 +241,6 @@ describe('créer ou fusionner depuis un usager externe — géocodage commune', 
       ],
       mediateurId,
     })
-    trackBeneficiaire(merges[0]?.id ?? '')
 
     const beneficiaire = await prismaClient.beneficiaire.findUniqueOrThrow({
       where: { id: merges[0]?.id ?? '' },
@@ -277,7 +266,6 @@ describe('créer ou fusionner depuis un usager externe — géocodage commune', 
       ],
       mediateurId,
     })
-    trackBeneficiaire(merges[0]?.id ?? '')
 
     const beneficiaire = await prismaClient.beneficiaire.findUniqueOrThrow({
       where: { id: merges[0]?.id ?? '' },
@@ -303,7 +291,6 @@ describe('créer ou fusionner depuis un usager externe — géocodage commune', 
       ],
       mediateurId,
     })
-    trackBeneficiaire(merges[0]?.id ?? '')
 
     const beneficiaire = await prismaClient.beneficiaire.findUniqueOrThrow({
       where: { id: merges[0]?.id ?? '' },

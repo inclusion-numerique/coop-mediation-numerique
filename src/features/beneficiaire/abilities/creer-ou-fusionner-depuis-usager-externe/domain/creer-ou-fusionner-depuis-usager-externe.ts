@@ -1,11 +1,5 @@
-import { AnneeNaissance } from '@/features/beneficiaire/domain/annee-naissance'
-import { Email } from '@/features/beneficiaire/domain/email'
+import type { CommuneResidence } from '@/features/beneficiaire/domain/commune-residence'
 import type { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
-import { NOM_MAX_LENGTH, Nom } from '@/features/beneficiaire/domain/nom'
-import {
-  PRENOM_MAX_LENGTH,
-  Prenom,
-} from '@/features/beneficiaire/domain/prenom'
 import { effectiveTrancheAge } from '@/features/beneficiaire/domain/tranche-age'
 import {
   type EchecTechnique,
@@ -13,7 +7,6 @@ import {
   type Result,
   success,
 } from '@/libraries/result'
-import { Telephone } from '@/libraries/telephone'
 import {
   type EchecDeCreerOuFusionnerDepuisUsagerExterne,
   IdentiteIncomplete,
@@ -22,50 +15,11 @@ import {
 import type { EcritureDUnUsager, FusionDesUsagers } from './fusion-des-usagers'
 import type { CreerOuFusionnerDepuisUsagerExternePorts } from './ports'
 import type {
-  CommuneFields,
   DonneesDeFusion,
+  IdentiteConnue,
   MergedBeneficiaire,
-  UsagerExterneAFusionner,
   UsagerNormalise,
 } from './usager-externe'
-
-const ANNEE_DE_NAISSANCE_ABSENTE_DE_RDVSP = 1900
-
-type IdentiteConnue = {
-  readonly email: string | null
-  readonly telephone: string | null
-  readonly prenom: string | null
-  readonly nom: string | null
-  readonly anneeNaissance: number | null
-}
-
-const tronque = (valeur: string, longueurMax: number): string =>
-  valeur.trim().slice(0, longueurMax)
-
-const anneeDeNaissance = (
-  birthDate: Date | null,
-  maintenant: Date,
-): AnneeNaissance | null => {
-  const annee = birthDate?.getFullYear()
-  return annee && annee > ANNEE_DE_NAISSANCE_ABSENTE_DE_RDVSP
-    ? AnneeNaissance(maintenant).safe(annee)
-    : null
-}
-
-const normaliser = (
-  usager: UsagerExterneAFusionner,
-  maintenant: Date,
-): UsagerNormalise => ({
-  rdvUserId: usager.rdvUserId,
-  nom: usager.nom ? Nom.safe(tronque(usager.nom, NOM_MAX_LENGTH)) : null,
-  prenom: usager.prenom
-    ? Prenom.safe(tronque(usager.prenom, PRENOM_MAX_LENGTH))
-    : null,
-  telephone: usager.telephone ? Telephone.safe(usager.telephone) : null,
-  email: usager.email ? Email.safe(usager.email) : null,
-  adresse: usager.adresse,
-  anneeNaissance: anneeDeNaissance(usager.birthDate, maintenant),
-})
 
 const donneesDeFusion = ({
   usager,
@@ -79,7 +33,7 @@ const donneesDeFusion = ({
   readonly existant: IdentiteConnue
   readonly dejaLie: boolean
   readonly residenceConnue: boolean
-  readonly commune: CommuneFields | null
+  readonly commune: CommuneResidence | null
   readonly maintenant: Date
 }): DonneesDeFusion => ({
   ...(dejaLie ? {} : { rdvUserId: usager.rdvUserId }),
@@ -103,8 +57,8 @@ const donneesDeFusion = ({
   ...(commune
     ? {
         commune: commune.commune,
-        communeCodePostal: commune.communeCodePostal,
-        communeCodeInsee: commune.communeCodeInsee,
+        communeCodePostal: commune.codePostal,
+        communeCodeInsee: commune.codeInsee,
       }
     : {}),
 })
@@ -136,13 +90,11 @@ const traiterUnUsager =
     maintenant: Date,
   ) =>
   async (
-    usagerExterne: UsagerExterneAFusionner,
+    usager: UsagerNormalise,
   ): Promise<Result<IssueDUnUsager, MotifDEcart>> => {
-    const usager = normaliser(usagerExterne, maintenant)
-
     const communeSiInconnue = (
       communeConnue: boolean,
-    ): Promise<Result<CommuneFields | null, EchecTechnique>> =>
+    ): Promise<Result<CommuneResidence | null, EchecTechnique>> =>
       usager.adresse && !communeConnue
         ? communeDeLAdresse(usager.adresse)
         : Promise.resolve(success(null))
@@ -219,8 +171,8 @@ const traiterUnUsager =
       anneeNaissance: usager.anneeNaissance,
       trancheAge: effectiveTrancheAge(usager.anneeNaissance, null, maintenant),
       commune: commune.data?.commune ?? null,
-      communeCodePostal: commune.data?.communeCodePostal ?? null,
-      communeCodeInsee: commune.data?.communeCodeInsee ?? null,
+      communeCodePostal: commune.data?.codePostal ?? null,
+      communeCodeInsee: commune.data?.codeInsee ?? null,
       mediateurId,
     }
     return ecrit({ _tag: 'Creation', beneficiaire })(
@@ -241,7 +193,7 @@ export const creerOuFusionnerDepuisUsagerExterne =
     mediateurId,
     maintenant,
   }: {
-    readonly usagers: readonly UsagerExterneAFusionner[]
+    readonly usagers: readonly UsagerNormalise[]
     readonly mediateurId: MediateurId
     readonly maintenant: Date
   }): Promise<

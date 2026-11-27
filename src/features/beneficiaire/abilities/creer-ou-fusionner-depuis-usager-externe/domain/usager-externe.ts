@@ -1,5 +1,6 @@
 import type { AnneeNaissance } from '@/features/beneficiaire/domain/annee-naissance'
 import type { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
+import type { CommuneResidence } from '@/features/beneficiaire/domain/commune-residence'
 import type { Email } from '@/features/beneficiaire/domain/email'
 import type { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
 import type { Nom } from '@/features/beneficiaire/domain/nom'
@@ -7,33 +8,22 @@ import type { Prenom } from '@/features/beneficiaire/domain/prenom'
 import type { TrancheAge } from '@/features/beneficiaire/domain/tranche-age'
 import type { Telephone } from '@/libraries/telephone'
 
-export type UsagerExterneAFusionner = {
-  readonly rdvUserId: number
-  readonly nom: string | null
-  readonly prenom: string | null
-  readonly telephone: string | null
-  readonly email: string | null
-  readonly adresse: string | null
-  readonly birthDate: Date | null
-}
-
 export type MergedBeneficiaire = {
   readonly id: BeneficiaireId
-  readonly nom: string | null
-  readonly prenom: string | null
-  readonly email: string | null
-  readonly telephone: string | null
+  readonly nom: Nom | null
+  readonly prenom: Prenom | null
+  readonly email: Email | null
+  readonly telephone: Telephone | null
   readonly mediateurId: MediateurId
   readonly adresse: string | null
-  readonly anneeNaissance: number | null
-  readonly commune: string | null
+  readonly anneeNaissance: AnneeNaissance | null
+  readonly commune: CommuneResidence['commune'] | null
 }
 
-export type CommuneFields = {
-  readonly commune: string
-  readonly communeCodePostal: string
-  readonly communeCodeInsee: string
-}
+export type IdentiteConnue = Pick<
+  MergedBeneficiaire,
+  'email' | 'telephone' | 'prenom' | 'nom' | 'anneeNaissance'
+>
 
 export type UsagerNormalise = {
   readonly rdvUserId: number
@@ -54,9 +44,9 @@ export type DonneesDeFusion = {
   readonly adresse?: string
   readonly anneeNaissance?: AnneeNaissance
   readonly trancheAge?: TrancheAge | null
-  readonly commune?: string
-  readonly communeCodePostal?: string
-  readonly communeCodeInsee?: string
+  readonly commune?: CommuneResidence['commune']
+  readonly communeCodePostal?: CommuneResidence['codePostal']
+  readonly communeCodeInsee?: CommuneResidence['codeInsee']
 }
 
 export type NouveauBeneficiaire = {
@@ -68,8 +58,8 @@ export type NouveauBeneficiaire = {
   readonly adresse: string | null
   readonly anneeNaissance: AnneeNaissance | null
   readonly trancheAge: TrancheAge | null
-  readonly commune: string | null
-  readonly communeCodePostal: string | null
-  readonly communeCodeInsee: string | null
+  readonly commune: CommuneResidence['commune'] | null
+  readonly communeCodePostal: CommuneResidence['codePostal'] | null
+  readonly communeCodeInsee: CommuneResidence['codeInsee'] | null
   readonly mediateurId: MediateurId
 }

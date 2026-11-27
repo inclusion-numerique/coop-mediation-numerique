@@ -1,9 +1,9 @@
 import type { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
+import type { CommuneResidence } from '@/features/beneficiaire/domain/commune-residence'
 import type { DuplicateBeneficiaire } from '@/features/beneficiaire/domain/doublon-de-beneficiaire'
 import type { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
 import type { EchecTechnique, Result } from '@/libraries/result'
 import type {
-  CommuneFields,
   DonneesDeFusion,
   MergedBeneficiaire,
   NouveauBeneficiaire,
@@ -23,7 +23,7 @@ export type TrouverUnDoublon = (
 
 export type CommuneDeLAdresse = (
   adresse: string,
-) => Promise<Result<CommuneFields | null, EchecTechnique>>
+) => Promise<Result<CommuneResidence | null, EchecTechnique>>
 
 export type MettreAJourLeBeneficiaire = (miseAJour: {
   readonly id: BeneficiaireId

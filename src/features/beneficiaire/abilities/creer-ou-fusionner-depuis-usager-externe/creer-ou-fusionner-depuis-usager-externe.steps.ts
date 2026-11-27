@@ -3,11 +3,14 @@ import { After, Given, Then, When } from '@cucumber/cucumber'
 import { prismaClient } from '@/configuration/prisma'
 import { creerOuFusionnerDepuisUsagerExterne } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/domain/creer-ou-fusionner-depuis-usager-externe'
 import type { FusionDesUsagers } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/domain/fusion-des-usagers'
-import type { UsagerExterneAFusionner } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/domain/usager-externe'
 import { lireLeBeneficiaireLie } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/beneficiaire-lie.query'
 import { creerLeBeneficiaire } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/creer-le-beneficiaire.mutation'
 import { trouverUnDoublon } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/doublon-de-l-usager.query'
 import { mettreAJourLeBeneficiaire } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/mettre-a-jour-le-beneficiaire.mutation'
+import {
+  demandeNormalisee,
+  type UsagerExterneAFusionner,
+} from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/rdv-service-public/usager-externe.transfer'
 import {
   seedBeneficiaire,
   suivreLeBeneficiaire,
@@ -131,13 +134,15 @@ When('je crée ou fusionne les bénéficiaires depuis ces usagers', async () => 
     communeDeLAdresse: async () => success(null),
     mettreAJourLeBeneficiaire,
     creerLeBeneficiaire,
-  })({
-    usagers: contexte.usagers,
-    mediateurId: testMediateurId,
-    maintenant: new Date(),
-  })
+  })(
+    demandeNormalisee({
+      usagers: contexte.usagers,
+      mediateurId: testMediateurId,
+      maintenant: new Date(),
+    }),
+  )
   contexte.result = fusion.data
-  for (const merge of contexte.result.merges) suivreLeBeneficiaire(merge.id)
+  fusion.data.merges.map(({ id }) => id).forEach(suivreLeBeneficiaire)
 })
 
 Then('un bénéficiaire est créé et lié à cet usager', async () => {

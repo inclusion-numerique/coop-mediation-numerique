@@ -13,11 +13,7 @@ import { Telephone } from '@/libraries/telephone'
 import { creerOuFusionnerDepuisUsagerExterne } from './creer-ou-fusionner-depuis-usager-externe'
 import type { FusionDesUsagers } from './fusion-des-usagers'
 import type { CreerOuFusionnerDepuisUsagerExternePorts } from './ports'
-import type {
-  CommuneFields,
-  MergedBeneficiaire,
-  UsagerExterneAFusionner,
-} from './usager-externe'
+import type { MergedBeneficiaire, UsagerNormalise } from './usager-externe'
 
 const maintenant = new Date('2026-06-15T12:00:00.000Z')
 
@@ -25,30 +21,38 @@ const mediateurId = MediateurId('8a1b2c3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d')
 
 const adresse = '12 rue de la Paix, 27000 Évreux'
 
-const evreux: CommuneFields = {
+const evreux = CommuneResidence({
+  commune: 'Évreux',
+  codePostal: '27000',
+  codeInsee: '27229',
+})
+
+const communeDEvreux = {
   commune: 'Évreux',
   communeCodePostal: '27000',
   communeCodeInsee: '27229',
 }
 
-const usagerComplet: UsagerExterneAFusionner = {
+const annee1996 = AnneeNaissance(maintenant)(1996)
+
+const usagerComplet: UsagerNormalise = {
   rdvUserId: 42,
-  nom: '  Martin ',
-  prenom: 'Léa',
-  telephone: '0102030405',
-  email: ' Lea@Example.fr ',
+  nom: Nom('Martin'),
+  prenom: Prenom('Léa'),
+  telephone: Telephone('0102030405'),
+  email: Email('lea@example.fr'),
   adresse,
-  birthDate: new Date('1996-03-01T12:00:00.000Z'),
+  anneeNaissance: annee1996,
 }
 
-const usagerSansDonnees: UsagerExterneAFusionner = {
+const usagerSansDonnees: UsagerNormalise = {
   rdvUserId: 42,
   nom: null,
   prenom: null,
   telephone: null,
   email: null,
   adresse: null,
-  birthDate: null,
+  anneeNaissance: null,
 }
 
 const lie: MergedBeneficiaire = {
@@ -65,11 +69,11 @@ const lie: MergedBeneficiaire = {
 
 const lieComplet: MergedBeneficiaire = {
   ...lie,
-  nom: 'Martin',
-  prenom: 'Léa',
-  email: 'lea@example.fr',
-  telephone: '+33102030405',
-  anneeNaissance: 1990,
+  nom: Nom('Martin'),
+  prenom: Prenom('Léa'),
+  email: Email('lea@example.fr'),
+  telephone: Telephone('+33102030405'),
+  anneeNaissance: AnneeNaissance(maintenant)(1990),
   commune: 'Évreux',
 }
 
@@ -98,8 +102,6 @@ const ports: CreerOuFusionnerDepuisUsagerExternePorts = {
 }
 
 const panne = async () => failure(EchecTechnique('panne'))
-
-const annee1996 = AnneeNaissance(maintenant)(1996)
 
 const nouveauBeneficiaire = {
   rdvUserId: 42,
@@ -158,49 +160,44 @@ describe('créer ou fusionner des bénéficiaires depuis des usagers externes', 
     )
   })
 
-  it.each<{ cas: string; birthDate: Date | null }>([
-    { cas: 'sans date de naissance', birthDate: null },
-    {
-      cas: 'né le 1er janvier 1900, date que RDV Service Public donne à défaut',
-      birthDate: new Date('1900-01-01T12:00:00.000Z'),
-    },
-  ])(
-    'crée le bénéficiaire sans année de naissance ni tranche d’âge $cas',
-    async ({ birthDate }) => {
-      expect(
-        await creerOuFusionnerDepuisUsagerExterne(ports)({
-          usagers: [
-            { ...usagerSansDonnees, nom: 'Martin', prenom: 'Léa', birthDate },
-          ],
-          mediateurId,
-          maintenant,
-        }),
-      ).toEqual(
-        success<FusionDesUsagers>({
-          merges: [ecrit],
-          skipped: [],
-          ecritures: [
-            {
-              _tag: 'Creation',
-              beneficiaire: {
-                ...nouveauBeneficiaire,
-                telephone: null,
-                email: null,
-                adresse: null,
-                anneeNaissance: null,
-                trancheAge: null,
-                commune: null,
-                communeCodePostal: null,
-                communeCodeInsee: null,
-              },
+  it('crée le bénéficiaire sans année de naissance ni tranche d’âge quand l’usager n’en donne pas', async () => {
+    expect(
+      await creerOuFusionnerDepuisUsagerExterne(ports)({
+        usagers: [
+          {
+            ...usagerSansDonnees,
+            nom: Nom('Martin'),
+            prenom: Prenom('Léa'),
+          },
+        ],
+        mediateurId,
+        maintenant,
+      }),
+    ).toEqual(
+      success<FusionDesUsagers>({
+        merges: [ecrit],
+        skipped: [],
+        ecritures: [
+          {
+            _tag: 'Creation',
+            beneficiaire: {
+              ...nouveauBeneficiaire,
+              telephone: null,
+              email: null,
+              adresse: null,
+              anneeNaissance: null,
+              trancheAge: null,
+              commune: null,
+              communeCodePostal: null,
+              communeCodeInsee: null,
             },
-          ],
-        }),
-      )
-    },
-  )
+          },
+        ],
+      }),
+    )
+  })
 
-  it.each<{ cas: string; usager: UsagerExterneAFusionner }>([
+  it.each<{ cas: string; usager: UsagerNormalise }>([
     { cas: 'nom', usager: { ...usagerComplet, nom: null } },
     { cas: 'prénom', usager: { ...usagerComplet, prenom: null } },
   ])(
@@ -261,7 +258,7 @@ describe('créer ou fusionner des bénéficiaires depuis des usagers externes', 
               adresse,
               anneeNaissance: annee1996,
               trancheAge: TrancheAge('VingtCinqTrenteNeuf'),
-              ...evreux,
+              ...communeDEvreux,
             },
           },
         ],
@@ -313,7 +310,7 @@ describe('créer ou fusionner des bénéficiaires depuis des usagers externes', 
               adresse,
               anneeNaissance: annee1996,
               trancheAge: TrancheAge('VingtCinqTrenteNeuf'),
-              ...evreux,
+              ...communeDEvreux,
             },
           },
         ],
@@ -328,11 +325,7 @@ describe('créer ou fusionner des bénéficiaires depuis des usagers externes', 
         trouverUnDoublon: async () =>
           success({
             ...doublon,
-            communeResidence: CommuneResidence({
-              commune: 'Évreux',
-              codePostal: '27000',
-              codeInsee: '27229',
-            }),
+            communeResidence: evreux,
           }),
       })({ usagers: [usagerComplet], mediateurId, maintenant }),
     ).toEqual(

@@ -12,5 +12,6 @@ export const mettreAJourLeBeneficiaire: MettreAJourLeBeneficiaire =
         data: donnees,
         select: beneficiaireFusionneSelect,
       }),
+      new Date(),
     ),
   )

@@ -10,5 +10,5 @@ export const lireLeBeneficiaireLie: LireLeBeneficiaireLie =
       where: { rdvUserId, mediateurId, suppression: null, anonyme: false },
       select: beneficiaireFusionneSelect,
     })
-    return lie === null ? null : versBeneficiaireFusionne(lie)
+    return lie === null ? null : versBeneficiaireFusionne(lie, new Date())
   })
