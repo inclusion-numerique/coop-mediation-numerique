@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest'
+import { AnneeNaissance } from '@/features/beneficiaire/domain/annee-naissance'
 import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
+import { Email } from '@/features/beneficiaire/domain/email'
 import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
+import { Nom } from '@/features/beneficiaire/domain/nom'
+import { Prenom } from '@/features/beneficiaire/domain/prenom'
+import { Telephone } from '@/libraries/telephone'
 import type { BeneficiaireAFusionner } from './beneficiaire-a-fusionner'
 import { fusionnerBeneficiaires } from './fusionner-beneficiaires'
 
@@ -34,21 +39,21 @@ const vide: BeneficiaireAFusionner = {
 
 const marie: BeneficiaireAFusionner = {
   ...vide,
-  prenom: 'Marie',
-  nom: 'Martin',
-  email: 'marie@example.com',
+  prenom: Prenom('Marie'),
+  nom: Nom('Martin'),
+  email: Email('marie@example.com'),
+  adresse: '3 rue de la République',
   pasDeTelephone: true,
-  anneeNaissance: 1990,
+  anneeNaissance: AnneeNaissance(maintenant)(1990),
   creation: new Date('2025-01-05T08:00:00.000Z'),
 }
 
 const jeanne: BeneficiaireAFusionner = {
   ...vide,
-  prenom: 'Jeanne',
-  nom: '   ',
-  telephone: '+33600000000',
+  prenom: Prenom('Jeanne'),
+  telephone: Telephone('+33600000000'),
+  adresse: '   ',
   pasDeTelephone: false,
-  anneeNaissance: 0,
   creation: new Date('2025-03-10T08:00:00.000Z'),
 }
 
@@ -69,12 +74,13 @@ describe('fusionner des bénéficiaires', () => {
         destinationId,
         mediateurId,
         donneesDeLaDestination: {
-          prenom: 'Jeanne',
-          nom: 'Martin',
-          telephone: '+33600000000',
-          email: 'marie@example.com',
+          prenom: Prenom('Jeanne'),
+          nom: Nom('Martin'),
+          telephone: Telephone('+33600000000'),
+          email: Email('marie@example.com'),
+          adresse: '3 rue de la République',
           pasDeTelephone: false,
-          anneeNaissance: 0,
+          anneeNaissance: AnneeNaissance(maintenant)(1990),
         },
         creation: new Date('2025-01-05T08:00:00.000Z'),
         maintenant,

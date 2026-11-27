@@ -32,6 +32,7 @@ export const fusionnerBeneficiaires =
       sourceId,
       destinationId,
       mediateurId,
+      maintenant,
     })
 
     if (source === null) return failure(BeneficiaireSourceIntrouvable(sourceId))

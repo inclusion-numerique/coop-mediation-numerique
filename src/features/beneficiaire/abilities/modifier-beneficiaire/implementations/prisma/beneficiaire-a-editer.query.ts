@@ -1,4 +1,5 @@
 import { prismaClient } from '@/configuration/prisma'
+import { beneficiaireEnregistreDe } from '@/features/beneficiaire/implementations/prisma/beneficiaire-enregistre.transfer'
 import type { Prisma } from '@/generated/prisma/client'
 import type { LireBeneficiaireAEditer } from '../../domain/ports'
 
@@ -21,11 +22,12 @@ const beneficiaireAEditerSelect = {
   communeCodeInsee: true,
 } satisfies Prisma.BeneficiaireSelect
 
-export const beneficiaireAEditer: LireBeneficiaireAEditer = ({
+export const beneficiaireAEditer: LireBeneficiaireAEditer = async ({
   beneficiaireId,
   mediateurId,
-}) =>
-  prismaClient.beneficiaire.findUnique({
+  maintenant,
+}) => {
+  const ligne = await prismaClient.beneficiaire.findUnique({
     where: {
       id: beneficiaireId,
       mediateurId,
@@ -33,3 +35,5 @@ export const beneficiaireAEditer: LireBeneficiaireAEditer = ({
     },
     select: beneficiaireAEditerSelect,
   })
+  return ligne === null ? null : beneficiaireEnregistreDe(ligne, maintenant)
+}

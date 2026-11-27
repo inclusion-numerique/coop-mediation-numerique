@@ -33,6 +33,7 @@ const BeneficiaireLayout = async (
   const beneficiaire = await consulterBeneficiaire({
     beneficiaireId: BeneficiaireId(beneficiaireId),
     mediateurId,
+    maintenant: new Date(),
   })
 
   if (!beneficiaire) {

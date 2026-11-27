@@ -247,6 +247,7 @@
     "beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/domain",
     "beneficiaire/abilities/detecter-doublons/domain",
     "beneficiaire/abilities/exporter-beneficiaires/domain",
+    "beneficiaire/abilities/fusionner-beneficiaires/domain",
     "beneficiaire/abilities/importer-beneficiaires/action",
     "beneficiaire/abilities/lister-beneficiaires/domain",
     "beneficiaire/action",

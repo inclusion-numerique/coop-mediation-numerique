@@ -7,6 +7,7 @@ export type LireLesBeneficiairesAFusionner = (cibles: {
   readonly sourceId: BeneficiaireId
   readonly destinationId: BeneficiaireId
   readonly mediateurId: MediateurId
+  readonly maintenant: Date
 }) => Promise<{
   readonly source: BeneficiaireAFusionner | null
   readonly destination: BeneficiaireAFusionner | null

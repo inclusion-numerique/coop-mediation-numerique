@@ -1,6 +1,14 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { expect, within } from 'storybook/test'
 import BeneficiaireConsultationLayout from '@/features/beneficiaire/abilities/consulter-beneficiaire/ui/layouts/BeneficiaireConsultationLayout'
+import { AnneeNaissance } from '@/features/beneficiaire/domain/annee-naissance'
+import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
+import { Email } from '@/features/beneficiaire/domain/email'
+import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
+import { Nom } from '@/features/beneficiaire/domain/nom'
+import { Notes } from '@/features/beneficiaire/domain/notes'
+import { Prenom } from '@/features/beneficiaire/domain/prenom'
+import { Telephone } from '@/libraries/telephone'
 import ViewBeneficiaireInformationsPage, {
   type BeneficiaireInformationsPageData,
 } from './ViewBeneficiaireInformationsPage'
@@ -31,12 +39,12 @@ export default meta
 type Story = StoryObj<typeof ViewBeneficiaireInformationsPage>
 
 const beneficiaireSansInformations = {
-  id: 'f4dbca97-6fe8-4be1-97be-bdf5e66b9ea8',
-  mediateurId: '303381cc-3da7-433d-a553-1a5f76465989',
+  id: BeneficiaireId('f4dbca97-6fe8-4be1-97be-bdf5e66b9ea8'),
+  mediateurId: MediateurId('303381cc-3da7-433d-a553-1a5f76465989'),
   rdvUserId: null,
   rdvServicePublicId: null,
-  prenom: 'Jeanne',
-  nom: 'Minimale',
+  prenom: Prenom('Jeanne'),
+  nom: Nom('Minimale'),
   email: null,
   anneeNaissance: null,
   notes: null,
@@ -68,20 +76,20 @@ export const SansInformations: Story = {
 }
 
 const beneficiaireAvecInformations = {
-  id: '36929ed7-3b6f-4ed3-9924-b5e1a6c27096',
-  mediateurId: '303381cc-3da7-433d-a553-1a5f76465989',
+  id: BeneficiaireId('36929ed7-3b6f-4ed3-9924-b5e1a6c27096'),
+  mediateurId: MediateurId('303381cc-3da7-433d-a553-1a5f76465989'),
   rdvUserId: null,
   rdvServicePublicId: 42,
-  prenom: 'Jean',
-  nom: 'Maximal',
-  email: 'jean.maximal@coop-numerique.incubateur.anct.gouv.fr',
-  anneeNaissance: 1987,
-  notes: 'Notes de Jean Maximal',
+  prenom: Prenom('Jean'),
+  nom: Nom('Maximal'),
+  email: Email('jean.maximal@coop-numerique.incubateur.anct.gouv.fr'),
+  anneeNaissance: AnneeNaissance(new Date('2024-01-01'))(1987),
+  notes: Notes('Notes de Jean Maximal'),
   genre: 'Masculin',
   trancheAge: 'QuaranteCinquanteNeuf',
   creation: new Date('2024-01-01'),
   adresse: '1 rue de la Paix',
-  telephone: '0123456789',
+  telephone: Telephone('0123456789'),
   pasDeTelephone: false,
   statutSocial: 'EnEmploi',
   commune: 'Paris',

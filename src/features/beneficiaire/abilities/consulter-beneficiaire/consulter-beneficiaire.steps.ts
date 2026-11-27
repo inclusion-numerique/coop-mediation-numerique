@@ -23,6 +23,7 @@ When(
     contexte.result = await consulterBeneficiaire({
       beneficiaireId: BeneficiaireId(id),
       mediateurId: testMediateurId,
+      maintenant: new Date(),
     })
   },
 )
@@ -31,6 +32,7 @@ When('je consulte un bénéficiaire inexistant', async () => {
   contexte.result = await consulterBeneficiaire({
     beneficiaireId: BeneficiaireId(v4()),
     mediateurId: testMediateurId,
+    maintenant: new Date(),
   })
 })
 

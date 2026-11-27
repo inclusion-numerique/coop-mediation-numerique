@@ -5,4 +5,5 @@ import type { BeneficiaireInformations } from './beneficiaire-informations'
 export type ConsulterBeneficiaire = (input: {
   readonly beneficiaireId: BeneficiaireId
   readonly mediateurId: MediateurId
+  readonly maintenant: Date
 }) => Promise<BeneficiaireInformations | null>

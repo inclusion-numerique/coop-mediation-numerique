@@ -30,6 +30,7 @@ const BeneficiaireInformationsPage = async (props: {
   const beneficiaire = await consulterBeneficiaire({
     beneficiaireId: BeneficiaireId(beneficiaireId),
     mediateurId: MediateurId(mediateurId),
+    maintenant: new Date(),
   })
 
   if (!beneficiaire) {

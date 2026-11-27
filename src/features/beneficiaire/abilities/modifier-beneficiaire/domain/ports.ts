@@ -20,4 +20,5 @@ export type ModifierBeneficiairePorts = {
 export type LireBeneficiaireAEditer = (input: {
   readonly beneficiaireId: BeneficiaireId
   readonly mediateurId: MediateurId
+  readonly maintenant: Date
 }) => Promise<BeneficiaireAEditer | null>

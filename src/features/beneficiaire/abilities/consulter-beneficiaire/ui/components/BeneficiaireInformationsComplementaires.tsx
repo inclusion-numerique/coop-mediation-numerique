@@ -1,12 +1,8 @@
-import { AnneeNaissance } from '@/features/beneficiaire/domain/annee-naissance'
 import { genreLabels } from '@/features/beneficiaire/domain/genre'
 import { statutSocialLabels } from '@/features/beneficiaire/domain/statut-social'
-import {
-  effectiveTrancheAge,
-  trancheAgeLabels,
-} from '@/features/beneficiaire/domain/tranche-age'
 import { InfoLabelValue } from '@/libraries/ui/components'
 import type { BeneficiaireInformations } from '../../domain/beneficiaire-informations'
+import { trancheAgeAffichee } from '../presenters/tranche-age-affichee.presenter'
 
 const BeneficiaireInformationsComplementaires = ({
   beneficiaire: {
@@ -30,13 +26,9 @@ const BeneficiaireInformationsComplementaires = ({
     | 'anneeNaissance'
   >
 }) => {
-  const maintenant = new Date()
-  const displayedTrancheAge = effectiveTrancheAge(
-    anneeNaissance === null
-      ? null
-      : AnneeNaissance(maintenant).safe(anneeNaissance),
-    trancheAge,
-    maintenant,
+  const trancheAffichee = trancheAgeAffichee(
+    { anneeNaissance, trancheAge },
+    new Date(),
   )
 
   return (
@@ -62,12 +54,7 @@ const BeneficiaireInformationsComplementaires = ({
           />
         </div>
         <div className="fr-col-6">
-          <InfoLabelValue
-            label="Tranche d’âge"
-            value={
-              displayedTrancheAge ? trancheAgeLabels[displayedTrancheAge] : '-'
-            }
-          />
+          <InfoLabelValue label="Tranche d’âge" value={trancheAffichee} />
         </div>
         <div className="fr-col-6">
           <InfoLabelValue
