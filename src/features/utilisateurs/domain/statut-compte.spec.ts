@@ -17,28 +17,28 @@ const ilYA = (jours: number): Date =>
 
 const mediateur = (
   derniereActivite: Jalon,
-  dernierBeneficiaire: Jalon = JAMAIS,
+  dernierBeneficiaire: Jalon,
 ): ActiviteMediateur => ({ derniereActivite, dernierBeneficiaire })
 
 const ilYALe = (jours: number): Jalon => jalon(ilYA(jours))
 
 const coordinateur = (
   aUneEquipe: boolean,
-  aCoordonne = false,
+  aCoordonne: boolean,
 ): ActiviteCoordinateur => ({ aUneEquipe, aCoordonne })
 
 const inscrit = ({
-  depuis = 200,
-  role = 'User',
-  med = null,
-  coord = null,
-  visite = JAMAIS,
+  depuis,
+  role,
+  med,
+  coord,
+  visite,
 }: {
-  depuis?: number
-  role?: 'User' | 'Admin'
-  med?: ActiviteMediateur | null
-  coord?: ActiviteCoordinateur | null
-  visite?: Jalon
+  depuis: number
+  role: 'User' | 'Admin'
+  med: ActiviteMediateur | null
+  coord: ActiviteCoordinateur | null
+  visite: Jalon
 }): SituationDuCompte => ({
   role: RoleUtilisateur(role),
   cycle: cycleDeVie({
@@ -70,7 +70,13 @@ describe('statut d’un compte', () => {
     expect(
       statutDe(
         {
-          ...inscrit({ role: 'Admin' }),
+          ...inscrit({
+            depuis: 200,
+            role: 'Admin',
+            med: null,
+            coord: null,
+            visite: JAMAIS,
+          }),
           cycle: cycleDeVie({
             creeLe: ilYA(10),
             inscritLe: ilYA(9),
@@ -83,7 +89,18 @@ describe('statut d’un compte', () => {
   })
 
   it('ne range pas un administrateur dans le cycle de vie', () => {
-    expect(statutDe(inscrit({ role: 'Admin' }), MAINTENANT)).toEqual({
+    expect(
+      statutDe(
+        inscrit({
+          depuis: 200,
+          role: 'Admin',
+          med: null,
+          coord: null,
+          visite: JAMAIS,
+        }),
+        MAINTENANT,
+      ),
+    ).toEqual({
       _tag: 'Administrateur',
     })
   })
@@ -112,7 +129,13 @@ describe('statut d’un compte', () => {
     (jours, palier) => {
       expect(
         statutDe(
-          inscrit({ depuis: jours, med: mediateur(JAMAIS) }),
+          inscrit({
+            depuis: jours,
+            role: 'User',
+            med: mediateur(JAMAIS, JAMAIS),
+            coord: null,
+            visite: JAMAIS,
+          }),
           MAINTENANT,
         ),
       ).toEqual({ _tag: 'Nouveau', palier })
@@ -128,14 +151,32 @@ describe('statut d’un compte', () => {
     'médiateur dont la dernière activité date de %i jours',
     (jours, attendu) => {
       expect(
-        statutDe(inscrit({ med: mediateur(ilYALe(jours)) }), MAINTENANT),
+        statutDe(
+          inscrit({
+            depuis: 200,
+            role: 'User',
+            med: mediateur(ilYALe(jours), JAMAIS),
+            coord: null,
+            visite: JAMAIS,
+          }),
+          MAINTENANT,
+        ),
       ).toEqual(attendu)
     },
   )
 
   it('compte la création d’un bénéficiaire comme une activité', () => {
     expect(
-      statutDe(inscrit({ med: mediateur(JAMAIS, ilYALe(5)) }), MAINTENANT),
+      statutDe(
+        inscrit({
+          depuis: 200,
+          role: 'User',
+          med: mediateur(JAMAIS, ilYALe(5)),
+          coord: null,
+          visite: JAMAIS,
+        }),
+        MAINTENANT,
+      ),
     ).toEqual({
       _tag: 'Actif',
     })
@@ -144,7 +185,13 @@ describe('statut d’un compte', () => {
   it('juge un coordinateur qui a une équipe sur sa dernière visite', () => {
     expect(
       statutDe(
-        inscrit({ coord: coordinateur(true), visite: ilYALe(2) }),
+        inscrit({
+          depuis: 200,
+          role: 'User',
+          med: null,
+          coord: coordinateur(true, false),
+          visite: ilYALe(2),
+        }),
         MAINTENANT,
       ),
     ).toEqual({ _tag: 'Actif' })
@@ -153,7 +200,13 @@ describe('statut d’un compte', () => {
   it('juge un coordinateur qui a coordonné sur sa dernière visite', () => {
     expect(
       statutDe(
-        inscrit({ coord: coordinateur(false, true), visite: ilYALe(40) }),
+        inscrit({
+          depuis: 200,
+          role: 'User',
+          med: null,
+          coord: coordinateur(false, true),
+          visite: ilYALe(40),
+        }),
         MAINTENANT,
       ),
     ).toEqual({ _tag: 'Inactif', palier: 30 })
@@ -162,7 +215,13 @@ describe('statut d’un compte', () => {
   it('ne retient pas la visite d’un coordinateur sans équipe ni coordination', () => {
     expect(
       statutDe(
-        inscrit({ depuis: 10, coord: coordinateur(false), visite: ilYALe(1) }),
+        inscrit({
+          depuis: 10,
+          role: 'User',
+          med: null,
+          coord: coordinateur(false, false),
+          visite: ilYALe(1),
+        }),
         MAINTENANT,
       ),
     ).toEqual({ _tag: 'Nouveau', palier: 7 })
@@ -172,8 +231,10 @@ describe('statut d’un compte', () => {
     expect(
       statutDe(
         inscrit({
-          med: mediateur(ilYALe(3)),
-          coord: coordinateur(false),
+          depuis: 200,
+          role: 'User',
+          med: mediateur(ilYALe(3), JAMAIS),
+          coord: coordinateur(false, false),
           visite: ilYALe(1),
         }),
         MAINTENANT,
@@ -185,8 +246,10 @@ describe('statut d’un compte', () => {
     expect(
       statutDe(
         inscrit({
-          med: mediateur(ilYALe(100)),
-          coord: coordinateur(true),
+          depuis: 200,
+          role: 'User',
+          med: mediateur(ilYALe(100), JAMAIS),
+          coord: coordinateur(true, false),
           visite: ilYALe(2),
         }),
         MAINTENANT,

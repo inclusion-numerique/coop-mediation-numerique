@@ -98,7 +98,7 @@ const reglesDesRoles: readonly {
   },
 ]
 
-export const rolesBrevoDe = (inscrit: Tenue): readonly RoleBrevo[] =>
+const rolesBrevoDe = (inscrit: Tenue): readonly RoleBrevo[] =>
   reglesDesRoles.filter(({ tenu }) => tenu(inscrit)).map(({ role }) => role)
 
 export const contactASynchroniser = (

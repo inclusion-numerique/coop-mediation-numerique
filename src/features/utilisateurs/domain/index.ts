@@ -12,6 +12,7 @@ export {
   type InscritDeLaListe,
   RoleBrevo,
   SANS_CONTRAT,
+  type SituationDansLeDispositif,
   situationDansLeDispositif,
 } from './contact-brevo'
 export { Dispositif, dispositifDe, estEnPoste } from './dispositif'
