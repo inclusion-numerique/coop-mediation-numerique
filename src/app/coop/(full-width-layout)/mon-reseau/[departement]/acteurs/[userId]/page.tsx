@@ -5,7 +5,12 @@ import { retirerUnMembreAction } from '@/app/_actions/equipe/retirer-un-membre.a
 import { supprimerUnAncienMembreAction } from '@/app/_actions/equipe/supprimer-un-ancien-membre.action'
 import { rechercherUnLieuActiviteAction } from '@/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
 import { metadataTitle } from '@/configuration/projet'
-import { compterLesAccompagnements } from '@/features/activites/abilities/compter-les-accompagnements/implementations/prisma/totaux-des-accompagnements.query'
+import { compterLesAccompagnements } from '@/features/activites/abilities/compter-les-accompagnements/domain'
+import {
+  activitesComptees,
+  nouvellesPersonnesComptees,
+  personnesComptees,
+} from '@/features/activites/abilities/compter-les-accompagnements/implementations/prisma/totaux-des-accompagnements.query'
 import {
   CoordinateurId as CoordinateurIdDesActivites,
   criteresSurLaPeriode,
@@ -69,7 +74,13 @@ const lireLesStatistiquesSur30Jours = async (
   mediateurId: string,
   periode: { readonly du: Date; readonly au: Date },
 ) => {
-  const { accompagnements, personnes } = await compterLesAccompagnements({
+  const {
+    data: { accompagnements, personnes },
+  } = await compterLesAccompagnements({
+    activitesComptees,
+    personnesComptees,
+    nouvellesPersonnesComptees,
+  })({
     perimetre: {
       type: 'Equipe',
       coordinateur: CoordinateurIdDesActivites(coordinateurId),

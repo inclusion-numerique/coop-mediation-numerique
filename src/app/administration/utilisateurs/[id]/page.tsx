@@ -11,7 +11,12 @@ import { supprimerCompteAction } from '@/app/_actions/utilisateurs/supprimer-com
 import { usurperUnUtilisateurAction } from '@/app/_actions/utilisateurs/usurper-un-utilisateur.action'
 import { environnementServeur } from '@/configuration/environnement/serveur'
 import { metadataTitle } from '@/configuration/projet'
-import { compterLesAccompagnements } from '@/features/activites/abilities/compter-les-accompagnements/implementations/prisma/totaux-des-accompagnements.query'
+import { compterLesAccompagnements } from '@/features/activites/abilities/compter-les-accompagnements/domain'
+import {
+  activitesComptees,
+  nouvellesPersonnesComptees,
+  personnesComptees,
+} from '@/features/activites/abilities/compter-les-accompagnements/implementations/prisma/totaux-des-accompagnements.query'
 import { totauxPresentes } from '@/features/activites/abilities/compter-les-accompagnements/ui/presenters/totaux.presenter'
 import { compterLesAccompagnementsParLieu } from '@/features/activites/abilities/compter-les-accompagnements-par-lieu/implementations/prisma/accompagnements-par-lieu.query'
 import { parLieuPresentes } from '@/features/activites/abilities/compter-les-accompagnements-par-lieu/ui/presenters/par-lieu.presenter'
@@ -195,7 +200,11 @@ const sectionStatistiques = async (
     coordination,
     { premiere, derniere },
   ] = await Promise.all([
-    compterLesAccompagnements(demande).then(totauxPresentes),
+    compterLesAccompagnements({
+      activitesComptees,
+      personnesComptees,
+      nouvellesPersonnesComptees,
+    })(demande).then(({ data }) => totauxPresentes(data)),
     repartirLesAccompagnements(demande).then(repartitionPresentee),
     decrireLesPersonnesAccompagnees(demande).then(profilPresente),
     compterLesAccompagnementsParLieu(demande).then(parLieuPresentes),

@@ -1,5 +1,10 @@
 import type { NextRequest } from 'next/server'
-import { compterLesAccompagnements } from '@/features/activites/abilities/compter-les-accompagnements/implementations/prisma/totaux-des-accompagnements.query'
+import { compterLesAccompagnements } from '@/features/activites/abilities/compter-les-accompagnements/domain'
+import {
+  activitesComptees,
+  nouvellesPersonnesComptees,
+  personnesComptees,
+} from '@/features/activites/abilities/compter-les-accompagnements/implementations/prisma/totaux-des-accompagnements.query'
 import { totauxPresentes } from '@/features/activites/abilities/compter-les-accompagnements/ui/presenters/totaux.presenter'
 import { compterLesAccompagnementsParCommune } from '@/features/activites/abilities/compter-les-accompagnements-par-commune/implementations/prisma/accompagnements-par-commune.query'
 import { parCommunePresentes } from '@/features/activites/abilities/compter-les-accompagnements-par-commune/ui/presenters/par-commune.presenter'
@@ -55,7 +60,15 @@ import { UtilisateurId } from '@/features/utilisateurs/domain'
 import { auteurDeLExport } from '@/features/utilisateurs/ui/presenters/auteur-de-l-export.presenter'
 
 const statistiquesDesActivites = statistiquesAvec({
-  totalCounts: source(compterLesAccompagnements, totauxPresentes),
+  totalCounts: source(
+    (demande) =>
+      compterLesAccompagnements({
+        activitesComptees,
+        personnesComptees,
+        nouvellesPersonnesComptees,
+      })(demande).then(({ data }) => data),
+    totauxPresentes,
+  ),
   periode: source(compterLesAccompagnementsParPeriode, parPeriodePresentes),
   repartition: source(repartirLesAccompagnements, repartitionPresentee),
   tags: sourceOptionnelle(repartirLesAccompagnementsParTag, parTagPresentes),

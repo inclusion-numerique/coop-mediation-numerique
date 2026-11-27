@@ -1,7 +1,12 @@
 import { rechercherLesLieuxNationauxAction } from '@/app/_actions/statistiques/rechercher-les-lieux-nationaux.action'
 import { rechercherLesTagsCollectifsAction } from '@/app/_actions/statistiques/rechercher-les-tags-collectifs.action'
 import { metadataTitle } from '@/configuration/projet'
-import { compterLesAccompagnements } from '@/features/activites/abilities/compter-les-accompagnements/implementations/prisma/totaux-des-accompagnements.query'
+import { compterLesAccompagnements } from '@/features/activites/abilities/compter-les-accompagnements/domain'
+import {
+  activitesComptees,
+  nouvellesPersonnesComptees,
+  personnesComptees,
+} from '@/features/activites/abilities/compter-les-accompagnements/implementations/prisma/totaux-des-accompagnements.query'
 import { totauxPresentes } from '@/features/activites/abilities/compter-les-accompagnements/ui/presenters/totaux.presenter'
 import { BlocDesChiffresCles } from '@/features/activites/abilities/compter-les-accompagnements/ui/slots/BlocDesChiffresCles.slot'
 import { compterLesAccompagnementsParCommune } from '@/features/activites/abilities/compter-les-accompagnements-par-commune/implementations/prisma/accompagnements-par-commune.query'
@@ -57,7 +62,15 @@ import { lireLesTagsCollectifs } from '@/features/tags/abilities/lire-les-tags-v
 import { ClientBinder } from '@/libraries/nextjs/injection'
 
 const statistiquesDesActivites = statistiquesAvec({
-  totalCounts: source(compterLesAccompagnements, totauxPresentes),
+  totalCounts: source(
+    (demande) =>
+      compterLesAccompagnements({
+        activitesComptees,
+        personnesComptees,
+        nouvellesPersonnesComptees,
+      })(demande).then(({ data }) => data),
+    totauxPresentes,
+  ),
   periode: source(compterLesAccompagnementsParPeriode, parPeriodePresentes),
   repartition: source(repartirLesAccompagnements, repartitionPresentee),
   tags: sourceOptionnelle(repartirLesAccompagnementsParTag, parTagPresentes),

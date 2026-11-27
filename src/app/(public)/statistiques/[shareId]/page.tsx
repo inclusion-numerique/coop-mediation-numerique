@@ -2,7 +2,12 @@ import { notFound } from 'next/navigation'
 import { rechercherLesEmployeusesDuPartageAction } from '@/app/_actions/statistiques/rechercher-les-employeuses-du-partage.action'
 import { rechercherLesLieuxDuPartageAction } from '@/app/_actions/statistiques/rechercher-les-lieux-du-partage.action'
 import { rechercherLesTagsDuPartageAction } from '@/app/_actions/statistiques/rechercher-les-tags-du-partage.action'
-import { compterLesAccompagnements } from '@/features/activites/abilities/compter-les-accompagnements/implementations/prisma/totaux-des-accompagnements.query'
+import { compterLesAccompagnements } from '@/features/activites/abilities/compter-les-accompagnements/domain'
+import {
+  activitesComptees,
+  nouvellesPersonnesComptees,
+  personnesComptees,
+} from '@/features/activites/abilities/compter-les-accompagnements/implementations/prisma/totaux-des-accompagnements.query'
 import { totauxPresentes } from '@/features/activites/abilities/compter-les-accompagnements/ui/presenters/totaux.presenter'
 import { BlocDesChiffresCles } from '@/features/activites/abilities/compter-les-accompagnements/ui/slots/BlocDesChiffresCles.slot'
 import { ChiffresClesImprimes } from '@/features/activites/abilities/compter-les-accompagnements/ui/slots/ChiffresClesImprimes.slot'
@@ -79,7 +84,15 @@ import {
 import { ClientBinder } from '@/libraries/nextjs/injection'
 
 const statistiquesDesActivites = statistiquesAvec({
-  totalCounts: source(compterLesAccompagnements, totauxPresentes),
+  totalCounts: source(
+    (demande) =>
+      compterLesAccompagnements({
+        activitesComptees,
+        personnesComptees,
+        nouvellesPersonnesComptees,
+      })(demande).then(({ data }) => data),
+    totauxPresentes,
+  ),
   periode: source(compterLesAccompagnementsParPeriode, parPeriodePresentes),
   repartition: source(repartirLesAccompagnements, repartitionPresentee),
   tags: sourceOptionnelle(repartirLesAccompagnementsParTag, parTagPresentes),
