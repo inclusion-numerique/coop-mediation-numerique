@@ -1,7 +1,8 @@
 import type { Employeuse } from '../../../domain/employeuse'
+import type { UtilisateurId } from '../../../domain/utilisateur-id'
 
 export type PersonneEmployee = {
-  readonly utilisateurId: string
+  readonly utilisateurId: UtilisateurId
   readonly prenom: string | null
   readonly nom: string | null
   readonly nomComplet: string | null
@@ -10,5 +11,5 @@ export type PersonneEmployee = {
 
 export type EmployeuseConsultee = {
   readonly employeuse: Employeuse
-  readonly personnesEmployees: PersonneEmployee[]
+  readonly personnesEmployees: readonly PersonneEmployee[]
 }

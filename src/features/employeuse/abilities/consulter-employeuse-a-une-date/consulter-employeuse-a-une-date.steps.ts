@@ -1,6 +1,7 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
-import { consulterEmployeuseAUneDate } from '@/features/employeuse/abilities/consulter-employeuse-a-une-date/implementations/prisma/consulter-employeuse-a-une-date.query'
+import { consulterEmployeuseAUneDate } from '@/features/employeuse/abilities/consulter-employeuse-a-une-date/domain/consulter-employeuse-a-une-date'
+import { UtilisateurId } from '@/features/employeuse/domain'
 import type { Employeuse } from '@/features/employeuse/domain/employeuse'
 import {
   seedAffectation,
@@ -8,6 +9,7 @@ import {
   seedEmployeuseMain,
   seedUtilisateur,
 } from '@/features/employeuse/employeuse.cucumber'
+import { lireLEmploiActuel } from '@/features/employeuse/implementations/prisma/emploi-actuel.query'
 
 const contexte: {
   utilisateurId: string
@@ -100,10 +102,12 @@ Given('un utilisateur sans employeuse connue', async () => {
 })
 
 When('je consulte son employeuse au {string}', async (date: string) => {
-  contexte.employeuseALaDate = await consulterEmployeuseAUneDate({
-    userId: contexte.utilisateurId,
+  const { data } = await consulterEmployeuseAUneDate({ lireLEmploiActuel })({
+    utilisateurId: UtilisateurId(contexte.utilisateurId),
     date: new Date(date),
+    maintenant: new Date(),
   })
+  contexte.employeuseALaDate = data
 })
 
 Then("l'employeuse à cette date est {string}", (nom: string) => {

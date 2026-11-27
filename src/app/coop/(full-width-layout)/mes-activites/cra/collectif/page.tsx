@@ -16,9 +16,11 @@ import { dureesFrequentesDuMediateur } from '@/features/activites/implementation
 import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
 import { authenticateMediateur } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
 import { beneficiairesLesPlusSuivis } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/implementations/prisma/beneficiaires-les-plus-suivis.query'
-import { consulterEmployeuseAUneDate } from '@/features/employeuse/abilities/consulter-employeuse-a-une-date/implementations/prisma/consulter-employeuse-a-une-date.query'
+import { consulterEmployeuseAUneDate } from '@/features/employeuse/abilities/consulter-employeuse-a-une-date/domain/consulter-employeuse-a-une-date'
 import RattacherEmployeusePage from '@/features/employeuse/abilities/rattacher-a-une-employeuse/ui/pages/RattacherEmployeusePage'
 import RattacherEmployeuseForm from '@/features/employeuse/abilities/rattacher-a-une-employeuse/ui/slots/RattacherEmployeuseForm.slot'
+import { UtilisateurId as UtilisateurIdDeLEmployeuse } from '@/features/employeuse/domain'
+import { lireLEmploiActuel } from '@/features/employeuse/implementations/prisma/emploi-actuel.query'
 import { lieuxDuMediateur } from '@/features/lieux-activite/abilities/lister-les-options-de-lieux/implementations/prisma/options-de-lieux-du-mediateur.query'
 import { visibilitesProposees } from '@/features/tags/abilities/creer-un-tag/ui/presenters/visibilites.presenter'
 import { tagsInitiauxAvec } from '@/features/tags/abilities/rechercher-des-tags/implementations/prisma/tags-initiaux-par.query'
@@ -37,9 +39,13 @@ const CreateCraCollectifPage = async ({
   const { retour, v } = await searchParams
   const user = await authenticateMediateur()
 
-  const employeuse = await consulterEmployeuseAUneDate({
-    userId: user.id,
-    date: new Date(),
+  const maintenant = new Date()
+  const { data: employeuse } = await consulterEmployeuseAUneDate({
+    lireLEmploiActuel,
+  })({
+    utilisateurId: UtilisateurIdDeLEmployeuse(user.id),
+    date: maintenant,
+    maintenant,
   })
 
   if (!employeuse) {

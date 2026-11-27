@@ -4,8 +4,10 @@ import { rechercherUnLieuActiviteAction } from '@/app/_actions/lieux-activite/re
 import { metadataTitle } from '@/configuration/projet'
 import { aTermineSonInscription } from '@/features/authentification/domain/page-d-accueil'
 import { authenticateUser } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
-import { consulterEmployeuseActuelle } from '@/features/employeuse/abilities/consulter-employeuse-actuelle/implementations/prisma/consulter-employeuse-actuelle.query'
+import { consulterEmployeuseActuelle } from '@/features/employeuse/abilities/consulter-employeuse-actuelle/domain/consulter-employeuse-actuelle'
 import { employeuseActuelleAffichage } from '@/features/employeuse/abilities/consulter-employeuse-actuelle/ui/presenters/employeuse-actuelle.presenter'
+import { UtilisateurId as UtilisateurIdDeLEmployeuse } from '@/features/employeuse/domain'
+import { lireLEmploiActuel } from '@/features/employeuse/implementations/prisma/emploi-actuel.query'
 import StructureAdministrativeCard from '@/features/employeuse/ui/slots/StructureAdministrativeCard.slot'
 import { consulterLeRecapitulatif } from '@/features/inscription/abilities/consulter-le-recapitulatif/domain/consulter-le-recapitulatif'
 import { lireLInscritARecapituler } from '@/features/inscription/abilities/consulter-le-recapitulatif/implementations/prisma/inscrit-a-recapituler.query'
@@ -35,8 +37,11 @@ const RecapitulatifPageRoute = async () => {
     redirect('/coop')
   }
 
-  const employeuseActuelle = await consulterEmployeuseActuelle({
-    userId: user.id,
+  const { data: employeuseActuelle } = await consulterEmployeuseActuelle({
+    lireLEmploiActuel,
+  })({
+    utilisateurId: UtilisateurIdDeLEmployeuse(user.id),
+    maintenant: new Date(),
   })
 
   const recapitulatif = await consulterLeRecapitulatif({

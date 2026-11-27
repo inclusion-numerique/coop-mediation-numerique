@@ -1,5 +1,5 @@
-import type { EmployeuseActuelle } from '../../../domain/consultation/employeuse-actuelle'
+import type { LireLEmploiActuel } from '../../../domain/ports'
 
-export type ConsulterEmployeuseActuelle = (input: {
-  userId: string
-}) => Promise<EmployeuseActuelle | null>
+export type ConsulterEmployeuseActuellePorts = {
+  readonly lireLEmploiActuel: LireLEmploiActuel
+}

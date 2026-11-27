@@ -4,11 +4,13 @@ import { rechercherStructureEmployeuseAction } from '@/app/_actions/employeuse/r
 import { renseignerStructureEmployeuseAction } from '@/app/_actions/employeuse/renseigner-structure-employeuse.action'
 import { metadataTitle } from '@/configuration/projet'
 import { authenticateUser } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
-import { consulterEmployeuseAUneDate } from '@/features/employeuse/abilities/consulter-employeuse-a-une-date/implementations/prisma/consulter-employeuse-a-une-date.query'
+import { consulterEmployeuseAUneDate } from '@/features/employeuse/abilities/consulter-employeuse-a-une-date/domain/consulter-employeuse-a-une-date'
 import { MaStructureEmployeusePage } from '@/features/employeuse/abilities/consulter-employeuse-a-une-date/ui/pages/MaStructureEmployeusePage'
 import { RECHERCHER_STRUCTURE_EMPLOYEUSE_ACTION_KEY } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/action/rechercher-structure-employeuse.key'
 import { RENSEIGNER_STRUCTURE_EMPLOYEUSE_ACTION_KEY } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/action/renseigner-structure-employeuse.key'
 import RattacherEmployeuseForm from '@/features/employeuse/abilities/rattacher-a-une-employeuse/ui/slots/RattacherEmployeuseForm.slot'
+import { UtilisateurId as UtilisateurIdDeLEmployeuse } from '@/features/employeuse/domain'
+import { lireLEmploiActuel } from '@/features/employeuse/implementations/prisma/emploi-actuel.query'
 import { emploiEmployeuseAffichage } from '@/features/employeuse/ui/presenters/employeuse-emploi.presenter'
 import ActeurStructureEmployeuse from '@/features/employeuse/ui/slots/ActeurStructureEmployeuse.slot'
 import { ClientBinder } from '@/libraries/nextjs/injection'
@@ -24,9 +26,13 @@ const Page = async () => {
     return redirect('/')
   }
 
-  const employeuse = await consulterEmployeuseAUneDate({
-    userId: user.id,
-    date: new Date(),
+  const maintenant = new Date()
+  const { data: employeuse } = await consulterEmployeuseAUneDate({
+    lireLEmploiActuel,
+  })({
+    utilisateurId: UtilisateurIdDeLEmployeuse(user.id),
+    date: maintenant,
+    maintenant,
   })
 
   return (

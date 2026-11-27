@@ -1,6 +1,8 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
-import { consulterHistoriqueEmployeuses } from '@/features/employeuse/abilities/consulter-historique-employeuses/implementations/prisma/consulter-historique-employeuses.query'
+import { consulterHistoriqueEmployeuses } from '@/features/employeuse/abilities/consulter-historique-employeuses/domain/consulter-historique-employeuses'
+import { lireLHistoriqueDEmploi } from '@/features/employeuse/abilities/consulter-historique-employeuses/implementations/prisma/historique-d-emploi.query'
+import { UtilisateurId } from '@/features/employeuse/domain'
 import type { EmployeuseHistorique } from '@/features/employeuse/domain/consultation/employeuses-historique'
 import {
   seedAffectation,
@@ -11,7 +13,7 @@ import {
 
 const contexte: {
   compteId: string
-  historique: EmployeuseHistorique[]
+  historique: readonly EmployeuseHistorique[]
 } = {
   compteId: '',
   historique: [],
@@ -90,9 +92,13 @@ Given(
 )
 
 When("je consulte l'historique de ses employeuses", async () => {
-  contexte.historique = await consulterHistoriqueEmployeuses({
-    userId: contexte.compteId,
+  const { data } = await consulterHistoriqueEmployeuses({
+    lireLHistoriqueDEmploi,
+  })({
+    utilisateurId: UtilisateurId(contexte.compteId),
+    maintenant: new Date(),
   })
+  contexte.historique = data
 })
 
 Then("l'historique compte {int} employeuse(s)", (attendu: number) => {

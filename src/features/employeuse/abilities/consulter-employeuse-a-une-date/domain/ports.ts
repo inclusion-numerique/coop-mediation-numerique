@@ -1,6 +1,5 @@
-import type { Employeuse } from '../../../domain/employeuse'
+import type { LireLEmploiActuel } from '../../../domain/ports'
 
-export type ConsulterEmployeuseAUneDate = (input: {
-  userId: string
-  date: Date
-}) => Promise<Employeuse | null>
+export type ConsulterEmployeuseAUneDatePorts = {
+  readonly lireLEmploiActuel: LireLEmploiActuel
+}

@@ -18,7 +18,9 @@ import {
   MediateurId as MediateurIdDesActivites,
 } from '@/features/activites/domain'
 import { authenticateMediateurOrCoordinateur } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
-import { consulterEmployeuseAUneDate } from '@/features/employeuse/abilities/consulter-employeuse-a-une-date/implementations/prisma/consulter-employeuse-a-une-date.query'
+import { consulterEmployeuseAUneDate } from '@/features/employeuse/abilities/consulter-employeuse-a-une-date/domain/consulter-employeuse-a-une-date'
+import { UtilisateurId as UtilisateurIdDeLEmployeuse } from '@/features/employeuse/domain'
+import { lireLEmploiActuel } from '@/features/employeuse/implementations/prisma/emploi-actuel.query'
 import { emploiEmployeuseAffichage } from '@/features/employeuse/ui/presenters/employeuse-emploi.presenter'
 import ActeurStructureEmployeuse from '@/features/employeuse/ui/slots/ActeurStructureEmployeuse.slot'
 import { SUPPRIMER_UN_ANCIEN_MEMBRE_ACTION_KEY } from '@/features/equipe/abilities/supprimer-un-ancien-membre/action/supprimer-un-ancien-membre.key'
@@ -120,7 +122,11 @@ const Page = async ({ params }: Parametres) => {
   const { acteur, regard } = fiche
   const mediation = acteur.profil.mediation
   const [employeuse, lieux, consultationDuContrat] = await Promise.all([
-    consulterEmployeuseAUneDate({ userId: acteur.acteurId, date: maintenant }),
+    consulterEmployeuseAUneDate({ lireLEmploiActuel })({
+      utilisateurId: UtilisateurIdDeLEmployeuse(acteur.acteurId),
+      date: maintenant,
+      maintenant,
+    }).then(({ data }) => data),
     mediation === null
       ? null
       : listerLesLieuxDuMediateur({

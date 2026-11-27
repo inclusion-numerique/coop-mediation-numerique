@@ -2,7 +2,9 @@
 
 import { actionBuilder } from '@/configuration/nextjs'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
-import { consulterEmployeuseActuelle } from '@/features/employeuse/abilities/consulter-employeuse-actuelle/implementations/prisma/consulter-employeuse-actuelle.query'
+import { consulterEmployeuseActuelle } from '@/features/employeuse/abilities/consulter-employeuse-actuelle/domain/consulter-employeuse-actuelle'
+import { UtilisateurId as UtilisateurIdDeLEmployeuse } from '@/features/employeuse/domain'
+import { lireLEmploiActuel } from '@/features/employeuse/implementations/prisma/emploi-actuel.query'
 import { AJOUTER_STRUCTURE_EMPLOYEUSE_EN_LIEU_ERRORS } from '@/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/action/ajouter-structure-employeuse-en-lieu.errors'
 import { StructureEmployeuseLieuValidation } from '@/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/action/ajouter-structure-employeuse-en-lieu.validation'
 import { ajouterStructureEmployeuseEnLieu } from '@/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/domain/ajouter-structure-employeuse-en-lieu'
@@ -28,8 +30,13 @@ export const ajouterStructureEmployeuseEnLieuAction = actionBuilder()
   .execute(
     fromResult(
       async ({ user, input }) => {
+        const maintenant = new Date()
         const resultat = await ajouterStructureEmployeuseEnLieu({
-          consulterEmployeuseActuelle,
+          consulterEmployeuseActuelle: ({ userId }) =>
+            consulterEmployeuseActuelle({ lireLEmploiActuel })({
+              utilisateurId: UtilisateurIdDeLEmployeuse(userId),
+              maintenant,
+            }).then(({ data }) => data),
           lireLAdresseDeLEmployeuse,
           geocoderLAdresse,
           destinationDuLieuDecrit: destinationDuLieuDecrit({
@@ -44,7 +51,7 @@ export const ajouterStructureEmployeuseEnLieuAction = actionBuilder()
         })({
           userId: UtilisateurId(user.id),
           estLieuActivite: input.estLieuActivite,
-          maintenant: new Date(),
+          maintenant,
         })
 
         return resultat.success ? success(undefined) : resultat

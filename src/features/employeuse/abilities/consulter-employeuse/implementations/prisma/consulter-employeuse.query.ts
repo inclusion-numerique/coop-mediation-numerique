@@ -1,4 +1,5 @@
 import { prismaClient } from '@/configuration/prisma'
+import { UtilisateurId } from '../../../../domain/utilisateur-id'
 import {
   employeuseSelect,
   employeuseToDomain,
@@ -43,7 +44,7 @@ export const consulterEmployeuse: ConsulterEmployeuse = async ({
               [
                 personne.user.id,
                 {
-                  utilisateurId: personne.user.id,
+                  utilisateurId: UtilisateurId(personne.user.id),
                   prenom: personne.user.firstName,
                   nom: personne.user.lastName,
                   nomComplet: personne.user.name,

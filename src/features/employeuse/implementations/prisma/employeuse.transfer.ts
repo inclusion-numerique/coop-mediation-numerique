@@ -2,19 +2,13 @@ import type { Prisma } from '@/generated/prisma/client'
 import { Siret } from '@/libraries/insee'
 import { AdresseEmployeuse } from '../../domain/adresse-employeuse'
 import type { Affectation } from '../../domain/affectation/affectation'
-import type { Contrat } from '../../domain/affectation/contrat'
-import { PeriodeEmploi } from '../../domain/affectation/periode-emploi'
 import { SourceAffectation } from '../../domain/affectation/source-affectation'
-import { employeuseALaDate } from '../../domain/consultation/employeuse-a-la-date'
-import {
-  type AffectationActuelle,
-  type EmployeuseActuelle,
-  employeuseActuelle,
-} from '../../domain/consultation/employeuse-actuelle'
-import {
-  type EmployeuseHistorique,
-  employeusesHistorique,
-} from '../../domain/consultation/employeuses-historique'
+import type {
+  ContratLu,
+  EmploiActuelLu,
+  HistoriqueDEmploiLu,
+} from '../../domain/consultation/emploi-lu'
+import type { AffectationActuelle } from '../../domain/consultation/employeuse-actuelle'
 import { ContactReferent } from '../../domain/contact-referent'
 import { DenominationEmployeuse } from '../../domain/denomination-employeuse'
 import type { Employeuse } from '../../domain/employeuse'
@@ -124,40 +118,24 @@ const affectationToDomain = (row: AffectationRow): Affectation => ({
   depuis: row.createdAt,
 })
 
-export const contratsToDomain = (
-  rows: readonly ContratRow[],
-  maintenant: Date = new Date(),
-): Contrat[] =>
+export const contratsLus = (rows: readonly ContratRow[]): ContratLu[] =>
   rows.flatMap((row) =>
     row.structureAdministrative
       ? [
           {
             employeuse: employeuseToDomain(row.structureAdministrative),
-            periode: PeriodeEmploi({
-              debut: row.dateDebut,
-              fin: row.dateFin,
-              rupture: row.dateRupture,
-              maintenant,
-            }),
+            debut: row.dateDebut,
+            fin: row.dateFin,
+            rupture: row.dateRupture,
           },
         ]
       : [],
   )
 
-const personneToAffectations = (
-  personne: PersonneEmployeusePayload | null,
-): Affectation[] =>
-  (personne?.affectationsEmploi ?? []).map(affectationToDomain)
-
-const personneToContrats = (
-  personne: { readonly contrats: readonly ContratRow[] } | null,
-  maintenant: Date = new Date(),
-): Contrat[] => contratsToDomain(personne?.contrats ?? [], maintenant)
-
 const affectationActuelleToDomain = (
-  personne: PersonneEmployeuseActuellePayload | null,
+  personne: PersonneEmployeuseActuellePayload,
 ): AffectationActuelle | null =>
-  personne?.employeuseActuelle
+  personne.employeuseActuelle
     ? {
         employeuse: employeuseToDomain(
           personne.employeuseActuelle.structureAdministrative,
@@ -166,31 +144,16 @@ const affectationActuelleToDomain = (
       }
     : null
 
-export const personneToEmployeuseActuelle = (
-  personne: PersonneEmployeuseActuellePayload | null,
-  maintenant: Date = new Date(),
-): EmployeuseActuelle | null =>
-  employeuseActuelle(
-    affectationActuelleToDomain(personne),
-    personneToContrats(personne, maintenant),
-  )
+export const emploiActuelLu = (
+  personne: PersonneEmployeuseActuellePayload,
+): EmploiActuelLu => ({
+  affectationActuelle: affectationActuelleToDomain(personne),
+  contrats: contratsLus(personne.contrats),
+})
 
-export const personneToEmployeusesHistorique = (
-  personne: PersonneEmployeusePayload | null,
-  maintenant: Date = new Date(),
-): EmployeuseHistorique[] =>
-  employeusesHistorique(
-    personneToAffectations(personne),
-    personneToContrats(personne, maintenant),
-  )
-
-export const personneToEmployeuseALaDate = (
-  personne: PersonneEmployeuseActuellePayload | null,
-  date: Date,
-  maintenant: Date = new Date(),
-): Employeuse | null =>
-  employeuseALaDate(
-    affectationActuelleToDomain(personne)?.employeuse ?? null,
-    personneToContrats(personne, maintenant),
-    date,
-  )
+export const historiqueDEmploiLu = (
+  personne: PersonneEmployeusePayload,
+): HistoriqueDEmploiLu => ({
+  affectations: personne.affectationsEmploi.map(affectationToDomain),
+  contrats: contratsLus(personne.contrats),
+})

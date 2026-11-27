@@ -24,7 +24,9 @@ import {
 } from '@/features/activites/implementations/prisma/saisie-de-mediation.query'
 import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
-import { consulterEmployeuseAUneDate } from '@/features/employeuse/abilities/consulter-employeuse-a-une-date/implementations/prisma/consulter-employeuse-a-une-date.query'
+import { consulterEmployeuseAUneDate } from '@/features/employeuse/abilities/consulter-employeuse-a-une-date/domain/consulter-employeuse-a-une-date'
+import { UtilisateurId as UtilisateurIdDeLEmployeuse } from '@/features/employeuse/domain'
+import { lireLEmploiActuel } from '@/features/employeuse/implementations/prisma/emploi-actuel.query'
 import { lieuUtilisablePar } from '@/features/lieux-activite/abilities/verifier-un-lieu-d-activite/implementations/prisma/lieu-utilisable-par.where'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { mettreAJourStatutRdv } from '@/features/rdvsp/abilities/mettre-a-jour-statut-rdv/domain/mettre-a-jour-statut-rdv'
@@ -80,12 +82,17 @@ export const enregistrerUnAccompagnementIndividuelAction = actionBuilder()
   .execute(
     fromResult(
       async ({ user, input }) => {
+        const maintenant = new Date()
         const enregistre = await enregistrerUnAccompagnementIndividuel({
           activiteDuMediateur: activiteDeMediationDuMediateur,
           nouvelIdentifiant: nouvelIdentifiantDActivite,
           beneficiaireDuMediateur,
           employeuseDeLaDate: employeuseDeLaDateDepuis((date) =>
-            consulterEmployeuseAUneDate({ userId: user.id, date }),
+            consulterEmployeuseAUneDate({ lireLEmploiActuel })({
+              utilisateurId: UtilisateurIdDeLEmployeuse(user.id),
+              date,
+              maintenant,
+            }).then(({ data }) => data),
           ),
           lieuUtilisable: lieuUtilisablePar(user.mediateur?.id ?? null),
           tagsUtilisables: tagsUtilisablesDepuis(
@@ -102,7 +109,7 @@ export const enregistrerUnAccompagnementIndividuelAction = actionBuilder()
           saisie: input,
           mediateurId:
             user.mediateur == null ? null : MediateurId(user.mediateur.id),
-          maintenant: new Date(),
+          maintenant,
         })
         return enregistre.success
           ? success(accompagnementEnregistre(enregistre.data))

@@ -36,9 +36,11 @@ import {
   authenticateAdmin,
   authenticateUser,
 } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
-import { consulterHistoriqueEmployeuses } from '@/features/employeuse/abilities/consulter-historique-employeuses/implementations/prisma/consulter-historique-employeuses.query'
+import { consulterHistoriqueEmployeuses } from '@/features/employeuse/abilities/consulter-historique-employeuses/domain/consulter-historique-employeuses'
+import { lireLHistoriqueDEmploi } from '@/features/employeuse/abilities/consulter-historique-employeuses/implementations/prisma/historique-d-emploi.query'
 import { historiqueEmployeusesAffichage } from '@/features/employeuse/abilities/consulter-historique-employeuses/ui/presenters/historique-employeuses.presenter'
 import { HistoriqueDesEmployeuses } from '@/features/employeuse/abilities/consulter-historique-employeuses/ui/slots/HistoriqueDesEmployeuses.slot'
+import { UtilisateurId as UtilisateurIdDeLEmployeuse } from '@/features/employeuse/domain'
 import { listerLesMembres } from '@/features/equipe/abilities/lister-les-membres/domain/lister-les-membres'
 import { lireLaCommuneDuCoordinateur } from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/commune-du-coordinateur.query'
 import { lireLesMembres } from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/lister-les-membres.query'
@@ -234,9 +236,10 @@ const Page = async (props: {
     props.searchParams,
   ])
 
+  const maintenant = new Date()
   const fiche = await ficheUtilisateur({
     utilisateurId: id,
-    maintenant: new Date(),
+    maintenant,
   })
   if (fiche === null) notFound()
 
@@ -245,7 +248,10 @@ const Page = async (props: {
   const [equipe, lieux, employeuses, statistiques] = await Promise.all([
     sectionEquipe(fiche, searchParams),
     sectionLieux(fiche),
-    consulterHistoriqueEmployeuses({ userId: fiche.id }),
+    consulterHistoriqueEmployeuses({ lireLHistoriqueDEmploi })({
+      utilisateurId: UtilisateurIdDeLEmployeuse(fiche.id),
+      maintenant,
+    }).then(({ data }) => data),
     sectionStatistiques(fiche, periodeChoisieDans(searchParams)),
   ])
 
