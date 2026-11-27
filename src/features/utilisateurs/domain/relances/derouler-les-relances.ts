@@ -1,15 +1,11 @@
 import { type Result, success } from '@/libraries/result'
 import type { EchecDeRelance } from '../errors'
-import type {
-  EnvoyerLAvertissement,
-  EnvoyerLaRelance,
-  NoterLaRelance,
-} from '../ports'
+import type { PortsDeRelance } from '../ports'
 import type {
   ActionDecidee,
   CompteARelancer,
-  DestinataireDeRelance,
   RapportDeRelance,
+  RelancesDeroulees,
 } from './destinataire-de-relance'
 import {
   actionDeRelance,
@@ -17,30 +13,24 @@ import {
   suppressionAnnonceeApres,
 } from './relance'
 
-export type PortsDeRelance = {
-  readonly relancer: EnvoyerLaRelance
-  readonly avertir: EnvoyerLAvertissement
-  readonly effacer: (
-    destinataire: DestinataireDeRelance,
-  ) => Promise<Result<unknown, EchecDeRelance>>
-  readonly noter: NoterLaRelance
-}
+type ActionANoter = Exclude<ActionDecidee, { readonly _tag: 'Effacer' }>
 
 const envoyer = (
   compte: CompteARelancer,
-  action: Exclude<ActionDecidee, { readonly _tag: 'Effacer' }>,
+  action: ActionANoter,
   { relancer, avertir }: PortsDeRelance,
-): Promise<Result<unknown, EchecDeRelance>> => {
+): Promise<Result<void, EchecDeRelance>> => {
+  if (action._tag === 'Reinitialiser')
+    return Promise.resolve(success(undefined))
   if (action._tag === 'Relancer') return relancer(compte, action.palier)
-  if (action._tag === 'Avertir') return avertir(compte, action)
-  return Promise.resolve(success(undefined))
+  return avertir(compte, action)
 }
 
 const executer = async (
   compte: CompteARelancer,
   action: ActionDecidee,
   ports: PortsDeRelance,
-): Promise<Result<unknown, EchecDeRelance>> => {
+): Promise<Result<void, EchecDeRelance>> => {
   if (action._tag === 'Effacer') return ports.effacer(compte)
 
   const envoi = await envoyer(compte, action, ports)
@@ -81,22 +71,19 @@ export const deroulerLesRelances =
   }: {
     readonly comptes: readonly CompteARelancer[]
     readonly maintenant: Date
-  }): Promise<readonly RapportDeRelance[]> =>
-    comptes.reduce<Promise<readonly RapportDeRelance[]>>(
-      async (precedents, compte) => {
-        const rapports = await precedents
-        const action = actionDeRelance(compte.situation, maintenant)
-        return action._tag === 'Rien'
-          ? rapports
-          : [
-              ...rapports,
-              await rapporter(compte, action, {
-                relancer,
-                avertir,
-                effacer,
-                noter,
-              }),
-            ]
-      },
-      Promise.resolve([]),
-    )
+  }): Promise<RelancesDeroulees> =>
+    comptes.reduce<Promise<RelancesDeroulees>>(async (precedents, compte) => {
+      const rapports = await precedents
+      const action = actionDeRelance(compte.situation, maintenant)
+      return action._tag === 'Rien'
+        ? rapports
+        : [
+            ...rapports,
+            await rapporter(compte, action, {
+              relancer,
+              avertir,
+              effacer,
+              noter,
+            }),
+          ]
+    }, Promise.resolve([]))

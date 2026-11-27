@@ -69,6 +69,7 @@ export { NomEmployeuse } from './nom-employeuse'
 export { OrigineCompte } from './origine-compte'
 export type {
   AppliquerLePlan,
+  EffacerLeDestinataire,
   EnvoyerLAvertissement,
   EnvoyerLAvisDEffacement,
   EnvoyerLaRelance,
@@ -76,6 +77,7 @@ export type {
   LireLeCompteAReaffecter,
   LireLesComptesARelancer,
   NoterLaRelance,
+  PortsDeRelance,
   SupprimerLeCompte,
 } from './ports'
 export {
