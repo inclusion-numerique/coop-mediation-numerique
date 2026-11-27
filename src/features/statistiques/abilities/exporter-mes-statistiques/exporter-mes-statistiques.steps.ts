@@ -1,61 +1,116 @@
 import assert from 'node:assert'
-import { Given, Then, When } from '@cucumber/cucumber'
+import { After, Given, Then, When } from '@cucumber/cucumber'
+import { v4 } from 'uuid'
+import { prismaClient } from '@/configuration/prisma'
 import type { DemandeurDeLExport } from '@/features/statistiques/abilities/exporter-mes-statistiques/domain/demandeur-de-l-export'
 import { exporterMesStatistiques } from '@/features/statistiques/abilities/exporter-mes-statistiques/domain/exporter-mes-statistiques'
+import { demandeurDeLExport } from '@/features/statistiques/abilities/exporter-mes-statistiques/implementations/session/demandeur-de-l-export.transfer'
 import { MediateurId } from '@/features/statistiques/domain/mediateur-id'
 
-const LUI_MEME = MediateurId('a0000000-0000-4000-8000-000000000001')
-
-const mediateurs: Readonly<Record<string, MediateurId>> = {
-  'lui-même': LUI_MEME,
-  'un médiateur coordonné': MediateurId('a0000000-0000-4000-8000-000000000002'),
-  'un autre médiateur': MediateurId('a0000000-0000-4000-8000-000000000003'),
-}
-
-const MEDIATEUR: DemandeurDeLExport = {
-  _tag: 'Mediateur',
-  mediateurId: LUI_MEME,
-}
-
-const COORDINATEUR: DemandeurDeLExport = {
-  _tag: 'Coordinateur',
-  coordonnes: [MediateurId('a0000000-0000-4000-8000-000000000002')],
-}
-
 const exporter = exporterMesStatistiques({
-  preparerLExport: async (perimetre: string) => `classeur ${perimetre}`,
+  preparerLExport: async (perimetre: DemandeurDeLExport) => perimetre,
 })
 
-const contexte: {
-  demandeur?: DemandeurDeLExport | null
+const etat: {
+  utilisateurs: readonly string[]
+  demandeur?: string
+  mediateurs: Readonly<Record<string, string>>
   resultat?: Awaited<ReturnType<typeof exporter>>
-} = {}
+} = { utilisateurs: [], mediateurs: {} }
 
-Given('un médiateur', () => {
-  contexte.demandeur = MEDIATEUR
+const semerUnCompte = async (): Promise<string> => {
+  const userId = v4()
+  await prismaClient.user.create({
+    data: {
+      id: userId,
+      email: `exporter-mes-statistiques-${userId}@example.com`,
+    },
+  })
+  etat.utilisateurs = [...etat.utilisateurs, userId]
+  return userId
+}
+
+const semerUnMediateur = async (
+  qui: string,
+): Promise<{ readonly userId: string; readonly mediateurId: string }> => {
+  const userId = await semerUnCompte()
+  const { id: mediateurId } = await prismaClient.mediateur.create({
+    data: { userId },
+    select: { id: true },
+  })
+  etat.mediateurs = { ...etat.mediateurs, [qui]: mediateurId }
+  return { userId, mediateurId }
+}
+
+const compteDuDemandeur = async (userId: string) => {
+  const { mediateur, coordinateur } = await prismaClient.user.findUniqueOrThrow(
+    {
+      where: { id: userId },
+      select: {
+        mediateur: { select: { id: true } },
+        coordinateur: {
+          select: {
+            mediateursCoordonnes: {
+              select: { mediateurId: true, suppression: true },
+            },
+          },
+        },
+      },
+    },
+  )
+  return {
+    mediateur,
+    coordinateur:
+      coordinateur === null
+        ? null
+        : {
+            mediateursCoordonnes: coordinateur.mediateursCoordonnes.filter(
+              ({ suppression }) => suppression === null,
+            ),
+            ancienMediateursCoordonnes:
+              coordinateur.mediateursCoordonnes.filter(
+                ({ suppression }) => suppression !== null,
+              ),
+          },
+  }
+}
+
+Given('un médiateur', async () => {
+  etat.demandeur = (await semerUnMediateur('lui-même')).userId
+  await semerUnMediateur('un autre médiateur')
 })
 
-Given('un coordinateur', () => {
-  contexte.demandeur = COORDINATEUR
+Given('un coordinateur', async () => {
+  const userId = await semerUnCompte()
+  const { id: coordinateurId } = await prismaClient.coordinateur.create({
+    data: { userId },
+    select: { id: true },
+  })
+  const { mediateurId } = await semerUnMediateur('un médiateur coordonné')
+  await prismaClient.mediateurCoordonne.create({
+    data: { coordinateurId, mediateurId },
+  })
+  etat.demandeur = userId
 })
 
-Given('un compte ni médiateur ni coordinateur', () => {
-  contexte.demandeur = null
+Given('un compte ni médiateur ni coordinateur', async () => {
+  etat.demandeur = await semerUnCompte()
 })
 
 const exporterPour = async (mediateursExportes: readonly MediateurId[]) => {
-  assert.ok(contexte.demandeur !== undefined, "Aucun demandeur n'a été décrit")
-  contexte.resultat = await exporter({
-    demandeur: contexte.demandeur,
-    perimetre: contexte.demandeur === null ? null : contexte.demandeur._tag,
+  assert.ok(etat.demandeur, "Aucun demandeur n'a été semé")
+  const demandeur = demandeurDeLExport(await compteDuDemandeur(etat.demandeur))
+  etat.resultat = await exporter({
+    demandeur,
+    perimetre: demandeur,
     mediateursExportes,
   })
 }
 
 When('il exporte les statistiques de {string}', async (qui: string) => {
-  const mediateur = mediateurs[qui]
-  assert.ok(mediateur, `Médiateur inconnu : ${qui}`)
-  await exporterPour([mediateur])
+  const mediateur = etat.mediateurs[qui]
+  assert.ok(mediateur, `Médiateur non semé : ${qui}`)
+  await exporterPour([MediateurId(mediateur)])
 })
 
 When('il exporte ses statistiques', async () => {
@@ -63,12 +118,32 @@ When('il exporte ses statistiques', async () => {
 })
 
 Then("l'export est préparé", () => {
-  assert.strictEqual(contexte.resultat?.success, true)
+  assert.strictEqual(etat.resultat?.success, true)
 })
 
 Then("l'export est refusé : {string}", (echec: string) => {
-  assert.deepStrictEqual(contexte.resultat, {
+  assert.deepStrictEqual(etat.resultat, {
     success: false,
     error: { _tag: echec },
+  })
+})
+
+After(async () => {
+  const utilisateurs = etat.utilisateurs
+  etat.utilisateurs = []
+  etat.mediateurs = {}
+  delete etat.demandeur
+  delete etat.resultat
+  if (utilisateurs.length === 0) return
+  const proprietaires = { userId: { in: [...utilisateurs] } }
+  await prismaClient.mediateurCoordonne.deleteMany({
+    where: {
+      OR: [{ mediateur: proprietaires }, { coordinateur: proprietaires }],
+    },
+  })
+  await prismaClient.coordinateur.deleteMany({ where: proprietaires })
+  await prismaClient.mediateur.deleteMany({ where: proprietaires })
+  await prismaClient.user.deleteMany({
+    where: { id: { in: [...utilisateurs] } },
   })
 })
