@@ -73,7 +73,8 @@ export const GET = async (
         ...(mediateurId === null ? {} : { mediateurId }),
         perimetreDesActivites: dansLaPeriodeDAppartenance(coordinateurId),
       }),
-    communesEtDepartements: communesDuMediateur,
+    communesEtDepartements: ({ mediateurIds }) =>
+      communesDuMediateur({ mediateurIds: [...mediateurIds] }),
     tagsUtilisables: tagsUtilisablesDepuis(
       tagsVisiblesPar(acteurDe(profilDeLaSession(user))),
     ),

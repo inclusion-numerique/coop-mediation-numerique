@@ -51,7 +51,7 @@ export type LieuxNommes = (perimetre: {
 }) => Promise<readonly NomDeFiltre[]>
 
 export type CommunesEtDepartements = (perimetre: {
-  mediateurIds: string[]
+  readonly mediateurIds: readonly MediateurId[]
 }) => Promise<{
   readonly communesOptions: readonly NomDeFiltre[]
   readonly departementsOptions: readonly NomDeFiltre[]

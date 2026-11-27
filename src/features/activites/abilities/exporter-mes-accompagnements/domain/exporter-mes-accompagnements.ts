@@ -44,17 +44,14 @@ const mediateursNommes = (
   coordinateurId: CoordinateurId | null,
 ): readonly MediateurNomme[] => {
   const nommes = lus.map((lu) => ({
-    ancien: coordinateurId !== null && estUnAncienMembre(lu),
+    mediateurId: lu.mediateurId,
     nom: lu.nom,
-    value: { mediateurId: lu.mediateurId },
+    ancien: coordinateurId !== null && estUnAncienMembre(lu),
   }))
   return [
     ...nommes.filter(({ ancien }) => !ancien),
     ...nommes.filter(({ ancien }) => ancien),
-  ].map(({ ancien, nom, value }) => ({
-    label: ancien ? `Ancien membre - ${nom}` : nom,
-    value,
-  }))
+  ]
 }
 
 const nommerLesFiltres = async (
@@ -108,7 +105,7 @@ const nommerLesFiltres = async (
     ),
     territoire.length === 0
       ? Promise.resolve({ communesOptions: [], departementsOptions: [] })
-      : communesEtDepartements({ mediateurIds: [...autorises] }),
+      : communesEtDepartements({ mediateurIds: autorises }),
     siFiltre(criteres.tags, () => tagsUtilisables(criteres.tags)),
   ])
 

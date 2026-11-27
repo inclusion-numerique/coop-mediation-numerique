@@ -209,27 +209,24 @@ describe('exporter mes accompagnements', () => {
         {
           ...sansNom,
           mediateurs: [
-            { label: 'Ada Lovelace', value: { mediateurId: ancien } },
-            { label: 'Grace Hopper', value: { mediateurId: membre } },
-            { label: 'Margaret Hamilton', value: { mediateurId: moi } },
+            { mediateurId: ancien, nom: 'Ada Lovelace', ancien: false },
+            { mediateurId: membre, nom: 'Grace Hopper', ancien: false },
+            { mediateurId: moi, nom: 'Margaret Hamilton', ancien: false },
           ],
         },
         { personnel: true, source: false },
       ),
     },
     {
-      cas: 'range en dernier, et nomme comme tels, les anciens membres de l’équipe d’un coordinateur',
+      cas: 'range en dernier, et marque comme tels, les anciens membres de l’équipe d’un coordinateur',
       demandeur: coordinateurSeul,
       attendu: exportDe(
         {
           ...sansNom,
           mediateurs: [
-            { label: 'Grace Hopper', value: { mediateurId: membre } },
-            { label: 'Margaret Hamilton', value: { mediateurId: moi } },
-            {
-              label: 'Ancien membre - Ada Lovelace',
-              value: { mediateurId: ancien },
-            },
+            { mediateurId: membre, nom: 'Grace Hopper', ancien: false },
+            { mediateurId: moi, nom: 'Margaret Hamilton', ancien: false },
+            { mediateurId: ancien, nom: 'Ada Lovelace', ancien: true },
           ],
         },
         { personnel: false, source: true },

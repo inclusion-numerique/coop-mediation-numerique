@@ -1,4 +1,8 @@
-import type { EmployeuseDesActivites, TagDeLActivite } from '../../../domain'
+import type {
+  EmployeuseDesActivites,
+  MediateurId,
+  TagDeLActivite,
+} from '../../../domain'
 
 export type NomDeFiltre = { readonly label: string; readonly value: string }
 
@@ -8,8 +12,9 @@ export type NomDeFiltreDeBeneficiaire = {
 }
 
 export type MediateurNomme = {
-  readonly label: string
-  readonly value: { readonly mediateurId: string }
+  readonly mediateurId: MediateurId
+  readonly nom: string
+  readonly ancien: boolean
 }
 
 export type NomsDesFiltresExportes = {

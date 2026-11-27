@@ -314,7 +314,7 @@ Then('les employeuses nommées sont {string}', (attendues: string) => {
 Then('seule la médiatrice {string} est nommée', (nom: string) => {
   assert.ok(contexte.noms, 'Aucun filtre nommé')
   assert.deepStrictEqual(contexte.noms.mediateurs, [
-    { label: nom, value: { mediateurId: moi().mediateurId } },
+    { mediateurId: moi().mediateurId, nom, ancien: false },
   ])
 })
 
