@@ -3,6 +3,7 @@
 import { environnementServeur } from '@/configuration/environnement/serveur'
 import { actionBuilder } from '@/configuration/nextjs'
 import { adresseDeRetourApresConnexion } from '@/features/authentification/domain/page-d-accueil'
+import { RoleDeLaSession } from '@/features/authentification/domain/role-de-la-session'
 import { getAuthenticatedSessionToken } from '@/features/authentification/implementations/session/session-token-from-cookies.query'
 import { withAdmin } from '@/features/authentification/middlewares/with-admin'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
@@ -48,7 +49,7 @@ export const usurperUnUtilisateurAction = actionBuilder()
         return success({
           nom: cible.nom,
           redirection: adresseDeRetourApresConnexion({
-            role: cible.role,
+            role: RoleDeLaSession(cible.role),
             inscriptionValidee:
               cible.inscription._tag === 'Le' ? cible.inscription.date : null,
             mediateur: mediateurId === null ? null : { id: mediateurId },

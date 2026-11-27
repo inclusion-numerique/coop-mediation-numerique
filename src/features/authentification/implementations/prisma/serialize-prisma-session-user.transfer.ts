@@ -1,3 +1,7 @@
+import { CompteDeLaSessionId } from '@/features/authentification/domain/compte-de-la-session-id'
+import { CourrielDeLaSession } from '@/features/authentification/domain/courriel-de-la-session'
+import { ProfilDInscription } from '@/features/authentification/domain/profil-d-inscription'
+import { RoleDeLaSession } from '@/features/authentification/domain/role-de-la-session'
 import type { UtilisateurDeLaSession } from '@/features/authentification/domain/utilisateur-de-la-session'
 import type {
   PrismaSessionUsupper,
@@ -24,16 +28,19 @@ export const serializePrismaSessionUser = (
   prismaSessionUser: UtilisateurDeLaSessionRow,
   usurper?: PrismaSessionUsupper,
 ): UtilisateurDeLaSession => ({
-  id: prismaSessionUser.id,
+  id: CompteDeLaSessionId(prismaSessionUser.id),
   firstName: prismaSessionUser.firstName,
   lastName: prismaSessionUser.lastName,
   name: prismaSessionUser.name,
-  email: prismaSessionUser.email,
+  email: CourrielDeLaSession(prismaSessionUser.email),
   phone: prismaSessionUser.phone,
   siret: prismaSessionUser.siret,
-  role: prismaSessionUser.role === 'Admin' ? 'Admin' : 'User',
+  role: RoleDeLaSession(prismaSessionUser.role === 'Admin' ? 'Admin' : 'User'),
   isFixture: prismaSessionUser.isFixture,
-  profilInscription: prismaSessionUser.profilInscription,
+  profilInscription:
+    prismaSessionUser.profilInscription === null
+      ? null
+      : ProfilDInscription(prismaSessionUser.profilInscription),
   acceptationCgu: prismaSessionUser.acceptationCgu,
   timezone: prismaSessionUser.timezone,
   mediateur: prismaSessionUser.mediateur,

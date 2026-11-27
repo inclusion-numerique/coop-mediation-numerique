@@ -1,22 +1,19 @@
-type RoleDeLaSession = 'User' | 'Admin'
-
-type ProfilDInscriptionDeLaSession =
-  | 'ConseillerNumerique'
-  | 'CoordinateurConseillerNumerique'
-  | 'Mediateur'
-  | 'Coordinateur'
+import type { CompteDeLaSessionId } from './compte-de-la-session-id'
+import type { CourrielDeLaSession } from './courriel-de-la-session'
+import type { ProfilDInscription } from './profil-d-inscription'
+import type { RoleDeLaSession } from './role-de-la-session'
 
 export type UtilisateurDeLaSession = {
-  id: string
+  id: CompteDeLaSessionId
   firstName: string | null
   lastName: string | null
   name: string | null
-  email: string
+  email: CourrielDeLaSession
   phone: string | null
   siret: string | null
   role: RoleDeLaSession
   isFixture: boolean
-  profilInscription: ProfilDInscriptionDeLaSession | null
+  profilInscription: ProfilDInscription | null
   acceptationCgu: Date | null
   timezone: string
   isConseillerNumerique: boolean

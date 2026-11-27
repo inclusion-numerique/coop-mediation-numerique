@@ -1,15 +1,18 @@
 import { describe, expect, it } from 'vitest'
+import { CompteDeLaSessionId } from './compte-de-la-session-id'
+import { CourrielDeLaSession } from './courriel-de-la-session'
 import { profilDeLaSession } from './profil-de-la-session'
+import { RoleDeLaSession } from './role-de-la-session'
 import type { UtilisateurDeLaSession } from './utilisateur-de-la-session'
 
 const utilisateurDeLaSession = {
-  id: 'test',
-  email: 'jean.biche@example.com',
+  id: CompteDeLaSessionId('test'),
+  email: CourrielDeLaSession('jean.biche@example.com'),
   phone: '0123456789',
   firstName: 'Jean',
   lastName: 'Biche',
   name: 'Jean Biche',
-  role: 'User',
+  role: RoleDeLaSession('User'),
   siret: '13002603200016',
   updated: new Date('2023-05-05').toISOString(),
   created: new Date('2023-01-01').toISOString(),

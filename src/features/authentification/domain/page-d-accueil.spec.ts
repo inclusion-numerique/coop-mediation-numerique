@@ -3,9 +3,10 @@ import {
   adresseDeRetourApresConnexion,
   pageDAccueil,
 } from '@/features/authentification/domain/page-d-accueil'
+import { RoleDeLaSession } from './role-de-la-session'
 
 const utilisateur: NonNullable<Parameters<typeof pageDAccueil>[0]> = {
-  role: 'User',
+  role: RoleDeLaSession('User'),
   inscriptionValidee: null,
   mediateur: null,
   coordinateur: null,
@@ -17,9 +18,9 @@ describe('pageDAccueil', () => {
   })
 
   it('renvoie l’administration pour un admin', () => {
-    expect(pageDAccueil({ ...utilisateur, role: 'Admin' })).toBe(
-      '/administration',
-    )
+    expect(
+      pageDAccueil({ ...utilisateur, role: RoleDeLaSession('Admin') }),
+    ).toBe('/administration')
   })
 
   it('renvoie l’inscription quand elle n’est pas validée', () => {
@@ -60,7 +61,10 @@ describe('adresseDeRetourApresConnexion', () => {
 
   it('renvoie les utilisateurs de l’administration pour un admin', () => {
     expect(
-      adresseDeRetourApresConnexion({ ...utilisateur, role: 'Admin' }),
+      adresseDeRetourApresConnexion({
+        ...utilisateur,
+        role: RoleDeLaSession('Admin'),
+      }),
     ).toBe('/administration/utilisateurs')
   })
 
