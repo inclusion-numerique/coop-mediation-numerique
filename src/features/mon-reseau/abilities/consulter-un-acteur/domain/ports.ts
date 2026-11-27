@@ -22,7 +22,7 @@ export type LireLaDerniereActivite = (
 export type LireLesStatistiquesSur30Jours = (
   coordinateurId: CoordinateurId,
   mediateurId: MediateurId,
-  periode: { readonly du: string; readonly au: string },
+  periode: { readonly du: Date; readonly au: Date },
 ) => Promise<StatistiquesSur30Jours>
 
 export type LireLesLiensDEquipe = (

@@ -1,4 +1,4 @@
-import { format, subDays } from '@/libraries/date'
+import { subDays } from '@/libraries/date'
 import { failure, type Result, success } from '@/libraries/result'
 import { type Acteur, type ActeurId, ActeurIntrouvable } from '../../../domain'
 import type { EchecDeConsulterUnActeur } from './errors'
@@ -12,8 +12,6 @@ import type { Lecteur } from './lecteur'
 import type { ConsulterUnActeurPorts, LecturesDuRegard } from './ports'
 import { lienDEquipe } from './relation-d-equipe'
 import { statutDActivitePublic } from './statut-d-activite-public'
-
-const jour = (date: Date): string => format(date, 'yyyy-MM-dd')
 
 const relationAvec = async (
   lecteur: Extract<Lecteur, { _tag: 'Coordinateur' }>,
@@ -38,8 +36,8 @@ const relationAvec = async (
     lecteur.coordinateurId,
     mediation.mediateurId,
     {
-      du: jour(subDays(maintenant, FENETRE_DES_STATISTIQUES_EN_JOURS)),
-      au: jour(maintenant),
+      du: subDays(maintenant, FENETRE_DES_STATISTIQUES_EN_JOURS),
+      au: maintenant,
     },
   )
   return { _tag: 'Membre', statistiques }

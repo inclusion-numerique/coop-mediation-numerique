@@ -110,7 +110,7 @@ export { MediateurId } from './identifiants/mediateur-id'
 export { RdvId } from './identifiants/rdv-id'
 export { TagId } from './identifiants/tag-id'
 export { UtilisateurId } from './identifiants/utilisateur-id'
-export { Jour } from './jour'
+export { Jour, jourDe } from './jour'
 export {
   type AccompagnementIndividuel,
   type ActiviteDeMediation,

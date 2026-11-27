@@ -9,7 +9,7 @@ import { compterLesAccompagnements } from '@/features/activites/abilities/compte
 import {
   CoordinateurId as CoordinateurIdDesActivites,
   criteresSurLaPeriode,
-  Jour,
+  jourDe,
   MediateurId as MediateurIdDesActivites,
 } from '@/features/activites/domain'
 import { authenticateMediateurOrCoordinateur } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
@@ -67,7 +67,7 @@ export const generateMetadata = async ({
 const lireLesStatistiquesSur30Jours = async (
   coordinateurId: string,
   mediateurId: string,
-  periode: { readonly du: string; readonly au: string },
+  periode: { readonly du: Date; readonly au: Date },
 ) => {
   const { accompagnements, personnes } = await compterLesAccompagnements({
     perimetre: {
@@ -76,8 +76,8 @@ const lireLesStatistiquesSur30Jours = async (
       membres: [MediateurIdDesActivites(mediateurId)],
     },
     criteres: criteresSurLaPeriode({
-      du: Jour.safe(periode.du),
-      au: Jour.safe(periode.au),
+      du: jourDe(periode.du),
+      au: jourDe(periode.au),
     }),
     rendezVousAuxStatuts: rendezVousAuxStatutsSql,
   })
