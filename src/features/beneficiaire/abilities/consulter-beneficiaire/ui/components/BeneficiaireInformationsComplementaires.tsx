@@ -2,7 +2,6 @@ import { genreLabels } from '@/features/beneficiaire/domain/genre'
 import { statutSocialLabels } from '@/features/beneficiaire/domain/statut-social'
 import { InfoLabelValue } from '@/libraries/ui/components'
 import type { BeneficiaireInformations } from '../../domain/beneficiaire-informations'
-import { trancheAgeAffichee } from '../presenters/tranche-age-affichee.presenter'
 
 const BeneficiaireInformationsComplementaires = ({
   beneficiaire: {
@@ -11,9 +10,8 @@ const BeneficiaireInformationsComplementaires = ({
     communeCodePostal,
     genre,
     statutSocial,
-    trancheAge,
-    anneeNaissance,
   },
+  trancheAgeAffichee,
 }: {
   beneficiaire: Pick<
     BeneficiaireInformations,
@@ -22,15 +20,9 @@ const BeneficiaireInformationsComplementaires = ({
     | 'communeCodePostal'
     | 'genre'
     | 'statutSocial'
-    | 'trancheAge'
-    | 'anneeNaissance'
   >
+  trancheAgeAffichee: string
 }) => {
-  const trancheAffichee = trancheAgeAffichee(
-    { anneeNaissance, trancheAge },
-    new Date(),
-  )
-
   return (
     <div className="fr-border--bottom fr-pt-6v fr-px-6v fr-pb-8v">
       <h4 className="fr-text--xs fr-text--bold fr-text--uppercase fr-mb-4v">
@@ -54,7 +46,7 @@ const BeneficiaireInformationsComplementaires = ({
           />
         </div>
         <div className="fr-col-6">
-          <InfoLabelValue label="Tranche d’âge" value={trancheAffichee} />
+          <InfoLabelValue label="Tranche d’âge" value={trancheAgeAffichee} />
         </div>
         <div className="fr-col-6">
           <InfoLabelValue

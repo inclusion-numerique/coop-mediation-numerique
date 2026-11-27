@@ -65,6 +65,7 @@ const sansInformations = {
   beneficiaire: beneficiaireSansInformations,
   thematiquesAbordees: [],
   totalActivitesCount: 0,
+  trancheAgeAffichee: '-',
 } satisfies BeneficiaireInformationsPageData
 
 export const SansInformations: Story = {
@@ -123,6 +124,7 @@ const avecInformations = {
     },
   ],
   totalActivitesCount: 6,
+  trancheAgeAffichee: '25 - 39 ans',
 } satisfies BeneficiaireInformationsPageData
 
 export const AvecInformations: Story = {

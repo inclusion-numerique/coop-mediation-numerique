@@ -13,10 +13,16 @@ export type BeneficiaireInformationsPageData = {
   beneficiaire: BeneficiaireInformations
   thematiquesAbordees: readonly ThematiqueAbordee[]
   totalActivitesCount: number
+  trancheAgeAffichee: string
 }
 
 const ViewBeneficiaireInformationsPage = ({
-  data: { beneficiaire, thematiquesAbordees, totalActivitesCount },
+  data: {
+    beneficiaire,
+    thematiquesAbordees,
+    totalActivitesCount,
+    trancheAgeAffichee,
+  },
   actions,
 }: {
   data: BeneficiaireInformationsPageData
@@ -40,7 +46,10 @@ const ViewBeneficiaireInformationsPage = ({
       </div>
       <BeneficiaireThematiques thematiques={thematiquesAbordees} />
       <BeneficiaireCoordonnees beneficiaire={beneficiaire} />
-      <BeneficiaireInformationsComplementaires beneficiaire={beneficiaire} />
+      <BeneficiaireInformationsComplementaires
+        beneficiaire={beneficiaire}
+        trancheAgeAffichee={trancheAgeAffichee}
+      />
       <BeneficiaireNotes notes={beneficiaire.notes} />
     </div>
   </>
