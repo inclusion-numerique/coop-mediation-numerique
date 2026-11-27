@@ -1,9 +1,10 @@
 import {
   contactAInscrire,
+  type InscriptionALaListe,
+  inscriptionALaListe,
   type UtilisateurId,
 } from '@/features/utilisateurs/domain'
 import { type Result, success } from '@/libraries/result'
-import type { InscriptionALaListe } from './inscription-a-la-liste'
 import type { InscrireALaListeDeDiffusionPorts } from './ports'
 
 export const inscrireALaListeDeDiffusion =
@@ -16,11 +17,12 @@ export const inscrireALaListeDeDiffusion =
   }: {
     readonly utilisateurId: UtilisateurId
   }): Promise<Result<InscriptionALaListe, never>> => {
-    const contact = contactAInscrire(await lireLInscritAInscrire(utilisateurId))
+    const inscription = inscriptionALaListe(
+      contactAInscrire(await lireLInscritAInscrire(utilisateurId)),
+    )
 
-    if (contact === null) return success({ _tag: 'SansContactAInscrire' })
+    if (inscription._tag === 'ContactInscrit')
+      await importerLeContact(inscription.contact)
 
-    await importerLeContact(contact)
-
-    return success({ _tag: 'ContactInscrit', contact })
+    return success(inscription)
   }

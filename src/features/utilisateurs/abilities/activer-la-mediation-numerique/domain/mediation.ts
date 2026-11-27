@@ -1,7 +1,7 @@
 import {
-  type ContactAImporter,
   type CoordinateurId,
   coordinateurDe,
+  type InscriptionALaListe,
   mediateurDe,
   type RattachementsDuCompte,
   type UtilisateurId,
@@ -15,7 +15,7 @@ export type Activation =
       readonly _tag: 'Activee'
       readonly utilisateurId: UtilisateurId
       readonly coordinateurId: CoordinateurId
-      readonly inscription: ContactAImporter | null
+      readonly inscription: InscriptionALaListe
     }
 
 type DecisionDActivation =

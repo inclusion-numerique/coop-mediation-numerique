@@ -51,6 +51,10 @@ export { Nom } from './identite/nom'
 export { type Identite, NomAffiche, nomAffiche } from './identite/nom-affiche'
 export { Prenom } from './identite/prenom'
 export {
+  type InscriptionALaListe,
+  inscriptionALaListe,
+} from './inscription-a-la-liste'
+export {
   type CritereStatut,
   critereDuStatut,
   FiltreStatut,

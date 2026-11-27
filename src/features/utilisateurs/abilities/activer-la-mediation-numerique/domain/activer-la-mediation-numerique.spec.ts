@@ -72,13 +72,16 @@ describe('activer la médiation numérique', () => {
         utilisateurId,
         coordinateurId,
         inscription: {
-          utilisateurId,
-          courriel: AdresseCourriel('jeanne@example.com'),
-          prenom: null,
-          nom: null,
-          telephone: null,
-          roles: [RoleBrevo('Mediateur')],
-          contrat: SANS_CONTRAT,
+          _tag: 'ContactInscrit',
+          contact: {
+            utilisateurId,
+            courriel: AdresseCourriel('jeanne@example.com'),
+            prenom: null,
+            nom: null,
+            telephone: null,
+            roles: [RoleBrevo('Mediateur')],
+            contrat: SANS_CONTRAT,
+          },
         },
       },
     })
@@ -96,7 +99,7 @@ describe('activer la médiation numérique', () => {
         _tag: 'Activee',
         utilisateurId,
         coordinateurId,
-        inscription: null,
+        inscription: { _tag: 'SansContactAInscrire' },
       },
     })
   })
@@ -108,7 +111,7 @@ describe('activer la médiation numérique', () => {
         _tag: 'Activee',
         utilisateurId,
         coordinateurId,
-        inscription: null,
+        inscription: { _tag: 'SansContactAInscrire' },
       },
     })
   })

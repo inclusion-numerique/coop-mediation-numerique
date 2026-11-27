@@ -1,5 +1,6 @@
 import {
   contactAInscrire,
+  inscriptionALaListe,
   type UtilisateurId,
   UtilisateurIntrouvable,
 } from '@/features/utilisateurs/domain'
@@ -33,8 +34,11 @@ export const activerLaMediationNumerique =
     const { coordinateurId } = activation.data
     await activer({ utilisateurId: compte.id, coordinateurId })
 
-    const inscription = contactAInscrire(await lireLInscritAInscrire(compte.id))
-    if (inscription !== null) await inscrireALaListeDeDiffusion(inscription)
+    const inscription = inscriptionALaListe(
+      contactAInscrire(await lireLInscritAInscrire(compte.id)),
+    )
+    if (inscription._tag === 'ContactInscrit')
+      await inscrireALaListeDeDiffusion(inscription.contact)
 
     return success({
       _tag: 'Activee',
