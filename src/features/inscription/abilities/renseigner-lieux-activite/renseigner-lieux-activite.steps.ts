@@ -2,9 +2,13 @@ import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
+import {
+  type LieuDesire,
+  RattachementId,
+} from '@/features/inscription/abilities/renseigner-lieux-activite/domain'
 import { renseignerLieuxActivite } from '@/features/inscription/abilities/renseigner-lieux-activite/domain/renseigner-lieux-activite'
 import { enregistrerReconciliation } from '@/features/inscription/abilities/renseigner-lieux-activite/implementations/prisma/enregistrer-reconciliation.mutation'
-import { ProfilInscription } from '@/features/inscription/domain'
+import { LieuId, ProfilInscription } from '@/features/inscription/domain'
 import { getInscriptionEtat } from '@/features/inscription/implementations/prisma/get-inscription-etat.query'
 import {
   seedLieuActivite,
@@ -16,7 +20,7 @@ import { success } from '@/libraries/result'
 const etat: {
   ancienneActivite?: { readonly id: string; readonly lieuId: string }
   lieuRenseigne?: string
-  confies: string[]
+  confies: readonly string[]
 } = { confies: [] }
 
 const lireLesActivitesEnCours = async () =>
@@ -24,9 +28,9 @@ const lireLesActivitesEnCours = async () =>
     ? []
     : [
         {
-          id: etat.ancienneActivite.id,
+          id: RattachementId(etat.ancienneActivite.id),
           lieuInclusion: {
-            id: etat.ancienneActivite.lieuId,
+            id: LieuId(etat.ancienneActivite.lieuId),
             structureCartographieNationaleId: null,
           },
         },
@@ -35,14 +39,15 @@ const lireLesActivitesEnCours = async () =>
 const lieuxConnus = async ({
   lieux,
 }: {
-  readonly lieux: readonly { readonly id?: string | null }[]
-}) => success(lieux.flatMap(({ id }) => (id == null ? [] : [id])))
+  readonly lieux: readonly LieuDesire<never>[]
+}) =>
+  success(lieux.flatMap((lieu) => (lieu._tag === 'LieuConnu' ? [lieu.id] : [])))
 
 const confierAuRattachement = async (
   _transaction: unknown,
   { destinations }: { readonly destinations: readonly string[] },
 ) => {
-  etat.confies.push(...destinations)
+  etat.confies = [...etat.confies, ...destinations]
 }
 
 Given('je suis un médiateur en cours d’inscription', async () => {
@@ -84,12 +89,11 @@ When(
         userId: utilisateurDeLInscriptionEnCours(),
         lieuxActivite: [
           {
-            id: etat.lieuRenseigne,
-            structureCartographieNationaleId: null,
+            _tag: 'LieuConnu',
+            id: LieuId(etat.lieuRenseigne),
             nom: 'Lieu connu',
-            adresse: '1 rue de la Paix',
-            commune: 'Paris',
-            codePostal: '75001',
+            siret: null,
+            structureCartographieNationaleId: null,
           },
         ],
       },

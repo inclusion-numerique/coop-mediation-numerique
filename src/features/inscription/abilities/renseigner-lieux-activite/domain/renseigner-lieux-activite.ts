@@ -2,34 +2,47 @@ import {
   LieuIntrouvable,
   type UtilisateurId,
 } from '@/features/inscription/domain'
-import { onlyDefinedAndNotNull } from '@/libraries/collections'
 import { failure, type Result, success } from '@/libraries/result'
 import { deciderLesLieux } from './decider-les-lieux'
 import type { EchecDeRenseignerLieuxActivite } from './errors'
+import type { IdentifiantCartographie } from './identifiant-cartographie'
+import type { LieuDesire, LieuSoumis } from './lieu-soumis'
 import type { LieuxActiviteRenseignes } from './lieux-activite-renseignes'
-import { type LieuSoumis, lieuxDesires } from './lieux-desires'
+import { lieuxDesires } from './lieux-desires'
 import type { RenseignerLieuxActivitePorts } from './ports'
 import { reconcilierLieuxActivite } from './reconcilier'
 
+const identifiantsCarto = <Adresse>(
+  lieux: readonly LieuDesire<Adresse>[],
+): readonly IdentifiantCartographie[] =>
+  lieux.flatMap(({ structureCartographieNationaleId }) =>
+    structureCartographieNationaleId === null
+      ? []
+      : [structureCartographieNationaleId],
+  )
+
 export const renseignerLieuxActivite =
-  <StructureCarto, Destination>({
+  <Adresse, StructuresCarto, Destination>({
     lireLEtat,
     lireLieuxActiviteExistants,
     trouverStructuresCarto,
     planifierLesRattachements,
     enregistrerReconciliation,
-  }: RenseignerLieuxActivitePorts<StructureCarto, Destination>) =>
+  }: RenseignerLieuxActivitePorts<Adresse, StructuresCarto, Destination>) =>
   async ({
     command: { userId, lieuxActivite },
     maintenant,
   }: {
     readonly command: {
       readonly userId: UtilisateurId
-      readonly lieuxActivite: readonly LieuSoumis[]
+      readonly lieuxActivite: readonly LieuSoumis<Adresse>[]
     }
     readonly maintenant: Date
   }): Promise<
-    Result<LieuxActiviteRenseignes<Destination>, EchecDeRenseignerLieuxActivite>
+    Result<
+      LieuxActiviteRenseignes<Adresse, Destination>,
+      EchecDeRenseignerLieuxActivite
+    >
   > => {
     const desires = lieuxDesires(lieuxActivite)
 
@@ -48,18 +61,9 @@ export const renseignerLieuxActivite =
       desires.data,
     )
 
-    const structuresCarto = await trouverStructuresCarto(
-      aCreer
-        .map(
-          ({ structureCartographieNationaleId }) =>
-            structureCartographieNationaleId,
-        )
-        .filter(onlyDefinedAndNotNull),
-    )
-
     const destinations = await planifierLesRattachements({
       lieux: aCreer,
-      structuresCarto,
+      structuresCarto: await trouverStructuresCarto(identifiantsCarto(aCreer)),
       maintenant,
     })
 

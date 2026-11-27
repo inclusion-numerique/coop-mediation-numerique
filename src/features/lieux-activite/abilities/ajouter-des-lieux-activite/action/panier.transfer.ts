@@ -29,7 +29,19 @@ const identite = ({
       : IdentifiantCartographie.safe(structureCartographieNationaleId),
 })
 
-const adresseValidee = (lieu: LieuSoumis): AdresseValidee | null => {
+export type SaisieDeLAdresse = {
+  readonly adresse: string
+  readonly commune: string
+  readonly codePostal: string
+  readonly codeInsee?: string | null | undefined
+  readonly banId?: string | null | undefined
+  readonly latitude?: number | null | undefined
+  readonly longitude?: number | null | undefined
+}
+
+export const adresseValidee = (
+  lieu: SaisieDeLAdresse,
+): AdresseValidee | null => {
   if (lieu.codeInsee == null || lieu.latitude == null || lieu.longitude == null)
     return null
 

@@ -3,12 +3,10 @@ import { After, Given, setDefaultTimeout, Then, When } from '@cucumber/cucumber'
 import { typologiesDepuisNom } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
+import type { LieuxAAjouterData } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/action/ajouter-des-lieux-activite.validation'
+import { depuisLePanier } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/action/panier.transfer'
 import { planifierLesRattachements } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/domain/planifier-les-rattachements'
 import { appliquerLesDestinations } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/ajouter-des-lieux-activite.mutation'
-import {
-  type LieuDesire,
-  lieuDemandeDepuisLeLieuDesire,
-} from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/lieu-desire.transfer'
 import {
   etatDuLieu,
   lieuPorteurDeLaCarto,
@@ -381,15 +379,19 @@ const seedLieuActivite = async (
   return id
 }
 
-const renseigner = async (lieux: readonly LieuDesire[]) => {
+const renseigner = async (saisies: LieuxAAjouterData['lieux']) => {
   const maintenant = new Date()
+  const lieux = depuisLePanier(saisies)
+
+  assert.ok(lieux.success, 'Les lieux saisis auraient dû être acceptés')
+
   const destinations = await planifierLesRattachements({
     etatDuLieu,
     lieuPorteurDeLaCarto,
     lieuxAuMemeEndroit,
     nouvelIdentifiantDeLieu,
   })({
-    lieux: lieux.map(lieuDemandeDepuisLeLieuDesire),
+    lieux: lieux.data,
     structuresCarto: new Map(),
     maintenant,
   })
@@ -985,7 +987,11 @@ Then('le lieu supprimé n’a pas été relevé', async () => {
 
 When('je renseigne ce lieu retiré en le désignant', async () => {
   await renseigner([
-    { id: reconnus.lieuSupprimeId, nom: reconnus.nomDuNouveauLieu },
+    {
+      id: reconnus.lieuSupprimeId,
+      nom: reconnus.nomDuNouveauLieu,
+      ...adresseDuLieuDisponible,
+    },
   ])
 })
 

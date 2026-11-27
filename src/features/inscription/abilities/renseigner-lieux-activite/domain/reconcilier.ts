@@ -1,69 +1,49 @@
+import type { LieuId } from '@/features/inscription/domain'
+import type { IdentifiantCartographie } from './identifiant-cartographie'
+import type { LieuDesire } from './lieu-soumis'
+import type { RattachementId } from './rattachement-id'
+
 export type LieuActiviteExistant = {
-  readonly id: string
+  readonly id: RattachementId
   readonly lieuInclusion: {
-    readonly id: string
-    readonly structureCartographieNationaleId: string | null
+    readonly id: LieuId
+    readonly structureCartographieNationaleId: IdentifiantCartographie | null
   }
 }
 
-export type AdresseValidee = {
-  readonly adresse: string
-  readonly commune: string
-  readonly codePostal: string
-  readonly codeInsee: string
-  readonly banId: string
-  readonly latitude: number
-  readonly longitude: number
+export type Reconciliation<Adresse> = {
+  readonly aCloturer: readonly RattachementId[]
+  readonly aCreer: readonly LieuDesire<Adresse>[]
 }
 
-type Identite = {
-  readonly nom: string
-  readonly siret?: string | null
-  readonly structureCartographieNationaleId?: string | null
+const estDefini = <T>(valeur: T | null): valeur is T => valeur !== null
+
+const identifiantInterne = <Adresse>(
+  lieu: LieuDesire<Adresse>,
+): LieuId | null => (lieu._tag === 'LieuConnu' ? lieu.id : null)
+
+const identite = <Adresse>(lieu: LieuDesire<Adresse>): string => {
+  const id = identifiantInterne(lieu)
+
+  if (id !== null) return `id:${id}`
+
+  return lieu.structureCartographieNationaleId === null
+    ? `nom:${lieu.nom}`
+    : `carto:${lieu.structureCartographieNationaleId}`
 }
 
-type LieuActiviteConnu = Identite & {
-  readonly id: string
-  readonly adresse: string
-  readonly commune: string
-  readonly codePostal: string
-  readonly codeInsee?: string | null
-}
-
-type LieuActiviteACreer = Identite & AdresseValidee & { readonly id?: null }
-
-export type LieuActiviteInput = LieuActiviteConnu | LieuActiviteACreer
-
-export type Reconciliation = {
-  readonly aCloturer: readonly string[]
-  readonly aCreer: readonly LieuActiviteInput[]
-}
-
-const estDefini = (valeur?: string | null): valeur is string => valeur != null
-
-const identite = ({
-  id,
-  structureCartographieNationaleId,
-  nom,
-}: LieuActiviteInput): string =>
-  estDefini(id)
-    ? `id:${id}`
-    : estDefini(structureCartographieNationaleId)
-      ? `carto:${structureCartographieNationaleId}`
-      : `nom:${nom}`
-
-const premiereOccurrence = (
-  desire: LieuActiviteInput,
+const premiereOccurrence = <Adresse>(
+  desire: LieuDesire<Adresse>,
   index: number,
-  desires: readonly LieuActiviteInput[],
+  desires: readonly LieuDesire<Adresse>[],
 ): boolean =>
   desires.findIndex((autre) => identite(autre) === identite(desire)) === index
 
-export const reconcilierLieuxActivite = (
+export const reconcilierLieuxActivite = <Adresse>(
   existants: readonly LieuActiviteExistant[],
-  desires: readonly LieuActiviteInput[],
-): Reconciliation => {
-  const idsDesires = desires.map(({ id }) => id).filter(estDefini)
+  desires: readonly LieuDesire<Adresse>[],
+): Reconciliation<Adresse> => {
+  const idsDesires = desires.map(identifiantInterne).filter(estDefini)
   const cartoIdsDesires = desires
     .map(
       ({ structureCartographieNationaleId }) =>
@@ -73,7 +53,7 @@ export const reconcilierLieuxActivite = (
 
   const estDesire = ({ lieuInclusion }: LieuActiviteExistant) =>
     idsDesires.includes(lieuInclusion.id) ||
-    (estDefini(lieuInclusion.structureCartographieNationaleId) &&
+    (lieuInclusion.structureCartographieNationaleId !== null &&
       cartoIdsDesires.includes(lieuInclusion.structureCartographieNationaleId))
 
   const idsLieuxExistants = existants.map(
@@ -83,13 +63,17 @@ export const reconcilierLieuxActivite = (
     .map(({ lieuInclusion }) => lieuInclusion.structureCartographieNationaleId)
     .filter(estDefini)
 
-  const estDejaRattache = ({
-    id,
-    structureCartographieNationaleId,
-  }: LieuActiviteInput) =>
-    (estDefini(id) && idsLieuxExistants.includes(id)) ||
-    (estDefini(structureCartographieNationaleId) &&
-      cartoIdsLieuxExistants.includes(structureCartographieNationaleId))
+  const estDejaRattache = (desire: LieuDesire<Adresse>) => {
+    const id = identifiantInterne(desire)
+
+    return (
+      (id !== null && idsLieuxExistants.includes(id)) ||
+      (desire.structureCartographieNationaleId !== null &&
+        cartoIdsLieuxExistants.includes(
+          desire.structureCartographieNationaleId,
+        ))
+    )
+  }
 
   return {
     aCloturer: existants
