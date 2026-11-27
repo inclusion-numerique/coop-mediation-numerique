@@ -23,7 +23,11 @@ describe('détacher un compte de ses équipes', () => {
 
     expect(await detacher({ compte, maintenant })).toEqual({
       success: true,
-      data: { detachement: { compte, retireesLe: maintenant }, bilan },
+      data: {
+        _tag: 'Detache',
+        detachement: { compte, retireesLe: maintenant },
+        bilan,
+      },
     })
   })
 
@@ -33,7 +37,7 @@ describe('détacher un compte de ses équipes', () => {
     ).toEqual({
       success: true,
       data: {
-        detachement: null,
+        _tag: 'SansEquipe',
         bilan: { invitationsSupprimees: 0, appartenancesRetirees: 0 },
       },
     })

@@ -35,7 +35,10 @@ export type BilanDuDetachement = {
   readonly appartenancesRetirees: number
 }
 
-export type DetachementEffectue = {
-  readonly detachement: Detachement | null
-  readonly bilan: BilanDuDetachement
-}
+export type DetachementEffectue =
+  | { readonly _tag: 'SansEquipe'; readonly bilan: BilanDuDetachement }
+  | {
+      readonly _tag: 'Detache'
+      readonly detachement: Detachement
+      readonly bilan: BilanDuDetachement
+    }
