@@ -20,6 +20,10 @@ import {
   StructureEmployeuseOptions,
 } from '../forms/StructureEmployeuseComboBox'
 
+const aucuneStructure: { readonly structure: StructureTrouvee | null } = {
+  structure: null,
+}
+
 const RattacherEmployeuseForm = ({
   nextStepPath,
 }: {
@@ -37,7 +41,7 @@ const RattacherEmployeuseForm = ({
 
   const form = useAppForm({
     validators: { onSubmit: RenseignerStructureEmployeuseValidation },
-    defaultValues: { structure: null as StructureTrouvee | null },
+    defaultValues: aucuneStructure,
     onSubmit: async ({ value: { structure } }) => {
       if (!structure) return
 

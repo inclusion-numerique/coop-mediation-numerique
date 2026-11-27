@@ -5,6 +5,11 @@ import {
 } from '@/features/employeuse/domain/typologie-de-structure'
 import { Siret } from '@/libraries/insee'
 
+const estUneTypologieDeStructure = (
+  valeur: unknown,
+): valeur is TypologieStructure =>
+  typeof valeur === 'string' && Object.hasOwn(typologiesStructure, valeur)
+
 const EmployeuseChoisieValidation = z.object(
   {
     siret: Siret.schema,
@@ -15,12 +20,7 @@ const EmployeuseChoisieValidation = z.object(
     codeInsee: z.string().trim(),
     id: z.string().nullable().exactOptional(),
     typologie: z
-      .enum(
-        Object.keys(typologiesStructure) as [
-          TypologieStructure,
-          ...TypologieStructure[],
-        ],
-      )
+      .custom<TypologieStructure>(estUneTypologieDeStructure)
       .nullable()
       .exactOptional(),
     source: z.enum(['database', 'api']),

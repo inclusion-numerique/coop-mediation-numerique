@@ -154,19 +154,19 @@ Then('le nombre de lieux est celui de l’annuaire du département', async () =>
 const proposes = () => semis.trouves ?? []
 
 Then('le lieu publié est proposé', () => {
-  assert.ok(proposes().includes(semis.publie as string))
+  assert.ok(proposes().includes(semis.publie ?? ''))
 })
 
 Then('le lieu fréquenté est proposé', () => {
-  assert.ok(proposes().includes(semis.frequente as string))
+  assert.ok(proposes().includes(semis.frequente ?? ''))
 })
 
 Then('le lieu délaissé n’est pas proposé', () => {
-  assert.ok(!proposes().includes(semis.delaisse as string))
+  assert.ok(!proposes().includes(semis.delaisse ?? ''))
 })
 
 Then('le lieu publié n’est pas proposé', () => {
-  assert.ok(!proposes().includes(semis.publie as string))
+  assert.ok(!proposes().includes(semis.publie ?? ''))
 })
 
 Then('seul le lieu fréquenté est signalé avec une adresse à préciser', () => {
