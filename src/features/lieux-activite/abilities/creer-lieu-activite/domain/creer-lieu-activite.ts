@@ -11,7 +11,7 @@ import {
 } from '../../../domain/reconnaitre-le-lieu'
 import { ecritureALaCreation } from '../../../domain/registre/ecriture-au-registre'
 import type { EchecDeCreerLieuActivite } from './errors'
-import type { LieuCree } from './lieu-cree'
+import type { LieuActiviteCree, LieuCree } from './lieu-cree'
 import type { CreerLieuActivitePorts } from './ports'
 
 const aReconnaitre = ({ fiche }: Lieu): LieuAMaterialiser | null =>
@@ -52,7 +52,7 @@ export const creerLieuActivite =
   }: {
     readonly lieu: Lieu
     readonly mediateurId: MediateurId | null
-  }): Promise<Result<LieuCree, EchecDeCreerLieuActivite>> => {
+  }): Promise<Result<LieuActiviteCree, EchecDeCreerLieuActivite>> => {
     if (mediateurId == null) return failure(MediateurRequis())
 
     const creation: LieuCree = {
@@ -67,5 +67,5 @@ export const creerLieuActivite =
 
     return enregistrement._tag === 'LieuDisparu'
       ? failure(LieuIntrouvable(enregistrement.lieuId))
-      : success(creation)
+      : success({ ...creation, rattachement: enregistrement.rattachement })
   }

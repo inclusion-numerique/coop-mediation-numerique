@@ -15,6 +15,7 @@ import { ecrireAuRegistre } from '../../../../implementations/prisma/registre/ec
 import type {
   EnregistrementDuLieu,
   EnregistrerLieuActivite,
+  RattachementDuMediateur,
 } from '../../domain/ports'
 
 const rattacher = async (
@@ -30,17 +31,19 @@ const rattacher = async (
     readonly debut: Date
     readonly creationParId: string | null
   },
-) => {
+): Promise<RattachementDuMediateur> => {
   const dejaRattache = await transaction.mediateurEnActivite.findFirst({
     where: { mediateurId, structureId, suppression: null, fin: null },
     select: { id: true },
   })
 
-  if (dejaRattache) return
+  if (dejaRattache) return 'DejaRattache'
 
   await transaction.mediateurEnActivite.create({
     data: { id: v4(), mediateurId, structureId, debut, creationParId },
   })
+
+  return 'Rattache'
 }
 
 const creerLaFiche =
@@ -81,13 +84,13 @@ export const enregistrerLieuActivite: EnregistrerLieuActivite = async ({
         creer: creerLaFiche(transaction, ecritureAuRegistre),
       })
 
-      await rattacher(transaction, {
+      const rattachement = await rattacher(transaction, {
         mediateurId,
         structureId: destination.id,
         debut,
         creationParId: par,
       })
 
-      return { _tag: 'Enregistre' }
+      return { _tag: 'Enregistre', rattachement }
     },
   )

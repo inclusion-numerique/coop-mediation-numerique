@@ -125,7 +125,10 @@ describe('créer un lieu d’activité', () => {
     expect(
       await creerLieuActivite({
         lieuxAuMemeEndroit: async () => [],
-        enregistrer: async () => ({ _tag: 'Enregistre' }),
+        enregistrer: async () => ({
+          _tag: 'Enregistre',
+          rattachement: 'Rattache',
+        }),
       })({ lieu: auPort, mediateurId: null }),
     ).toEqual(failure({ _tag: 'MediateurRequis' }))
   })
@@ -188,7 +191,10 @@ describe('créer un lieu d’activité', () => {
     expect(
       await creerLieuActivite({
         lieuxAuMemeEndroit: async () => candidats,
-        enregistrer: async () => ({ _tag: 'Enregistre' }),
+        enregistrer: async () => ({
+          _tag: 'Enregistre',
+          rattachement: 'Rattache',
+        }),
       })({ lieu, mediateurId }),
     ).toEqual(
       success({
@@ -197,6 +203,7 @@ describe('créer un lieu d’activité', () => {
         debut: creeLe,
         par: createur,
         ecritureAuRegistre: 'IdentiteSeule',
+        rattachement: 'Rattache',
       }),
     )
   })
@@ -205,7 +212,10 @@ describe('créer un lieu d’activité', () => {
     expect(
       await creerLieuActivite({
         lieuxAuMemeEndroit: async () => [],
-        enregistrer: async () => ({ _tag: 'Enregistre' }),
+        enregistrer: async () => ({
+          _tag: 'Enregistre',
+          rattachement: 'Rattache',
+        }),
       })({ lieu: publieAuPort, mediateurId }),
     ).toEqual(
       success({
@@ -218,6 +228,7 @@ describe('créer un lieu d’activité', () => {
         debut: creeLe,
         par: createur,
         ecritureAuRegistre: 'FicheComplete',
+        rattachement: 'Rattache',
       }),
     )
   })
@@ -229,5 +240,26 @@ describe('créer un lieu d’activité', () => {
         enregistrer: async () => ({ _tag: 'LieuDisparu', lieuId: EXISTANT }),
       })({ lieu: auPort, mediateurId }),
     ).toEqual(failure({ _tag: 'LieuIntrouvable', lieuId: EXISTANT }))
+  })
+
+  it('rend compte du médiateur qui exerçait déjà dans le lieu rejoint', async () => {
+    expect(
+      await creerLieuActivite({
+        lieuxAuMemeEndroit: async () => [candidat(null)],
+        enregistrer: async () => ({
+          _tag: 'Enregistre',
+          rattachement: 'DejaRattache',
+        }),
+      })({ lieu: auPort, mediateurId }),
+    ).toEqual(
+      success({
+        destination: { _tag: 'LieuActif', id: EXISTANT },
+        mediateurId,
+        debut: creeLe,
+        par: createur,
+        ecritureAuRegistre: 'IdentiteSeule',
+        rattachement: 'DejaRattache',
+      }),
+    )
   })
 })
