@@ -9,14 +9,15 @@
     "lieux-activite/abilities/ajouter-des-lieux-activite/action",
     "lieux-activite/abilities/ajouter-des-lieux-activite/domain",
     "lieux-activite/abilities/ajouter-des-lieux-activite/implementations/entrepot",
-    "lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma",
     "lieux-activite/abilities/ajouter-des-lieux-activite/ui/presenters",
+    "lieux-activite/abilities/apercevoir-la-fusion/domain",
+    "lieux-activite/abilities/apercevoir-la-fusion/implementations/prisma",
+    "lieux-activite/abilities/apercevoir-la-fusion/ui/presenters",
     "lieux-activite/abilities/appliquer-les-differences/domain",
     "lieux-activite/abilities/creer-lieu-activite/action",
     "lieux-activite/abilities/creer-lieu-activite/domain",
     "lieux-activite/abilities/fusionner-des-lieux/domain",
     "lieux-activite/abilities/fusionner-des-lieux/implementations/prisma",
-    "lieux-activite/abilities/fusionner-des-lieux/ui/presenters",
     "lieux-activite/abilities/lister-les-lieux-du-mediateur/ui/presenters",
     "lieux-activite/abilities/modifier-la-fiche-du-lieu/action",
     "lieux-activite/abilities/modifier-la-fiche-du-lieu/domain",
@@ -151,7 +152,6 @@
     "equipe/domain"
   ],
   "libraries/collections": [
-    "inscription/abilities/renseigner-lieux-activite/domain",
     "lieux-activite/abilities/ajouter-des-lieux-activite/domain"
   ],
   "libraries/date": [

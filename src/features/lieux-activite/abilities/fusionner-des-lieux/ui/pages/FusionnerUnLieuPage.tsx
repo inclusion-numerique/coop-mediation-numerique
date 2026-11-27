@@ -1,4 +1,4 @@
-import { ChoisirLeLieuAFusionner } from '@/features/lieux-activite/abilities/fusionner-des-lieux/ui/components/ChoisirLeLieuAFusionner'
+import type { ReactNode } from 'react'
 import { hrefDeModificationDuLieu } from '@/features/lieux-activite/ui/presenters/href-du-lieu.presenter'
 import { contentId } from '@/libraries/liens-d-evitement'
 import { SkipLinksPortal } from '@/libraries/liens-d-evitement/composants'
@@ -11,9 +11,11 @@ import {
 export const FusionnerUnLieuPage = ({
   structureId,
   nom,
+  choixDuLieu,
 }: {
   structureId: string
   nom: string
+  choixDuLieu: ReactNode
 }) => (
   <CoopPageContainer>
     <SkipLinksPortal />
@@ -36,7 +38,7 @@ export const FusionnerUnLieuPage = ({
       <AdministrationTitle icon="fr-icon-git-merge-line">
         Fusionner {nom} avec un autre lieu d’activité
       </AdministrationTitle>
-      <ChoisirLeLieuAFusionner structureId={structureId} />
+      {choixDuLieu}
     </main>
   </CoopPageContainer>
 )

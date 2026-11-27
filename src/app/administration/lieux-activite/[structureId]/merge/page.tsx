@@ -5,6 +5,7 @@ import { authenticateAdmin } from '@/features/authentification/middlewares/with-
 import { RECHERCHER_UN_LIEU_A_FUSIONNER_ACTION_KEY } from '@/features/lieux-activite/abilities/fusionner-des-lieux/action/rechercher-un-lieu-a-fusionner.key'
 import { lieuAFusionner } from '@/features/lieux-activite/abilities/fusionner-des-lieux/implementations/prisma/lieu-a-fusionner.query'
 import { FusionnerUnLieuPage } from '@/features/lieux-activite/abilities/fusionner-des-lieux/ui/pages/FusionnerUnLieuPage'
+import { ChoisirLeLieuAFusionner } from '@/features/lieux-activite/abilities/fusionner-des-lieux/ui/slots/ChoisirLeLieuAFusionner.slot'
 import { ClientBinder } from '@/libraries/nextjs/injection'
 
 export const metadata = {
@@ -22,7 +23,11 @@ const Page = async (props: { params: Promise<{ structureId: string }> }) => {
       bind={RECHERCHER_UN_LIEU_A_FUSIONNER_ACTION_KEY}
       to={rechercherUnLieuAFusionnerAction}
     >
-      <FusionnerUnLieuPage structureId={structureId} nom={pageData.nom} />
+      <FusionnerUnLieuPage
+        structureId={structureId}
+        nom={pageData.nom}
+        choixDuLieu={<ChoisirLeLieuAFusionner structureId={structureId} />}
+      />
     </ClientBinder>
   )
 }

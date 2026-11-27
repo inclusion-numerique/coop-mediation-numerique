@@ -1,24 +1,26 @@
-import type { FusionApercue } from '@/features/lieux-activite/abilities/fusionner-des-lieux/domain'
-import { ApercuDeLaFusion } from '@/features/lieux-activite/abilities/fusionner-des-lieux/ui/components/ApercuDeLaFusion'
-import { ChoisirLeLieuAFusionner } from '@/features/lieux-activite/abilities/fusionner-des-lieux/ui/components/ChoisirLeLieuAFusionner'
-import ValiderLaFusion from '@/features/lieux-activite/abilities/fusionner-des-lieux/ui/components/ValiderLaFusion'
+import type { ReactNode } from 'react'
 import { hrefDeModificationDuLieu } from '@/features/lieux-activite/ui/presenters/href-du-lieu.presenter'
 import { contentId } from '@/libraries/liens-d-evitement'
 import { SkipLinksPortal } from '@/libraries/liens-d-evitement/composants'
-import { toTitleCase } from '@/libraries/texte'
 import {
   AdministrationBreadcrumbs,
   AdministrationTitle,
   CoopPageContainer,
 } from '@/libraries/ui/components'
+import type { FusionApercue } from '../../domain'
+import { ApercuDeLaFusion } from '../components/ApercuDeLaFusion'
 import { nomAffiche } from '../presenters/nom-affiche.presenter'
 
 export const ApercuDeLaFusionPage = ({
   structureId,
   mergeData,
+  choixDuLieu,
+  validation,
 }: {
   structureId: string
   mergeData: FusionApercue
+  choixDuLieu: ReactNode
+  validation: ReactNode
 }) => (
   <CoopPageContainer>
     <SkipLinksPortal />
@@ -42,18 +44,7 @@ export const ApercuDeLaFusionPage = ({
         Fusionner {nomAffiche(mergeData.mergeTarget.nom)} avec un autre lieu
         d’activité
       </AdministrationTitle>
-      <ChoisirLeLieuAFusionner
-        structureId={structureId}
-        defaultMergeStructure={{
-          id: mergeData.mergeSource.id,
-          nom: nomAffiche(mergeData.mergeSource.nom),
-          adresse: toTitleCase(mergeData.mergeSource.adresse?.voie ?? '', {
-            noUpper: true,
-          }),
-          commune: toTitleCase(mergeData.mergeSource.adresse?.commune ?? ''),
-          codePostal: mergeData.mergeSource.adresse?.code_postal ?? '',
-        }}
-      />
+      {choixDuLieu}
       <div className="fr-flex fr-flex-gap-6v fr-mb-6v fr-direction-lg-row fr-direction-column">
         <div className="fr-border-radius--8 fr-border fr-p-8v fr-width-full">
           <ApercuDeLaFusion
@@ -77,10 +68,7 @@ export const ApercuDeLaFusionPage = ({
           />
         </div>
       </div>
-      <ValiderLaFusion
-        sourceStructure={mergeData.mergeSource}
-        targetStructure={mergeData.mergeTarget}
-      />
+      {validation}
     </main>
   </CoopPageContainer>
 )

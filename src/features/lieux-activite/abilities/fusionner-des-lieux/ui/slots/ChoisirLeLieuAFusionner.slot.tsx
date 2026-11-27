@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import { hrefDuLieuAFusionner } from '@/features/lieux-activite/ui/presenters/href-du-lieu.presenter'
-import RechercheDUnLieu from './RechercheDUnLieu'
+import RechercheDUnLieu from '../components/RechercheDUnLieu'
 
 export const ChoisirLeLieuAFusionner = ({
   structureId,

@@ -2,10 +2,13 @@ import { notFound } from 'next/navigation'
 import { fusionnerDesLieuxAction } from '@/app/_actions/lieux-activite/fusionner-des-lieux.action'
 import { metadataTitle } from '@/configuration/projet'
 import { authenticateAdmin } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
+import { apercevoirLaFusion } from '@/features/lieux-activite/abilities/apercevoir-la-fusion/domain'
+import { lieuxAApercevoir } from '@/features/lieux-activite/abilities/apercevoir-la-fusion/implementations/prisma/lieux-a-apercevoir.query'
+import { ApercuDeLaFusionPage } from '@/features/lieux-activite/abilities/apercevoir-la-fusion/ui/pages/ApercuDeLaFusionPage'
+import { lieuChoisiParDefaut } from '@/features/lieux-activite/abilities/apercevoir-la-fusion/ui/presenters/lieu-choisi-par-defaut.presenter'
 import { FUSIONNER_DES_LIEUX_ACTION_KEY } from '@/features/lieux-activite/abilities/fusionner-des-lieux/action/fusionner-des-lieux.key'
-import { apercevoirLaFusion } from '@/features/lieux-activite/abilities/fusionner-des-lieux/domain'
-import { lieuxAApercevoir } from '@/features/lieux-activite/abilities/fusionner-des-lieux/implementations/prisma/lieux-a-apercevoir.query'
-import { ApercuDeLaFusionPage } from '@/features/lieux-activite/abilities/fusionner-des-lieux/ui/pages/ApercuDeLaFusionPage'
+import { ChoisirLeLieuAFusionner } from '@/features/lieux-activite/abilities/fusionner-des-lieux/ui/slots/ChoisirLeLieuAFusionner.slot'
+import ValiderLaFusion from '@/features/lieux-activite/abilities/fusionner-des-lieux/ui/slots/ValiderLaFusion.slot'
 import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
 import { ClientBinder } from '@/libraries/nextjs/injection'
 
@@ -29,7 +32,22 @@ const Page = async (props: {
       bind={FUSIONNER_DES_LIEUX_ACTION_KEY}
       to={fusionnerDesLieuxAction}
     >
-      <ApercuDeLaFusionPage structureId={structureId} mergeData={apercu.data} />
+      <ApercuDeLaFusionPage
+        structureId={structureId}
+        mergeData={apercu.data}
+        choixDuLieu={
+          <ChoisirLeLieuAFusionner
+            structureId={structureId}
+            defaultMergeStructure={lieuChoisiParDefaut(apercu.data)}
+          />
+        }
+        validation={
+          <ValiderLaFusion
+            sourceStructure={apercu.data.mergeSource}
+            targetStructure={apercu.data.mergeTarget}
+          />
+        }
+      />
     </ClientBinder>
   )
 }
