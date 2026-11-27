@@ -10,11 +10,13 @@ const etat: {
   proposes?: readonly string[]
 } = {}
 
-Given('un lieu {string} à fusionner', async (nom: string) => {
+const NOM = 'Cyberbase des Docks'
+
+Given('un lieu « Cyberbase des Docks » à fusionner', async () => {
   etat.suffixe = v4()
   const lieu = await prismaClient.lieuInclusion.create({
     data: {
-      nom: `${nom} ${etat.suffixe}`,
+      nom: `${NOM} ${etat.suffixe}`,
       adresse: '12 quai du Port',
       commune: 'Rochefort',
       codePostal: '17300',
@@ -32,11 +34,9 @@ Given('ce lieu à fusionner est supprimé', async () => {
 })
 
 When(
-  "l'administration cherche {string} parmi les lieux à fusionner",
-  async (recherche: string) => {
-    const { structures } = await lieuxAFusionner(
-      `${recherche} ${etat.suffixe ?? ''}`,
-    )
+  "l'administration cherche « Cyberbase des Docks » parmi les lieux à fusionner",
+  async () => {
+    const { structures } = await lieuxAFusionner(`${NOM} ${etat.suffixe ?? ''}`)
     etat.proposes = structures.map(({ id }) => id)
   },
 )
