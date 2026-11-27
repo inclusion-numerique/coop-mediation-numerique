@@ -51,6 +51,17 @@ Then("l'anonymisation porte sur {int} bénéficiaires", (attendu: number) => {
   assert.strictEqual(contexte.anonymises, attendu)
 })
 
+const anonymise = {
+  prenom: null,
+  nom: null,
+  telephone: null,
+  email: null,
+  notes: null,
+  adresse: null,
+  anonyme: true,
+  supprime: true,
+}
+
 Then("les bénéficiaires du portefeuille n'ont plus d'identité", async () => {
   const beneficiaires = await prismaClient.beneficiaire.findMany({
     where: { mediateurId: portefeuilleSeme().mediateurId },
@@ -66,17 +77,13 @@ Then("les bénéficiaires du portefeuille n'ont plus d'identité", async () => {
     },
   })
 
-  assert.strictEqual(beneficiaires.length, 2)
-  for (const beneficiaire of beneficiaires) {
-    assert.strictEqual(beneficiaire.prenom, null)
-    assert.strictEqual(beneficiaire.nom, null)
-    assert.strictEqual(beneficiaire.telephone, null)
-    assert.strictEqual(beneficiaire.email, null)
-    assert.strictEqual(beneficiaire.notes, null)
-    assert.strictEqual(beneficiaire.adresse, null)
-    assert.strictEqual(beneficiaire.anonyme, true)
-    assert.ok(beneficiaire.suppression)
-  }
+  assert.deepStrictEqual(
+    beneficiaires.map(({ suppression, ...identite }) => ({
+      ...identite,
+      supprime: suppression !== null,
+    })),
+    [anonymise, anonymise],
+  )
 })
 
 Then(
@@ -87,11 +94,14 @@ Then(
       select: { anneeNaissance: true, commune: true, genre: true },
     })
 
-    for (const beneficiaire of beneficiaires) {
-      assert.strictEqual(beneficiaire.anneeNaissance, 1980)
-      assert.strictEqual(beneficiaire.commune, 'Reims')
-      assert.strictEqual(beneficiaire.genre, 'Masculin')
-    }
+    assert.deepStrictEqual(
+      beneficiaires,
+      beneficiaires.map(() => ({
+        anneeNaissance: 1980,
+        commune: 'Reims',
+        genre: 'Masculin',
+      })),
+    )
   },
 )
 

@@ -57,7 +57,7 @@ When("j'importe {int} bénéficiaires", async (count: number) => {
     },
     select: { id: true },
   })
-  for (const { id } of created) suivreLeBeneficiaire(id)
+  created.map(({ id }) => id).forEach(suivreLeBeneficiaire)
 })
 
 Then("l'import crée {int} bénéficiaires", (count: number) => {

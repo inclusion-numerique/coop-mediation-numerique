@@ -6,7 +6,7 @@ import { staticFile } from '@/libraries/chemins'
 export type Commune = {
   codeInsee: string
   nom: string
-  codePostal: string // Can be multiple, comma separated
+  codePostal: string
 }
 
 const filePath = staticFile('communes.csv')

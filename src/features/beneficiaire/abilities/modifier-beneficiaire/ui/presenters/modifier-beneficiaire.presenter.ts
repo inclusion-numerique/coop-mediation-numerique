@@ -12,8 +12,7 @@ const beneficiaireCommuneResidenceToPreviewBanData = ({
   'communeCodePostal' | 'communeCodeInsee' | 'commune'
 >) =>
   commune && communeCodePostal && communeCodeInsee
-    ? // We only need data for preview in UI
-      {
+    ? {
         id: communeCodeInsee,
         nom: commune,
         codePostal: communeCodePostal,
