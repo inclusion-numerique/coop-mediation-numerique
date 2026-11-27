@@ -57,7 +57,11 @@ describe('fusionner des comptes', () => {
   it('fusionne deux comptes distincts', async () => {
     expect(await fusionnerEntre(source, cible)).toEqual({
       success: true,
-      data: { source, cible, retraitDeLaSource: sourceRetiree },
+      data: {
+        source,
+        cible,
+        retraitDeLaSource: { _tag: 'Retire', retrait: sourceRetiree },
+      },
     })
   })
 
@@ -77,7 +81,10 @@ describe('fusionner des comptes', () => {
       data: {
         source,
         cible,
-        retraitDeLaSource: EchecTechnique('Brevo indisponible'),
+        retraitDeLaSource: {
+          _tag: 'NonRetire',
+          echec: EchecTechnique('Brevo indisponible'),
+        },
       },
     })
   })
@@ -88,7 +95,7 @@ describe('fusionner des comptes', () => {
       data: {
         source: { ...source, supprime: true },
         cible,
-        retraitDeLaSource: sourceRetiree,
+        retraitDeLaSource: { _tag: 'Retire', retrait: sourceRetiree },
       },
     })
   })

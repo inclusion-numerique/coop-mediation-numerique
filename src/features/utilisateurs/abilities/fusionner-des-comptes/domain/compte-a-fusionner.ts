@@ -43,6 +43,10 @@ export const autoriserFusion = (
   return success({ source, cible })
 }
 
+export type RetraitDeLaSource =
+  | { readonly _tag: 'Retire'; readonly retrait: RetraitDuContact }
+  | { readonly _tag: 'NonRetire'; readonly echec: EchecTechnique }
+
 export type FusionEffectuee = FusionAutorisee & {
-  readonly retraitDeLaSource: RetraitDuContact | EchecTechnique
+  readonly retraitDeLaSource: RetraitDeLaSource
 }

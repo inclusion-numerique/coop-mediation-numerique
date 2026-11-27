@@ -49,6 +49,8 @@ export const fusionnerDesComptes =
 
     return success({
       ...autorisation.data,
-      retraitDeLaSource: retrait.success ? retrait.data : retrait.error,
+      retraitDeLaSource: retrait.success
+        ? { _tag: 'Retire', retrait: retrait.data }
+        : { _tag: 'NonRetire', echec: retrait.error },
     })
   }

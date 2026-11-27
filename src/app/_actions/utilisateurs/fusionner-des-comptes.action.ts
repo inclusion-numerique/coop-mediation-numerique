@@ -44,7 +44,8 @@ export const fusionnerDesComptesAction = actionBuilder()
         })
         if (!resultat.success) return resultat
         const { retraitDeLaSource } = resultat.data
-        if ('cause' in retraitDeLaSource) signaler(retraitDeLaSource.cause)
+        if (retraitDeLaSource._tag === 'NonRetire')
+          signaler(retraitDeLaSource.echec.cause)
         return success(undefined)
       },
       { onError: FUSIONNER_DES_COMPTES_ERRORS },
