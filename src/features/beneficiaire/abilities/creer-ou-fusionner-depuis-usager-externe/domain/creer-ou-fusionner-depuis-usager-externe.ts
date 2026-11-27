@@ -102,6 +102,7 @@ const traiterUnUsager =
     const lie = await lireLeBeneficiaireLie({
       rdvUserId: usager.rdvUserId,
       mediateurId,
+      maintenant,
     })
     if (!lie.success) return lie
 
@@ -120,7 +121,7 @@ const traiterUnUsager =
       const miseAJour = { id: beneficiaireLie.id, mediateurId, donnees }
       return Object.keys(donnees).length > 0
         ? ecrit({ _tag: 'MiseAJour', ...miseAJour })(
-            await mettreAJourLeBeneficiaire(miseAJour),
+            await mettreAJourLeBeneficiaire({ ...miseAJour, maintenant }),
           )
         : success({ beneficiaire: beneficiaireLie, ecriture: null })
     }
@@ -151,7 +152,7 @@ const traiterUnUsager =
         }),
       }
       return ecrit({ _tag: 'MiseAJour', ...miseAJour })(
-        await mettreAJourLeBeneficiaire(miseAJour),
+        await mettreAJourLeBeneficiaire({ ...miseAJour, maintenant }),
       )
     }
 
@@ -176,7 +177,7 @@ const traiterUnUsager =
       mediateurId,
     }
     return ecrit({ _tag: 'Creation', beneficiaire })(
-      await creerLeBeneficiaire(beneficiaire),
+      await creerLeBeneficiaire({ beneficiaire, maintenant }),
     )
   }
 

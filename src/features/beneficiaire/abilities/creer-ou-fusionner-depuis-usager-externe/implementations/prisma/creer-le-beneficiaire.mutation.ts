@@ -7,14 +7,14 @@ import { versBeneficiaireFusionne } from './beneficiaire-fusionne.transfer'
 import { signalerLesValeursInvalides } from './valeurs-invalides.adapter'
 
 export const creerLeBeneficiaire: CreerLeBeneficiaire =
-  attraperEnEchecTechnique(async (beneficiaire) =>
+  attraperEnEchecTechnique(async ({ beneficiaire, maintenant }) =>
     signalerLesValeursInvalides(
       versBeneficiaireFusionne(
         await prismaClient.beneficiaire.create({
           data: { id: v4(), ...beneficiaire, anonyme: false },
           select: beneficiaireFusionneSelect,
         }),
-        new Date(),
+        maintenant,
       ),
     ),
   )

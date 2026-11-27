@@ -6,12 +6,12 @@ import { versBeneficiaireFusionne } from './beneficiaire-fusionne.transfer'
 import { signalerLesValeursInvalides } from './valeurs-invalides.adapter'
 
 export const lireLeBeneficiaireLie: LireLeBeneficiaireLie =
-  attraperEnEchecTechnique(async ({ rdvUserId, mediateurId }) => {
+  attraperEnEchecTechnique(async ({ rdvUserId, mediateurId, maintenant }) => {
     const lie = await prismaClient.beneficiaire.findFirst({
       where: { rdvUserId, mediateurId, suppression: null, anonyme: false },
       select: beneficiaireFusionneSelect,
     })
     return lie === null
       ? null
-      : signalerLesValeursInvalides(versBeneficiaireFusionne(lie, new Date()))
+      : signalerLesValeursInvalides(versBeneficiaireFusionne(lie, maintenant))
   })

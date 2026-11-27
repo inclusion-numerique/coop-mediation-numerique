@@ -14,6 +14,7 @@ import type {
 export type LireLeBeneficiaireLie = (critere: {
   readonly rdvUserId: RdvUserId
   readonly mediateurId: MediateurId
+  readonly maintenant: Date
 }) => Promise<Result<MergedBeneficiaire | null, EchecTechnique>>
 
 export type TrouverUnDoublon = (
@@ -30,11 +31,13 @@ export type MettreAJourLeBeneficiaire = (miseAJour: {
   readonly id: BeneficiaireId
   readonly mediateurId: MediateurId
   readonly donnees: DonneesDeFusion
+  readonly maintenant: Date
 }) => Promise<Result<MergedBeneficiaire, EchecTechnique>>
 
-export type CreerLeBeneficiaire = (
-  beneficiaire: NouveauBeneficiaire,
-) => Promise<Result<MergedBeneficiaire, EchecTechnique>>
+export type CreerLeBeneficiaire = (creation: {
+  readonly beneficiaire: NouveauBeneficiaire
+  readonly maintenant: Date
+}) => Promise<Result<MergedBeneficiaire, EchecTechnique>>
 
 export type CreerOuFusionnerDepuisUsagerExternePorts = {
   readonly lireLeBeneficiaireLie: LireLeBeneficiaireLie

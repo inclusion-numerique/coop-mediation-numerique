@@ -6,7 +6,7 @@ import { versBeneficiaireFusionne } from './beneficiaire-fusionne.transfer'
 import { signalerLesValeursInvalides } from './valeurs-invalides.adapter'
 
 export const mettreAJourLeBeneficiaire: MettreAJourLeBeneficiaire =
-  attraperEnEchecTechnique(async ({ id, mediateurId, donnees }) =>
+  attraperEnEchecTechnique(async ({ id, mediateurId, donnees, maintenant }) =>
     signalerLesValeursInvalides(
       versBeneficiaireFusionne(
         await prismaClient.beneficiaire.update({
@@ -14,7 +14,7 @@ export const mettreAJourLeBeneficiaire: MettreAJourLeBeneficiaire =
           data: donnees,
           select: beneficiaireFusionneSelect,
         }),
-        new Date(),
+        maintenant,
       ),
     ),
   )
