@@ -33,9 +33,10 @@ Given(
   async (premiere: string, deuxieme: string, troisieme: string) => {
     employeuses.clear()
     contexte.listees = []
-    for (const nom of [premiere, deuxieme, troisieme]) {
+    await [premiere, deuxieme, troisieme].reduce(async (precedente, nom) => {
+      await precedente
       employeuses.set(nom, await seedEmployeuseMain(nom))
-    }
+    }, Promise.resolve())
   },
 )
 
