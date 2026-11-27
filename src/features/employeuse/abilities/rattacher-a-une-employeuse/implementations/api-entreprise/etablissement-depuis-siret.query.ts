@@ -1,3 +1,4 @@
+import { signaler } from '@/configuration/telemetry/serveur'
 import { fetchSiretApiData } from '@/features/employeuse/implementations/api-entreprise/fetch-siret-data.query'
 import { failure, success } from '@/libraries/result'
 import { SireneIndisponible } from '../../domain/errors'
@@ -8,11 +9,10 @@ export const etablissementDepuisSiret: LireLEtablissement = async (siret) => {
   const reponse = await fetchSiretApiData(siret)
 
   if ('error' in reponse) {
-    // biome-ignore lint/suspicious/noConsole: trace d'appel externe
-    console.error(
-      `Recherche d’entreprises indisponible pour le SIRET ${siret} :`,
-      reponse.error.statusCode,
-      reponse.error.message,
+    signaler(
+      new Error(
+        `Recherche d’entreprises indisponible pour le SIRET ${siret} : ${reponse.error.statusCode} ${reponse.error.message}`,
+      ),
     )
     return failure(SireneIndisponible())
   }
