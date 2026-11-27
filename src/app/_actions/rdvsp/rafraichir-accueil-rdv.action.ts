@@ -12,13 +12,13 @@ import { mettreAJourLeBeneficiaire } from '@/features/beneficiaire/abilities/cre
 import { signalerLesUsagersEcartes } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/telemetrie/usagers-ecartes.adapter'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { consulterRdvsAccueil } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/domain/consulter-rdvs-accueil'
-import type { RafraichissementAccueil } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/domain/rafraichissement-accueil'
 import { compteDuMediateur } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/implementations/prisma/compte-du-mediateur.query'
 import { lireDonneesAccueilRdv } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/implementations/prisma/donnees-accueil-rdv.query'
 import { DECLENCHER_SYNCHRONISATION_ERRORS } from '@/features/rdvsp/abilities/declencher-synchronisation/action/declencher-synchronisation.errors'
 import { declencherSynchronisation } from '@/features/rdvsp/abilities/declencher-synchronisation/domain/declencher-synchronisation'
 import { compteACible } from '@/features/rdvsp/abilities/declencher-synchronisation/implementations/prisma/compte-a-cible.query'
 import { marquerEchecDeSynchronisation } from '@/features/rdvsp/abilities/declencher-synchronisation/implementations/prisma/marquer-echec.mutation'
+import { rafraichirAccueilRdv } from '@/features/rdvsp/abilities/rafraichir-accueil-rdv/domain/rafraichir-accueil-rdv'
 import { synchroniserCompteRdv } from '@/features/rdvsp/abilities/synchroniser-compte-rdv/domain/synchroniser-compte-rdv'
 import { detacherOrganisations } from '@/features/rdvsp/abilities/synchroniser-compte-rdv/implementations/prisma/detacher-organisations.mutation'
 import {
@@ -49,7 +49,6 @@ import { enregistrerLesJetons } from '@/features/rdvsp/implementations/prisma/je
 import { jetonsCourants } from '@/features/rdvsp/implementations/prisma/jetons-du-compte.query'
 import { lireLesUsagersARapprocher } from '@/features/rdvsp/implementations/prisma/usagers-a-rapprocher.query'
 import { fromResult } from '@/libraries/nextjs'
-import { success } from '@/libraries/result'
 
 const rdvServicePublic = rdvServicePublicApi({
   ...configurationRdvServicePublic(),
@@ -103,9 +102,12 @@ const declencher = declencherSynchronisation({
   signaler,
 })
 
-const consulter = consulterRdvsAccueil({
-  compteDuMediateur,
-  lireDonnees: lireDonneesAccueilRdv,
+const rafraichir = rafraichirAccueilRdv({
+  declencher,
+  consulter: consulterRdvsAccueil({
+    compteDuMediateur,
+    lireDonnees: lireDonneesAccueilRdv,
+  }),
 })
 
 export const rafraichirAccueilRdvAction = actionBuilder()
@@ -113,35 +115,11 @@ export const rafraichirAccueilRdvAction = actionBuilder()
   .use(withMaintenance())
   .execute(
     fromResult(
-      async ({ user }) => {
-        const utilisateurId = UtilisateurCoopId(user.id)
-
-        const synchronisation = await declencher({
-          demandeur: { id: utilisateurId, role: user.role },
-          utilisateurId,
-          seulementSansWebhook: true,
+      async ({ user }) =>
+        rafraichir({
+          demandeur: { id: UtilisateurCoopId(user.id), role: user.role },
           maintenant: new Date(),
-        })
-
-        if (!synchronisation.success) {
-          return synchronisation
-        }
-
-        if (synchronisation.data.derive === 0) {
-          return success<RafraichissementAccueil>({ _tag: 'inchange' })
-        }
-
-        const consultation = await consulter({
-          utilisateurId,
-          maintenant: new Date(),
-        })
-
-        return success<RafraichissementAccueil>({
-          _tag: 'rafraichi',
-          derive: synchronisation.data.derive,
-          widget: consultation.data.widget,
-        })
-      },
+        }),
       { onError: DECLENCHER_SYNCHRONISATION_ERRORS },
     ),
   )
