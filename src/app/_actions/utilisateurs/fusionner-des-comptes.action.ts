@@ -41,6 +41,7 @@ export const fusionnerDesComptesAction = actionBuilder()
         const resultat = await fusionnerDesComptesAvec(synchroniserPersonne)({
           sourceId: UtilisateurId.safe(input.sourceId),
           cibleId: UtilisateurId.safe(input.cibleId),
+          maintenant: new Date(),
         })
         if (!resultat.success) return resultat
         const { retraitDeLaSource } = resultat.data

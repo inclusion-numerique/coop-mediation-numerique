@@ -20,9 +20,11 @@ export const fusionnerDesComptes =
   async ({
     sourceId,
     cibleId,
+    maintenant,
   }: {
     readonly sourceId: UtilisateurId | null
     readonly cibleId: UtilisateurId | null
+    readonly maintenant: Date
   }): Promise<Result<FusionEffectuee, EchecDeFusionnerDesComptes>> => {
     if (sourceId === null) return failure(SourceIntrouvable())
     if (cibleId === null) return failure(CibleIntrouvable())
@@ -35,7 +37,7 @@ export const fusionnerDesComptes =
     if (source === null) return failure(SourceIntrouvable())
     if (cible === null) return failure(CibleIntrouvable())
 
-    const autorisation = autoriserFusion(source, cible)
+    const autorisation = autoriserFusion(source, cible, maintenant)
     if (!autorisation.success) return autorisation
 
     await fusionner(autorisation.data)

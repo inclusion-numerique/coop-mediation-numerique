@@ -141,6 +141,7 @@ When("l'administration fusionne la source dans la cible", async () => {
   fusion.resultat = await fusionnerDesComptesAvec(async () => undefined)({
     sourceId: UtilisateurId.safe(source().userId),
     cibleId: UtilisateurId.safe(cible().userId),
+    maintenant: new Date(),
   })
 })
 
@@ -148,6 +149,7 @@ When("l'administration fusionne la source avec elle-même", async () => {
   fusion.resultat = await fusionnerDesComptesAvec(async () => undefined)({
     sourceId: UtilisateurId.safe(source().userId),
     cibleId: UtilisateurId.safe(source().userId),
+    maintenant: new Date(),
   })
 })
 
