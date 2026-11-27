@@ -14,7 +14,7 @@ const accueil: Accueil = {
 export default {
   title: 'Coop/Accueil',
   component: AccueilPage,
-} as Meta<typeof AccueilPage>
+} satisfies Meta<typeof AccueilPage>
 
 type Story = StoryObj<typeof AccueilPage>
 

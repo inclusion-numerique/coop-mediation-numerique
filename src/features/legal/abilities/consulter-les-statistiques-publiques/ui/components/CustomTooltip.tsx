@@ -1,36 +1,27 @@
-import { ReactNode } from 'react'
 import type { TooltipContentProps } from 'recharts'
-import {
+import type {
   NameType,
   ValueType,
 } from 'recharts/types/component/DefaultTooltipContent'
 import { onlyDefinedAndNotNull } from '@/libraries/collections'
 import { numberToString } from '@/libraries/nombre'
 
-const CustomTooltip = <TValue extends ValueType, TName extends NameType>({
+const CustomTooltip = ({
   active,
   payload,
   label,
   formatter,
   labelFormatter,
-}: TooltipContentProps<TValue, TName>) => {
+}: TooltipContentProps<ValueType, NameType>) => {
   if (active && payload && payload.length > 0) {
-    const title = labelFormatter
-      ? labelFormatter(label, payload)
-      : (label as ReactNode)
+    const title = labelFormatter ? labelFormatter(label, payload) : label
 
     return (
       <div className="infobulle-de-graphique">
         <p className="infobulle-de-graphique__titre">{title}</p>
         {payload.map((item, index) => {
           const formatedName = formatter
-            ? formatter(
-                item.value as TValue,
-                item.name as TName,
-                item,
-                index,
-                payload,
-              )
+            ? formatter(item.value, item.name, item, index, payload)
             : item.name
 
           return (
@@ -38,13 +29,7 @@ const CustomTooltip = <TValue extends ValueType, TName extends NameType>({
               {onlyDefinedAndNotNull(formatedName) ? (
                 <span>
                   {formatter
-                    ? formatter(
-                        item.value as TValue,
-                        item.name as TName,
-                        item,
-                        index,
-                        payload,
-                      )
+                    ? formatter(item.value, item.name, item, index, payload)
                     : item.name}
                 </span>
               ) : null}

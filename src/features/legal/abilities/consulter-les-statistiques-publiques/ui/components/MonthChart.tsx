@@ -36,6 +36,9 @@ export type DonneesDuGraphique =
     }
   | { [key: string]: number }
 
+const valeurDe = (ligne: object, cle: PropertyKey): unknown =>
+  Object.entries(ligne).find(([nom]) => nom === String(cle))?.[1]
+
 const StatisticsTooltip = <T extends object>({
   tooltipLabelDataKey,
   legends = [],
@@ -52,10 +55,10 @@ const StatisticsTooltip = <T extends object>({
       const labelAsString = `${label}`
       if (!tooltipLabelDataKey) return labelAsString
 
-      const row = payload[0]?.payload as T | undefined
-      if (!row) return labelAsString
+      const ligne: unknown = payload[0]?.payload
+      if (typeof ligne !== 'object' || ligne === null) return labelAsString
 
-      return `${row[tooltipLabelDataKey]}` || null
+      return `${valeurDe(ligne, tooltipLabelDataKey)}` || null
     }}
     formatter={(_value, name) =>
       legends.find((legend) => legend.key === name)?.label
