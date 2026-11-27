@@ -226,7 +226,6 @@
     "statistiques/implementations/excel"
   ],
   "libraries/result": [
-    "lieux-activite/abilities/ajouter-des-lieux-activite/action",
     "lieux-activite/abilities/ajouter-des-lieux-activite/ui/forms",
     "rdvsp/abilities/consulter-rdvs-accueil/ui/slots"
   ],

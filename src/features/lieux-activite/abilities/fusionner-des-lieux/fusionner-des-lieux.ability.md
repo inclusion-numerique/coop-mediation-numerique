@@ -5,9 +5,7 @@
 > une correction de saisie.
 >
 > D'où la garde d'administration, posée par l'action plutôt que par l'ability :
-> c'est l'écran qui est réservé, pas l'écriture. La recherche du lieu à absorber
-> est réservée de même : elle voit tous les lieux de la coop, sans égard pour
-> ceux où l'on exerce.
+> c'est l'écran qui est réservé, pas l'écriture.
 
 ## Règle: La source disparaît dans la cible
 
