@@ -31,7 +31,11 @@ export type EffacerEmpreinteRdv = (input: {
   >
 >
 
-export type RetirerLesTagsDUnCompte = (input: IdentifiantsRattaches) => Promise<
+export type EffacementDatee = IdentifiantsRattaches & {
+  readonly maintenant: Date
+}
+
+export type RetirerLesTagsDUnCompte = (input: EffacementDatee) => Promise<
   Result<
     {
       readonly transferes: number
@@ -41,7 +45,7 @@ export type RetirerLesTagsDUnCompte = (input: IdentifiantsRattaches) => Promise<
   >
 >
 
-export type DetacherDesEquipes = (input: IdentifiantsRattaches) => Promise<
+export type DetacherDesEquipes = (input: EffacementDatee) => Promise<
   Result<
     {
       readonly invitationsSupprimees: number
@@ -58,7 +62,7 @@ export type RetirerDesLieux = (input: {
 >
 
 export type RevoquerPartageStatistiques = (
-  input: IdentifiantsRattaches,
+  input: EffacementDatee,
 ) => Promise<Result<{ readonly partagesRevoques: number }, EchecTechnique>>
 
 export type RetirerDesListesDeDiffusion = (

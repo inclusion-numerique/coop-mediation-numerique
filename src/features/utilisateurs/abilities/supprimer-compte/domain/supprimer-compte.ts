@@ -1,5 +1,4 @@
 import {
-  type CompteASupprimer,
   estCourrielAnonymise,
   identiteAnonyme,
   type UtilisateurId,
@@ -10,7 +9,11 @@ import {
   autoriserSuppression,
   type CompteSupprime,
 } from './autoriser-la-suppression'
-import { type EtapePlanifiee, effacementPlan } from './effacement-plan'
+import {
+  type EtapePlanifiee,
+  effacementPlan,
+  type Suppression,
+} from './effacement-plan'
 import {
   ErasedCount,
   failureReasonOf,
@@ -40,10 +43,12 @@ const runStep = async ({
 }
 
 const executerLePlan = (
-  compte: CompteASupprimer,
+  suppression: Suppression,
   effacements: EffacementsDuCompte,
 ): Promise<readonly StepResult[]> =>
-  effacementPlan(compte, effacements).reduce<Promise<readonly StepResult[]>>(
+  effacementPlan(suppression, effacements).reduce<
+    Promise<readonly StepResult[]>
+  >(
     async (precedents, etape) => [...(await precedents), await runStep(etape)],
     Promise.resolve([]),
   )
@@ -92,7 +97,7 @@ export const supprimerCompte =
       supprimeLe: maintenant,
       identite,
       dejaAnonymise,
-      report: report(await executerLePlan(compte, effacements)),
+      report: report(await executerLePlan({ compte, maintenant }, effacements)),
     }
 
     journaliserLEffacement(compteSupprime)

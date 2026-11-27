@@ -40,7 +40,10 @@ import { relancerLesInscritsInactifs } from '@/features/utilisateurs/abilities/r
 import { relancesDesInscritsParCourriel } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/implementations/email/relances-des-inscrits-par-courriel.adapter'
 import { inscritsSansProduction } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/implementations/prisma/inscrits-sans-production.query'
 import { RetentionPolicy } from '@/features/utilisateurs/abilities/supprimer-compte/domain/index'
-import type { EffacementsDuCompte } from '@/features/utilisateurs/abilities/supprimer-compte/domain/ports'
+import type {
+  EffacementDatee,
+  EffacementsDuCompte,
+} from '@/features/utilisateurs/abilities/supprimer-compte/domain/ports'
 import { supprimerCompte } from '@/features/utilisateurs/abilities/supprimer-compte/domain/supprimer-compte'
 import { retirerDesListesDeDiffusion } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/brevo/retirer-des-listes-de-diffusion.mutation'
 import { hash } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/crypto/hash.adapter'
@@ -48,7 +51,6 @@ import { compteASupprimer } from '@/features/utilisateurs/abilities/supprimer-co
 import { couperAcces } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/prisma/couper-acces.mutation'
 import { logEffacementReport } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/prisma/log-effacement-report.mutation'
 import {
-  type IdentifiantsRattaches,
   SuppressionRefusee,
   type UtilisateurId,
 } from '@/features/utilisateurs/domain'
@@ -137,10 +139,13 @@ const effacerLEmpreinteRdv = async ({
   return bilanDeLEffacement(effacement.data)
 }
 
-const detacherDesEquipes = async (identifiants: IdentifiantsRattaches) => {
+const detacherDesEquipes = async ({
+  maintenant,
+  ...identifiants
+}: EffacementDatee) => {
   const detachement = await detacherDesEquipesAvec({ retirerDesEquipes })({
     compte: compteADetacher(identifiants),
-    maintenant: new Date(),
+    maintenant,
   })
   return detachement.data.bilan
 }
@@ -150,10 +155,10 @@ const supprimerComptePorts: EffacementsDuCompte = {
   effacerNotes: attraperEnEchecTechnique(effacerNotes),
   effacerEmpreinteRdv: attraperEnEchecTechnique(effacerLEmpreinteRdv),
   retirerLesTagsDUnCompte: attraperEnEchecTechnique(
-    async (identifiants: IdentifiantsRattaches) => {
+    async ({ mediateurId, coordinateurId, maintenant }: EffacementDatee) => {
       const retrait = await retirerLesTags({
-        compte: role(identifiants.mediateurId, identifiants.coordinateurId),
-        maintenant: new Date(),
+        compte: role(mediateurId, coordinateurId),
+        maintenant,
       })
       return bilanDuRetrait(retrait.data)
     },
@@ -161,11 +166,8 @@ const supprimerComptePorts: EffacementsDuCompte = {
   detacherDesEquipes: attraperEnEchecTechnique(detacherDesEquipes),
   retirerDesLieux: attraperEnEchecTechnique(retirerDesLieux),
   revoquerPartageStatistiques: attraperEnEchecTechnique(
-    async (identifiants: IdentifiantsRattaches) => {
-      const revocation = await revoquerLePartage({
-        ...identifiants,
-        maintenant: new Date(),
-      })
+    async (effacement: EffacementDatee) => {
+      const revocation = await revoquerLePartage(effacement)
       return { partagesRevoques: revocation.data.partagesRevoques }
     },
   ),
