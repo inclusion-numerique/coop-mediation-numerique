@@ -99,6 +99,7 @@ export const revalidate = 0
 const sectionEquipe = async (
   fiche: FicheUtilisateur,
   searchParams: ParametresDeLaListe,
+  maintenant: Date,
 ): Promise<ReactNode> => {
   const coordinateur = coordinateurDe(fiche.rattachements)
   if (coordinateur === null) return null
@@ -109,7 +110,7 @@ const sectionEquipe = async (
     lireLaCommuneDuCoordinateur,
     lireLesMembres,
   })({
-    maintenant: new Date(),
+    maintenant,
     coordinateurId: CoordinateurId(coordinateur.id),
     lecteur: {
       gestionnaire: gestionnaireDe(administrateur),
@@ -246,7 +247,7 @@ const Page = async (props: {
   const mediateur = mediateurDe(fiche.rattachements)
 
   const [equipe, lieux, employeuses, statistiques] = await Promise.all([
-    sectionEquipe(fiche, searchParams),
+    sectionEquipe(fiche, searchParams, maintenant),
     sectionLieux(fiche),
     consulterHistoriqueEmployeuses({ lireLHistoriqueDEmploi })({
       utilisateurId: UtilisateurIdDeLEmployeuse(fiche.id),
