@@ -15,6 +15,7 @@ import {
 import { abonnementsDeLaCoop, WebhookId } from '../../domain/webhook/webhook'
 import { compteRdvToDomain } from '../../implementations/prisma/compte-rdv.transfer'
 import { compteRdvEnBase, ID_TEST, seedCompteRdv } from '../../rdvsp.cucumber'
+import type { ReconcilierOrganisations, ReconcilierRdvs } from './domain/ports'
 import {
   type CompteSynchronise,
   synchroniserCompteRdv,
@@ -29,123 +30,68 @@ const AGENT_ID = ID_TEST.compte + 8
 
 const MAINTENANT = new Date('2026-09-01T10:00:00.000Z')
 
+const MEDIATEUR_ID = MediateurId('b6f1a6a2-3c4d-4e5f-8a9b-0c1d2e3f4a5b')
+
+const ORGANISATIONS_DU_COMPTE = [OrganisationId(101), OrganisationId(102)]
+
+const unChangement = { ...bilanVide, updated: 1 }
+
+const indisponible = ApiIndisponible(503, 'service indisponible')
+
+const organisationsRecues = (
+  organisationIds: readonly OrganisationId[],
+): Awaited<ReturnType<ReconcilierOrganisations>> =>
+  success({ bilan: unChangement, organisationIdsRecues: organisationIds })
+
+const rdvsReconcilies = (
+  organisationIdsInaccessibles: readonly OrganisationId[],
+): Awaited<ReturnType<ReconcilierRdvs>> =>
+  success({
+    rdvs: unChangement,
+    usagers: unChangement,
+    motifs: bilanVide,
+    lieux: bilanVide,
+    organisationIdsInaccessibles,
+    rapprochements: [],
+  })
+
 type Etat = {
-  appels: readonly string[]
-  echecs: readonly string[]
-  exceptions: readonly string[]
-  organisationsRecues: readonly number[]
-  organisationsRefusees: readonly number[]
-  organisationsDetachees: readonly number[]
-  organisationsSansWebhook: readonly number[]
-  webhooksVises: readonly {
-    readonly organisationsDuCompte: readonly number[]
-    readonly organisation: number
-  }[]
-  porteeRecueParLesRdvs: PorteeDeSynchronisation | undefined
+  organisations: Awaited<ReturnType<ReconcilierOrganisations>>
+  rdvs: Awaited<ReturnType<ReconcilierRdvs>>
+  lectureDesWebhooksEchoue: boolean
   resultat: CompteSynchronise | undefined
   echoue: boolean
 }
 
 const etatInitial: Etat = {
-  appels: [],
-  echecs: [],
-  exceptions: [],
-  organisationsRecues: [],
-  organisationsRefusees: [],
-  organisationsDetachees: [],
-  organisationsSansWebhook: [],
-  webhooksVises: [],
-  porteeRecueParLesRdvs: undefined,
+  organisations: organisationsRecues(ORGANISATIONS_DU_COMPTE),
+  rdvs: rdvsReconcilies([]),
+  lectureDesWebhooksEchoue: false,
   resultat: undefined,
   echoue: false,
 }
 
 const etat: Etat = { ...etatInitial }
 
-const reinitialiser = () => {
-  Object.assign(etat, etatInitial)
-}
-
-const appeler = (etape: string) => {
-  etat.appels = [...etat.appels, etape]
-}
-
-const unChangement = { ...bilanVide, updated: 1 }
-
-const MEDIATEUR_ID = MediateurId('b6f1a6a2-3c4d-4e5f-8a9b-0c1d2e3f4a5b')
-
-const ORGANISATIONS_DU_COMPTE = [101, 102]
-
 const synchroniser = synchroniserCompteRdv({
-  reconcilierOrganisations: async () => {
-    appeler('organisations')
-
-    return etat.echecs.includes('organisations')
-      ? failure(ApiIndisponible(503, 'service indisponible'))
-      : success({
-          bilan: unChangement,
-          organisationIdsRecues: (etat.organisationsRecues.length > 0
-            ? etat.organisationsRecues
-            : ORGANISATIONS_DU_COMPTE
-          ).map((id) => OrganisationId(id)),
-        })
-  },
-  reconcilierRdvs: async ({ portee }) => {
-    appeler('rendez-vous')
-    etat.porteeRecueParLesRdvs = portee
-
-    if (etat.exceptions.includes('rendez-vous')) {
-      return failure(EchecTechnique('la réconciliation a levé'))
-    }
-
-    return etat.echecs.includes('rendez-vous')
-      ? failure(ApiIndisponible(503, 'service indisponible'))
-      : success({
-          rdvs: unChangement,
-          usagers: unChangement,
-          motifs: bilanVide,
-          lieux: bilanVide,
-          organisationIdsInaccessibles: (portee._tag === 'organisations'
-            ? portee.organisationIds
-            : []
-          )
-            .filter((id) => etat.organisationsRefusees.includes(id))
-            .map((id) => OrganisationId(id)),
-          rapprochements: [],
-        })
-  },
-  listerWebhooksDeLaCoop: async (compte, organisationId) => {
-    if (etat.appels.at(-1) !== 'webhooks') appeler('webhooks')
-    etat.webhooksVises = [
-      ...etat.webhooksVises,
-      {
-        organisationsDuCompte: compte.organisationIds,
-        organisation: organisationId,
-      },
-    ]
-
-    return etat.organisationsSansWebhook.includes(organisationId)
-      ? failure(ApiIndisponible(503, 'service indisponible'))
+  reconcilierOrganisations: async () => etat.organisations,
+  reconcilierRdvs: async () => etat.rdvs,
+  listerWebhooksDeLaCoop: async (_compte, organisationId) =>
+    etat.lectureDesWebhooksEchoue
+      ? failure(indisponible)
       : success([
           {
             id: WebhookId(1),
             organisationId,
             abonnements: abonnementsDeLaCoop,
           },
-        ])
-  },
-  poserWebhook: async () => failure(ApiIndisponible(503, 'inattendu')),
+        ]),
+  poserWebhook: async () => failure(indisponible),
   relireWebhooksDeLaCoop: async () => success([]),
-  reconfigurerWebhook: async () => failure(ApiIndisponible(503, 'inattendu')),
+  reconfigurerWebhook: async () => failure(indisponible),
   destinationDesWebhooksJoignable: () => false,
   noterLesWebhooksInvalides: async () => success(undefined),
-  detacherOrganisations: async ({ organisationIds }) => {
-    etat.organisationsDetachees = [
-      ...etat.organisationsDetachees,
-      ...organisationIds,
-    ]
-    return success(undefined)
-  },
+  detacherOrganisations: async () => success(undefined),
   ouvrirJournal,
   cloturerJournal,
   echouerJournal,
@@ -159,11 +105,29 @@ const compteUtilisable = async () => {
   const compte = compteRdvToDomain(row)
   assert.ok(estUtilisable(compte), 'Le compte devrait être utilisable')
 
-  return {
-    ...compte,
-    organisationIds: ORGANISATIONS_DU_COMPTE.map((id) => OrganisationId(id)),
-  }
+  return { ...compte, organisationIds: ORGANISATIONS_DU_COMPTE }
 }
+
+const synchroniserSur = async (portee: PorteeDeSynchronisation) => {
+  const reponse = await synchroniser({
+    compte: await compteUtilisable(),
+    mediateurId: MEDIATEUR_ID,
+    portee,
+    maintenant: MAINTENANT,
+  })
+
+  etat.echoue = !reponse.success
+  etat.resultat = reponse.success ? reponse.data : undefined
+}
+
+const passeSynchronisee = () => {
+  const { resultat } = etat
+  assert.ok(resultat?._tag === 'synchronise', 'La passe n’a pas eu lieu')
+  return resultat
+}
+
+const organisations = (ids: string): readonly OrganisationId[] =>
+  ids.split(',').map((id) => OrganisationId(Number(id)))
 
 const journauxDuCompte = async () =>
   prismaClient.rdvSyncLog.findMany({
@@ -172,107 +136,68 @@ const journauxDuCompte = async () =>
       started: true,
       ended: true,
       error: true,
-      drift: true,
+      log: true,
       organisationIds: true,
     },
   })
 
+const lignesDuJournal = async (): Promise<readonly string[]> => {
+  const journaux = await journauxDuCompte()
+
+  assert.equal(journaux.length, 1, 'Un seul journal attendu')
+
+  return (journaux[0]?.log ?? '').split('\n')
+}
+
 Given('un compte RDV à réconcilier', async () => {
-  reinitialiser()
+  Object.assign(etat, etatInitial)
   await seedCompteRdv({ id: AGENT_ID, accessToken: 'jeton-acces' })
 })
 
 Given('la réconciliation des organisations échoue', () => {
-  etat.echecs = [...etat.echecs, 'organisations']
+  etat.organisations = failure(indisponible)
 })
 
 Given('la réconciliation des rendez-vous échoue', () => {
-  etat.echecs = [...etat.echecs, 'rendez-vous']
+  etat.rdvs = failure(indisponible)
+})
+
+Given('la réconciliation des rendez-vous lève une exception', () => {
+  etat.rdvs = failure(EchecTechnique('la réconciliation a levé'))
 })
 
 Given(
   'RDV Service Public ne renvoie que les organisations {string}',
   (ids: string) => {
-    etat.organisationsRecues = ids.split(',').map(Number)
+    etat.organisations = organisationsRecues(organisations(ids))
   },
 )
 
 Given(
   'l’organisation {string} refuse l’accès à ses rendez-vous',
   (id: string) => {
-    etat.organisationsRefusees = [...etat.organisationsRefusees, Number(id)]
+    etat.rdvs = rdvsReconcilies(organisations(id))
   },
 )
 
-Given('la réconciliation des rendez-vous lève une exception', () => {
-  etat.exceptions = [...etat.exceptions, 'rendez-vous']
+Given('la lecture des webhooks échoue', () => {
+  etat.lectureDesWebhooksEchoue = true
 })
-
-Given(
-  'la pose de webhook échoue sur l’organisation {string}',
-  (ids: string) => {
-    etat.organisationsSansWebhook = ids.split(',').map(Number)
-  },
-)
 
 When('je synchronise tout le compte', async () => {
-  const reponse = await synchroniser({
-    compte: await compteUtilisable(),
-    mediateurId: MEDIATEUR_ID,
-    portee: toutesOrganisations,
-    maintenant: MAINTENANT,
-  })
-
-  etat.echoue = !reponse.success
-  etat.resultat = reponse.success ? reponse.data : undefined
-})
-
-When('je synchronise tout le compte en rattrapant l’exception', async () => {
-  const reponse = await synchroniser({
-    compte: await compteUtilisable(),
-    mediateurId: MEDIATEUR_ID,
-    portee: toutesOrganisations,
-    maintenant: MAINTENANT,
-  })
-
-  etat.echoue = !reponse.success
+  await synchroniserSur(toutesOrganisations)
 })
 
 When('je synchronise une portée vide', async () => {
-  const reponse = await synchroniser({
-    compte: await compteUtilisable(),
-    mediateurId: MEDIATEUR_ID,
-    portee: organisationsCiblees([]),
-    maintenant: MAINTENANT,
-  })
-
-  etat.echoue = !reponse.success
-  etat.resultat = reponse.success ? reponse.data : undefined
+  await synchroniserSur(organisationsCiblees([]))
 })
 
 When('je synchronise les organisations {string}', async (ids: string) => {
-  const reponse = await synchroniser({
-    compte: await compteUtilisable(),
-    mediateurId: MEDIATEUR_ID,
-    portee: organisationsCiblees(
-      ids.split(',').map((id) => OrganisationId(Number(id))),
-    ),
-    maintenant: MAINTENANT,
-  })
-
-  etat.echoue = !reponse.success
-  etat.resultat = reponse.success ? reponse.data : undefined
+  await synchroniserSur(organisationsCiblees(organisations(ids)))
 })
 
-Then(
-  'les réconciliations se sont enchaînées dans l’ordre {string}',
-  (attendu: string) => {
-    assert.deepEqual(etat.appels, attendu.split(','))
-  },
-)
-
-Then('aucune réconciliation n’a été lancée', () => {
-  assert.deepEqual(etat.appels, [])
+Then('la passe est sans objet', () => {
+  assert.equal(etat.resultat?._tag, 'sansObjet')
 })
 
 Then('la passe de synchronisation échoue', () => {
@@ -284,57 +209,46 @@ Then('la passe rend une dérive de {int}', (attendue: number) => {
 })
 
 Then(
-  'les rendez-vous ont été réconciliés sur les organisations {string}',
-  (ids: string) => {
-    assert.deepEqual(etat.porteeRecueParLesRdvs, {
-      _tag: 'organisations',
-      organisationIds: ids.split(',').map(Number),
-    })
-  },
-)
-
-Then(
   'la passe signale les organisations sans webhook {string}',
   (ids: string) => {
-    const { resultat } = etat
-    assert.ok(resultat?._tag === 'synchronise', 'La passe n’a pas eu lieu')
-    assert.deepEqual(resultat.organisationsSansWebhook, {
+    assert.deepEqual(passeSynchronisee().organisationsSansWebhook, {
       _tag: 'relevees',
-      organisationIds: ids.split(',').map(Number),
+      organisationIds: organisations(ids),
     })
   },
 )
 
-Then(
-  'les organisations {string} ont été détachées du compte',
-  (ids: string) => {
-    assert.deepEqual(etat.organisationsDetachees, ids.split(',').map(Number))
-  },
-)
+Then('la passe a détaché les organisations {string}', (ids: string) => {
+  assert.deepEqual(
+    passeSynchronisee().organisationIdsDetachees,
+    organisations(ids),
+  )
+})
 
-Then('aucune organisation n’a été détachée du compte', () => {
-  assert.deepEqual(etat.organisationsDetachees, [])
+Then('la passe n’a détaché aucune organisation', () => {
+  assert.deepEqual(passeSynchronisee().organisationIdsDetachees, [])
 })
 
 Then(
-  'les webhooks ont été réconciliés sur les organisations {string}',
+  'la passe a réconcilié les webhooks des organisations {string}',
   (ids: string) => {
     assert.deepEqual(
-      etat.webhooksVises.map(({ organisation }) => organisation),
-      ids.split(',').map(Number),
+      passeSynchronisee().webhooks.map(({ organisationId }) => organisationId),
+      organisations(ids),
     )
   },
 )
 
-Then(
-  'les webhooks ont visé les seules organisations reçues {string}',
-  (ids: string) => {
-    assert.deepEqual(
-      etat.webhooksVises[0]?.organisationsDuCompte.map(Number),
-      ids.split(',').map(Number),
-    )
-  },
-)
+Then('le journal de la passe retrace {string}', async (ligne: string) => {
+  assert.ok(
+    (await lignesDuJournal()).includes(ligne),
+    `Le journal ne retrace pas « ${ligne} »`,
+  )
+})
+
+Then('le journal de la passe s’arrête sur {string}', async (ligne: string) => {
+  assert.equal((await lignesDuJournal()).at(-1), ligne)
+})
 
 Then('le journal de la passe est clôturé sans erreur', async () => {
   const journaux = await journauxDuCompte()
