@@ -42,6 +42,7 @@ When(
   async (recherche: string) => {
     contexte.listResult = await listerBeneficiaires({
       mediateurId: testMediateurId,
+      maintenant: new Date(),
       search: Search(recherche),
     })
   },
@@ -52,6 +53,7 @@ When(
   async (recherche: string, pageSize: number) => {
     contexte.listResult = await listerBeneficiaires({
       mediateurId: testMediateurId,
+      maintenant: new Date(),
       search: Search(recherche),
       pageSize: PageSize(pageSize),
     })
@@ -63,6 +65,7 @@ When(
   async (field: string, direction: string) => {
     contexte.listResult = await listerBeneficiaires({
       mediateurId: testMediateurId,
+      maintenant: new Date(),
       sort: Sort(toSortField(field), SortDirection(direction)),
     })
   },

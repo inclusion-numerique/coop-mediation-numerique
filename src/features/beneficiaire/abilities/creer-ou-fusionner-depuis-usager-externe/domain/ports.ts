@@ -20,6 +20,7 @@ export type LireLeBeneficiaireLie = (critere: {
 export type TrouverUnDoublon = (
   usager: Pick<UsagerNormalise, 'nom' | 'prenom' | 'telephone' | 'email'> & {
     readonly mediateurId: MediateurId
+    readonly maintenant: Date
   },
 ) => Promise<Result<DuplicateBeneficiaire | null, EchecTechnique>>
 

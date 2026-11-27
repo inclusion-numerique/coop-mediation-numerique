@@ -26,6 +26,7 @@ const MesBeneficiairesPage = async (props: {
   const beneficiaires = await listerBeneficiaires({
     mediateurId: MediateurId(user.mediateur.id),
     ...query,
+    maintenant: new Date(),
   })
 
   const view = presentMesBeneficiaires(beneficiaires, query.search)

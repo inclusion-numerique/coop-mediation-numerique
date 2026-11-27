@@ -9,6 +9,7 @@ export type ListerLesBeneficiairesAExporter = (input: {
   mediateurId: MediateurId
   search?: Search
   pageSize: PageSize
+  maintenant: Date
 }) => Promise<{
   items: readonly BeneficiaireExportRow[]
   totalItems: number

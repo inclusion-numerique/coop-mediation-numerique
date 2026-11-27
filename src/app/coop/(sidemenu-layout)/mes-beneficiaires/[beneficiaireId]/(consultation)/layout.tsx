@@ -30,10 +30,11 @@ const BeneficiaireLayout = async (
   const user = await authenticateMediateur()
 
   const mediateurId = MediateurId(user.mediateur.id)
+  const maintenant = new Date()
   const beneficiaire = await consulterBeneficiaire({
     beneficiaireId: BeneficiaireId(beneficiaireId),
     mediateurId,
-    maintenant: new Date(),
+    maintenant,
   })
 
   if (!beneficiaire) {
@@ -43,6 +44,7 @@ const BeneficiaireLayout = async (
   const duplicates = await findDuplicatesForBeneficiaireById({
     beneficiaireId: BeneficiaireId(beneficiaire.id),
     mediateurId,
+    maintenant,
   })
 
   const displayName = nomAfficheDepuisLIdentite(beneficiaire)

@@ -58,7 +58,10 @@ const toAnonyme = (row: PrismaBeneficiaire): BeneficiaireAnonyme => ({
   anonyme: true,
 })
 
-const toIdentifie = (row: PrismaBeneficiaire): BeneficiaireIdentifie => ({
+const toIdentifie = (
+  row: PrismaBeneficiaire,
+  maintenant: Date,
+): BeneficiaireIdentifie => ({
   ...toBase(row),
   anonyme: false,
   prenom: Prenom(row.prenom ?? ''),
@@ -66,14 +69,16 @@ const toIdentifie = (row: PrismaBeneficiaire): BeneficiaireIdentifie => ({
   contactTelephone: toContactTelephone(row),
   email: row.email ? Email(row.email) : null,
   anneeNaissance: row.anneeNaissance
-    ? AnneeNaissance(new Date())(row.anneeNaissance)
+    ? AnneeNaissance(maintenant)(row.anneeNaissance)
     : null,
   communeResidence: toCommuneResidence(row),
   notes: row.notes ? Notes.safe(row.notes) : null,
 })
 
-export const beneficiaireToDomain = (row: PrismaBeneficiaire): Beneficiaire =>
-  row.anonyme ? toAnonyme(row) : toIdentifie(row)
+export const beneficiaireToDomain = (
+  row: PrismaBeneficiaire,
+  maintenant: Date,
+): Beneficiaire => (row.anonyme ? toAnonyme(row) : toIdentifie(row, maintenant))
 
 const fromContactTelephone = (contact: ContactTelephone) => ({
   telephone: contact._tag === 'disponible' ? contact.numero : null,

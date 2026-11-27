@@ -13,4 +13,5 @@ export type ListerBeneficiaires = (input: {
   readonly pageSize?: PageSize
   readonly sort?: Sort<ColonneTriableDesBeneficiaires>
   readonly excludeIds?: readonly BeneficiaireId[]
+  readonly maintenant: Date
 }) => Promise<Paginated<BeneficiaireListItem>>

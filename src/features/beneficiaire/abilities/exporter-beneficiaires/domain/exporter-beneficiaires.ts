@@ -27,6 +27,7 @@ export const exporterBeneficiaires =
       mediateurId,
       ...(filters.recherche ? { search: Search(filters.recherche) } : {}),
       pageSize: TOUS_LES_BENEFICIAIRES,
+      maintenant,
     })
 
     return success(

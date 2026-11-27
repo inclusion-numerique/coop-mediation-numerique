@@ -9,6 +9,7 @@ import type { DetecterLesDoublons } from '../../domain/ports'
 export const findDuplicatesForBeneficiaireById: DetecterLesDoublons = async ({
   beneficiaireId,
   mediateurId,
+  maintenant,
 }) => {
   const beneficiaire = await prismaClient.beneficiaire.findUnique({
     where: { id: beneficiaireId, mediateurId, suppression: null },
@@ -30,5 +31,6 @@ export const findDuplicatesForBeneficiaireById: DetecterLesDoublons = async ({
     },
     withConflictingFields: 'include',
     fuzzyMatching: true,
+    maintenant,
   })
 }

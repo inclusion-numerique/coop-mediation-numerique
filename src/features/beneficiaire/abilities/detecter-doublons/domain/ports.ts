@@ -6,6 +6,7 @@ import type { BeneficiaireDoublon } from './beneficiaire-doublon'
 export type DetecterLesDoublons = (input: {
   readonly beneficiaireId: BeneficiaireId
   readonly mediateurId: MediateurId
+  readonly maintenant: Date
 }) => Promise<DuplicateBeneficiaire[]>
 
 export type DetecterDoublons = (input: {

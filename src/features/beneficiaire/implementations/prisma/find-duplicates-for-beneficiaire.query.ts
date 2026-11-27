@@ -1,15 +1,19 @@
 import { prismaClient } from '@/configuration/prisma'
-import { AnneeNaissance } from '@/features/beneficiaire/domain/annee-naissance'
-import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
-import { CommuneResidence } from '@/features/beneficiaire/domain/commune-residence'
+import { signaler } from '@/configuration/telemetry/serveur'
+import type { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
 import type { DuplicateBeneficiaire } from '@/features/beneficiaire/domain/doublon-de-beneficiaire'
-import { Email } from '@/features/beneficiaire/domain/email'
+import type { Email } from '@/features/beneficiaire/domain/email'
 import type { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
-import { Nom } from '@/features/beneficiaire/domain/nom'
-import { Prenom } from '@/features/beneficiaire/domain/prenom'
+import type { Nom } from '@/features/beneficiaire/domain/nom'
+import type { Prenom } from '@/features/beneficiaire/domain/prenom'
 import { Prisma } from '@/generated/prisma/client'
 import { onlyDefinedAndNotNull } from '@/libraries/collections'
-import { Telephone } from '@/libraries/telephone'
+import type { Telephone } from '@/libraries/telephone'
+import {
+  doublonLu,
+  type LigneDeDoublon,
+  valeurInvalideDuDoublonEnErreur,
+} from './doublon-de-beneficiaire.transfer'
 
 export type FindDuplicatesForBeneficiaireInput = {
   beneficiaire: {
@@ -22,56 +26,22 @@ export type FindDuplicatesForBeneficiaireInput = {
   }
   withConflictingFields: 'include' | 'exclude'
   fuzzyMatching?: boolean
+  maintenant: Date
 }
 
-type RawDuplicate = {
-  id: string
-  nom: string | null
-  prenom: string | null
-  telephone: string | null
-  email: string | null
-  creation: Date
-  anneeNaissance: number | null
-  adresse: string | null
-  commune: string | null
-  communeCodePostal: string | null
-  communeCodeInsee: string | null
-}
-
-const toCommuneResidence = (row: RawDuplicate): CommuneResidence | null =>
-  row.commune && row.communeCodePostal && row.communeCodeInsee
-    ? CommuneResidence.safe({
-        commune: row.commune,
-        codePostal: row.communeCodePostal,
-        codeInsee: row.communeCodeInsee,
-        ...(row.adresse ? { adresse: row.adresse } : {}),
-      })
-    : null
-
-const toDuplicateBeneficiaire = (
-  row: RawDuplicate,
-): DuplicateBeneficiaire | null => {
-  const id = BeneficiaireId.safe(row.id)
-  return id
-    ? {
-        id,
-        nom: row.nom ? Nom.safe(row.nom) : null,
-        prenom: row.prenom ? Prenom.safe(row.prenom) : null,
-        telephone: row.telephone ? Telephone.safe(row.telephone) : null,
-        email: row.email ? Email.safe(row.email) : null,
-        creation: row.creation,
-        anneeNaissance: row.anneeNaissance
-          ? AnneeNaissance(new Date()).safe(row.anneeNaissance)
-          : null,
-        communeResidence: toCommuneResidence(row),
-      }
-    : null
-}
+const doublonSignale =
+  (maintenant: Date) =>
+  (ligne: LigneDeDoublon): DuplicateBeneficiaire | null => {
+    const { doublon, invalides } = doublonLu(ligne, maintenant)
+    invalides.map(valeurInvalideDuDoublonEnErreur(ligne.id)).forEach(signaler)
+    return doublon
+  }
 
 export const findDuplicatesForBeneficiaire = async ({
   beneficiaire,
   withConflictingFields,
   fuzzyMatching = false,
+  maintenant,
 }: FindDuplicatesForBeneficiaireInput): Promise<DuplicateBeneficiaire[]> => {
   const conflictCheckClause =
     withConflictingFields === 'include'
@@ -91,7 +61,7 @@ export const findDuplicatesForBeneficiaire = async ({
     ? Prisma.sql`(CASE WHEN t.prenom_search IS NOT NULL AND c.prenom_search IS NOT NULL AND similarity(t.prenom_search, c.prenom_search) > 0.4 THEN 1 ELSE 0 END)`
     : Prisma.sql`(CASE WHEN t.prenom_search IS NOT NULL AND c.prenom_search IS NOT NULL AND t.prenom_search = c.prenom_search THEN 1 ELSE 0 END)`
 
-  const rows = await prismaClient.$queryRaw<RawDuplicate[]>`
+  const rows = await prismaClient.$queryRaw<LigneDeDoublon[]>`
     WITH "target" AS (
       SELECT
         ${beneficiaire.nom} as nom,
@@ -151,5 +121,5 @@ export const findDuplicatesForBeneficiaire = async ({
     ORDER BY c.nom ASC, c.creation DESC
   `
 
-  return rows.map(toDuplicateBeneficiaire).filter(onlyDefinedAndNotNull)
+  return rows.map(doublonSignale(maintenant)).filter(onlyDefinedAndNotNull)
 }

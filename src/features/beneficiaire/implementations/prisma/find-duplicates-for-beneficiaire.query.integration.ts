@@ -177,6 +177,7 @@ describe('findDuplicateForBeneficiaire', () => {
         beneficiaire: withBrandedFields(beneficiaireJeanPierre),
         withConflictingFields: 'include',
         fuzzyMatching: false,
+        maintenant: new Date(),
       })
 
       expect(duplicates).toHaveLength(1)
@@ -188,6 +189,7 @@ describe('findDuplicateForBeneficiaire', () => {
         beneficiaire: withBrandedFields(beneficiaireMueller),
         withConflictingFields: 'include',
         fuzzyMatching: false,
+        maintenant: new Date(),
       })
 
       expect(duplicates).toHaveLength(0)
@@ -198,6 +200,7 @@ describe('findDuplicateForBeneficiaire', () => {
         beneficiaire: withBrandedFields(beneficiaireSameEmail1),
         withConflictingFields: 'include',
         fuzzyMatching: false,
+        maintenant: new Date(),
       })
 
       expect(duplicates).toHaveLength(1)
@@ -211,6 +214,7 @@ describe('findDuplicateForBeneficiaire', () => {
         beneficiaire: withBrandedFields(beneficiaireMueller),
         withConflictingFields: 'include',
         fuzzyMatching: true,
+        maintenant: new Date(),
       })
 
       expect(duplicates).toHaveLength(1)
@@ -222,6 +226,7 @@ describe('findDuplicateForBeneficiaire', () => {
         beneficiaire: withBrandedFields(beneficiaireJeanPierre),
         withConflictingFields: 'include',
         fuzzyMatching: true,
+        maintenant: new Date(),
       })
 
       expect(duplicates).toHaveLength(1)
@@ -233,6 +238,7 @@ describe('findDuplicateForBeneficiaire', () => {
         beneficiaire: withBrandedFields(beneficiaireSameEmail1),
         withConflictingFields: 'include',
         fuzzyMatching: true,
+        maintenant: new Date(),
       })
 
       expect(duplicates).toHaveLength(1)
@@ -246,6 +252,7 @@ describe('findDuplicateForBeneficiaire', () => {
         beneficiaire: withBrandedFields(beneficiaireSameEmail1),
         withConflictingFields: 'exclude',
         fuzzyMatching: false,
+        maintenant: new Date(),
       })
 
       expect(duplicates).toHaveLength(0)
@@ -256,6 +263,7 @@ describe('findDuplicateForBeneficiaire', () => {
         beneficiaire: withBrandedFields(beneficiaireSameEmail1),
         withConflictingFields: 'include',
         fuzzyMatching: false,
+        maintenant: new Date(),
       })
 
       expect(duplicates).toHaveLength(1)
@@ -269,6 +277,7 @@ describe('findDuplicateForBeneficiaire', () => {
         beneficiaire: withBrandedFields(beneficiaireLegacyTarget),
         withConflictingFields: 'include',
         fuzzyMatching: false,
+        maintenant: new Date(),
       })
 
       const candidate = duplicates.find(

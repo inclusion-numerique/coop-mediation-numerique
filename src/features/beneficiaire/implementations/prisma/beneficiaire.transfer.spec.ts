@@ -50,7 +50,10 @@ describe('beneficiaire transfer layer', () => {
       fusionVersId: null,
     }
 
-    const result = beneficiaireToDomain(prismaRow)
+    const result = beneficiaireToDomain(
+      prismaRow,
+      new Date('2026-06-15T12:00:00.000Z'),
+    )
 
     expect(result).toEqual(anonyme)
   })
@@ -99,7 +102,10 @@ describe('beneficiaire transfer layer', () => {
       fusionVersId: null,
     }
 
-    const result = beneficiaireToDomain(prismaRow)
+    const result = beneficiaireToDomain(
+      prismaRow,
+      new Date('2026-06-15T12:00:00.000Z'),
+    )
 
     expect(result).toEqual(identifie)
   })

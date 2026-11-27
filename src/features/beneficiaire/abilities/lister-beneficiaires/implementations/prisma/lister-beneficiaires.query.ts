@@ -79,50 +79,52 @@ const toSearchParts = (search?: Search): string[] =>
     .map((part) => part.trim())
     .filter(Boolean)
 
-const toListItem = (row: {
-  id: string
-  mediateurId: string
-  prenom: string | null
-  nom: string | null
-  telephone: string | null
-  email: string | null
-  anneeNaissance: number | null
-  trancheAge: PrismaTrancheAge | null
-  genre: PrismaGenre | null
-  statutSocial: PrismaStatutSocial | null
-  commune: string | null
-  communeCodePostal: string | null
-  communeCodeInsee: string | null
-  adresse: string | null
-  creation: Date
-  accompagnementsCount: number
-  notes: string | null
-}): BeneficiaireListItem => ({
-  id: BeneficiaireId(row.id),
-  mediateurId: MediateurId(row.mediateurId),
-  prenom: Prenom(row.prenom ?? ''),
-  nom: Nom(row.nom ?? ''),
-  telephone: row.telephone ? Telephone(row.telephone) : null,
-  email: row.email ? Email(row.email) : null,
-  anneeNaissance: row.anneeNaissance
-    ? AnneeNaissance(new Date())(row.anneeNaissance)
-    : null,
-  trancheAge: TrancheAge(row.trancheAge),
-  genre: Genre(row.genre),
-  statutSocial: StatutSocial(row.statutSocial),
-  communeResidence:
-    row.commune && row.communeCodePostal && row.communeCodeInsee
-      ? CommuneResidence({
-          commune: row.commune,
-          codePostal: row.communeCodePostal,
-          codeInsee: row.communeCodeInsee,
-          ...(row.adresse ? { adresse: row.adresse } : {}),
-        })
+const toListItem =
+  (maintenant: Date) =>
+  (row: {
+    id: string
+    mediateurId: string
+    prenom: string | null
+    nom: string | null
+    telephone: string | null
+    email: string | null
+    anneeNaissance: number | null
+    trancheAge: PrismaTrancheAge | null
+    genre: PrismaGenre | null
+    statutSocial: PrismaStatutSocial | null
+    commune: string | null
+    communeCodePostal: string | null
+    communeCodeInsee: string | null
+    adresse: string | null
+    creation: Date
+    accompagnementsCount: number
+    notes: string | null
+  }): BeneficiaireListItem => ({
+    id: BeneficiaireId(row.id),
+    mediateurId: MediateurId(row.mediateurId),
+    prenom: Prenom(row.prenom ?? ''),
+    nom: Nom(row.nom ?? ''),
+    telephone: row.telephone ? Telephone(row.telephone) : null,
+    email: row.email ? Email(row.email) : null,
+    anneeNaissance: row.anneeNaissance
+      ? AnneeNaissance(maintenant)(row.anneeNaissance)
       : null,
-  creation: row.creation,
-  accompagnementsCount: row.accompagnementsCount,
-  notes: row.notes ? Notes(row.notes) : null,
-})
+    trancheAge: TrancheAge(row.trancheAge),
+    genre: Genre(row.genre),
+    statutSocial: StatutSocial(row.statutSocial),
+    communeResidence:
+      row.commune && row.communeCodePostal && row.communeCodeInsee
+        ? CommuneResidence({
+            commune: row.commune,
+            codePostal: row.communeCodePostal,
+            codeInsee: row.communeCodeInsee,
+            ...(row.adresse ? { adresse: row.adresse } : {}),
+          })
+        : null,
+    creation: row.creation,
+    accompagnementsCount: row.accompagnementsCount,
+    notes: row.notes ? Notes(row.notes) : null,
+  })
 
 export const listerBeneficiaires: ListerBeneficiaires = async ({
   mediateurId,
@@ -131,6 +133,7 @@ export const listerBeneficiaires: ListerBeneficiaires = async ({
   pageSize = DEFAULT_PAGE_SIZE,
   sort,
   excludeIds = [],
+  maintenant,
 }) => {
   const searchParts = toSearchParts(search)
 
@@ -173,7 +176,7 @@ export const listerBeneficiaires: ListerBeneficiaires = async ({
   ])
 
   return {
-    items: rows.map(toListItem),
+    items: rows.map(toListItem(maintenant)),
     totalItems: matchesCount,
     currentPage: page,
     pageSize,
