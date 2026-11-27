@@ -18,17 +18,17 @@ const employeuse = 'Structure de test'
 
 const rattachement = 'Rattachée à la structure de test'
 
-const rattachable: RattacherEmployeuse<string, string> = async () =>
+const rattachable: RattacherEmployeuse<string, string, string> = async () =>
   success(rattachement)
 
-const nonRattachable: RattacherEmployeuse<string, string> = async () =>
+const nonRattachable: RattacherEmployeuse<string, string, string> = async () =>
   failure('Identité inexploitable')
 
 const contexte: {
-  rattacherEmployeuse: RattacherEmployeuse<string, string>
+  rattacherEmployeuse: RattacherEmployeuse<string, string, string>
   resultat: Result<
     StructureEmployeuseRenseignee<string, string>,
-    EchecDeRenseignerStructureEmployeuse
+    EchecDeRenseignerStructureEmployeuse<string>
   > | null
 } = { rattacherEmployeuse: rattachable, resultat: null }
 

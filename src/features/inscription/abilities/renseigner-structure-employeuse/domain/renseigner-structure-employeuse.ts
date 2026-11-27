@@ -9,11 +9,11 @@ import type { RenseignerStructureEmployeusePorts } from './ports'
 import type { StructureEmployeuseRenseignee } from './structure-employeuse-renseignee'
 
 export const renseignerStructureEmployeuse =
-  <Employeuse, Rattachement>({
+  <Employeuse, Rattachement, Echec>({
     lireLEtat,
     rattacherEmployeuse,
     projeterEtapeFranchie,
-  }: RenseignerStructureEmployeusePorts<Employeuse, Rattachement>) =>
+  }: RenseignerStructureEmployeusePorts<Employeuse, Rattachement, Echec>) =>
   async ({
     command: { userId, employeuse },
     maintenant,
@@ -26,7 +26,7 @@ export const renseignerStructureEmployeuse =
   }): Promise<
     Result<
       StructureEmployeuseRenseignee<Employeuse, Rattachement>,
-      EchecDeRenseignerStructureEmployeuse
+      EchecDeRenseignerStructureEmployeuse<Echec>
     >
   > => {
     const etatFranchi = deciderLaStructureEmployeuse({
@@ -39,7 +39,8 @@ export const renseignerStructureEmployeuse =
 
     const rattachement = await rattacherEmployeuse({ userId, employeuse })
 
-    if (!rattachement.success) return failure(EmployeuseNonRattachee(userId))
+    if (!rattachement.success)
+      return failure(EmployeuseNonRattachee(userId, rattachement.error))
 
     await projeterEtapeFranchie(etatFranchi.data)
 

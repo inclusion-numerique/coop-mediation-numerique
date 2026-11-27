@@ -5,20 +5,23 @@ import type {
   UtilisateurId,
 } from '@/features/inscription/domain'
 
-export type EmployeuseNonRattachee = {
+export type EmployeuseNonRattachee<Cause> = {
   readonly _tag: 'EmployeuseNonRattachee'
   readonly userId: UtilisateurId
+  readonly cause: Cause
 }
 
-export const EmployeuseNonRattachee = (
+export const EmployeuseNonRattachee = <Cause>(
   userId: UtilisateurId,
-): EmployeuseNonRattachee => ({
+  cause: Cause,
+): EmployeuseNonRattachee<Cause> => ({
   _tag: 'EmployeuseNonRattachee',
   userId,
+  cause,
 })
 
-export type EchecDeRenseignerStructureEmployeuse =
+export type EchecDeRenseignerStructureEmployeuse<Cause> =
   | InscriptionIntrouvable
   | ProfilNonChoisi
   | InscriptionDejaValidee
-  | EmployeuseNonRattachee
+  | EmployeuseNonRattachee<Cause>

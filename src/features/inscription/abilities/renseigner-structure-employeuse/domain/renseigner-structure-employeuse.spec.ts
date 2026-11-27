@@ -44,7 +44,7 @@ const employeuse = 'Association du numérique'
 
 const rattachement = 'Rattachée à l’association du numérique'
 
-const ports: RenseignerStructureEmployeusePorts<string, string> = {
+const ports: RenseignerStructureEmployeusePorts<string, string, string> = {
   lireLEtat: async () => enCours,
   rattacherEmployeuse: async () => success(rattachement),
   projeterEtapeFranchie: async () => undefined,
@@ -101,12 +101,18 @@ describe('renseigner la structure employeuse', () => {
     ).toEqual(failure({ _tag: erreur, userId }))
   })
 
-  it('refuse quand l’employeuse n’a pas pu être rattachée', async () => {
+  it('refuse quand l’employeuse n’a pas pu être rattachée, en portant la cause', async () => {
     expect(
       await renseignerStructureEmployeuse({
         ...ports,
         rattacherEmployeuse: async () => failure('Identité inexploitable'),
       })({ command: { userId, employeuse }, maintenant }),
-    ).toEqual(failure({ _tag: 'EmployeuseNonRattachee', userId }))
+    ).toEqual(
+      failure({
+        _tag: 'EmployeuseNonRattachee',
+        userId,
+        cause: 'Identité inexploitable',
+      }),
+    )
   })
 })
