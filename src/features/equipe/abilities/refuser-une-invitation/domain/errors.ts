@@ -3,4 +3,6 @@ import type {
   InvitationIntrouvable,
 } from '../../../domain'
 
-export type EchecDeRefus = InvitationIntrouvable | InvitationDejaTraitee
+export type EchecDeRefuserUneInvitation =
+  | InvitationIntrouvable
+  | InvitationDejaTraitee

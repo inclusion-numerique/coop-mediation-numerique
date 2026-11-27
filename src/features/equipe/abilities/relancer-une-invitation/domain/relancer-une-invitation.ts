@@ -11,7 +11,7 @@ import {
   type ReferenceInvitation,
   type UtilisateurId,
 } from '../../../domain'
-import type { EchecDeRelance } from './errors'
+import type { EchecDeRelancerUneInvitation } from './errors'
 import type { RelancerUneInvitationPorts } from './ports'
 import type { Relance, RelanceEnvoyee } from './relance'
 
@@ -32,7 +32,7 @@ export const relancerUneInvitation =
     readonly gestionnaire: Gestionnaire
     readonly auteurId: UtilisateurId
     readonly maintenant: Date
-  }): Promise<Result<RelanceEnvoyee, EchecDeRelance>> => {
+  }): Promise<Result<RelanceEnvoyee, EchecDeRelancerUneInvitation>> => {
     if (!peutGererLEquipe(gestionnaire)(reference.coordinateurId))
       return failure(ActionNonAutorisee())
 

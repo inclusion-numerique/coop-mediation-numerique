@@ -12,7 +12,7 @@ import type {
   AdhesionALAcceptation,
 } from './acceptation'
 import { type Accepteur, mediateurQuiAccepte } from './accepter'
-import type { EchecDAcceptation } from './errors'
+import type { EchecDeAccepterUneInvitation } from './errors'
 import type { AccepterUneInvitationPorts } from './ports'
 
 const DEJA_MEMBRE: AdhesionALAcceptation = { _tag: 'DejaMembre' }
@@ -35,7 +35,7 @@ export const accepterUneInvitation =
     readonly accepteur: Accepteur
     readonly auteurId: UtilisateurId
     readonly maintenant: Date
-  }): Promise<Result<AcceptationEnregistree, EchecDAcceptation>> => {
+  }): Promise<Result<AcceptationEnregistree, EchecDeAccepterUneInvitation>> => {
     const lue = await lireUneInvitation(reference)
     if (lue === null) return failure(InvitationIntrouvable())
 

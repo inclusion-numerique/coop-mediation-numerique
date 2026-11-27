@@ -8,7 +8,7 @@ import {
   peutGererLEquipe,
   type UtilisateurId,
 } from '../../../domain'
-import type { EchecDeRetrait } from './errors'
+import type { EchecDeRetirerUnMembre } from './errors'
 import type { RetirerUnMembrePorts } from './ports'
 import type { Retrait } from './retrait'
 
@@ -26,7 +26,7 @@ export const retirerUnMembre =
     readonly gestionnaire: Gestionnaire
     readonly auteurId: UtilisateurId
     readonly maintenant: Date
-  }): Promise<Result<Retrait, EchecDeRetrait>> => {
+  }): Promise<Result<Retrait, EchecDeRetirerUnMembre>> => {
     if (!peutGererLEquipe(gestionnaire)(coordinateurId))
       return failure(ActionNonAutorisee())
 

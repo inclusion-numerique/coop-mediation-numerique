@@ -14,7 +14,7 @@ export const UtilisateurNonMediateur = (): UtilisateurNonMediateur => ({
   _tag: 'UtilisateurNonMediateur',
 })
 
-export type EchecDAjout =
+export type EchecDeAjouterUnMembre =
   | UtilisateurIntrouvable
   | UtilisateurNonMediateur
   | CoordinateurIntrouvable

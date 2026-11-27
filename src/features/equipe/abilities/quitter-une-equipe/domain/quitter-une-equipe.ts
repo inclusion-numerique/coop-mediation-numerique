@@ -6,7 +6,7 @@ import {
   type UtilisateurId,
 } from '../../../domain'
 import type { Depart } from './depart'
-import type { EchecDeDepart } from './errors'
+import type { EchecDeQuitterUneEquipe } from './errors'
 import type { QuitterUneEquipePorts } from './ports'
 
 export const quitterUneEquipe =
@@ -21,7 +21,7 @@ export const quitterUneEquipe =
     readonly coordinateurId: CoordinateurId
     readonly auteurId: UtilisateurId
     readonly maintenant: Date
-  }): Promise<Result<Depart, EchecDeDepart>> => {
+  }): Promise<Result<Depart, EchecDeQuitterUneEquipe>> => {
     const archivage = archiver(
       await lireLesAdhesionsDeLaPaire({ mediateurId, coordinateurId }),
       maintenant,

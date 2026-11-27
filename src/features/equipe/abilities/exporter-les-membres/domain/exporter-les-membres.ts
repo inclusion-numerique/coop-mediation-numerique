@@ -14,7 +14,7 @@ import {
   type LigneContrat,
   type MembreAExporter,
 } from './contrat-membre'
-import type { EchecDExport } from './errors'
+import type { EchecDeExporterLesMembres } from './errors'
 import type { ExporterLesMembresPorts } from './ports'
 
 const utilisateursDe = (lignes: readonly LigneEquipe[]): UtilisateurId[] =>
@@ -58,7 +58,7 @@ export const exporterLesMembres =
     readonly criteres: CriteresEquipe
     readonly maintenant: Date
   }): Promise<
-    Result<readonly MembreAExporter<LigneEquipe>[], EchecDExport>
+    Result<readonly MembreAExporter<LigneEquipe>[], EchecDeExporterLesMembres>
   > => {
     if (!peutConsulterLEquipe(lecteur)(coordinateurId))
       return failure(ConsultationNonAutorisee())

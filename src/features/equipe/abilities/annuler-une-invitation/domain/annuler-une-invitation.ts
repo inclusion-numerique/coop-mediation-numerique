@@ -9,7 +9,7 @@ import {
   type UtilisateurId,
 } from '../../../domain'
 import type { Annulation } from './annulation'
-import type { EchecDAnnulation } from './errors'
+import type { EchecDeAnnulerUneInvitation } from './errors'
 import type { AnnulerUneInvitationPorts } from './ports'
 
 export const annulerUneInvitation =
@@ -25,7 +25,7 @@ export const annulerUneInvitation =
     readonly reference: ReferenceInvitation
     readonly gestionnaire: Gestionnaire
     readonly auteurId: UtilisateurId
-  }): Promise<Result<Annulation, EchecDAnnulation>> => {
+  }): Promise<Result<Annulation, EchecDeAnnulerUneInvitation>> => {
     if (!peutGererLEquipe(gestionnaire)(reference.coordinateurId))
       return failure(ActionNonAutorisee())
 

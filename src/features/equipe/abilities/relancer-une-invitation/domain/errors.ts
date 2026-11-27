@@ -7,7 +7,7 @@ import type {
   RelanceTropRecente,
 } from '../../../domain'
 
-export type EchecDeRelance =
+export type EchecDeRelancerUneInvitation =
   | ActionNonAutorisee
   | InvitationIntrouvable
   | InvitationDejaTraitee

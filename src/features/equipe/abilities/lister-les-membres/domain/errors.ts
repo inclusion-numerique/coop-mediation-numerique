@@ -3,4 +3,6 @@ import type {
   CoordinateurIntrouvable,
 } from '../../../domain'
 
-export type EchecDeListe = ConsultationNonAutorisee | CoordinateurIntrouvable
+export type EchecDeListerLesMembres =
+  | ConsultationNonAutorisee
+  | CoordinateurIntrouvable

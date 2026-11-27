@@ -8,7 +8,7 @@ import {
   type UtilisateurId,
 } from '../../../domain'
 import { exigerAncienMembre } from './ancien-membre'
-import type { EchecDeSuppression } from './errors'
+import type { EchecDeSupprimerUnAncienMembre } from './errors'
 import type { SupprimerUnAncienMembrePorts } from './ports'
 import type { SuppressionDesArchives } from './suppression-des-archives'
 
@@ -27,7 +27,9 @@ export const supprimerUnAncienMembre =
     readonly coordinateurId: CoordinateurId
     readonly gestionnaire: Gestionnaire
     readonly auteurId: UtilisateurId
-  }): Promise<Result<SuppressionDesArchives, EchecDeSuppression>> => {
+  }): Promise<
+    Result<SuppressionDesArchives, EchecDeSupprimerUnAncienMembre>
+  > => {
     if (!peutGererLEquipe(gestionnaire)(coordinateurId))
       return failure(ActionNonAutorisee())
 

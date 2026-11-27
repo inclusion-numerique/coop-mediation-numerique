@@ -10,7 +10,7 @@ import {
   type Lecteur,
   peutConsulterLEquipe,
 } from '../../../domain'
-import type { EchecDeListe } from './errors'
+import type { EchecDeListerLesMembres } from './errors'
 import type { MembresDeLEquipe } from './membres-de-l-equipe'
 import type { ListerLesMembresPorts } from './ports'
 
@@ -34,7 +34,7 @@ export const listerLesMembres =
     readonly page: Page
     readonly pageSize: PageSize
     readonly maintenant: Date
-  }): Promise<Result<MembresDeLEquipe, EchecDeListe>> => {
+  }): Promise<Result<MembresDeLEquipe, EchecDeListerLesMembres>> => {
     if (!peutConsulterLEquipe(lecteur)(coordinateurId))
       return failure(ConsultationNonAutorisee())
 

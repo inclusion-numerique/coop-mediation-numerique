@@ -7,7 +7,7 @@ import {
 } from '../../../domain'
 import type { Ajout } from './ajout'
 import {
-  type EchecDAjout,
+  type EchecDeAjouterUnMembre,
   UtilisateurIntrouvable,
   UtilisateurNonMediateur,
 } from './errors'
@@ -28,7 +28,7 @@ export const ajouterUnMembre =
     readonly utilisateurId: UtilisateurId
     readonly coordinateurId: CoordinateurId
     readonly auteurId: UtilisateurId
-  }): Promise<Result<Ajout, EchecDAjout>> => {
+  }): Promise<Result<Ajout, EchecDeAjouterUnMembre>> => {
     const [utilisateur, coordinateurTrouve] = await Promise.all([
       lireLUtilisateurAAjouter(utilisateurId),
       coordinateurExiste(coordinateurId),

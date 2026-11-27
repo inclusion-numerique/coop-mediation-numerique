@@ -6,7 +6,7 @@ import {
   type ReferenceInvitation,
   type UtilisateurId,
 } from '../../../domain'
-import type { EchecDeRefus } from './errors'
+import type { EchecDeRefuserUneInvitation } from './errors'
 import type { RefuserUneInvitationPorts } from './ports'
 import type { Refus, RefusEnregistre } from './refus'
 
@@ -25,7 +25,7 @@ export const refuserUneInvitation =
     readonly reference: ReferenceInvitation
     readonly auteurId: UtilisateurId | null
     readonly maintenant: Date
-  }): Promise<Result<RefusEnregistre, EchecDeRefus>> => {
+  }): Promise<Result<RefusEnregistre, EchecDeRefuserUneInvitation>> => {
     const lue = await lireUneInvitation(reference)
     if (lue === null) return failure(InvitationIntrouvable())
 

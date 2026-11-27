@@ -7,7 +7,7 @@ import {
   type NomAffiche,
   type UtilisateurId,
 } from '../../../domain'
-import type { EchecDInvitation } from './errors'
+import type { EchecDeInviterDesMembres } from './errors'
 import type {
   EnregistrementDesInvitations,
   InvitationsDecidees,
@@ -41,7 +41,7 @@ export const inviterDesMembres =
     readonly candidats: readonly Courriel[]
     readonly auteurId: UtilisateurId
     readonly maintenant: Date
-  }): Promise<Result<InvitationsDecidees, EchecDInvitation>> => {
+  }): Promise<Result<InvitationsDecidees, EchecDeInviterDesMembres>> => {
     if (inviteur.type === 'NonCoordinateur')
       return failure(ActionNonAutorisee())
 

@@ -15,7 +15,7 @@ export const InscriptionNonValidee = (): InscriptionNonValidee => ({
   _tag: 'InscriptionNonValidee',
 })
 
-export type EchecDAcceptation =
+export type EchecDeAccepterUneInvitation =
   | InvitationIntrouvable
   | InvitationDejaTraitee
   | MauvaisDestinataire

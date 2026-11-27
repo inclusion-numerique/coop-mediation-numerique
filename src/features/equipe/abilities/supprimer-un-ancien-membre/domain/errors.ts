@@ -10,7 +10,7 @@ export const PasAncienMembre = (): PasAncienMembre => ({
   _tag: 'PasAncienMembre',
 })
 
-export type EchecDeSuppression =
+export type EchecDeSupprimerUnAncienMembre =
   | ActionNonAutorisee
   | ToujoursMembre
   | PasAncienMembre

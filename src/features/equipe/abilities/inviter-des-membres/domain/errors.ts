@@ -13,7 +13,7 @@ export const AucuneInvitationAEnvoyer = (
   ecartes: readonly Ecart[],
 ): AucuneInvitationAEnvoyer => ({ _tag: 'AucuneInvitationAEnvoyer', ecartes })
 
-export type EchecDInvitation =
+export type EchecDeInviterDesMembres =
   | ActionNonAutorisee
   | AucuneInvitationAEnvoyer
   | CoordinateurIntrouvable

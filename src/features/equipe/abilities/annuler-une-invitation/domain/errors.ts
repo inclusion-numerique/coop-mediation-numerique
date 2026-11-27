@@ -4,7 +4,7 @@ import type {
   InvitationIntrouvable,
 } from '../../../domain'
 
-export type EchecDAnnulation =
+export type EchecDeAnnulerUneInvitation =
   | ActionNonAutorisee
   | InvitationIntrouvable
   | InvitationDejaTraitee
