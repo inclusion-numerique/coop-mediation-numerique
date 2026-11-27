@@ -18,6 +18,7 @@ describe('message du webhook usager', () => {
         _tag: 'anonymiseEtSupprime',
         usagerId: UsagerId(200),
         beneficiaires: [],
+        anonymiseLe: new Date('2026-09-01T10:00:00.000Z'),
       }),
       message: 'usager anonymiseEtSupprime',
     },

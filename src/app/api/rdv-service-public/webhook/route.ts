@@ -81,7 +81,11 @@ const traiter = aiguillerNotificationWebhook({
   traiterUsager: async ({ evenement, donnees }) =>
     journaliserWebhook(
       messageDuWebhookUsager(
-        await recevoirLUsager({ evenement, payload: donnees }),
+        await recevoirLUsager({
+          evenement,
+          payload: donnees,
+          maintenant: new Date(),
+        }),
       ),
     ),
   journaliser: journaliserWebhook,

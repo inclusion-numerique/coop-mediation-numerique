@@ -51,9 +51,23 @@ const avecBeneficiaire: RecevoirWebhookUsagerPorts = {
   beneficiairesLies: async () => [{ id: beneficiaireLie }],
 }
 
-const creation = { evenement: EvenementWebhook('created'), payload: {} }
-const miseAJour = { evenement: EvenementWebhook('updated'), payload: {} }
-const suppression = { evenement: EvenementWebhook('destroyed'), payload: {} }
+const maintenant = new Date('2026-09-01T10:00:00.000Z')
+
+const creation = {
+  evenement: EvenementWebhook('created'),
+  payload: {},
+  maintenant,
+}
+const miseAJour = {
+  evenement: EvenementWebhook('updated'),
+  payload: {},
+  maintenant,
+}
+const suppression = {
+  evenement: EvenementWebhook('destroyed'),
+  payload: {},
+  maintenant,
+}
 
 describe('recevoir une notification portant sur un usager', () => {
   it('renonce à une notification dont le payload a changé de forme', async () => {
@@ -103,6 +117,7 @@ describe('recevoir une notification portant sur un usager', () => {
         _tag: 'anonymiseEtSupprime',
         usagerId: UsagerId(200),
         beneficiaires: [{ id: beneficiaireLie }],
+        anonymiseLe: maintenant,
       }),
     )
   })
@@ -115,6 +130,7 @@ describe('recevoir une notification portant sur un usager', () => {
         _tag: 'anonymiseEtSupprime',
         usagerId: UsagerId(200),
         beneficiaires: [],
+        anonymiseLe: maintenant,
       }),
     )
   })

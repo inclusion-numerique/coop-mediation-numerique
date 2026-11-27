@@ -8,6 +8,7 @@ import type {
 export type AnonymisationDeLUsager = {
   readonly usagerId: UsagerId
   readonly beneficiaires: readonly BeneficiaireLie[]
+  readonly anonymiseLe: Date
 }
 
 export type WebhookUsagerTraite =

@@ -17,6 +17,7 @@ export const mettreAJourUsager: MettreAJourUsager = async (usager) => {
 export const anonymiserEtSupprimerUsager: AnonymiserEtSupprimerUsager = async ({
   usagerId,
   beneficiaires,
+  anonymiseLe,
 }) => {
   await prismaClient.$transaction(async (transaction) => {
     if (beneficiaires.length > 0) {
@@ -24,8 +25,8 @@ export const anonymiserEtSupprimerUsager: AnonymiserEtSupprimerUsager = async ({
         where: { id: { in: beneficiaires.map(({ id }) => id) } },
         data: {
           anonyme: true,
-          suppression: new Date(),
-          modification: new Date(),
+          suppression: anonymiseLe,
+          modification: anonymiseLe,
           rdvUserId: null,
           prenom: null,
           nom: null,

@@ -18,9 +18,11 @@ export const recevoirWebhookUsager =
   async ({
     evenement,
     payload,
+    maintenant,
   }: {
     readonly evenement: EvenementWebhook
     readonly payload: unknown
+    readonly maintenant: Date
   }): Promise<Result<WebhookUsagerTraite, EchecDeRecevoirWebhookUsager>> => {
     const notification = lireNotification(payload)
 
@@ -48,6 +50,7 @@ export const recevoirWebhookUsager =
     const anonymisation: AnonymisationDeLUsager = {
       usagerId: usager.id,
       beneficiaires,
+      anonymiseLe: maintenant,
     }
 
     await anonymiserEtSupprimer(anonymisation)
