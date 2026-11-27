@@ -35,12 +35,12 @@ import type { CreationDemandee } from '../../../domain/rattachement/creation-dem
 import type { LieuCarto } from '../../../domain/rattachement/lieu-carto'
 import type {
   LieuACreer,
-  LieuDemande,
   LieuExistant,
 } from '../../../domain/rattachement/lieu-demande'
 import { SourceCartographie } from '../../../domain/registre/tracabilite'
 import { ajouterDesLieuxActivite } from './ajouter-des-lieux-activite'
 import type { LieuDejaRattache } from './lieu-deja-rattache'
+import type { LieuSoumis } from './lieu-soumis'
 import type { AjouterDesLieuxActivitePorts } from './ports'
 
 const LIEU_A = LieuId('0927f824-b84d-4840-ae2e-e4a96a7a519b')
@@ -164,7 +164,7 @@ describe('ajouter des lieux d’activité', () => {
   it.each<{
     cas: string
     dejaRattaches: readonly LieuDejaRattache[]
-    demandes: readonly LieuDemande[]
+    demandes: readonly LieuSoumis[]
     destinations: readonly DestinationDuLieu<CreationDemandee>[]
     lieuxRattaches: readonly LieuId[]
   }>([
@@ -323,7 +323,7 @@ describe('ajouter des lieux d’activité', () => {
   it.each<{
     cas: string
     ports: Partial<AjouterDesLieuxActivitePorts>
-    demandes: readonly LieuDemande[]
+    demandes: readonly LieuSoumis[]
     destinations: readonly DestinationDuLieu<CreationDemandee>[]
     lieuxRattaches: readonly LieuId[]
   }>([
@@ -521,6 +521,47 @@ describe('ajouter des lieux d’activité', () => {
     ).toEqual(failure({ _tag: 'LieuIntrouvable', lieuId: LIEU_A }))
   })
 
+  it.each<{ cas: string; manque: Partial<LieuSoumis>; nom: string }>([
+    {
+      cas: 'refuse un lieu à créer sans adresse validée',
+      manque: { adresse: null },
+      nom: 'Maison France Services',
+    },
+    {
+      cas: 'refuse un lieu à créer sans localisation',
+      manque: { localisation: null },
+      nom: 'Maison France Services',
+    },
+    {
+      cas: 'refuse un lieu à créer sans identifiant BAN',
+      manque: { banId: null },
+      nom: 'Maison France Services',
+    },
+  ])('$cas', async ({ manque, nom }) => {
+    expect(
+      await ajouterDesLieuxActivite(ports)({
+        demandes: [connu({ id: LIEU_A }), { ...aCreer(), ...manque }],
+        utilisateurId,
+        mediateurId,
+        maintenant,
+      }),
+    ).toEqual(failure({ _tag: 'AdresseNonValidee', nom }))
+  })
+
+  it('signale le premier lieu dont l’adresse n’est pas validée', async () => {
+    expect(
+      await ajouterDesLieuxActivite(ports)({
+        demandes: [
+          { ...aCreer({ nom: Nom('Premier') }), banId: null },
+          { ...aCreer({ nom: Nom('Second') }), banId: null },
+        ],
+        utilisateurId,
+        mediateurId,
+        maintenant,
+      }),
+    ).toEqual(failure({ _tag: 'AdresseNonValidee', nom: 'Premier' }))
+  })
+
   it('refuse un panier vide', async () => {
     expect(
       await ajouterDesLieuxActivite(ports)({
@@ -532,7 +573,7 @@ describe('ajouter des lieux d’activité', () => {
     ).toEqual(failure({ _tag: 'PanierVide' }))
   })
 
-  it.each<{ cas: string; demandes: readonly LieuDemande[] }>([
+  it.each<{ cas: string; demandes: readonly LieuSoumis[] }>([
     { cas: 'avec un panier', demandes: [connu({ id: LIEU_A })] },
     { cas: 'même avec un panier vide', demandes: [] },
   ])('refuse un compte sans médiateur, $cas', async ({ demandes }) => {

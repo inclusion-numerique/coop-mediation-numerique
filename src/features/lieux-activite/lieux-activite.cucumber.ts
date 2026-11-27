@@ -5,6 +5,7 @@ import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
 import type { LieuxAAjouterData } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/action/ajouter-des-lieux-activite.validation'
 import { depuisLePanier } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/action/panier.transfer'
+import { lieuxDemandes } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/domain'
 import { appliquerLesDestinations } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/ajouter-des-lieux-activite.mutation'
 import {
   etatDuLieu,
@@ -381,7 +382,7 @@ const seedLieuActivite = async (
 
 const renseigner = async (saisies: LieuxAAjouterData['lieux']) => {
   const maintenant = new Date()
-  const lieux = depuisLePanier(saisies)
+  const lieux = lieuxDemandes(depuisLePanier(saisies))
 
   assert.ok(lieux.success, 'Les lieux saisis auraient dû être acceptés')
 

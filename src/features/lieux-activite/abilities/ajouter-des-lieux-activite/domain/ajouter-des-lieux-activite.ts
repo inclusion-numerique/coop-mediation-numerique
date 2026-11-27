@@ -2,12 +2,12 @@ import { failure, type Result, success } from '@/libraries/result'
 import { LieuIntrouvable } from '../../../domain/errors'
 import type { MediateurId } from '../../../domain/identifiants/mediateur-id'
 import type { UtilisateurId } from '../../../domain/identifiants/utilisateur-id'
-import type { LieuDemande } from '../../../domain/rattachement/lieu-demande'
 import { planifierLesRattachements } from '../../../domain/rattachement/planifier-les-rattachements'
 import type { AjoutDeLieux, LieuxAjoutes } from './ajout-de-lieux'
 import { demandeDAjout } from './demande-d-ajout'
 import type { EchecDeAjouterDesLieuxActivite } from './errors'
 import { identifiantsCarto } from './identifiants-carto'
+import { type LieuSoumis, lieuxDemandes } from './lieu-soumis'
 import { lieuxAMaterialiser } from './lieux-a-materialiser'
 import type { AjouterDesLieuxActivitePorts } from './ports'
 
@@ -24,12 +24,19 @@ export const ajouterDesLieuxActivite =
     mediateurId,
     maintenant,
   }: {
-    readonly demandes: readonly LieuDemande[]
+    readonly demandes: readonly LieuSoumis[]
     readonly utilisateurId: UtilisateurId
     readonly mediateurId: MediateurId | null
     readonly maintenant: Date
   }): Promise<Result<LieuxAjoutes, EchecDeAjouterDesLieuxActivite>> => {
-    const demande = demandeDAjout({ mediateurId, demandes })
+    const demandesSituees = lieuxDemandes(demandes)
+
+    if (!demandesSituees.success) return demandesSituees
+
+    const demande = demandeDAjout({
+      mediateurId,
+      demandes: demandesSituees.data,
+    })
 
     if (!demande.success) return demande
 

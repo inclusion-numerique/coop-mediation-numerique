@@ -1,7 +1,18 @@
+import {
+  Adresse,
+  Localisation,
+  Nom,
+} from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { describe, expect, it } from 'vitest'
+import { IdentifiantCartographie } from '../../../domain/cartographie-nationale/ids-cartographie-nationale'
+import { BanId } from '../../../domain/identifiants/ban-id'
+import { LieuId } from '../../../domain/identifiants/lieu-id'
+import type { LieuxAAjouterData } from './ajouter-des-lieux-activite.validation'
 import { depuisLePanier } from './panier.transfer'
 
-const lieuSoumis = (champs: Record<string, unknown> = {}) => ({
+type LieuDuPanier = LieuxAAjouterData['lieux'][number]
+
+const lieuDuPanier: LieuDuPanier = {
   id: null,
   structureCartographieNationaleId: null,
   nom: 'Tiers-lieu du Port',
@@ -13,107 +24,89 @@ const lieuSoumis = (champs: Record<string, unknown> = {}) => ({
   banId: '17299_0123_00012',
   latitude: 45.94,
   longitude: -0.96,
-  ...champs,
-})
+}
 
 const CONNU = '0927f824-b84d-4840-ae2e-e4a96a7a519b'
 
-describe('le panier soumis devient une liste de demandes', () => {
-  describe('un lieu que la coop connaît déjà', () => {
-    it('se rattache par son id, sans exiger d’adresse validée', () => {
-      const issue = depuisLePanier([
-        lieuSoumis({ id: CONNU, codeInsee: null, banId: null, latitude: null }),
-      ])
+const adresse = Adresse({
+  voie: '12 quai du Port',
+  commune: 'Rochefort',
+  code_postal: '17300',
+  code_insee: '17299',
+})
 
-      expect(issue.success).toBe(true)
-      expect(issue.success && issue.data).toEqual([
-        {
-          id: CONNU,
-          nom: 'Tiers-lieu du Port',
-          siret: null,
-          structureCartographieNationaleId: null,
-        },
-      ])
-    })
+const localisation = Localisation({ latitude: 45.94, longitude: -0.96 })
+
+const banId = BanId('17299_0123_00012')
+
+const nouveau = {
+  nom: Nom('Tiers-lieu du Port'),
+  siret: null,
+  structureCartographieNationaleId: null,
+  adresse,
+  localisation,
+  banId,
+}
+
+describe('le panier soumis devient une liste de lieux soumis', () => {
+  it('désigne un lieu que la coop connaît par son id, sans lire son adresse', () => {
+    expect(
+      depuisLePanier([
+        { ...lieuDuPanier, id: CONNU, codeInsee: null, banId: null },
+      ]),
+    ).toEqual([
+      {
+        id: LieuId(CONNU),
+        nom: Nom('Tiers-lieu du Port'),
+        siret: null,
+        structureCartographieNationaleId: null,
+      },
+    ])
   })
 
-  describe('un lieu qu’il faudra créer', () => {
-    it('emporte son adresse, sa localisation et son identifiant BAN', () => {
-      const issue = depuisLePanier([lieuSoumis()])
+  it('emporte l’adresse, la localisation et l’identifiant BAN d’un lieu à créer', () => {
+    expect(depuisLePanier([lieuDuPanier])).toEqual([nouveau])
+  })
 
-      expect(issue.success && issue.data.at(0)).toMatchObject({
-        nom: 'Tiers-lieu du Port',
-        banId: '17299_0123_00012',
-        localisation: { latitude: 45.94, longitude: -0.96 },
-        adresse: {
-          voie: '12 quai du Port',
-          commune: 'Rochefort',
-          code_postal: '17300',
-          code_insee: '17299',
-        },
-      })
-    })
+  it.each<{ cas: string; manque: Partial<LieuDuPanier>; attendu: object }>([
+    {
+      cas: 'laisse au domaine un lieu sans code INSEE, sans adresse ni localisation',
+      manque: { codeInsee: null },
+      attendu: { ...nouveau, adresse: null, localisation: null },
+    },
+    {
+      cas: 'laisse au domaine un lieu sans identifiant BAN',
+      manque: { banId: null },
+      attendu: { ...nouveau, banId: null },
+    },
+    {
+      cas: 'laisse au domaine un lieu sans latitude',
+      manque: { latitude: null },
+      attendu: { ...nouveau, adresse: null, localisation: null },
+    },
+  ])('$cas', ({ manque, attendu }) => {
+    expect(depuisLePanier([{ ...lieuDuPanier, ...manque }])).toEqual([attendu])
+  })
 
-    it.each([
-      ['sans code INSEE', { codeInsee: null }],
-      ['sans identifiant BAN', { banId: null }],
-      ['sans latitude', { latitude: null }],
-      ['sans longitude', { longitude: null }],
-    ])('est refusé %s', (_, manque) => {
-      const issue = depuisLePanier([lieuSoumis(manque)])
-
-      expect(issue.success).toBe(false)
-      expect(!issue.success && issue.error).toEqual({
-        _tag: 'AdresseNonValidee',
-        nom: 'Tiers-lieu du Port',
-      })
-    })
-
-    it('retient le SIRET et l’identité de cartographie soumis', () => {
-      const issue = depuisLePanier([
-        lieuSoumis({
+  it('retient le SIRET et l’identité de cartographie soumis', () => {
+    expect(
+      depuisLePanier([
+        {
+          ...lieuDuPanier,
           siret: '13002603200016',
           structureCartographieNationaleId: 'dora__abc',
-        }),
-      ])
-
-      expect(issue.success && issue.data.at(0)).toMatchObject({
+        },
+      ]),
+    ).toEqual([
+      {
+        ...nouveau,
         siret: '13002603200016',
-        structureCartographieNationaleId: 'dora__abc',
-      })
-    })
-  })
-
-  describe('un panier de plusieurs lieux', () => {
-    it('conserve l’ordre de la sélection', () => {
-      const issue = depuisLePanier([
-        lieuSoumis({ nom: 'Premier' }),
-        lieuSoumis({ nom: 'Deuxième' }),
-      ])
-
-      expect(issue.success && issue.data.map(({ nom }) => nom)).toEqual([
-        'Premier',
-        'Deuxième',
-      ])
-    })
-
-    it('est refusé en entier dès qu’un seul lieu n’est pas situable', () => {
-      const issue = depuisLePanier([
-        lieuSoumis({ nom: 'Premier' }),
-        lieuSoumis({ nom: 'Deuxième', codeInsee: null }),
-        lieuSoumis({ nom: 'Troisième' }),
-      ])
-
-      expect(!issue.success && issue.error).toEqual({
-        _tag: 'AdresseNonValidee',
-        nom: 'Deuxième',
-      })
-    })
+        structureCartographieNationaleId: IdentifiantCartographie('dora__abc'),
+      },
+    ])
   })
 
   it('rend une liste vide pour un panier vide', () => {
-    const issue = depuisLePanier([])
-
-    expect(issue.success && issue.data).toEqual([])
+    expect(depuisLePanier([])).toEqual([])
   })
 })

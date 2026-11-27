@@ -29,6 +29,11 @@ export {
 } from './errors'
 export { identifiantsCarto } from './identifiants-carto'
 export type { LieuDejaRattache } from './lieu-deja-rattache'
+export {
+  type LieuNouveauSoumis,
+  type LieuSoumis,
+  lieuxDemandes,
+} from './lieu-soumis'
 export type {
   AjouterDesLieuxActivitePorts,
   LireLieuxDejaRattaches,

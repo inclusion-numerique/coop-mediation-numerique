@@ -28,10 +28,6 @@ export const ajouterDesLieuxActiviteAction = actionBuilder()
   .execute(
     fromResult(
       async ({ user, input }) => {
-        const demandes = depuisLePanier(input.lieux)
-
-        if (!demandes.success) return demandes
-
         const ajout = await ajouterDesLieuxActivite({
           lireLieuxDejaRattaches,
           trouverStructuresCarto,
@@ -41,7 +37,7 @@ export const ajouterDesLieuxActiviteAction = actionBuilder()
           nouvelIdentifiantDeLieu,
           rattacherAuxLieux,
         })({
-          demandes: demandes.data,
+          demandes: depuisLePanier(input.lieux),
           utilisateurId: UtilisateurId(user.id),
           mediateurId:
             user.mediateur == null ? null : MediateurId(user.mediateur.id),
