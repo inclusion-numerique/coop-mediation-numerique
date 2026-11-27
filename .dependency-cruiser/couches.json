@@ -98,6 +98,7 @@
     "beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/rdv-service-public",
     "beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/telemetrie",
     "clients-api/abilities/authentifier-un-client-api/implementations/api-v1",
+    "employeuse/abilities/rattacher-a-une-employeuse/implementations/api-entreprise",
     "equipe/implementations/email",
     "inscription/abilities/ajouter-structure-employeuse-en-lieu/implementations/ban",
     "maintenance-mode/implementations/prisma",
