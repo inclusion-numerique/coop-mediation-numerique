@@ -1,5 +1,5 @@
-import type { DemandeurDeLExport } from '../../domain/export-interdit'
-import { MediateurId } from '../../domain/mediateur-id'
+import { MediateurId } from '../../../../domain/mediateur-id'
+import type { DemandeurDeLExport } from '../../domain/demandeur-de-l-export'
 
 type MediateurCoordonne = { readonly mediateurId: string }
 

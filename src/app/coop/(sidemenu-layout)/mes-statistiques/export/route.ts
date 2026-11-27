@@ -50,9 +50,9 @@ import {
 import { demandeurDuFiltre } from '@/features/equipe/abilities/lister-les-membres-a-filtrer/implementations/session/demandeur-du-filtre.query'
 import { optionDeMembre } from '@/features/equipe/abilities/lister-les-membres-a-filtrer/ui/presenters/options-de-membres.presenter'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/rdvs-des-activites.query'
-import { exportInterdit } from '@/features/statistiques/domain/export-interdit'
+import { exporterMesStatistiques } from '@/features/statistiques/abilities/exporter-mes-statistiques/domain/exporter-mes-statistiques'
+import { demandeurDeLExport } from '@/features/statistiques/abilities/exporter-mes-statistiques/implementations/session/demandeur-de-l-export.transfer'
 import { classeurDesStatistiques } from '@/features/statistiques/implementations/excel/classeur-des-statistiques.classeur'
-import { demandeurDeLExport } from '@/features/statistiques/implementations/session/demandeur-de-l-export.transfer'
 import { entreeDuClasseur } from '@/features/statistiques/ui/presenters/entree-du-classeur.presenter'
 import { nomDuFichierDesStatistiques } from '@/features/statistiques/ui/presenters/nom-du-fichier.presenter'
 import { auteurDeLExport } from '@/features/utilisateurs/ui/presenters/auteur-de-l-export.presenter'
@@ -108,6 +108,7 @@ const classeurDuPerimetre = async (
   perimetre: PerimetreDesStatistiques,
   valeurs: ReturnType<typeof filtresDesStatistiques.charger>,
   membres: () => Promise<readonly { value: string; label: string }[]>,
+  maintenant: Date,
 ) => {
   const [statistiques, barre] = await Promise.all([
     statistiquesDesActivites.rassembler(
@@ -117,7 +118,7 @@ const classeurDuPerimetre = async (
       )({
         perimetre,
         criteres: criteresDesStatistiquesDesFiltres(valeurs),
-        fin: valeurs.au ?? new Date(),
+        fin: valeurs.au ?? maintenant,
       }),
     ),
     barreDesStatistiquesAvec(lecturesDeLaBarre(perimetre, membres))(
@@ -138,6 +139,11 @@ const optionsDesMembres = async (
   return membres.data.map(optionDeMembre)
 }
 
+const refus = {
+  ExportNonAutorise: 'Forbidden',
+  ExportDUnAutreMediateur: 'Cannot export for another mediateur',
+} as const
+
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
@@ -149,29 +155,33 @@ export const GET = async (request: NextRequest) => {
     return new Response('Unauthorized', { status: 401 })
   }
 
-  const demandeur = demandeurDeLExport(user)
-  if (demandeur === null) {
-    return new Response('Forbidden', { status: 403 })
-  }
-
+  const maintenant = new Date()
   const valeurs = filtresDesStatistiques.charger(request.nextUrl.searchParams)
-  if (exportInterdit(demandeur, valeurs.mediateurs ?? [])) {
-    return new Response('Cannot export for another mediateur', { status: 403 })
-  }
-  const perimetre = perimetreDeLUtilisateur(user)
-  if (perimetre === null) return new Response('Forbidden', { status: 403 })
-
-  const statistiquesWorksheetInput = entreeDuClasseur({
-    ...(await classeurDuPerimetre(perimetre, valeurs, async () =>
-      optionsDesMembres(user),
-    )),
-    auteur: auteurDeLExport(user),
-    fuseau: user.timezone,
+  const exportation = await exporterMesStatistiques({
+    preparerLExport: async (perimetre: PerimetreDesStatistiques) =>
+      classeurDesStatistiques(
+        entreeDuClasseur({
+          ...(await classeurDuPerimetre(
+            perimetre,
+            valeurs,
+            async () => optionsDesMembres(user),
+            maintenant,
+          )),
+          auteur: auteurDeLExport(user),
+          fuseau: user.timezone,
+        }),
+      ).xlsx.writeBuffer(),
+  })({
+    demandeur: demandeurDeLExport(user),
+    perimetre: perimetreDeLUtilisateur(user),
+    mediateursExportes: valeurs.mediateurs ?? [],
   })
-  const workbook = classeurDesStatistiques(statistiquesWorksheetInput)
 
-  const data = await workbook.xlsx.writeBuffer()
-  const filename = nomDuFichierDesStatistiques(new Date())
+  if (!exportation.success)
+    return new Response(refus[exportation.error._tag], { status: 403 })
+
+  const data = exportation.data
+  const filename = nomDuFichierDesStatistiques(maintenant)
 
   return new Response(data, {
     status: 200,

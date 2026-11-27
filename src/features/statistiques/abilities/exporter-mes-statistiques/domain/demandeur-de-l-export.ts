@@ -1,4 +1,4 @@
-import type { MediateurId } from './mediateur-id'
+import type { MediateurId } from '../../../domain/mediateur-id'
 
 export type DemandeurDeLExport =
   | { readonly _tag: 'Mediateur'; readonly mediateurId: MediateurId }

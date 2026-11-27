@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { type DemandeurDeLExport, exportInterdit } from './export-interdit'
-import { MediateurId } from './mediateur-id'
+import { MediateurId } from '../../../domain/mediateur-id'
+import {
+  type DemandeurDeLExport,
+  exportInterdit,
+} from './demandeur-de-l-export'
 
 const moi = MediateurId('a0000000-0000-4000-8000-000000000001')
 const coordonne = MediateurId('a0000000-0000-4000-8000-000000000002')
