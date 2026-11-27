@@ -1,7 +1,8 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
+import { consulterEmployeuse } from '@/features/employeuse/abilities/consulter-employeuse/domain/consulter-employeuse'
 import type { EmployeuseConsultee } from '@/features/employeuse/abilities/consulter-employeuse/domain/employeuse-consultee'
-import { consulterEmployeuse } from '@/features/employeuse/abilities/consulter-employeuse/implementations/prisma/consulter-employeuse.query'
+import { lireLEmployeuse } from '@/features/employeuse/abilities/consulter-employeuse/implementations/prisma/employeuse-et-ses-affectations.query'
 import { EmployeuseId } from '@/features/employeuse/domain/employeuse-id'
 import {
   desactiverAffectations,
@@ -81,9 +82,10 @@ Given("l'employeuse {string} a été supprimée", async (nom: string) => {
 })
 
 When('je consulte la fiche de {string}', async (nom: string) => {
-  contexte.fiche = await consulterEmployeuse({
+  const { data } = await consulterEmployeuse({ lireLEmployeuse })({
     employeuseId: EmployeuseId(employeuseId(nom)),
   })
+  contexte.fiche = data
 })
 
 Then('la fiche porte le nom {string}', (nom: string) => {

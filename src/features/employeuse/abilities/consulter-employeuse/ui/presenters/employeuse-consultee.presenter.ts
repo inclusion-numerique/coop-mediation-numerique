@@ -24,7 +24,7 @@ const libelle = ({
   nomComplet,
   courriel,
 }: PersonneEmployee): string =>
-  [prenom, nom].filter(Boolean).join(' ') || nomComplet || courriel
+  [prenom, nom].filter(Boolean).join(' ') || nomComplet || courriel || ''
 
 export const employeuseConsulteeAffichage = ({
   employeuse,
@@ -52,7 +52,7 @@ export const employeuseConsulteeAffichage = ({
     personnesEmployees: personnesEmployees.map((personne) => ({
       id: personne.utilisateurId,
       libelle: libelle(personne),
-      courriel: personne.courriel,
+      courriel: personne.courriel ?? '',
     })),
   }
 }

@@ -2,7 +2,8 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { metadataTitle } from '@/configuration/projet'
 import { authenticateAdmin } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
-import { consulterEmployeuse } from '@/features/employeuse/abilities/consulter-employeuse/implementations/prisma/consulter-employeuse.query'
+import { consulterEmployeuse } from '@/features/employeuse/abilities/consulter-employeuse/domain/consulter-employeuse'
+import { lireLEmployeuse } from '@/features/employeuse/abilities/consulter-employeuse/implementations/prisma/employeuse-et-ses-affectations.query'
 import EmployeusePage from '@/features/employeuse/abilities/consulter-employeuse/ui/pages/EmployeusePage'
 import { employeuseConsulteeAffichage } from '@/features/employeuse/abilities/consulter-employeuse/ui/presenters/employeuse-consultee.presenter'
 import { EmployeuseId } from '@/features/employeuse/domain'
@@ -22,7 +23,9 @@ const Page = async (props: {
   const employeuseId = EmployeuseId.safe(Number(structureAdministrativeId))
   if (!employeuseId) return notFound()
 
-  const employeuse = await consulterEmployeuse({ employeuseId })
+  const { data: employeuse } = await consulterEmployeuse({ lireLEmployeuse })({
+    employeuseId,
+  })
   if (!employeuse) return notFound()
 
   return (
