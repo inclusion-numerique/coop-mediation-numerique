@@ -1,6 +1,5 @@
 import { prismaClient } from '@/configuration/prisma'
 import type { Prisma } from '@/generated/prisma/client'
-import { toTitleCase } from '@/libraries/texte'
 
 const LIMITE = 50
 
@@ -52,17 +51,8 @@ export const lieuxAFusionner = async (query: string) => {
     where: matchesWhere,
   })
 
-  const structures = structuresRaw.map(
-    ({ nom, adresse, commune, ...rest }) => ({
-      nom: toTitleCase(nom, { noUpper: true }),
-      commune: toTitleCase(commune),
-      adresse: toTitleCase(adresse, { noUpper: true }),
-      ...rest,
-    }),
-  )
-
   return {
-    structures,
+    structures: structuresRaw,
     matchesCount,
     moreResults: Math.max(matchesCount - structuresSearchLimit, 0),
   }

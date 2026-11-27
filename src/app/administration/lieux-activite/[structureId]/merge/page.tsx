@@ -5,7 +5,9 @@ import { authenticateAdmin } from '@/features/authentification/middlewares/with-
 import { RECHERCHER_UN_LIEU_A_FUSIONNER_ACTION_KEY } from '@/features/lieux-activite/abilities/rechercher-un-lieu-a-fusionner/action/rechercher-un-lieu-a-fusionner.key'
 import { lieuAFusionner } from '@/features/lieux-activite/abilities/rechercher-un-lieu-a-fusionner/implementations/prisma/lieu-a-fusionner.query'
 import { FusionnerUnLieuPage } from '@/features/lieux-activite/abilities/rechercher-un-lieu-a-fusionner/ui/pages/FusionnerUnLieuPage'
+import { nomDuLieuAFusionner } from '@/features/lieux-activite/abilities/rechercher-un-lieu-a-fusionner/ui/presenters/lieu-a-fusionner.presenter'
 import { ChoisirLeLieuAFusionner } from '@/features/lieux-activite/abilities/rechercher-un-lieu-a-fusionner/ui/slots/ChoisirLeLieuAFusionner.slot'
+import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
 import { ClientBinder } from '@/libraries/nextjs/injection'
 
 export const metadata = {
@@ -15,8 +17,11 @@ export const metadata = {
 const Page = async (props: { params: Promise<{ structureId: string }> }) => {
   await authenticateAdmin()
   const { structureId } = await props.params
-  const pageData = await lieuAFusionner(structureId)
-  if (!pageData) return notFound()
+  const lieuId = LieuId.safe(structureId)
+  if (lieuId === null) return notFound()
+
+  const lieu = await lieuAFusionner(lieuId)
+  if (lieu === null) return notFound()
 
   return (
     <ClientBinder
@@ -25,7 +30,7 @@ const Page = async (props: { params: Promise<{ structureId: string }> }) => {
     >
       <FusionnerUnLieuPage
         structureId={structureId}
-        nom={pageData.nom}
+        nom={nomDuLieuAFusionner(lieu.nom)}
         choixDuLieu={<ChoisirLeLieuAFusionner structureId={structureId} />}
       />
     </ClientBinder>

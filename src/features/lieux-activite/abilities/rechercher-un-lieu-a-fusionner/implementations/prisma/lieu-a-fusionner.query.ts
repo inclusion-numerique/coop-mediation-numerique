@@ -1,14 +1,8 @@
 import { prismaClient } from '@/configuration/prisma'
-import { toTitleCase } from '@/libraries/texte'
+import type { LieuId } from '../../../../domain/identifiants/lieu-id'
 
-export const lieuAFusionner = async (structureId: string) => {
-  const structure = await prismaClient.lieuInclusion.findUnique({
-    where: { id: structureId },
+export const lieuAFusionner = (lieuId: LieuId) =>
+  prismaClient.lieuInclusion.findUnique({
+    where: { id: lieuId },
+    select: { nom: true },
   })
-
-  if (!structure) return null
-
-  return {
-    nom: toTitleCase(structure.nom, { noUpper: true }),
-  }
-}
