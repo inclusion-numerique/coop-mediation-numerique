@@ -14,9 +14,11 @@ const tousLesPublics: PublicSpecifiquementAdresse[] =
 const sontTousCoches = (publics: PublicSpecifiquementAdresse[]) =>
   publics.length === tousLesPublics.length
 
+const proprietes: { isPending: boolean } = { isPending: false }
+
 export const TypesDePublicsAccueillisFields = withForm({
   ...creerLieuActiviteFormOptions,
-  props: {} as { isPending: boolean },
+  props: proprietes,
   render: ({ form, isPending }) => (
     <>
       <p className="fr-mb-1v fr-mt-1w">

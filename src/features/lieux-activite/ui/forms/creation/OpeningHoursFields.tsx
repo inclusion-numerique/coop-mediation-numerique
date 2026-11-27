@@ -18,9 +18,21 @@ const jours: readonly OsmDaysOfWeek[] = [...OSM_DAYS_OF_WEEK]
 
 const periodes: Period[] = ['am', 'pm']
 
+const proprietesDeLaDemiJournee: {
+  isPending: boolean
+  day: OsmDaysOfWeek
+  period: Period
+} = {
+  isPending: false,
+  day: 'Mo',
+  period: 'am',
+}
+
+const proprietesDeLaGrille: { isPending: boolean } = { isPending: false }
+
 const DemiJournee = withForm({
   ...creerLieuActiviteFormOptions,
-  props: {} as { isPending: boolean; day: OsmDaysOfWeek; period: Period },
+  props: proprietesDeLaDemiJournee,
   render: ({ form, isPending, day, period }) => {
     const isOpen = useSelector(
       form.store,
@@ -101,7 +113,7 @@ const DemiJournee = withForm({
 
 export const OpeningHoursFields = withForm({
   ...creerLieuActiviteFormOptions,
-  props: {} as { isPending: boolean },
+  props: proprietesDeLaGrille,
   render: ({ form, isPending }) => (
     <div className="fr-grid-row fr-grid-row--gutters fr-mb-2w">
       {jours.flatMap((day) =>

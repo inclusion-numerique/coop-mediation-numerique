@@ -13,9 +13,13 @@ import { RedAsterisk, RequiredFieldsDisclaimer } from '@/libraries/ui/form'
 import { Options } from '@/libraries/ui/primitives'
 import { creerLieuActiviteFormOptions } from '../creer-lieu-activite.form-options'
 
+const proprietes: { isPending: boolean; className?: string } = {
+  isPending: false,
+}
+
 export const InformationsGeneralesFields = withForm({
   ...creerLieuActiviteFormOptions,
-  props: {} as { isPending: boolean; className?: string },
+  props: proprietes,
   render: ({ form, isPending, className }) => (
     <div className={className}>
       <RequiredFieldsDisclaimer className="fr-mb-4v" />
