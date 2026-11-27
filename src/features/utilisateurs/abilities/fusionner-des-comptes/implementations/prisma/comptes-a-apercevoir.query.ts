@@ -6,7 +6,7 @@ import {
 } from '@/features/utilisateurs/domain'
 import { identiteToDomain } from '@/features/utilisateurs/implementations/prisma/identite.transfer'
 import type { Prisma } from '@/generated/prisma/client'
-import { type ApercuDeFusion, type CompteApercu, communs } from '../../domain'
+import type { CompteApercu, LireLesComptesAApercevoir } from '../../domain'
 
 const apercuSelect = {
   id: true,
@@ -98,32 +98,23 @@ const versApercu = (row: ApercuRow): CompteApercu => {
   }
 }
 
-export const apercuDeFusion = async ({
+const compteApercu = async (
+  id: UtilisateurId,
+): Promise<CompteApercu | null> => {
+  const row = await prismaClient.user.findUnique({
+    where: { id },
+    select: apercuSelect,
+  })
+  return row === null ? null : versApercu(row)
+}
+
+export const lireLesComptesAApercevoir: LireLesComptesAApercevoir = async ({
   sourceId,
   cibleId,
-}: {
-  readonly sourceId: string
-  readonly cibleId: string
-}): Promise<ApercuDeFusion | null> => {
+}) => {
   const [source, cible] = await Promise.all([
-    prismaClient.user.findUnique({
-      where: { id: sourceId },
-      select: apercuSelect,
-    }),
-    prismaClient.user.findUnique({
-      where: { id: cibleId },
-      select: apercuSelect,
-    }),
+    compteApercu(sourceId),
+    compteApercu(cibleId),
   ])
-
-  if (source === null || cible === null) return null
-
-  const apercuSource = versApercu(source)
-  const apercuCible = versApercu(cible)
-
-  return {
-    source: apercuSource,
-    cible: apercuCible,
-    communs: communs(apercuSource.contenu, apercuCible.contenu),
-  }
+  return { source, cible }
 }

@@ -4,10 +4,10 @@ export {
   type CompteApercu,
   type ContenuDuCompte,
   categoriesDeFusion,
-  communs,
 } from './apercu-de-fusion'
 export type {
   CompteAFusionner,
   FusionAutorisee,
 } from './compte-a-fusionner'
 export type { CompteTrouve } from './compte-trouve'
+export type { LireLesComptesAApercevoir } from './ports'

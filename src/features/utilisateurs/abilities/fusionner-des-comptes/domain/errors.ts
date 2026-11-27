@@ -26,3 +26,5 @@ export type EchecDeFusionnerDesComptes =
   | CibleIntrouvable
   | CibleSupprimee
   | RoleProtege
+
+export type EchecDApercevoirLaFusion = SourceIntrouvable | CibleIntrouvable
