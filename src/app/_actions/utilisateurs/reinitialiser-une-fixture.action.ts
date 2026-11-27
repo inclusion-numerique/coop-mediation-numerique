@@ -12,9 +12,10 @@ import {
   mediateque,
   structureEmployeuse,
 } from '@/features/lieux-activite/fixtures/lieux-de-demonstration'
+import { REINITIALISER_UNE_FIXTURE_ERRORS } from '@/features/utilisateurs/abilities/reinitialiser-une-fixture/action/reinitialiser-une-fixture.errors'
 import { ReinitialiserUneFixtureValidation } from '@/features/utilisateurs/abilities/reinitialiser-une-fixture/action/reinitialiser-une-fixture.validation'
 import { reinitialiserUneFixture as reinitialiserLaFixture } from '@/features/utilisateurs/abilities/reinitialiser-une-fixture/domain/reinitialiser-une-fixture'
-import { estUneFixture } from '@/features/utilisateurs/abilities/reinitialiser-une-fixture/implementations/prisma/est-une-fixture.query'
+import { lireLeMarquageFixture } from '@/features/utilisateurs/abilities/reinitialiser-une-fixture/implementations/prisma/marquage-fixture.query'
 import { reinitialiser } from '@/features/utilisateurs/abilities/reinitialiser-une-fixture/implementations/prisma/reinitialiser.mutation'
 import { UtilisateurId } from '@/features/utilisateurs/domain'
 import { mediateursDesPersonas } from '@/features/utilisateurs/fixtures/personas'
@@ -22,7 +23,7 @@ import { fromResult, withInput } from '@/libraries/nextjs'
 import { success } from '@/libraries/result'
 
 const reinitialiserUneFixture = reinitialiserLaFixture({
-  estUneFixture,
+  lireLeMarquageFixture,
   reinitialiser,
 })
 
@@ -52,11 +53,6 @@ export const reinitialiserUneFixtureAction = actionBuilder()
         })
         return resultat.success ? success({ nom: resultat.data.nom }) : resultat
       },
-      {
-        onError: {
-          UtilisateurIntrouvable: 'Cet utilisateur est introuvable',
-          CompteNonFixture: 'Seul un utilisateur de test se réinitialise',
-        },
-      },
+      { onError: REINITIALISER_UNE_FIXTURE_ERRORS },
     ),
   )

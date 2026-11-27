@@ -3,10 +3,8 @@ import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
 import { terminerLUsurpation as terminer } from '@/features/utilisateurs/abilities/terminer-l-usurpation/domain/terminer-l-usurpation'
-import {
-  rendreLaSession,
-  sessionCourante,
-} from '@/features/utilisateurs/abilities/terminer-l-usurpation/implementations/prisma/session-courante.mutation'
+import { rendreLaSession } from '@/features/utilisateurs/abilities/terminer-l-usurpation/implementations/prisma/rendre-la-session.mutation'
+import { sessionCourante } from '@/features/utilisateurs/abilities/terminer-l-usurpation/implementations/prisma/session-courante.query'
 import { semerUnCompteDeListe } from '@/features/utilisateurs/utilisateurs.cucumber'
 
 const terminerLUsurpation = terminer({

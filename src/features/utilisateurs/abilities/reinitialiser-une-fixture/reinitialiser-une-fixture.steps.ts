@@ -2,13 +2,13 @@ import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { reinitialiserUneFixture as reinitialiserLaFixture } from '@/features/utilisateurs/abilities/reinitialiser-une-fixture/domain/reinitialiser-une-fixture'
-import { estUneFixture } from '@/features/utilisateurs/abilities/reinitialiser-une-fixture/implementations/prisma/est-une-fixture.query'
+import { lireLeMarquageFixture } from '@/features/utilisateurs/abilities/reinitialiser-une-fixture/implementations/prisma/marquage-fixture.query'
 import { reinitialiser } from '@/features/utilisateurs/abilities/reinitialiser-une-fixture/implementations/prisma/reinitialiser.mutation'
 import { UtilisateurId } from '@/features/utilisateurs/domain'
 import { semerUnCompteDeListe } from '@/features/utilisateurs/utilisateurs.cucumber'
 
 const reinitialiserUneFixture = reinitialiserLaFixture({
-  estUneFixture,
+  lireLeMarquageFixture,
   reinitialiser,
 })
 
