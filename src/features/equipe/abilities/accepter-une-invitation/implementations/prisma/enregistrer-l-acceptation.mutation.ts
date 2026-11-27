@@ -2,6 +2,7 @@ import { addMutationLog, prismaClient } from '@/configuration/prisma'
 import type { Prisma } from '@/generated/prisma/client'
 import type { NouvelleAdhesion } from '../../../../domain'
 import type { CleDInvitation } from '../../../../implementations/prisma/invitation.query'
+import type { AdhesionALAcceptation } from '../../domain/acceptation'
 import type { EnregistrerLAcceptation } from '../../domain/ports'
 
 const adhesionActiveExiste = async (
@@ -14,12 +15,17 @@ const adhesionActiveExiste = async (
 
 const enregistrerLAdhesion = async (
   prisma: Prisma.TransactionClient,
-  adhesion: NouvelleAdhesion | null,
+  adhesion: AdhesionALAcceptation,
 ): Promise<boolean> => {
-  if (adhesion === null || (await adhesionActiveExiste(prisma, adhesion)))
-    return false
+  if (adhesion._tag === 'DejaMembre') return false
 
-  await prisma.mediateurCoordonne.create({ data: adhesion })
+  const nouvelle: NouvelleAdhesion = {
+    mediateurId: adhesion.mediateurId,
+    coordinateurId: adhesion.coordinateurId,
+  }
+  if (await adhesionActiveExiste(prisma, nouvelle)) return false
+
+  await prisma.mediateurCoordonne.create({ data: nouvelle })
   return true
 }
 

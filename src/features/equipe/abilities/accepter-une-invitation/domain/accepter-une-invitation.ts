@@ -6,10 +6,16 @@ import {
   type ReferenceInvitation,
   type UtilisateurId,
 } from '../../../domain'
-import type { Acceptation, AcceptationEnregistree } from './acceptation'
+import type {
+  Acceptation,
+  AcceptationEnregistree,
+  AdhesionALAcceptation,
+} from './acceptation'
 import { type Accepteur, mediateurQuiAccepte } from './accepter'
 import type { EchecDAcceptation } from './errors'
 import type { AccepterUneInvitationPorts } from './ports'
+
+const DEJA_MEMBRE: AdhesionALAcceptation = { _tag: 'DejaMembre' }
 
 export const accepterUneInvitation =
   <Cle>({
@@ -47,7 +53,9 @@ export const accepterUneInvitation =
       mediateurId: mediateur.data,
       auteurId,
       accepteeLe: maintenant,
-      adhesion: adhesion.success ? adhesion.data : null,
+      adhesion: adhesion.success
+        ? { _tag: 'NouvelleAdhesion', ...adhesion.data }
+        : DEJA_MEMBRE,
     }
 
     const { adhesionEnregistree } = await enregistrerLAcceptation({
@@ -57,7 +65,7 @@ export const accepterUneInvitation =
 
     const acceptation: Acceptation = adhesionEnregistree
       ? proposee
-      : { ...proposee, adhesion: null }
+      : { ...proposee, adhesion: DEJA_MEMBRE }
 
     const prevenance = prevenanceDe({
       coordinateur: await lireLeCoordinateur(reference.coordinateurId),

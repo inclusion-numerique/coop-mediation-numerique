@@ -73,7 +73,7 @@ const acceptation = {
   mediateurId,
   auteurId,
   accepteeLe: maintenant,
-  adhesion: { mediateurId, coordinateurId },
+  adhesion: { _tag: 'NouvelleAdhesion', mediateurId, coordinateurId },
 }
 
 const prevenance = {
@@ -148,7 +148,10 @@ describe('accepter une invitation', () => {
       }),
     ).toEqual({
       success: true,
-      data: { acceptation: { ...acceptation, adhesion: null }, prevenance },
+      data: {
+        acceptation: { ...acceptation, adhesion: { _tag: 'DejaMembre' } },
+        prevenance,
+      },
     })
   })
 
@@ -173,7 +176,10 @@ describe('accepter une invitation', () => {
       }),
     ).toEqual({
       success: true,
-      data: { acceptation: { ...acceptation, adhesion: null }, prevenance },
+      data: {
+        acceptation: { ...acceptation, adhesion: { _tag: 'DejaMembre' } },
+        prevenance,
+      },
     })
   })
 

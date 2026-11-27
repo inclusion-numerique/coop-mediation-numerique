@@ -6,12 +6,16 @@ import type {
   UtilisateurId,
 } from '../../../domain'
 
+export type AdhesionALAcceptation =
+  | { readonly _tag: 'DejaMembre' }
+  | (NouvelleAdhesion & { readonly _tag: 'NouvelleAdhesion' })
+
 export type Acceptation = {
   readonly reference: ReferenceInvitation
   readonly mediateurId: MediateurId
   readonly auteurId: UtilisateurId
   readonly accepteeLe: Date
-  readonly adhesion: NouvelleAdhesion | null
+  readonly adhesion: AdhesionALAcceptation
 }
 
 export type AcceptationEnregistree = {
