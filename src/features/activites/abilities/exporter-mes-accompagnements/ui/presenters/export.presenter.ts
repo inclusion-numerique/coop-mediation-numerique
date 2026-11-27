@@ -7,8 +7,8 @@ import { contenuDuClasseur } from './lignes-du-classeur.presenter'
 
 type NomsDesFiltres = {
   readonly beneficiaires: readonly {
-    readonly label: string
-    readonly value: { readonly id?: string | null } | null
+    readonly id: string
+    readonly nom: string
   }[]
   readonly mediateurs: readonly {
     readonly mediateurId: string
@@ -20,14 +20,14 @@ type NomsDesFiltres = {
     readonly nom: string | null
   }[]
   readonly communes: readonly {
-    readonly label: string
-    readonly value: string
+    readonly codeInsee: string
+    readonly nom: string
   }[]
   readonly departements: readonly {
-    readonly label: string
-    readonly value: string
+    readonly code: string
+    readonly nom: string
   }[]
-  readonly lieux: readonly { readonly label: string; readonly value: string }[]
+  readonly lieux: readonly { readonly id: string; readonly nom: string }[]
   readonly tags: readonly { readonly id: string; readonly nom: string }[]
 }
 
@@ -50,9 +50,18 @@ const etiquettesDuClasseur = (
     { chemin: '', parametres: {} },
     valeurs,
     {
-      lieux: libelles(noms.lieux),
-      communes: libelles(noms.communes),
-      departements: libelles(noms.departements),
+      lieux: libelles(
+        noms.lieux.map(({ id, nom }) => ({ value: id, label: nom })),
+      ),
+      communes: libelles(
+        noms.communes.map(({ codeInsee, nom }) => ({
+          value: codeInsee,
+          label: nom,
+        })),
+      ),
+      departements: libelles(
+        noms.departements.map(({ code, nom }) => ({ value: code, label: nom })),
+      ),
       tags: libelles(
         noms.tags.map(({ id, nom }) => ({ value: id, label: nom })),
       ),
@@ -69,9 +78,7 @@ const etiquettesDuClasseur = (
         })),
       ),
       beneficiaires: libelles(
-        noms.beneficiaires.flatMap(({ label, value }) =>
-          value?.id ? [{ value: value.id, label }] : [],
-        ),
+        noms.beneficiaires.map(({ id, nom }) => ({ value: id, label: nom })),
       ),
     },
   )

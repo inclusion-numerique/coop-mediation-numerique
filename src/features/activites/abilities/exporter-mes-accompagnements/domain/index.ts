@@ -15,11 +15,14 @@ export {
   type ExportNomme,
   exporterMesAccompagnements,
 } from './exporter-mes-accompagnements'
-export type {
-  MediateurNomme,
+export {
+  type BeneficiaireNomme,
+  type CommuneNommee,
+  type DepartementNomme,
+  type LieuNomme,
+  type MediateurNomme,
   NomDeFiltre,
-  NomDeFiltreDeBeneficiaire,
-  NomsDesFiltresExportes,
+  type NomsDesFiltresExportes,
 } from './noms-des-filtres-exportes'
 export type { Demandeur } from './perimetre-de-l-export'
 export type {

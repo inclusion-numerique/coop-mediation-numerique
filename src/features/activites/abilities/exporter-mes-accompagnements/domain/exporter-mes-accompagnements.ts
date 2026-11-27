@@ -75,7 +75,7 @@ const nommerLesFiltres = async (
     mediateurs,
     employeuses,
     lieux,
-    { communesOptions, departementsOptions },
+    { communes, departements },
     tags,
   ] = await Promise.all([
     mediateurId === null
@@ -104,7 +104,7 @@ const nommerLesFiltres = async (
       lieuxNommes({ mediateurs: autorises, mediateurId, coordinateurId }),
     ),
     territoire.length === 0
-      ? Promise.resolve({ communesOptions: [], departementsOptions: [] })
+      ? Promise.resolve({ communes: [], departements: [] })
       : communesEtDepartements({ mediateurIds: autorises }),
     siFiltre(criteres.tags, () => tagsUtilisables(criteres.tags)),
   ])
@@ -113,8 +113,8 @@ const nommerLesFiltres = async (
     beneficiaires,
     mediateurs,
     employeuses,
-    communes: communesOptions,
-    departements: departementsOptions,
+    communes,
+    departements,
     lieux,
     tags,
   }

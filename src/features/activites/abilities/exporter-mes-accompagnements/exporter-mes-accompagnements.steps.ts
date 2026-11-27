@@ -69,8 +69,8 @@ const exporterAvec = async (
     employeusesNommees,
     lieuxNommes: recherche('lieux', []),
     communesEtDepartements: recherche('territoire', {
-      communesOptions: [],
-      departementsOptions: [],
+      communes: [],
+      departements: [],
     }),
     tagsUtilisables: recherche('tags', []),
     beneficiairesNommes: recherche('beneficiaires', []),

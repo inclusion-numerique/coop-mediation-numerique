@@ -2,6 +2,11 @@ import type { NextRequest } from 'next/server'
 import { exporterMesAccompagnements } from '@/features/activites/abilities/exporter-mes-accompagnements/domain'
 import { classeurDeMesAccompagnements } from '@/features/activites/abilities/exporter-mes-accompagnements/implementations/excel/classeur-de-mes-accompagnements.classeur'
 import {
+  beneficiairesDepuisLesOptions,
+  communesEtDepartementsDepuisLesOptions,
+  lieuxDepuisLesOptions,
+} from '@/features/activites/abilities/exporter-mes-accompagnements/implementations/options/noms-depuis-les-options.transfer'
+import {
   accompagnementsExportes,
   importsV1Presents,
 } from '@/features/activites/abilities/exporter-mes-accompagnements/implementations/prisma/accompagnements-exportes.query'
@@ -67,23 +72,29 @@ export const GET = async (
     importsV1Presents,
     mediateursLus,
     employeusesNommees,
-    lieuxNommes: ({ mediateurs, mediateurId, coordinateurId }) =>
-      getLieuxDesActivitesOptions({
-        mediateurIds: [...mediateurs],
-        ...(mediateurId === null ? {} : { mediateurId }),
-        perimetreDesActivites: dansLaPeriodeDAppartenance(coordinateurId),
-      }),
-    communesEtDepartements: ({ mediateurIds }) =>
-      communesDuMediateur({ mediateurIds: [...mediateurIds] }),
+    lieuxNommes: async ({ mediateurs, mediateurId, coordinateurId }) =>
+      lieuxDepuisLesOptions(
+        await getLieuxDesActivitesOptions({
+          mediateurIds: [...mediateurs],
+          ...(mediateurId === null ? {} : { mediateurId }),
+          perimetreDesActivites: dansLaPeriodeDAppartenance(coordinateurId),
+        }),
+      ),
+    communesEtDepartements: async ({ mediateurIds }) =>
+      communesEtDepartementsDepuisLesOptions(
+        await communesDuMediateur({ mediateurIds: [...mediateurIds] }),
+      ),
     tagsUtilisables: tagsUtilisablesDepuis(
       tagsVisiblesPar(acteurDe(profilDeLaSession(user))),
     ),
     beneficiairesNommes: async ({ mediateurId, ids }) =>
-      optionsDesBeneficiairesInitiaux(
-        await beneficiairesProposes({
-          mediateurId: MediateurId(mediateurId),
-          includeBeneficiaireIds: ids.map(BeneficiaireId),
-        }),
+      beneficiairesDepuisLesOptions(
+        optionsDesBeneficiairesInitiaux(
+          await beneficiairesProposes({
+            mediateurId: MediateurId(mediateurId),
+            includeBeneficiaireIds: ids.map(BeneficiaireId),
+          }),
+        ),
       ),
   })({ demandeur, criteres })
   if (!exporte.success) return new Response('Not found', { status: 404 })

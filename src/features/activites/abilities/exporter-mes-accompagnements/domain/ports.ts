@@ -10,8 +10,11 @@ import type {
 } from '../../../domain'
 import type { ActiviteExportee } from './activite-exportee'
 import type {
+  BeneficiaireNomme,
+  CommuneNommee,
+  DepartementNomme,
+  LieuNomme,
   NomDeFiltre,
-  NomDeFiltreDeBeneficiaire,
 } from './noms-des-filtres-exportes'
 
 export type SelectionDesAccompagnements = {
@@ -30,7 +33,7 @@ export type ImportsV1Presents = (
 
 export type MediateurLu = {
   readonly mediateurId: MediateurId
-  readonly nom: string
+  readonly nom: NomDeFiltre
   readonly appartenances: readonly { readonly suppression: Date | null }[]
 }
 
@@ -48,19 +51,19 @@ export type LieuxNommes = (perimetre: {
   readonly mediateurs: readonly MediateurId[]
   readonly mediateurId: MediateurId | null
   readonly coordinateurId: CoordinateurId | null
-}) => Promise<readonly NomDeFiltre[]>
+}) => Promise<readonly LieuNomme[]>
 
 export type CommunesEtDepartements = (perimetre: {
   readonly mediateurIds: readonly MediateurId[]
 }) => Promise<{
-  readonly communesOptions: readonly NomDeFiltre[]
-  readonly departementsOptions: readonly NomDeFiltre[]
+  readonly communes: readonly CommuneNommee[]
+  readonly departements: readonly DepartementNomme[]
 }>
 
 export type BeneficiairesNommes = (demande: {
   readonly mediateurId: MediateurId
   readonly ids: readonly BeneficiaireId[]
-}) => Promise<readonly NomDeFiltreDeBeneficiaire[]>
+}) => Promise<readonly BeneficiaireNomme[]>
 
 export type ExporterMesAccompagnementsPorts = {
   readonly accompagnementsExportes: AccompagnementsExportes

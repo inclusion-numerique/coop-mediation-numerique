@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { CodeInsee } from '@/libraries/insee'
+import { CodeDepartement, CodeInsee } from '@/libraries/insee'
 import { failure, type Result, success } from '@/libraries/result'
 import {
   ActionNonAutorisee,
@@ -20,7 +20,10 @@ import {
   type ExportNomme,
   exporterMesAccompagnements,
 } from './exporter-mes-accompagnements'
-import type { NomsDesFiltresExportes } from './noms-des-filtres-exportes'
+import {
+  NomDeFiltre,
+  type NomsDesFiltresExportes,
+} from './noms-des-filtres-exportes'
 import type { Demandeur } from './perimetre-de-l-export'
 import type { ExporterMesAccompagnementsPorts, MediateurLu } from './ports'
 
@@ -61,15 +64,19 @@ const activites: readonly ActiviteExportee[] = []
 const lus: readonly MediateurLu[] = [
   {
     mediateurId: ancien,
-    nom: 'Ada Lovelace',
+    nom: NomDeFiltre('Ada Lovelace'),
     appartenances: [{ suppression: new Date('2026-03-06T00:00:00.000Z') }],
   },
   {
     mediateurId: membre,
-    nom: 'Grace Hopper',
+    nom: NomDeFiltre('Grace Hopper'),
     appartenances: [{ suppression: null }],
   },
-  { mediateurId: moi, nom: 'Margaret Hamilton', appartenances: [] },
+  {
+    mediateurId: moi,
+    nom: NomDeFiltre('Margaret Hamilton'),
+    appartenances: [],
+  },
 ]
 
 const sansNom: NomsDesFiltresExportes = {
@@ -83,13 +90,18 @@ const sansNom: NomsDesFiltresExportes = {
 }
 
 const nomsFournis = {
-  beneficiaires: [{ label: 'Paul Durand', value: { id: beneficiaire } }],
+  beneficiaires: [{ id: beneficiaire, nom: NomDeFiltre('Paul Durand') }],
   employeuses: [
     { id: employeuse, nom: NomDeStructure('Mairie de Lyon'), commune: null },
   ],
-  communes: [{ label: 'Lyon', value: '69123' }],
-  departements: [{ label: 'Rhône', value: '69' }],
-  lieux: [{ label: 'Médiathèque', value: 'lieu' }],
+  communes: [{ codeInsee: CodeInsee('69123'), nom: NomDeFiltre('Lyon') }],
+  departements: [{ code: CodeDepartement('69'), nom: NomDeFiltre('Rhône') }],
+  lieux: [
+    {
+      id: LieuActiviteId('d0000000-0000-4000-8000-000000000001'),
+      nom: NomDeFiltre('Médiathèque'),
+    },
+  ],
   tags: [{ id: tag, nom: NomDeTag('Numérique en famille') }],
 }
 
@@ -100,8 +112,8 @@ const ports: ExporterMesAccompagnementsPorts = {
   employeusesNommees: async () => nomsFournis.employeuses,
   lieuxNommes: async () => nomsFournis.lieux,
   communesEtDepartements: async () => ({
-    communesOptions: nomsFournis.communes,
-    departementsOptions: nomsFournis.departements,
+    communes: nomsFournis.communes,
+    departements: nomsFournis.departements,
   }),
   tagsUtilisables: async () => nomsFournis.tags,
   beneficiairesNommes: async () => nomsFournis.beneficiaires,
@@ -221,9 +233,21 @@ describe('exporter mes accompagnements', () => {
         {
           ...sansNom,
           mediateurs: [
-            { mediateurId: ancien, nom: 'Ada Lovelace', ancien: false },
-            { mediateurId: membre, nom: 'Grace Hopper', ancien: false },
-            { mediateurId: moi, nom: 'Margaret Hamilton', ancien: false },
+            {
+              mediateurId: ancien,
+              nom: NomDeFiltre('Ada Lovelace'),
+              ancien: false,
+            },
+            {
+              mediateurId: membre,
+              nom: NomDeFiltre('Grace Hopper'),
+              ancien: false,
+            },
+            {
+              mediateurId: moi,
+              nom: NomDeFiltre('Margaret Hamilton'),
+              ancien: false,
+            },
           ],
         },
         { personnel: true, source: false },
@@ -236,9 +260,21 @@ describe('exporter mes accompagnements', () => {
         {
           ...sansNom,
           mediateurs: [
-            { mediateurId: membre, nom: 'Grace Hopper', ancien: false },
-            { mediateurId: moi, nom: 'Margaret Hamilton', ancien: false },
-            { mediateurId: ancien, nom: 'Ada Lovelace', ancien: true },
+            {
+              mediateurId: membre,
+              nom: NomDeFiltre('Grace Hopper'),
+              ancien: false,
+            },
+            {
+              mediateurId: moi,
+              nom: NomDeFiltre('Margaret Hamilton'),
+              ancien: false,
+            },
+            {
+              mediateurId: ancien,
+              nom: NomDeFiltre('Ada Lovelace'),
+              ancien: true,
+            },
           ],
         },
         { personnel: false, source: true },

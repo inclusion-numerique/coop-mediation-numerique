@@ -1,7 +1,7 @@
 import { prismaClient } from '@/configuration/prisma'
 import { nomAffiche } from '@/libraries/nom-affiche'
 import { MediateurId } from '../../../../domain'
-import type { MediateursLus } from '../../domain'
+import { type MediateursLus, NomDeFiltre } from '../../domain'
 
 export const mediateursLus: MediateursLus = async ({ ids, coordinateurId }) =>
   (
@@ -21,11 +21,13 @@ export const mediateursLus: MediateursLus = async ({ ids, coordinateurId }) =>
     })
   ).map(({ id, user, coordinations }) => ({
     mediateurId: MediateurId(id),
-    nom: nomAffiche({
-      prenom: user.firstName,
-      nom: user.lastName,
-      nomComplet: user.name,
-      courriel: user.email,
-    }),
+    nom: NomDeFiltre(
+      nomAffiche({
+        prenom: user.firstName,
+        nom: user.lastName,
+        nomComplet: user.name,
+        courriel: user.email,
+      }),
+    ),
     appartenances: coordinations,
   }))
