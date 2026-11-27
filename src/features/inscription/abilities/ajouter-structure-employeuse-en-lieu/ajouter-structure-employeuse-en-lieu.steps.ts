@@ -1,5 +1,6 @@
 import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
+import { Nom } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
 import type {
@@ -7,6 +8,7 @@ import type {
   EmployeuseLue,
   Geocodage,
 } from '@/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/domain'
+import { BanId } from '@/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/domain/ban-id'
 import {
   seedEmployeuseMain,
   utilisateurDeLInscriptionEnCours,
@@ -21,7 +23,7 @@ import { lireLAdresseDeLEmployeuse } from './implementations/prisma/adresse-de-l
 const nomEmployeuse = 'Employeuse lieu d’activité'
 
 const ADRESSE_RECONNUE: AdresseGeocodee = {
-  id: '75101_7038_00001',
+  id: BanId('75101_7038_00001'),
   nom: '1 Rue de la Paix',
   commune: 'Paris',
   codePostal: CodePostal('75001'),
@@ -92,7 +94,7 @@ Given('j’ai une structure employeuse', async () => {
   etat.employeuse = {
     employeuse: {
       id: EmployeuseId(id),
-      denomination: nomEmployeuse,
+      denomination: Nom(nomEmployeuse),
       siret: null,
       rna: null,
       adresse: {

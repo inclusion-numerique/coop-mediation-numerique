@@ -7,6 +7,7 @@ import { UtilisateurId as UtilisateurIdDeLEmployeuse } from '@/features/employeu
 import { lireLEmploiActuel } from '@/features/employeuse/implementations/prisma/emploi-actuel.query'
 import { AJOUTER_STRUCTURE_EMPLOYEUSE_EN_LIEU_ERRORS } from '@/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/action/ajouter-structure-employeuse-en-lieu.errors'
 import { StructureEmployeuseLieuValidation } from '@/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/action/ajouter-structure-employeuse-en-lieu.validation'
+import { employeuseLue } from '@/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/action/employeuse-lue.transfer'
 import { ajouterStructureEmployeuseEnLieu } from '@/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/domain/ajouter-structure-employeuse-en-lieu'
 import { geocoderLAdresse } from '@/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/implementations/ban/geocoder-l-adresse.query'
 import { lireLAdresseDeLEmployeuse } from '@/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/implementations/prisma/adresse-de-l-employeuse.query'
@@ -36,7 +37,7 @@ export const ajouterStructureEmployeuseEnLieuAction = actionBuilder()
             consulterEmployeuseActuelle({ lireLEmploiActuel })({
               utilisateurId: UtilisateurIdDeLEmployeuse(userId),
               maintenant,
-            }).then(({ data }) => data),
+            }).then(({ data }) => employeuseLue(data)),
           lireLAdresseDeLEmployeuse,
           geocoderLAdresse,
           destinationDuLieuDecrit: destinationDuLieuDecrit({

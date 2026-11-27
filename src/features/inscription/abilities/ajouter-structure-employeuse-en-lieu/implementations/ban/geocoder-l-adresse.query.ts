@@ -3,6 +3,7 @@ import type { AdresseBanData } from '@/libraries/adresse'
 import { geocoderPrecisement, siIndisponible } from '@/libraries/ban'
 import { CodePostal } from '@/libraries/code-postal'
 import { CodeInsee } from '@/libraries/insee'
+import { BanId } from '../../domain/ban-id'
 import type { Geocodage, GeocoderLAdresse } from '../../domain/ports'
 
 const geocodage = (adresseBan: AdresseBanData | null): Geocodage => {
@@ -10,13 +11,17 @@ const geocodage = (adresseBan: AdresseBanData | null): Geocodage => {
     adresseBan === null ? null : CodePostal.safe(adresseBan.codePostal)
   const codeInsee =
     adresseBan === null ? null : CodeInsee.safe(adresseBan.codeInsee)
+  const banId = adresseBan === null ? null : BanId.safe(adresseBan.id)
 
-  return adresseBan === null || codePostal === null || codeInsee === null
+  return adresseBan === null ||
+    codePostal === null ||
+    codeInsee === null ||
+    banId === null
     ? { _tag: 'AdresseInconnue' }
     : {
         _tag: 'AdresseReconnue',
         adresse: {
-          id: adresseBan.id,
+          id: banId,
           nom: adresseBan.nom,
           commune: adresseBan.commune,
           codePostal,

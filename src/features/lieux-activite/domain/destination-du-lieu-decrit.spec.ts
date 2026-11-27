@@ -1,8 +1,10 @@
 import {
   CodeInsee,
   CodePostal,
+  Nom,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { describe, expect, it } from 'vitest'
+import { BanId } from '@/features/lieux-activite/domain/identifiants/ban-id'
 import { success } from '@/libraries/result'
 import type { DestinationDuLieu, LieuCandidatCoop } from './destination-du-lieu'
 import { destinationDuLieuDecrit } from './destination-du-lieu-decrit'
@@ -14,14 +16,14 @@ const NOUVEAU = LieuId('6f1e2d3c-4b5a-4987-8a6b-5c4d3e2f1a0b')
 const supprimeLe = new Date('2026-01-15T10:00:00Z')
 
 const decrit: LieuDecrit = {
-  nom: 'Association du numérique',
+  nom: Nom('Association du numérique'),
   adresse: {
     _tag: 'AdresseGeocodee',
     voie: '4 Rue de la Rue',
     commune: 'Lyon',
     codePostal: CodePostal('69001'),
     codeInsee: CodeInsee('69381'),
-    banId: '69381_1234_00004',
+    banId: BanId('69381_1234_00004'),
     latitude: 45.767,
     longitude: 4.834,
   },
@@ -46,7 +48,7 @@ const declare: LieuDecrit = {
 
 const annexe: LieuDecrit = {
   ...decrit,
-  nom: 'Association du numérique Annexe',
+  nom: Nom('Association du numérique Annexe'),
 }
 
 const candidat = (suppression: Date | null): LieuCandidatCoop => ({

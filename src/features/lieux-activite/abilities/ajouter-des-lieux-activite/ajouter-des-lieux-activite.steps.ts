@@ -475,14 +475,14 @@ const etat: {
 } = { nom: '', utilisateurs: [] }
 
 const lieuDecrit = (nom: string): LieuDecritGeocode => ({
-  nom,
+  nom: Nom(nom),
   adresse: {
     _tag: 'AdresseGeocodee',
     voie: '1 Rue de la Paix',
     commune: 'Paris',
     codePostal: CodePostal('75001'),
     codeInsee: CodeInsee('75101'),
-    banId: '75101_7038_00001',
+    banId: BanId('75101_7038_00001'),
     latitude: 48.869_36,
     longitude: 2.331_08,
   },

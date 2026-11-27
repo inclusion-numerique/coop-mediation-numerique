@@ -6,6 +6,8 @@
   "@auth/prisma-adapter": ["authentification/implementations/prisma"],
   "@gouvfr-anct/lieux-de-mediation-numerique": [
     "clients-api/abilities/lire-les-lieux-activite/implementations/api-v1",
+    "inscription/abilities/ajouter-structure-employeuse-en-lieu/action",
+    "inscription/abilities/ajouter-structure-employeuse-en-lieu/domain",
     "inscription/abilities/renseigner-lieux-activite/action",
     "inscription/abilities/renseigner-lieux-activite/domain",
     "lieux-activite/abilities/ajouter-des-lieux-activite/action",

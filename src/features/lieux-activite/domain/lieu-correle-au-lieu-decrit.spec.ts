@@ -1,8 +1,10 @@
 import {
   CodeInsee,
   CodePostal,
+  Nom,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { describe, expect, it } from 'vitest'
+import { BanId } from '@/features/lieux-activite/domain/identifiants/ban-id'
 import { success } from '@/libraries/result'
 import type { LieuCandidatCoop } from './destination-du-lieu'
 import { LieuId } from './identifiants/lieu-id'
@@ -13,14 +15,14 @@ const CANDIDAT = LieuId('8d9e2f4a-5b6c-4d7e-8f90-1a2b3c4d5e6f')
 const supprimeLe = new Date('2026-01-15T10:00:00Z')
 
 const decrit: LieuDecrit = {
-  nom: 'Association du numérique',
+  nom: Nom('Association du numérique'),
   adresse: {
     _tag: 'AdresseGeocodee',
     voie: '4 Rue de la Rue',
     commune: 'Lyon',
     codePostal: CodePostal('69001'),
     codeInsee: CodeInsee('69381'),
-    banId: '69381_1234_00004',
+    banId: BanId('69381_1234_00004'),
     latitude: 45.767,
     longitude: 4.834,
   },
@@ -83,7 +85,7 @@ describe('le lieu de la coop corrélé à un lieu décrit', () => {
     {
       cas: 'est aussi un lieu supprimé dont la dénomination n’est que proche',
       candidats: [candidat(supprimeLe)],
-      lieu: { ...decrit, nom: 'Association du numérique Annexe' },
+      lieu: { ...decrit, nom: Nom('Association du numérique Annexe') },
       correle: CANDIDAT,
     },
   ])('$cas', async ({ candidats, lieu, correle }) => {

@@ -1,7 +1,9 @@
+import type { Nom } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import type { LieuId, UtilisateurId } from '@/features/inscription/domain'
 import type { CodePostal } from '@/libraries/code-postal'
 import type { CodeInsee, Siret } from '@/libraries/insee'
 import type { Result } from '@/libraries/result'
+import type { BanId } from './ban-id'
 import type { EmployeuseId } from './employeuse-id'
 
 type AdresseAGeocoder = {
@@ -13,7 +15,7 @@ type AdresseAGeocoder = {
 
 export type EmployeuseLue = {
   readonly id: EmployeuseId
-  readonly denomination: string | null
+  readonly denomination: Nom | null
   readonly siret: Siret | null
   readonly rna: string | null
   readonly adresse: {
@@ -37,7 +39,7 @@ export type ConsulterEmployeuseActuelle = (input: {
 }) => Promise<{ readonly employeuse: EmployeuseLue } | null>
 
 export type AdresseGeocodee = {
-  readonly id: string
+  readonly id: BanId
   readonly nom: string
   readonly commune: string
   readonly codePostal: CodePostal
@@ -55,7 +57,7 @@ type LocaliteDuLieu = {
 export type AdresseGeocodeeDuLieu = LocaliteDuLieu & {
   readonly _tag: 'AdresseGeocodee'
   readonly voie: string
-  readonly banId: string
+  readonly banId: BanId
   readonly latitude: number
   readonly longitude: number
 }
@@ -66,7 +68,7 @@ export type AdresseDeclareeDuLieu = LocaliteDuLieu & {
 }
 
 type DescriptionDuLieu<Adresse> = {
-  readonly nom: string
+  readonly nom: Nom
   readonly adresse: Adresse
   readonly siret: Siret | null
   readonly synchronisationSiret: Date | null

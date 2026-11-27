@@ -1,8 +1,10 @@
 import type {
   CodeInsee,
   CodePostal,
+  Nom,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import type { Siret } from '@/libraries/insee'
+import type { BanId } from './identifiants/ban-id'
 import type { LieuAMaterialiser } from './lieu-identite'
 
 type Localite = {
@@ -14,7 +16,7 @@ type Localite = {
 export type AdresseGeocodeeDuLieu = Localite & {
   readonly _tag: 'AdresseGeocodee'
   readonly voie: string
-  readonly banId: string
+  readonly banId: BanId
   readonly latitude: number
   readonly longitude: number
 }
@@ -25,7 +27,7 @@ export type AdresseDeclareeDuLieu = Localite & {
 }
 
 type Description<Adresse> = {
-  readonly nom: string
+  readonly nom: Nom
   readonly adresse: Adresse
   readonly siret: Siret | null
   readonly synchronisationSiret: Date | null

@@ -1,3 +1,4 @@
+import type { Nom } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import type {
   AdresseDeclareeDuLieu,
   AdresseGeocodee,
@@ -18,7 +19,7 @@ const referent = ({ contactReferent }: EmployeuseLue) =>
 
 const lieuALAdresse = <Adresse>(
   employeuse: EmployeuseLue,
-  nom: string,
+  nom: Nom,
   adresse: Adresse,
   maintenant: Date,
 ) => ({
@@ -37,7 +38,7 @@ export const lieuGeocode = ({
   maintenant,
 }: {
   readonly employeuse: EmployeuseLue
-  readonly nom: string
+  readonly nom: Nom
   readonly adresseBan: AdresseGeocodee
   readonly maintenant: Date
 }): LieuDecritGeocode =>

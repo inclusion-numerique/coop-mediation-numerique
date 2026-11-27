@@ -1,4 +1,6 @@
+import { Nom } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { describe, expect, it } from 'vitest'
+import { BanId } from '@/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/domain/ban-id'
 import { LieuId, UtilisateurId } from '@/features/inscription/domain'
 import { CodePostal } from '@/libraries/code-postal'
 import { CodeInsee, Siret } from '@/libraries/insee'
@@ -30,7 +32,7 @@ const employeuseSansAdresse: EmployeuseLue = {
 
 const employeuseAdressee: EmployeuseLue = {
   id: employeuseId,
-  denomination: 'Association du numérique',
+  denomination: Nom('Association du numérique'),
   siret: Siret('13002526500013'),
   rna: 'W691234567',
   adresse: {
@@ -48,7 +50,7 @@ const employeuseAdressee: EmployeuseLue = {
 }
 
 const adresseBan: AdresseGeocodee = {
-  id: '69381_1234_00004',
+  id: BanId('69381_1234_00004'),
   nom: '4 Rue de la Rue',
   commune: 'Lyon',
   codePostal: CodePostal('69001'),
@@ -170,7 +172,7 @@ describe('ajouter la structure employeuse en lieu d’activité', () => {
         consulterEmployeuseActuelle: async () => ({
           employeuse: {
             ...employeuseSansAdresse,
-            denomination: 'Association du numérique',
+            denomination: Nom('Association du numérique'),
             adresse: {
               voie: null,
               commune: 'Lyon',
