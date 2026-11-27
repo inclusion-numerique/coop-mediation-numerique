@@ -25,6 +25,7 @@ export const GET = async (
   )
   if (!user) return new Response('Unauthorized', { status: 401 })
 
+  const maintenant = new Date()
   const criteres = criteresDeLEquipe(new URL(request.url).searchParams)
 
   const membres = await exporterLesMembres({
@@ -41,7 +42,7 @@ export const GET = async (
       }),
     },
     criteres,
-    maintenant: new Date(),
+    maintenant,
   })
 
   if (!membres.success) return new Response('Forbidden', { status: 403 })
@@ -57,7 +58,7 @@ export const GET = async (
     headers: {
       'Content-Type':
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      'Content-Disposition': `attachment; filename="${nomDuFichierDeLEquipe(new Date())}"`,
+      'Content-Disposition': `attachment; filename="${nomDuFichierDeLEquipe(maintenant)}"`,
     },
   })
 }

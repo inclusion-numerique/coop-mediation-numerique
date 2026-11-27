@@ -103,6 +103,7 @@ const classeurDuPerimetre = async (
   perimetre: PerimetreDesStatistiques,
   valeurs: ReturnType<typeof filtresDesStatistiques.charger>,
   membres: () => Promise<readonly { value: string; label: string }[]>,
+  maintenant: Date,
 ) => {
   const [statistiques, barre] = await Promise.all([
     statistiquesDesActivites.rassembler(
@@ -112,7 +113,7 @@ const classeurDuPerimetre = async (
       )({
         perimetre,
         criteres: criteresDesStatistiquesDesFiltres(valeurs),
-        fin: valeurs.au ?? new Date(),
+        fin: valeurs.au ?? maintenant,
       }),
     ),
     barreDesStatistiquesAvec(lecturesDeLaBarre(perimetre, membres))(
@@ -130,6 +131,7 @@ export const GET = async (
   request: NextRequest,
   { params }: { params: Promise<{ shareId: string }> },
 ) => {
+  const maintenant = new Date()
   const shareId = (await params).shareId
   const partage = await resoudreUnLienDePartage({ lirePartage: lireLePartage })(
     { lien: LienDePartageId.safe(shareId) },
@@ -148,6 +150,7 @@ export const GET = async (
       perimetre,
       filtresDesStatistiques.charger(request.nextUrl.searchParams),
       async () => [],
+      maintenant,
     )),
     auteur: auteurDeLExport(user),
     fuseau: user.timezone,
@@ -156,7 +159,7 @@ export const GET = async (
   const workbook = classeurDesStatistiques(statistiquesWorksheetInput)
 
   const data = await workbook.xlsx.writeBuffer()
-  const filename = nomDuFichierDesStatistiques(new Date())
+  const filename = nomDuFichierDesStatistiques(maintenant)
 
   return new Response(data, {
     status: 200,

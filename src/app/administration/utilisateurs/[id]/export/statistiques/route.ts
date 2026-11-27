@@ -110,6 +110,7 @@ const classeurDuPerimetre = async (
   perimetre: PerimetreDesStatistiques,
   valeurs: ReturnType<typeof filtresDesStatistiques.charger>,
   membres: () => Promise<readonly { value: string; label: string }[]>,
+  maintenant: Date,
 ) => {
   const [statistiques, barre] = await Promise.all([
     statistiquesDesActivites.rassembler(
@@ -119,7 +120,7 @@ const classeurDuPerimetre = async (
       )({
         perimetre,
         criteres: criteresDesStatistiquesDesFiltres(valeurs),
-        fin: valeurs.au ?? new Date(),
+        fin: valeurs.au ?? maintenant,
       }),
     ),
     barreDesStatistiquesAvec(lecturesDeLaBarre(perimetre, membres))(
@@ -147,6 +148,7 @@ export const GET = async (
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) => {
+  const maintenant = new Date()
   const administrateur = await utilisateurDuJetonDeSession(
     jetonDeSessionDesCookies(request.cookies),
   )
@@ -168,6 +170,7 @@ export const GET = async (
         perimetre,
         filtresDesStatistiques.charger(request.nextUrl.searchParams),
         async () => optionsDesMembres(user),
+        maintenant,
       )),
       auteur: auteurDeLExport(administrateur),
       fuseau: user.timezone,
@@ -179,7 +182,7 @@ export const GET = async (
     headers: {
       'Content-Type':
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      'Content-Disposition': `attachment; filename="${nomDuFichierDesStatistiques(new Date())}"`,
+      'Content-Disposition': `attachment; filename="${nomDuFichierDesStatistiques(maintenant)}"`,
     },
   })
 }
