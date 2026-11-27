@@ -51,7 +51,8 @@ const ports = (
   comptes: readonly CompteARelancer[],
 ): RelancerLesInscritsInactifsPorts => ({
   lireLesComptesARelancer: async () => comptes,
-  envoyerLaRelance: async () => success(undefined),
+  envoyerBienDemarrer: async () => success(undefined),
+  envoyerLaRelanceDuCompte: async () => success(undefined),
   envoyerLAvertissement: async () => success(undefined),
   envoyerLAvisDEffacement: async () => success(undefined),
   supprimerLeCompte: async () => success({ id: utilisateurId }),
@@ -144,6 +145,42 @@ describe('relancer les inscrits inactifs', () => {
           action: { _tag: 'Effacer' },
           issue: 'echec',
           cause: 'SMTP indisponible',
+        },
+      ]),
+    )
+  })
+
+  it.each<{
+    cas: string
+    compteLu: CompteARelancer
+    defaillant: Partial<RelancerLesInscritsInactifsPorts>
+    palier: 7 | 30 | 60
+  }>([
+    {
+      cas: 'le gabarit Bien démarrer à J+7',
+      compteLu: compte(8, Relance('Aucune'), null, false),
+      defaillant: {
+        envoyerLaRelanceDuCompte: async () =>
+          failure(EchecTechnique('mauvais gabarit')),
+      },
+      palier: 7,
+    },
+    {
+      cas: 'la relance du compte à J+30',
+      compteLu: compte(40, Relance('Aucune'), null, false),
+      defaillant: {
+        envoyerBienDemarrer: async () =>
+          failure(EchecTechnique('mauvais gabarit')),
+      },
+      palier: 30,
+    },
+  ])('envoie $cas', async ({ compteLu, defaillant, palier }) => {
+    expect(await relancer({ ...ports([compteLu]), ...defaillant })).toEqual(
+      success([
+        {
+          utilisateurId,
+          action: { _tag: 'Relancer', palier },
+          issue: 'fait',
         },
       ]),
     )

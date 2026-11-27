@@ -34,12 +34,17 @@ import {
 } from '@/features/tags/abilities/retirer-les-tags-d-un-compte/implementations/prisma/tags-du-compte.query'
 import { role } from '@/features/tags/domain'
 import { relancerLesInscriptionsInachevees } from '@/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees/domain/relancer-les-inscriptions-inachevees'
-import { relancesDInscriptionParCourriel } from '@/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees/implementations/email/relances-d-inscription-par-courriel.adapter'
+import { envoyerLAvertissementDeSuppression as avertirDeLInscriptionInachevee } from '@/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees/implementations/email/envoyer-l-avertissement-de-suppression.mutation'
+import { envoyerLaRelance as relancerLInscription } from '@/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees/implementations/email/envoyer-la-relance.mutation'
+import { envoyerLaSuppressionDuCompte as aviserDeLInscriptionEffacee } from '@/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees/implementations/email/envoyer-la-suppression-du-compte.mutation'
 import { effacerLInscription } from '@/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees/implementations/prisma'
 import { inscriptionsInachevees } from '@/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees/implementations/prisma/inscriptions-inachevees.query'
 import type { RelancerLesInscritsInactifsPorts } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/domain'
 import { relancerLesInscritsInactifs } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/domain/relancer-les-inscrits-inactifs'
-import { relancesDesInscritsParCourriel } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/implementations/email/relances-des-inscrits-par-courriel.adapter'
+import { envoyerBienDemarrer } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/implementations/email/envoyer-bien-demarrer.mutation'
+import { envoyerLAvertissementDeSuppression as avertirLInscrit } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/implementations/email/envoyer-l-avertissement-de-suppression.mutation'
+import { envoyerLaRelanceDuCompte } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/implementations/email/envoyer-la-relance.mutation'
+import { envoyerLaSuppressionDuCompte as aviserLInscritDeLEffacement } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/implementations/email/envoyer-la-suppression-du-compte.mutation'
 import { inscritsSansProduction } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/implementations/prisma/inscrits-sans-production.query'
 import { RetentionPolicy } from '@/features/utilisateurs/abilities/supprimer-compte/domain/index'
 import type {
@@ -121,7 +126,12 @@ const lancerLesRelancesDesInscrits = async (
   supprimerLeCompte: RelancerLesInscritsInactifsPorts['supprimerLeCompte'],
 ) => {
   const resultat = await relancerLesInscritsInactifs({
-    ...relancesDesInscritsParCourriel(await compterLesInscrits()),
+    envoyerBienDemarrer,
+    envoyerLaRelanceDuCompte: envoyerLaRelanceDuCompte(
+      await compterLesInscrits(),
+    ),
+    envoyerLAvertissement: avertirLInscrit,
+    envoyerLAvisDEffacement: aviserLInscritDeLEffacement,
     lireLesComptesARelancer: inscritsSansProduction,
     noterLaRelance: noterLaRelance('Nouveau'),
     supprimerLeCompte,
@@ -134,7 +144,9 @@ const lancerLesRelancesDInscription = async (
   retirerDuRegistre: RetirerDuRegistre,
 ) => {
   const resultat = await relancerLesInscriptionsInachevees({
-    ...relancesDInscriptionParCourriel(await compterLesInscrits()),
+    envoyerLaRelance: relancerLInscription(await compterLesInscrits()),
+    envoyerLAvertissement: avertirDeLInscriptionInachevee,
+    envoyerLAvisDEffacement: aviserDeLInscriptionEffacee,
     lireLesComptesARelancer: inscriptionsInachevees,
     noterLaRelance: noterLaRelance('Inscription'),
     effacerLInscription: effacerLInscription(retirerDuRegistre),

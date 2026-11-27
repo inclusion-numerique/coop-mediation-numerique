@@ -5,9 +5,12 @@ import {
   throwOnSendMailFailure,
 } from '@/configuration/smtp'
 import { bienDemarrer } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/implementations/email/bien-demarrer.email'
+import { coordinateurDe, mediateurDe } from '@/features/utilisateurs/domain'
 import { compileMjml } from '@/libraries/emails/rendu'
+import { attraperEnEchecTechnique } from '@/libraries/result'
+import type { EnvoyerBienDemarrer } from '../../domain'
 
-export const envoyerBienDemarrer = async ({
+const envoyer = async ({
   email,
   firstname,
   matomoCampaignId,
@@ -43,3 +46,15 @@ export const envoyerBienDemarrer = async ({
 
   throwOnSendMailFailure(result)
 }
+
+export const envoyerBienDemarrer: EnvoyerBienDemarrer = (
+  destinataire,
+  { palier },
+) =>
+  attraperEnEchecTechnique(envoyer)({
+    email: destinataire.courriel,
+    firstname: destinataire.prenom,
+    matomoCampaignId: `nouveau_j${palier}`,
+    isMediateur: mediateurDe(destinataire.rattachements) !== null,
+    isCoordinateur: coordinateurDe(destinataire.rattachements) !== null,
+  })

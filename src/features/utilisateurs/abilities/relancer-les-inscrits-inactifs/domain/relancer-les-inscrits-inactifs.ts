@@ -10,7 +10,8 @@ import { relanceDuNouvelInscrit } from './relance-du-nouvel-inscrit'
 export const relancerLesInscritsInactifs =
   ({
     lireLesComptesARelancer,
-    envoyerLaRelance,
+    envoyerBienDemarrer,
+    envoyerLaRelanceDuCompte,
     envoyerLAvertissement,
     envoyerLAvisDEffacement,
     supprimerLeCompte,
@@ -23,8 +24,12 @@ export const relancerLesInscritsInactifs =
   }): Promise<Result<RelancesDeroulees, never>> =>
     success(
       await deroulerLesRelances({
-        relancer: (destinataire, palier) =>
-          envoyerLaRelance(destinataire, relanceDuNouvelInscrit(palier)),
+        relancer: (destinataire, palier) => {
+          const relance = relanceDuNouvelInscrit(palier)
+          return relance._tag === 'BienDemarrer'
+            ? envoyerBienDemarrer(destinataire, relance)
+            : envoyerLaRelanceDuCompte(destinataire, relance)
+        },
         avertir: envoyerLAvertissement,
         effacer: async (destinataire) => {
           const suppression = await supprimerLeCompte({

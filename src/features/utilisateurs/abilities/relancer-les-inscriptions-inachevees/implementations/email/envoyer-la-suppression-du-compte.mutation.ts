@@ -5,9 +5,11 @@ import {
   throwOnSendMailFailure,
 } from '@/configuration/smtp'
 import { compteSupprime } from '@/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees/implementations/email/compte-supprime.email'
+import type { EnvoyerLAvisDEffacement } from '@/features/utilisateurs/domain'
 import { compileMjml } from '@/libraries/emails/rendu'
+import { attraperEnEchecTechnique } from '@/libraries/result'
 
-export const envoyerLaSuppressionDuCompte = async ({
+const envoyer = async ({
   email,
   firstname,
 }: {
@@ -26,3 +28,8 @@ export const envoyerLaSuppressionDuCompte = async ({
 
   throwOnSendMailFailure(result)
 }
+
+export const envoyerLaSuppressionDuCompte: EnvoyerLAvisDEffacement = ({
+  courriel,
+  prenom,
+}) => attraperEnEchecTechnique(envoyer)({ email: courriel, firstname: prenom })

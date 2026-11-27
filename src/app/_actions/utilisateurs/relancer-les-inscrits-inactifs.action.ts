@@ -37,7 +37,10 @@ import {
 import { role } from '@/features/tags/domain'
 import type { RelancerLesInscritsInactifsPorts } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/domain'
 import { relancerLesInscritsInactifs } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/domain/relancer-les-inscrits-inactifs'
-import { relancesDesInscritsParCourriel } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/implementations/email/relances-des-inscrits-par-courriel.adapter'
+import { envoyerBienDemarrer } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/implementations/email/envoyer-bien-demarrer.mutation'
+import { envoyerLAvertissementDeSuppression as avertirLInscrit } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/implementations/email/envoyer-l-avertissement-de-suppression.mutation'
+import { envoyerLaRelanceDuCompte } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/implementations/email/envoyer-la-relance.mutation'
+import { envoyerLaSuppressionDuCompte as aviserLInscritDeLEffacement } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/implementations/email/envoyer-la-suppression-du-compte.mutation'
 import { inscritsSansProduction } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/implementations/prisma/inscrits-sans-production.query'
 import { RetentionPolicy } from '@/features/utilisateurs/abilities/supprimer-compte/domain/index'
 import type {
@@ -115,7 +118,12 @@ const lancerLesRelancesDesInscrits = async (
 ) =>
   (
     await relancerLesInscritsInactifs({
-      ...relancesDesInscritsParCourriel(await compterLesInscrits()),
+      envoyerBienDemarrer,
+      envoyerLaRelanceDuCompte: envoyerLaRelanceDuCompte(
+        await compterLesInscrits(),
+      ),
+      envoyerLAvertissement: avertirLInscrit,
+      envoyerLAvisDEffacement: aviserLInscritDeLEffacement,
       lireLesComptesARelancer: inscritsSansProduction,
       noterLaRelance: noterLaRelance('Nouveau'),
       supprimerLeCompte,

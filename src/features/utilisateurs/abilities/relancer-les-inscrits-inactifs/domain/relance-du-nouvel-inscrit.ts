@@ -1,12 +1,17 @@
 import type { PalierDeRelance } from '@/features/utilisateurs/domain'
 
-export type RelanceDuNouvelInscrit =
-  | { readonly _tag: 'BienDemarrer'; readonly palier: PalierDeRelance }
-  | {
-      readonly _tag: 'RelanceDuCompte'
-      readonly palier: PalierDeRelance
-      readonly moisDepuisLInscription: 1 | 2
-    }
+export type BienDemarrer = {
+  readonly _tag: 'BienDemarrer'
+  readonly palier: PalierDeRelance
+}
+
+export type RelanceDuCompte = {
+  readonly _tag: 'RelanceDuCompte'
+  readonly palier: PalierDeRelance
+  readonly moisDepuisLInscription: 1 | 2
+}
+
+export type RelanceDuNouvelInscrit = BienDemarrer | RelanceDuCompte
 
 export const relanceDuNouvelInscrit = (
   palier: PalierDeRelance,

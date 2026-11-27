@@ -5,7 +5,9 @@ import { withAdmin } from '@/features/authentification/middlewares/with-admin'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { retirerDuRegistre } from '@/features/registre-des-personnes/implementations/prisma/registre-personne.mutation'
 import { relancerLesInscriptionsInachevees } from '@/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees/domain/relancer-les-inscriptions-inachevees'
-import { relancesDInscriptionParCourriel } from '@/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees/implementations/email/relances-d-inscription-par-courriel.adapter'
+import { envoyerLAvertissementDeSuppression as avertirDeLInscriptionInachevee } from '@/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees/implementations/email/envoyer-l-avertissement-de-suppression.mutation'
+import { envoyerLaRelance as relancerLInscription } from '@/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees/implementations/email/envoyer-la-relance.mutation'
+import { envoyerLaSuppressionDuCompte as aviserDeLInscriptionEffacee } from '@/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees/implementations/email/envoyer-la-suppression-du-compte.mutation'
 import { effacerLInscription } from '@/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees/implementations/prisma'
 import { inscriptionsInachevees } from '@/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees/implementations/prisma/inscriptions-inachevees.query'
 import {
@@ -23,7 +25,9 @@ const lancerLesRelancesDInscription = async (
 ) =>
   (
     await relancerLesInscriptionsInachevees({
-      ...relancesDInscriptionParCourriel(await compterLesInscrits()),
+      envoyerLaRelance: relancerLInscription(await compterLesInscrits()),
+      envoyerLAvertissement: avertirDeLInscriptionInachevee,
+      envoyerLAvisDEffacement: aviserDeLInscriptionEffacee,
       lireLesComptesARelancer: inscriptionsInachevees,
       noterLaRelance: noterLaRelance('Inscription'),
       effacerLInscription: effacerLInscription(retirerDuRegistre),

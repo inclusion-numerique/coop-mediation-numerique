@@ -5,9 +5,11 @@ import {
   throwOnSendMailFailure,
 } from '@/configuration/smtp'
 import { avertissementDeSuppression } from '@/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees/implementations/email/avertissement-de-suppression.email'
+import type { EnvoyerLAvertissement } from '@/features/utilisateurs/domain'
 import { compileMjml } from '@/libraries/emails/rendu'
+import { attraperEnEchecTechnique } from '@/libraries/result'
 
-export const envoyerLAvertissementDeSuppression = async ({
+const envoyer = async ({
   email,
   firstname,
   deletionDate,
@@ -43,3 +45,15 @@ export const envoyerLAvertissementDeSuppression = async ({
 
   throwOnSendMailFailure(result)
 }
+
+export const envoyerLAvertissementDeSuppression: EnvoyerLAvertissement = (
+  { courriel, prenom },
+  { suppressionLe, joursRestants },
+) =>
+  attraperEnEchecTechnique(envoyer)({
+    email: courriel,
+    firstname: prenom,
+    deletionDate: suppressionLe.toLocaleDateString('fr-FR'),
+    daysRemaining: joursRestants,
+    matomoCampaignId: 'finaliser_inscription_j90',
+  })
