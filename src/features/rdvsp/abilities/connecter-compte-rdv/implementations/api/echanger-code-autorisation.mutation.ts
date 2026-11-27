@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { z } from 'zod'
-import { failure, success } from '@/libraries/result'
+import { failure, messageDe, success } from '@/libraries/result'
 import {
   JetonAcces,
   JetonRafraichissement,
@@ -76,7 +76,7 @@ export const echangerCodeAutorisation =
         CodeAutorisationRefuse(
           axios.isAxiosError(erreur)
             ? (erreur.response?.data?.error_description ?? erreur.message)
-            : 'Erreur inconnue',
+            : messageDe(erreur),
         ),
       )
     }

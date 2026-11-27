@@ -1,6 +1,12 @@
 import axios, { type AxiosRequestConfig } from 'axios'
 import type { z } from 'zod'
-import { type Failure, failure, type Result, success } from '@/libraries/result'
+import {
+  type Failure,
+  failure,
+  messageDe,
+  type Result,
+  success,
+} from '@/libraries/result'
 import type { CompteRdvUtilisable } from '../../domain/compte/compte-rdv'
 import {
   type JetonsOAuth,
@@ -71,13 +77,6 @@ type Requete = {
 }
 
 const cheminsDuCompte: readonly string[] = ['/agents/me', '/organisations']
-
-const messageDe = (erreur: unknown): string =>
-  axios.isAxiosError(erreur)
-    ? erreur.message
-    : erreur instanceof Error
-      ? erreur.message
-      : 'Erreur inconnue'
 
 const erreurDe = (
   agentId: RdvAgentId | null,
