@@ -7,6 +7,7 @@ export {
 export { ActeurId } from './acteur-id'
 export { CoordinateurId } from './coordinateur-id'
 export { Courriel } from './courriel'
+export { departementDuCoordinateur } from './departement-du-coordinateur'
 export { Dispositif, dispositifDe } from './dispositif'
 export { Effectif } from './effectif'
 export { ActeurIntrouvable, DepartementInconnu } from './errors'

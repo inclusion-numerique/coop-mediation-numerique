@@ -76,7 +76,7 @@ describe('traduction d’un acteur', () => {
             {
               acteurId: 'b1b2c3d4-0000-4000-8000-000000000002',
               nomAffiche: 'alex.durand@example.org',
-              departement: '75',
+              communeDeLEmployeuse: null,
             },
           ],
         },
@@ -97,9 +97,37 @@ describe('traduction d’un acteur', () => {
     expect(versActeur({ ...ligneMinimale, mediateur: null })).toBeNull()
   })
 
-  it('écarte un compte au courriel invalide sans lever d’erreur', () => {
+  it('lit la commune de l’employeuse du coordinateur', () => {
     expect(
+      versActeur({
+        ...ligneMaximale,
+        mediateur: {
+          id: 'b1b2c3d4-0000-4000-8000-000000000006',
+          coordinations: [
+            {
+              coordinateur: {
+                user: {
+                  ...coordinateurDeLActeur,
+                  personneMain: { employeuseActuelle: { codeInsee: '15014' } },
+                },
+              },
+            },
+          ],
+          _count: { enActivite: 3 },
+        },
+      })?.profil.mediation?.coordinateurs,
+    ).toEqual([
+      {
+        acteurId: 'b1b2c3d4-0000-4000-8000-000000000002',
+        nomAffiche: 'alex.durand@example.org',
+        communeDeLEmployeuse: '15014',
+      },
+    ])
+  })
+
+  it('refuse un compte au courriel invalide', () => {
+    expect(() =>
       versActeur({ ...ligneMinimale, email: 'pas-un-courriel' }),
-    ).toBeNull()
+    ).toThrow()
   })
 })

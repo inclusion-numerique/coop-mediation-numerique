@@ -170,7 +170,8 @@
     "lieux-activite/abilities/mesurer-la-visibilite-sur-la-cartographie/domain",
     "mon-reseau/abilities/consulter-le-reseau-du-departement/domain",
     "mon-reseau/abilities/consulter-les-lieux-du-departement/domain",
-    "mon-reseau/abilities/lister-les-acteurs-du-departement/domain"
+    "mon-reseau/abilities/lister-les-acteurs-du-departement/domain",
+    "mon-reseau/domain"
   ],
   "libraries/etat-encode": [
     "activites/abilities/enregistrer-un-accompagnement-individuel/ui/presenters",

@@ -1,4 +1,4 @@
-import type { CodeDepartement } from '@/libraries/insee'
+import type { CodeInsee } from '@/libraries/insee'
 import type { NomAffiche } from '@/libraries/nom-affiche'
 import type { ActeurId } from './acteur-id'
 import type { CoordinateurId } from './coordinateur-id'
@@ -10,7 +10,7 @@ import type { MediateurId } from './mediateur-id'
 export type CoordinateurDeLActeur = {
   readonly acteurId: ActeurId
   readonly nomAffiche: NomAffiche
-  readonly departement: CodeDepartement
+  readonly communeDeLEmployeuse: CodeInsee | null
 }
 
 export type Mediation = {
