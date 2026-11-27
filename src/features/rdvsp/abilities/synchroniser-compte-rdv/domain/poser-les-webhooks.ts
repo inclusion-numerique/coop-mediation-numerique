@@ -4,10 +4,7 @@ import {
   type Result,
   success,
 } from '@/libraries/result'
-import type {
-  BilanModele,
-  OperationSynchronisation,
-} from '../../../domain/compte/bilan-synchronisation'
+import type { BilanModele } from '../../../domain/compte/bilan-synchronisation'
 import type { CompteRdvUtilisable } from '../../../domain/compte/compte-rdv'
 import type { OrganisationId } from '../../../domain/identifiants/organisation-id'
 import type { PorteeDeSynchronisation } from '../../../domain/portee-de-synchronisation'
@@ -16,9 +13,8 @@ import type { PoserLesWebhooksPorts, PoserUnWebhookPorts } from './ports'
 import type { OrganisationsSansWebhook } from './resultat-synchronisation'
 
 export type PoseDeWebhook = {
+  readonly _tag: 'inchange' | 'reconfigure' | 'cree' | 'manquant'
   readonly organisationId: OrganisationId
-  readonly operation: Exclude<OperationSynchronisation, 'deleted'>
-  readonly invalide: boolean
 }
 
 export type PosesDeWebhooks = {
@@ -29,9 +25,8 @@ export type PosesDeWebhooks = {
 
 const pose = (
   organisationId: OrganisationId,
-  operation: PoseDeWebhook['operation'],
-  invalide: boolean,
-): PoseDeWebhook => ({ organisationId, operation, invalide })
+  issue: PoseDeWebhook['_tag'],
+): PoseDeWebhook => ({ _tag: issue, organisationId })
 
 const poserUnWebhook =
   ({
@@ -50,12 +45,12 @@ const poserUnWebhook =
   }): Promise<PoseDeWebhook> => {
     const existants = await listerWebhooksDeLaCoop(compte, organisationId)
 
-    if (!existants.success) return pose(organisationId, 'noop', true)
+    if (!existants.success) return pose(organisationId, 'manquant')
 
     const [existant] = existants.data
 
     if (existant !== undefined && estAJour(existant, abonnementsDeLaCoop))
-      return pose(organisationId, 'noop', false)
+      return pose(organisationId, 'inchange')
 
     if (existant !== undefined) {
       const reconfigure = await reconfigurerWebhook(
@@ -66,28 +61,28 @@ const poserUnWebhook =
       )
 
       return reconfigure.success
-        ? pose(organisationId, 'updated', false)
-        : pose(organisationId, 'noop', true)
+        ? pose(organisationId, 'reconfigure')
+        : pose(organisationId, 'manquant')
     }
 
     if (!destinationDesWebhooksJoignable())
-      return pose(organisationId, 'noop', false)
+      return pose(organisationId, 'inchange')
 
     const cree = await poserWebhook(compte, organisationId, abonnementsDeLaCoop)
 
-    if (!cree.success) return pose(organisationId, 'noop', true)
+    if (!cree.success) return pose(organisationId, 'manquant')
 
     const apresPose = await relireWebhooksDeLaCoop(compte, organisationId)
 
     return apresPose.success && apresPose.data.length > 0
-      ? pose(organisationId, 'created', false)
-      : pose(organisationId, 'noop', true)
+      ? pose(organisationId, 'cree')
+      : pose(organisationId, 'manquant')
   }
 
 const compter = (
   poses: readonly PoseDeWebhook[],
-  operation: PoseDeWebhook['operation'],
-): number => poses.filter((une) => une.operation === operation).length
+  issues: readonly PoseDeWebhook['_tag'][],
+): number => poses.filter((une) => issues.includes(une._tag)).length
 
 const dansLaPortee = (
   portee: PorteeDeSynchronisation,
@@ -114,9 +109,9 @@ export const poserLesWebhooks =
     )
 
     const bilan: BilanModele = {
-      noop: compter(poses, 'noop'),
-      created: compter(poses, 'created'),
-      updated: compter(poses, 'updated'),
+      noop: compter(poses, ['inchange', 'manquant']),
+      created: compter(poses, ['cree']),
+      updated: compter(poses, ['reconfigure']),
       deleted: 0,
     }
 
@@ -128,7 +123,7 @@ export const poserLesWebhooks =
       })
 
     const organisationIds = poses
-      .filter((une) => une.invalide)
+      .filter((une) => une._tag === 'manquant')
       .map((une) => une.organisationId)
 
     const notees = await noterLesWebhooksInvalides({

@@ -23,6 +23,7 @@ import {
   type WebhookInstalle,
 } from '../../../domain/webhook/webhook'
 import type { SynchroniserCompteRdvPorts } from './ports'
+import type { PoseDeWebhook } from './poser-les-webhooks'
 import type { OrganisationsSansWebhook } from './resultat-synchronisation'
 import { synchroniserCompteRdv } from './synchroniser-compte-rdv'
 
@@ -116,15 +117,12 @@ const synchronise = ({
   readonly derive: number
   readonly organisationsSansWebhook: OrganisationsSansWebhook
   readonly organisationIdsDetachees: readonly OrganisationId[]
-  readonly webhook: readonly {
-    readonly organisationId: OrganisationId
-    readonly operation: 'noop' | 'created' | 'updated'
-    readonly invalide: boolean
-  }[]
+  readonly webhook: readonly PoseDeWebhook[]
   readonly rapprochements: readonly Rapprochement[]
-  readonly journal: string | null
+  readonly journal: string
 }) =>
   success({
+    _tag: 'synchronise',
     bilan,
     derive,
     organisationsSansWebhook,
@@ -152,23 +150,16 @@ const cree = { ...bilanVide, created: 1 }
 const reconfigure = { ...bilanVide, updated: 1 }
 
 const poseDuWebhook = (
-  operation: 'noop' | 'created' | 'updated',
+  issue: PoseDeWebhook['_tag'],
   webhooks: typeof bilanVide,
   derive: number,
   organisationIds: readonly OrganisationId[],
-  invalide: boolean,
 ) => ({
   bilan: { ...bilanComplet, webhooks },
   derive,
   organisationsSansWebhook: releves(organisationIds),
   organisationIdsDetachees: [],
-  webhook: [
-    {
-      organisationId: organisation,
-      operation,
-      invalide,
-    },
-  ],
+  webhook: [{ _tag: issue, organisationId: organisation }],
   rapprochements: rapprochementsDuLot,
   journal: journalComplet,
 })
@@ -176,7 +167,7 @@ const poseDuWebhook = (
 describe('synchroniser un compte RDV', () => {
   it('réconcilie organisations, rendez-vous et webhooks, et rend la dérive de la passe', async () => {
     expect(await synchroniserCompteRdv(ports)(passeComplete)).toEqual(
-      synchronise(poseDuWebhook('noop', noop, 2, [], false)),
+      synchronise(poseDuWebhook('inchange', noop, 2, [])),
     )
   })
 
@@ -187,15 +178,7 @@ describe('synchroniser un compte RDV', () => {
         portee: organisationsCiblees([]),
       }),
     ).toEqual(
-      synchronise({
-        bilan: bilanSynchronisationVide,
-        derive: 0,
-        organisationsSansWebhook: nonRelevees,
-        organisationIdsDetachees: [],
-        webhook: [],
-        rapprochements: [],
-        journal: null,
-      }),
+      success({ _tag: 'sansObjet', derive: 0, synchroniseeLe: maintenant }),
     )
   })
 
@@ -215,9 +198,7 @@ describe('synchroniser un compte RDV', () => {
         derive: 1,
         organisationsSansWebhook: releves([]),
         organisationIdsDetachees: [],
-        webhook: [
-          { organisationId: organisation, operation: 'noop', invalide: false },
-        ],
+        webhook: [{ _tag: 'inchange', organisationId: organisation }],
         rapprochements: [],
         journal: journalComplet,
       }),
@@ -240,9 +221,7 @@ describe('synchroniser un compte RDV', () => {
         derive: 1,
         organisationsSansWebhook: nonRelevees,
         organisationIdsDetachees: [],
-        webhook: [
-          { organisationId: organisation, operation: 'noop', invalide: false },
-        ],
+        webhook: [{ _tag: 'inchange', organisationId: organisation }],
         rapprochements: rapprochementsDuLot,
         journal: journalRestreint,
       }),
@@ -276,9 +255,7 @@ describe('synchroniser un compte RDV', () => {
         derive: 1,
         organisationsSansWebhook: nonRelevees,
         organisationIdsDetachees: [autreOrganisation],
-        webhook: [
-          { organisationId: organisation, operation: 'noop', invalide: false },
-        ],
+        webhook: [{ _tag: 'inchange', organisationId: organisation }],
         rapprochements: rapprochementsDuLot,
         journal:
           'organisations non réconciliées (passe restreinte)\norganisations réconciliées\nréconciliation des rendez-vous\nrendez-vous réconciliés\norganisations inaccessibles détachées : 20\ninstallation des webhooks\nwebhooks installés',
@@ -294,12 +271,12 @@ describe('synchroniser un compte RDV', () => {
     {
       cas: 'tient pour manquant le webhook d’une organisation illisible',
       ports: { listerWebhooksDeLaCoop: async () => failure(indisponible) },
-      attendu: poseDuWebhook('noop', noop, 2, [organisation], true),
+      attendu: poseDuWebhook('manquant', noop, 2, [organisation]),
     },
     {
       cas: 'reconfigure un webhook dont les abonnements ont changé',
       ports: { listerWebhooksDeLaCoop: async () => success([webhookPerime]) },
-      attendu: poseDuWebhook('updated', reconfigure, 3, [], false),
+      attendu: poseDuWebhook('reconfigure', reconfigure, 3, []),
     },
     {
       cas: 'tient pour manquant un webhook que la reconfiguration n’a pas atteint',
@@ -307,7 +284,7 @@ describe('synchroniser un compte RDV', () => {
         listerWebhooksDeLaCoop: async () => success([webhookPerime]),
         reconfigurerWebhook: async () => failure(indisponible),
       },
-      attendu: poseDuWebhook('noop', noop, 2, [organisation], true),
+      attendu: poseDuWebhook('manquant', noop, 2, [organisation]),
     },
     {
       cas: 'ne pose rien quand la destination n’est pas joignable',
@@ -315,7 +292,7 @@ describe('synchroniser un compte RDV', () => {
         listerWebhooksDeLaCoop: async () => success([]),
         destinationDesWebhooksJoignable: () => false,
       },
-      attendu: poseDuWebhook('noop', noop, 2, [], false),
+      attendu: poseDuWebhook('inchange', noop, 2, []),
     },
     {
       cas: 'tient pour manquant un webhook dont la pose échoue',
@@ -323,12 +300,12 @@ describe('synchroniser un compte RDV', () => {
         listerWebhooksDeLaCoop: async () => success([]),
         poserWebhook: async () => failure(indisponible),
       },
-      attendu: poseDuWebhook('noop', noop, 2, [organisation], true),
+      attendu: poseDuWebhook('manquant', noop, 2, [organisation]),
     },
     {
       cas: 'pose le webhook manquant et le retrouve à la relecture',
       ports: { listerWebhooksDeLaCoop: async () => success([]) },
-      attendu: poseDuWebhook('created', cree, 3, [], false),
+      attendu: poseDuWebhook('cree', cree, 3, []),
     },
     {
       cas: 'tient pour manquant un webhook posé que la relecture ne retrouve pas',
@@ -336,7 +313,7 @@ describe('synchroniser un compte RDV', () => {
         listerWebhooksDeLaCoop: async () => success([]),
         relireWebhooksDeLaCoop: async () => success([]),
       },
-      attendu: poseDuWebhook('noop', noop, 2, [organisation], true),
+      attendu: poseDuWebhook('manquant', noop, 2, [organisation]),
     },
   ])('$cas', async ({ ports: surcharge, attendu }) => {
     expect(

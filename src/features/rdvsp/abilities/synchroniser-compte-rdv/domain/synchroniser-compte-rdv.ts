@@ -1,6 +1,5 @@
 import {
   type BilanSynchronisation,
-  bilanSynchronisationVide,
   bilanVide,
   deriveTotale,
 } from '@/features/rdvsp/domain/compte/bilan-synchronisation'
@@ -24,26 +23,28 @@ import type { PoseDeWebhook } from './poser-les-webhooks'
 import { poserLesWebhooks } from './poser-les-webhooks'
 import type { ResultatSynchronisation } from './resultat-synchronisation'
 
-export type CompteSynchronise = ResultatSynchronisation & {
-  readonly synchroniseeLe: Date
-  readonly organisationIdsDetachees: readonly OrganisationId[]
-  readonly webhooks: readonly PoseDeWebhook[]
-  readonly rapprochements: readonly Rapprochement[]
-  readonly journal: string | null
-}
+export type CompteSynchronise =
+  | {
+      readonly _tag: 'sansObjet'
+      readonly derive: 0
+      readonly synchroniseeLe: Date
+    }
+  | (ResultatSynchronisation & {
+      readonly _tag: 'synchronise'
+      readonly synchroniseeLe: Date
+      readonly organisationIdsDetachees: readonly OrganisationId[]
+      readonly webhooks: readonly PoseDeWebhook[]
+      readonly rapprochements: readonly Rapprochement[]
+      readonly journal: string
+    })
 
 const estSansObjet = (portee: PorteeDeSynchronisation): boolean =>
   portee._tag === 'organisations' && portee.organisationIds.length === 0
 
 const sansObjet = (maintenant: Date): CompteSynchronise => ({
-  bilan: bilanSynchronisationVide,
+  _tag: 'sansObjet',
   derive: 0,
-  organisationsSansWebhook: { _tag: 'nonRelevees' },
   synchroniseeLe: maintenant,
-  organisationIdsDetachees: [],
-  webhooks: [],
-  rapprochements: [],
-  journal: null,
 })
 
 const bilanRdvsVide = {
@@ -245,6 +246,7 @@ export const synchroniserCompteRdv =
           if (!cloture.success) return echouer(cloture.error, traceCloture)
 
           return success({
+            _tag: 'synchronise',
             ...resultat,
             synchroniseeLe: maintenant,
             organisationIdsDetachees: organisationIdsInaccessibles,
