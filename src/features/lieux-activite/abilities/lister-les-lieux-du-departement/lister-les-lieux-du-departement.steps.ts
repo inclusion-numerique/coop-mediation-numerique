@@ -178,7 +178,7 @@ Then('le lieu de l’autre commune n’est pas proposé', () => {
 })
 
 Then('le lieu d’ailleurs n’est pas proposé', () => {
-  assert.ok(!proposes().includes(semis.ailleurs as string))
+  assert.ok(!proposes().includes(semis.ailleurs ?? ''))
 })
 
 After(async () => {
