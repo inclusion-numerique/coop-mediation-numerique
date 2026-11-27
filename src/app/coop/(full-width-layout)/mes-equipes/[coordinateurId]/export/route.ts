@@ -51,6 +51,7 @@ export const GET = async (
     membres: membres.data,
     criteres,
     auteur: auteurDeLExport(user),
+    genereLe: maintenant,
   }).xlsx.writeBuffer()
 
   return new Response(donnees, {

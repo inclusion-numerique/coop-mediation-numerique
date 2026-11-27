@@ -7,11 +7,13 @@ export const entreeDuClasseur = <Statistiques>({
   etiquettes,
   auteur,
   fuseau,
+  genereLe,
 }: {
   statistiques: Statistiques
   etiquettes: readonly EtiquetteDuFiltre[]
   auteur: AuteurDExport
   fuseau: string
+  genereLe: Date
 }) => ({
   statistiques,
   auteur,
@@ -20,4 +22,5 @@ export const entreeDuClasseur = <Statistiques>({
     label: libelle,
   })),
   fuseau,
+  worksheetGenerationDate: genereLe,
 })

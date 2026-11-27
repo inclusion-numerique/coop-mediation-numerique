@@ -169,6 +169,7 @@ export const GET = async (request: NextRequest) => {
           )),
           auteur: auteurDeLExport(user),
           fuseau: user.timezone,
+          genereLe: maintenant,
         }),
       ).xlsx.writeBuffer(),
   })({

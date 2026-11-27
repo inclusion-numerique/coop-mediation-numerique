@@ -154,6 +154,7 @@ export const GET = async (
     )),
     auteur: auteurDeLExport(user),
     fuseau: user.timezone,
+    genereLe: maintenant,
   })
 
   const workbook = classeurDesStatistiques(statistiquesWorksheetInput)

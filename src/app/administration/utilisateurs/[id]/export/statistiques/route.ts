@@ -174,6 +174,7 @@ export const GET = async (
       )),
       auteur: auteurDeLExport(administrateur),
       fuseau: user.timezone,
+      genereLe: maintenant,
     }),
   )
 
