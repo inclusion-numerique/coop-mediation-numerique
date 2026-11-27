@@ -13,6 +13,7 @@ import { Telephone } from '@/libraries/telephone'
 import { creerOuFusionnerDepuisUsagerExterne } from './creer-ou-fusionner-depuis-usager-externe'
 import type { FusionDesUsagers } from './fusion-des-usagers'
 import type { CreerOuFusionnerDepuisUsagerExternePorts } from './ports'
+import { RdvUserId } from './rdv-user-id'
 import type { MergedBeneficiaire, UsagerNormalise } from './usager-externe'
 
 const maintenant = new Date('2026-06-15T12:00:00.000Z')
@@ -36,7 +37,7 @@ const communeDEvreux = {
 const annee1996 = AnneeNaissance(maintenant)(1996)
 
 const usagerComplet: UsagerNormalise = {
-  rdvUserId: 42,
+  rdvUserId: RdvUserId(42),
   nom: Nom('Martin'),
   prenom: Prenom('Léa'),
   telephone: Telephone('0102030405'),
@@ -46,7 +47,7 @@ const usagerComplet: UsagerNormalise = {
 }
 
 const usagerSansDonnees: UsagerNormalise = {
-  rdvUserId: 42,
+  rdvUserId: RdvUserId(42),
   nom: null,
   prenom: null,
   telephone: null,
@@ -104,7 +105,7 @@ const ports: CreerOuFusionnerDepuisUsagerExternePorts = {
 const panne = async () => failure(EchecTechnique('panne'))
 
 const nouveauBeneficiaire = {
-  rdvUserId: 42,
+  rdvUserId: RdvUserId(42),
   nom: Nom('Martin'),
   prenom: Prenom('Léa'),
   telephone: Telephone('0102030405'),
@@ -214,8 +215,8 @@ describe('créer ou fusionner des bénéficiaires depuis des usagers externes', 
           merges: [],
           skipped: [
             {
-              rdvUserId: 42,
-              reason: { _tag: 'IdentiteIncomplete', rdvUserId: 42 },
+              rdvUserId: RdvUserId(42),
+              reason: { _tag: 'IdentiteIncomplete', rdvUserId: RdvUserId(42) },
             },
           ],
           ecritures: [],
@@ -304,7 +305,7 @@ describe('créer ou fusionner des bénéficiaires depuis des usagers externes', 
             id: doublon.id,
             mediateurId,
             donnees: {
-              rdvUserId: 42,
+              rdvUserId: RdvUserId(42),
               email: Email('lea@example.fr'),
               telephone: Telephone('0102030405'),
               adresse,
@@ -338,7 +339,7 @@ describe('créer ou fusionner des bénéficiaires depuis des usagers externes', 
             id: doublon.id,
             mediateurId,
             donnees: {
-              rdvUserId: 42,
+              rdvUserId: RdvUserId(42),
               email: Email('lea@example.fr'),
               telephone: Telephone('0102030405'),
               anneeNaissance: annee1996,
@@ -403,7 +404,7 @@ describe('créer ou fusionner des bénéficiaires depuis des usagers externes', 
         merges: [],
         skipped: [
           {
-            rdvUserId: 42,
+            rdvUserId: RdvUserId(42),
             reason: { _tag: 'EchecTechnique', cause: 'panne' },
           },
         ],

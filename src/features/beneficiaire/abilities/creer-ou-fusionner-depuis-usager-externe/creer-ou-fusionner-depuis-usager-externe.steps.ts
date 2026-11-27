@@ -3,6 +3,7 @@ import { After, Given, Then, When } from '@cucumber/cucumber'
 import { prismaClient } from '@/configuration/prisma'
 import { creerOuFusionnerDepuisUsagerExterne } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/domain/creer-ou-fusionner-depuis-usager-externe'
 import type { FusionDesUsagers } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/domain/fusion-des-usagers'
+import { RdvUserId } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/domain/rdv-user-id'
 import { lireLeBeneficiaireLie } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/beneficiaire-lie.query'
 import { creerLeBeneficiaire } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/creer-le-beneficiaire.mutation'
 import { trouverUnDoublon } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/doublon-de-l-usager.query'
@@ -46,7 +47,7 @@ const externalUser = (
   rdvUserId: number,
   fields: Partial<Omit<UsagerExterneAFusionner, 'rdvUserId'>> = {},
 ): UsagerExterneAFusionner => ({
-  rdvUserId,
+  rdvUserId: RdvUserId(rdvUserId),
   nom: fields.nom ?? null,
   prenom: fields.prenom ?? null,
   telephone: fields.telephone ?? null,
@@ -242,7 +243,7 @@ Then('aucun bénéficiaire n’est créé et l’usager est écarté', async () 
   assert.strictEqual(contexte.result.skipped.length, 1)
   assert.strictEqual(contexte.result.skipped[0]?.rdvUserId, 990_206)
   const cree = await prismaClient.beneficiaire.findFirst({
-    where: { rdvUserId: 990_206 },
+    where: { rdvUserId: RdvUserId(990_206) },
   })
   assert.strictEqual(cree, null)
 })

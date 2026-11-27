@@ -3,6 +3,7 @@ import type { CommuneResidence } from '@/features/beneficiaire/domain/commune-re
 import type { DuplicateBeneficiaire } from '@/features/beneficiaire/domain/doublon-de-beneficiaire'
 import type { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
 import type { EchecTechnique, Result } from '@/libraries/result'
+import type { RdvUserId } from './rdv-user-id'
 import type {
   DonneesDeFusion,
   MergedBeneficiaire,
@@ -11,7 +12,7 @@ import type {
 } from './usager-externe'
 
 export type LireLeBeneficiaireLie = (critere: {
-  readonly rdvUserId: number
+  readonly rdvUserId: RdvUserId
   readonly mediateurId: MediateurId
 }) => Promise<Result<MergedBeneficiaire | null, EchecTechnique>>
 

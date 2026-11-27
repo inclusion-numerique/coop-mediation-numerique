@@ -7,10 +7,11 @@ import {
   Prenom,
 } from '@/features/beneficiaire/domain/prenom'
 import { Telephone } from '@/libraries/telephone'
+import type { RdvUserId } from '../../domain/rdv-user-id'
 import type { UsagerNormalise } from '../../domain/usager-externe'
 
 export type UsagerExterneAFusionner = {
-  readonly rdvUserId: number
+  readonly rdvUserId: RdvUserId
   readonly nom: string | null
   readonly prenom: string | null
   readonly telephone: string | null

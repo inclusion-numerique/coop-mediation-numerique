@@ -5,6 +5,7 @@ import { CommuneResidence } from '@/features/beneficiaire/domain/commune-residen
 import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
 import { AdresseIndisponible } from '@/libraries/ban'
 import { creerOuFusionnerDepuisUsagerExterne } from '../../domain/creer-ou-fusionner-depuis-usager-externe'
+import { RdvUserId } from '../../domain/rdv-user-id'
 import { communeDeLAdresseAvec } from '../ban/commune-de-l-adresse.query'
 import {
   demandeNormalisee,
@@ -21,7 +22,7 @@ const evreux = CommuneResidence({
   codeInsee: '27229',
 })
 
-const rdvUserId = 990_101
+const rdvUserId = RdvUserId(990_101)
 const utilisateurId = '45661444-bbca-4961-9944-32cfa9695a4a'
 const mediateurId = '44aed6e1-ffcd-433c-8018-e50f5f554709'
 

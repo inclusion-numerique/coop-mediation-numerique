@@ -5,6 +5,7 @@ import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
 import { NOM_MAX_LENGTH, Nom } from '@/features/beneficiaire/domain/nom'
 import { Prenom } from '@/features/beneficiaire/domain/prenom'
 import { Telephone } from '@/libraries/telephone'
+import { RdvUserId } from '../../domain/rdv-user-id'
 import type { UsagerNormalise } from '../../domain/usager-externe'
 import {
   type DemandeDUsagersExternes,
@@ -17,7 +18,7 @@ const maintenant = new Date('2026-06-15T12:00:00.000Z')
 const mediateurId = MediateurId('8a1b2c3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d')
 
 const usagerSansDonnees: UsagerExterneAFusionner = {
-  rdvUserId: 42,
+  rdvUserId: RdvUserId(42),
   nom: null,
   prenom: null,
   telephone: null,
@@ -27,7 +28,7 @@ const usagerSansDonnees: UsagerExterneAFusionner = {
 }
 
 const normaliseSansDonnees: UsagerNormalise = {
-  rdvUserId: 42,
+  rdvUserId: RdvUserId(42),
   nom: null,
   prenom: null,
   telephone: null,
@@ -51,7 +52,7 @@ describe('demande de fusion reçue de RDV Service Public', () => {
     {
       cas: 'décode l’identité, le contact et l’année de naissance',
       usager: {
-        rdvUserId: 42,
+        rdvUserId: RdvUserId(42),
         nom: '  Martin ',
         prenom: 'Léa',
         telephone: '0102030405',
@@ -60,7 +61,7 @@ describe('demande de fusion reçue de RDV Service Public', () => {
         birthDate: new Date('1996-03-01T12:00:00.000Z'),
       },
       attendu: {
-        rdvUserId: 42,
+        rdvUserId: RdvUserId(42),
         nom: Nom('Martin'),
         prenom: Prenom('Léa'),
         telephone: Telephone('0102030405'),

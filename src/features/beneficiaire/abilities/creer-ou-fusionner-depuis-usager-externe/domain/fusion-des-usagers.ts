@@ -1,6 +1,7 @@
 import type { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
 import type { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
 import type { MotifDEcart } from './errors'
+import type { RdvUserId } from './rdv-user-id'
 import type {
   DonneesDeFusion,
   MergedBeneficiaire,
@@ -8,7 +9,7 @@ import type {
 } from './usager-externe'
 
 export type UsagerEcarte = {
-  readonly rdvUserId: number
+  readonly rdvUserId: RdvUserId
   readonly reason: MotifDEcart
 }
 

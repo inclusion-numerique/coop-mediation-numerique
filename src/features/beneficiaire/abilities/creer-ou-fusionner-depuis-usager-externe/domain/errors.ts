@@ -1,11 +1,14 @@
 import type { EchecTechnique } from '@/libraries/result'
+import type { RdvUserId } from './rdv-user-id'
 
 export type IdentiteIncomplete = {
   readonly _tag: 'IdentiteIncomplete'
-  readonly rdvUserId: number
+  readonly rdvUserId: RdvUserId
 }
 
-export const IdentiteIncomplete = (rdvUserId: number): IdentiteIncomplete => ({
+export const IdentiteIncomplete = (
+  rdvUserId: RdvUserId,
+): IdentiteIncomplete => ({
   _tag: 'IdentiteIncomplete',
   rdvUserId,
 })

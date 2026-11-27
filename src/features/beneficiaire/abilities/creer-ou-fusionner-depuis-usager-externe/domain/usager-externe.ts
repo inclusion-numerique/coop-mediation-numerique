@@ -7,6 +7,7 @@ import type { Nom } from '@/features/beneficiaire/domain/nom'
 import type { Prenom } from '@/features/beneficiaire/domain/prenom'
 import type { TrancheAge } from '@/features/beneficiaire/domain/tranche-age'
 import type { Telephone } from '@/libraries/telephone'
+import type { RdvUserId } from './rdv-user-id'
 
 export type MergedBeneficiaire = {
   readonly id: BeneficiaireId
@@ -26,7 +27,7 @@ export type IdentiteConnue = Pick<
 >
 
 export type UsagerNormalise = {
-  readonly rdvUserId: number
+  readonly rdvUserId: RdvUserId
   readonly nom: Nom | null
   readonly prenom: Prenom | null
   readonly telephone: Telephone | null
@@ -36,7 +37,7 @@ export type UsagerNormalise = {
 }
 
 export type DonneesDeFusion = {
-  readonly rdvUserId?: number
+  readonly rdvUserId?: RdvUserId
   readonly email?: Email
   readonly telephone?: Telephone
   readonly prenom?: Prenom
@@ -50,7 +51,7 @@ export type DonneesDeFusion = {
 }
 
 export type NouveauBeneficiaire = {
-  readonly rdvUserId: number
+  readonly rdvUserId: RdvUserId
   readonly nom: Nom
   readonly prenom: Prenom
   readonly telephone: Telephone | null
