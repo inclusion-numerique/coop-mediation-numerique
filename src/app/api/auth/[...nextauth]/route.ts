@@ -44,17 +44,26 @@ const options = nextAuthOptions({
   moyenDeConnexion: connexionParProConnect()
     ? moyenDeConnexionProConnect
     : moyenDeConnexionParCourriel,
-  garantirLeRoleCoordinateur: (utilisateurId: string) =>
-    garantirLeRoleCoordinateurDuDispositif({
-      aLeRoleCoordinateur,
-      coordonneDansLeDispositif,
-      creerLeRoleCoordinateur: creerLeRoleCoordinateur(synchroniserPersonne),
-    })({ utilisateurId: IdentifiantDuCompte(utilisateurId) }),
-  importerLEmployeuseProConnect: ({ userId, siret }) =>
-    rattacher({
-      userId: UtilisateurId(userId),
-      source: { _tag: 'ProConnect', siret: Siret.safe(siret ?? '') },
-    }),
+  garantirLeRoleCoordinateur: async (utilisateurId: string) => {
+    const compte = IdentifiantDuCompte.safe(utilisateurId)
+    return compte === null
+      ? undefined
+      : garantirLeRoleCoordinateurDuDispositif({
+          aLeRoleCoordinateur,
+          coordonneDansLeDispositif,
+          creerLeRoleCoordinateur:
+            creerLeRoleCoordinateur(synchroniserPersonne),
+        })({ utilisateurId: compte })
+  },
+  importerLEmployeuseProConnect: async ({ userId, siret }) => {
+    const utilisateur = UtilisateurId.safe(userId)
+    return utilisateur === null
+      ? undefined
+      : rattacher({
+          userId: utilisateur,
+          source: { _tag: 'ProConnect', siret: Siret.safe(siret ?? '') },
+        })
+  },
   synchroniserLaPersonne: synchroniserPersonne,
 })
 
