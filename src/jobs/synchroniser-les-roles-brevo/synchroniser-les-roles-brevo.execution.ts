@@ -1,14 +1,29 @@
 import { brevoActif } from '@/configuration/brevo'
 import { errorReporter } from '@/configuration/telemetry/serveur'
-import { synchroniserLesRolesBrevo } from '@/features/utilisateurs/abilities/synchroniser-les-roles-brevo/domain/synchroniser-les-roles-brevo'
 import {
-  importerUnLot,
-  retirerUnLot,
-  TAILLE_DES_IMPORTS_BREVO,
-  TAILLE_DES_RETRAITS_BREVO,
-} from '@/features/utilisateurs/abilities/synchroniser-les-roles-brevo/implementations/brevo/liste-de-diffusion.mutation'
+  IdentifiantDImport,
+  TailleDeLot,
+} from '@/features/utilisateurs/abilities/synchroniser-les-roles-brevo/domain'
+import { synchroniserLesRolesBrevo } from '@/features/utilisateurs/abilities/synchroniser-les-roles-brevo/domain/synchroniser-les-roles-brevo'
 import { inscritsDeLaListe } from '@/features/utilisateurs/abilities/synchroniser-les-roles-brevo/implementations/prisma/inscrits-de-la-liste.query'
+import type { ContactAImporter } from '@/features/utilisateurs/domain'
+import {
+  importerDansLaListe,
+  retirerDeLaListe,
+} from '@/features/utilisateurs/implementations/brevo/liste-de-diffusion.mutation'
 import { output } from '@/libraries/console'
+import { attraperEnEchecTechnique } from '@/libraries/result'
+
+const TAILLE_DES_IMPORTS_BREVO = TailleDeLot(1000)
+
+const TAILLE_DES_RETRAITS_BREVO = TailleDeLot(150)
+
+const importerUnLot = attraperEnEchecTechnique(
+  async (lot: readonly ContactAImporter[]) =>
+    IdentifiantDImport(await importerDansLaListe(lot)),
+)
+
+const retirerUnLot = attraperEnEchecTechnique(retirerDeLaListe)
 
 export const executeSynchroniserLesRolesBrevo = async () => {
   if (!brevoActif()) {

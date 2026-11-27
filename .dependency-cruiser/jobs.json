@@ -7,7 +7,8 @@
   "libraries/emails": ["verifier-le-bundle.ts"],
   "libraries/result": [
     "anonymiser-les-comptes-inactifs",
-    "inactive-users-reminders"
+    "inactive-users-reminders",
+    "synchroniser-les-roles-brevo"
   ],
   "uuid": ["job-executors.ts"]
 }

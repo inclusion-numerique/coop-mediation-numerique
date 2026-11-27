@@ -130,7 +130,6 @@
   ],
   "jsonwebtoken": ["authentification/implementations/proconnect"],
   "libraries/adresse": [
-    "inscription/abilities/ajouter-structure-employeuse-en-lieu/domain",
     "lieux-activite/abilities/modifier-la-fiche-du-lieu/action",
     "lieux-activite/action"
   ],
