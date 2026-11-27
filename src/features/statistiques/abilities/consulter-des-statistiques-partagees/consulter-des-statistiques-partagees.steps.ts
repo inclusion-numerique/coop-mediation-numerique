@@ -1,6 +1,9 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
-import { utilisateurDuPartage } from '@/features/statistiques/domain/utilisateur-du-partage'
+import {
+  type ProprietaireDuPartage,
+  utilisateurDuPartage,
+} from '@/features/statistiques/implementations/session/utilisateur-du-partage.transfer'
 
 const personne = {
   mediateur: { id: 'mediateur' },
@@ -11,7 +14,7 @@ const personne = {
 
 type Personne = typeof personne
 
-const proprietaires: Readonly<Record<string, { readonly _tag: string }>> = {
+const proprietaires: Readonly<Record<string, ProprietaireDuPartage>> = {
   médiateur: { _tag: 'Mediateur' },
   coordinateur: { _tag: 'Coordinateur' },
 }

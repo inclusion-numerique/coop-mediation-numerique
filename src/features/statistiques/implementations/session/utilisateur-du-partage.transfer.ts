@@ -1,7 +1,11 @@
+export type ProprietaireDuPartage = {
+  readonly _tag: 'Mediateur' | 'Coordinateur'
+}
+
 export const utilisateurDuPartage = <
   Utilisateur extends { readonly coordinateur: unknown },
 >(
-  proprietaire: { readonly _tag: string },
+  proprietaire: ProprietaireDuPartage,
   utilisateur: Utilisateur,
 ) => ({
   ...utilisateur,

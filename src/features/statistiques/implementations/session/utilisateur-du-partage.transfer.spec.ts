@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { utilisateurDuPartage } from './utilisateur-du-partage'
+import { utilisateurDuPartage } from './utilisateur-du-partage.transfer'
 
 const personne = {
   id: 'utilisateur-1',

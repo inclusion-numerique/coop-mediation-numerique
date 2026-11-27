@@ -69,7 +69,7 @@ import { lireLePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-
 import { LienDePartageId } from '@/features/mediateurs/domain'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/rdvs-des-activites.query'
 import { StatistiquesPartageesPage } from '@/features/statistiques/abilities/consulter-des-statistiques-partagees/ui/pages/StatistiquesPartageesPage'
-import { utilisateurDuPartage } from '@/features/statistiques/domain/utilisateur-du-partage'
+import { utilisateurDuPartage } from '@/features/statistiques/implementations/session/utilisateur-du-partage.transfer'
 import {
   impressionDesStatistiques,
   sectionActivites,

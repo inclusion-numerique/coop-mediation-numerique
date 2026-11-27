@@ -6,7 +6,7 @@ import { utilisateurDeLaSessionParId } from '@/features/authentification/impleme
 import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage/domain'
 import { lireLePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage/implementations/prisma/partage.query'
 import { LienDePartageId } from '@/features/mediateurs/domain'
-import { utilisateurDuPartage } from '@/features/statistiques/domain/utilisateur-du-partage'
+import { utilisateurDuPartage } from '@/features/statistiques/implementations/session/utilisateur-du-partage.transfer'
 import { RechercherDesTagsDuPartageValidation } from '@/features/tags/abilities/rechercher-des-tags/action/rechercher-des-tags.validation'
 import { rechercherDesTags } from '@/features/tags/abilities/rechercher-des-tags/implementations/prisma/rechercher-des-tags.query'
 import { TagId } from '@/features/tags/domain'

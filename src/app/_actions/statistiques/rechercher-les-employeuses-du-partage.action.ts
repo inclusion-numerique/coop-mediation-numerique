@@ -13,7 +13,7 @@ import { utilisateurDeLaSessionParId } from '@/features/authentification/impleme
 import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage/domain'
 import { lireLePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage/implementations/prisma/partage.query'
 import { LienDePartageId } from '@/features/mediateurs/domain'
-import { utilisateurDuPartage } from '@/features/statistiques/domain/utilisateur-du-partage'
+import { utilisateurDuPartage } from '@/features/statistiques/implementations/session/utilisateur-du-partage.transfer'
 import { withInput } from '@/libraries/nextjs'
 
 const rechercherDansLePartage = actionBuilder()
