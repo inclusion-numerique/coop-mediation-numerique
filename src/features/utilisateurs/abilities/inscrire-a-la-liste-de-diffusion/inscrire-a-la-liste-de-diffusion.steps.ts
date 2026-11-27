@@ -1,11 +1,11 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { inscrireLeContactALaListe } from '@/features/utilisateurs/abilities/activer-la-mediation-numerique/implementations/brevo/inscrire-le-contact-a-la-liste.mutation'
-import { inscritAInscrire } from '@/features/utilisateurs/abilities/activer-la-mediation-numerique/implementations/prisma/inscrit-a-inscrire.query'
 import type { InscriptionALaListe } from '@/features/utilisateurs/abilities/inscrire-a-la-liste-de-diffusion/domain/inscription-a-la-liste'
 import { inscrireALaListeDeDiffusion } from '@/features/utilisateurs/abilities/inscrire-a-la-liste-de-diffusion/domain/inscrire-a-la-liste-de-diffusion'
 import { UtilisateurId } from '@/features/utilisateurs/domain'
+import { inscrireLeContactALaListe } from '@/features/utilisateurs/implementations/brevo/liste-de-diffusion.mutation'
+import { inscritAInscrire } from '@/features/utilisateurs/implementations/prisma/inscrit-a-inscrire.query'
 import { semerUnCompteDeListe } from '@/features/utilisateurs/utilisateurs.cucumber'
 
 const inscrire = inscrireALaListeDeDiffusion({

@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { brevoActif } from '@/configuration/brevo'
 import {
   cleApiBrevo,
   listeDesUtilisateurs,
@@ -97,3 +98,10 @@ export const retirerDeLaListe = brevoApiThrottle(
       })
   },
 )
+
+export const inscrireLeContactALaListe = async (
+  contact: ContactAImporter,
+): Promise<void> => {
+  if (!brevoActif()) return
+  await importerDansLaListe([contact])
+}

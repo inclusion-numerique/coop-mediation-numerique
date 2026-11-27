@@ -18,10 +18,10 @@ import { enregistrerValidation } from '@/features/inscription/abilities/valider/
 import { lireFaitsInscription } from '@/features/inscription/abilities/valider/implementations/prisma/lire-faits-inscription.query'
 import { UtilisateurId } from '@/features/inscription/domain'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
-import { inscrireLeContactALaListe } from '@/features/utilisateurs/abilities/activer-la-mediation-numerique/implementations/brevo/inscrire-le-contact-a-la-liste.mutation'
-import { inscritAInscrire } from '@/features/utilisateurs/abilities/activer-la-mediation-numerique/implementations/prisma/inscrit-a-inscrire.query'
 import { inscrireALaListeDeDiffusion } from '@/features/utilisateurs/abilities/inscrire-a-la-liste-de-diffusion/domain/inscrire-a-la-liste-de-diffusion'
 import { UtilisateurId as UtilisateurDeLaListe } from '@/features/utilisateurs/domain'
+import { inscrireLeContactALaListe } from '@/features/utilisateurs/implementations/brevo/liste-de-diffusion.mutation'
+import { inscritAInscrire } from '@/features/utilisateurs/implementations/prisma/inscrit-a-inscrire.query'
 import { fromResult, withInput } from '@/libraries/nextjs'
 import { enEchecTechnique, failure, success } from '@/libraries/result'
 
