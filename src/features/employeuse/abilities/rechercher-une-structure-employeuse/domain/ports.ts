@@ -1,4 +1,5 @@
 import type { Result } from '@/libraries/result'
+import type { RechercherEmployeuse } from '../../../domain/ports'
 import type { AnnuaireIndisponible } from './errors'
 
 export type StructuresLues<Structure> = {
@@ -6,16 +7,11 @@ export type StructuresLues<Structure> = {
   readonly total: number
 }
 
-export type LireLesStructuresDeLaCoop<Structure> = (entree: {
-  readonly recherche: string
-  readonly limite: number
-}) => Promise<StructuresLues<Structure>>
-
-export type LireLAnnuaireDesEntreprises<Structure> = (
+export type LireLAnnuaireDesEntreprises<Etablissement> = (
   recherche: string,
-) => Promise<Result<StructuresLues<Structure>, AnnuaireIndisponible>>
+) => Promise<Result<StructuresLues<Etablissement>, AnnuaireIndisponible>>
 
-export type RechercherUneStructureEmployeusePorts<Coop, Annuaire> = {
-  readonly lireLesStructuresDeLaCoop: LireLesStructuresDeLaCoop<Coop>
-  readonly lireLAnnuaireDesEntreprises: LireLAnnuaireDesEntreprises<Annuaire>
+export type RechercherUneStructureEmployeusePorts<Etablissement> = {
+  readonly lireLesStructuresDeLaCoop: RechercherEmployeuse
+  readonly lireLAnnuaireDesEntreprises: LireLAnnuaireDesEntreprises<Etablissement>
 }

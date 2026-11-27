@@ -1,5 +1,5 @@
 import type { PropsWithChildren } from 'react'
-import { rechercherStructureEmployeuseAction } from '@/app/_actions/employeuse/rechercher-structure-employeuse.action'
+import { rechercherUneStructureEmployeuseAction } from '@/app/_actions/employeuse/rechercher-une-structure-employeuse.action'
 import { renseignerStructureEmployeuseAction } from '@/app/_actions/employeuse/renseigner-structure-employeuse.action'
 import { RECHERCHER_UNE_STRUCTURE_EMPLOYEUSE_ACTION_KEY } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/action/rechercher-une-structure-employeuse.key'
 import { RENSEIGNER_STRUCTURE_EMPLOYEUSE_ACTION_KEY } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/action/renseigner-structure-employeuse.key'
@@ -12,7 +12,7 @@ const Layout = ({ children }: PropsWithChildren) => (
   >
     <ClientBinder
       bind={RECHERCHER_UNE_STRUCTURE_EMPLOYEUSE_ACTION_KEY}
-      to={rechercherStructureEmployeuseAction}
+      to={rechercherUneStructureEmployeuseAction}
     >
       {children}
     </ClientBinder>

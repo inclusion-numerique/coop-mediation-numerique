@@ -1,9 +1,10 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { seedEmployeuseMain } from '@/features/employeuse/employeuse.cucumber'
+import { rechercherEmployeuse } from '@/features/employeuse/implementations/prisma/rechercher-employeuse.query'
 import { success } from '@/libraries/result'
 import { rechercherUneStructureEmployeuse } from './domain/rechercher-une-structure-employeuse'
-import { lireLesStructuresDeLaCoop } from './implementations/prisma/structures-de-la-coop.query'
+import { structuresTrouveesAffichees } from './ui/presenters/structures-trouvees.presenter'
 
 const contexte: {
   proposees: readonly { readonly nom: string; readonly source: string }[]
@@ -22,10 +23,10 @@ When(
   'je cherche la structure employeuse {string}',
   async (recherche: string) => {
     const { data } = await rechercherUneStructureEmployeuse({
-      lireLesStructuresDeLaCoop,
+      lireLesStructuresDeLaCoop: rechercherEmployeuse,
       lireLAnnuaireDesEntreprises: annuaireSansResultat,
     })({ recherche })
-    contexte.proposees = data.structures
+    contexte.proposees = structuresTrouveesAffichees(data).structures
   },
 )
 

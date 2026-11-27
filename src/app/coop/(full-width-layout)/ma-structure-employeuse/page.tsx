@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
-import { rechercherStructureEmployeuseAction } from '@/app/_actions/employeuse/rechercher-structure-employeuse.action'
+import { rechercherUneStructureEmployeuseAction } from '@/app/_actions/employeuse/rechercher-une-structure-employeuse.action'
 import { renseignerStructureEmployeuseAction } from '@/app/_actions/employeuse/renseigner-structure-employeuse.action'
 import { metadataTitle } from '@/configuration/projet'
 import { authenticateUser } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
@@ -54,7 +54,7 @@ const Page = async () => {
         >
           <ClientBinder
             bind={RECHERCHER_UNE_STRUCTURE_EMPLOYEUSE_ACTION_KEY}
-            to={rechercherStructureEmployeuseAction}
+            to={rechercherUneStructureEmployeuseAction}
           >
             <RattacherEmployeuseForm nextStepPath={null} />
           </ClientBinder>
