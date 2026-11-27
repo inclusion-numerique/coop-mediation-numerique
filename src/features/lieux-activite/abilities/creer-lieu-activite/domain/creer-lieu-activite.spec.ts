@@ -103,6 +103,11 @@ const annexeAuPort: Lieu = {
   fiche: { ...auPort.fiche, nom: Nom('Tiers-lieu du Port Annexe') },
 }
 
+const publieAuPort: Lieu = {
+  ...auPort,
+  visibilite: VisibiliteCartographie('Publie'),
+}
+
 const candidat = (suppression: Date | null): LieuCandidatCoop => ({
   id: EXISTANT,
   nom: 'Tiers-lieu du Port',
@@ -186,7 +191,34 @@ describe('créer un lieu d’activité', () => {
         enregistrer: async () => ({ _tag: 'Enregistre' }),
       })({ lieu, mediateurId }),
     ).toEqual(
-      success({ destination, mediateurId, debut: creeLe, par: createur }),
+      success({
+        destination,
+        mediateurId,
+        debut: creeLe,
+        par: createur,
+        ecritureAuRegistre: 'IdentiteSeule',
+      }),
+    )
+  })
+
+  it('écrit toute la fiche au registre quand le lieu créé est publié', async () => {
+    expect(
+      await creerLieuActivite({
+        lieuxAuMemeEndroit: async () => [],
+        enregistrer: async () => ({ _tag: 'Enregistre' }),
+      })({ lieu: publieAuPort, mediateurId }),
+    ).toEqual(
+      success({
+        destination: {
+          _tag: 'LieuACreer',
+          id: publieAuPort.id,
+          creation: publieAuPort,
+        },
+        mediateurId,
+        debut: creeLe,
+        par: createur,
+        ecritureAuRegistre: 'FicheComplete',
+      }),
     )
   })
 

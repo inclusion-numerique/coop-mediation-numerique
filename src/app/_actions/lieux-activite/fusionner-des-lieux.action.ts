@@ -8,6 +8,7 @@ import { FusionnerDesLieuxValidation } from '@/features/lieux-activite/abilities
 import { fusionnerDesLieux } from '@/features/lieux-activite/abilities/fusionner-des-lieux/domain'
 import { fichesAFusionner } from '@/features/lieux-activite/abilities/fusionner-des-lieux/implementations/prisma/fiches-a-fusionner.query'
 import { fusionnerLesLieux } from '@/features/lieux-activite/abilities/fusionner-des-lieux/implementations/prisma/fusionner-des-lieux.mutation'
+import { mediateursDesLieux } from '@/features/lieux-activite/abilities/fusionner-des-lieux/implementations/prisma/mediateurs-des-lieux.query'
 import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
 import { fromResult, withInput } from '@/libraries/nextjs'
 import { success } from '@/libraries/result'
@@ -21,6 +22,7 @@ export const fusionnerDesLieuxAction = actionBuilder()
       async ({ input }) => {
         const fusion = await fusionnerDesLieux({
           fichesAFusionner,
+          mediateursDesLieux,
           fusionner: fusionnerLesLieux,
         })({
           source: LieuId(input.sourceStructureId),

@@ -9,6 +9,7 @@ import {
   AUCUN_LIEU_PREVU,
   reconnaitreLeLieu,
 } from '../../../domain/reconnaitre-le-lieu'
+import { ecritureALaCreation } from '../../../domain/registre/ecriture-au-registre'
 import type { EchecDeCreerLieuActivite } from './errors'
 import type { LieuCree } from './lieu-cree'
 import type { CreerLieuActivitePorts } from './ports'
@@ -59,6 +60,7 @@ export const creerLieuActivite =
       mediateurId,
       debut: lieu.tracabilite.creation.date,
       par: lieu.tracabilite.creation.par,
+      ecritureAuRegistre: ecritureALaCreation(lieu.visibilite),
     }
 
     const enregistrement = await enregistrer(creation)

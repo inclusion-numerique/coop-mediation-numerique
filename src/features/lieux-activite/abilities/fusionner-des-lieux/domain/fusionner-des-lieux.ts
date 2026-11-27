@@ -1,6 +1,7 @@
 import { failure, type Result, success } from '@/libraries/result'
 import { LieuIntrouvable } from '../../../domain/errors'
 import type { LieuId } from '../../../domain/identifiants/lieu-id'
+import type { MediateurId } from '../../../domain/identifiants/mediateur-id'
 import type { EchecDeFusionnerDesLieux } from './errors'
 import type { FicheFusionnable } from './fiche-fusionnable'
 import { ficheFusionnee } from './fiche-fusionnee'
@@ -12,8 +13,26 @@ const ficheDe = (
   id: LieuId,
 ): FicheFusionnable | undefined => fiches.find(({ lieu }) => lieu.id === id)
 
+const mediateursATransferer = ({
+  rattachesALaSource,
+  enActiviteDansLaCible,
+}: {
+  readonly rattachesALaSource: readonly MediateurId[]
+  readonly enActiviteDansLaCible: readonly MediateurId[]
+}): readonly MediateurId[] => [
+  ...new Set(
+    rattachesALaSource.filter(
+      (mediateur) => !enActiviteDansLaCible.includes(mediateur),
+    ),
+  ),
+]
+
 export const fusionnerDesLieux =
-  ({ fichesAFusionner, fusionner }: FusionnerDesLieuxPorts) =>
+  ({
+    fichesAFusionner,
+    mediateursDesLieux,
+    fusionner,
+  }: FusionnerDesLieuxPorts) =>
   async ({
     source,
     cible,
@@ -37,8 +56,14 @@ export const fusionnerDesLieux =
       cible,
       fusionneLe: maintenant,
       fiche: ficheFusionnee(deLaSource, deLaCible),
+      mediateursATransferer: mediateursATransferer(
+        await mediateursDesLieux({ source, cible }),
+      ),
+      ecritureAuRegistre: 'FicheComplete',
     }
-    const { fusionne } = await fusionner(fusion)
+    const issue = await fusionner(fusion)
 
-    return fusionne ? success(fusion) : failure(LieuIntrouvable(source))
+    return issue._tag === 'LieuDisparu'
+      ? failure(LieuIntrouvable(issue.lieuId))
+      : success(fusion)
   }

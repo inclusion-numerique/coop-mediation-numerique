@@ -28,10 +28,12 @@ import { failure, success } from '@/libraries/result'
 import { VisibiliteCartographie } from '../../../domain/cartographie-nationale/visibilite-cartographie'
 import type { Fiche } from '../../../domain/fiche'
 import { LieuId } from '../../../domain/identifiants/lieu-id'
+import { MediateurId } from '../../../domain/identifiants/mediateur-id'
 import type { Lieu } from '../../../domain/lieu'
 import { ModificationInconnue } from '../../../domain/registre/tracabilite'
 import type { FicheFusionnable, HeritageDeLaFiche } from './fiche-fusionnable'
 import { fusionnerDesLieux } from './fusionner-des-lieux'
+import type { FusionDesLieux } from './ports'
 
 const SOURCE = LieuId('550e8400-e29b-41d4-a716-446655440000')
 const CIBLE = LieuId('7c9e6679-7425-40de-944b-e07fc1f90ae7')
@@ -179,7 +181,17 @@ const cibleRenseignee: FicheFusionnable = {
   heritage: heritageDeLaCible,
 }
 
-const fusionne = async () => ({ fusionne: true })
+const fusionne = async (): Promise<FusionDesLieux> => ({ _tag: 'Fusionnes' })
+
+const MEDIATEUR_DE_LA_SOURCE = MediateurId(
+  '0927f824-b84d-4840-ae2e-e4a96a7a519b',
+)
+const MEDIATEUR_DES_DEUX = MediateurId('f98724ab-93d2-46cd-bff6-1821dd6a6da7')
+
+const sansMediateur = async () => ({
+  rattachesALaSource: [],
+  enActiviteDansLaCible: [],
+})
 
 describe('fusionner des lieux', () => {
   it.each<{
@@ -201,18 +213,55 @@ describe('fusionner des lieux', () => {
     expect(
       await fusionnerDesLieux({
         fichesAFusionner: async () => fiches,
+        mediateursDesLieux: sansMediateur,
         fusionner: fusionne,
       })({ source: SOURCE, cible: CIBLE, maintenant }),
     ).toEqual(failure({ _tag: 'LieuIntrouvable', lieuId: manquant }))
   })
 
-  it('signale le lieu à absorber introuvable quand il disparaît avant la fusion', async () => {
+  it.each<{ cas: string; disparu: LieuId }>([
+    {
+      cas: 'signale le lieu à absorber qui disparaît avant la fusion',
+      disparu: SOURCE,
+    },
+    {
+      cas: 'signale le lieu à conserver qui disparaît avant la fusion',
+      disparu: CIBLE,
+    },
+  ])('$cas', async ({ disparu }) => {
     expect(
       await fusionnerDesLieux({
         fichesAFusionner: async () => [publiee(SOURCE), publiee(CIBLE)],
-        fusionner: async () => ({ fusionne: false }),
+        mediateursDesLieux: sansMediateur,
+        fusionner: async () => ({ _tag: 'LieuDisparu', lieuId: disparu }),
       })({ source: SOURCE, cible: CIBLE, maintenant }),
-    ).toEqual(failure({ _tag: 'LieuIntrouvable', lieuId: SOURCE }))
+    ).toEqual(failure({ _tag: 'LieuIntrouvable', lieuId: disparu }))
+  })
+
+  it('ne transfère au lieu conservé que les médiateurs qui n’y exercent pas déjà, une seule fois chacun', async () => {
+    expect(
+      await fusionnerDesLieux({
+        fichesAFusionner: async () => [publiee(SOURCE), publiee(CIBLE)],
+        mediateursDesLieux: async () => ({
+          rattachesALaSource: [
+            MEDIATEUR_DE_LA_SOURCE,
+            MEDIATEUR_DES_DEUX,
+            MEDIATEUR_DE_LA_SOURCE,
+          ],
+          enActiviteDansLaCible: [MEDIATEUR_DES_DEUX],
+        }),
+        fusionner: fusionne,
+      })({ source: SOURCE, cible: CIBLE, maintenant }),
+    ).toEqual(
+      success({
+        source: SOURCE,
+        cible: CIBLE,
+        fusionneLe: maintenant,
+        fiche: publiee(CIBLE),
+        mediateursATransferer: [MEDIATEUR_DE_LA_SOURCE],
+        ecritureAuRegistre: 'FicheComplete',
+      }),
+    )
   })
 
   it.each<{
@@ -301,10 +350,18 @@ describe('fusionner des lieux', () => {
     expect(
       await fusionnerDesLieux({
         fichesAFusionner: async () => [source, cible],
+        mediateursDesLieux: sansMediateur,
         fusionner: fusionne,
       })({ source: SOURCE, cible: CIBLE, maintenant }),
     ).toEqual(
-      success({ source: SOURCE, cible: CIBLE, fusionneLe: maintenant, fiche }),
+      success({
+        source: SOURCE,
+        cible: CIBLE,
+        fusionneLe: maintenant,
+        fiche,
+        mediateursATransferer: [],
+        ecritureAuRegistre: 'FicheComplete',
+      }),
     )
   })
 })

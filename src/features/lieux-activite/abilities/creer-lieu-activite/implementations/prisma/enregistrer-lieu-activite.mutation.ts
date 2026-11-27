@@ -1,19 +1,16 @@
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
 import type { Prisma } from '@/generated/prisma/client'
-import { estPublie } from '../../../../domain/cartographie-nationale/visibilite-cartographie'
 import type { LieuId } from '../../../../domain/identifiants/lieu-id'
 import type { MediateurId } from '../../../../domain/identifiants/mediateur-id'
 import type { Lieu } from '../../../../domain/lieu'
+import type { EcritureAuRegistre } from '../../../../domain/registre/ecriture-au-registre'
 import {
   lieuDisparu,
   preparerLeLieu,
 } from '../../../../implementations/prisma/destination-du-lieu.mutation'
 import { lieuFromDomain } from '../../../../implementations/prisma/lieu.transfer'
-import {
-  identiteDuLieu,
-  toutesLesColonnes,
-} from '../../../../implementations/prisma/registre/colonnes-a-ecrire.select'
+import { colonnesDeLEcriture } from '../../../../implementations/prisma/registre/colonnes-a-ecrire.select'
 import { ecrireAuRegistre } from '../../../../implementations/prisma/registre/ecrire-au-registre.mutation'
 import type {
   EnregistrementDuLieu,
@@ -46,11 +43,11 @@ const rattacher = async (
   })
 }
 
-const colonnesDuFormulaire = (lieu: Lieu) =>
-  estPublie(lieu.visibilite) ? toutesLesColonnes : identiteDuLieu
-
 const creerLaFiche =
-  (transaction: Prisma.TransactionClient) =>
+  (
+    transaction: Prisma.TransactionClient,
+    ecritureAuRegistre: EcritureAuRegistre,
+  ) =>
   async (id: LieuId, lieu: Lieu): Promise<{ readonly id: string }> => {
     const cree = await transaction.lieuInclusion.create({
       data: { ...lieuFromDomain(lieu), id },
@@ -59,7 +56,7 @@ const creerLaFiche =
 
     await ecrireAuRegistre(transaction, {
       lieu,
-      colonnes: colonnesDuFormulaire(lieu),
+      colonnes: colonnesDeLEcriture[ecritureAuRegistre],
       maintenant: lieu.tracabilite.creation.date,
     })
 
@@ -71,6 +68,7 @@ export const enregistrerLieuActivite: EnregistrerLieuActivite = async ({
   mediateurId,
   debut,
   par,
+  ecritureAuRegistre,
 }) =>
   prismaClient.$transaction(
     async (transaction): Promise<EnregistrementDuLieu> => {
@@ -80,7 +78,7 @@ export const enregistrerLieuActivite: EnregistrerLieuActivite = async ({
 
       await preparerLeLieu(transaction, destination, {
         maintenant: debut,
-        creer: creerLaFiche(transaction),
+        creer: creerLaFiche(transaction, ecritureAuRegistre),
       })
 
       await rattacher(transaction, {
