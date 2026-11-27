@@ -73,7 +73,9 @@ export const GET = async (request: NextRequest) => {
   })({ demandeur, criteres })
   if (!exporte.success) return new Response('Unauthorized', { status: 401 })
   const { exportDes, noms } = exporte.data
+  const maintenant = new Date()
   const classeur = classeurDeMesAccompagnements({
+    date: maintenant,
     criteres,
     noms,
     exportDes,
@@ -83,7 +85,7 @@ export const GET = async (request: NextRequest) => {
   })
 
   const data = await classeur.xlsx.writeBuffer()
-  const filename = nomDuFichierDesAccompagnements(new Date())
+  const filename = nomDuFichierDesAccompagnements(maintenant)
 
   return new Response(data, {
     status: 200,

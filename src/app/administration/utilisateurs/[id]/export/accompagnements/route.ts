@@ -87,7 +87,9 @@ export const GET = async (
   })({ demandeur, criteres })
   if (!exporte.success) return new Response('Not found', { status: 404 })
   const { exportDes, noms } = exporte.data
+  const maintenant = new Date()
   const classeur = classeurDeMesAccompagnements({
+    date: maintenant,
     criteres,
     noms,
     exportDes,
@@ -101,7 +103,7 @@ export const GET = async (
     headers: {
       'Content-Type':
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      'Content-Disposition': `attachment; filename="${nomDuFichierDesAccompagnements(new Date())}"`,
+      'Content-Disposition': `attachment; filename="${nomDuFichierDesAccompagnements(maintenant)}"`,
     },
   })
 }

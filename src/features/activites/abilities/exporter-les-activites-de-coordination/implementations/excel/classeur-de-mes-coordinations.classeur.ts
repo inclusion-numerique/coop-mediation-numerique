@@ -22,6 +22,7 @@ export const classeurDeMesCoordinations = ({
   auteur,
   fuseau,
   presenter,
+  genereLe,
 }: {
   readonly activites: readonly ActiviteDeCoordination[]
   readonly tags: readonly TagDeLActivite[]
@@ -29,9 +30,11 @@ export const classeurDeMesCoordinations = ({
   readonly auteur: Parameters<typeof classeurDesCoordinations>[0]['auteur']
   readonly fuseau: string
   readonly presenter: Presenter
+  readonly genereLe: Date
 }) =>
   classeurDesCoordinations({
     ...presenter({ activites, criteres, tags, fuseau }),
     auteur,
     fuseau,
+    genereLe,
   })

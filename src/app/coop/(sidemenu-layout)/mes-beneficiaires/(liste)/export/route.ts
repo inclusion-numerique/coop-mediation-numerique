@@ -39,6 +39,7 @@ export const GET = async (request: NextRequest) => {
     return new Response('Invalid query params', { status: 400 })
   }
 
+  const maintenant = new Date()
   const exportation = await exporterBeneficiairesAvec(listerBeneficiaires)({
     mediateurId: MediateurId(user.mediateur.id),
     filters:
@@ -46,11 +47,11 @@ export const GET = async (request: NextRequest) => {
         ? {}
         : { recherche: parsedQueryParams.data.recherche },
     auteur: auteurDeLExport(user),
-    maintenant: new Date(),
+    maintenant,
   })
 
   const data = await exportation.data.xlsx.writeBuffer()
-  const filename = nomDuFichierDesBeneficiaires(new Date())
+  const filename = nomDuFichierDesBeneficiaires(maintenant)
 
   return new Response(data, {
     status: 200,

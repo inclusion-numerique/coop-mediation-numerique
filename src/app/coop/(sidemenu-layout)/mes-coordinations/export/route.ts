@@ -36,7 +36,9 @@ export const GET = async (request: NextRequest) => {
     ),
   })({ coordinateurId: CoordinateurId(user.coordinateur.id), criteres })
   const { activites, tags } = exportees.data
+  const maintenant = new Date()
   const classeur = classeurDeMesCoordinations({
+    genereLe: maintenant,
     activites,
     tags,
     criteres,
@@ -52,7 +54,7 @@ export const GET = async (request: NextRequest) => {
     headers: {
       'Content-Type':
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      'Content-Disposition': `attachment; filename="${nomDuFichierDesCoordinations(new Date())}"`,
+      'Content-Disposition': `attachment; filename="${nomDuFichierDesCoordinations(maintenant)}"`,
     },
   })
 }
