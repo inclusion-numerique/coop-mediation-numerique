@@ -1,6 +1,7 @@
-export type ProprietaireDuPartage = {
-  readonly _tag: 'Mediateur' | 'Coordinateur'
-}
+import {
+  montreLEquipe,
+  type ProprietaireDuPartage,
+} from '../../domain/proprietaire-du-partage'
 
 export const utilisateurDuPartage = <
   Utilisateur extends { readonly coordinateur: unknown },
@@ -11,6 +12,5 @@ export const utilisateurDuPartage = <
   ...utilisateur,
   emplois: [],
   rdvAccount: null,
-  coordinateur:
-    proprietaire._tag === 'Coordinateur' ? utilisateur.coordinateur : null,
+  coordinateur: montreLEquipe(proprietaire) ? utilisateur.coordinateur : null,
 })

@@ -1,9 +1,7 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
-import {
-  type ProprietaireDuPartage,
-  utilisateurDuPartage,
-} from '@/features/statistiques/implementations/session/utilisateur-du-partage.transfer'
+import type { ProprietaireDuPartage } from '@/features/statistiques/domain/proprietaire-du-partage'
+import { utilisateurDuPartage } from '@/features/statistiques/implementations/session/utilisateur-du-partage.transfer'
 
 const personne = {
   mediateur: { id: 'mediateur' },
