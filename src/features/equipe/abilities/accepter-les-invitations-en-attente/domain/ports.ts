@@ -4,9 +4,13 @@ import type {
   MediateurInvite,
 } from './acceptations-en-attente'
 
+export type MediateurInviteLu = Omit<MediateurInvite, 'email'> & {
+  readonly email: Courriel | null
+}
+
 export type LireLeMediateurInvite = (
   utilisateurId: UtilisateurId,
-) => Promise<MediateurInvite | null>
+) => Promise<MediateurInviteLu | null>
 
 export type LireLesInvitationsDe = (
   email: Courriel,

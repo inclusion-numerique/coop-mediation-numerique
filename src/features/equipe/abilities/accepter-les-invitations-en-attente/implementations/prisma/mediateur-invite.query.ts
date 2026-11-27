@@ -21,7 +21,7 @@ export const lireLeMediateurInvite: LireLeMediateurInvite = async (
     ? null
     : {
         mediateurId: MediateurId(utilisateur.mediateur.id),
-        email: Courriel(utilisateur.email),
+        email: Courriel.safe(utilisateur.email),
       }
 }
 

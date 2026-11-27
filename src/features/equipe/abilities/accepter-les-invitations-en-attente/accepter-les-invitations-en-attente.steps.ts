@@ -1,5 +1,7 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
+import { v4 } from 'uuid'
+import { prismaClient } from '@/configuration/prisma'
 import { UtilisateurId } from '@/features/equipe/domain'
 import {
   adhesionsDe,
@@ -17,7 +19,13 @@ import {
   lireLesInvitationsDe,
 } from './implementations/prisma/mediateur-invite.query'
 
-const contexte: { coordinateur?: CoordinateurSeme; invite?: MediateurSeme } = {}
+const contexte: {
+  coordinateur?: CoordinateurSeme
+  invite?: MediateurSeme
+  issue?: Awaited<
+    ReturnType<ReturnType<typeof accepterLesInvitationsEnAttente>>
+  >
+} = {}
 
 const coordinateur = (): CoordinateurSeme => {
   assert.ok(contexte.coordinateur)
@@ -59,8 +67,15 @@ Given("un médiateur qui a refusé l'invitation d'une équipe", async () => {
   await inviter('Refusee')
 })
 
+Given('son adresse électronique enregistrée est illisible', async () => {
+  await prismaClient.user.update({
+    where: { id: invite().userId },
+    data: { email: `illisible-${v4()}` },
+  })
+})
+
 When('ses invitations en attente sont acceptées', async () => {
-  await accepterLesInvitationsEnAttente({
+  contexte.issue = await accepterLesInvitationsEnAttente({
     lireLeMediateurInvite,
     lireLesInvitationsDe,
     enregistrerLesAcceptations,
@@ -85,4 +100,15 @@ Then("il a rejoint l'équipe qui l'avait invité", async () => {
 
 Then("il n'a pas rejoint cette équipe", async () => {
   assert.strictEqual((await adhesions()).length, 0)
+})
+
+Then("l'acceptation est refusée faute de courriel lisible", () => {
+  assert.strictEqual(
+    contexte.issue?.success === false ? contexte.issue.error._tag : null,
+    'CourrielDuMediateurIllisible',
+  )
+})
+
+Then('son invitation reste en attente', async () => {
+  assert.strictEqual((await invitation())?.acceptee ?? null, null)
 })

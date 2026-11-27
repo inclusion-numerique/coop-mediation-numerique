@@ -83,4 +83,17 @@ describe('accepter les invitations en attente d’un médiateur qui s’inscrit'
       data: { type: 'SansCompteMediateur' },
     })
   })
+
+  it('refuse d’accepter les invitations d’un médiateur dont le courriel est illisible', async () => {
+    const accepter = accepterLesInvitationsEnAttente({
+      lireLeMediateurInvite: async () => ({ mediateurId, email: null }),
+      lireLesInvitationsDe: async () => [enAttente],
+      enregistrerLesAcceptations: async () => undefined,
+    })
+
+    expect(await accepter({ utilisateurId, maintenant })).toEqual({
+      success: false,
+      error: { _tag: 'CourrielDuMediateurIllisible', mediateurId },
+    })
+  })
 })
