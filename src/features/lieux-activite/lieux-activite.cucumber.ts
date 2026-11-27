@@ -408,19 +408,23 @@ const renseigner = async (saisies: LieuxAAjouterData['lieux']) => {
   )
 }
 
-const creerUnLieuDActivite = (saisie: CreerLieuActiviteData) =>
-  creerLieuActivite({
+const creerUnLieuDActivite = (saisie: CreerLieuActiviteData) => {
+  const maintenant = new Date()
+
+  return creerLieuActivite({
     lieuxAuMemeEndroit,
     enregistrer: enregistrerLieuActivite,
   })({
     lieu: nouveauLieu(
       saisie,
       UtilisateurId(utilisateurCourant()),
-      new Date(),
+      maintenant,
       LieuId(crypto.randomUUID()),
     ),
     mediateurId: MediateurId(mediateurCourant()),
+    maintenant,
   })
+}
 
 const typologiesLues = (nom: string): string =>
   [nom, `${nom} SAS`].map((lu) => typologiesDepuisNom(lu).join()).join(';')

@@ -32,6 +32,7 @@ import { ModificationInconnue } from '../../../domain/registre/tracabilite'
 import { creerLieuActivite } from './creer-lieu-activite'
 
 const creeLe = new Date('2026-01-01T00:00:00Z')
+const maintenant = new Date('2026-01-01T00:00:05Z')
 const supprimeLe = new Date('2025-06-01T00:00:00Z')
 const createur = UtilisateurId('3f2b8c1d-6e4a-4b9f-8d7c-2a1e5f0b9c34')
 const mediateurId = MediateurId('9b2d5a3e-1f4c-4e8a-9d6b-3c7e2f1a8b40')
@@ -131,7 +132,7 @@ describe('créer un lieu d’activité', () => {
           _tag: 'Enregistre',
           rattachement: { _tag: 'Rattache' },
         }),
-      })({ lieu: auPort, mediateurId: null }),
+      })({ lieu: auPort, mediateurId: null, maintenant }),
     ).toEqual(failure({ _tag: 'MediateurRequis' }))
   })
 
@@ -197,12 +198,12 @@ describe('créer un lieu d’activité', () => {
           _tag: 'Enregistre',
           rattachement: { _tag: 'Rattache' },
         }),
-      })({ lieu, mediateurId }),
+      })({ lieu, mediateurId, maintenant }),
     ).toEqual(
       success({
         destination,
         mediateurId,
-        debut: creeLe,
+        debut: maintenant,
         par: createur,
         ecritureAuRegistre: { _tag: 'IdentiteSeule' },
         rattachement: { _tag: 'Rattache' },
@@ -218,7 +219,7 @@ describe('créer un lieu d’activité', () => {
           _tag: 'Enregistre',
           rattachement: { _tag: 'Rattache' },
         }),
-      })({ lieu: publieAuPort, mediateurId }),
+      })({ lieu: publieAuPort, mediateurId, maintenant }),
     ).toEqual(
       success({
         destination: {
@@ -227,7 +228,7 @@ describe('créer un lieu d’activité', () => {
           creation: publieAuPort,
         },
         mediateurId,
-        debut: creeLe,
+        debut: maintenant,
         par: createur,
         ecritureAuRegistre: { _tag: 'FicheComplete' },
         rattachement: { _tag: 'Rattache' },
@@ -240,7 +241,7 @@ describe('créer un lieu d’activité', () => {
       await creerLieuActivite({
         lieuxAuMemeEndroit: async () => [candidat(null)],
         enregistrer: async () => ({ _tag: 'LieuDisparu', lieuId: EXISTANT }),
-      })({ lieu: auPort, mediateurId }),
+      })({ lieu: auPort, mediateurId, maintenant }),
     ).toEqual(failure({ _tag: 'LieuIntrouvable', lieuId: EXISTANT }))
   })
 
@@ -252,12 +253,12 @@ describe('créer un lieu d’activité', () => {
           _tag: 'Enregistre',
           rattachement: { _tag: 'DejaRattache' },
         }),
-      })({ lieu: auPort, mediateurId }),
+      })({ lieu: auPort, mediateurId, maintenant }),
     ).toEqual(
       success({
         destination: { _tag: 'LieuActif', id: EXISTANT },
         mediateurId,
-        debut: creeLe,
+        debut: maintenant,
         par: createur,
         ecritureAuRegistre: { _tag: 'IdentiteSeule' },
         rattachement: { _tag: 'DejaRattache' },

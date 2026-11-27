@@ -49,16 +49,18 @@ export const creerLieuActivite =
   async ({
     lieu,
     mediateurId,
+    maintenant,
   }: {
     readonly lieu: Lieu
     readonly mediateurId: MediateurId | null
+    readonly maintenant: Date
   }): Promise<Result<LieuActiviteCree, EchecDeCreerLieuActivite>> => {
     if (mediateurId == null) return failure(MediateurRequis())
 
     const creation: LieuCree = {
       destination: await destinationDuLieu(lieuxAuMemeEndroit)(lieu),
       mediateurId,
-      debut: lieu.tracabilite.creation.date,
+      debut: maintenant,
       par: lieu.tracabilite.creation.par,
       ecritureAuRegistre: ecritureALaCreation(lieu.visibilite),
     }

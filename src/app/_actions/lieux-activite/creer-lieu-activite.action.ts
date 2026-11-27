@@ -22,6 +22,7 @@ export const creerUnLieuActiviteAction = actionBuilder()
   .execute(
     fromResult(
       async ({ user, input }) => {
+        const maintenant = new Date()
         const creation = await creerLieuActivite({
           lieuxAuMemeEndroit,
           enregistrer: enregistrerLieuActivite,
@@ -29,11 +30,12 @@ export const creerUnLieuActiviteAction = actionBuilder()
           lieu: nouveauLieu(
             input,
             UtilisateurId(user.id),
-            new Date(),
+            maintenant,
             LieuId(crypto.randomUUID()),
           ),
           mediateurId:
             user.mediateur == null ? null : MediateurId(user.mediateur.id),
+          maintenant,
         })
 
         return creation.success

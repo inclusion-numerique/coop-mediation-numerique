@@ -61,6 +61,7 @@ const creer = async (
   mediateurId: string | null,
   quoi: CreerLieuActiviteData = saisie,
 ) => {
+  const maintenant = new Date()
   dernier.creation = await creerLieuActivite({
     lieuxAuMemeEndroit,
     enregistrer: enregistrerLieuActivite,
@@ -68,10 +69,11 @@ const creer = async (
     lieu: nouveauLieu(
       quoi,
       UtilisateurId(ficheSemee().userIds[0] ?? ''),
-      new Date(),
+      maintenant,
       LieuId(crypto.randomUUID()),
     ),
     mediateurId: mediateurId == null ? null : MediateurId(mediateurId),
+    maintenant,
   })
 
   if (dernier.creation.success)
