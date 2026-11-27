@@ -10,7 +10,7 @@ export type EmployeuseEnLieu<Destination> =
     }
   | {
       readonly _tag: 'DetacheeDesLieux'
-      readonly lieu: LieuDecrit
+      readonly lieu: LieuDecrit | null
       readonly trace: TraceDeLEmployeuse
       readonly lieuDetache: LieuId | null
     }

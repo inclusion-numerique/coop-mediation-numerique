@@ -1,10 +1,12 @@
 import { describe, expect, it } from 'vitest'
 import { LieuId, UtilisateurId } from '@/features/inscription/domain'
-import type { AdresseBanData } from '@/libraries/adresse'
+import { CodePostal } from '@/libraries/code-postal'
+import { CodeInsee } from '@/libraries/insee'
 import { failure, success } from '@/libraries/result'
 import { ajouterStructureEmployeuseEnLieu } from './ajouter-structure-employeuse-en-lieu'
 import { EmployeuseId } from './employeuse-id'
 import type {
+  AdresseGeocodee,
   AjouterStructureEmployeuseEnLieuPorts,
   EmployeuseLue,
 } from './ports'
@@ -34,8 +36,8 @@ const employeuseAdressee: EmployeuseLue = {
   adresse: {
     voie: '4 rue de la Rue',
     commune: 'Lyon',
-    codePostal: '69001',
-    codeInsee: '69381',
+    codePostal: CodePostal('69001'),
+    codeInsee: CodeInsee('69381'),
   },
   contactReferent: {
     _tag: 'renseigne',
@@ -45,13 +47,12 @@ const employeuseAdressee: EmployeuseLue = {
   },
 }
 
-const adresseBan: AdresseBanData = {
+const adresseBan: AdresseGeocodee = {
   id: '69381_1234_00004',
   nom: '4 Rue de la Rue',
   commune: 'Lyon',
-  codePostal: '69001',
-  codeInsee: '69381',
-  contexte: '69, Rhône, Auvergne-Rhône-Alpes',
+  codePostal: CodePostal('69001'),
+  codeInsee: CodeInsee('69381'),
   latitude: 45.767,
   longitude: 4.834,
 }
@@ -93,8 +94,8 @@ describe('ajouter la structure employeuse en lieu d’activité', () => {
           nom: 'Association du numérique',
           adresse: '4 Rue de la Rue',
           commune: 'Lyon',
-          codePostal: '69001',
-          codeInsee: '69381',
+          codePostal: CodePostal('69001'),
+          codeInsee: CodeInsee('69381'),
           banId: '69381_1234_00004',
           latitude: 45.767,
           longitude: 4.834,
@@ -126,8 +127,8 @@ describe('ajouter la structure employeuse en lieu d’activité', () => {
           nom: 'Association du numérique',
           adresse: '4 rue de la Rue',
           commune: 'Lyon',
-          codePostal: '69001',
-          codeInsee: '69381',
+          codePostal: CodePostal('69001'),
+          codeInsee: CodeInsee('69381'),
           complementAdresse: null,
           siret: '13002526500013',
           synchronisationSiret: maintenant,
@@ -140,7 +141,7 @@ describe('ajouter la structure employeuse en lieu d’activité', () => {
     )
   })
 
-  it('retire des lieux d’activité une employeuse sans nom, sans adresse ni SIRET ni référent', async () => {
+  it('ne cherche aucun lieu à retirer pour une employeuse sans adresse', async () => {
     expect(
       await ajouterStructureEmployeuseEnLieu({
         ...ports,
@@ -153,20 +154,7 @@ describe('ajouter la structure employeuse en lieu d’activité', () => {
         _tag: 'DetacheeDesLieux',
         trace,
         lieuDetache: null,
-        lieu: {
-          nom: '',
-          adresse: '',
-          commune: '',
-          codePostal: '',
-          codeInsee: null,
-          complementAdresse: null,
-          siret: null,
-          synchronisationSiret: null,
-          rna: null,
-          nomReferent: null,
-          courrielReferent: null,
-          telephoneReferent: null,
-        },
+        lieu: null,
       }),
     )
   })
@@ -181,8 +169,8 @@ describe('ajouter la structure employeuse en lieu d’activité', () => {
             adresse: {
               voie: null,
               commune: 'Lyon',
-              codePostal: '69001',
-              codeInsee: '69381',
+              codePostal: CodePostal('69001'),
+              codeInsee: CodeInsee('69381'),
             },
           },
         }),
@@ -196,8 +184,8 @@ describe('ajouter la structure employeuse en lieu d’activité', () => {
           nom: '',
           adresse: '',
           commune: 'Lyon',
-          codePostal: '69001',
-          codeInsee: '69381',
+          codePostal: CodePostal('69001'),
+          codeInsee: CodeInsee('69381'),
           complementAdresse: null,
           siret: null,
           synchronisationSiret: null,

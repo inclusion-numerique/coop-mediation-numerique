@@ -1,3 +1,7 @@
+import {
+  CodeInsee,
+  CodePostal,
+} from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { prismaClient } from '@/configuration/prisma'
 import { LieuId } from '../../domain/identifiants/lieu-id'
 import type { LieuxAuMemeEndroit } from '../../domain/ports'
@@ -26,4 +30,10 @@ export const lieuxAuMemeEndroit: LieuxAuMemeEndroit = async ({
         typologies: true,
       },
     })
-  ).map((candidat) => ({ ...candidat, id: LieuId(candidat.id) }))
+  ).map((candidat) => ({
+    ...candidat,
+    id: LieuId(candidat.id),
+    codePostal: CodePostal.safe(candidat.codePostal),
+    codeInsee:
+      candidat.codeInsee === null ? null : CodeInsee.safe(candidat.codeInsee),
+  }))

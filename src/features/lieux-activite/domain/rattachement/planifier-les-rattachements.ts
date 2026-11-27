@@ -5,6 +5,7 @@ import type {
 } from '../destination-du-lieu'
 import { LieuIntrouvable } from '../errors'
 import type { LieuId } from '../identifiants/lieu-id'
+import type { LieuAMaterialiser } from '../lieu-identite'
 import type { PlanifierLesRattachementsPorts } from '../ports'
 import {
   AUCUN_LIEU_PREVU,
@@ -23,7 +24,8 @@ type Plan = {
 const lieuAReconnaitre = (
   { nom, adresse, localisation }: LieuACreer,
   lieuCarto: LieuCarto | undefined,
-): Omit<LieuCandidatCoop, 'id' | 'suppression'> => ({
+): Omit<LieuCandidatCoop, 'id' | 'suppression' | 'codePostal'> &
+  LieuAMaterialiser => ({
   nom: lieuCarto?.fiche.nom ?? nom,
   adresse: adresse.voie,
   commune: adresse.commune,

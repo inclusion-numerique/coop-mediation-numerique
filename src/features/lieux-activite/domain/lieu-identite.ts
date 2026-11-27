@@ -1,4 +1,6 @@
 import {
+  type CodeInsee,
+  type CodePostal,
   type ComparaisonMesuree,
   comparer,
   type LieuPrepare,
@@ -10,8 +12,8 @@ export type LieuAMaterialiser = {
   readonly nom: string
   readonly adresse: string
   readonly commune: string
-  readonly codePostal: string
-  readonly codeInsee?: string | null
+  readonly codePostal: CodePostal
+  readonly codeInsee?: CodeInsee | null
   readonly latitude?: number | null
   readonly longitude?: number | null
   readonly typologies?: readonly string[] | null
@@ -24,8 +26,8 @@ export type LieuCandidat = {
   readonly latitude: number | null
   readonly longitude: number | null
   readonly commune: string
-  readonly codePostal: string
-  readonly codeInsee: string | null
+  readonly codePostal: CodePostal | null
+  readonly codeInsee: CodeInsee | null
   readonly suppression: Date | null
   readonly typologies?: readonly string[] | null
 }

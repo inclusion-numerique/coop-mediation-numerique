@@ -1,5 +1,7 @@
 import {
   Adresse,
+  CodeInsee,
+  CodePostal,
   Contact,
   DispositifProgrammesNationaux,
   FormationsLabels,
@@ -106,8 +108,8 @@ const candidat = (suppression: Date | null): LieuCandidatCoop => ({
   nom: 'Maison France Services',
   adresse: '12 rue de la Paix',
   commune: 'Reims',
-  codePostal: '51100',
-  codeInsee: '51454',
+  codePostal: CodePostal('51100'),
+  codeInsee: CodeInsee('51454'),
   latitude: 49.25,
   longitude: 4.03,
   suppression,

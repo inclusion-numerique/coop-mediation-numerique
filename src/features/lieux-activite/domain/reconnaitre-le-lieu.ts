@@ -1,7 +1,7 @@
-import type {
+import {
   Endroit,
-  LieuCandidatCoop,
-  LieuConnu,
+  type LieuCandidatCoop,
+  type LieuConnu,
 } from './destination-du-lieu'
 import type { LieuId } from './identifiants/lieu-id'
 import { correler, type LieuAMaterialiser } from './lieu-identite'
@@ -18,7 +18,7 @@ export const endroitDe = ({
   codeInsee,
   codePostal,
 }: LieuAMaterialiser): Endroit | null =>
-  codeInsee ? { codeInsee, codePostal } : null
+  codeInsee ? Endroit({ codeInsee, codePostal }) : null
 
 const auMemeEndroit =
   (endroit: Endroit) =>

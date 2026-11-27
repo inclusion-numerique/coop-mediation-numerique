@@ -3,6 +3,7 @@ import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
 import type {
+  AdresseGeocodee,
   EmployeuseLue,
   Geocodage,
 } from '@/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/domain'
@@ -10,7 +11,8 @@ import {
   seedEmployeuseMain,
   utilisateurDeLInscriptionEnCours,
 } from '@/features/inscription/inscription.cucumber'
-import type { AdresseBanData } from '@/libraries/adresse'
+import { CodePostal } from '@/libraries/code-postal'
+import { CodeInsee } from '@/libraries/insee'
 import { success } from '@/libraries/result'
 import { ajouterStructureEmployeuseEnLieu } from './domain/ajouter-structure-employeuse-en-lieu'
 import { EmployeuseId } from './domain/employeuse-id'
@@ -18,14 +20,12 @@ import { lireLAdresseDeLEmployeuse } from './implementations/prisma/adresse-de-l
 
 const nomEmployeuse = 'Employeuse lieu d’activité'
 
-const ADRESSE_RECONNUE: AdresseBanData = {
+const ADRESSE_RECONNUE: AdresseGeocodee = {
   id: '75101_7038_00001',
-  label: '1 Rue de la Paix 75001 Paris',
   nom: '1 Rue de la Paix',
   commune: 'Paris',
-  codePostal: '75001',
-  codeInsee: '75101',
-  contexte: '75, Paris, Île-de-France',
+  codePostal: CodePostal('75001'),
+  codeInsee: CodeInsee('75101'),
   latitude: 48.869_36,
   longitude: 2.331_08,
 }
@@ -98,8 +98,8 @@ Given('j’ai une structure employeuse', async () => {
       adresse: {
         voie: '1 rue de la Paix',
         commune: 'Paris',
-        codePostal: '75001',
-        codeInsee: '75101',
+        codePostal: CodePostal('75001'),
+        codeInsee: CodeInsee('75101'),
       },
       contactReferent: { _tag: 'nonRenseigne' },
     },
@@ -137,7 +137,7 @@ Then('ma structure employeuse est confiée au détachement', () => {
     etat.resultat?.success && etat.resultat.data._tag === 'DetacheeDesLieux',
     'La structure employeuse n’a pas été confiée au détachement',
   )
-  assert.strictEqual(etat.resultat.data.lieu.nom, nomEmployeuse)
+  assert.strictEqual(etat.resultat.data.lieu?.nom, nomEmployeuse)
 })
 
 Then('rien n’est confié au rattachement', () => {

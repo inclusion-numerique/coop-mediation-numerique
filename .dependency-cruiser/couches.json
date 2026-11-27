@@ -149,7 +149,8 @@
   "libraries/code-postal": [
     "activites/domain",
     "employeuse/domain",
-    "equipe/domain"
+    "equipe/domain",
+    "inscription/abilities/ajouter-structure-employeuse-en-lieu/domain"
   ],
   "libraries/collections": [
     "lieux-activite/abilities/ajouter-des-lieux-activite/domain"
@@ -195,6 +196,7 @@
     "employeuse/domain",
     "equipe/abilities/lister-les-membres/domain",
     "equipe/domain",
+    "inscription/abilities/ajouter-structure-employeuse-en-lieu/domain",
     "inscription/abilities/initialiser-inscription/domain",
     "lieux-activite/abilities/lister-les-mediateurs-du-lieu/domain",
     "lieux-activite/abilities/mesurer-la-visibilite-sur-la-cartographie/domain",

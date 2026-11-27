@@ -1,5 +1,6 @@
 import type { LieuId, UtilisateurId } from '@/features/inscription/domain'
-import type { AdresseBanData } from '@/libraries/adresse'
+import type { CodePostal } from '@/libraries/code-postal'
+import type { CodeInsee } from '@/libraries/insee'
 import type { Result } from '@/libraries/result'
 import type { EmployeuseId } from './employeuse-id'
 
@@ -18,8 +19,8 @@ export type EmployeuseLue = {
   readonly adresse: {
     readonly voie: string | null
     readonly commune: string
-    readonly codePostal: string
-    readonly codeInsee: string
+    readonly codePostal: CodePostal
+    readonly codeInsee: CodeInsee
   } | null
   readonly contactReferent:
     | { readonly _tag: 'nonRenseigne' }
@@ -35,12 +36,22 @@ export type ConsulterEmployeuseActuelle = (input: {
   readonly userId: UtilisateurId
 }) => Promise<{ readonly employeuse: EmployeuseLue } | null>
 
+export type AdresseGeocodee = {
+  readonly id: string
+  readonly nom: string
+  readonly commune: string
+  readonly codePostal: CodePostal
+  readonly codeInsee: CodeInsee
+  readonly latitude: number
+  readonly longitude: number
+}
+
 export type LieuDecrit = {
   readonly nom: string
   readonly adresse: string
   readonly commune: string
-  readonly codePostal: string
-  readonly codeInsee: string | null
+  readonly codePostal: CodePostal
+  readonly codeInsee: CodeInsee | null
   readonly banId?: string
   readonly latitude?: number
   readonly longitude?: number
@@ -89,7 +100,7 @@ export type LireLAdresseDeLEmployeuse = (
 ) => Promise<AdresseAGeocoder | null>
 
 export type Geocodage =
-  | { readonly _tag: 'AdresseReconnue'; readonly adresse: AdresseBanData }
+  | { readonly _tag: 'AdresseReconnue'; readonly adresse: AdresseGeocodee }
   | { readonly _tag: 'AdresseInconnue' }
   | { readonly _tag: 'ServiceIndisponible' }
 

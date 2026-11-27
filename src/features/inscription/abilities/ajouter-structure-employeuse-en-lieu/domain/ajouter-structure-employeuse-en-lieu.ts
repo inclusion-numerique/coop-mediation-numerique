@@ -10,7 +10,7 @@ import {
   EmployeuseIntrouvable,
   ServiceAdresseIndisponible,
 } from './errors'
-import { lieuDepuisEmployeuse } from './lieu-depuis-employeuse'
+import { lieuALAdresseConnue, lieuGeocode } from './lieu-depuis-employeuse'
 import type { AjouterStructureEmployeuseEnLieuPorts, Geocodage } from './ports'
 
 export const ajouterStructureEmployeuseEnLieu =
@@ -46,11 +46,15 @@ export const ajouterStructureEmployeuseEnLieu =
     const trace = { userId, structureId: employeuse.id }
 
     if (!estLieuActivite) {
-      const lieu = lieuDepuisEmployeuse({
-        employeuse,
-        adresseBan: null,
-        maintenant,
-      })
+      const lieu = lieuALAdresseConnue({ employeuse, maintenant })
+
+      if (lieu === null)
+        return success({
+          _tag: 'DetacheeDesLieux',
+          lieu,
+          trace,
+          lieuDetache: null,
+        })
 
       const { data: lieuDetache } = await lieuCorreleAuLieuDecrit({ lieu })
 
@@ -77,7 +81,7 @@ export const ajouterStructureEmployeuseEnLieu =
     if (geocodage._tag === 'AdresseInconnue')
       return failure(AdresseNonReconnue(employeuseId))
 
-    const lieu = lieuDepuisEmployeuse({
+    const lieu = lieuGeocode({
       employeuse,
       adresseBan: geocodage.adresse,
       maintenant,

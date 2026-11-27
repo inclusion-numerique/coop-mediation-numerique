@@ -1,5 +1,7 @@
 import {
   Adresse,
+  CodeInsee,
+  CodePostal,
   Contact,
   DispositifProgrammesNationaux,
   FormationsLabels,
@@ -113,8 +115,8 @@ const candidat = (suppression: Date | null): LieuCandidatCoop => ({
   nom: 'Tiers-lieu du Port',
   adresse: '12 quai du Port',
   commune: 'Rochefort',
-  codePostal: '17300',
-  codeInsee: '17299',
+  codePostal: CodePostal('17300'),
+  codeInsee: CodeInsee('17299'),
   latitude: 45.94,
   longitude: -0.96,
   suppression,

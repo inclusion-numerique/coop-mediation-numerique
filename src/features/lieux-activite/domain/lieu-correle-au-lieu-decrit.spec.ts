@@ -1,3 +1,7 @@
+import {
+  CodeInsee,
+  CodePostal,
+} from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { describe, expect, it } from 'vitest'
 import { success } from '@/libraries/result'
 import type { LieuCandidatCoop } from './destination-du-lieu'
@@ -12,8 +16,8 @@ const decrit: LieuAMaterialiser = {
   nom: 'Association du numérique',
   adresse: '4 Rue de la Rue',
   commune: 'Lyon',
-  codePostal: '69001',
-  codeInsee: '69381',
+  codePostal: CodePostal('69001'),
+  codeInsee: CodeInsee('69381'),
   latitude: 45.767,
   longitude: 4.834,
 }
@@ -23,8 +27,8 @@ const candidat = (suppression: Date | null): LieuCandidatCoop => ({
   nom: 'Association du numérique',
   adresse: '4 Rue de la Rue',
   commune: 'Lyon',
-  codePostal: '69001',
-  codeInsee: '69381',
+  codePostal: CodePostal('69001'),
+  codeInsee: CodeInsee('69381'),
   latitude: 45.767,
   longitude: 4.834,
   suppression,

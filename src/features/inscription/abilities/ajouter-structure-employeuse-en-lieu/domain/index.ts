@@ -1,4 +1,5 @@
 export type {
+  AdresseGeocodee,
   EmployeuseLue,
   Geocodage,
   GeocoderLAdresse,
