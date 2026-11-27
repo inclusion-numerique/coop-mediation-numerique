@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { communeComptee } from './commune-comptee'
+import { communeComptee } from './commune-comptee.transfer'
 
 describe('commune comptée', () => {
   it('est renseignée quand nom, code postal et code INSEE sont valides', () => {

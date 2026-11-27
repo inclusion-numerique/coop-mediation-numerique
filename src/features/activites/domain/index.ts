@@ -211,10 +211,7 @@ export {
   StatutDeRendezVous,
 } from './rendez-vous/statut-de-rendez-vous'
 export { TitreDuRendezVous } from './rendez-vous/titre-du-rendez-vous'
-export {
-  type CommuneComptee,
-  communeComptee,
-} from './statistiques/commune-comptee'
+export { type CommuneComptee } from './statistiques/commune-comptee'
 export {
   type CriteresDesStatistiques,
   type PeriodeDesStatistiques,
