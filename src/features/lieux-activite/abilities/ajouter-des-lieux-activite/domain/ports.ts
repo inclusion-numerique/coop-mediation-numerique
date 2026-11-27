@@ -1,10 +1,9 @@
-import type { IdentifiantCartographie } from '../../../domain/cartographie-nationale/ids-cartographie-nationale'
 import type { LieuId } from '../../../domain/identifiants/lieu-id'
 import type { MediateurId } from '../../../domain/identifiants/mediateur-id'
-import type { DestinationDuLieuDecritPorts } from '../../../domain/ports'
+import type { PlanifierLesRattachementsPorts } from '../../../domain/ports'
+import type { LieuCarto } from '../../../domain/rattachement/lieu-carto'
 import type { AjoutDeLieux } from './ajout-de-lieux'
-import type { LieuCarto } from './lieu-carto'
-import type { LieuDejaRattache } from './lieu-demande'
+import type { LieuDejaRattache } from './lieu-deja-rattache'
 
 export type TrouverStructuresCarto = (
   cartoIds: readonly string[],
@@ -14,14 +13,6 @@ export type LireLieuxDejaRattaches = (
   mediateurId: MediateurId,
 ) => Promise<readonly LieuDejaRattache[]>
 
-export type EtatDuLieu = 'Actif' | 'Inactif'
-
-export type LireLEtatDuLieu = (lieuId: LieuId) => Promise<EtatDuLieu | null>
-
-export type LieuPorteurDeLaCarto = (
-  identifiant: IdentifiantCartographie,
-) => Promise<LieuId | null>
-
 export type RattachementAuxLieux =
   | { readonly _tag: 'Rattaches' }
   | { readonly _tag: 'LieuDisparu'; readonly lieuId: LieuId }
@@ -29,11 +20,6 @@ export type RattachementAuxLieux =
 export type RattacherAuxLieux = (
   ajout: AjoutDeLieux,
 ) => Promise<RattachementAuxLieux>
-
-export type PlanifierLesRattachementsPorts = DestinationDuLieuDecritPorts & {
-  readonly etatDuLieu: LireLEtatDuLieu
-  readonly lieuPorteurDeLaCarto: LieuPorteurDeLaCarto
-}
 
 export type AjouterDesLieuxActivitePorts = PlanifierLesRattachementsPorts & {
   readonly trouverStructuresCarto: TrouverStructuresCarto

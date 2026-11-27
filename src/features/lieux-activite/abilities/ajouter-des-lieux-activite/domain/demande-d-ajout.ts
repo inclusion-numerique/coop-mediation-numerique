@@ -1,8 +1,8 @@
 import { failure, type Result, success } from '@/libraries/result'
 import { MediateurRequis } from '../../../domain/errors'
 import type { MediateurId } from '../../../domain/identifiants/mediateur-id'
+import type { LieuDemande } from '../../../domain/rattachement/lieu-demande'
 import { type EchecDeAjouterDesLieuxActivite, PanierVide } from './errors'
-import type { LieuDemande } from './lieu-demande'
 
 export const demandeDAjout = ({
   mediateurId,

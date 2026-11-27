@@ -1,6 +1,7 @@
 import { onlyDefinedAndNotNull } from '@/libraries/collections'
+import type { LieuDemande } from '../../../domain/rattachement/lieu-demande'
 import { identifiantsCarto } from './identifiants-carto'
-import type { LieuDejaRattache, LieuDemande } from './lieu-demande'
+import type { LieuDejaRattache } from './lieu-deja-rattache'
 
 const identite = ({
   id,

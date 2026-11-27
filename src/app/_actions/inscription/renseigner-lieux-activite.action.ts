@@ -18,7 +18,6 @@ import type {
   DestinationDuLieu,
   LieuCarto,
 } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/domain'
-import { planifierLesRattachements } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/domain/planifier-les-rattachements'
 import { structuresCartoParIds } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/entrepot/structures-carto.query'
 import { activitesEnCoursDeLUtilisateur } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/activites-en-cours.query'
 import { appliquerLesDestinations } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/ajouter-des-lieux-activite.mutation'
@@ -27,6 +26,7 @@ import {
   lieuPorteurDeLaCarto,
   nouvelIdentifiantDeLieu,
 } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/situation-du-lieu.query'
+import { planifierLesRattachements } from '@/features/lieux-activite/domain/rattachement/planifier-les-rattachements'
 import { lieuDisparu } from '@/features/lieux-activite/implementations/prisma/destination-du-lieu.mutation'
 import { lieuxAuMemeEndroit } from '@/features/lieux-activite/implementations/prisma/lieux-au-meme-endroit.query'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'

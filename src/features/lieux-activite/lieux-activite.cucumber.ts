@@ -5,7 +5,6 @@ import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
 import type { LieuxAAjouterData } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/action/ajouter-des-lieux-activite.validation'
 import { depuisLePanier } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/action/panier.transfer'
-import { planifierLesRattachements } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/domain/planifier-les-rattachements'
 import { appliquerLesDestinations } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/ajouter-des-lieux-activite.mutation'
 import {
   etatDuLieu,
@@ -22,6 +21,7 @@ import {
 import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
 import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
 import { UtilisateurId } from '@/features/lieux-activite/domain/identifiants/utilisateur-id'
+import { planifierLesRattachements } from '@/features/lieux-activite/domain/rattachement/planifier-les-rattachements'
 import { horairesVides } from '@/features/lieux-activite/domain/saisie/horaires-d-ouverture'
 import { lieuxAuMemeEndroit } from '@/features/lieux-activite/implementations/prisma/lieux-au-meme-endroit.query'
 import type { Typologie } from '@/generated/prisma/client'

@@ -31,16 +31,16 @@ import { BanId } from '../../../domain/identifiants/ban-id'
 import { LieuId } from '../../../domain/identifiants/lieu-id'
 import { MediateurId } from '../../../domain/identifiants/mediateur-id'
 import { UtilisateurId } from '../../../domain/identifiants/utilisateur-id'
-import { SourceCartographie } from '../../../domain/registre/tracabilite'
-import { ajouterDesLieuxActivite } from './ajouter-des-lieux-activite'
-import type { CreationDemandee } from './destination-du-lieu'
-import type { LieuCarto } from './lieu-carto'
+import type { CreationDemandee } from '../../../domain/rattachement/creation-demandee'
+import type { LieuCarto } from '../../../domain/rattachement/lieu-carto'
 import type {
   LieuACreer,
-  LieuDejaRattache,
   LieuDemande,
   LieuExistant,
-} from './lieu-demande'
+} from '../../../domain/rattachement/lieu-demande'
+import { SourceCartographie } from '../../../domain/registre/tracabilite'
+import { ajouterDesLieuxActivite } from './ajouter-des-lieux-activite'
+import type { LieuDejaRattache } from './lieu-deja-rattache'
 import type { AjouterDesLieuxActivitePorts } from './ports'
 
 const LIEU_A = LieuId('0927f824-b84d-4840-ae2e-e4a96a7a519b')

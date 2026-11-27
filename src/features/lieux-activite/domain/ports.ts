@@ -1,3 +1,4 @@
+import type { IdentifiantCartographie } from './cartographie-nationale/ids-cartographie-nationale'
 import type { Endroit, LieuCandidatCoop } from './destination-du-lieu'
 import type { LieuId } from './identifiants/lieu-id'
 import type { Lieu } from './lieu'
@@ -23,3 +24,16 @@ export type EnregistrerLesSections = (entree: {
   readonly sections: readonly SectionDeLaFiche[]
   readonly maintenant: Date
 }) => Promise<void>
+
+export type EtatDuLieu = 'Actif' | 'Inactif'
+
+export type LireLEtatDuLieu = (lieuId: LieuId) => Promise<EtatDuLieu | null>
+
+export type LieuPorteurDeLaCarto = (
+  identifiant: IdentifiantCartographie,
+) => Promise<LieuId | null>
+
+export type PlanifierLesRattachementsPorts = DestinationDuLieuDecritPorts & {
+  readonly etatDuLieu: LireLEtatDuLieu
+  readonly lieuPorteurDeLaCarto: LieuPorteurDeLaCarto
+}

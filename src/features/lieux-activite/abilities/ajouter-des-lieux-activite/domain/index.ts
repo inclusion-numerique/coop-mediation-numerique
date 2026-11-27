@@ -5,27 +5,33 @@ export type {
   LieuConnu,
   LieuNouveau,
 } from '../../../domain/destination-du-lieu'
-export type { AjoutDeLieux, LieuxAjoutes } from './ajout-de-lieux'
-export type { CreationDemandee } from './destination-du-lieu'
+export type {
+  LieuPorteurDeLaCarto,
+  LireLEtatDuLieu,
+  PlanifierLesRattachementsPorts,
+} from '../../../domain/ports'
+export type { CreationDemandee } from '../../../domain/rattachement/creation-demandee'
 export {
-  AdresseNonValidee,
-  type EchecDeAjouterDesLieuxActivite,
-} from './errors'
-export { identifiantsCarto } from './identifiants-carto'
-export { type LieuCarto, lieuDepuisCarto } from './lieu-carto'
+  type LieuCarto,
+  lieuDepuisCarto,
+} from '../../../domain/rattachement/lieu-carto'
 export {
   type AdresseValidee,
   estExistant,
   type LieuACreer,
   type LieuDemande,
   type LieuExistant,
-} from './lieu-demande'
+} from '../../../domain/rattachement/lieu-demande'
+export type { AjoutDeLieux, LieuxAjoutes } from './ajout-de-lieux'
+export {
+  AdresseNonValidee,
+  type EchecDeAjouterDesLieuxActivite,
+} from './errors'
+export { identifiantsCarto } from './identifiants-carto'
+export type { LieuDejaRattache } from './lieu-deja-rattache'
 export type {
   AjouterDesLieuxActivitePorts,
-  LieuPorteurDeLaCarto,
-  LireLEtatDuLieu,
   LireLieuxDejaRattaches,
-  PlanifierLesRattachementsPorts,
   RattachementAuxLieux,
   RattacherAuxLieux,
   TrouverStructuresCarto,
