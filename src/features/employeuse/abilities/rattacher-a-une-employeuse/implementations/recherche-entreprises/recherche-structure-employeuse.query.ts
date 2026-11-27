@@ -2,7 +2,26 @@ import { rechercheApiEntreprise } from '@/configuration/recherche-entreprises'
 import { etablissementsDepuisUniteLegale } from '@/libraries/recherche-entreprises'
 import type { Employeuse } from '../../../../domain/employeuse'
 import type { RechercherEmployeuse } from '../../../../domain/ports'
-import type { StructureTrouvee } from '../../domain/structure-trouvee'
+import type { TypologieStructure } from '../../../../domain/typologie-de-structure'
+
+type StructureTrouvee = {
+  readonly id?: string | null
+  readonly nom: string
+  readonly adresse: string
+  readonly codePostal: string
+  readonly commune: string
+  readonly codeInsee: string
+  readonly siret: string
+  readonly typologie?: TypologieStructure | null
+  readonly source: 'database' | 'api'
+}
+
+const premiereParSiret = (
+  structure: StructureTrouvee,
+  index: number,
+  structures: readonly StructureTrouvee[],
+): boolean =>
+  structures.findIndex(({ siret }) => siret === structure.siret) === index
 
 type EmployeuseRecherchee = {
   readonly id: string
@@ -27,7 +46,7 @@ export const rechercheStructureEmployeuseAvec =
   async (
     query: string,
   ): Promise<{
-    structures: StructureTrouvee[]
+    structures: readonly StructureTrouvee[]
     totalCount: number
     moreResults: number
     apiUnavailable: boolean
@@ -54,46 +73,52 @@ export const rechercheStructureEmployeuseAvec =
 
     const { data: apiResult, unavailable: apiUnavailable } = apiResponse
 
-    const dbStructures: StructureTrouvee[] = dbResult.employeuses
+    const dbStructures: readonly StructureTrouvee[] = dbResult.employeuses
       .map(employeuseRecherchee)
-      .filter((structure) => structure.siret)
-      .map((structure) => ({
-        id: structure.id,
-        nom: structure.nom,
-        adresse: structure.adresse,
-        commune: structure.commune,
-        codePostal: structure.codePostal,
-        codeInsee: structure.codeInsee ?? '',
-        siret: structure.siret as string,
-        typologie: null,
-        source: 'database' as const,
-      }))
+      .flatMap(({ siret, ...structure }) =>
+        siret
+          ? [
+              {
+                id: structure.id,
+                nom: structure.nom,
+                adresse: structure.adresse,
+                commune: structure.commune,
+                codePostal: structure.codePostal,
+                codeInsee: structure.codeInsee ?? '',
+                siret,
+                typologie: null,
+                source: 'database' as const,
+              },
+            ]
+          : [],
+      )
 
-    const apiStructures: StructureTrouvee[] = apiResult
+    const apiStructures: readonly StructureTrouvee[] = apiResult
       ? apiResult.results
           .flatMap(etablissementsDepuisUniteLegale)
-          .filter((structure) => structure.siret)
-          .map((structure) => ({
-            nom: structure.nom,
-            adresse: structure.adresse ?? '',
-            commune: structure.commune ?? '',
-            codePostal: structure.codePostal ?? '',
-            codeInsee: structure.codeInsee ?? '',
-            siret: structure.siret as string,
-            typologie: structure.typologie,
-            source: 'api' as const,
-          }))
+          .flatMap((structure) =>
+            structure.siret
+              ? [
+                  {
+                    nom: structure.nom,
+                    adresse: structure.adresse ?? '',
+                    commune: structure.commune ?? '',
+                    codePostal: structure.codePostal ?? '',
+                    codeInsee: structure.codeInsee ?? '',
+                    siret: structure.siret,
+                    typologie: structure.typologie,
+                    source: 'api' as const,
+                  },
+                ]
+              : [],
+          )
       : []
 
-    const siretsSeen = new Set<string>()
-    const uniqueDbStructures = dbStructures.filter((s) => {
-      if (siretsSeen.has(s.siret)) return false
-      siretsSeen.add(s.siret)
-      return true
-    })
-    const deduplicatedStructures: StructureTrouvee[] = [
+    const uniqueDbStructures = dbStructures.filter(premiereParSiret)
+    const siretsDeLaCoop = uniqueDbStructures.map(({ siret }) => siret)
+    const deduplicatedStructures: readonly StructureTrouvee[] = [
       ...uniqueDbStructures,
-      ...apiStructures.filter((s) => !siretsSeen.has(s.siret)),
+      ...apiStructures.filter(({ siret }) => !siretsDeLaCoop.includes(siret)),
     ]
 
     const totalFromApi = apiResult?.total_results ?? 0

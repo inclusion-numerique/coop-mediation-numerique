@@ -3,8 +3,8 @@ import { addresseFromParts } from '@/libraries/adresse'
 import type { ComboBoxData } from '@/libraries/formulaire/fields-components'
 import { inject } from '@/libraries/nextjs/injection'
 import type { OptionsData } from '@/libraries/ui/primitives'
+import type { StructureTrouvee } from '../../action/rechercher-structure-employeuse.key'
 import { RECHERCHER_STRUCTURE_EMPLOYEUSE_ACTION_KEY } from '../../action/rechercher-structure-employeuse.key'
-import type { StructureTrouvee } from '../../domain/structure-trouvee'
 
 const itemToKey = (item: StructureTrouvee): string => item.siret
 
@@ -21,7 +21,7 @@ const loadSuggestions =
 
     onApiUnavailable(result.data.apiUnavailable)
 
-    return { items: result.data.structures }
+    return { items: [...result.data.structures] }
   }
 
 const renderItem = ({ item }: { item: StructureTrouvee }) => (
