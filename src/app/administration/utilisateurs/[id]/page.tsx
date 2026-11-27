@@ -179,6 +179,7 @@ const activitesDeCoordinationEnCumul = async (
 const sectionStatistiques = async (
   fiche: FicheUtilisateur,
   periode: PeriodeChoisie,
+  maintenant: Date,
 ): Promise<ReactNode> => {
   const perimetre = perimetreDeLUtilisateur(
     await utilisateurDeLaSessionParId(fiche.id),
@@ -223,6 +224,7 @@ const sectionStatistiques = async (
       derniere={derniere}
       periode={periode}
       statistiques={{ totaux, repartition, profil, lieux, coordination }}
+      maintenant={maintenant}
     />
   )
 }
@@ -253,7 +255,7 @@ const Page = async (props: {
       utilisateurId: UtilisateurIdDeLEmployeuse(fiche.id),
       maintenant,
     }).then(({ data }) => data),
-    sectionStatistiques(fiche, periodeChoisieDans(searchParams)),
+    sectionStatistiques(fiche, periodeChoisieDans(searchParams), maintenant),
   ])
 
   return (

@@ -22,6 +22,7 @@ export const StatistiquesEnAdministration = ({
   derniere,
   periode,
   statistiques,
+  maintenant,
 }: {
   utilisateurId: string
   coordinateur: boolean
@@ -29,6 +30,7 @@ export const StatistiquesEnAdministration = ({
   derniere: string | null
   periode: PeriodeChoisie
   statistiques: StatistiquesBrutes
+  maintenant: Date
 }) => {
   const exports = adressesDesExports(utilisateurId)
 
@@ -75,7 +77,7 @@ export const StatistiquesEnAdministration = ({
       <div className="fr-mb-8v">
         <PeriodeEnPopover
           debut={debutDuFiltreDePeriode(premiere)}
-          fin={new Date()}
+          fin={maintenant}
         />
       </div>
       <div className="fr-grid-row fr-grid-row--gutters">
