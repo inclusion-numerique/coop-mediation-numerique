@@ -12,7 +12,7 @@ import { handleSubmit, useAppForm } from '@/libraries/formulaire/hooks'
 import { inject } from '@/libraries/nextjs/injection'
 import { Options } from '@/libraries/ui/primitives'
 import { createToast } from '@/libraries/ui/toast'
-import type { StructureTrouvee } from '../../action/rechercher-structure-employeuse.key'
+import type { StructureTrouvee } from '../../action/rechercher-une-structure-employeuse.key'
 import { RENSEIGNER_STRUCTURE_EMPLOYEUSE_ACTION_KEY } from '../../action/renseigner-structure-employeuse.key'
 import { RenseignerStructureEmployeuseValidation } from '../../action/renseigner-structure-employeuse.validation'
 import {

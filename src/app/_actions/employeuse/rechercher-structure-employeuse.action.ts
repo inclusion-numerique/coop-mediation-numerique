@@ -2,18 +2,20 @@
 
 import { actionBuilder } from '@/configuration/nextjs'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
-import { RechercherStructureEmployeuseValidation } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/action/rechercher-structure-employeuse.validation'
-import { rechercheStructureEmployeuseAvec } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/recherche-entreprises/recherche-structure-employeuse.query'
-import { rechercherEmployeuse } from '@/features/employeuse/implementations/prisma/rechercher-employeuse.query'
-import { employeuseRecherchee } from '@/features/employeuse/ui/presenters/employeuse-recherchee.presenter'
+import { RechercherUneStructureEmployeuseValidation } from '@/features/employeuse/abilities/rechercher-une-structure-employeuse/action/rechercher-une-structure-employeuse.validation'
+import { rechercherUneStructureEmployeuse } from '@/features/employeuse/abilities/rechercher-une-structure-employeuse/domain/rechercher-une-structure-employeuse'
+import { lireLesStructuresDeLaCoop } from '@/features/employeuse/abilities/rechercher-une-structure-employeuse/implementations/prisma/structures-de-la-coop.query'
+import { lireLAnnuaireDesEntreprises } from '@/features/employeuse/abilities/rechercher-une-structure-employeuse/implementations/recherche-entreprises/annuaire-des-entreprises.query'
 import { withInput } from '@/libraries/nextjs'
 
 export const rechercherStructureEmployeuseAction = actionBuilder()
   .use(withAuth())
-  .use(withInput(RechercherStructureEmployeuseValidation))
-  .execute(async ({ input: { query } }) =>
-    rechercheStructureEmployeuseAvec({
-      employeuseRecherchee,
-      rechercherEmployeuse,
-    })(query),
-  )
+  .use(withInput(RechercherUneStructureEmployeuseValidation))
+  .execute(async ({ input: { query } }) => {
+    const { data } = await rechercherUneStructureEmployeuse({
+      lireLesStructuresDeLaCoop,
+      lireLAnnuaireDesEntreprises,
+    })({ recherche: query })
+
+    return data
+  })

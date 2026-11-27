@@ -3,8 +3,8 @@ import { addresseFromParts } from '@/libraries/adresse'
 import type { ComboBoxData } from '@/libraries/formulaire/fields-components'
 import { inject } from '@/libraries/nextjs/injection'
 import type { OptionsData } from '@/libraries/ui/primitives'
-import type { StructureTrouvee } from '../../action/rechercher-structure-employeuse.key'
-import { RECHERCHER_STRUCTURE_EMPLOYEUSE_ACTION_KEY } from '../../action/rechercher-structure-employeuse.key'
+import type { StructureTrouvee } from '../../action/rechercher-une-structure-employeuse.key'
+import { RECHERCHER_UNE_STRUCTURE_EMPLOYEUSE_ACTION_KEY } from '../../action/rechercher-une-structure-employeuse.key'
 
 const itemToKey = (item: StructureTrouvee): string => item.siret
 
@@ -13,9 +13,11 @@ const itemToString = (item: StructureTrouvee | null): string => item?.nom ?? ''
 const loadSuggestions =
   (onApiUnavailable: (indisponible: boolean) => void) =>
   async (input: string): Promise<{ items: StructureTrouvee[] }> => {
-    const result = await inject(RECHERCHER_STRUCTURE_EMPLOYEUSE_ACTION_KEY)({
-      query: input,
-    })
+    const result = await inject(RECHERCHER_UNE_STRUCTURE_EMPLOYEUSE_ACTION_KEY)(
+      {
+        query: input,
+      },
+    )
 
     if (!result.success) return { items: [] }
 

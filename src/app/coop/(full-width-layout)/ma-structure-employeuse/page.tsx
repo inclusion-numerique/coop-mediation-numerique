@@ -6,7 +6,7 @@ import { metadataTitle } from '@/configuration/projet'
 import { authenticateUser } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
 import { consulterEmployeuseAUneDate } from '@/features/employeuse/abilities/consulter-employeuse-a-une-date/domain/consulter-employeuse-a-une-date'
 import { MaStructureEmployeusePage } from '@/features/employeuse/abilities/consulter-employeuse-a-une-date/ui/pages/MaStructureEmployeusePage'
-import { RECHERCHER_STRUCTURE_EMPLOYEUSE_ACTION_KEY } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/action/rechercher-structure-employeuse.key'
+import { RECHERCHER_UNE_STRUCTURE_EMPLOYEUSE_ACTION_KEY } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/action/rechercher-une-structure-employeuse.key'
 import { RENSEIGNER_STRUCTURE_EMPLOYEUSE_ACTION_KEY } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/action/renseigner-structure-employeuse.key'
 import RattacherEmployeuseForm from '@/features/employeuse/abilities/rattacher-a-une-employeuse/ui/slots/RattacherEmployeuseForm.slot'
 import { UtilisateurId as UtilisateurIdDeLEmployeuse } from '@/features/employeuse/domain'
@@ -53,7 +53,7 @@ const Page = async () => {
           to={renseignerStructureEmployeuseAction}
         >
           <ClientBinder
-            bind={RECHERCHER_STRUCTURE_EMPLOYEUSE_ACTION_KEY}
+            bind={RECHERCHER_UNE_STRUCTURE_EMPLOYEUSE_ACTION_KEY}
             to={rechercherStructureEmployeuseAction}
           >
             <RattacherEmployeuseForm nextStepPath={null} />

@@ -14,7 +14,7 @@ export type StructureTrouvee = {
   readonly source: 'database' | 'api'
 }
 
-export const RECHERCHER_STRUCTURE_EMPLOYEUSE_ACTION_KEY = keyFor<
+export const RECHERCHER_UNE_STRUCTURE_EMPLOYEUSE_ACTION_KEY = keyFor<
   (input: { query: string }) => Promise<
     ServerActionResult<
       {
@@ -24,4 +24,4 @@ export const RECHERCHER_STRUCTURE_EMPLOYEUSE_ACTION_KEY = keyFor<
       string
     >
   >
->('rechercher-structure-employeuse.action')
+>('rechercher-une-structure-employeuse.action')

@@ -193,6 +193,7 @@
     "activites/domain",
     "employeuse/abilities/rattacher-a-une-employeuse/action",
     "employeuse/abilities/rattacher-a-une-employeuse/domain",
+    "employeuse/abilities/rechercher-une-structure-employeuse/domain",
     "employeuse/domain",
     "equipe/abilities/lister-les-membres/domain",
     "equipe/domain",
