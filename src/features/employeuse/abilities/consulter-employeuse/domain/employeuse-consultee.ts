@@ -8,7 +8,7 @@ export type PersonneEmployee = {
   readonly prenom: NomDeLaPersonne | null
   readonly nom: NomDeLaPersonne | null
   readonly nomComplet: NomDeLaPersonne | null
-  readonly courriel: CourrielDeLaPersonne | null
+  readonly courriel: CourrielDeLaPersonne
 }
 
 export type EmployeuseConsultee = {

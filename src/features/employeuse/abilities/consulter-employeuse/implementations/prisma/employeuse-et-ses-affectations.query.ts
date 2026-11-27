@@ -18,7 +18,7 @@ type UtilisateurLu = {
 }
 
 const nomLu = (valeur: string | null): NomDeLaPersonne | null =>
-  valeur === null ? null : NomDeLaPersonne.safe(valeur)
+  valeur === null ? null : NomDeLaPersonne(valeur)
 
 const personneLue = (user: UtilisateurLu | null): PersonneEmployee | null =>
   user === null
@@ -28,7 +28,7 @@ const personneLue = (user: UtilisateurLu | null): PersonneEmployee | null =>
         prenom: nomLu(user.firstName),
         nom: nomLu(user.lastName),
         nomComplet: nomLu(user.name),
-        courriel: CourrielDeLaPersonne.safe(user.email),
+        courriel: CourrielDeLaPersonne(user.email),
       }
 
 export const lireLEmployeuse: LireLEmployeuse = async (employeuseId) => {
