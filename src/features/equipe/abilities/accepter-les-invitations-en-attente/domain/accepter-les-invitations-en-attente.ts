@@ -1,10 +1,13 @@
 import { failure, type Result, success } from '@/libraries/result'
 import type { UtilisateurId } from '../../../domain'
-import { CourrielDuMediateurIllisible } from '../../../domain/errors'
 import {
   type AcceptationsEnAttente,
   acceptationsEnAttente,
 } from './acceptations-en-attente'
+import {
+  CourrielDuMediateurIllisible,
+  type EchecDeAccepterLesInvitationsEnAttente,
+} from './errors'
 import type { AccepterLesInvitationsEnAttentePorts } from './ports'
 
 export const accepterLesInvitationsEnAttente =
@@ -19,7 +22,9 @@ export const accepterLesInvitationsEnAttente =
   }: {
     readonly utilisateurId: UtilisateurId
     readonly maintenant: Date
-  }): Promise<Result<AcceptationsEnAttente, CourrielDuMediateurIllisible>> => {
+  }): Promise<
+    Result<AcceptationsEnAttente, EchecDeAccepterLesInvitationsEnAttente>
+  > => {
     const lu = await lireLeMediateurInvite(utilisateurId)
     if (lu === null) return success({ type: 'SansCompteMediateur' })
 

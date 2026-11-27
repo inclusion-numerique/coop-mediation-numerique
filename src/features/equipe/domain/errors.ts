@@ -67,15 +67,3 @@ export type ConsultationNonAutorisee = {
 export const ConsultationNonAutorisee = (): ConsultationNonAutorisee => ({
   _tag: 'ConsultationNonAutorisee',
 })
-
-export type CourrielDuMediateurIllisible = {
-  readonly _tag: 'CourrielDuMediateurIllisible'
-  readonly mediateurId: MediateurId
-}
-
-export const CourrielDuMediateurIllisible = (
-  mediateurId: MediateurId,
-): CourrielDuMediateurIllisible => ({
-  _tag: 'CourrielDuMediateurIllisible',
-  mediateurId,
-})
