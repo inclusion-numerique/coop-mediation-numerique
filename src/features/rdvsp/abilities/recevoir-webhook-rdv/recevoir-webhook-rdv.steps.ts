@@ -4,12 +4,14 @@ import { messageDuWebhookRdv } from '@/features/rdvsp/abilities/recevoir-webhook
 import { recevoirWebhookRdv } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/domain/recevoir-webhook-rdv'
 import { lireNotificationRdv } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/implementations/api/notification-rdv.params'
 import {
-  comptePourWebhook,
   enregistrerRdvDeLaNotification,
-  organisationConnue,
-  rdvConnuParId,
   supprimerRdvDeLaNotification,
 } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/implementations/prisma/webhook-rdv.mutation'
+import {
+  comptePourWebhook,
+  organisationConnue,
+  rdvConnuParId,
+} from '@/features/rdvsp/abilities/recevoir-webhook-rdv/implementations/prisma/webhook-rdv.query'
 import { EvenementWebhook } from '@/features/rdvsp/domain/webhook/evenement-webhook'
 import {
   ID_TEST,

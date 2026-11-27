@@ -12,18 +12,20 @@ import { messageDuWebhookRdv } from '@/features/rdvsp/abilities/recevoir-webhook
 import { recevoirWebhookRdv } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/domain/recevoir-webhook-rdv'
 import { lireNotificationRdv } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/implementations/api/notification-rdv.params'
 import {
-  comptePourWebhook,
   enregistrerRdvDeLaNotification,
-  organisationConnue,
-  rdvConnuParId,
   supprimerRdvDeLaNotification,
 } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/implementations/prisma/webhook-rdv.mutation'
+import {
+  comptePourWebhook,
+  organisationConnue,
+  rdvConnuParId,
+} from '@/features/rdvsp/abilities/recevoir-webhook-rdv/implementations/prisma/webhook-rdv.query'
 import { messageDuWebhookUsager } from '@/features/rdvsp/abilities/recevoir-webhook-usager/domain/message-du-webhook-usager'
 import { recevoirWebhookUsager } from '@/features/rdvsp/abilities/recevoir-webhook-usager/domain/recevoir-webhook-usager'
 import { lireNotificationUsager } from '@/features/rdvsp/abilities/recevoir-webhook-usager/implementations/api/notification-usager.params'
+import { beneficiairesLiesAUsager } from '@/features/rdvsp/abilities/recevoir-webhook-usager/implementations/prisma/beneficiaires-lies.query'
 import {
   anonymiserEtSupprimerUsager,
-  beneficiairesLiesAUsager,
   mettreAJourUsager,
 } from '@/features/rdvsp/abilities/recevoir-webhook-usager/implementations/prisma/webhook-usager.mutation'
 import { aiguillerNotificationWebhook } from '@/features/rdvsp/domain/webhook/aiguiller-notification-webhook'

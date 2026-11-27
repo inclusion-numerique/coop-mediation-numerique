@@ -3,9 +3,9 @@ import { Given, Then, When, type World } from '@cucumber/cucumber'
 import { prismaClient } from '@/configuration/prisma'
 import { recevoirWebhookUsager } from '@/features/rdvsp/abilities/recevoir-webhook-usager/domain/recevoir-webhook-usager'
 import { lireNotificationUsager } from '@/features/rdvsp/abilities/recevoir-webhook-usager/implementations/api/notification-usager.params'
+import { beneficiairesLiesAUsager } from '@/features/rdvsp/abilities/recevoir-webhook-usager/implementations/prisma/beneficiaires-lies.query'
 import {
   anonymiserEtSupprimerUsager,
-  beneficiairesLiesAUsager,
   mettreAJourUsager,
 } from '@/features/rdvsp/abilities/recevoir-webhook-usager/implementations/prisma/webhook-usager.mutation'
 import { EvenementWebhook } from '@/features/rdvsp/domain/webhook/evenement-webhook'

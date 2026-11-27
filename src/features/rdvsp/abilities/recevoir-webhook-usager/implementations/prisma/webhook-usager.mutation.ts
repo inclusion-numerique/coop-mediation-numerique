@@ -3,18 +3,9 @@ import { Prisma } from '@/generated/prisma/client'
 import { usagerFromDomain } from '../../../../implementations/prisma/entourage.transfer'
 import type {
   AnonymiserEtSupprimerUsager,
-  BeneficiairesLiesAUsager,
   MettreAJourUsager,
 } from '../../domain/ports'
 import { garderUnSeulCodePostal } from './un-seul-code-postal.mutation'
-
-export const beneficiairesLiesAUsager: BeneficiairesLiesAUsager = async (
-  usagerId,
-) =>
-  await prismaClient.beneficiaire.findMany({
-    where: { rdvUserId: usagerId, suppression: null },
-    select: { id: true },
-  })
 
 export const mettreAJourUsager: MettreAJourUsager = async (usager) => {
   await prismaClient.rdvUser.update({
