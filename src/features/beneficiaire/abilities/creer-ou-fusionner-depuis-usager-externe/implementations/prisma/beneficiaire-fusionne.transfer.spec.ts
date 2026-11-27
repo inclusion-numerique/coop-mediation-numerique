@@ -48,7 +48,10 @@ const vide: MergedBeneficiaire = {
 
 describe('bénéficiaire fusionné lu en base', () => {
   it('décode chaque champ en value object', () => {
-    expect(versBeneficiaireFusionne(ligne, maintenant)).toEqual(fusionne)
+    expect(versBeneficiaireFusionne(ligne, maintenant)).toEqual({
+      beneficiaire: fusionne,
+      invalides: [],
+    })
   })
 
   it('laisse vides les champs absents', () => {
@@ -66,7 +69,7 @@ describe('bénéficiaire fusionné lu en base', () => {
         },
         maintenant,
       ),
-    ).toEqual(vide)
+    ).toEqual({ beneficiaire: vide, invalides: [] })
   })
 
   it('tient pour absentes les valeurs anciennes devenues invalides', () => {
@@ -84,7 +87,10 @@ describe('bénéficiaire fusionné lu en base', () => {
         },
         maintenant,
       ),
-    ).toEqual(vide)
+    ).toEqual({
+      beneficiaire: vide,
+      invalides: ['nom', 'prenom', 'email', 'telephone', 'anneeNaissance'],
+    })
   })
 
   it('refuse un identifiant de bénéficiaire invalide', () => {

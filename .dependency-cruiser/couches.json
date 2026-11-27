@@ -89,6 +89,7 @@
     "authentification/implementations/email",
     "authentification/implementations/proconnect",
     "beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/ban",
+    "beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma",
     "beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/telemetrie",
     "clients-api/abilities/authentifier-un-client-api/implementations/api-v1",
     "equipe/implementations/email",
