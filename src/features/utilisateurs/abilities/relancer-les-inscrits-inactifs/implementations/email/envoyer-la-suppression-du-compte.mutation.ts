@@ -5,12 +5,10 @@ import {
   throwOnSendMailFailure,
 } from '@/configuration/smtp'
 import { compteSupprime } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/implementations/email/compte-supprime.email'
-import {
-  type EnvoyerLAvisDEffacement,
-  mediateurDe,
-} from '@/features/utilisateurs/domain'
+import { type EnvoyerLAvisDEffacement } from '@/features/utilisateurs/domain'
 import { compileMjml } from '@/libraries/emails/rendu'
 import { attraperEnEchecTechnique } from '@/libraries/result'
+import { profilDuCourriel } from './profil-du-destinataire.transfer'
 
 const envoyer = async ({
   email,
@@ -36,5 +34,5 @@ export const envoyerLaSuppressionDuCompte: EnvoyerLAvisDEffacement = (
 ) =>
   attraperEnEchecTechnique(envoyer)({
     email: destinataire.courriel,
-    isMediateur: mediateurDe(destinataire.rattachements) !== null,
+    isMediateur: profilDuCourriel(destinataire.profil).isMediateur,
   })

@@ -125,6 +125,7 @@ export type {
   ActionDecidee,
   CompteARelancer,
   DestinataireDeRelance,
+  ProfilDuDestinataire,
   RapportDeRelance,
   RelancesDeroulees,
 } from './relances/destinataire-de-relance'

@@ -3,9 +3,10 @@ import {
   type ActionDecidee,
   AdresseCourriel,
   type CompteARelancer,
-  type CoordinateurId,
+  CoordinateurId,
   MediateurId,
   Prenom,
+  type ProfilDuDestinataire,
   Relance,
   rattachements,
   SuppressionRefusee,
@@ -14,6 +15,8 @@ import {
 import { EchecTechnique, failure, success } from '@/libraries/result'
 import type { RelancerLesInscritsInactifsPorts } from './ports'
 import { relancerLesInscritsInactifs } from './relancer-les-inscrits-inactifs'
+
+const MEDIATEUR: ProfilDuDestinataire = { _tag: 'Mediateur' }
 
 const maintenant = new Date('2026-10-21T00:00:00.000Z')
 const UN_JOUR = 24 * 60 * 60 * 1000
@@ -100,7 +103,7 @@ describe('relancer les inscrits inactifs', () => {
     },
   ])('$cas', async ({ compteLu, action }) => {
     expect(await relancer(ports([compteLu]))).toEqual(
-      success([{ utilisateurId, action, issue: 'fait' }]),
+      success([{ utilisateurId, profil: MEDIATEUR, action, issue: 'fait' }]),
     )
   })
 
@@ -123,6 +126,7 @@ describe('relancer les inscrits inactifs', () => {
       success([
         {
           utilisateurId,
+          profil: MEDIATEUR,
           action: { _tag: 'Effacer' },
           issue: 'echec',
           cause: 'RoleProtege',
@@ -142,6 +146,7 @@ describe('relancer les inscrits inactifs', () => {
       success([
         {
           utilisateurId,
+          profil: MEDIATEUR,
           action: { _tag: 'Effacer' },
           issue: 'echec',
           cause: 'SMTP indisponible',
@@ -179,7 +184,33 @@ describe('relancer les inscrits inactifs', () => {
       success([
         {
           utilisateurId,
+          profil: MEDIATEUR,
           action: { _tag: 'Relancer', palier },
+          issue: 'fait',
+        },
+      ]),
+    )
+  })
+
+  it('rapporte le profil du destinataire médiateur et coordinateur', async () => {
+    expect(
+      await relancer(
+        ports([
+          {
+            ...compte(8, Relance('Aucune'), null, false),
+            rattachements: rattachements<MediateurId, CoordinateurId>(
+              MediateurId('2b3c4d5e-6f70-4819-92a3-b4c5d6e7f809'),
+              CoordinateurId('3c4d5e6f-7081-4a92-b3c4-d5e6f708192a'),
+            ),
+          },
+        ]),
+      ),
+    ).toEqual(
+      success([
+        {
+          utilisateurId,
+          profil: { _tag: 'MediateurEtCoordinateur' },
+          action: { _tag: 'Relancer', palier: 7 },
           issue: 'fait',
         },
       ]),

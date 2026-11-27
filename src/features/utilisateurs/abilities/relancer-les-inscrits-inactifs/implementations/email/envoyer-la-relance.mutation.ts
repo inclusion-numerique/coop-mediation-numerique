@@ -5,10 +5,10 @@ import {
   throwOnSendMailFailure,
 } from '@/configuration/smtp'
 import { relance } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/implementations/email/relance.email'
-import { coordinateurDe, mediateurDe } from '@/features/utilisateurs/domain'
 import { compileMjml } from '@/libraries/emails/rendu'
 import { attraperEnEchecTechnique } from '@/libraries/result'
 import type { EnvoyerLaRelanceDuCompte } from '../../domain'
+import { profilDuCourriel } from './profil-du-destinataire.transfer'
 
 const envoyer = async ({
   email,
@@ -63,7 +63,6 @@ export const envoyerLaRelanceDuCompte =
       firstname: destinataire.prenom,
       totalUsers: totalInscrits,
       matomoCampaignId: `nouveau_j${palier}`,
-      isMediateur: mediateurDe(destinataire.rattachements) !== null,
-      isCoordinateur: coordinateurDe(destinataire.rattachements) !== null,
+      ...profilDuCourriel(destinataire.profil),
       monthsCount: moisDepuisLInscription,
     })

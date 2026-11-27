@@ -1,11 +1,13 @@
 import { type Result, success } from '@/libraries/result'
 import type { EchecDeRelance } from '../errors'
 import type { PortsDeRelance } from '../ports'
-import type {
-  ActionDecidee,
-  CompteARelancer,
-  RapportDeRelance,
-  RelancesDeroulees,
+import {
+  type ActionDecidee,
+  type CompteARelancer,
+  type DestinataireDeRelance,
+  destinataireDe,
+  type RapportDeRelance,
+  type RelancesDeroulees,
 } from './destinataire-de-relance'
 import {
   actionDeRelance,
@@ -16,28 +18,28 @@ import {
 type ActionANoter = Exclude<ActionDecidee, { readonly _tag: 'Effacer' }>
 
 const envoyer = (
-  compte: CompteARelancer,
+  destinataire: DestinataireDeRelance,
   action: ActionANoter,
   { relancer, avertir }: PortsDeRelance,
 ): Promise<Result<void, EchecDeRelance>> => {
   if (action._tag === 'Reinitialiser')
     return Promise.resolve(success(undefined))
-  if (action._tag === 'Relancer') return relancer(compte, action.palier)
-  return avertir(compte, action)
+  if (action._tag === 'Relancer') return relancer(destinataire, action.palier)
+  return avertir(destinataire, action)
 }
 
 const executer = async (
-  compte: CompteARelancer,
+  destinataire: DestinataireDeRelance,
   action: ActionDecidee,
   ports: PortsDeRelance,
 ): Promise<Result<void, EchecDeRelance>> => {
-  if (action._tag === 'Effacer') return ports.effacer(compte)
+  if (action._tag === 'Effacer') return ports.effacer(destinataire)
 
-  const envoi = await envoyer(compte, action, ports)
+  const envoi = await envoyer(destinataire, action, ports)
   if (!envoi.success) return envoi
 
   return ports.noter(
-    compte.utilisateurId,
+    destinataire.utilisateurId,
     relanceApres(action),
     suppressionAnnonceeApres(action),
   )
@@ -51,12 +53,15 @@ const rapporter = async (
   action: ActionDecidee,
   ports: PortsDeRelance,
 ): Promise<RapportDeRelance> => {
-  const resultat = await executer(compte, action, ports)
+  const destinataire = destinataireDe(compte)
+  const resultat = await executer(destinataire, action, ports)
+  const { utilisateurId, profil } = destinataire
 
   return resultat.success
-    ? { utilisateurId: compte.utilisateurId, action, issue: 'fait' }
+    ? { utilisateurId, profil, action, issue: 'fait' }
     : {
-        utilisateurId: compte.utilisateurId,
+        utilisateurId,
+        profil,
         action,
         issue: 'echec',
         cause: causeDe(resultat.error),

@@ -6,6 +6,7 @@ import {
   type CoordinateurId,
   type MediateurId,
   Prenom,
+  type ProfilDuDestinataire,
   Relance,
   rattachements,
   UtilisateurId,
@@ -13,6 +14,8 @@ import {
 import { EchecTechnique, failure, success } from '@/libraries/result'
 import type { RelancerLesInscriptionsInacheveesPorts } from './ports'
 import { relancerLesInscriptionsInachevees } from './relancer-les-inscriptions-inachevees'
+
+const SANS_ROLE: ProfilDuDestinataire = { _tag: 'SansRole' }
 
 const maintenant = new Date('2026-10-21T00:00:00.000Z')
 const UN_JOUR = 24 * 60 * 60 * 1000
@@ -118,7 +121,7 @@ describe('relancer les inscriptions inachevées', () => {
     },
   ])('$cas', async ({ compteLu, action }) => {
     expect(await relancer(ports([compteLu]))).toEqual(
-      success([{ utilisateurId, action, issue: 'fait' }]),
+      success([{ utilisateurId, profil: SANS_ROLE, action, issue: 'fait' }]),
     )
   })
 
@@ -204,6 +207,7 @@ describe('relancer les inscriptions inachevées', () => {
         success([
           {
             utilisateurId,
+            profil: SANS_ROLE,
             action,
             issue: 'echec',
             cause: 'service indisponible',
