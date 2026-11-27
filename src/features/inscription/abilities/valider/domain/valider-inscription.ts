@@ -3,12 +3,7 @@ import {
   ProfilNonChoisi,
   type UtilisateurId,
 } from '@/features/inscription/domain'
-import {
-  type EchecTechnique,
-  failure,
-  type Result,
-  success,
-} from '@/libraries/result'
+import { failure, type Result, success } from '@/libraries/result'
 import { CompteDeRoleIntrouvable, type EchecDeValider } from './errors'
 
 export type FaitsInscription = {
@@ -25,20 +20,24 @@ export type ValidationAEnregistrer = {
   readonly cguAPoser: Date | null
 }
 
-export type AcceptationDesInvitations =
-  | { readonly _tag: 'InvitationsAcceptees' }
-  | { readonly _tag: 'AcceptationEchouee'; readonly echec: EchecTechnique }
+export type AcceptationDesInvitations<Acceptation, Echec> =
+  | { readonly _tag: 'InvitationsAcceptees'; readonly acceptation: Acceptation }
+  | { readonly _tag: 'AcceptationEchouee'; readonly echec: Echec }
 
-export type InscriptionValidee<Inscription> = ValidationAEnregistrer & {
-  readonly inscriptionALaListe: Inscription
-  readonly acceptationDesInvitations: AcceptationDesInvitations
-}
+export type InscriptionValidee<Inscription, Acceptation, Echec> =
+  ValidationAEnregistrer & {
+    readonly inscriptionALaListe: Inscription
+    readonly acceptationDesInvitations: AcceptationDesInvitations<
+      Acceptation,
+      Echec
+    >
+  }
 
-export const acceptationDesInvitations = (
-  acceptation: Result<void, EchecTechnique>,
-): AcceptationDesInvitations =>
+export const acceptationDesInvitations = <Acceptation, Echec>(
+  acceptation: Result<Acceptation, Echec>,
+): AcceptationDesInvitations<Acceptation, Echec> =>
   acceptation.success
-    ? { _tag: 'InvitationsAcceptees' }
+    ? { _tag: 'InvitationsAcceptees', acceptation: acceptation.data }
     : { _tag: 'AcceptationEchouee', echec: acceptation.error }
 
 export const validerInscription = ({

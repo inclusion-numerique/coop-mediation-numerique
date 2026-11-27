@@ -12,7 +12,6 @@ import {
 import { UtilisateurId as UtilisateurDeLEquipe } from '@/features/equipe/domain'
 import { VALIDER_ERRORS } from '@/features/inscription/abilities/valider/action/valider.errors'
 import { ValiderValidation } from '@/features/inscription/abilities/valider/action/valider.validation'
-import type { AccepterLesInvitations } from '@/features/inscription/abilities/valider/domain/ports'
 import { valider } from '@/features/inscription/abilities/valider/domain/valider'
 import { enregistrerValidation } from '@/features/inscription/abilities/valider/implementations/prisma/enregistrer-validation.mutation'
 import { lireFaitsInscription } from '@/features/inscription/abilities/valider/implementations/prisma/lire-faits-inscription.query'
@@ -23,35 +22,29 @@ import { UtilisateurId as UtilisateurDeLaListe } from '@/features/utilisateurs/d
 import { inscrireLeContactALaListe } from '@/features/utilisateurs/implementations/brevo/liste-de-diffusion.mutation'
 import { inscritAInscrire } from '@/features/utilisateurs/implementations/prisma/inscrit-a-inscrire.query'
 import { fromResult, withInput } from '@/libraries/nextjs'
-import { enEchecTechnique, failure, success } from '@/libraries/result'
+import { success } from '@/libraries/result'
 
 const inscrireALaListe = inscrireALaListeDeDiffusion({
   lireLInscritAInscrire: inscritAInscrire,
   importerLeContact: inscrireLeContactALaListe,
 })
 
-const accepterLesInvitationsDeLInscrit: AccepterLesInvitations = async ({
-  userId,
-  maintenant,
-}) => {
-  try {
-    await accepterLesInvitationsEnAttente({
-      lireLeMediateurInvite,
-      lireLesInvitationsDe,
-      enregistrerLesAcceptations,
-    })({ utilisateurId: UtilisateurDeLEquipe(userId), maintenant })
-    return success(undefined)
-  } catch (erreur) {
-    return failure(enEchecTechnique(erreur))
-  }
-}
+const accepterLesInvitations = accepterLesInvitationsEnAttente({
+  lireLeMediateurInvite,
+  lireLesInvitationsDe,
+  enregistrerLesAcceptations,
+})
 
 const validerLInscription = valider({
   lireFaitsInscription,
   enregistrerValidation,
   inscrireALaListeDeDiffusion: ({ utilisateurId }) =>
     inscrireALaListe({ utilisateurId: UtilisateurDeLaListe(utilisateurId) }),
-  accepterLesInvitations: accepterLesInvitationsDeLInscrit,
+  accepterLesInvitations: ({ userId, maintenant }) =>
+    accepterLesInvitations({
+      utilisateurId: UtilisateurDeLEquipe(userId),
+      maintenant,
+    }),
   signaler,
 })
 

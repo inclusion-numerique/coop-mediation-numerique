@@ -21,14 +21,16 @@ const inscriptionValidable: FaitsInscription = {
   cguDejaAcceptee: true,
 }
 
-const ACCEPTEES = success(undefined)
+const INVITATIONS_ACCEPTEES = 'Invitations acceptées'
+
+const ACCEPTEES = success(INVITATIONS_ACCEPTEES)
 
 const SANS_CONTACT = 'Sans contact à inscrire'
 
 const validerDepuis = (
   faits: FaitsInscription,
   inscriptionALaListe: string,
-  acceptation: Result<void, EchecTechnique>,
+  acceptation: Result<string, EchecTechnique>,
 ) =>
   valider({
     lireFaitsInscription: async () => faits,
@@ -48,7 +50,10 @@ describe('valider l’inscription', () => {
         inscriptionValidee: maintenant,
         cguAPoser: null,
         inscriptionALaListe: SANS_CONTACT,
-        acceptationDesInvitations: { _tag: 'InvitationsAcceptees' },
+        acceptationDesInvitations: {
+          _tag: 'InvitationsAcceptees',
+          acceptation: INVITATIONS_ACCEPTEES,
+        },
       }),
     )
   })
@@ -66,7 +71,10 @@ describe('valider l’inscription', () => {
         inscriptionValidee: maintenant,
         cguAPoser: maintenant,
         inscriptionALaListe: SANS_CONTACT,
-        acceptationDesInvitations: { _tag: 'InvitationsAcceptees' },
+        acceptationDesInvitations: {
+          _tag: 'InvitationsAcceptees',
+          acceptation: INVITATIONS_ACCEPTEES,
+        },
       }),
     )
   })

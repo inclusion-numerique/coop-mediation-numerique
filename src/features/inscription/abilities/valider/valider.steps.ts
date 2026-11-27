@@ -20,7 +20,9 @@ import {
   success,
 } from '@/libraries/result'
 
-const validerAvec = (accepterLesInvitations: AccepterLesInvitations) =>
+const validerAvec = (
+  accepterLesInvitations: AccepterLesInvitations<undefined, EchecTechnique>,
+) =>
   valider({
     lireFaitsInscription,
     enregistrerValidation,
@@ -30,7 +32,10 @@ const validerAvec = (accepterLesInvitations: AccepterLesInvitations) =>
   })
 
 const contexte: {
-  resultat: Result<InscriptionValidee<undefined>, EchecDeValider> | null
+  resultat: Result<
+    InscriptionValidee<undefined, undefined, EchecTechnique>,
+    EchecDeValider
+  > | null
 } = { resultat: null }
 
 const validee = () => {

@@ -9,20 +9,22 @@ import {
 } from './valider-inscription'
 
 export const valider =
-  <Inscription>({
+  <Inscription, Acceptation, Echec>({
     lireFaitsInscription,
     enregistrerValidation,
     inscrireALaListeDeDiffusion,
     accepterLesInvitations,
     signaler,
-  }: ValiderPorts<Inscription>) =>
+  }: ValiderPorts<Inscription, Acceptation, Echec>) =>
   async ({
     userId,
     maintenant,
   }: {
     readonly userId: UtilisateurId
     readonly maintenant: Date
-  }): Promise<Result<InscriptionValidee<Inscription>, EchecDeValider>> => {
+  }): Promise<
+    Result<InscriptionValidee<Inscription, Acceptation, Echec>, EchecDeValider>
+  > => {
     const validation = validerInscription({
       faits: await lireFaitsInscription(userId),
       maintenant,
