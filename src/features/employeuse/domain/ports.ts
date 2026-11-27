@@ -3,11 +3,11 @@ import type { Employeuse } from './employeuse'
 import type { UtilisateurId } from './utilisateur-id'
 
 export type RechercherEmployeuse = (input: {
-  recherche: string
-  limite?: number
+  readonly recherche: string
+  readonly limite: number
 }) => Promise<{
-  employeuses: Employeuse[]
-  total: number
+  readonly employeuses: readonly Employeuse[]
+  readonly total: number
 }>
 
 export type LireLEmploiActuel = (

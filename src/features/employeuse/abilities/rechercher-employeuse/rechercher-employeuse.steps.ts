@@ -11,7 +11,7 @@ import {
 import { rechercherEmployeuse } from '@/features/employeuse/implementations/prisma/rechercher-employeuse.query'
 
 const contexte: {
-  trouvees: Employeuse[]
+  trouvees: readonly Employeuse[]
 } = {
   trouvees: [],
 }
@@ -34,7 +34,7 @@ Given(
 )
 
 When("je recherche l'employeuse {string}", async (recherche: string) => {
-  const resultat = await rechercherEmployeuse({ recherche })
+  const resultat = await rechercherEmployeuse({ recherche, limite: 50 })
   contexte.trouvees = resultat.employeuses
 })
 
