@@ -259,7 +259,7 @@ describe('fusionner des lieux', () => {
         fusionneLe: maintenant,
         fiche: publiee(CIBLE),
         mediateursATransferer: [MEDIATEUR_DE_LA_SOURCE],
-        ecritureAuRegistre: 'FicheComplete',
+        ecritureAuRegistre: { _tag: 'FicheComplete' },
       }),
     )
   })
@@ -360,7 +360,7 @@ describe('fusionner des lieux', () => {
         fusionneLe: maintenant,
         fiche,
         mediateursATransferer: [],
-        ecritureAuRegistre: 'FicheComplete',
+        ecritureAuRegistre: { _tag: 'FicheComplete' },
       }),
     )
   })

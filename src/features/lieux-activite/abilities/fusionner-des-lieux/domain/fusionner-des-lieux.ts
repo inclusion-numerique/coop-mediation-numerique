@@ -2,6 +2,7 @@ import { failure, type Result, success } from '@/libraries/result'
 import { LieuIntrouvable } from '../../../domain/errors'
 import type { LieuId } from '../../../domain/identifiants/lieu-id'
 import type { MediateurId } from '../../../domain/identifiants/mediateur-id'
+import { FicheComplete } from '../../../domain/registre/ecriture-au-registre'
 import type { EchecDeFusionnerDesLieux } from './errors'
 import type { FicheFusionnable } from './fiche-fusionnable'
 import { ficheFusionnee } from './fiche-fusionnee'
@@ -59,7 +60,7 @@ export const fusionnerDesLieux =
       mediateursATransferer: mediateursATransferer(
         await mediateursDesLieux({ source, cible }),
       ),
-      ecritureAuRegistre: 'FicheComplete',
+      ecritureAuRegistre: FicheComplete,
     }
     const issue = await fusionner(fusion)
 

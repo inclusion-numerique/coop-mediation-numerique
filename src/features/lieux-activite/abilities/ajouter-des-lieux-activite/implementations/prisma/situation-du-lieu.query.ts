@@ -15,7 +15,7 @@ export const etatDuLieu: LireLEtatDuLieu = async (lieuId) => {
 
   if (lieu === null) return null
 
-  return lieu.suppression === null ? 'Actif' : 'Inactif'
+  return { _tag: lieu.suppression === null ? 'Actif' : 'Inactif' }
 }
 
 export const lieuPorteurDeLaCarto: LieuPorteurDeLaCarto = async (

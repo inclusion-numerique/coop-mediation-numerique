@@ -146,7 +146,7 @@ const supprimeLe = new Date('2026-01-15T10:00:00Z')
 const ports: AjouterDesLieuxActivitePorts = {
   lireLieuxDejaRattaches: async () => [],
   trouverStructuresCarto: async () => new Map(),
-  etatDuLieu: async () => 'Actif',
+  etatDuLieu: async () => ({ _tag: 'Actif' }),
   lieuPorteurDeLaCarto: async () => null,
   lieuxAuMemeEndroit: async () => [],
   nouvelIdentifiantDeLieu: () => NOUVEAU,
@@ -333,7 +333,7 @@ describe('ajouter des lieux d’activité', () => {
       cas: 'rattache au lieu porteur de la carto un lieu désigné qui n’est plus actif',
       lieuxRattaches: [PORTEUR],
       ports: {
-        etatDuLieu: async () => 'Inactif',
+        etatDuLieu: async () => ({ _tag: 'Inactif' }),
         lieuPorteurDeLaCarto: async () => PORTEUR,
       },
       demandes: [
@@ -344,7 +344,7 @@ describe('ajouter des lieux d’activité', () => {
     {
       cas: 'relève et rattache un lieu désigné qui n’est plus actif et que la carto ne porte pas',
       lieuxRattaches: [LIEU_A],
-      ports: { etatDuLieu: async () => 'Inactif' },
+      ports: { etatDuLieu: async () => ({ _tag: 'Inactif' }) },
       demandes: [connu({ id: LIEU_A })],
       destinations: [{ _tag: 'LieuARelever', id: LIEU_A }],
     },

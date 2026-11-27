@@ -37,13 +37,13 @@ const rattacher = async (
     select: { id: true },
   })
 
-  if (dejaRattache) return 'DejaRattache'
+  if (dejaRattache) return { _tag: 'DejaRattache' }
 
   await transaction.mediateurEnActivite.create({
     data: { id: v4(), mediateurId, structureId, debut, creationParId },
   })
 
-  return 'Rattache'
+  return { _tag: 'Rattache' }
 }
 
 const creerLaFiche =
@@ -59,7 +59,7 @@ const creerLaFiche =
 
     await ecrireAuRegistre(transaction, {
       lieu,
-      colonnes: colonnesDeLEcriture[ecritureAuRegistre],
+      colonnes: colonnesDeLEcriture[ecritureAuRegistre._tag],
       maintenant: lieu.tracabilite.creation.date,
     })
 

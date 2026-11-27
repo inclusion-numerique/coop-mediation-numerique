@@ -87,7 +87,7 @@ export const planifierLesRattachements =
     ): Promise<Result<Plan, LieuIntrouvable>> => {
       const etat = estExistant(lieu) ? await etatDuLieu(lieu.id) : null
 
-      if (estExistant(lieu) && etat === 'Actif')
+      if (estExistant(lieu) && etat?._tag === 'Actif')
         return ajouter(plan, { _tag: 'LieuActif', id: lieu.id }, plan.prevus)
 
       const porteur =
@@ -98,7 +98,7 @@ export const planifierLesRattachements =
       if (porteur !== null)
         return ajouter(plan, { _tag: 'LieuActif', id: porteur }, plan.prevus)
 
-      if (estExistant(lieu) && etat === 'Inactif')
+      if (estExistant(lieu) && etat?._tag === 'Inactif')
         return ajouter(
           plan,
           { _tag: 'LieuARelever', id: lieu.id },

@@ -88,7 +88,7 @@ const fusionnerAuRegistre = async (
 
   await ecrireLeLieuAuRegistre(prisma, {
     ligne: fusionne,
-    colonnes: colonnesDeLEcriture[ecritureAuRegistre],
+    colonnes: colonnesDeLEcriture[ecritureAuRegistre._tag],
     maintenant: fusionneLe,
   })
 }

@@ -64,7 +64,7 @@ export const colonnesRapporteesParLaCartographie = ({
 })
 
 export const colonnesDeLEcriture: Readonly<
-  Record<EcritureAuRegistre, ColonnesAEcrire>
+  Record<EcritureAuRegistre['_tag'], ColonnesAEcrire>
 > = {
   FicheComplete: toutesLesColonnes,
   IdentiteSeule: identiteDuLieu,

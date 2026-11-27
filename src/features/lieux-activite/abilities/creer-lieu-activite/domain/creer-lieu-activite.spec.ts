@@ -129,7 +129,7 @@ describe('créer un lieu d’activité', () => {
         lieuxAuMemeEndroit: async () => [],
         enregistrer: async () => ({
           _tag: 'Enregistre',
-          rattachement: 'Rattache',
+          rattachement: { _tag: 'Rattache' },
         }),
       })({ lieu: auPort, mediateurId: null }),
     ).toEqual(failure({ _tag: 'MediateurRequis' }))
@@ -195,7 +195,7 @@ describe('créer un lieu d’activité', () => {
         lieuxAuMemeEndroit: async () => candidats,
         enregistrer: async () => ({
           _tag: 'Enregistre',
-          rattachement: 'Rattache',
+          rattachement: { _tag: 'Rattache' },
         }),
       })({ lieu, mediateurId }),
     ).toEqual(
@@ -204,8 +204,8 @@ describe('créer un lieu d’activité', () => {
         mediateurId,
         debut: creeLe,
         par: createur,
-        ecritureAuRegistre: 'IdentiteSeule',
-        rattachement: 'Rattache',
+        ecritureAuRegistre: { _tag: 'IdentiteSeule' },
+        rattachement: { _tag: 'Rattache' },
       }),
     )
   })
@@ -216,7 +216,7 @@ describe('créer un lieu d’activité', () => {
         lieuxAuMemeEndroit: async () => [],
         enregistrer: async () => ({
           _tag: 'Enregistre',
-          rattachement: 'Rattache',
+          rattachement: { _tag: 'Rattache' },
         }),
       })({ lieu: publieAuPort, mediateurId }),
     ).toEqual(
@@ -229,8 +229,8 @@ describe('créer un lieu d’activité', () => {
         mediateurId,
         debut: creeLe,
         par: createur,
-        ecritureAuRegistre: 'FicheComplete',
-        rattachement: 'Rattache',
+        ecritureAuRegistre: { _tag: 'FicheComplete' },
+        rattachement: { _tag: 'Rattache' },
       }),
     )
   })
@@ -250,7 +250,7 @@ describe('créer un lieu d’activité', () => {
         lieuxAuMemeEndroit: async () => [candidat(null)],
         enregistrer: async () => ({
           _tag: 'Enregistre',
-          rattachement: 'DejaRattache',
+          rattachement: { _tag: 'DejaRattache' },
         }),
       })({ lieu: auPort, mediateurId }),
     ).toEqual(
@@ -259,8 +259,8 @@ describe('créer un lieu d’activité', () => {
         mediateurId,
         debut: creeLe,
         par: createur,
-        ecritureAuRegistre: 'IdentiteSeule',
-        rattachement: 'DejaRattache',
+        ecritureAuRegistre: { _tag: 'IdentiteSeule' },
+        rattachement: { _tag: 'DejaRattache' },
       }),
     )
   })
