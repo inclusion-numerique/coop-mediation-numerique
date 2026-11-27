@@ -4,7 +4,10 @@ const LieuAAjouterValidation = z.object({
   id: z.guid().nullish(),
   structureCartographieNationaleId: z.string().nullish(),
   nom: z.string().trim().min(1, 'Le lieu doit porter un nom'),
-  siret: z.string().nullish(),
+  siret: z
+    .string()
+    .regex(/^\d{14}$/, 'Le SIRET doit comporter 14 chiffres')
+    .nullish(),
   adresse: z.string().trim().min(1, 'Le lieu doit porter une adresse'),
   commune: z.string().trim().min(1, 'Le lieu doit porter une commune'),
   codePostal: z.string().trim().min(1, 'Le lieu doit porter un code postal'),

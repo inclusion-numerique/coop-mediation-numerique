@@ -18,7 +18,7 @@ const identite = ({
   structureCartographieNationaleId,
 }: LieuDuPanier) => ({
   nom: Nom(nom),
-  siret: siret == null ? null : Siret.safe(siret),
+  siret: siret == null ? null : Siret(siret),
   structureCartographieNationaleId:
     structureCartographieNationaleId == null
       ? null
