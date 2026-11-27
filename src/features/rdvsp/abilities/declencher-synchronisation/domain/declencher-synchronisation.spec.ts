@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { failure, success } from '@/libraries/result'
+import { EchecTechnique, failure, success } from '@/libraries/result'
 import {
   type CompteRdv,
   MessageErreurCompte,
@@ -8,11 +8,7 @@ import {
   JetonAcces,
   type JetonsOAuth,
 } from '../../../domain/compte/jetons-oauth'
-import {
-  ApiIndisponible,
-  ErreurTechnique,
-  JetonRevoque,
-} from '../../../domain/errors'
+import { ApiIndisponible, JetonRevoque } from '../../../domain/errors'
 import { OrganisationId } from '../../../domain/identifiants/organisation-id'
 import { RdvAgentId } from '../../../domain/identifiants/rdv-agent-id'
 import { UtilisateurCoopId } from '../../../domain/identifiants/utilisateur-coop-id'
@@ -176,14 +172,14 @@ describe('déclencher une synchronisation', () => {
     )
   })
 
-  it.each<{ cas: string; echec: ApiIndisponible | ErreurTechnique }>([
+  it.each<{ cas: string; echec: ApiIndisponible | EchecTechnique }>([
     {
       cas: 'une API momentanément indisponible',
       echec: ApiIndisponible(503, 'maintenance'),
     },
     {
       cas: 'une erreur technique',
-      echec: ErreurTechnique(new Error('connexion perdue')),
+      echec: EchecTechnique('connexion perdue'),
     },
   ])(
     'ne marque pas le compte pour $cas, qu’un nouvel essai résoudra',

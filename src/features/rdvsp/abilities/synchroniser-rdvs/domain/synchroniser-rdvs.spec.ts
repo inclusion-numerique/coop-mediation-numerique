@@ -1,12 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { failure, success } from '@/libraries/result'
+import { EchecTechnique, failure, success } from '@/libraries/result'
 import type { CompteRdvLie } from '../../../domain/compte/compte-rdv'
 import { JetonAcces } from '../../../domain/compte/jetons-oauth'
-import {
-  AccesRefuse,
-  ApiIndisponible,
-  ErreurTechnique,
-} from '../../../domain/errors'
+import { AccesRefuse, ApiIndisponible } from '../../../domain/errors'
 import { MediateurId } from '../../../domain/identifiants/mediateur-id'
 import { MotifId } from '../../../domain/identifiants/motif-id'
 import { OrganisationId } from '../../../domain/identifiants/organisation-id'
@@ -142,7 +138,7 @@ const accessible = OrganisationId(3089)
 const inaccessible = OrganisationId(3090)
 const mediateurId = MediateurId('11111111-1111-4111-8111-111111111112')
 const maintenant = new Date('2026-09-01T10:00:00.000Z')
-const panne = ErreurTechnique(new Error('connexion perdue'))
+const panne = EchecTechnique('connexion perdue')
 
 const etatInconnu: EtatConnu = {
   rdvs: new Map(),

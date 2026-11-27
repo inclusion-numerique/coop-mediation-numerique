@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { failure, success } from '@/libraries/result'
-import { ErreurTechnique, PayloadInexploitable } from '../../../domain/errors'
+import { EchecTechnique, failure, success } from '@/libraries/result'
+import { PayloadInexploitable } from '../../../domain/errors'
 import { MediateurId } from '../../../domain/identifiants/mediateur-id'
 import { MotifId } from '../../../domain/identifiants/motif-id'
 import { OrganisationId } from '../../../domain/identifiants/organisation-id'
@@ -237,7 +237,7 @@ describe('recevoir une notification portant sur un rendez-vous', () => {
     const resultat = await recevoirWebhookRdv({
       ...dependances,
       lireLesUsagersARapprocher: async () =>
-        failure(ErreurTechnique(new Error('connexion perdue'))),
+        failure(EchecTechnique('connexion perdue')),
       lireNotification: recu(avecParticipant),
     })(misAJour)
 

@@ -1,13 +1,13 @@
 import { prismaClient } from '@/configuration/prisma'
+import { attraperEnEchecTechnique } from '@/libraries/result'
 import { RdvId } from '../../../../domain/identifiants/rdv-id'
 import type { Lieu } from '../../../../domain/rdv/lieu'
 import type { Motif } from '../../../../domain/rdv/motif'
 import type { Usager } from '../../../../domain/usager'
 import { rdvToDomain } from '../../../../implementations/prisma/rdv.transfer'
-import { tenter } from '../../../../implementations/prisma/tenter.adapter'
 import type { EtatConnuDuLot, RdvsDejaImportes } from '../../domain/ports'
 
-export const rdvsDejaImportes: RdvsDejaImportes = tenter(
+export const rdvsDejaImportes: RdvsDejaImportes = attraperEnEchecTechnique(
   async ({ compte, organisationIds }) =>
     (
       await prismaClient.rdv.findMany({
@@ -22,7 +22,7 @@ export const rdvsDejaImportes: RdvsDejaImportes = tenter(
     ).map(({ id }) => RdvId(id)),
 )
 
-export const etatConnuDuLot: EtatConnuDuLot = tenter(
+export const etatConnuDuLot: EtatConnuDuLot = attraperEnEchecTechnique(
   async ({ rdvIds, organisationIds }) => {
     const rows = await prismaClient.rdv.findMany({
       where: {

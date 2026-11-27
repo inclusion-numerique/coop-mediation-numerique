@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { failure, success } from '@/libraries/result'
+import { EchecTechnique, failure, success } from '@/libraries/result'
 import type { CompteRdvLie } from '../../../domain/compte/compte-rdv'
 import { JetonAcces } from '../../../domain/compte/jetons-oauth'
-import { ApiIndisponible, ErreurTechnique } from '../../../domain/errors'
+import { ApiIndisponible } from '../../../domain/errors'
 import { OrganisationId } from '../../../domain/identifiants/organisation-id'
 import { RdvAgentId } from '../../../domain/identifiants/rdv-agent-id'
 import { UtilisateurCoopId } from '../../../domain/identifiants/utilisateur-coop-id'
@@ -87,29 +87,25 @@ describe('synchroniser les organisations d’un compte', () => {
   })
 
   it('renonce quand l’état connu de La Coop ne peut être lu', async () => {
-    const panne = new Error('connexion perdue')
+    const panne = 'connexion perdue'
 
     const resultat = await synchroniserOrganisations({
       ...ports({ recues: [premiere], connues: [], rattachements: [] }),
-      etatOrganisations: async () => failure(ErreurTechnique(panne)),
+      etatOrganisations: async () => failure(EchecTechnique(panne)),
     })({ compte })
 
-    expect(resultat).toEqual(
-      failure({ _tag: 'ErreurTechnique', erreur: panne }),
-    )
+    expect(resultat).toEqual(failure({ _tag: 'EchecTechnique', cause: panne }))
   })
 
   it('rend l’échec de l’écriture du plan', async () => {
-    const panne = new Error('transaction annulée')
+    const panne = 'transaction annulée'
 
     const resultat = await synchroniserOrganisations({
       ...ports({ recues: [premiere], connues: [], rattachements: [] }),
-      appliquerPlan: async () => failure(ErreurTechnique(panne)),
+      appliquerPlan: async () => failure(EchecTechnique(panne)),
     })({ compte })
 
-    expect(resultat).toEqual(
-      failure({ _tag: 'ErreurTechnique', erreur: panne }),
-    )
+    expect(resultat).toEqual(failure({ _tag: 'EchecTechnique', cause: panne }))
   })
 
   it('rend les organisations reçues, pour que la passe parcoure les mêmes', async () => {

@@ -1,9 +1,9 @@
 import { prismaClient } from '@/configuration/prisma'
-import { tenter } from '../../../../implementations/prisma/tenter.adapter'
+import { attraperEnEchecTechnique } from '@/libraries/result'
 import type { NoterLaSynchronisationReussie } from '../../domain/ports'
 
 export const noterLaSynchronisationReussie: NoterLaSynchronisationReussie =
-  tenter(async ({ agentId, organisationIdsSansWebhook }) => {
+  attraperEnEchecTechnique(async ({ agentId, organisationIdsSansWebhook }) => {
     await prismaClient.rdvAccount.update({
       where: { id: agentId },
       data: {

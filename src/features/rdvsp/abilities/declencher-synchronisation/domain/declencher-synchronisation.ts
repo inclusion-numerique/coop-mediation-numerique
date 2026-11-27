@@ -71,9 +71,9 @@ const motifsDefinitifs: readonly EchecDeSynchronisation['_tag'][] = [
   'AgentSupprime',
 ]
 
-const causeASignaler = (echec: EchecDeSynchronisation): unknown =>
-  echec._tag === 'ErreurTechnique'
-    ? echec.erreur
+const causeASignaler = (echec: EchecDeSynchronisation): Error =>
+  echec._tag === 'EchecTechnique'
+    ? new Error(echec.cause)
     : new Error(
         `Impossible de synchroniser le compte RDV (${diagnosticErreur(echec)})`,
       )

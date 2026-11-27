@@ -1,6 +1,6 @@
 import { prismaClient } from '@/configuration/prisma'
+import { attraperEnEchecTechnique } from '@/libraries/result'
 import type { Organisation } from '../../../../domain/organisation'
-import { tenter } from '../../../../implementations/prisma/tenter.adapter'
 import type { AppliquerPlanOrganisations } from '../../domain/ports'
 
 const colonnes = (organisation: Organisation) => ({
@@ -11,8 +11,8 @@ const colonnes = (organisation: Organisation) => ({
   verticale: organisation.verticale,
 })
 
-export const appliquerPlanOrganisations: AppliquerPlanOrganisations = tenter(
-  async ({ compte, plan }) => {
+export const appliquerPlanOrganisations: AppliquerPlanOrganisations =
+  attraperEnEchecTechnique(async ({ compte, plan }) => {
     await prismaClient.$transaction(async (transaction) => {
       await transaction.rdvOrganisation.createMany({
         data: plan.aCreer.map(colonnes),
@@ -43,5 +43,4 @@ export const appliquerPlanOrganisations: AppliquerPlanOrganisations = tenter(
         skipDuplicates: true,
       })
     })
-  },
-)
+  })

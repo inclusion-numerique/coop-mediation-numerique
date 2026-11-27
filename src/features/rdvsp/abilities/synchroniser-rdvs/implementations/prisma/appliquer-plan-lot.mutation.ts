@@ -1,4 +1,5 @@
 import { prismaClient } from '@/configuration/prisma'
+import { attraperEnEchecTechnique } from '@/libraries/result'
 import type { Rdv } from '../../../../domain/rdv/rdv'
 import {
   lieuFromDomain,
@@ -9,7 +10,6 @@ import {
   participationFromDomain,
   rdvFromDomain,
 } from '../../../../implementations/prisma/rdv.transfer'
-import { tenter } from '../../../../implementations/prisma/tenter.adapter'
 import type {
   AppliquerPlanLot,
   SupprimerMotifsOrphelins,
@@ -38,7 +38,7 @@ const ecrireRdv = async (rdv: Rdv, brut: unknown) =>
     })
   })
 
-export const appliquerPlanLot: AppliquerPlanLot = tenter(
+export const appliquerPlanLot: AppliquerPlanLot = attraperEnEchecTechnique(
   async ({ plan, bruts }) => {
     await prismaClient.rdvUser.createMany({
       data: plan.usagers.aCreer.map(usagerFromDomain),
@@ -92,12 +92,14 @@ export const appliquerPlanLot: AppliquerPlanLot = tenter(
   },
 )
 
-export const supprimerRdvs: SupprimerRdvs = tenter(async (rdvIds) => {
-  await prismaClient.rdv.deleteMany({ where: { id: { in: [...rdvIds] } } })
-})
+export const supprimerRdvs: SupprimerRdvs = attraperEnEchecTechnique(
+  async (rdvIds) => {
+    await prismaClient.rdv.deleteMany({ where: { id: { in: [...rdvIds] } } })
+  },
+)
 
-export const supprimerMotifsOrphelins: SupprimerMotifsOrphelins = tenter(
-  async (organisationIds) => {
+export const supprimerMotifsOrphelins: SupprimerMotifsOrphelins =
+  attraperEnEchecTechnique(async (organisationIds) => {
     const { count } = await prismaClient.rdvMotif.deleteMany({
       where: {
         rdvs: { none: {} },
@@ -106,5 +108,4 @@ export const supprimerMotifsOrphelins: SupprimerMotifsOrphelins = tenter(
     })
 
     return count
-  },
-)
+  })

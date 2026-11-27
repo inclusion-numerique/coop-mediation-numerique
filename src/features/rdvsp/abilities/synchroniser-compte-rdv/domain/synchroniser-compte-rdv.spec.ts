@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import { failure, success } from '@/libraries/result'
+import { EchecTechnique, failure, success } from '@/libraries/result'
 import {
   bilanSynchronisationVide,
   bilanVide,
 } from '../../../domain/compte/bilan-synchronisation'
 import type { CompteRdvLie } from '../../../domain/compte/compte-rdv'
 import { JetonAcces } from '../../../domain/compte/jetons-oauth'
-import { ApiIndisponible, ErreurTechnique } from '../../../domain/errors'
+import { ApiIndisponible } from '../../../domain/errors'
 import { MediateurId } from '../../../domain/identifiants/mediateur-id'
 import { OrganisationId } from '../../../domain/identifiants/organisation-id'
 import { RdvAgentId } from '../../../domain/identifiants/rdv-agent-id'
@@ -25,7 +25,7 @@ const organisation = OrganisationId(10)
 const autreOrganisation = OrganisationId(20)
 const mediateurId = MediateurId('b6f1a6a2-3c4d-4e5f-8a9b-0c1d2e3f4a5b')
 const maintenant = new Date('2026-09-01T10:00:00.000Z')
-const panne = ErreurTechnique(new Error('connexion perdue'))
+const panne = EchecTechnique('connexion perdue')
 const indisponible = ApiIndisponible(503, 'maintenance')
 
 const compte: CompteRdvLie = {

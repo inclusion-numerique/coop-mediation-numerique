@@ -1,10 +1,10 @@
+import type { EchecTechnique } from '@/libraries/result'
 import { failure, type Result, success } from '@/libraries/result'
 import type {
   BilanModele,
   OperationSynchronisation,
 } from '../../../domain/compte/bilan-synchronisation'
 import type { CompteRdvUtilisable } from '../../../domain/compte/compte-rdv'
-import type { ErreurTechnique } from '../../../domain/errors'
 import type { OrganisationId } from '../../../domain/identifiants/organisation-id'
 import { abonnementsDeLaCoop, estAJour } from '../../../domain/webhook/webhook'
 import type { SynchroniserCompteRdvPorts } from './ports'
@@ -96,7 +96,7 @@ export const poserLesWebhooks = async (
     readonly compte: CompteRdvUtilisable
     readonly organisationIds: readonly OrganisationId[] | undefined
   },
-): Promise<Result<PosesDeWebhooks, ErreurTechnique>> => {
+): Promise<Result<PosesDeWebhooks, EchecTechnique>> => {
   const poses = await Promise.all(
     compte.organisationIds
       .filter(

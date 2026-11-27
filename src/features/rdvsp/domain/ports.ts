@@ -1,8 +1,8 @@
-import type { Result } from '@/libraries/result'
+import type { EchecTechnique, Result } from '@/libraries/result'
 import type { Agent } from './agent'
 import type { CompteRdvUtilisable } from './compte/compte-rdv'
 import type { JetonsOAuth } from './compte/jetons-oauth'
-import type { ErreurRdvApi, ErreurTechnique } from './errors'
+import type { ErreurRdvApi } from './errors'
 import type { MediateurId } from './identifiants/mediateur-id'
 import type { OrganisationId } from './identifiants/organisation-id'
 import type { RdvAgentId } from './identifiants/rdv-agent-id'
@@ -118,7 +118,7 @@ export type DemandeDeRapprochement = {
 
 export type LireLesUsagersARapprocher = (
   usagerIds: readonly UsagerId[],
-) => Promise<Result<readonly UsagerExterne[], ErreurTechnique>>
+) => Promise<Result<readonly UsagerExterne[], EchecTechnique>>
 
 export type RapprocherLesBeneficiaires = (
   demande: DemandeDeRapprochement,

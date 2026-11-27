@@ -1,10 +1,10 @@
 import { prismaClient } from '@/configuration/prisma'
+import { attraperEnEchecTechnique } from '@/libraries/result'
 import {
   type BilanSynchronisation,
   deriveDuModele,
   type ModeleSynchronise,
 } from '../../../../domain/compte/bilan-synchronisation'
-import { tenter } from '../../../../implementations/prisma/tenter.adapter'
 import type {
   CloturerJournal,
   EchouerJournal,
@@ -22,7 +22,7 @@ const colonnesDuModele = (
   [`${modele}Deleted`]: bilan[modele].deleted,
 })
 
-export const ouvrirJournal: OuvrirJournal = tenter(
+export const ouvrirJournal: OuvrirJournal = attraperEnEchecTechnique(
   async ({ compte, organisationIds }) => {
     const { id } = await prismaClient.rdvSyncLog.create({
       data: {
@@ -38,7 +38,7 @@ export const ouvrirJournal: OuvrirJournal = tenter(
   },
 )
 
-export const cloturerJournal: CloturerJournal = tenter(
+export const cloturerJournal: CloturerJournal = attraperEnEchecTechnique(
   async ({ journalId, resultat, journal }) => {
     const { bilan } = resultat
 
@@ -59,7 +59,7 @@ export const cloturerJournal: CloturerJournal = tenter(
   },
 )
 
-export const echouerJournal: EchouerJournal = tenter(
+export const echouerJournal: EchouerJournal = attraperEnEchecTechnique(
   async ({ journalId, message, journal }) => {
     await prismaClient.rdvSyncLog.update({
       where: { id: journalId },

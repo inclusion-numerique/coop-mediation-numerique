@@ -1,6 +1,5 @@
-import type { Result } from '@/libraries/result'
+import type { EchecTechnique, Result } from '@/libraries/result'
 import type { CompteRdvUtilisable } from '../../../domain/compte/compte-rdv'
-import type { ErreurTechnique } from '../../../domain/errors'
 import type { OrganisationId } from '../../../domain/identifiants/organisation-id'
 import type { RdvId } from '../../../domain/identifiants/rdv-id'
 import type {
@@ -13,26 +12,26 @@ import type { EtatConnu, PlanLot } from './plan-rdvs'
 export type RdvsDejaImportes = (portee: {
   readonly compte: CompteRdvUtilisable
   readonly organisationIds?: readonly OrganisationId[]
-}) => Promise<Result<readonly RdvId[], ErreurTechnique>>
+}) => Promise<Result<readonly RdvId[], EchecTechnique>>
 
 export type EtatConnuDuLot = (lecture: {
   readonly rdvIds: readonly RdvId[]
   readonly organisationIds?: readonly OrganisationId[]
-}) => Promise<Result<EtatConnu, ErreurTechnique>>
+}) => Promise<Result<EtatConnu, EchecTechnique>>
 
 export type AppliquerPlanLot = (application: {
   readonly compte: CompteRdvUtilisable
   readonly plan: PlanLot
   readonly bruts: ReadonlyMap<RdvId, unknown>
-}) => Promise<Result<void, ErreurTechnique>>
+}) => Promise<Result<void, EchecTechnique>>
 
 export type SupprimerMotifsOrphelins = (
   organisationIds: readonly OrganisationId[],
-) => Promise<Result<number, ErreurTechnique>>
+) => Promise<Result<number, EchecTechnique>>
 
 export type SupprimerRdvs = (
   rdvIds: readonly RdvId[],
-) => Promise<Result<void, ErreurTechnique>>
+) => Promise<Result<void, EchecTechnique>>
 
 export type SynchroniserRdvsPorts = {
   readonly listerRdvs: RdvServicePublicApi['listerRdvs']

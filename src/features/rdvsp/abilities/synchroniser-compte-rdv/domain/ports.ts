@@ -1,10 +1,7 @@
-import type { Result } from '@/libraries/result'
+import type { EchecTechnique, Result } from '@/libraries/result'
 import type { BilanModele } from '../../../domain/compte/bilan-synchronisation'
 import type { CompteRdvUtilisable } from '../../../domain/compte/compte-rdv'
-import type {
-  EchecDeSynchronisation,
-  ErreurTechnique,
-} from '../../../domain/errors'
+import type { EchecDeSynchronisation } from '../../../domain/errors'
 import type { MediateurId } from '../../../domain/identifiants/mediateur-id'
 import type { OrganisationId } from '../../../domain/identifiants/organisation-id'
 import type { RdvAgentId } from '../../../domain/identifiants/rdv-agent-id'
@@ -49,34 +46,34 @@ export type DestinationDesWebhooksJoignable = () => boolean
 export type NoterLesWebhooksInvalides = (invalides: {
   readonly agentId: RdvAgentId
   readonly organisationIds: readonly OrganisationId[]
-}) => Promise<Result<void, ErreurTechnique>>
+}) => Promise<Result<void, EchecTechnique>>
 
 export type DetacherOrganisations = (detachement: {
   readonly compte: CompteRdvUtilisable
   readonly organisationIds: readonly OrganisationId[]
-}) => Promise<Result<void, ErreurTechnique>>
+}) => Promise<Result<void, EchecTechnique>>
 
 export type OuvrirJournal = (ouverture: {
   readonly compte: CompteRdvUtilisable
   readonly organisationIds?: readonly OrganisationId[]
-}) => Promise<Result<{ readonly journalId: string }, ErreurTechnique>>
+}) => Promise<Result<{ readonly journalId: string }, EchecTechnique>>
 
 export type CloturerJournal = (cloture: {
   readonly journalId: string
   readonly resultat: ResultatSynchronisation
   readonly journal: string
-}) => Promise<Result<void, ErreurTechnique>>
+}) => Promise<Result<void, EchecTechnique>>
 
 export type EchouerJournal = (echec: {
   readonly journalId: string
   readonly message: string
   readonly journal: string
-}) => Promise<Result<void, ErreurTechnique>>
+}) => Promise<Result<void, EchecTechnique>>
 
 export type NoterLaSynchronisationReussie = (reussite: {
   readonly agentId: RdvAgentId
   readonly organisationIdsSansWebhook: readonly OrganisationId[] | undefined
-}) => Promise<Result<void, ErreurTechnique>>
+}) => Promise<Result<void, EchecTechnique>>
 
 export type SynchroniserCompteRdvPorts = {
   readonly reconcilierOrganisations: ReconcilierOrganisations

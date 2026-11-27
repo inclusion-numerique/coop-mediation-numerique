@@ -1,4 +1,4 @@
-import { messageDe } from '@/libraries/result'
+import type { EchecTechnique } from '@/libraries/result'
 import type { OrganisationId } from './identifiants/organisation-id'
 import type { RdvAgentId } from './identifiants/rdv-agent-id'
 import type { RdvId } from './identifiants/rdv-id'
@@ -111,17 +111,7 @@ export type ErreurRdvApi =
   | CompteNonLie
   | RdvIntrouvable
 
-export type ErreurTechnique = {
-  readonly _tag: 'ErreurTechnique'
-  readonly erreur: unknown
-}
-
-export const ErreurTechnique = (erreur: unknown): ErreurTechnique => ({
-  _tag: 'ErreurTechnique',
-  erreur,
-})
-
-export type EchecDeSynchronisation = ErreurRdvApi | ErreurTechnique
+export type EchecDeSynchronisation = ErreurRdvApi | EchecTechnique
 
 const detailErreur = (erreur: ErreurRdvApi): string | null => {
   if (erreur._tag === 'AccesRefuse' || erreur._tag === 'AgentSupprime') {
@@ -144,7 +134,5 @@ export const diagnosticErreur = (erreur: ErreurRdvApi): string => {
 }
 
 export const messageDeLEchec = (echec: EchecDeSynchronisation): string => {
-  if (echec._tag !== 'ErreurTechnique') return diagnosticErreur(echec)
-
-  return messageDe(echec.erreur)
+  return echec._tag === 'EchecTechnique' ? echec.cause : diagnosticErreur(echec)
 }

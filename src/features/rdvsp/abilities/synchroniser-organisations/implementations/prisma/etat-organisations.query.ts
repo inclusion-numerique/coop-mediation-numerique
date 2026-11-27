@@ -1,12 +1,12 @@
 import { prismaClient } from '@/configuration/prisma'
+import { attraperEnEchecTechnique } from '@/libraries/result'
 import { OrganisationId } from '../../../../domain/identifiants/organisation-id'
 import { EmailExterne, TelephoneExterne } from '../../../../domain/identite'
 import { NomOrganisation } from '../../../../domain/libelle'
 import type { Organisation } from '../../../../domain/organisation'
-import { tenter } from '../../../../implementations/prisma/tenter.adapter'
 import type { EtatOrganisations } from '../../domain/ports'
 
-export const etatOrganisations: EtatOrganisations = tenter(
+export const etatOrganisations: EtatOrganisations = attraperEnEchecTechnique(
   async ({ compte, idsRecus }) => {
     const [connues, rattachements] = await Promise.all([
       prismaClient.rdvOrganisation.findMany({

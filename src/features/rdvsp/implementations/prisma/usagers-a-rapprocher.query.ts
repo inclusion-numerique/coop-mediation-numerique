@@ -1,10 +1,10 @@
 import { prismaClient } from '@/configuration/prisma'
+import { attraperEnEchecTechnique } from '@/libraries/result'
 import type { LireLesUsagersARapprocher } from '../../domain/ports'
-import { tenter } from './tenter.adapter'
 import { usagerExterneToDomain } from './usager-externe.transfer'
 
-export const lireLesUsagersARapprocher: LireLesUsagersARapprocher = tenter(
-  async (usagerIds) =>
+export const lireLesUsagersARapprocher: LireLesUsagersARapprocher =
+  attraperEnEchecTechnique(async (usagerIds) =>
     (
       await prismaClient.rdvUser.findMany({
         where: { id: { in: [...usagerIds] } },
@@ -19,4 +19,4 @@ export const lireLesUsagersARapprocher: LireLesUsagersARapprocher = tenter(
         },
       })
     ).map(usagerExterneToDomain),
-)
+  )

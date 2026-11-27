@@ -1,9 +1,9 @@
 import { prismaClient } from '@/configuration/prisma'
-import { tenter } from '../../../../implementations/prisma/tenter.adapter'
+import { attraperEnEchecTechnique } from '@/libraries/result'
 import type { DetacherOrganisations } from '../../domain/ports'
 
-export const detacherOrganisations: DetacherOrganisations = tenter(
-  async ({ compte, organisationIds }) => {
+export const detacherOrganisations: DetacherOrganisations =
+  attraperEnEchecTechnique(async ({ compte, organisationIds }) => {
     await prismaClient.$transaction(async (transaction) => {
       await transaction.rdvAccountOrganisation.deleteMany({
         where: {
@@ -28,5 +28,4 @@ export const detacherOrganisations: DetacherOrganisations = tenter(
         },
       })
     })
-  },
-)
+  })

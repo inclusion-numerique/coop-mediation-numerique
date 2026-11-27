@@ -1,11 +1,11 @@
 import { describe, expect, it } from 'vitest'
+import { EchecTechnique } from '@/libraries/result'
 import {
   AccesRefuse,
   AgentSupprime,
   ApiIndisponible,
   CompteNonLie,
   type EchecDeSynchronisation,
-  ErreurTechnique,
   JetonRevoque,
   messageDeLEchec,
   ReponseInattendue,
@@ -44,14 +44,9 @@ describe('message d’un échec de synchronisation', () => {
       message: 'CompteNonLie',
     },
     {
-      cas: 'reprend le message d’une erreur technique',
-      echec: ErreurTechnique(new Error('connexion perdue')),
+      cas: 'reprend la cause d’un échec technique',
+      echec: EchecTechnique('connexion perdue'),
       message: 'connexion perdue',
-    },
-    {
-      cas: 'reprend telle quelle une erreur technique qui n’est pas une Error',
-      echec: ErreurTechnique('délai dépassé'),
-      message: 'délai dépassé',
     },
   ])('$cas', ({ echec, message }) => {
     expect(messageDeLEchec(echec)).toBe(message)

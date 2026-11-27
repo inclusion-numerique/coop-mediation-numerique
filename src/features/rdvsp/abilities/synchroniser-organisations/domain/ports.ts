@@ -1,6 +1,5 @@
-import type { Result } from '@/libraries/result'
+import type { EchecTechnique, Result } from '@/libraries/result'
 import type { CompteRdvUtilisable } from '../../../domain/compte/compte-rdv'
-import type { ErreurTechnique } from '../../../domain/errors'
 import type { OrganisationId } from '../../../domain/identifiants/organisation-id'
 import type { Organisation } from '../../../domain/organisation'
 import type { RdvServicePublicApi } from '../../../domain/ports'
@@ -15,14 +14,14 @@ export type EtatOrganisations = (lecture: {
       readonly connues: readonly Organisation[]
       readonly rattachements: readonly OrganisationId[]
     },
-    ErreurTechnique
+    EchecTechnique
   >
 >
 
 export type AppliquerPlanOrganisations = (application: {
   readonly compte: CompteRdvUtilisable
   readonly plan: PlanSynchronisation
-}) => Promise<Result<void, ErreurTechnique>>
+}) => Promise<Result<void, EchecTechnique>>
 
 export type SynchroniserOrganisationsPorts = {
   readonly listerOrganisations: RdvServicePublicApi['listerOrganisations']

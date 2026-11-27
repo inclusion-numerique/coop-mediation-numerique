@@ -1,10 +1,10 @@
 import assert from 'node:assert'
 import { Given, Then, When, type World } from '@cucumber/cucumber'
 import { prismaClient } from '@/configuration/prisma'
-import { failure, success } from '@/libraries/result'
+import { EchecTechnique, failure, success } from '@/libraries/result'
 import { bilanVide } from '../../domain/compte/bilan-synchronisation'
 import { estUtilisable } from '../../domain/compte/compte-rdv'
-import { ApiIndisponible, ErreurTechnique } from '../../domain/errors'
+import { ApiIndisponible } from '../../domain/errors'
 import { MediateurId } from '../../domain/identifiants/mediateur-id'
 import { OrganisationId } from '../../domain/identifiants/organisation-id'
 import { abonnementsDeLaCoop, WebhookId } from '../../domain/webhook/webhook'
@@ -74,7 +74,7 @@ const synchroniserPour = (monde: Monde) =>
       monde.organisationIdsRecusParLesRdvs = organisationIds
 
       if (exceptions.has('rendez-vous')) {
-        return failure(ErreurTechnique(new Error('la réconciliation a levé')))
+        return failure(EchecTechnique('la réconciliation a levé'))
       }
 
       return echecs.has('rendez-vous')
