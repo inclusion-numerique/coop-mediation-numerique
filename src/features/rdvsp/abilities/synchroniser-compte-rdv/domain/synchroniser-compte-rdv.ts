@@ -10,10 +10,11 @@ import {
   messageDeLEchec,
 } from '@/features/rdvsp/domain/errors'
 import type { MediateurId } from '@/features/rdvsp/domain/identifiants/mediateur-id'
+import type { OrganisationId } from '@/features/rdvsp/domain/identifiants/organisation-id'
 import {
-  type OrganisationId,
-  organisationsAccessibles,
-} from '@/features/rdvsp/domain/identifiants/organisation-id'
+  type PorteeDeSynchronisation,
+  porteeAccessible,
+} from '@/features/rdvsp/domain/portee-de-synchronisation'
 import type { Rapprochement } from '@/features/rdvsp/domain/rapprochement'
 import { TAILLE_DES_LOTS_DE_RDVS } from '@/features/rdvsp/domain/rdv/taille-des-lots'
 import { failure, type Result, success } from '@/libraries/result'
@@ -24,40 +25,26 @@ import { poserLesWebhooks } from './poser-les-webhooks'
 import type { ResultatSynchronisation } from './resultat-synchronisation'
 
 export type CompteSynchronise = ResultatSynchronisation & {
+  readonly synchroniseeLe: Date
   readonly organisationIdsDetachees: readonly OrganisationId[]
   readonly webhooks: readonly PoseDeWebhook[]
   readonly rapprochements: readonly Rapprochement[]
   readonly journal: string | null
 }
 
-type PasseDeSynchronisation =
-  | { readonly _tag: 'sansObjet' }
-  | {
-      readonly _tag: 'aExecuter'
-      readonly toutesOrganisations: boolean
-      readonly organisationIds: readonly OrganisationId[] | undefined
-    }
+const estSansObjet = (portee: PorteeDeSynchronisation): boolean =>
+  portee._tag === 'organisations' && portee.organisationIds.length === 0
 
-const passePour = (
-  organisationIds: readonly OrganisationId[] | undefined,
-): PasseDeSynchronisation =>
-  organisationIds !== undefined && organisationIds.length === 0
-    ? { _tag: 'sansObjet' }
-    : {
-        _tag: 'aExecuter',
-        toutesOrganisations: organisationIds === undefined,
-        organisationIds,
-      }
-
-const sansObjet: CompteSynchronise = {
+const sansObjet = (maintenant: Date): CompteSynchronise => ({
   bilan: bilanSynchronisationVide,
   derive: 0,
-  organisationIdsSansWebhook: undefined,
+  organisationsSansWebhook: { _tag: 'nonRelevees' },
+  synchroniseeLe: maintenant,
   organisationIdsDetachees: [],
   webhooks: [],
   rapprochements: [],
   journal: null,
-}
+})
 
 const bilanRdvsVide = {
   rdvs: bilanVide,
@@ -68,13 +55,10 @@ const bilanRdvsVide = {
   rapprochements: [],
 }
 
-const avecPortee = (organisationIds: readonly OrganisationId[] | undefined) =>
-  organisationIds === undefined ? {} : { organisationIds }
-
 const rdvsDuMediateur = (
   reconcilierRdvs: ReconcilierRdvs,
   compte: CompteRdvUtilisable,
-  organisationIds: readonly OrganisationId[] | undefined,
+  portee: PorteeDeSynchronisation,
   mediateurId: MediateurId | null,
   maintenant: Date,
 ): ReturnType<ReconcilierRdvs> =>
@@ -82,18 +66,18 @@ const rdvsDuMediateur = (
     ? Promise.resolve(success(bilanRdvsVide))
     : reconcilierRdvs({
         compte,
-        ...avecPortee(organisationIds),
+        portee,
         mediateurId,
         tailleLot: TAILLE_DES_LOTS_DE_RDVS,
         maintenant,
       })
 
 const organisationsDeLaPasse = (
-  toutesOrganisations: boolean,
+  portee: PorteeDeSynchronisation,
   reconcilier: SynchroniserCompteRdvPorts['reconcilierOrganisations'],
   compte: CompteRdvUtilisable,
 ): ReturnType<SynchroniserCompteRdvPorts['reconcilierOrganisations']> =>
-  toutesOrganisations
+  portee._tag === 'toutesOrganisations'
     ? reconcilier({ compte })
     : Promise.resolve(
         success({
@@ -121,169 +105,160 @@ export const synchroniserCompteRdv =
   async ({
     compte,
     mediateurId,
-    organisationIds,
+    portee,
     maintenant,
   }: {
     readonly compte: CompteRdvUtilisable
     readonly mediateurId: MediateurId | null
-    readonly organisationIds?: readonly OrganisationId[]
+    readonly portee: PorteeDeSynchronisation
     readonly maintenant: Date
   }): Promise<Result<CompteSynchronise, EchecDeSynchroniserCompteRdv>> => {
-    const passe = passePour(organisationIds)
+    const synchronisation = estSansObjet(portee)
+      ? success(sansObjet(maintenant))
+      : await (async (): Promise<
+          Result<CompteSynchronise, EchecDeSynchroniserCompteRdv>
+        > => {
+          const ouverture = await ouvrirJournal({
+            compte,
+            portee,
+            ouvertLe: maintenant,
+          })
 
-    const synchronisation =
-      passe._tag === 'sansObjet'
-        ? success(sansObjet)
-        : await (async (): Promise<
-            Result<CompteSynchronise, EchecDeSynchroniserCompteRdv>
-          > => {
-            const ouverture = await ouvrirJournal({
-              compte,
-              ...avecPortee(passe.organisationIds),
-            })
+          if (!ouverture.success) return ouverture
 
-            if (!ouverture.success) return ouverture
+          const { journalId } = ouverture.data
 
-            const { journalId } = ouverture.data
-
-            const echouer = async (
-              echec: EchecDeSynchronisation,
-              lignes: readonly string[],
-            ): Promise<Result<never, EchecDeSynchroniserCompteRdv>> => {
-              const consigne = await echouerJournal({
-                journalId,
-                message: messageDeLEchec(echec),
-                journal: lignes.join('\n'),
-              })
-
-              return consigne.success ? failure(echec) : consigne
-            }
-
-            const traceOrganisations = [
-              passe.toutesOrganisations
-                ? 'réconciliation des organisations'
-                : 'organisations non réconciliées (passe restreinte)',
-            ]
-
-            const organisations = await organisationsDeLaPasse(
-              passe.toutesOrganisations,
-              reconcilierOrganisations,
-              compte,
-            )
-
-            if (!organisations.success)
-              return echouer(organisations.error, traceOrganisations)
-
-            const traceRdvs = [
-              ...traceOrganisations,
-              'organisations réconciliées',
-              'réconciliation des rendez-vous',
-            ]
-
-            const rdvs = await rdvsDuMediateur(
-              reconcilierRdvs,
-              compte,
-              passe.organisationIds,
-              mediateurId,
-              maintenant,
-            )
-
-            if (!rdvs.success) return echouer(rdvs.error, traceRdvs)
-
-            const { organisationIdsInaccessibles } = rdvs.data
-
-            const traceDetachement = [
-              ...traceRdvs,
-              'rendez-vous réconciliés',
-              ...(organisationIdsInaccessibles.length > 0
-                ? [
-                    `organisations inaccessibles détachées : ${organisationIdsInaccessibles.join(', ')}`,
-                  ]
-                : []),
-            ]
-
-            const detachement =
-              organisationIdsInaccessibles.length > 0
-                ? await detacherOrganisations({
-                    compte,
-                    organisationIds: organisationIdsInaccessibles,
-                  })
-                : success(undefined)
-
-            if (!detachement.success)
-              return echouer(detachement.error, traceDetachement)
-
-            const traceWebhooks = [
-              ...traceDetachement,
-              'installation des webhooks',
-            ]
-
-            const webhooks = await poserLesWebhooks(
-              {
-                listerWebhooksDeLaCoop,
-                poserWebhook,
-                relireWebhooksDeLaCoop,
-                reconfigurerWebhook,
-                destinationDesWebhooksJoignable,
-                noterLesWebhooksInvalides,
-              },
-              {
-                compte: {
-                  ...compte,
-                  organisationIds: organisations.data.organisationIdsRecues,
-                },
-                organisationIds: organisationsAccessibles(
-                  passe.organisationIds,
-                  organisationIdsInaccessibles,
-                ),
-              },
-            )
-
-            if (!webhooks.success) return echouer(webhooks.error, traceWebhooks)
-
-            const traceCloture = [...traceWebhooks, 'webhooks installés']
-
-            const bilan: BilanSynchronisation = {
-              organisations: organisations.data.bilan,
-              rdvs: rdvs.data.rdvs,
-              users: rdvs.data.usagers,
-              motifs: rdvs.data.motifs,
-              lieux: rdvs.data.lieux,
-              webhooks: webhooks.data.bilan,
-            }
-
-            const resultat: ResultatSynchronisation = {
-              bilan,
-              derive: deriveTotale(bilan),
-              organisationIdsSansWebhook:
-                webhooks.data.organisationIdsSansWebhook,
-            }
-
-            const journal = traceCloture.join('\n')
-
-            const cloture = await cloturerJournal({
+          const echouer = async (
+            echec: EchecDeSynchronisation,
+            lignes: readonly string[],
+          ): Promise<Result<never, EchecDeSynchroniserCompteRdv>> => {
+            const consigne = await echouerJournal({
               journalId,
-              resultat,
-              journal,
+              message: messageDeLEchec(echec),
+              journal: lignes.join('\n'),
             })
 
-            if (!cloture.success) return echouer(cloture.error, traceCloture)
+            return consigne.success ? failure(echec) : consigne
+          }
 
-            return success({
-              ...resultat,
-              organisationIdsDetachees: organisationIdsInaccessibles,
-              webhooks: webhooks.data.poses,
-              rapprochements: rdvs.data.rapprochements,
-              journal,
-            })
-          })()
+          const traceOrganisations = [
+            portee._tag === 'toutesOrganisations'
+              ? 'réconciliation des organisations'
+              : 'organisations non réconciliées (passe restreinte)',
+          ]
+
+          const organisations = await organisationsDeLaPasse(
+            portee,
+            reconcilierOrganisations,
+            compte,
+          )
+
+          if (!organisations.success)
+            return echouer(organisations.error, traceOrganisations)
+
+          const traceRdvs = [
+            ...traceOrganisations,
+            'organisations réconciliées',
+            'réconciliation des rendez-vous',
+          ]
+
+          const rdvs = await rdvsDuMediateur(
+            reconcilierRdvs,
+            compte,
+            portee,
+            mediateurId,
+            maintenant,
+          )
+
+          if (!rdvs.success) return echouer(rdvs.error, traceRdvs)
+
+          const { organisationIdsInaccessibles } = rdvs.data
+
+          const traceDetachement = [
+            ...traceRdvs,
+            'rendez-vous réconciliés',
+            ...(organisationIdsInaccessibles.length > 0
+              ? [
+                  `organisations inaccessibles détachées : ${organisationIdsInaccessibles.join(', ')}`,
+                ]
+              : []),
+          ]
+
+          const detachement =
+            organisationIdsInaccessibles.length > 0
+              ? await detacherOrganisations({
+                  compte,
+                  organisationIds: organisationIdsInaccessibles,
+                })
+              : success(undefined)
+
+          if (!detachement.success)
+            return echouer(detachement.error, traceDetachement)
+
+          const traceWebhooks = [
+            ...traceDetachement,
+            'installation des webhooks',
+          ]
+
+          const webhooks = await poserLesWebhooks({
+            listerWebhooksDeLaCoop,
+            poserWebhook,
+            relireWebhooksDeLaCoop,
+            reconfigurerWebhook,
+            destinationDesWebhooksJoignable,
+            noterLesWebhooksInvalides,
+          })({
+            compte: {
+              ...compte,
+              organisationIds: organisations.data.organisationIdsRecues,
+            },
+            portee: porteeAccessible(portee, organisationIdsInaccessibles),
+          })
+
+          if (!webhooks.success) return echouer(webhooks.error, traceWebhooks)
+
+          const traceCloture = [...traceWebhooks, 'webhooks installés']
+
+          const bilan: BilanSynchronisation = {
+            organisations: organisations.data.bilan,
+            rdvs: rdvs.data.rdvs,
+            users: rdvs.data.usagers,
+            motifs: rdvs.data.motifs,
+            lieux: rdvs.data.lieux,
+            webhooks: webhooks.data.bilan,
+          }
+
+          const resultat: ResultatSynchronisation = {
+            bilan,
+            derive: deriveTotale(bilan),
+            organisationsSansWebhook: webhooks.data.organisationsSansWebhook,
+          }
+
+          const journal = traceCloture.join('\n')
+
+          const cloture = await cloturerJournal({
+            journalId,
+            resultat,
+            journal,
+          })
+
+          if (!cloture.success) return echouer(cloture.error, traceCloture)
+
+          return success({
+            ...resultat,
+            synchroniseeLe: maintenant,
+            organisationIdsDetachees: organisationIdsInaccessibles,
+            webhooks: webhooks.data.poses,
+            rapprochements: rdvs.data.rapprochements,
+            journal,
+          })
+        })()
 
     if (!synchronisation.success) return synchronisation
 
     const reussite = await noterLaSynchronisationReussie({
       agentId: compte.agentId,
-      organisationIdsSansWebhook:
-        synchronisation.data.organisationIdsSansWebhook,
+      synchroniseeLe: synchronisation.data.synchroniseeLe,
     })
 
     return reussite.success ? synchronisation : reussite

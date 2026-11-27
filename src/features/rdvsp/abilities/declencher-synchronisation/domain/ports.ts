@@ -5,8 +5,8 @@ import type {
 } from '../../../domain/compte/compte-rdv'
 import type { EchecDeSynchronisation } from '../../../domain/errors'
 import type { MediateurId } from '../../../domain/identifiants/mediateur-id'
-import type { OrganisationId } from '../../../domain/identifiants/organisation-id'
 import type { UtilisateurCoopId } from '../../../domain/identifiants/utilisateur-coop-id'
+import type { PorteeDeSynchronisation } from '../../../domain/portee-de-synchronisation'
 import type { MarquageDEchec } from './errors'
 
 export type CompteACible = (utilisateurId: UtilisateurCoopId) => Promise<{
@@ -17,7 +17,7 @@ export type CompteACible = (utilisateurId: UtilisateurCoopId) => Promise<{
 export type SynchroniserLeCompte = (synchronisation: {
   readonly compte: CompteRdvUtilisable
   readonly mediateurId: MediateurId | null
-  readonly organisationIds?: readonly OrganisationId[]
+  readonly portee: PorteeDeSynchronisation
   readonly maintenant: Date
 }) => Promise<Result<{ readonly derive: number }, EchecDeSynchronisation>>
 

@@ -23,13 +23,13 @@ const colonnesDuModele = (
 })
 
 export const ouvrirJournal: OuvrirJournal = attraperEnEchecTechnique(
-  async ({ compte, organisationIds }) => {
+  async ({ compte, portee, ouvertLe }) => {
     const { id } = await prismaClient.rdvSyncLog.create({
       data: {
         rdvAccountId: compte.agentId,
-        started: new Date(),
+        started: ouvertLe,
         organisationIds:
-          organisationIds === undefined ? [] : [...organisationIds],
+          portee._tag === 'organisations' ? [...portee.organisationIds] : [],
       },
       select: { id: true },
     })

@@ -7,8 +7,12 @@ import {
   diagnosticErreur,
   type EchecDeSynchronisation,
 } from '@/features/rdvsp/domain/errors'
-import type { OrganisationId } from '@/features/rdvsp/domain/identifiants/organisation-id'
 import type { UtilisateurCoopId } from '@/features/rdvsp/domain/identifiants/utilisateur-coop-id'
+import {
+  organisationsCiblees,
+  type PorteeDeSynchronisation,
+  toutesOrganisations,
+} from '@/features/rdvsp/domain/portee-de-synchronisation'
 import type { Result } from '@/libraries/result'
 import { failure, success } from '@/libraries/result'
 import {
@@ -38,11 +42,7 @@ const peutDeclencherPour = (
 
 type PorteeDeclenchement =
   | { readonly _tag: 'sansObjet' }
-  | { readonly _tag: 'toutesOrganisations' }
-  | {
-      readonly _tag: 'organisations'
-      readonly organisationIds: readonly OrganisationId[]
-    }
+  | PorteeDeSynchronisation
 
 const porteePour = (
   compte: CompteRdv,
@@ -52,14 +52,11 @@ const porteePour = (
   if (compte._tag === 'enErreur' && (seulementSansWebhook || !relanceAutorisee))
     return { _tag: 'sansObjet' }
 
-  if (!seulementSansWebhook) return { _tag: 'toutesOrganisations' }
+  if (!seulementSansWebhook) return toutesOrganisations
 
   return compte.organisationIdsSansWebhook.length === 0
     ? { _tag: 'sansObjet' }
-    : {
-        _tag: 'organisations',
-        organisationIds: compte.organisationIdsSansWebhook,
-      }
+    : organisationsCiblees(compte.organisationIdsSansWebhook)
 }
 
 export const MESSAGE_ECHEC =
@@ -127,10 +124,8 @@ export const declencherSynchronisation =
     const synchronisation = await synchroniser({
       compte,
       mediateurId,
+      portee,
       maintenant,
-      ...(portee._tag === 'organisations'
-        ? { organisationIds: portee.organisationIds }
-        : {}),
     })
 
     if (synchronisation.success) {

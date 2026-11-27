@@ -4,8 +4,8 @@ import { declencherSynchronisation } from '@/features/rdvsp/abilities/declencher
 import { compteACible } from '@/features/rdvsp/abilities/declencher-synchronisation/implementations/prisma/compte-a-cible.query'
 import { marquerEchecDeSynchronisation } from '@/features/rdvsp/abilities/declencher-synchronisation/implementations/prisma/marquer-echec.mutation'
 import { JetonRevoque } from '@/features/rdvsp/domain/errors'
-import type { OrganisationId } from '@/features/rdvsp/domain/identifiants/organisation-id'
 import { UtilisateurCoopId } from '@/features/rdvsp/domain/identifiants/utilisateur-coop-id'
+import type { PorteeDeSynchronisation } from '@/features/rdvsp/domain/portee-de-synchronisation'
 import {
   compteRdvEnBase,
   ID_TEST,
@@ -21,7 +21,7 @@ const AUTRUI = UtilisateurCoopId('9c858901-8a57-4791-81fe-4c455b099bc9')
 const ADMINISTRATEUR = UtilisateurCoopId('d0f9a5b2-1d2f-4d0f-9a7c-6b0f2a1c4e88')
 
 type Monde = World & {
-  portee?: { organisationIds?: readonly OrganisationId[] }
+  portee?: PorteeDeSynchronisation
   echoue?: boolean
   resultat?: Awaited<ReturnType<ReturnType<typeof declencherPour>>>
 }
@@ -29,8 +29,8 @@ type Monde = World & {
 const declencherPour = (monde: Monde) =>
   declencherSynchronisation({
     compteACible,
-    synchroniser: async ({ compte, organisationIds }) => {
-      monde.portee = organisationIds === undefined ? {} : { organisationIds }
+    synchroniser: async ({ compte, portee }) => {
+      monde.portee = portee
 
       return monde.echoue
         ? failure(JetonRevoque(compte.agentId))
@@ -126,8 +126,7 @@ Then(
   'la synchronisation a parcouru toutes les organisations',
   function (this: Monde) {
     assert.ok(this.resultat?.success, 'Le déclenchement a échoué')
-    assert.ok(this.portee, 'La synchronisation n’a pas été lancée')
-    assert.strictEqual(this.portee.organisationIds, undefined)
+    assert.strictEqual(this.portee?._tag, 'toutesOrganisations')
   },
 )
 
@@ -135,10 +134,10 @@ Then(
   'la synchronisation a parcouru les organisations {string}',
   function (this: Monde, ids: string) {
     assert.ok(this.resultat?.success, 'Le déclenchement a échoué')
-    assert.deepStrictEqual(
-      this.portee?.organisationIds,
-      ids.split(',').map(Number),
-    )
+    assert.deepStrictEqual(this.portee, {
+      _tag: 'organisations',
+      organisationIds: ids.split(',').map(Number),
+    })
   },
 )
 

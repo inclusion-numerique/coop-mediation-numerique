@@ -5,6 +5,7 @@ import type { EchecDeSynchronisation } from '../../../domain/errors'
 import type { MediateurId } from '../../../domain/identifiants/mediateur-id'
 import type { OrganisationId } from '../../../domain/identifiants/organisation-id'
 import type { RdvAgentId } from '../../../domain/identifiants/rdv-agent-id'
+import type { PorteeDeSynchronisation } from '../../../domain/portee-de-synchronisation'
 import type { RdvServicePublicApi } from '../../../domain/ports'
 import type { Rapprochement } from '../../../domain/rapprochement'
 import type { ResultatSynchronisation } from './resultat-synchronisation'
@@ -23,7 +24,7 @@ export type ReconcilierOrganisations = (reconciliation: {
 
 export type ReconcilierRdvs = (reconciliation: {
   readonly compte: CompteRdvUtilisable
-  readonly organisationIds?: readonly OrganisationId[]
+  readonly portee: PorteeDeSynchronisation
   readonly mediateurId: MediateurId
   readonly tailleLot: number
   readonly maintenant: Date
@@ -55,7 +56,8 @@ export type DetacherOrganisations = (detachement: {
 
 export type OuvrirJournal = (ouverture: {
   readonly compte: CompteRdvUtilisable
-  readonly organisationIds?: readonly OrganisationId[]
+  readonly portee: PorteeDeSynchronisation
+  readonly ouvertLe: Date
 }) => Promise<Result<{ readonly journalId: string }, EchecTechnique>>
 
 export type CloturerJournal = (cloture: {
@@ -72,18 +74,24 @@ export type EchouerJournal = (echec: {
 
 export type NoterLaSynchronisationReussie = (reussite: {
   readonly agentId: RdvAgentId
-  readonly organisationIdsSansWebhook: readonly OrganisationId[] | undefined
+  readonly synchroniseeLe: Date
 }) => Promise<Result<void, EchecTechnique>>
 
-export type SynchroniserCompteRdvPorts = {
-  readonly reconcilierOrganisations: ReconcilierOrganisations
-  readonly reconcilierRdvs: ReconcilierRdvs
+export type PoserUnWebhookPorts = {
   readonly listerWebhooksDeLaCoop: RdvServicePublicApi['listerWebhooksDeLaCoop']
   readonly poserWebhook: RdvServicePublicApi['poserWebhook']
   readonly relireWebhooksDeLaCoop: RdvServicePublicApi['listerWebhooksDeLaCoop']
   readonly reconfigurerWebhook: RdvServicePublicApi['reconfigurerWebhook']
   readonly destinationDesWebhooksJoignable: DestinationDesWebhooksJoignable
+}
+
+export type PoserLesWebhooksPorts = PoserUnWebhookPorts & {
   readonly noterLesWebhooksInvalides: NoterLesWebhooksInvalides
+}
+
+export type SynchroniserCompteRdvPorts = PoserLesWebhooksPorts & {
+  readonly reconcilierOrganisations: ReconcilierOrganisations
+  readonly reconcilierRdvs: ReconcilierRdvs
   readonly detacherOrganisations: DetacherOrganisations
   readonly ouvrirJournal: OuvrirJournal
   readonly cloturerJournal: CloturerJournal

@@ -23,6 +23,7 @@ import { RdvId } from '@/features/rdvsp/domain/identifiants/rdv-id'
 import { RdvUuid } from '@/features/rdvsp/domain/identifiants/rdv-uuid'
 import { UsagerId } from '@/features/rdvsp/domain/identifiants/usager-id'
 import { NomExterne, PrenomExterne } from '@/features/rdvsp/domain/identite'
+import { toutesOrganisations } from '@/features/rdvsp/domain/portee-de-synchronisation'
 import { AdresseRdv } from '@/features/rdvsp/domain/rdv/adresse-rdv'
 import { DureeEnMinutes } from '@/features/rdvsp/domain/rdv/duree-en-minutes'
 import type { Rdv, RdvSynchronise } from '@/features/rdvsp/domain/rdv/rdv'
@@ -187,6 +188,7 @@ Given(
 When('je synchronise les rendez-vous', async function (this: Monde) {
   this.resultat = await synchroniserPour(this)({
     compte: await compteUtilisable(),
+    portee: toutesOrganisations,
     mediateurId: MediateurId('b6f1a6a2-3c4d-4e5f-8a9b-0c1d2e3f4a5b'),
     tailleLot: TAILLE_DES_LOTS_DE_RDVS,
     maintenant: new Date(),

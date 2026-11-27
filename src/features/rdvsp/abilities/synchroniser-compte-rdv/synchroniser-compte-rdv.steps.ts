@@ -7,6 +7,11 @@ import { estUtilisable } from '../../domain/compte/compte-rdv'
 import { ApiIndisponible } from '../../domain/errors'
 import { MediateurId } from '../../domain/identifiants/mediateur-id'
 import { OrganisationId } from '../../domain/identifiants/organisation-id'
+import {
+  organisationsCiblees,
+  type PorteeDeSynchronisation,
+  toutesOrganisations,
+} from '../../domain/portee-de-synchronisation'
 import { abonnementsDeLaCoop, WebhookId } from '../../domain/webhook/webhook'
 import { compteRdvToDomain } from '../../implementations/prisma/compte-rdv.transfer'
 import { compteRdvEnBase, ID_TEST, seedCompteRdv } from '../../rdvsp.cucumber'
@@ -20,6 +25,8 @@ import {
 
 const AGENT_ID = ID_TEST.compte + 8
 
+const MAINTENANT = new Date('2026-09-01T10:00:00.000Z')
+
 const appels: string[] = []
 
 const echecs = new Set<string>()
@@ -32,7 +39,7 @@ const webhooksVises: {
   organisation: number
 }[] = []
 type Monde = World & {
-  organisationIdsRecusParLesRdvs?: readonly OrganisationId[] | undefined
+  porteeRecueParLesRdvs?: PorteeDeSynchronisation
   organisationsSansWebhook?: readonly number[]
   resultat?: ResultatSynchronisation | undefined
   echoue?: boolean
@@ -69,9 +76,9 @@ const synchroniserPour = (monde: Monde) =>
             ).map((id) => OrganisationId(id)),
           })
     },
-    reconcilierRdvs: async ({ organisationIds }) => {
+    reconcilierRdvs: async ({ portee }) => {
       appels.push('rendez-vous')
-      monde.organisationIdsRecusParLesRdvs = organisationIds
+      monde.porteeRecueParLesRdvs = portee
 
       if (exceptions.has('rendez-vous')) {
         return failure(EchecTechnique('la réconciliation a levé'))
@@ -84,7 +91,10 @@ const synchroniserPour = (monde: Monde) =>
             usagers: unChangement,
             motifs: bilanVide,
             lieux: bilanVide,
-            organisationIdsInaccessibles: (organisationIds ?? [])
+            organisationIdsInaccessibles: (portee._tag === 'organisations'
+              ? portee.organisationIds
+              : []
+            )
               .filter((id) => organisationsRefusees.includes(id))
               .map((id) => OrganisationId(id)),
             rapprochements: [],
@@ -139,6 +149,7 @@ const journauxDuCompte = async () =>
   prismaClient.rdvSyncLog.findMany({
     where: { rdvAccountId: AGENT_ID },
     select: {
+      started: true,
       ended: true,
       error: true,
       drift: true,
@@ -188,7 +199,8 @@ When('je synchronise tout le compte', async function (this: Monde) {
   const reponse = await synchroniserPour(this)({
     compte: await compteUtilisable(),
     mediateurId: MEDIATEUR_ID,
-    maintenant: new Date(),
+    portee: toutesOrganisations,
+    maintenant: MAINTENANT,
   })
 
   this.echoue = !reponse.success
@@ -201,7 +213,8 @@ When(
     const reponse = await synchroniserPour(this)({
       compte: await compteUtilisable(),
       mediateurId: MEDIATEUR_ID,
-      maintenant: new Date(),
+      portee: toutesOrganisations,
+      maintenant: MAINTENANT,
     })
 
     this.echoue = !reponse.success
@@ -212,8 +225,8 @@ When('je synchronise une portée vide', async function (this: Monde) {
   const reponse = await synchroniserPour(this)({
     compte: await compteUtilisable(),
     mediateurId: MEDIATEUR_ID,
-    maintenant: new Date(),
-    organisationIds: [],
+    portee: organisationsCiblees([]),
+    maintenant: MAINTENANT,
   })
 
   this.echoue = !reponse.success
@@ -226,8 +239,10 @@ When(
     const reponse = await synchroniserPour(this)({
       compte: await compteUtilisable(),
       mediateurId: MEDIATEUR_ID,
-      maintenant: new Date(),
-      organisationIds: ids.split(',').map((id) => OrganisationId(Number(id))),
+      portee: organisationsCiblees(
+        ids.split(',').map((id) => OrganisationId(Number(id))),
+      ),
+      maintenant: MAINTENANT,
     })
 
     this.echoue = !reponse.success
@@ -260,20 +275,20 @@ Then(
 Then(
   'les rendez-vous ont été réconciliés sur les organisations {string}',
   function (this: Monde, ids: string) {
-    assert.deepEqual(
-      this.organisationIdsRecusParLesRdvs?.map(Number),
-      ids.split(',').map(Number),
-    )
+    assert.deepEqual(this.porteeRecueParLesRdvs, {
+      _tag: 'organisations',
+      organisationIds: ids.split(',').map(Number),
+    })
   },
 )
 
 Then(
   'la passe signale les organisations sans webhook {string}',
   function (this: Monde, ids: string) {
-    assert.deepEqual(
-      this.resultat?.organisationIdsSansWebhook?.map(Number),
-      ids.split(',').map(Number),
-    )
+    assert.deepEqual(this.resultat?.organisationsSansWebhook, {
+      _tag: 'relevees',
+      organisationIds: ids.split(',').map(Number),
+    })
   },
 )
 
@@ -324,6 +339,12 @@ Then(
     assert.deepEqual(journal?.organisationIds, ids.split(',').map(Number))
   },
 )
+
+Then('le journal de la passe s’ouvre à l’instant de la passe', async () => {
+  const [journal] = await journauxDuCompte()
+
+  assert.deepEqual(journal?.started, MAINTENANT)
+})
 
 Then('le journal de la passe consigne une portée complète', async () => {
   const [journal] = await journauxDuCompte()

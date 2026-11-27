@@ -11,6 +11,10 @@ import { MediateurId } from '../../../domain/identifiants/mediateur-id'
 import { OrganisationId } from '../../../domain/identifiants/organisation-id'
 import { RdvAgentId } from '../../../domain/identifiants/rdv-agent-id'
 import { UtilisateurCoopId } from '../../../domain/identifiants/utilisateur-coop-id'
+import {
+  organisationsCiblees,
+  toutesOrganisations,
+} from '../../../domain/portee-de-synchronisation'
 import type { Rapprochement } from '../../../domain/rapprochement'
 import {
   AbonnementWebhook,
@@ -19,6 +23,7 @@ import {
   type WebhookInstalle,
 } from '../../../domain/webhook/webhook'
 import type { SynchroniserCompteRdvPorts } from './ports'
+import type { OrganisationsSansWebhook } from './resultat-synchronisation'
 import { synchroniserCompteRdv } from './synchroniser-compte-rdv'
 
 const organisation = OrganisationId(10)
@@ -91,12 +96,17 @@ const ports: SynchroniserCompteRdvPorts = {
   noterLaSynchronisationReussie: async () => success(undefined),
 }
 
-const passeComplete = { compte, mediateurId, maintenant }
+const passeComplete = {
+  compte,
+  mediateurId,
+  portee: toutesOrganisations,
+  maintenant,
+}
 
 const synchronise = ({
   bilan,
   derive,
-  organisationIdsSansWebhook,
+  organisationsSansWebhook,
   organisationIdsDetachees,
   webhook,
   rapprochements,
@@ -104,7 +114,7 @@ const synchronise = ({
 }: {
   readonly bilan: typeof bilanSynchronisationVide
   readonly derive: number
-  readonly organisationIdsSansWebhook: readonly OrganisationId[] | undefined
+  readonly organisationsSansWebhook: OrganisationsSansWebhook
   readonly organisationIdsDetachees: readonly OrganisationId[]
   readonly webhook: readonly {
     readonly organisationId: OrganisationId
@@ -117,7 +127,8 @@ const synchronise = ({
   success({
     bilan,
     derive,
-    organisationIdsSansWebhook,
+    organisationsSansWebhook,
+    synchroniseeLe: maintenant,
     organisationIdsDetachees,
     webhooks: webhook,
     rapprochements,
@@ -130,6 +141,12 @@ const bilanComplet = {
   rdvs: unChangement,
 }
 
+const nonRelevees: OrganisationsSansWebhook = { _tag: 'nonRelevees' }
+
+const releves = (
+  organisationIds: readonly OrganisationId[],
+): OrganisationsSansWebhook => ({ _tag: 'relevees', organisationIds })
+
 const noop = { ...bilanVide, noop: 1 }
 const cree = { ...bilanVide, created: 1 }
 const reconfigure = { ...bilanVide, updated: 1 }
@@ -138,12 +155,12 @@ const poseDuWebhook = (
   operation: 'noop' | 'created' | 'updated',
   webhooks: typeof bilanVide,
   derive: number,
-  organisationIdsSansWebhook: readonly OrganisationId[],
+  organisationIds: readonly OrganisationId[],
   invalide: boolean,
 ) => ({
   bilan: { ...bilanComplet, webhooks },
   derive,
-  organisationIdsSansWebhook,
+  organisationsSansWebhook: releves(organisationIds),
   organisationIdsDetachees: [],
   webhook: [
     {
@@ -167,13 +184,13 @@ describe('synchroniser un compte RDV', () => {
     expect(
       await synchroniserCompteRdv(ports)({
         ...passeComplete,
-        organisationIds: [],
+        portee: organisationsCiblees([]),
       }),
     ).toEqual(
       synchronise({
         bilan: bilanSynchronisationVide,
         derive: 0,
-        organisationIdsSansWebhook: undefined,
+        organisationsSansWebhook: nonRelevees,
         organisationIdsDetachees: [],
         webhook: [],
         rapprochements: [],
@@ -196,7 +213,7 @@ describe('synchroniser un compte RDV', () => {
           webhooks: { ...bilanVide, noop: 1 },
         },
         derive: 1,
-        organisationIdsSansWebhook: [],
+        organisationsSansWebhook: releves([]),
         organisationIdsDetachees: [],
         webhook: [
           { organisationId: organisation, operation: 'noop', invalide: false },
@@ -211,7 +228,7 @@ describe('synchroniser un compte RDV', () => {
     expect(
       await synchroniserCompteRdv(ports)({
         ...passeComplete,
-        organisationIds: [organisation],
+        portee: organisationsCiblees([organisation]),
       }),
     ).toEqual(
       synchronise({
@@ -221,7 +238,7 @@ describe('synchroniser un compte RDV', () => {
           webhooks: { ...bilanVide, noop: 1 },
         },
         derive: 1,
-        organisationIdsSansWebhook: undefined,
+        organisationsSansWebhook: nonRelevees,
         organisationIdsDetachees: [],
         webhook: [
           { organisationId: organisation, operation: 'noop', invalide: false },
@@ -247,7 +264,7 @@ describe('synchroniser un compte RDV', () => {
           }),
       })({
         ...passeComplete,
-        organisationIds: [organisation, autreOrganisation],
+        portee: organisationsCiblees([organisation, autreOrganisation]),
       }),
     ).toEqual(
       synchronise({
@@ -257,7 +274,7 @@ describe('synchroniser un compte RDV', () => {
           webhooks: { ...bilanVide, noop: 1 },
         },
         derive: 1,
-        organisationIdsSansWebhook: undefined,
+        organisationsSansWebhook: nonRelevees,
         organisationIdsDetachees: [autreOrganisation],
         webhook: [
           { organisationId: organisation, operation: 'noop', invalide: false },

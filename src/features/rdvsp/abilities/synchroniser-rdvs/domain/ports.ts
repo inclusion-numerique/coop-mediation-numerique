@@ -2,6 +2,7 @@ import type { EchecTechnique, Result } from '@/libraries/result'
 import type { CompteRdvUtilisable } from '../../../domain/compte/compte-rdv'
 import type { OrganisationId } from '../../../domain/identifiants/organisation-id'
 import type { RdvId } from '../../../domain/identifiants/rdv-id'
+import type { PorteeDeSynchronisation } from '../../../domain/portee-de-synchronisation'
 import type {
   LireLesUsagersARapprocher,
   RapprocherLesBeneficiaires,
@@ -9,14 +10,14 @@ import type {
 } from '../../../domain/ports'
 import type { EtatConnu, PlanLot } from './plan-rdvs'
 
-export type RdvsDejaImportes = (portee: {
+export type RdvsDejaImportes = (lecture: {
   readonly compte: CompteRdvUtilisable
-  readonly organisationIds?: readonly OrganisationId[]
+  readonly portee: PorteeDeSynchronisation
 }) => Promise<Result<readonly RdvId[], EchecTechnique>>
 
 export type EtatConnuDuLot = (lecture: {
   readonly rdvIds: readonly RdvId[]
-  readonly organisationIds?: readonly OrganisationId[]
+  readonly portee: PorteeDeSynchronisation
 }) => Promise<Result<EtatConnu, EchecTechnique>>
 
 export type AppliquerPlanLot = (application: {

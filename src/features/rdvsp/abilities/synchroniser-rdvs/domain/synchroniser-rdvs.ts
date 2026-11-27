@@ -17,11 +17,12 @@ import {
 import type { CompteRdvUtilisable } from '@/features/rdvsp/domain/compte/compte-rdv'
 import type { ErreurRdvApi } from '@/features/rdvsp/domain/errors'
 import type { MediateurId } from '@/features/rdvsp/domain/identifiants/mediateur-id'
-import {
-  type OrganisationId,
-  organisationsAccessibles,
-} from '@/features/rdvsp/domain/identifiants/organisation-id'
+import type { OrganisationId } from '@/features/rdvsp/domain/identifiants/organisation-id'
 import type { RdvId } from '@/features/rdvsp/domain/identifiants/rdv-id'
+import {
+  type PorteeDeSynchronisation,
+  porteeAccessible,
+} from '@/features/rdvsp/domain/portee-de-synchronisation'
 import type { RdvServicePublicApi } from '@/features/rdvsp/domain/ports'
 import {
   type Rapprochement,
@@ -49,7 +50,7 @@ export type RdvsSynchronises = {
 const lireRdvs = async (
   listerRdvs: RdvServicePublicApi['listerRdvs'],
   compte: CompteRdvUtilisable,
-  organisationIds: readonly OrganisationId[] | undefined,
+  portee: PorteeDeSynchronisation,
 ): Promise<Result<RdvsLus, ErreurRdvApi>> => {
   const filtres = {
     agentId: compte.agentId,
@@ -58,7 +59,7 @@ const lireRdvs = async (
       : { debutApres: compte.synchroniserDepuis }),
   }
 
-  if (organisationIds === undefined) {
+  if (portee._tag === 'toutesOrganisations') {
     const recus = await listerRdvs(compte, filtres)
 
     return recus.success
@@ -68,7 +69,7 @@ const lireRdvs = async (
 
   return rassemblerLectures(
     await Promise.all(
-      organisationIds.map(async (organisationId) => ({
+      portee.organisationIds.map(async (organisationId) => ({
         organisationId,
         resultat: await listerRdvs(compte, {
           ...filtres,
@@ -150,13 +151,13 @@ export const synchroniserRdvs =
   }: SynchroniserRdvsPorts) =>
   async ({
     compte,
-    organisationIds: porteeDemandee,
+    portee: porteeDemandee,
     mediateurId,
     tailleLot,
     maintenant,
   }: {
     readonly compte: CompteRdvUtilisable
-    readonly organisationIds?: readonly OrganisationId[]
+    readonly portee: PorteeDeSynchronisation
     readonly mediateurId: MediateurId
     readonly tailleLot: number
     readonly maintenant: Date
@@ -168,13 +169,12 @@ export const synchroniserRdvs =
     }
 
     const { organisationIdsInaccessibles } = lus.data
-    const organisationIds = organisationsAccessibles(
+    const portee = porteeAccessible(
       porteeDemandee,
       organisationIdsInaccessibles,
     )
-    const portee = organisationIds === undefined ? {} : { organisationIds }
 
-    const dejaImportes = await rdvsDejaImportes({ compte, ...portee })
+    const dejaImportes = await rdvsDejaImportes({ compte, portee })
 
     if (!dejaImportes.success) {
       return dejaImportes
@@ -200,7 +200,7 @@ export const synchroniserRdvs =
 
         const connu = await etatConnuDuLot({
           rdvIds: rdvsDuLot.map((rdv) => rdv.id),
-          ...portee,
+          portee,
         })
 
         if (!connu.success) {
@@ -250,7 +250,10 @@ export const synchroniserRdvs =
       return suppression
     }
 
-    const motifsOrphelinsDans = organisationIds ?? compte.organisationIds
+    const motifsOrphelinsDans =
+      portee._tag === 'organisations'
+        ? portee.organisationIds
+        : compte.organisationIds
     const motifsSupprimes = await supprimerMotifsOrphelins(motifsOrphelinsDans)
 
     if (!motifsSupprimes.success) {

@@ -1,21 +1,25 @@
 import { prismaClient } from '@/configuration/prisma'
 import { attraperEnEchecTechnique } from '@/libraries/result'
 import { RdvId } from '../../../../domain/identifiants/rdv-id'
+import type { PorteeDeSynchronisation } from '../../../../domain/portee-de-synchronisation'
 import type { Lieu } from '../../../../domain/rdv/lieu'
 import type { Motif } from '../../../../domain/rdv/motif'
 import type { Usager } from '../../../../domain/usager'
 import { rdvToDomain } from '../../../../implementations/prisma/rdv.transfer'
 import type { EtatConnuDuLot, RdvsDejaImportes } from '../../domain/ports'
 
+const filtreDeLaPortee = (portee: PorteeDeSynchronisation) =>
+  portee._tag === 'organisations'
+    ? { organisationId: { in: [...portee.organisationIds] } }
+    : {}
+
 export const rdvsDejaImportes: RdvsDejaImportes = attraperEnEchecTechnique(
-  async ({ compte, organisationIds }) =>
+  async ({ compte, portee }) =>
     (
       await prismaClient.rdv.findMany({
         where: {
           rdvAccountId: compte.agentId,
-          ...(organisationIds
-            ? { organisationId: { in: [...organisationIds] } }
-            : {}),
+          ...filtreDeLaPortee(portee),
         },
         select: { id: true },
       })
@@ -23,13 +27,11 @@ export const rdvsDejaImportes: RdvsDejaImportes = attraperEnEchecTechnique(
 )
 
 export const etatConnuDuLot: EtatConnuDuLot = attraperEnEchecTechnique(
-  async ({ rdvIds, organisationIds }) => {
+  async ({ rdvIds, portee }) => {
     const rows = await prismaClient.rdv.findMany({
       where: {
         id: { in: [...rdvIds] },
-        ...(organisationIds
-          ? { organisationId: { in: [...organisationIds] } }
-          : {}),
+        ...filtreDeLaPortee(portee),
       },
       include: {
         motif: true,

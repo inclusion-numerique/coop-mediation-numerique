@@ -19,6 +19,10 @@ import {
   TelephoneExterne,
 } from '../../../domain/identite'
 import { NomAtelier, NomMotif } from '../../../domain/libelle'
+import {
+  organisationsCiblees,
+  toutesOrganisations,
+} from '../../../domain/portee-de-synchronisation'
 import { AdresseRdv } from '../../../domain/rdv/adresse-rdv'
 import { DureeEnMinutes } from '../../../domain/rdv/duree-en-minutes'
 import { type Lieu, LieuId, NomLieu } from '../../../domain/rdv/lieu'
@@ -158,7 +162,13 @@ const dependances: SynchroniserRdvsPorts = {
   rapprocherLesBeneficiaires: async () => success({ skipped: [] }),
 }
 
-const passe = { compte, mediateurId, tailleLot: 250, maintenant }
+const passe = {
+  compte,
+  portee: toutesOrganisations,
+  mediateurId,
+  tailleLot: 250,
+  maintenant,
+}
 
 describe('ramassage des motifs orphelins', () => {
   it('se borne aux organisations du compte quand la passe est complète', async () => {
@@ -174,7 +184,7 @@ describe('ramassage des motifs orphelins', () => {
     expect(
       await synchroniserRdvs(dependances)({
         ...passe,
-        organisationIds: [accessible],
+        portee: organisationsCiblees([accessible]),
       }),
     ).toMatchObject(success({ motifsOrphelinsDans: [accessible] }))
   })
@@ -186,7 +196,7 @@ describe('organisation devenue inaccessible pendant un rattrapage', () => {
       await synchroniserRdvs({
         ...dependances,
         listerRdvs: async () => failure(AccesRefuse('/rdvs', inaccessible)),
-      })({ ...passe, organisationIds: [inaccessible] }),
+      })({ ...passe, portee: organisationsCiblees([inaccessible]) }),
     ).toMatchObject(
       success({
         organisationIdsInaccessibles: [inaccessible],
@@ -202,7 +212,10 @@ describe('organisation devenue inaccessible pendant un rattrapage', () => {
         ...dependances,
         listerRdvs: async () =>
           failure(ApiIndisponible(503, 'service indisponible')),
-      })({ ...passe, organisationIds: [accessible, inaccessible] }),
+      })({
+        ...passe,
+        portee: organisationsCiblees([accessible, inaccessible]),
+      }),
     ).toEqual(
       failure({
         _tag: 'ApiIndisponible',
@@ -316,7 +329,13 @@ const synchroniserLot = (surcharge: {
     rdvsDejaImportes: async () => success(enBase),
     etatConnuDuLot: async () => success(connu),
     supprimerMotifsOrphelins: async () => success(0),
-  })({ compte: compteSuivi, mediateurId, tailleLot, maintenant })
+  })({
+    compte: compteSuivi,
+    portee: toutesOrganisations,
+    mediateurId,
+    tailleLot,
+    maintenant,
+  })
 }
 
 const rdvConnu = (rdv: Rdv): EtatConnu => ({
@@ -786,7 +805,7 @@ describe('lecture des rendez-vous', () => {
     const resultat = await synchroniserRdvs({
       ...dependances,
       listerRdvs: async () => success([synchronise(rdvFixture(1, {}))]),
-    })({ ...passe, organisationIds: [accessible] })
+    })({ ...passe, portee: organisationsCiblees([accessible]) })
 
     expect(resultat).toMatchObject(
       success({

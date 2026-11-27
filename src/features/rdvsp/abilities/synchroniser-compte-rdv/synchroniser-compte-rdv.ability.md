@@ -17,6 +17,7 @@ webhooks en dernier, pour que les notifications reprennent sur un état à jour.
 * Alors les réconciliations se sont enchaînées dans l’ordre "organisations,rendez-vous,webhooks"
 * Et la passe rend une dérive de 3
 * Et le journal de la passe est clôturé sans erreur
+* Et le journal de la passe s’ouvre à l’instant de la passe
 * Et le journal de la passe consigne une portée complète
 
 ### Scénario: Les organisations échouent
