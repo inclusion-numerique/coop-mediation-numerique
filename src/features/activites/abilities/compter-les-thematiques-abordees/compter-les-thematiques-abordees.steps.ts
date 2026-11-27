@@ -13,8 +13,12 @@ type Semis = {
   readonly beneficiaireId: string
 }
 
-let semis: Semis | undefined
-let abordees: readonly ThematiqueAbordee[] = []
+const etat: {
+  semis?: Semis | undefined
+  abordees: readonly ThematiqueAbordee[]
+} = {
+  abordees: [],
+}
 
 const THEMATIQUES: Readonly<Record<string, Thematique>> = {
   AideAuxDemarchesAdministratives: 'AideAuxDemarchesAdministratives',
@@ -45,8 +49,8 @@ const semerUnMediateur = async () => {
 }
 
 const semisCourant = (): Semis => {
-  if (!semis) throw new Error('Aucun bénéficiaire semé')
-  return semis
+  if (!etat.semis) throw new Error('Aucun bénéficiaire semé')
+  return etat.semis
 }
 
 const semerUneActivite = ({
@@ -80,7 +84,11 @@ const semerUnBeneficiaire = async () => {
     data: { mediateurId, prenom: 'Ada', nom: 'Lovelace' },
     select: { id: true },
   })
-  semis = { userIds: [userId], mediateurIds: [mediateurId], beneficiaireId }
+  etat.semis = {
+    userIds: [userId],
+    mediateurIds: [mediateurId],
+    beneficiaireId,
+  }
   return { mediateurId, beneficiaireId }
 }
 
@@ -130,7 +138,7 @@ Given(
   async (thematiques: string) => {
     const courant = semisCourant()
     const autre = await semerUnMediateur()
-    semis = {
+    etat.semis = {
       ...courant,
       userIds: [...courant.userIds, autre.userId],
       mediateurIds: [...courant.mediateurIds, autre.mediateurId],
@@ -145,7 +153,7 @@ Given(
 
 When('je compte les thématiques abordées avec ce bénéficiaire', async () => {
   const { mediateurIds, beneficiaireId } = semisCourant()
-  abordees = await compterLesThematiquesAbordees({
+  etat.abordees = await compterLesThematiquesAbordees({
     mediateurId: MediateurId(mediateurIds[0] ?? ''),
     beneficiaireId: BeneficiaireId(beneficiaireId),
   })
@@ -153,7 +161,7 @@ When('je compte les thématiques abordées avec ce bénéficiaire', async () => 
 
 Then('les thématiques abordées sont {string}', (attendues: string) => {
   assert.strictEqual(
-    abordees
+    etat.abordees
       .map(({ thematique, nombre }) => `${thematique}: ${nombre}`)
       .join(', '),
     attendues,
@@ -161,13 +169,13 @@ Then('les thématiques abordées sont {string}', (attendues: string) => {
 })
 
 Then("aucune thématique n'a été abordée", () => {
-  assert.deepStrictEqual(abordees, [])
+  assert.deepStrictEqual(etat.abordees, [])
 })
 
 After(async () => {
-  const seme = semis
-  semis = undefined
-  abordees = []
+  const seme = etat.semis
+  etat.semis = undefined
+  etat.abordees = []
   if (!seme) return
   const mediateurIds = [...seme.mediateurIds]
   await prismaClient.accompagnement.deleteMany({

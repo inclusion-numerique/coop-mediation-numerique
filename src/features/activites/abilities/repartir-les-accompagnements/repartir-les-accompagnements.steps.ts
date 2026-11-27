@@ -5,18 +5,22 @@ import { demandeDeStatistiques } from '../../statistiques.cucumber'
 import { type RepartitionDesAccompagnements } from './domain/index'
 import { repartirLesAccompagnements } from './implementations/prisma/repartition-des-accompagnements.query'
 
-let repartition: RepartitionDesAccompagnements | undefined
+const etat: {
+  repartition?: RepartitionDesAccompagnements
+} = {}
 
 const repartie = (): RepartitionDesAccompagnements => {
-  assert.ok(repartition, 'Aucune répartition')
-  return repartition
+  assert.ok(etat.repartition, 'Aucune répartition')
+  return etat.repartition
 }
 
 const enTexte = (lignes: Repartition<string>): string =>
   lignes.map(({ valeur, nombre }) => `${valeur} ${nombre}`).join(', ')
 
 When('je répartis les accompagnements de {string}', async (nom: string) => {
-  repartition = await repartirLesAccompagnements(demandeDeStatistiques(nom))
+  etat.repartition = await repartirLesAccompagnements(
+    demandeDeStatistiques(nom),
+  )
 })
 
 Then('les accompagnements répartis sont {int}', (total: number) => {

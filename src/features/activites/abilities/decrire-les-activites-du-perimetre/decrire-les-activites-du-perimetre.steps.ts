@@ -4,17 +4,19 @@ import { perimetreDe } from '../../statistiques.cucumber'
 import { type ActivitesDuPerimetre } from './domain/index'
 import { decrireLesActivitesDuPerimetre } from './implementations/prisma/activites-du-perimetre.query'
 
-let decrites: ActivitesDuPerimetre | undefined
+const etat: {
+  decrites?: ActivitesDuPerimetre
+} = {}
 
 const activites = (): ActivitesDuPerimetre => {
-  assert.ok(decrites, 'Aucune description du périmètre')
-  return decrites
+  assert.ok(etat.decrites, 'Aucune description du périmètre')
+  return etat.decrites
 }
 
 When(
   'je décris les activités du périmètre de {string}',
   async (nom: string) => {
-    decrites = await decrireLesActivitesDuPerimetre(perimetreDe(nom))
+    etat.decrites = await decrireLesActivitesDuPerimetre(perimetreDe(nom))
   },
 )
 
