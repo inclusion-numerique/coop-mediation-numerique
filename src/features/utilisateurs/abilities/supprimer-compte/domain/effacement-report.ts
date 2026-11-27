@@ -29,8 +29,10 @@ export const FailureReason = defineModel(
 )
 export type FailureReason = Model.TypeOf<typeof FailureReason>
 
+const SANS_MESSAGE = FailureReason('Erreur sans message')
+
 export const failureReasonOf = ({ cause }: EchecTechnique): FailureReason =>
-  FailureReason(cause.slice(0, 500) || 'Erreur sans message')
+  FailureReason.safe(cause.slice(0, 500)) ?? SANS_MESSAGE
 
 export type StepResult =
   | {

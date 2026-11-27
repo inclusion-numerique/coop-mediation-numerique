@@ -207,6 +207,11 @@ describe('supprimer un compte', () => {
       echec: '',
       cause: 'Erreur sans message',
     },
+    {
+      cas: 'un texte de repli quand l’échec ne porte que des blancs',
+      echec: '   ',
+      cause: 'Erreur sans message',
+    },
   ])(
     'poursuit après l’échec d’une étape et en retient pour cause $cas',
     async ({ echec, cause }) => {
