@@ -1,3 +1,4 @@
+import { AnneeNaissance } from '@/features/beneficiaire/domain/annee-naissance'
 import { genreLabels } from '@/features/beneficiaire/domain/genre'
 import { statutSocialLabels } from '@/features/beneficiaire/domain/statut-social'
 import {
@@ -29,10 +30,13 @@ const BeneficiaireInformationsComplementaires = ({
     | 'anneeNaissance'
   >
 }) => {
+  const maintenant = new Date()
   const displayedTrancheAge = effectiveTrancheAge(
-    anneeNaissance,
+    anneeNaissance === null
+      ? null
+      : AnneeNaissance(maintenant).safe(anneeNaissance),
     trancheAge,
-    new Date(),
+    maintenant,
   )
 
   return (

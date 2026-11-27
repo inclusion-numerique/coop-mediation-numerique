@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { defineModel, type Model } from '@/libraries/model'
-import { AnneeNaissance } from './annee-naissance'
+import type { AnneeNaissance } from './annee-naissance'
 
 export const tranchesAge = [
   'SoixanteDixPlus',
@@ -61,23 +61,11 @@ export const trancheAgeForBeneficiaire = (
     ? trancheAgeFromAnneeNaissance(anneeNaissance, maintenant)
     : trancheAgeSaisie
 
-const trancheAgeFromAnneeNaissanceValue = (
-  anneeNaissance: string | number | null,
-  maintenant: Date,
-): TrancheAge | null => {
-  const annee =
-    typeof anneeNaissance === 'string'
-      ? Number.parseInt(anneeNaissance, 10)
-      : anneeNaissance
-  const parsed = AnneeNaissance(maintenant).schema.safeParse(annee)
-  return parsed.success
-    ? trancheAgeFromAnneeNaissance(parsed.data, maintenant)
-    : null
-}
-
 export const effectiveTrancheAge = (
-  anneeNaissance: string | number | null,
+  anneeNaissance: AnneeNaissance | null,
   trancheAge: TrancheAge | null,
   maintenant: Date,
 ): TrancheAge | null =>
-  trancheAgeFromAnneeNaissanceValue(anneeNaissance, maintenant) ?? trancheAge
+  anneeNaissance === null
+    ? trancheAge
+    : trancheAgeFromAnneeNaissance(anneeNaissance, maintenant)

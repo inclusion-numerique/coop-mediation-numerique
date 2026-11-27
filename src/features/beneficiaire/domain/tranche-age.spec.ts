@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { AnneeNaissance } from './annee-naissance'
 import { effectiveTrancheAge, TrancheAge } from './tranche-age'
 
 const maintenant = new Date('2026-06-15T12:00:00.000Z')
@@ -26,37 +27,29 @@ describe('effectiveTrancheAge', () => {
     { annee: 1961, tranche: TrancheAge('SoixanteSoixanteNeuf') },
     { annee: 1946, tranche: TrancheAge('SoixanteDixPlus') },
   ])('derives $tranche for a birth year $annee', ({ annee, tranche }) => {
-    expect(effectiveTrancheAge(annee, null, maintenant)).toBe(tranche)
-  })
-
-  it('parses a string birth year', () => {
-    expect(effectiveTrancheAge('1996', null, maintenant)).toBe(
-      'VingtCinqTrenteNeuf',
-    )
-  })
-
-  it.each<{ cas: string; annee: string | number | null }>([
-    { cas: 'an absent year', annee: null },
-    { cas: 'a zero year', annee: 0 },
-    { cas: 'a year before 1900', annee: 1899 },
-    { cas: 'a year after the current one', annee: 2027 },
-  ])('returns null for $cas without stored value', ({ annee }) => {
-    expect(effectiveTrancheAge(annee, null, maintenant)).toBeNull()
-  })
-
-  it('derives from a valid birth year, ignoring the stored value', () => {
     expect(
-      effectiveTrancheAge(1961, TrancheAge('VingtCinqTrenteNeuf'), maintenant),
+      effectiveTrancheAge(AnneeNaissance(maintenant)(annee), null, maintenant),
+    ).toBe(tranche)
+  })
+
+  it('returns null without birth year nor stored value', () => {
+    expect(effectiveTrancheAge(null, null, maintenant)).toBeNull()
+  })
+
+  it('derives from the birth year, ignoring the stored value', () => {
+    expect(
+      effectiveTrancheAge(
+        AnneeNaissance(maintenant)(1961),
+        TrancheAge('VingtCinqTrenteNeuf'),
+        maintenant,
+      ),
     ).toBe('SoixanteSoixanteNeuf')
   })
 
-  it.each<{ cas: string; annee: number | null }>([
-    { cas: 'there is no birth year', annee: null },
-    { cas: 'the birth year is out of range', annee: 1899 },
-  ])('falls back to the stored value when $cas', ({ annee }) => {
+  it('falls back to the stored value without birth year', () => {
     expect(
       effectiveTrancheAge(
-        annee,
+        null,
         TrancheAge('QuaranteCinquanteNeuf'),
         maintenant,
       ),
