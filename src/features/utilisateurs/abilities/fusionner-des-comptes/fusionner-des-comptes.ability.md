@@ -90,3 +90,22 @@
 * Et la cible est supprimée
 * Quand l'administration fusionne la source dans la cible
 * Alors la fusion des comptes échoue avec l'erreur "CibleSupprimee"
+
+## Règle: La cible reçoit les rôles que portait la source
+
+### Scénario: Une cible sans rôle devient médiatrice
+
+* Étant donné un compte source médiateur et une cible sans rôle à fusionner
+* Quand l'administration fusionne la source dans la cible
+* Alors la fusion des comptes aboutit
+* Et la cible est devenue médiatrice et porte le bénéficiaire de la source
+
+## Règle: Un partage des statistiques révoqué par la source le reste après la fusion
+
+### Scénario: La source avait révoqué le partage que la cible maintenait
+
+* Étant donné un compte source et un compte cible à fusionner
+* Et la source a révoqué le partage de ses statistiques que la cible maintient
+* Quand l'administration fusionne la source dans la cible
+* Alors la fusion des comptes aboutit
+* Et le partage des statistiques de la cible est révoqué

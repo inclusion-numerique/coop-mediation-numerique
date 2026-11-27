@@ -1,5 +1,6 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
+import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
 import { fusionnerDesComptes } from '@/features/utilisateurs/abilities/fusionner-des-comptes/domain/fusionner-des-comptes'
 import { comptesAFusionner } from '@/features/utilisateurs/abilities/fusionner-des-comptes/implementations/prisma/comptes-a-fusionner.query'
@@ -14,6 +15,7 @@ import type { SynchroniserLaPersonne } from '@/features/utilisateurs/implementat
 import {
   type CompteSeme,
   semerCompte,
+  semerUnCompteDeListe,
 } from '@/features/utilisateurs/utilisateurs.cucumber'
 
 const fusionnerDesComptesAvec = (
@@ -30,6 +32,7 @@ const fusionnerDesComptesAvec = (
 const fusion: {
   source?: CompteSeme
   cible?: CompteSeme
+  cibleId?: string
   resultat?: Awaited<ReturnType<ReturnType<typeof fusionnerDesComptesAvec>>>
   contratId?: number
   equipeId?: string
@@ -43,6 +46,11 @@ const source = (): CompteSeme => {
 const cible = (): CompteSeme => {
   assert.ok(fusion.cible, 'Aucune cible semée')
   return fusion.cible
+}
+
+const cibleId = (): string => {
+  assert.ok(fusion.cibleId, 'Aucune cible semée')
+  return fusion.cibleId
 }
 
 const equipe = (): string => {
@@ -61,7 +69,41 @@ const mediateurDeLaCible = async (): Promise<string> =>
 Given('un compte source et un compte cible à fusionner', async () => {
   fusion.source = await semerCompte()
   fusion.cible = await semerCompte()
+  fusion.cibleId = fusion.cible.userId
 })
+
+Given(
+  'un compte source médiateur et une cible sans rôle à fusionner',
+  async () => {
+    fusion.source = await semerCompte()
+    fusion.cibleId = await semerUnCompteDeListe({
+      prenom: 'Camille',
+      marqueur: `Fusion${v4().slice(0, 8)}`,
+      creeLe: new Date('2026-01-01'),
+      inscritLe: new Date('2026-01-02'),
+      mediateur: null,
+      coordinateur: null,
+    })
+  },
+)
+
+Given(
+  'la source a révoqué le partage de ses statistiques que la cible maintient',
+  async () => {
+    await Promise.all(
+      [
+        { mediateurId: source().mediateurId, deleted: new Date('2026-10-01') },
+        { mediateurId: cible().mediateurId, deleted: null },
+      ].map(({ mediateurId, deleted }) =>
+        prismaClient.partageStatistiques.upsert({
+          where: { mediateurId },
+          create: { mediateurId, deleted },
+          update: { deleted },
+        }),
+      ),
+    )
+  },
+)
 
 Given(
   'la source et la cible ont accepté une invitation de la même équipe',
@@ -140,7 +182,7 @@ Given('la cible est supprimée', async () => {
 When("l'administration fusionne la source dans la cible", async () => {
   fusion.resultat = await fusionnerDesComptesAvec(async () => undefined)({
     sourceId: UtilisateurId.safe(source().userId),
-    cibleId: UtilisateurId.safe(cible().userId),
+    cibleId: UtilisateurId.safe(cibleId()),
     maintenant: new Date(),
   })
 })
@@ -253,4 +295,29 @@ Then("l'Entrepôt ne connaît plus qu'une personne pour la cible", async () => {
     }),
     1,
   )
+})
+
+Then(
+  'la cible est devenue médiatrice et porte le bénéficiaire de la source',
+  async () => {
+    const [mediateur, beneficiaire] = await Promise.all([
+      prismaClient.mediateur.findUniqueOrThrow({
+        where: { userId: cibleId() },
+        select: { id: true },
+      }),
+      prismaClient.beneficiaire.findUniqueOrThrow({
+        where: { id: source().beneficiaireId },
+        select: { mediateurId: true },
+      }),
+    ])
+    assert.strictEqual(beneficiaire.mediateurId, mediateur.id)
+  },
+)
+
+Then('le partage des statistiques de la cible est révoqué', async () => {
+  const partage = await prismaClient.partageStatistiques.findUniqueOrThrow({
+    where: { mediateurId: cible().mediateurId },
+    select: { deleted: true },
+  })
+  assert.ok(partage.deleted, 'Le partage de la cible est toujours actif')
 })
