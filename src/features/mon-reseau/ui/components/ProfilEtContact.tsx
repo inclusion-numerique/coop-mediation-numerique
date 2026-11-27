@@ -1,7 +1,7 @@
 import classNames from 'classnames'
 import Link from 'next/link'
 import { Fragment } from 'react'
-import { type Acteur, departementDuCoordinateur } from '../../domain'
+import type { Acteur } from '../../domain'
 import { hrefDeLActeur } from '../presenters/liens.presenter'
 import { iconeDuProfil, libelleDuProfil } from '../presenters/profil.presenter'
 
@@ -49,7 +49,7 @@ export const ProfilEtContact = ({
                     classeDesLiens,
                   )}
                   href={hrefDeLActeur(
-                    departementDuCoordinateur(coordinateur),
+                    coordinateur.departement,
                     coordinateur.acteurId,
                   )}
                   prefetch={false}

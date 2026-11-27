@@ -1,6 +1,11 @@
 import { subDays } from '@/libraries/date'
 import { failure, type Result, success } from '@/libraries/result'
-import { type Acteur, type ActeurId, ActeurIntrouvable } from '../../../domain'
+import {
+  type Acteur,
+  type ActeurId,
+  ActeurIntrouvable,
+  situerLesCoordinateurs,
+} from '../../../domain'
 import type { EchecDeConsulterUnActeur } from './errors'
 import {
   FENETRE_DES_STATISTIQUES_EN_JOURS,
@@ -77,16 +82,18 @@ export const consulterUnActeur =
 
     if (acteurId === null || lu === null) return failure(ActeurIntrouvable())
 
+    const acteur = situerLesCoordinateurs(lu.acteur)
+
     const [derniereActivite, regard] = await Promise.all([
       lireLaDerniereActivite(acteurId),
-      regardDe(lecteur, lu.acteur, maintenant, {
+      regardDe(lecteur, acteur, maintenant, {
         lireLesLiensDEquipe,
         lireLesStatistiquesSur30Jours,
       }),
     ])
 
     return success({
-      acteur: lu.acteur,
+      acteur,
       profilCreeLe: lu.profilCreeLe,
       statut: statutDActivitePublic(derniereActivite, maintenant),
       regard,

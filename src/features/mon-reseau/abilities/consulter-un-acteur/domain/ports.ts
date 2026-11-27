@@ -1,5 +1,5 @@
 import type {
-  Acteur,
+  ActeurAvecCommunes,
   ActeurId,
   CoordinateurId,
   MediateurId,
@@ -9,7 +9,7 @@ import type { AdhesionLue } from './relation-d-equipe'
 import type { DerniereActivite } from './statut-d-activite-public'
 
 export type ActeurLu = {
-  readonly acteur: Acteur
+  readonly acteur: ActeurAvecCommunes
   readonly profilCreeLe: Date
 }
 

@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { CodeInsee } from '@/libraries/insee'
+import { CodeDepartement, CodeInsee } from '@/libraries/insee'
 import { NomAffiche } from '@/libraries/nom-affiche'
 import {
   type Acteur,
+  type ActeurAvecCommunes,
   ActeurId,
   CoordinateurId,
   Courriel,
@@ -10,6 +11,7 @@ import {
   Effectif,
   MediateurId,
   type Mediation,
+  type MediationAvecCommunes,
 } from '../../../domain'
 import { consulterUnActeur } from './consulter-un-acteur'
 import type { RelationDEquipe } from './fiche-acteur'
@@ -28,19 +30,23 @@ const coordinateurDuLecteur = CoordinateurId(
   'd1b2c3d4-0000-4000-8000-000000000002',
 )
 
-const mediation: Mediation = {
-  mediateurId: MediateurId('a1b2c3d4-0000-4000-8000-000000000001'),
-  nombreDeLieux: Effectif(2),
-  coordinateurs: [
-    {
-      acteurId: ActeurId('a1b2c3d4-0000-4000-8000-000000000002'),
-      nomAffiche: NomAffiche('Alex Durand'),
-      communeDeLEmployeuse: CodeInsee('15014'),
-    },
-  ],
+const alex = {
+  acteurId: ActeurId('a1b2c3d4-0000-4000-8000-000000000002'),
+  nomAffiche: NomAffiche('Alex Durand'),
 }
 
-const mediateur: Acteur = {
+const mediation: MediationAvecCommunes = {
+  mediateurId: MediateurId('a1b2c3d4-0000-4000-8000-000000000001'),
+  nombreDeLieux: Effectif(2),
+  coordinateurs: [{ ...alex, communeDeLEmployeuse: CodeInsee('15014') }],
+}
+
+const mediationSituee: Mediation = {
+  ...mediation,
+  coordinateurs: [{ ...alex, departement: CodeDepartement('15') }],
+}
+
+const mediateur: ActeurAvecCommunes = {
   acteurId: ActeurId('a1b2c3d4-0000-4000-8000-000000000003'),
   nomAffiche: NomAffiche('Camille Martin'),
   courriel: Courriel('camille.martin@example.org'),
@@ -51,10 +57,25 @@ const mediateur: Acteur = {
   },
 }
 
-const coordinateurSansMediation: Acteur = {
+const mediateurSitue: Acteur = {
+  ...mediateur,
+  profil: { ...mediateur.profil, mediation: mediationSituee },
+}
+
+const coordinateurSansMediation: ActeurAvecCommunes = {
   acteurId: ActeurId('a1b2c3d4-0000-4000-8000-000000000004'),
   nomAffiche: NomAffiche('Sacha Bernard'),
   courriel: Courriel('sacha.bernard@example.org'),
+  profil: {
+    _tag: 'Coordinateur',
+    dispositif: Dispositif('ConseillerNumerique'),
+    coordinateurId: CoordinateurId('a1b2c3d4-0000-4000-8000-000000000005'),
+    mediation: null,
+  },
+}
+
+const coordinateurSitue: Acteur = {
+  ...coordinateurSansMediation,
   profil: {
     _tag: 'Coordinateur',
     dispositif: Dispositif('ConseillerNumerique'),
@@ -166,7 +187,7 @@ describe('consulter un acteur', () => {
       ).toEqual({
         success: true,
         data: {
-          acteur: mediateur,
+          acteur: mediateurSitue,
           profilCreeLe,
           statut,
           regard: { _tag: 'Mediateur' },
@@ -177,7 +198,7 @@ describe('consulter un acteur', () => {
 
   it.each<{
     cas: string
-    acteur: Acteur
+    acteur: ActeurAvecCommunes
     adhesions: readonly AdhesionLue[]
     invitationEnCours: Date | null
     relation: RelationDEquipe
@@ -252,10 +273,9 @@ describe('consulter un acteur', () => {
           acteurId: acteur.acteurId,
           maintenant,
         }),
-      ).toEqual({
+      ).toMatchObject({
         success: true,
         data: {
-          acteur,
           profilCreeLe,
           statut: { _tag: 'JamaisActif' },
           regard: {
@@ -267,4 +287,73 @@ describe('consulter un acteur', () => {
       })
     },
   )
+
+  it.each<{
+    cas: string
+    acteur: ActeurAvecCommunes
+    situe: Acteur
+  }>([
+    {
+      cas: 'situe le coordinateur d’un médiateur dans le département de son employeuse',
+      acteur: mediateur,
+      situe: mediateurSitue,
+    },
+    {
+      cas: 'situe le coordinateur sans employeuse dans le département par défaut',
+      acteur: {
+        ...mediateur,
+        profil: {
+          ...mediateur.profil,
+          mediation: {
+            ...mediation,
+            coordinateurs: [{ ...alex, communeDeLEmployeuse: null }],
+          },
+        },
+      },
+      situe: {
+        ...mediateur,
+        profil: {
+          ...mediateur.profil,
+          mediation: {
+            ...mediation,
+            coordinateurs: [{ ...alex, departement: CodeDepartement('75') }],
+          },
+        },
+      },
+    },
+    {
+      cas: 'situe les coordinateurs d’un coordinateur qui fait de la médiation',
+      acteur: {
+        ...coordinateurSansMediation,
+        profil: { ...coordinateurSansMediation.profil, mediation },
+      },
+      situe: {
+        ...coordinateurSansMediation,
+        profil: {
+          ...coordinateurSansMediation.profil,
+          mediation: mediationSituee,
+        },
+      },
+    },
+    {
+      cas: 'laisse sans médiation un coordinateur qui n’en fait pas',
+      acteur: coordinateurSansMediation,
+      situe: coordinateurSitue,
+    },
+  ])('$cas', async ({ acteur, situe }) => {
+    expect(
+      await consulterUnActeur({
+        ...ports,
+        lireLActeur: async () => ({ acteur, profilCreeLe }),
+      })({ lecteur: parUnMediateur, acteurId: acteur.acteurId, maintenant }),
+    ).toEqual({
+      success: true,
+      data: {
+        acteur: situe,
+        profilCreeLe,
+        statut: { _tag: 'JamaisActif' },
+        regard: { _tag: 'Mediateur' },
+      },
+    })
+  })
 })

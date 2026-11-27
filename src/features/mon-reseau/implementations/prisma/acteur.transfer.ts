@@ -2,15 +2,15 @@ import type { Prisma } from '@/generated/prisma/client'
 import { CodeInsee } from '@/libraries/insee'
 import { nomAffiche } from '@/libraries/nom-affiche'
 import {
-  type Acteur,
+  type ActeurAvecCommunes,
   ActeurId,
-  type CoordinateurDeLActeur,
+  type CoordinateurAvecCommune,
   CoordinateurId,
   Courriel,
   dispositifDe,
   Effectif,
   MediateurId,
-  type Mediation,
+  type MediationAvecCommunes,
   type ProfilActeur,
 } from '../../domain'
 import { acteurVisibleWhere } from './acteur.sql'
@@ -95,13 +95,13 @@ const communeDeLEmployeuse = (
 
 const versCoordinateurDeLActeur = (
   coordinateur: LigneCoordinateurDeLActeur,
-): CoordinateurDeLActeur => ({
+): CoordinateurAvecCommune => ({
   acteurId: ActeurId(coordinateur.id),
   nomAffiche: nomAfficheDe(coordinateur),
   communeDeLEmployeuse: communeDeLEmployeuse(coordinateur.personneMain),
 })
 
-const versMediation = (mediateur: LigneMediateur): Mediation => ({
+const versMediation = (mediateur: LigneMediateur): MediationAvecCommunes => ({
   mediateurId: MediateurId(mediateur.id),
   nombreDeLieux: Effectif(mediateur._count.enActivite),
   coordinateurs: mediateur.coordinations.map(({ coordinateur }) =>
@@ -109,7 +109,9 @@ const versMediation = (mediateur: LigneMediateur): Mediation => ({
   ),
 })
 
-const versProfil = (ligne: LigneActeur): ProfilActeur | null => {
+const versProfil = (
+  ligne: LigneActeur,
+): ProfilActeur<CoordinateurAvecCommune> | null => {
   const dispositif = dispositifDe(
     ligne.personneMain?.conseillerNumeriqueEnPoste != null,
   )
@@ -129,7 +131,7 @@ const versProfil = (ligne: LigneActeur): ProfilActeur | null => {
     : { _tag: 'Mediateur', dispositif, mediation }
 }
 
-export const versActeur = (ligne: LigneActeur): Acteur | null => {
+export const versActeur = (ligne: LigneActeur): ActeurAvecCommunes | null => {
   const profil = versProfil(ligne)
 
   return profil === null

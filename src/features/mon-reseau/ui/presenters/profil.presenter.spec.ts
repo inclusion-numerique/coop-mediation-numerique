@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { CodeInsee } from '@/libraries/insee'
+import { CodeDepartement } from '@/libraries/insee'
 import { NomAffiche } from '@/libraries/nom-affiche'
 import {
   type Acteur,
@@ -24,7 +24,7 @@ const mediation: Mediation = {
     {
       acteurId: ActeurId('a1b2c3d4-0000-4000-8000-000000000002'),
       nomAffiche: NomAffiche('Alex Durand'),
-      communeDeLEmployeuse: CodeInsee('15014'),
+      departement: CodeDepartement('15'),
     },
   ],
 }
