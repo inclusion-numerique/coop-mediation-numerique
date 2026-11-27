@@ -15,11 +15,21 @@ export type PersonnesComptees = {
   readonly suivies: Effectif
 }
 
+export type ActivitesComptees<Demande extends DemandeDeComptage> = (
+  demande: Demande,
+) => Promise<ActivitesEtAccompagnementsComptes>
+
+export type PersonnesDeLaDemande<Demande extends DemandeDeComptage> = (
+  demande: Demande,
+) => Promise<PersonnesComptees>
+
+export type NouvellesPersonnesComptees<Demande extends DemandeDeComptage> = (
+  demande: Demande,
+) => Promise<Effectif>
+
 export type CompterLesAccompagnementsPorts<Demande extends DemandeDeComptage> =
   {
-    readonly activitesComptees: (
-      demande: Demande,
-    ) => Promise<ActivitesEtAccompagnementsComptes>
-    readonly personnesComptees: (demande: Demande) => Promise<PersonnesComptees>
-    readonly nouvellesPersonnesComptees: (demande: Demande) => Promise<Effectif>
+    readonly activitesComptees: ActivitesComptees<Demande>
+    readonly personnesComptees: PersonnesDeLaDemande<Demande>
+    readonly nouvellesPersonnesComptees: NouvellesPersonnesComptees<Demande>
   }
