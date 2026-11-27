@@ -1,21 +1,23 @@
 import { type Result, success } from '@/libraries/result'
+import { Endroit } from './destination-du-lieu'
 import type { LieuId } from './identifiants/lieu-id'
-import { correler, type LieuAMaterialiser } from './lieu-identite'
+import { type LieuDecrit, lieuAMaterialiserDuLieuDecrit } from './lieu-decrit'
+import { correler } from './lieu-identite'
 import type { LieuCorreleAuLieuDecritPorts } from './ports'
-import { endroitDe } from './reconnaitre-le-lieu'
 
 export const lieuCorreleAuLieuDecrit =
   ({ lieuxAuMemeEndroit }: LieuCorreleAuLieuDecritPorts) =>
   async ({
     lieu,
   }: {
-    readonly lieu: LieuAMaterialiser
+    readonly lieu: LieuDecrit
   }): Promise<Result<LieuId | null, never>> => {
-    const endroit = endroitDe(lieu)
-
-    if (endroit === null) return success(null)
+    const { codeInsee, codePostal } = lieu.adresse
 
     return success(
-      correler(await lieuxAuMemeEndroit(endroit), lieu)?.id ?? null,
+      correler(
+        await lieuxAuMemeEndroit(Endroit({ codeInsee, codePostal })),
+        lieuAMaterialiserDuLieuDecrit(lieu),
+      )?.id ?? null,
     )
   }

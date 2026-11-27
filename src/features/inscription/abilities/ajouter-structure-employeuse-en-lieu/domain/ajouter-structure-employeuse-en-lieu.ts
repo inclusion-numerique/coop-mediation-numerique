@@ -8,6 +8,7 @@ import {
   AdresseNonReconnue,
   type EchecDAjouterStructureEmployeuseEnLieu,
   EmployeuseIntrouvable,
+  EmployeuseSansDenomination,
   ServiceAdresseIndisponible,
 } from './errors'
 import { lieuALAdresseConnue, lieuGeocode } from './lieu-depuis-employeuse'
@@ -69,6 +70,10 @@ export const ajouterStructureEmployeuseEnLieu =
       return success({ _tag: 'DetacheeDesLieux', lieu, trace, lieuDetache })
     }
 
+    const nom = employeuse.denomination
+
+    if (nom === null) return failure(EmployeuseSansDenomination(employeuseId))
+
     const adresse = await lireLAdresseDeLEmployeuse(employeuseId)
     const geocodage: Geocodage =
       adresse === null
@@ -83,6 +88,7 @@ export const ajouterStructureEmployeuseEnLieu =
 
     const lieu = lieuGeocode({
       employeuse,
+      nom,
       adresseBan: geocodage.adresse,
       maintenant,
     })

@@ -1,10 +1,11 @@
-import type { AdresseGeocodee, EmployeuseLue, LieuDecrit } from './ports'
-
-type AdresseDuLieu = Pick<
+import type {
+  AdresseDeclareeDuLieu,
+  AdresseGeocodee,
+  AdresseGeocodeeDuLieu,
+  EmployeuseLue,
   LieuDecrit,
-  'adresse' | 'commune' | 'codePostal' | 'codeInsee'
-> &
-  Partial<Pick<LieuDecrit, 'banId' | 'latitude' | 'longitude'>>
+  LieuDecritGeocode,
+} from './ports'
 
 const referent = ({ contactReferent }: EmployeuseLue) =>
   contactReferent._tag === 'renseigne'
@@ -15,14 +16,14 @@ const referent = ({ contactReferent }: EmployeuseLue) =>
       }
     : { nomReferent: null, courrielReferent: null, telephoneReferent: null }
 
-const lieuALAdresse = (
+const lieuALAdresse = <Adresse>(
   employeuse: EmployeuseLue,
-  adresse: AdresseDuLieu,
+  nom: string,
+  adresse: Adresse,
   maintenant: Date,
-): LieuDecrit => ({
-  nom: employeuse.denomination ?? '',
-  ...adresse,
-  complementAdresse: null,
+) => ({
+  nom,
+  adresse,
   siret: employeuse.siret,
   synchronisationSiret: employeuse.siret === null ? null : maintenant,
   rna: employeuse.rna,
@@ -31,17 +32,21 @@ const lieuALAdresse = (
 
 export const lieuGeocode = ({
   employeuse,
+  nom,
   adresseBan,
   maintenant,
 }: {
   readonly employeuse: EmployeuseLue
+  readonly nom: string
   readonly adresseBan: AdresseGeocodee
   readonly maintenant: Date
-}): LieuDecrit =>
-  lieuALAdresse(
+}): LieuDecritGeocode =>
+  lieuALAdresse<AdresseGeocodeeDuLieu>(
     employeuse,
+    nom,
     {
-      adresse: adresseBan.nom,
+      _tag: 'AdresseGeocodee',
+      voie: adresseBan.nom,
       commune: adresseBan.commune,
       codePostal: adresseBan.codePostal,
       codeInsee: adresseBan.codeInsee,
@@ -59,12 +64,14 @@ export const lieuALAdresseConnue = ({
   readonly employeuse: EmployeuseLue
   readonly maintenant: Date
 }): LieuDecrit | null =>
-  employeuse.adresse === null
+  employeuse.adresse === null || employeuse.denomination === null
     ? null
-    : lieuALAdresse(
+    : lieuALAdresse<AdresseDeclareeDuLieu>(
         employeuse,
+        employeuse.denomination,
         {
-          adresse: employeuse.adresse.voie ?? '',
+          _tag: 'AdresseDeclaree',
+          voie: employeuse.adresse.voie,
           commune: employeuse.adresse.commune,
           codePostal: employeuse.adresse.codePostal,
           codeInsee: employeuse.adresse.codeInsee,

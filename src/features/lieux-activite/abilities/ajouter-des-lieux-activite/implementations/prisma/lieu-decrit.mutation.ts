@@ -1,7 +1,7 @@
 import { addMutationLog, prismaClient } from '@/configuration/prisma'
 import type { Prisma } from '@/generated/prisma/client'
 import type { LieuId } from '../../../../domain/identifiants/lieu-id'
-import type { LieuAMaterialiser } from '../../../../domain/lieu-identite'
+import type { LieuDecritGeocode } from '../../../../domain/lieu-decrit'
 import {
   lieuDisparu,
   preparerLeLieu,
@@ -12,14 +12,30 @@ import { inscriptionPourLIdentifiantCarto } from '../../../../implementations/pr
 import type { DestinationDuLieu, RattachementAuxLieux } from '../../domain'
 import { rattacherSiAbsent } from './destinations.mutation'
 
-export type LieuDecrit = LieuAMaterialiser &
-  Omit<Prisma.LieuInclusionCreateManyInput, 'id'>
+const colonnesDuLieuDecrit = (
+  id: LieuId,
+  { adresse, ...lieu }: LieuDecritGeocode,
+): Prisma.LieuInclusionCreateInput => ({
+  ...lieu,
+  id,
+  adresse: adresse.voie,
+  commune: adresse.commune,
+  codePostal: adresse.codePostal,
+  codeInsee: adresse.codeInsee,
+  banId: adresse.banId,
+  latitude: adresse.latitude,
+  longitude: adresse.longitude,
+  complementAdresse: null,
+})
 
 const creerLeLieuDecrit =
   (transaction: Prisma.TransactionClient) =>
-  async (id: LieuId, lieu: LieuDecrit): Promise<{ readonly id: string }> => {
+  async (
+    id: LieuId,
+    lieu: LieuDecritGeocode,
+  ): Promise<{ readonly id: string }> => {
     const cree = await transaction.lieuInclusion.create({
-      data: { ...lieu, id },
+      data: colonnesDuLieuDecrit(id, lieu),
       include: { inscriptionRegistre: inscriptionPourLIdentifiantCarto },
     })
 
@@ -39,7 +55,7 @@ export const rattacherAuLieuDecrit = async ({
   maintenant,
 }: {
   readonly utilisateurId: string
-  readonly destination: DestinationDuLieu<LieuDecrit>
+  readonly destination: DestinationDuLieu<LieuDecritGeocode>
   readonly trace: Prisma.InputJsonObject
   readonly maintenant: Date
 }): Promise<RattachementAuxLieux> =>

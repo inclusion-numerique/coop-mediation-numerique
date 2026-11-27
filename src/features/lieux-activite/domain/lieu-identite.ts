@@ -10,7 +10,7 @@ import {
 
 export type LieuAMaterialiser = {
   readonly nom: string
-  readonly adresse: string
+  readonly adresse: string | null
   readonly commune: string
   readonly codePostal: CodePostal
   readonly codeInsee?: CodeInsee | null
@@ -49,7 +49,7 @@ const auVocabulaire = (typologies: readonly string[]): Typologie[] | null => {
 const auStandard = (lieu: LieuAMaterialiser | LieuCandidat): LieuPrepare =>
   preparer({
     nom: lieu.nom,
-    adresse: lieu.adresse,
+    adresse: lieu.adresse ?? '',
     codeInsee: lieu.codeInsee ?? null,
     localisation:
       lieu.latitude == null || lieu.longitude == null

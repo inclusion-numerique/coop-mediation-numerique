@@ -1,6 +1,6 @@
 import type { LieuId, UtilisateurId } from '@/features/inscription/domain'
 import type { CodePostal } from '@/libraries/code-postal'
-import type { CodeInsee } from '@/libraries/insee'
+import type { CodeInsee, Siret } from '@/libraries/insee'
 import type { Result } from '@/libraries/result'
 import type { EmployeuseId } from './employeuse-id'
 
@@ -14,7 +14,7 @@ type AdresseAGeocoder = {
 export type EmployeuseLue = {
   readonly id: EmployeuseId
   readonly denomination: string | null
-  readonly siret: string | null
+  readonly siret: Siret | null
   readonly rna: string | null
   readonly adresse: {
     readonly voie: string | null
@@ -46,17 +46,29 @@ export type AdresseGeocodee = {
   readonly longitude: number
 }
 
-export type LieuDecrit = {
-  readonly nom: string
-  readonly adresse: string
+type LocaliteDuLieu = {
   readonly commune: string
   readonly codePostal: CodePostal
-  readonly codeInsee: CodeInsee | null
-  readonly banId?: string
-  readonly latitude?: number
-  readonly longitude?: number
-  readonly complementAdresse: null
-  readonly siret: string | null
+  readonly codeInsee: CodeInsee
+}
+
+export type AdresseGeocodeeDuLieu = LocaliteDuLieu & {
+  readonly _tag: 'AdresseGeocodee'
+  readonly voie: string
+  readonly banId: string
+  readonly latitude: number
+  readonly longitude: number
+}
+
+export type AdresseDeclareeDuLieu = LocaliteDuLieu & {
+  readonly _tag: 'AdresseDeclaree'
+  readonly voie: string | null
+}
+
+type DescriptionDuLieu<Adresse> = {
+  readonly nom: string
+  readonly adresse: Adresse
+  readonly siret: Siret | null
   readonly synchronisationSiret: Date | null
   readonly rna: string | null
   readonly nomReferent: string | null
@@ -64,13 +76,19 @@ export type LieuDecrit = {
   readonly telephoneReferent: string | null
 }
 
+export type LieuDecrit = DescriptionDuLieu<
+  AdresseGeocodeeDuLieu | AdresseDeclareeDuLieu
+>
+
+export type LieuDecritGeocode = DescriptionDuLieu<AdresseGeocodeeDuLieu>
+
 export type TraceDeLEmployeuse = {
   readonly userId: UtilisateurId
   readonly structureId: EmployeuseId
 }
 
 export type DestinationDuLieuDecrit<Destination> = (input: {
-  readonly lieu: LieuDecrit
+  readonly lieu: LieuDecritGeocode
 }) => Promise<Result<Destination, never>>
 
 export type RattachementAuLieuDecrit =

@@ -7,19 +7,40 @@ import { success } from '@/libraries/result'
 import type { LieuCandidatCoop } from './destination-du-lieu'
 import { LieuId } from './identifiants/lieu-id'
 import { lieuCorreleAuLieuDecrit } from './lieu-correle-au-lieu-decrit'
-import type { LieuAMaterialiser } from './lieu-identite'
+import type { LieuDecrit } from './lieu-decrit'
 
 const CANDIDAT = LieuId('8d9e2f4a-5b6c-4d7e-8f90-1a2b3c4d5e6f')
 const supprimeLe = new Date('2026-01-15T10:00:00Z')
 
-const decrit: LieuAMaterialiser = {
+const decrit: LieuDecrit = {
   nom: 'Association du numérique',
-  adresse: '4 Rue de la Rue',
-  commune: 'Lyon',
-  codePostal: CodePostal('69001'),
-  codeInsee: CodeInsee('69381'),
-  latitude: 45.767,
-  longitude: 4.834,
+  adresse: {
+    _tag: 'AdresseGeocodee',
+    voie: '4 Rue de la Rue',
+    commune: 'Lyon',
+    codePostal: CodePostal('69001'),
+    codeInsee: CodeInsee('69381'),
+    banId: '69381_1234_00004',
+    latitude: 45.767,
+    longitude: 4.834,
+  },
+  siret: null,
+  synchronisationSiret: null,
+  rna: null,
+  nomReferent: null,
+  courrielReferent: null,
+  telephoneReferent: null,
+}
+
+const declare: LieuDecrit = {
+  ...decrit,
+  adresse: {
+    _tag: 'AdresseDeclaree',
+    voie: null,
+    commune: 'Lyon',
+    codePostal: CodePostal('69001'),
+    codeInsee: CodeInsee('69381'),
+  },
 }
 
 const candidat = (suppression: Date | null): LieuCandidatCoop => ({
@@ -38,7 +59,7 @@ describe('le lieu de la coop corrélé à un lieu décrit', () => {
   it.each<{
     cas: string
     candidats: readonly LieuCandidatCoop[]
-    lieu: LieuAMaterialiser
+    lieu: LieuDecrit
     correle: LieuId | null
   }>([
     {
@@ -48,9 +69,9 @@ describe('le lieu de la coop corrélé à un lieu décrit', () => {
       correle: null,
     },
     {
-      cas: 'n’est pas cherché faute de code INSEE',
+      cas: 'n’existe pas pour un lieu déclaré sans voie ni position, que rien ne rapproche',
       candidats: [candidat(null)],
-      lieu: { ...decrit, codeInsee: null },
+      lieu: declare,
       correle: null,
     },
     {

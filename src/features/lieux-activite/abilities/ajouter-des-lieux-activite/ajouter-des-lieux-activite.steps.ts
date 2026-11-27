@@ -30,7 +30,6 @@ import { ajouterDesLieuxActivite } from '@/features/lieux-activite/abilities/ajo
 import { rattacherAuxLieux } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/ajouter-des-lieux-activite.mutation'
 import {
   detacherDuLieu,
-  type LieuDecrit,
   rattacherAuLieuDecrit,
 } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/lieu-decrit.mutation'
 import { lireLieuxDejaRattaches } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/lieux-deja-rattaches.query'
@@ -50,6 +49,7 @@ import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
 import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
 import { UtilisateurId } from '@/features/lieux-activite/domain/identifiants/utilisateur-id'
 import { lieuCorreleAuLieuDecrit } from '@/features/lieux-activite/domain/lieu-correle-au-lieu-decrit'
+import type { LieuDecritGeocode } from '@/features/lieux-activite/domain/lieu-decrit'
 import { lieuxAuMemeEndroit } from '@/features/lieux-activite/implementations/prisma/lieux-au-meme-endroit.query'
 import {
   effacerDuRegistre,
@@ -474,16 +474,18 @@ const etat: {
   commune?: string
 } = { nom: '', utilisateurs: [] }
 
-const lieuDecrit = (nom: string): LieuDecrit => ({
+const lieuDecrit = (nom: string): LieuDecritGeocode => ({
   nom,
-  adresse: '1 Rue de la Paix',
-  commune: 'Paris',
-  codePostal: CodePostal('75001'),
-  codeInsee: CodeInsee('75101'),
-  banId: '75101_7038_00001',
-  latitude: 48.869_36,
-  longitude: 2.331_08,
-  complementAdresse: null,
+  adresse: {
+    _tag: 'AdresseGeocodee',
+    voie: '1 Rue de la Paix',
+    commune: 'Paris',
+    codePostal: CodePostal('75001'),
+    codeInsee: CodeInsee('75101'),
+    banId: '75101_7038_00001',
+    latitude: 48.869_36,
+    longitude: 2.331_08,
+  },
   siret: null,
   synchronisationSiret: null,
   rna: null,

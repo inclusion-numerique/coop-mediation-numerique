@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { LieuId, UtilisateurId } from '@/features/inscription/domain'
 import { CodePostal } from '@/libraries/code-postal'
-import { CodeInsee } from '@/libraries/insee'
+import { CodeInsee, Siret } from '@/libraries/insee'
 import { failure, success } from '@/libraries/result'
 import { ajouterStructureEmployeuseEnLieu } from './ajouter-structure-employeuse-en-lieu'
 import { EmployeuseId } from './employeuse-id'
@@ -31,7 +31,7 @@ const employeuseSansAdresse: EmployeuseLue = {
 const employeuseAdressee: EmployeuseLue = {
   id: employeuseId,
   denomination: 'Association du numérique',
-  siret: '13002526500013',
+  siret: Siret('13002526500013'),
   rna: 'W691234567',
   adresse: {
     voie: '4 rue de la Rue',
@@ -92,15 +92,17 @@ describe('ajouter la structure employeuse en lieu d’activité', () => {
         destination: 'destination-1',
         lieu: {
           nom: 'Association du numérique',
-          adresse: '4 Rue de la Rue',
-          commune: 'Lyon',
-          codePostal: CodePostal('69001'),
-          codeInsee: CodeInsee('69381'),
-          banId: '69381_1234_00004',
-          latitude: 45.767,
-          longitude: 4.834,
-          complementAdresse: null,
-          siret: '13002526500013',
+          adresse: {
+            _tag: 'AdresseGeocodee',
+            voie: '4 Rue de la Rue',
+            commune: 'Lyon',
+            codePostal: CodePostal('69001'),
+            codeInsee: CodeInsee('69381'),
+            banId: '69381_1234_00004',
+            latitude: 45.767,
+            longitude: 4.834,
+          },
+          siret: Siret('13002526500013'),
           synchronisationSiret: maintenant,
           rna: 'W691234567',
           nomReferent: 'Camille Martin',
@@ -125,12 +127,14 @@ describe('ajouter la structure employeuse en lieu d’activité', () => {
         lieuDetache: null,
         lieu: {
           nom: 'Association du numérique',
-          adresse: '4 rue de la Rue',
-          commune: 'Lyon',
-          codePostal: CodePostal('69001'),
-          codeInsee: CodeInsee('69381'),
-          complementAdresse: null,
-          siret: '13002526500013',
+          adresse: {
+            _tag: 'AdresseDeclaree',
+            voie: '4 rue de la Rue',
+            commune: 'Lyon',
+            codePostal: CodePostal('69001'),
+            codeInsee: CodeInsee('69381'),
+          },
+          siret: Siret('13002526500013'),
           synchronisationSiret: maintenant,
           rna: 'W691234567',
           nomReferent: 'Camille Martin',
@@ -166,6 +170,7 @@ describe('ajouter la structure employeuse en lieu d’activité', () => {
         consulterEmployeuseActuelle: async () => ({
           employeuse: {
             ...employeuseSansAdresse,
+            denomination: 'Association du numérique',
             adresse: {
               voie: null,
               commune: 'Lyon',
@@ -181,12 +186,14 @@ describe('ajouter la structure employeuse en lieu d’activité', () => {
         trace,
         lieuDetache: null,
         lieu: {
-          nom: '',
-          adresse: '',
-          commune: 'Lyon',
-          codePostal: CodePostal('69001'),
-          codeInsee: CodeInsee('69381'),
-          complementAdresse: null,
+          nom: 'Association du numérique',
+          adresse: {
+            _tag: 'AdresseDeclaree',
+            voie: null,
+            commune: 'Lyon',
+            codePostal: CodePostal('69001'),
+            codeInsee: CodeInsee('69381'),
+          },
           siret: null,
           synchronisationSiret: null,
           rna: null,
@@ -196,6 +203,35 @@ describe('ajouter la structure employeuse en lieu d’activité', () => {
         },
       }),
     )
+  })
+
+  it('ne cherche aucun lieu à retirer pour une employeuse sans dénomination', async () => {
+    expect(
+      await ajouterStructureEmployeuseEnLieu({
+        ...ports,
+        consulterEmployeuseActuelle: async () => ({
+          employeuse: { ...employeuseAdressee, denomination: null },
+        }),
+      })({ userId, estLieuActivite: false, maintenant }),
+    ).toEqual(
+      success({
+        _tag: 'DetacheeDesLieux',
+        trace,
+        lieuDetache: null,
+        lieu: null,
+      }),
+    )
+  })
+
+  it('refuse de faire un lieu d’une employeuse sans dénomination', async () => {
+    expect(
+      await ajouterStructureEmployeuseEnLieu({
+        ...ports,
+        consulterEmployeuseActuelle: async () => ({
+          employeuse: { ...employeuseAdressee, denomination: null },
+        }),
+      })({ userId, estLieuActivite: true, maintenant }),
+    ).toEqual(failure({ _tag: 'EmployeuseSansDenomination', employeuseId }))
   })
 
   it('refuse un utilisateur sans employeuse', async () => {

@@ -156,11 +156,11 @@ Then('la déclaration m’est refusée faute de service d’adresse', () => {
 })
 
 Then('le lieu confié porte l’adresse de la Base Adresse Nationale', () => {
-  const lieu = lieuRattache()
-  assert.strictEqual(lieu.adresse, ADRESSE_RECONNUE.nom)
-  assert.strictEqual(lieu.banId, ADRESSE_RECONNUE.id)
-  assert.strictEqual(lieu.latitude, ADRESSE_RECONNUE.latitude)
-  assert.strictEqual(lieu.longitude, ADRESSE_RECONNUE.longitude)
+  const { adresse } = lieuRattache()
+  assert.strictEqual(adresse.voie, ADRESSE_RECONNUE.nom)
+  assert.strictEqual(adresse.banId, ADRESSE_RECONNUE.id)
+  assert.strictEqual(adresse.latitude, ADRESSE_RECONNUE.latitude)
+  assert.strictEqual(adresse.longitude, ADRESSE_RECONNUE.longitude)
 })
 
 After(() => {

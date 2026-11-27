@@ -7,25 +7,44 @@ import { success } from '@/libraries/result'
 import type { DestinationDuLieu, LieuCandidatCoop } from './destination-du-lieu'
 import { destinationDuLieuDecrit } from './destination-du-lieu-decrit'
 import { LieuId } from './identifiants/lieu-id'
-import type { LieuAMaterialiser } from './lieu-identite'
+import type { LieuDecrit } from './lieu-decrit'
 
 const CANDIDAT = LieuId('8d9e2f4a-5b6c-4d7e-8f90-1a2b3c4d5e6f')
 const NOUVEAU = LieuId('6f1e2d3c-4b5a-4987-8a6b-5c4d3e2f1a0b')
 const supprimeLe = new Date('2026-01-15T10:00:00Z')
 
-const decrit: LieuAMaterialiser = {
+const decrit: LieuDecrit = {
   nom: 'Association du numérique',
-  adresse: '4 Rue de la Rue',
-  commune: 'Lyon',
-  codePostal: CodePostal('69001'),
-  codeInsee: CodeInsee('69381'),
-  latitude: 45.767,
-  longitude: 4.834,
+  adresse: {
+    _tag: 'AdresseGeocodee',
+    voie: '4 Rue de la Rue',
+    commune: 'Lyon',
+    codePostal: CodePostal('69001'),
+    codeInsee: CodeInsee('69381'),
+    banId: '69381_1234_00004',
+    latitude: 45.767,
+    longitude: 4.834,
+  },
+  siret: null,
+  synchronisationSiret: null,
+  rna: null,
+  nomReferent: null,
+  courrielReferent: null,
+  telephoneReferent: null,
 }
 
-const sansCodeInsee: LieuAMaterialiser = { ...decrit, codeInsee: null }
+const declare: LieuDecrit = {
+  ...decrit,
+  adresse: {
+    _tag: 'AdresseDeclaree',
+    voie: null,
+    commune: 'Lyon',
+    codePostal: CodePostal('69001'),
+    codeInsee: CodeInsee('69381'),
+  },
+}
 
-const annexe: LieuAMaterialiser = {
+const annexe: LieuDecrit = {
   ...decrit,
   nom: 'Association du numérique Annexe',
 }
@@ -46,8 +65,8 @@ describe('la destination d’un lieu décrit', () => {
   it.each<{
     cas: string
     candidats: readonly LieuCandidatCoop[]
-    lieu: LieuAMaterialiser
-    destination: DestinationDuLieu<LieuAMaterialiser>
+    lieu: LieuDecrit
+    destination: DestinationDuLieu<LieuDecrit>
   }>([
     {
       cas: 'est un lieu à créer quand la coop ne connaît rien au même endroit',
@@ -56,14 +75,10 @@ describe('la destination d’un lieu décrit', () => {
       destination: { _tag: 'LieuACreer', id: NOUVEAU, creation: decrit },
     },
     {
-      cas: 'est un lieu à créer, sans chercher au même endroit, faute de code INSEE',
-      candidats: [candidat(null)],
-      lieu: sansCodeInsee,
-      destination: {
-        _tag: 'LieuACreer',
-        id: NOUVEAU,
-        creation: sansCodeInsee,
-      },
+      cas: 'est un lieu à créer pour un lieu déclaré sans voie ni position que la coop ne connaît pas',
+      candidats: [],
+      lieu: declare,
+      destination: { _tag: 'LieuACreer', id: NOUVEAU, creation: declare },
     },
     {
       cas: 'est le lieu actif de la coop qui désigne le même endroit',
