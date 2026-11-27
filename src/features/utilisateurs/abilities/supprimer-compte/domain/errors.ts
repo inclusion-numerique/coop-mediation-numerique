@@ -3,7 +3,6 @@ import type { FailureReason } from './effacement-report'
 
 export type CompteIntrouvable = {
   readonly _tag: 'CompteIntrouvable'
-  readonly utilisateurId: UtilisateurId
 }
 
 export type CompteDejaSupprime = {
@@ -30,9 +29,9 @@ export type EchecDeSupprimerCompte =
   | SuppressionReserveeAuDispositif
   | AccesNonCoupe
 
-export const CompteIntrouvable = (
-  utilisateurId: UtilisateurId,
-): CompteIntrouvable => ({ _tag: 'CompteIntrouvable', utilisateurId })
+export const CompteIntrouvable = (): CompteIntrouvable => ({
+  _tag: 'CompteIntrouvable',
+})
 
 export const CompteDejaSupprime = (
   utilisateurId: UtilisateurId,

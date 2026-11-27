@@ -149,7 +149,7 @@ export const supprimerCompteAction = actionBuilder()
           supprimerComptePorts,
           synchroniserPersonne,
         )({
-          cible: UtilisateurId(input.utilisateurId),
+          cible: UtilisateurId.safe(input.utilisateurId),
           auteur: {
             _tag: 'administrateur',
             administrateurId: AuteurId(user.id),

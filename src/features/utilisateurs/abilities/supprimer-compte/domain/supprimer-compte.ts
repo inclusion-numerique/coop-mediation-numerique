@@ -66,13 +66,15 @@ export const supprimerCompte =
     auteur,
     maintenant,
   }: {
-    readonly cible: UtilisateurId
+    readonly cible: UtilisateurId | null
     readonly auteur: AuteurSuppression
     readonly maintenant: Date
   }): Promise<Result<CompteSupprime, EchecDeSupprimerCompte>> => {
+    if (cible === null) return failure(CompteIntrouvable())
+
     const compte = await lireLeCompteASupprimer(cible)
 
-    if (compte === null) return failure(CompteIntrouvable(cible))
+    if (compte === null) return failure(CompteIntrouvable())
 
     const autorisation = autoriserSuppression(compte, auteur)
 

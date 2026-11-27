@@ -384,8 +384,18 @@ describe('supprimer un compte', () => {
   it('signale un compte introuvable', async () => {
     expect(await supprimer(dependances(null), administrateur)).toEqual({
       success: false,
-      error: { _tag: 'CompteIntrouvable', utilisateurId },
+      error: { _tag: 'CompteIntrouvable' },
     })
+  })
+
+  it('signale un compte qu’aucun identifiant ne désigne', async () => {
+    expect(
+      await supprimerCompte(dependances(compteOrdinaire))({
+        cible: null,
+        auteur: administrateur,
+        maintenant,
+      }),
+    ).toEqual({ success: false, error: { _tag: 'CompteIntrouvable' } })
   })
 
   it.each<[string, AuteurSuppression]>([
