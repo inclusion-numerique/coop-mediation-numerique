@@ -7,10 +7,9 @@ import { useSearchParams } from 'next/navigation'
 import {
   type KeyboardEvent,
   type MouseEvent as ReactMouseEvent,
-  type RefObject,
+  useEffect,
   useRef,
 } from 'react'
-import { useOnClickOutside } from 'usehooks-ts'
 import { hrefDeLExportDesBeneficiaires } from '@/features/beneficiaire/ui/presenters/liens.presenter'
 import { download } from '@/libraries/navigateur'
 import { createToast } from '@/libraries/ui/toast'
@@ -29,13 +28,21 @@ export const BeneficiairesMoreOptionsButton = () => {
     }
   }
 
-  useOnClickOutside(collapseRef as RefObject<HTMLDivElement>, (event) => {
-    if (event.target === buttonRef?.current) return
-
-    if (buttonRef.current?.getAttribute('aria-expanded') !== 'true') return
-
-    buttonRef.current.click()
-  })
+  useEffect(() => {
+    const fermerAuClicExterieur = (event: Event) => {
+      if (!(event.target instanceof Node)) return
+      if (collapseRef.current?.contains(event.target)) return
+      if (event.target === buttonRef.current) return
+      if (buttonRef.current?.getAttribute('aria-expanded') !== 'true') return
+      buttonRef.current.click()
+    }
+    document.addEventListener('mousedown', fermerAuClicExterieur)
+    document.addEventListener('touchstart', fermerAuClicExterieur)
+    return () => {
+      document.removeEventListener('mousedown', fermerAuClicExterieur)
+      document.removeEventListener('touchstart', fermerAuClicExterieur)
+    }
+  }, [])
 
   const exportXlsx = (exportPath: string, message: string) => {
     download(exportPath)

@@ -6,7 +6,7 @@ import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { z } from 'zod'
-import type { AnalyseResponse } from '@/features/beneficiaire/abilities/importer-beneficiaires/domain/analyse-de-l-import'
+import { AnalyseResponseSchema } from '@/features/beneficiaire/abilities/importer-beneficiaires/domain/analyse-de-l-import'
 import { useEnregistrementDeLAnalyse } from '@/features/beneficiaire/abilities/importer-beneficiaires/ui/hooks/use-analyse-de-l-import'
 import {
   hrefDeLAnalyseDeLImport,
@@ -30,9 +30,7 @@ const UploadBeneficiaireFileFormValidation = z.object({
     ),
 })
 
-type UploadBeneficiaireFileFormData = z.infer<
-  typeof UploadBeneficiaireFileFormValidation
->
+const sansFichier: { readonly file: File | null } = { file: null }
 
 const UploadBeneficiaireFileForm = () => {
   const router = useRouter()
@@ -42,8 +40,9 @@ const UploadBeneficiaireFileForm = () => {
 
   const form = useAppForm({
     validators: { onSubmit: UploadBeneficiaireFileFormValidation },
-    defaultValues: {} as UploadBeneficiaireFileFormData,
+    defaultValues: sansFichier,
     onSubmit: async ({ value }) => {
+      if (value.file === null) return
       const formData = new FormData()
       formData.append('file', value.file)
 
@@ -58,11 +57,18 @@ const UploadBeneficiaireFileForm = () => {
           return
         }
 
-        const analysisData = (await response.json()) as AnalyseResponse
+        const analysisData = AnalyseResponseSchema.safeParse(
+          await response.json(),
+        )
 
-        enregistrerLAnalyse(analysisData)
+        if (!analysisData.success) {
+          router.push(hrefDeLErreurDeLImport(response.statusText))
+          return
+        }
 
-        router.push(hrefDeLAnalyseDeLImport(analysisData.id))
+        enregistrerLAnalyse(analysisData.data)
+
+        router.push(hrefDeLAnalyseDeLImport(analysisData.data.id))
       } catch {
         router.push(`/coop/mes-beneficiaires/importer/erreur`)
       }

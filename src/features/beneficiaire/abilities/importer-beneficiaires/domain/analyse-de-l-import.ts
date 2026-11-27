@@ -254,7 +254,9 @@ export const analyserLaFeuille =
     }
   }
 
-export type AnalyseResponse = {
-  analysis: Analysis
-  id: string
-}
+export const AnalyseResponseSchema = z.object({
+  analysis: AnalysisSchema,
+  id: z.string(),
+})
+
+export type AnalyseResponse = z.infer<typeof AnalyseResponseSchema>

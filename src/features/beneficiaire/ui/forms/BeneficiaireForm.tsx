@@ -110,7 +110,12 @@ const BeneficiaireForm = ({
     validators: { onSubmit: BeneficiaireFormValidation },
     defaultValues,
     onSubmit: async ({ value }) => {
-      const data = value as BeneficiaireData
+      const saisie = BeneficiaireFormValidation.safeParse(value)
+      if (!saisie.success) {
+        erreurEnregistrement()
+        return
+      }
+      const data = saisie.data
       try {
         const result = await save(data)
 

@@ -1,6 +1,9 @@
 import { v4 } from 'uuid'
 import { ParticipantsAnonymesCraCollectifData } from '@/features/activites/abilities/enregistrer-un-atelier-collectif/ui/forms/participants-anonymes-du-cra-collectif.validation'
-import { beneficiairesDesParticipantsAnonymes } from '@/features/activites/fixtures/beneficiaires-des-participants-anonymes'
+import {
+  beneficiairesDesParticipantsAnonymes,
+  type CreatedBeneficiairesForParticipantsAnonymes,
+} from '@/features/activites/fixtures/beneficiaires-des-participants-anonymes'
 import type { Prisma, TypeLieu } from '@/generated/prisma/client'
 import { mergeUuids } from '@/libraries/fixtures'
 
@@ -138,7 +141,7 @@ export const craCollectif = <
   }
   employeuseCoopId: string
   accompagnements: Prisma.AccompagnementUncheckedCreateInput[]
-  beneficiairesAnonymes: Prisma.BeneficiaireUncheckedCreateInput[]
+  beneficiairesAnonymes: readonly CreatedBeneficiairesForParticipantsAnonymes[]
 } => {
   const {
     id,
@@ -154,7 +157,16 @@ export const craCollectif = <
 
   const givenId = id ?? v4()
 
-  const accompagnements = beneficiaireIds.map(
+  const beneficiairesAnonymes = beneficiairesDesParticipantsAnonymes({
+    participantsAnonymes,
+    rootUuid: givenId,
+    mediateurId: rest.mediateurId,
+  })
+
+  const accompagnements = [
+    ...beneficiaireIds,
+    ...beneficiairesAnonymes.map(({ id }) => id),
+  ].map(
     (beneficiaireId) =>
       ({
         id: mergeUuids(givenId, beneficiaireId),
@@ -162,20 +174,6 @@ export const craCollectif = <
         activiteId: givenId,
       }) satisfies Prisma.AccompagnementUncheckedCreateInput,
   )
-
-  const beneficiairesAnonymes = beneficiairesDesParticipantsAnonymes({
-    participantsAnonymes,
-    rootUuid: givenId,
-    mediateurId: rest.mediateurId,
-  })
-
-  for (const beneficiaireAnonyme of beneficiairesAnonymes) {
-    accompagnements.push({
-      id: mergeUuids(givenId, beneficiaireAnonyme.id),
-      beneficiaireId: beneficiaireAnonyme.id,
-      activiteId: givenId,
-    })
-  }
 
   const activite = {
     ...rest,
