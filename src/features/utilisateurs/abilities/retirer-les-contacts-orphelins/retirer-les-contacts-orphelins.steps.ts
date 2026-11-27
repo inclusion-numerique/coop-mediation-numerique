@@ -76,6 +76,8 @@ When('les contacts orphelins sont retirés', async () => {
       reconciliation.retires = [...reconciliation.retires, courriel]
       return success({ _tag: 'Retire' })
     },
+    lireLaPresenceDuContact: async () =>
+      success({ _tag: 'Present', listes: 1 }),
   })({ contacts: reconciliation.contacts })
   reconciliation.bilan = resultat.data
 })

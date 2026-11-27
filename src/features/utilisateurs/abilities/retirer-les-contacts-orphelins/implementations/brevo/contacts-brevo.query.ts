@@ -1,24 +1,17 @@
 import axios from 'axios'
+import { signaler } from '@/configuration/telemetry/serveur'
 import { AdresseCourriel, UtilisateurId } from '@/features/utilisateurs/domain'
 import {
   cleApiBrevo,
   listeDesUtilisateurs,
 } from '@/features/utilisateurs/implementations/brevo/brevo-api.client'
 import { brevoApiThrottle } from '@/features/utilisateurs/implementations/brevo/brevo-api-throttle.client'
-import { deleteBrevoContact } from '@/features/utilisateurs/implementations/brevo/delete-brevo-contact.mutation'
-import { deleteBrevoContactIfOrphan } from '@/features/utilisateurs/implementations/brevo/delete-brevo-contact-if-orphan.mutation'
-import { removeBrevoContactFromList } from '@/features/utilisateurs/implementations/brevo/remove-brevo-contact-from-list.mutation'
-import {
-  type EchecTechnique,
-  enEchecTechnique,
-  failure,
-  success,
-} from '@/libraries/result'
-import type { CompteDuContact, ContactBrevo } from '../../domain'
+import { enEchecTechnique, failure, success } from '@/libraries/result'
 import type {
-  RetirerLeContactDeLaListe,
-  SupprimerLeContact,
-} from '../../domain/ports'
+  CompteDuContact,
+  ContactBrevo,
+  LireLaPresenceDuContact,
+} from '../../domain'
 
 type PageDeContacts = {
   readonly contacts: readonly {
@@ -72,31 +65,35 @@ const lireAPartirDe = async (
     : [...contacts, ...(await lireAPartirDe(offset + TAILLE_DE_PAGE))]
 }
 
-const echecDe = (erreur: unknown): EchecTechnique => enEchecTechnique(erreur)
+const ATTENTE_DE_LA_MISE_A_JOUR_DES_LISTES = 1000
+
+const patienter = (millisecondes: number): Promise<void> =>
+  new Promise((resolve) => setTimeout(resolve, millisecondes))
+
+const lireLesListes = brevoApiThrottle(async (courriel: AdresseCourriel) => {
+  const reponse = await axios.get<{ readonly listIds: readonly number[] }>(
+    `https://api.brevo.com/v3/contacts/${encodeURIComponent(courriel)}`,
+    { headers: { 'api-key': cleApiBrevo } },
+  )
+  return reponse.data.listIds
+})
+
+const estIntrouvable = (erreur: unknown): boolean =>
+  axios.isAxiosError(erreur) && erreur.response?.status === 404
 
 export const listerLesContacts = (): Promise<readonly ContactBrevo[]> =>
   lireAPartirDe(0)
 
-export const supprimerLeContact: SupprimerLeContact = async (courriel) => {
-  try {
-    await deleteBrevoContact(courriel)
-    return success(undefined)
-  } catch (erreur) {
-    return failure(echecDe(erreur))
-  }
-}
-
-export const retirerLeContactDeLaListe: RetirerLeContactDeLaListe = async (
+export const lireLaPresenceDuContact: LireLaPresenceDuContact = async (
   courriel,
 ) => {
+  await patienter(ATTENTE_DE_LA_MISE_A_JOUR_DES_LISTES)
   try {
-    const retire = await removeBrevoContactFromList(
-      courriel,
-      listeDesUtilisateurs,
-    )
-    await deleteBrevoContactIfOrphan(courriel)
-    return success(retire ? { _tag: 'Retire' } : { _tag: 'DejaAbsent' })
+    const listes = await lireLesListes(courriel)
+    return success({ _tag: 'Present', listes: listes.length })
   } catch (erreur) {
-    return failure(echecDe(erreur))
+    if (estIntrouvable(erreur)) return success({ _tag: 'Introuvable' })
+    signaler(erreur)
+    return failure(enEchecTechnique(erreur))
   }
 }

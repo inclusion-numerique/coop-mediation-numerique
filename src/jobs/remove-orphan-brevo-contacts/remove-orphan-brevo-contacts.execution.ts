@@ -1,9 +1,12 @@
 import { brevoActif } from '@/configuration/brevo'
 import { retirerLesContactsOrphelins } from '@/features/utilisateurs/abilities/retirer-les-contacts-orphelins/domain/retirer-les-contacts-orphelins'
 import {
-  listerLesContacts,
   retirerLeContactDeLaListe,
   supprimerLeContact,
+} from '@/features/utilisateurs/abilities/retirer-les-contacts-orphelins/implementations/brevo/contacts-brevo.mutation'
+import {
+  lireLaPresenceDuContact,
+  listerLesContacts,
 } from '@/features/utilisateurs/abilities/retirer-les-contacts-orphelins/implementations/brevo/contacts-brevo.query'
 import { inscritsVivantsParmi } from '@/features/utilisateurs/abilities/retirer-les-contacts-orphelins/implementations/prisma/inscrits-vivants.query'
 import { output } from '@/libraries/console'
@@ -18,12 +21,14 @@ export const executeRemoveOrphanBrevoContacts = async () => {
     inscritsVivantsParmi,
     supprimerLeContact,
     retirerLeContactDeLaListe,
+    lireLaPresenceDuContact,
   })({ contacts: await listerLesContacts() })
 
   const bilan = {
     contacts: resultat.data.contacts,
     anonymisesSupprimes: resultat.data.anonymisesSupprimes.length,
     orphelinsRetires: resultat.data.orphelinsRetires.length,
+    orphelinsSupprimes: resultat.data.orphelinsSupprimes.length,
     echecs: resultat.data.echecs,
   }
 

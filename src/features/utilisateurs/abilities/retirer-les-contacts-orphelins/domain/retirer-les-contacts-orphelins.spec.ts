@@ -39,6 +39,7 @@ const ports: RetirerLesContactsOrphelinsPorts = {
   inscritsVivantsParmi: async () => new Set([vivant]),
   supprimerLeContact: async () => success(undefined),
   retirerLeContactDeLaListe: async () => success({ _tag: 'Retire' }),
+  lireLaPresenceDuContact: async () => success({ _tag: 'Present', listes: 1 }),
 }
 
 describe('retirer les contacts orphelins', () => {
@@ -49,6 +50,7 @@ describe('retirer les contacts orphelins', () => {
         contacts: 5,
         anonymisesSupprimes: [courrielAnonymise],
         orphelinsRetires: [courrielInconnu, courrielParti],
+        orphelinsSupprimes: [],
         echecs: [],
       },
     })
@@ -66,6 +68,7 @@ describe('retirer les contacts orphelins', () => {
         contacts: 5,
         anonymisesSupprimes: [courrielAnonymise],
         orphelinsRetires: [],
+        orphelinsSupprimes: [],
         echecs: [],
       },
     })
@@ -86,7 +89,82 @@ describe('retirer les contacts orphelins', () => {
         contacts: 5,
         anonymisesSupprimes: [],
         orphelinsRetires: [],
+        orphelinsSupprimes: [],
         echecs: [courrielAnonymise, courrielInconnu, courrielParti],
+      },
+    })
+  })
+
+  it('supprime un orphelin retiré de la liste qui n’est plus dans aucune liste', async () => {
+    expect(
+      await retirerLesContactsOrphelins({
+        ...ports,
+        lireLaPresenceDuContact: async () =>
+          success({ _tag: 'Present', listes: 0 }),
+      })({ contacts }),
+    ).toEqual({
+      success: true,
+      data: {
+        contacts: 5,
+        anonymisesSupprimes: [courrielAnonymise],
+        orphelinsRetires: [courrielInconnu, courrielParti],
+        orphelinsSupprimes: [courrielInconnu, courrielParti],
+        echecs: [],
+      },
+    })
+  })
+
+  it('ne supprime pas un orphelin retiré que Brevo ne connaît plus', async () => {
+    expect(
+      await retirerLesContactsOrphelins({
+        ...ports,
+        lireLaPresenceDuContact: async () => success({ _tag: 'Introuvable' }),
+      })({ contacts }),
+    ).toEqual({
+      success: true,
+      data: {
+        contacts: 5,
+        anonymisesSupprimes: [courrielAnonymise],
+        orphelinsRetires: [courrielInconnu, courrielParti],
+        orphelinsSupprimes: [],
+        echecs: [],
+      },
+    })
+  })
+
+  it.each<{
+    cas: string
+    defaillant: Partial<RetirerLesContactsOrphelinsPorts>
+  }>([
+    {
+      cas: 'la lecture de ses listes',
+      defaillant: {
+        lireLaPresenceDuContact: async () =>
+          failure(EchecTechnique('Brevo indisponible')),
+      },
+    },
+    {
+      cas: 'sa suppression',
+      defaillant: {
+        lireLaPresenceDuContact: async () =>
+          success({ _tag: 'Present', listes: 0 }),
+        supprimerLeContact: async () =>
+          failure(EchecTechnique('Brevo indisponible')),
+      },
+    },
+  ])('rapporte un orphelin retiré dont échoue $cas', async ({ defaillant }) => {
+    expect(
+      await retirerLesContactsOrphelins({ ...ports, ...defaillant })({
+        contacts: [{ courriel: courrielParti, compte: { _tag: 'Inconnu' } }],
+      }),
+    ).toEqual({
+      success: true,
+      data: {
+        contacts: 1,
+        anonymisesSupprimes: [],
+        orphelinsRetires: [],
+        orphelinsSupprimes: [],
+        echecs: [courrielParti],
       },
     })
   })
