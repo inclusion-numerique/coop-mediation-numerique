@@ -24,12 +24,14 @@ export type {
 export { retirerLeContactDesListes } from './contacts/retrait-du-contact'
 export { Dispositif, dispositifDe, estEnPoste } from './dispositif'
 export {
+  CibleIntrouvable,
   CompteSupprime,
   type EchecDeRelance,
   type EchecDuChangementDeRoles,
   EffacementRefuse,
   RoleNonVierge,
   RoleProtege,
+  SourceIntrouvable,
   SuppressionRefusee,
   UtilisateurIntrouvable,
 } from './errors'

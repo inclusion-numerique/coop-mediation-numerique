@@ -1,22 +1,22 @@
-import type { UtilisateurId } from '@/features/utilisateurs/domain'
-import { failure, type Result, success } from '@/libraries/result'
-import { type ApercuDeFusion, communs } from './apercu-de-fusion'
 import {
   CibleIntrouvable,
-  type EchecDApercevoirLaFusion,
   SourceIntrouvable,
-} from './errors'
-import type { ApercevoirLaFusionPorts } from './ports'
+  type UtilisateurId,
+} from '@/features/utilisateurs/domain'
+import { failure, type Result, success } from '@/libraries/result'
+import { type ApercuDeFusion, communs } from './apercu-de-fusion'
+import type { EchecDApercevoirLaFusionDesComptes } from './errors'
+import type { ApercevoirLaFusionDesComptesPorts } from './ports'
 
-export const apercevoirLaFusion =
-  ({ lireLesComptesAApercevoir }: ApercevoirLaFusionPorts) =>
+export const apercevoirLaFusionDesComptes =
+  ({ lireLesComptesAApercevoir }: ApercevoirLaFusionDesComptesPorts) =>
   async ({
     sourceId,
     cibleId,
   }: {
     readonly sourceId: UtilisateurId | null
     readonly cibleId: UtilisateurId | null
-  }): Promise<Result<ApercuDeFusion, EchecDApercevoirLaFusion>> => {
+  }): Promise<Result<ApercuDeFusion, EchecDApercevoirLaFusionDesComptes>> => {
     if (sourceId === null) return failure(SourceIntrouvable())
     if (cibleId === null) return failure(CibleIntrouvable())
 

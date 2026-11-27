@@ -4,7 +4,7 @@ import {
   NomAffiche,
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
-import { apercevoirLaFusion } from './apercevoir-la-fusion'
+import { apercevoirLaFusionDesComptes } from './apercevoir-la-fusion-des-comptes'
 import type { CompteApercu, ContenuDuCompte } from './apercu-de-fusion'
 
 const UN = UtilisateurId('0d1a1e7e-1f2b-4c3d-8e4f-5a6b7c8d9e0f')
@@ -65,7 +65,7 @@ const apercevoir = (
   sourceLue: CompteApercu | null,
   cibleLue: CompteApercu | null,
 ) =>
-  apercevoirLaFusion({
+  apercevoirLaFusionDesComptes({
     lireLesComptesAApercevoir: async () => ({
       source: sourceLue,
       cible: cibleLue,

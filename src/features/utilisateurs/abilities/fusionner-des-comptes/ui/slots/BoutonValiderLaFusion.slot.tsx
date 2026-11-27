@@ -9,7 +9,12 @@ import { inject } from '@/libraries/nextjs/injection'
 import { createToast } from '@/libraries/ui/toast'
 import { buttonLoadingClassname } from '@/libraries/ui/utils'
 import { FUSIONNER_DES_COMPTES_ACTION_KEY } from '../../action/fusionner-des-comptes.key'
-import type { CompteApercu } from '../../domain'
+
+type CompteAValider = {
+  readonly id: string
+  readonly nom: string
+  readonly courriel: string
+}
 
 const FusionModal = createModal({
   id: 'valider-fusion-modal',
@@ -20,8 +25,8 @@ export const BoutonValiderLaFusion = ({
   source,
   cible,
 }: {
-  source: CompteApercu
-  cible: CompteApercu
+  source: CompteAValider
+  cible: CompteAValider
 }) => {
   const router = useRouter()
   const [enCours, demarrer] = useTransition()

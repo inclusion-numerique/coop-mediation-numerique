@@ -9,7 +9,7 @@ import type { ComboBoxData } from '@/libraries/formulaire/fields-components'
 import { useAppForm, useHydrated } from '@/libraries/formulaire/hooks'
 import { inject } from '@/libraries/nextjs/injection'
 import { Options, type OptionsData } from '@/libraries/ui/primitives'
-import { RECHERCHER_DES_COMPTES_A_FUSIONNER_ACTION_KEY } from '../../action/fusionner-des-comptes.key'
+import { RECHERCHER_DES_COMPTES_A_FUSIONNER_ACTION_KEY } from '../../action/rechercher-des-comptes-a-fusionner.key'
 import type { CompteTrouve } from '../../domain'
 
 const cleDe = ({ id }: CompteTrouve): string => id

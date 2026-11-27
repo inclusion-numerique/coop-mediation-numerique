@@ -1,14 +1,12 @@
 import {
+  CibleIntrouvable,
   retirerLeContactDesListes,
+  SourceIntrouvable,
   type UtilisateurId,
 } from '@/features/utilisateurs/domain'
 import { failure, type Result, success } from '@/libraries/result'
 import { autoriserFusion, type FusionEffectuee } from './compte-a-fusionner'
-import {
-  CibleIntrouvable,
-  type EchecDeFusionnerDesComptes,
-  SourceIntrouvable,
-} from './errors'
+import type { EchecDeFusionnerDesComptes } from './errors'
 import type { FusionnerDesComptesPorts } from './ports'
 
 export const fusionnerDesComptes =
