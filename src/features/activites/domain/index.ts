@@ -7,6 +7,9 @@ export {
   statutsSociaux,
 } from './beneficiaires/statut-social'
 export {
+  AGE_AVANT_LA_TRANCHE_SUIVANTE,
+  PREMIERE_ANNEE_DE_NAISSANCE,
+  TRANCHE_DES_PLUS_AGES,
   TRANCHES_D_AGE,
   TrancheDAge,
   tranchesDAge,
