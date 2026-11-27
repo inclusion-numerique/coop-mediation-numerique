@@ -1,26 +1,31 @@
 import { describe, expect, it } from 'vitest'
-import { exportInterdit } from './export-interdit'
+import { type DemandeurDeLExport, exportInterdit } from './export-interdit'
+import { MediateurId } from './mediateur-id'
 
-const moi = 'a0000000-0000-4000-8000-000000000001'
-const coordonne = 'a0000000-0000-4000-8000-000000000002'
-const ancien = 'a0000000-0000-4000-8000-000000000003'
-const autre = 'a0000000-0000-4000-8000-000000000004'
+const moi = MediateurId('a0000000-0000-4000-8000-000000000001')
+const coordonne = MediateurId('a0000000-0000-4000-8000-000000000002')
+const ancien = MediateurId('a0000000-0000-4000-8000-000000000003')
+const autre = MediateurId('a0000000-0000-4000-8000-000000000004')
 
-const mediateurCoordinateur = {
-  mediateur: { id: moi },
-  coordinateur: {
-    mediateursCoordonnes: [{ mediateurId: coordonne }],
-    ancienMediateursCoordonnes: [{ mediateurId: ancien }],
-  },
+const mediateurCoordinateur: DemandeurDeLExport = {
+  _tag: 'MediateurEtCoordinateur',
+  mediateurId: moi,
+  coordonnes: [coordonne, ancien],
 }
 
-const coordinateurSeul = { ...mediateurCoordinateur, mediateur: null }
+const coordinateurSeul: DemandeurDeLExport = {
+  _tag: 'Coordinateur',
+  coordonnes: [coordonne, ancien],
+}
 
-const mediateurSeul = { ...mediateurCoordinateur, coordinateur: null }
+const mediateurSeul: DemandeurDeLExport = {
+  _tag: 'Mediateur',
+  mediateurId: moi,
+}
 
 describe('export interdit', () => {
   it("autorise l'export sans médiateur demandé", () => {
-    expect(exportInterdit(mediateurCoordinateur, undefined)).toBe(false)
+    expect(exportInterdit(mediateurCoordinateur, [])).toBe(false)
   })
 
   it("autorise l'export de ses propres statistiques", () => {

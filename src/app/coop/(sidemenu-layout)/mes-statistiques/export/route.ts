@@ -47,6 +47,7 @@ import { optionDeMembre } from '@/features/equipe/abilities/lister-les-membres-a
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/rdvs-des-activites.query'
 import { exportInterdit } from '@/features/statistiques/domain/export-interdit'
 import { classeurDesStatistiques } from '@/features/statistiques/implementations/excel/classeur-des-statistiques.classeur'
+import { demandeurDeLExport } from '@/features/statistiques/implementations/session/demandeur-de-l-export.transfer'
 import { entreeDuClasseur } from '@/features/statistiques/ui/presenters/entree-du-classeur.presenter'
 import { nomDuFichierDesStatistiques } from '@/features/statistiques/ui/presenters/nom-du-fichier.presenter'
 import { auteurDeLExport } from '@/features/utilisateurs/ui/presenters/auteur-de-l-export.presenter'
@@ -135,12 +136,13 @@ export const GET = async (request: NextRequest) => {
     return new Response('Unauthorized', { status: 401 })
   }
 
-  if (!user.mediateur && !user.coordinateur) {
+  const demandeur = demandeurDeLExport(user)
+  if (demandeur === null) {
     return new Response('Forbidden', { status: 403 })
   }
 
   const valeurs = filtresDesStatistiques.charger(request.nextUrl.searchParams)
-  if (exportInterdit(user, valeurs.mediateurs)) {
+  if (exportInterdit(demandeur, valeurs.mediateurs ?? [])) {
     return new Response('Cannot export for another mediateur', { status: 403 })
   }
   const perimetre = perimetreDeLUtilisateur(user)

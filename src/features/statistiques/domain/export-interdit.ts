@@ -1,25 +1,29 @@
-type MediateurCoordonne = { readonly mediateurId: string }
+import type { MediateurId } from './mediateur-id'
 
-export type DemandeurDeLExport = {
-  readonly mediateur: { readonly id: string } | null
-  readonly coordinateur: {
-    readonly mediateursCoordonnes: readonly MediateurCoordonne[]
-    readonly ancienMediateursCoordonnes: readonly MediateurCoordonne[]
-  } | null
+export type DemandeurDeLExport =
+  | { readonly _tag: 'Mediateur'; readonly mediateurId: MediateurId }
+  | {
+      readonly _tag: 'Coordinateur'
+      readonly coordonnes: readonly MediateurId[]
+    }
+  | {
+      readonly _tag: 'MediateurEtCoordinateur'
+      readonly mediateurId: MediateurId
+      readonly coordonnes: readonly MediateurId[]
+    }
+
+const mediateursAutorises = (
+  demandeur: DemandeurDeLExport,
+): readonly MediateurId[] => {
+  if (demandeur._tag === 'Mediateur') return [demandeur.mediateurId]
+  if (demandeur._tag === 'Coordinateur') return demandeur.coordonnes
+  return [demandeur.mediateurId, ...demandeur.coordonnes]
 }
 
-const idsDes = (mediateurs: readonly MediateurCoordonne[]) =>
-  mediateurs.map(({ mediateurId }) => mediateurId)
-
 export const exportInterdit = (
-  { mediateur, coordinateur }: DemandeurDeLExport,
-  mediateursExportes: readonly string[] | undefined,
+  demandeur: DemandeurDeLExport,
+  mediateursExportes: readonly MediateurId[],
 ): boolean => {
-  if (mediateursExportes === undefined) return false
-  const autorises = [
-    ...(mediateur ? [mediateur.id] : []),
-    ...idsDes(coordinateur?.mediateursCoordonnes ?? []),
-    ...idsDes(coordinateur?.ancienMediateursCoordonnes ?? []),
-  ]
+  const autorises = mediateursAutorises(demandeur)
   return !mediateursExportes.every((id) => autorises.includes(id))
 }
