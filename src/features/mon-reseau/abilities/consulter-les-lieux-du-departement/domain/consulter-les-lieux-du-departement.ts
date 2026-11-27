@@ -7,10 +7,10 @@ import type { LieuxConsultes } from './lieux-consultes'
 import type { ConsulterLesLieuxDuDepartementPorts } from './ports'
 
 export const consulterLesLieuxDuDepartement =
-  <Lieux>({
+  <Lieux, Communes>({
     lieuxDuDepartement,
     communesDesLieux,
-  }: ConsulterLesLieuxDuDepartementPorts<Lieux>) =>
+  }: ConsulterLesLieuxDuDepartementPorts<Lieux, Communes>) =>
   async ({
     departement,
     criteres,
@@ -18,11 +18,14 @@ export const consulterLesLieuxDuDepartement =
     readonly departement: Departement | null
     readonly criteres: CriteresDesLieux
   }): Promise<
-    Result<LieuxConsultes<Lieux>, EchecDeConsulterLesLieuxDuDepartement>
+    Result<
+      LieuxConsultes<Lieux, Communes>,
+      EchecDeConsulterLesLieuxDuDepartement
+    >
   > => {
     if (departement === null) return failure(DepartementInconnu())
 
-    const [lieux, { communesOptions }] = await Promise.all([
+    const [lieux, communes] = await Promise.all([
       lieuxDuDepartement({ departementCode: departement.code, criteres }),
       communesDesLieux({ departementCode: departement.code }),
     ])
@@ -31,6 +34,6 @@ export const consulterLesLieuxDuDepartement =
       departement,
       criteres,
       lieux,
-      communes: communesOptions,
+      communes,
     })
   }

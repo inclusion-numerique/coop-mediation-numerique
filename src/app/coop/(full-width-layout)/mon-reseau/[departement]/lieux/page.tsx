@@ -61,7 +61,7 @@ const Page = async ({
           barre={barreDuReseau({
             filtres: filtresDesLieuxDuReseau,
             adresse: { chemin: hrefDesLieux(departement), parametres },
-            communes: consultation.data.communes,
+            communes: consultation.data.communes.communesOptions,
           })}
           pages={pagesDesLieuxDuReseau(
             { chemin: hrefDesLieux(departement), parametres },

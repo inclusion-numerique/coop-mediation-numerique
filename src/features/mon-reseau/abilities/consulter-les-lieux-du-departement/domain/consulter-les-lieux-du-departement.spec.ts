@@ -22,9 +22,7 @@ const cantal: Departement = {
 
 const consulter = consulterLesLieuxDuDepartement({
   lieuxDuDepartement: async () => ['Médiathèque de Saint-Flour'],
-  communesDesLieux: async () => ({
-    communesOptions: [{ value: '15187', label: 'Saint-Flour' }],
-  }),
+  communesDesLieux: async () => [{ value: '15187', label: 'Saint-Flour' }],
 })
 
 describe('consulter les lieux du département', () => {

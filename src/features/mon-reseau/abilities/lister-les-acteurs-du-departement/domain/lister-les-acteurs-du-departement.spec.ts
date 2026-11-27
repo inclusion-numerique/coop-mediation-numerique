@@ -29,9 +29,7 @@ const cantal: Departement = {
 
 const lister = listerLesActeursDuDepartement({
   acteursDuDepartement: async () => aucunActeur,
-  communesDesLieux: async () => ({
-    communesOptions: [{ value: '15014', label: 'Aurillac' }],
-  }),
+  communesDesLieux: async () => [{ value: '15014', label: 'Aurillac' }],
 })
 
 describe('lister les acteurs du département', () => {

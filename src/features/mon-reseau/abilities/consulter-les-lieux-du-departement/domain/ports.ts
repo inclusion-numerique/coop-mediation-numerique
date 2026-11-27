@@ -7,7 +7,7 @@ export type LieuxDuDepartement<Lieux> = (options: {
   criteres: CriteresDesLieux
 }) => Promise<Lieux>
 
-export type ConsulterLesLieuxDuDepartementPorts<Lieux> = {
+export type ConsulterLesLieuxDuDepartementPorts<Lieux, Communes> = {
   readonly lieuxDuDepartement: LieuxDuDepartement<Lieux>
-  readonly communesDesLieux: CommunesDesLieux
+  readonly communesDesLieux: CommunesDesLieux<Communes>
 }

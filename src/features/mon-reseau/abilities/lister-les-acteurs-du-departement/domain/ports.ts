@@ -8,7 +8,7 @@ export type LireLesActeursDuDepartement = (
   criteres: CriteresActeurs,
 ) => Promise<PageDActeurs>
 
-export type ListerLesActeursDuDepartementPorts = {
+export type ListerLesActeursDuDepartementPorts<Communes> = {
   readonly acteursDuDepartement: LireLesActeursDuDepartement
-  readonly communesDesLieux: CommunesDesLieux
+  readonly communesDesLieux: CommunesDesLieux<Communes>
 }

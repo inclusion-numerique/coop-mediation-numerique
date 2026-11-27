@@ -7,10 +7,10 @@ import type { EchecDeListerLesActeursDuDepartement } from './errors'
 import type { ListerLesActeursDuDepartementPorts } from './ports'
 
 export const listerLesActeursDuDepartement =
-  ({
+  <Communes>({
     acteursDuDepartement,
     communesDesLieux,
-  }: ListerLesActeursDuDepartementPorts) =>
+  }: ListerLesActeursDuDepartementPorts<Communes>) =>
   async ({
     departement,
     criteres,
@@ -18,11 +18,11 @@ export const listerLesActeursDuDepartement =
     readonly departement: Departement | null
     readonly criteres: CriteresActeurs
   }): Promise<
-    Result<ActeursDuDepartement, EchecDeListerLesActeursDuDepartement>
+    Result<ActeursDuDepartement<Communes>, EchecDeListerLesActeursDuDepartement>
   > => {
     if (departement === null) return failure(DepartementInconnu())
 
-    const [acteurs, { communesOptions }] = await Promise.all([
+    const [acteurs, communes] = await Promise.all([
       acteursDuDepartement(departement.code, criteres),
       communesDesLieux({ departementCode: departement.code }),
     ])
@@ -31,6 +31,6 @@ export const listerLesActeursDuDepartement =
       departement,
       criteres,
       acteurs,
-      communes: communesOptions,
+      communes,
     })
   }
