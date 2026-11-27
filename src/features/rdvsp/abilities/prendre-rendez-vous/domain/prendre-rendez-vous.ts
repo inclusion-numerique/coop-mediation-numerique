@@ -12,9 +12,9 @@ import { CompteNonLie } from '@/features/rdvsp/domain/errors'
 import type { UtilisateurCoopId } from '@/features/rdvsp/domain/identifiants/utilisateur-coop-id'
 import type {
   DemandeRdv,
+  UrlRetour,
   UsagerDeLaDemande,
 } from '@/features/rdvsp/domain/rdv/demande-rdv'
-import { UrlRetour } from '@/features/rdvsp/domain/rdv/demande-rdv'
 import { failure, type Result, success } from '@/libraries/result'
 import {
   BeneficiaireIntrouvable,
@@ -107,7 +107,7 @@ export const prendreRendezVous =
 
     const demande = demandePourBeneficiaire(
       verifie.data,
-      UrlRetour(urlDossierBeneficiaire(beneficiaireId)),
+      urlDossierBeneficiaire(beneficiaireId),
     )
 
     const creee = await creerDemandeRdv(compte.data, demande)

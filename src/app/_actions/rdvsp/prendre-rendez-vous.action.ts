@@ -13,6 +13,7 @@ import { beneficiaireADemander } from '@/features/rdvsp/abilities/prendre-rendez
 import { compteDuMediateur } from '@/features/rdvsp/abilities/prendre-rendez-vous/implementations/prisma/compte-du-mediateur.query'
 import { lierUsagerAuBeneficiaire } from '@/features/rdvsp/abilities/prendre-rendez-vous/implementations/prisma/lier-usager-au-beneficiaire.mutation'
 import { UtilisateurCoopId } from '@/features/rdvsp/domain/identifiants/utilisateur-coop-id'
+import { UrlRetour } from '@/features/rdvsp/domain/rdv/demande-rdv'
 import { rdvServicePublicApi } from '@/features/rdvsp/implementations/api/rdv-service-public.client'
 import { configurationRdvServicePublic } from '@/features/rdvsp/implementations/api/rdv-service-public-configuration.client'
 import { enregistrerLesJetons } from '@/features/rdvsp/implementations/prisma/jetons-du-compte.mutation'
@@ -37,9 +38,11 @@ export const prendreRendezVousAction = actionBuilder()
           }).creerDemandeRdv,
           lierUsager: lierUsagerAuBeneficiaire,
           urlDossierBeneficiaire: (id) =>
-            getServerUrl(`/coop/mes-beneficiaires/${id}/accompagnements`, {
-              absolutePath: true,
-            }),
+            UrlRetour(
+              getServerUrl(`/coop/mes-beneficiaires/${id}/accompagnements`, {
+                absolutePath: true,
+              }),
+            ),
         })({
           utilisateurId: UtilisateurCoopId(user.id),
           mediateurId: MediateurProprietaireId(mediateur.id),

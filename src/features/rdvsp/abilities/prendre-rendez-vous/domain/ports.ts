@@ -1,6 +1,7 @@
 import type { CompteRdv } from '../../../domain/compte/compte-rdv'
 import type { UtilisateurCoopId } from '../../../domain/identifiants/utilisateur-coop-id'
 import type { RdvServicePublicApi } from '../../../domain/ports'
+import type { UrlRetour } from '../../../domain/rdv/demande-rdv'
 import type {
   BeneficiaireCible,
   BeneficiaireCibleId,
@@ -17,7 +18,7 @@ export type CompteDuMediateur = (
 
 export type LierUsagerAuBeneficiaire = (liaison: LiaisonUsager) => Promise<void>
 
-export type UrlDossierBeneficiaire = (id: BeneficiaireCibleId) => string
+export type UrlDossierBeneficiaire = (id: BeneficiaireCibleId) => UrlRetour
 
 export type PrendreRendezVousPorts = {
   readonly beneficiaireADemander: BeneficiaireADemander

@@ -14,6 +14,7 @@ import { UsagerId } from '@/features/rdvsp/domain/identifiants/usager-id'
 import {
   DemandeRdvId,
   UrlPriseRdv,
+  UrlRetour,
   type UsagerDeLaDemande,
 } from '@/features/rdvsp/domain/rdv/demande-rdv'
 import {
@@ -67,7 +68,9 @@ const planifierPour = (monde: Monde) =>
     },
     lierUsager: lierUsagerAuBeneficiaire,
     urlDossierBeneficiaire: (id) =>
-      `https://coop.test/coop/mes-beneficiaires/${id}/accompagnements`,
+      UrlRetour(
+        `https://coop.test/coop/mes-beneficiaires/${id}/accompagnements`,
+      ),
   })
 
 Given('un bénéficiaire suivi sans usager RDV', async function (this: Monde) {
