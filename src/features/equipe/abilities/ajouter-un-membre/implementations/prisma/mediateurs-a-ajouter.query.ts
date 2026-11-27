@@ -9,7 +9,7 @@ import {
   Prenom,
   UtilisateurId,
 } from '../../../../domain'
-import { lue } from '../../../../implementations/prisma/lue.transfer'
+import { facultative } from '../../../../implementations/prisma/lue.transfer'
 import type { EquipeAComplementer, MediateurAAjouter } from '../../domain'
 
 const LIMITE = 20
@@ -58,22 +58,18 @@ export const mediateursAAjouter = async ({
     take: LIMITE,
   })
 
-  return trouves.flatMap(({ user }) => {
-    const email = Courriel.safe(user.email)
-    return email === null
-      ? []
-      : [
-          {
-            utilisateurId: UtilisateurId(user.id),
-            nom: nomAffiche({
-              prenom: lue(Prenom, user.firstName),
-              nom: lue(Nom, user.lastName),
-              nomComplet: lue(NomAffiche, user.name),
-              email,
-            }),
-            email,
-          },
-        ]
+  return trouves.map(({ user }) => {
+    const email = Courriel(user.email)
+    return {
+      utilisateurId: UtilisateurId(user.id),
+      nom: nomAffiche({
+        prenom: facultative(Prenom, user.firstName),
+        nom: facultative(Nom, user.lastName),
+        nomComplet: facultative(NomAffiche, user.name),
+        email,
+      }),
+      email,
+    }
   })
 }
 
@@ -96,18 +92,14 @@ export const equipeAComplementer = async (
 
   if (coordinateur?.coordinateur == null) return null
 
-  const email = Courriel.safe(coordinateur.email)
-
-  return email === null
-    ? null
-    : {
-        coordinateurId: CoordinateurId(coordinateur.coordinateur.id),
-        utilisateurId: id,
-        nom: nomAffiche({
-          prenom: lue(Prenom, coordinateur.firstName),
-          nom: lue(Nom, coordinateur.lastName),
-          nomComplet: lue(NomAffiche, coordinateur.name),
-          email,
-        }),
-      }
+  return {
+    coordinateurId: CoordinateurId(coordinateur.coordinateur.id),
+    utilisateurId: id,
+    nom: nomAffiche({
+      prenom: facultative(Prenom, coordinateur.firstName),
+      nom: facultative(Nom, coordinateur.lastName),
+      nomComplet: facultative(NomAffiche, coordinateur.name),
+      email: Courriel(coordinateur.email),
+    }),
+  }
 }

@@ -6,15 +6,27 @@ export {
 } from './compte'
 export {
   type ContactAImporter,
+  contactAInscrire,
   contactASynchroniser,
   type DatesDeContrat,
   type InscritDeLaListe,
   RoleBrevo,
   SANS_CONTRAT,
+  type SituationDansLeDispositif,
   situationDansLeDispositif,
 } from './contact-brevo'
+export type { RetraitDuContact } from './contacts/contact-des-listes'
+export { retirerLeContactDesListes } from './contacts/retrait-du-contact'
 export { Dispositif, dispositifDe, estEnPoste } from './dispositif'
-export { CompteSupprime, UtilisateurIntrouvable } from './errors'
+export {
+  CibleIntrouvable,
+  type EchecDuChangementDeRoles,
+  EffacementRefuse,
+  RoleProtege,
+  SourceIntrouvable,
+  SuppressionRefusee,
+  UtilisateurIntrouvable,
+} from './errors'
 export { AuteurId } from './identifiants/auteur-id'
 export { CoordinateurId } from './identifiants/coordinateur-id'
 export { MediateurId } from './identifiants/mediateur-id'
@@ -32,6 +44,10 @@ export {
 export { Nom } from './identite/nom'
 export { type Identite, NomAffiche, nomAffiche } from './identite/nom-affiche'
 export { Prenom } from './identite/prenom'
+export {
+  type InscriptionALaListe,
+  inscriptionALaListe,
+} from './inscription-a-la-liste'
 export {
   type CritereStatut,
   critereDuStatut,
@@ -56,14 +72,27 @@ export type {
   MediateurDeLaLigne,
 } from './liste/ligne-utilisateur'
 export { NomEmployeuse } from './nom-employeuse'
-export { OrigineCompte, origineDuCompte } from './origine-compte'
+export { OrigineCompte } from './origine-compte'
+export type {
+  AppliquerLePlan,
+  EnvoyerLAvertissement,
+  EnvoyerLAvisDEffacement,
+  EnvoyerLaRelance,
+  JournaliserLeChangement,
+  LireLaPresenceDuContact,
+  LireLeCompteAReaffecter,
+  LireLesComptesARelancer,
+  NoterLaRelance,
+  PortsDuRetraitDuContact,
+  RetirerLeContactDeLaListe,
+  SupprimerLeCompte,
+  SupprimerLeContact,
+} from './ports'
 export {
   aProduit,
   coordinateurEstVierge,
   mediateurEstVierge,
   type Production,
-  type ProductionCoordinateur,
-  type ProductionMediateur,
 } from './production'
 export {
   coordinateurDe,
@@ -79,14 +108,14 @@ export {
   cycleDeVie,
   inscription,
 } from './relances/cycle-de-vie'
-export {
-  type CompteARelancer,
-  deroulerLesRelances,
-  type EffacementImpossible,
-} from './relances/derouler-les-relances'
+export { deroulerLesRelances } from './relances/derouler-les-relances'
 export type {
+  ActionDecidee,
+  CompteARelancer,
   DestinataireDeRelance,
+  ProfilDuDestinataire,
   RapportDeRelance,
+  RelancesDeroulees,
 } from './relances/destinataire-de-relance'
 export { JAMAIS, type Jalon, jalon } from './relances/jalon'
 export {
@@ -99,6 +128,17 @@ export {
   estRoleProtege,
   RoleUtilisateur,
 } from './role-utilisateur'
+export type { AuteurDuChangement } from './roles/auteur-du-changement'
+export {
+  type CompteAReaffecter,
+  type CoordinateurAReaffecter,
+  type MediateurAReaffecter,
+  type OperationRole,
+  type PlanDeChangement,
+  planDeChangement,
+  type RolesChanges,
+  type RolesDemandes,
+} from './roles/plan-de-changement'
 export {
   type StatutCompte,
   statutDe,

@@ -4,8 +4,8 @@ import Button from '@codegouvfr/react-dsfr/Button'
 import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
 import { useMemo, useState } from 'react'
-import { type DetecterDoublons } from '@/features/beneficiaire/abilities/detecter-doublons/domain/detecter-doublons'
-import { type BeneficiaireDoublon } from '@/features/beneficiaire/abilities/detecter-doublons/domain/types'
+import { type BeneficiaireDoublon } from '@/features/beneficiaire/abilities/detecter-doublons/domain/beneficiaire-doublon'
+import type { DetecterDoublons } from '@/features/beneficiaire/abilities/detecter-doublons/domain/ports'
 import { hrefDuBeneficiaire } from '@/features/beneficiaire/ui/presenters/liens.presenter'
 import { inject } from '@/libraries/nextjs/injection'
 import { numberToString } from '@/libraries/nombre'
@@ -40,7 +40,6 @@ const fusionDataFromFusionItems = ({
       keep,
       duplicate: duplicates.find((duplicate) => duplicate.id === id),
     }))
-    // only here for typesafety, should never happen
     .filter(
       (
         element,

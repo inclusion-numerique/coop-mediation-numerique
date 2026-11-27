@@ -14,9 +14,12 @@ webhooks en dernier, pour que les notifications reprennent sur un état à jour.
 
 * Étant donné un compte RDV à réconcilier
 * Quand je synchronise tout le compte
-* Alors les réconciliations se sont enchaînées dans l’ordre "organisations,rendez-vous,webhooks"
+* Alors le journal de la passe retrace "réconciliation des organisations"
+* Et le journal de la passe retrace "réconciliation des rendez-vous"
+* Et le journal de la passe s’arrête sur "webhooks installés"
 * Et la passe rend une dérive de 3
 * Et le journal de la passe est clôturé sans erreur
+* Et le journal de la passe s’ouvre à l’instant de la passe
 * Et le journal de la passe consigne une portée complète
 
 ### Scénario: Les organisations échouent
@@ -25,7 +28,7 @@ webhooks en dernier, pour que les notifications reprennent sur un état à jour.
 * Et la réconciliation des organisations échoue
 * Quand je synchronise tout le compte
 * Alors la passe de synchronisation échoue
-* Et les réconciliations se sont enchaînées dans l’ordre "organisations"
+* Et le journal de la passe s’arrête sur "réconciliation des organisations"
 * Et le journal de la passe porte une erreur
 
 ### Scénario: Les rendez-vous échouent
@@ -34,7 +37,7 @@ webhooks en dernier, pour que les notifications reprennent sur un état à jour.
 * Et la réconciliation des rendez-vous échoue
 * Quand je synchronise tout le compte
 * Alors la passe de synchronisation échoue
-* Et les réconciliations se sont enchaînées dans l’ordre "organisations,rendez-vous"
+* Et le journal de la passe s’arrête sur "réconciliation des rendez-vous"
 * Et le journal de la passe porte une erreur
 
 ### Scénario: Une réconciliation lève
@@ -44,8 +47,9 @@ lit quand un compte cesse de se synchroniser.
 
 * Étant donné un compte RDV à réconcilier
 * Et la réconciliation des rendez-vous lève une exception
-* Quand je synchronise tout le compte en rattrapant l’exception
-* Alors le journal de la passe porte une erreur
+* Quand je synchronise tout le compte
+* Alors la passe de synchronisation échoue
+* Et le journal de la passe porte une erreur
 
 ## Règle: La portée restreint la passe sans la vider
 
@@ -55,7 +59,7 @@ Aucune organisation à rattraper : il n’y a rien à faire, et surtout pas tout
 
 * Étant donné un compte RDV à réconcilier
 * Quand je synchronise une portée vide
-* Alors aucune réconciliation n’a été lancée
+* Alors la passe est sans objet
 * Et aucun journal de passe n’a été ouvert
 * Et la passe rend une dérive de 0
 
@@ -63,8 +67,8 @@ Aucune organisation à rattraper : il n’y a rien à faire, et surtout pas tout
 
 * Étant donné un compte RDV à réconcilier
 * Quand je synchronise les organisations "101,102"
-* Alors les réconciliations se sont enchaînées dans l’ordre "rendez-vous,webhooks"
-* Et les rendez-vous ont été réconciliés sur les organisations "101,102"
+* Alors le journal de la passe retrace "organisations non réconciliées (passe restreinte)"
+* Et le journal de la passe s’arrête sur "webhooks installés"
 * Et le journal de la passe consigne la portée "101,102"
 
 ## Règle: Les organisations sans webhook remontent à l’appelant
@@ -72,7 +76,8 @@ Aucune organisation à rattraper : il n’y a rien à faire, et surtout pas tout
 ### Scénario: Une organisation refuse la pose
 
 * Étant donné un compte RDV à réconcilier
-* Et la pose de webhook échoue sur l’organisation "101"
+* Et RDV Service Public ne renvoie que les organisations "101"
+* Et la lecture des webhooks échoue
 * Quand je synchronise tout le compte
 * Alors la passe signale les organisations sans webhook "101"
 
@@ -87,7 +92,7 @@ s’adresse qu’aux organisations que la passe vient de recevoir.
 * Étant donné un compte RDV à réconcilier
 * Et RDV Service Public ne renvoie que les organisations "101"
 * Quand je synchronise tout le compte
-* Alors les webhooks ont visé les seules organisations reçues "101"
+* Alors la passe a réconcilié les webhooks des organisations "101"
 
 ## Règle: Une organisation qui refuse l’accès est détachée
 
@@ -96,12 +101,12 @@ s’adresse qu’aux organisations que la passe vient de recevoir.
 * Étant donné un compte RDV à réconcilier
 * Et l’organisation "102" refuse l’accès à ses rendez-vous
 * Quand je synchronise les organisations "101,102"
-* Alors les organisations "102" ont été détachées du compte
-* Et les webhooks ont été réconciliés sur les organisations "101"
+* Alors la passe a détaché les organisations "102"
+* Et la passe a réconcilié les webhooks des organisations "101"
 * Et le journal de la passe est clôturé sans erreur
 
 ### Scénario: Aucun refus, aucun détachement
 
 * Étant donné un compte RDV à réconcilier
 * Quand je synchronise les organisations "101,102"
-* Alors aucune organisation n’a été détachée du compte
+* Alors la passe n’a détaché aucune organisation

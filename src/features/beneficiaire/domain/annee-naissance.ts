@@ -2,30 +2,26 @@ import { z } from 'zod'
 import { defineModel, type Model } from '@/libraries/model'
 
 export const ANNEE_NAISSANCE_MIN = 1900
-export const ANNEE_NAISSANCE_MAX = new Date().getFullYear()
 
-export const AnneeNaissance = defineModel(
-  z
-    .number()
-    .int()
-    .min(ANNEE_NAISSANCE_MIN)
-    .max(ANNEE_NAISSANCE_MAX)
-    .brand('AnneeNaissance'),
-)
+export const AnneeNaissance = (maintenant: Date) =>
+  defineModel(
+    z
+      .number()
+      .int()
+      .min(ANNEE_NAISSANCE_MIN)
+      .max(maintenant.getFullYear())
+      .brand('AnneeNaissance'),
+  )
 
-export type AnneeNaissance = Model.TypeOf<typeof AnneeNaissance>
+export type AnneeNaissance = Model.TypeOf<ReturnType<typeof AnneeNaissance>>
 
 export const anneeNaissanceInvalide =
   'Veuillez renseigner une année de naissance valide'
 
-/**
- * Validation tolérante (nullish, non brandée) pour parser une année de
- * naissance issue d'une source externe (import de fichier) : renvoie un nombre
- * brut ou l'absence.
- */
-export const anneeNaissanceValidation = z
-  .number({ error: anneeNaissanceInvalide })
-  .int(anneeNaissanceInvalide)
-  .min(ANNEE_NAISSANCE_MIN, anneeNaissanceInvalide)
-  .max(ANNEE_NAISSANCE_MAX, anneeNaissanceInvalide)
-  .nullish()
+export const anneeNaissanceValidation = (maintenant: Date) =>
+  z
+    .number({ error: anneeNaissanceInvalide })
+    .int(anneeNaissanceInvalide)
+    .min(ANNEE_NAISSANCE_MIN, anneeNaissanceInvalide)
+    .max(maintenant.getFullYear(), anneeNaissanceInvalide)
+    .nullish()

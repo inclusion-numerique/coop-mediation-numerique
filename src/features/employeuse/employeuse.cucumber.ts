@@ -4,14 +4,6 @@ import { prismaClient } from '@/configuration/prisma'
 
 setDefaultTimeout(60_000)
 
-/**
- * Support Cucumber de la feature employeuse.
- *
- * Les scénarios construisent leur propre état dans `main` (employeuse, personne,
- * affectation, contrat) plutôt que de s'appuyer sur les fixtures partagées : une
- * personne de fixture porte déjà des affectations, ce qui rendrait indécidables
- * les scénarios « aucune employeuse » et « une seule affectation active ».
- */
 const tracked = {
   contrats: new Set<number>(),
   affectations: new Set<number>(),
@@ -44,7 +36,6 @@ export const seedEmployeuseMain = async (
   return id
 }
 
-/** Clôture des rattachements d'une employeuse, comme un changement d'employeur. */
 export const desactiverAffectations = async (
   employeuseId: number,
 ): Promise<void> => {
@@ -54,7 +45,6 @@ export const desactiverAffectations = async (
   })
 }
 
-/** Suppression côté Entrepôt (soft-delete) : la coop l'observe, elle ne la pose pas. */
 export const supprimerEmployeuseMain = async (
   employeuseId: number,
 ): Promise<void> => {
@@ -64,7 +54,6 @@ export const supprimerEmployeuseMain = async (
   })
 }
 
-/** Affectations de la personne d'un utilisateur, pour les assertions d'écriture. */
 export const affectationsDe = async (
   userId: string,
 ): Promise<
@@ -152,13 +141,6 @@ const vider = <T>(ids: Set<T>): T[] => {
   return valeurs
 }
 
-/**
- * Nettoyage par appartenance à l'utilisateur de test, et non par identifiant
- * suivi : les abilities d'écriture créent leurs propres personnes, affectations
- * et contrats, que le support ne voit jamais passer. On efface donc tout ce qui
- * pend à l'utilisateur, puis les employeuses créées, puis l'utilisateur — dans
- * l'ordre qu'imposent les clés étrangères.
- */
 After(async () => {
   const utilisateurs = vider(tracked.utilisateurs)
   const dePersonneDeTest = { personne: { coopId: { in: utilisateurs } } }

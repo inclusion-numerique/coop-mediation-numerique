@@ -7,17 +7,14 @@ import { useSearchParams } from 'next/navigation'
 import {
   type KeyboardEvent,
   type MouseEvent as ReactMouseEvent,
-  type RefObject,
+  useEffect,
   useRef,
 } from 'react'
-import { useOnClickOutside } from 'usehooks-ts'
 import { hrefDeLExportDesBeneficiaires } from '@/features/beneficiaire/ui/presenters/liens.presenter'
 import { download } from '@/libraries/navigateur'
 import { createToast } from '@/libraries/ui/toast'
 
 export const BeneficiairesMoreOptionsButton = () => {
-  // Le click-outside par défaut du JS DSFR ne fonctionne pas ici, on le gère
-  // donc côté client via des refs et un hook.
   const buttonRef = useRef<HTMLButtonElement>(null)
   const collapseRef = useRef<HTMLDivElement>(null)
   const searchParams = useSearchParams()
@@ -26,21 +23,26 @@ export const BeneficiairesMoreOptionsButton = () => {
   const onClickOrEnterInsideDropdown = (
     event: KeyboardEvent<HTMLDivElement> | ReactMouseEvent<HTMLDivElement>,
   ) => {
-    // Ferme le menu si un lien a été cliqué.
     if (event.target instanceof HTMLAnchorElement) {
       buttonRef.current?.click()
     }
   }
 
-  useOnClickOutside(collapseRef as RefObject<HTMLDivElement>, (event) => {
-    // Laisse l'évènement se propager si on a cliqué sur le bouton de contrôle.
-    if (event.target === buttonRef?.current) return
-
-    // Ferme le menu s'il est ouvert lors d'un clic à l'extérieur.
-    if (buttonRef.current?.getAttribute('aria-expanded') !== 'true') return
-
-    buttonRef.current.click()
-  })
+  useEffect(() => {
+    const fermerAuClicExterieur = (event: Event) => {
+      if (!(event.target instanceof Node)) return
+      if (collapseRef.current?.contains(event.target)) return
+      if (event.target === buttonRef.current) return
+      if (buttonRef.current?.getAttribute('aria-expanded') !== 'true') return
+      buttonRef.current.click()
+    }
+    document.addEventListener('mousedown', fermerAuClicExterieur)
+    document.addEventListener('touchstart', fermerAuClicExterieur)
+    return () => {
+      document.removeEventListener('mousedown', fermerAuClicExterieur)
+      document.removeEventListener('touchstart', fermerAuClicExterieur)
+    }
+  }, [])
 
   const exportXlsx = (exportPath: string, message: string) => {
     download(exportPath)

@@ -35,3 +35,13 @@
 * Et mon inscription est déjà validée
 * Quand je valide mon inscription
 * Alors la validation est refusée car l’inscription est déjà validée
+
+## Règle: L'échec de l'acceptation des invitations n'empêche pas la validation
+
+### Scénario: Des invitations impossibles à accepter laissent l'inscription validée
+
+* Étant donné mon profil d’inscription est "Mediateur"
+* Et un compte médiateur existe pour mon inscription
+* Quand je valide mon inscription alors que mes invitations ne peuvent être acceptées
+* Alors mon inscription est validée
+* Et l’échec de l’acceptation de mes invitations est rapporté

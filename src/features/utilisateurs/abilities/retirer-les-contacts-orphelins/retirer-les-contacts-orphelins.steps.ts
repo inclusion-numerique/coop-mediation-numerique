@@ -3,6 +3,7 @@ import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { AdresseCourriel, UtilisateurId } from '@/features/utilisateurs/domain'
 import { semerUnCompteDeListe } from '@/features/utilisateurs/utilisateurs.cucumber'
+import { success } from '@/libraries/result'
 import type { CompteDuContact, ContactBrevo } from './domain'
 import {
   type BilanDesContacts,
@@ -62,20 +63,23 @@ Given("un contact dont le compte n'existe plus, déjà sorti de la liste", () =>
 })
 
 When('les contacts orphelins sont retirés', async () => {
-  reconciliation.bilan = await retirerLesContactsOrphelins({
+  const resultat = await retirerLesContactsOrphelins({
     inscritsVivantsParmi,
-    listerLesContacts: async () => reconciliation.contacts,
     supprimerLeContact: async (courriel) => {
       reconciliation.supprimes = [...reconciliation.supprimes, courriel]
+      return success(undefined)
     },
     retirerLeContactDeLaListe: async (courriel) => {
       if (reconciliation.horsDeLaListe.includes(courriel)) {
-        return { _tag: 'DejaAbsent' }
+        return success({ _tag: 'DejaAbsent' })
       }
       reconciliation.retires = [...reconciliation.retires, courriel]
-      return { _tag: 'Retire' }
+      return success({ _tag: 'Retire' })
     },
-  })()
+    lireLaPresenceDuContact: async () =>
+      success({ _tag: 'Present', listes: 1 }),
+  })({ contacts: reconciliation.contacts })
+  reconciliation.bilan = resultat.data
 })
 
 Then('le contact anonymisé est supprimé', () => {
@@ -92,6 +96,6 @@ Then("le contact de l'inscrit vivant reste dans la liste", () => {
 })
 
 Then("aucun contact n'est compté comme retiré", () => {
-  assert.equal(reconciliation.bilan?.orphelinsRetires, 0)
+  assert.equal(reconciliation.bilan?.orphelinsRetires.length, 0)
   assert.deepEqual(reconciliation.bilan?.echecs, [])
 })

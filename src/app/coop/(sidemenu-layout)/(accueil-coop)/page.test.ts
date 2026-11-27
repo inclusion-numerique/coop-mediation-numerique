@@ -1,20 +1,6 @@
 import { appUrl } from '@e2e/support/helpers'
 import { mediateurSansActivites } from '@/features/utilisateurs/fixtures/mediateurs/mediateur-sans-activites'
 
-/**
- * Couvre le bloc RDV Service Public de l'accueil.
- *
- * Ce que les scénarios Cucumber ne voient pas : les compteurs sont du SQL, et
- * ils ont longtemps classé sur la seule date. Un rendez-vous annulé restait
- * compté « à venir » tant que son horaire ne l'était pas, et pouvait même être
- * mis en avant comme prochain — un médiateur se voyait annoncer un rendez-vous
- * qui n'aurait pas lieu.
- *
- * Les assertions portent sur des phrases entières rendues à l'écran plutôt que
- * sur des compteurs atteints en remontant le DOM : la structure du bloc peut
- * changer sans que le comportement bouge, et l'inverse doit rester détectable.
- */
-
 const RDV = 9_900_200
 
 describe('ETQ médiateur, l’accueil ne m’annonce que les rendez-vous qui auront lieu', () => {
@@ -36,7 +22,6 @@ describe('ETQ médiateur, l’accueil ne m’annonce que les rendez-vous qui aur
     cy.visit(appUrl('/coop'))
 
     cy.contains('RDV Service Public').should('be.visible')
-    // Avant correctif, le plus proche des deux annulés était annoncé ici.
     cy.contains('Prochain le').should('not.exist')
   })
 
@@ -80,8 +65,6 @@ describe('ETQ médiateur, l’accueil ne m’annonce que les rendez-vous qui aur
     cy.signin(mediateurSansActivites)
     cy.visit(appUrl('/coop'))
 
-    // Le libellé du compteur s'accorde au nombre — « Rdv passé » au singulier —
-    // et ne fait pas une assertion stable. La phrase de mise en avant, si.
     cy.contains('Dernier le').should('be.visible')
     cy.contains('Vous n’avez pas de rendez-vous passés').should('not.exist')
   })

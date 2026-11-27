@@ -1,5 +1,24 @@
-export type ActionNonAutorisee = { readonly _tag: 'ActionNonAutorisee' }
+import type {
+  ActionNonAutorisee,
+  ActiviteIntrouvable,
+  AtelierSansParticipant,
+  BeneficiaireEnDouble,
+  BeneficiaireIntrouvable,
+  DateTropLointaine,
+  LieuInutilisable,
+  RendezVousIndisponible,
+  TagInutilisable,
+  TypeDActiviteIncompatible,
+} from '../../../domain'
 
-export const ActionNonAutorisee = (): ActionNonAutorisee => ({
-  _tag: 'ActionNonAutorisee',
-})
+export type EchecDEnregistrerUnAtelierCollectif =
+  | ActionNonAutorisee
+  | ActiviteIntrouvable
+  | TypeDActiviteIncompatible
+  | BeneficiaireIntrouvable
+  | BeneficiaireEnDouble
+  | AtelierSansParticipant
+  | LieuInutilisable
+  | TagInutilisable
+  | RendezVousIndisponible
+  | DateTropLointaine

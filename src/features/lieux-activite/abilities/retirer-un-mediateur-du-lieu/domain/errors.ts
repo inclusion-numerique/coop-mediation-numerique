@@ -25,4 +25,6 @@ export const RetraitNonAutorise = (
   mediateurId: MediateurId,
 ): RetraitNonAutorise => ({ _tag: 'RetraitNonAutorise', mediateurId })
 
-export type EchecDeRetrait = PasEnActiviteSurCeLieu | RetraitNonAutorise
+export type EchecDeRetirerUnMediateurDuLieu =
+  | PasEnActiviteSurCeLieu
+  | RetraitNonAutorise

@@ -1,6 +1,6 @@
 import { Page, PageSize, type Paginated } from '@arckit/resultset'
 import { describe, expect, it } from 'vitest'
-import type { BeneficiaireListItem } from '@/features/beneficiaire/abilities/lister-beneficiaires/domain/lister-beneficiaires'
+import type { BeneficiaireListItem } from '@/features/beneficiaire/abilities/lister-beneficiaires/domain/liste-des-beneficiaires'
 import { AnneeNaissance } from '@/features/beneficiaire/domain/annee-naissance'
 import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
 import { Genre } from '@/features/beneficiaire/domain/genre'
@@ -33,7 +33,9 @@ const beneficiaireListItem = (
     anneeNaissance:
       overrides.anneeNaissance === null
         ? null
-        : AnneeNaissance(overrides.anneeNaissance ?? 1990),
+        : AnneeNaissance(new Date('2026-06-15T12:00:00.000Z'))(
+            overrides.anneeNaissance ?? 1990,
+          ),
     trancheAge: TrancheAge(null),
     genre: Genre(null),
     statutSocial: StatutSocial(null),

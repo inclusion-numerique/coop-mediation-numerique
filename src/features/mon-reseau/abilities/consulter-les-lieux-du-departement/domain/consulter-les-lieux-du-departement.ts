@@ -1,39 +1,39 @@
-import {
-  type DepartementInconnu,
-  departementDuCode,
-} from '@/libraries/departement'
-import { failure, success } from '@/libraries/result'
-import {
-  type CommunesDesLieux,
-  type CriteresDesLieux,
-  type LieuxDuDepartement,
-} from '.'
+import type { Departement } from '@/libraries/departement'
+import { failure, type Result, success } from '@/libraries/result'
+import { DepartementInconnu } from '../../../domain'
+import type { CriteresDesLieux } from './criteres-des-lieux'
+import type { EchecDeConsulterLesLieuxDuDepartement } from './errors'
+import type { LieuxConsultes } from './lieux-consultes'
+import type { ConsulterLesLieuxDuDepartementPorts } from './ports'
 
-export const consulterLesLieuxDuDepartement = async <Lieux>(
-  code: string,
-  criteres: CriteresDesLieux,
-  {
+export const consulterLesLieuxDuDepartement =
+  <Lieux, Communes>({
     lieuxDuDepartement,
     communesDesLieux,
-  }: {
-    lieuxDuDepartement: LieuxDuDepartement<Lieux>
-    communesDesLieux: CommunesDesLieux
-  },
-) => {
-  const departement = departementDuCode(code)
-
-  if (!departement.success)
-    return failure<DepartementInconnu>(departement.error)
-
-  const [lieux, { communesOptions }] = await Promise.all([
-    lieuxDuDepartement({ departementCode: departement.data.code, criteres }),
-    communesDesLieux({ departementCode: departement.data.code }),
-  ])
-
-  return success({
-    departement: departement.data,
+  }: ConsulterLesLieuxDuDepartementPorts<Lieux, Communes>) =>
+  async ({
+    departement,
     criteres,
-    lieux,
-    communes: communesOptions,
-  })
-}
+  }: {
+    readonly departement: Departement | null
+    readonly criteres: CriteresDesLieux
+  }): Promise<
+    Result<
+      LieuxConsultes<Lieux, Communes>,
+      EchecDeConsulterLesLieuxDuDepartement
+    >
+  > => {
+    if (departement === null) return failure(DepartementInconnu())
+
+    const [lieux, communes] = await Promise.all([
+      lieuxDuDepartement({ departementCode: departement.code, criteres }),
+      communesDesLieux({ departementCode: departement.code }),
+    ])
+
+    return success({
+      departement,
+      criteres,
+      lieux,
+      communes,
+    })
+  }

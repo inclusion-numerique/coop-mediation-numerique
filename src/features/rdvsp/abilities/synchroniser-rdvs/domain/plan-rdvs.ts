@@ -13,7 +13,6 @@ import {
 } from './changements'
 import { type PlanModele, planifierModele } from './plan-modele'
 
-/** Les motifs, lieux et usagers arrivent portés par les rendez-vous eux-mêmes. */
 const motifsDe = (rdvs: readonly Rdv[]): readonly Motif[] =>
   rdvs.map((rdv) => rdv.motif).filter((motif) => motif !== null)
 
@@ -45,11 +44,6 @@ export type PlanLot = {
   readonly usagers: PlanModele<Usager>
 }
 
-/**
- * Plan d'un lot de rendez-vous. L'ordre d'application est imposé par les clés
- * étrangères — usagers, lieux et motifs avant les rendez-vous qui les désignent —
- * mais la décision, elle, se prend d'un seul coup.
- */
 export const planifierLot = ({
   recus,
   connu,
@@ -64,6 +58,7 @@ export const planifierLot = ({
     connus: connu.rdvs,
     cle: (rdv) => rdv.id,
     modifie: rdvModifie,
+    dejaTraites: new Set(),
   }),
   motifs: planifierModele({
     recus: motifsDe(recus),
@@ -88,13 +83,6 @@ export const planifierLot = ({
   }),
 })
 
-/**
- * Rendez-vous que La Coop détient et que RDV Service Public ne renvoie plus.
- *
- * Ils sont supprimés, et non conservés : un rendez-vous disparu de chez eux n'a
- * pas été annulé — l'annulation, elle, arrive avec un `cancelled_at` — il a été
- * effacé, et le garder afficherait un rendez-vous qui n'existe pour personne.
- */
 export const rdvsASupprimer = ({
   enBase,
   recus,

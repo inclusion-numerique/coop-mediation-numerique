@@ -2,8 +2,16 @@ import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
-import { reglerLaMaintenance } from '@/features/maintenance-mode/abilities/regler-la-maintenance/implementations/prisma/regler-la-maintenance.mutation'
+import type { DemandeDeReglage } from '@/features/maintenance-mode/abilities/regler-la-maintenance/domain'
+import { reglerLaMaintenance } from '@/features/maintenance-mode/abilities/regler-la-maintenance/domain/regler-la-maintenance'
+import { lireLaPeriodeEnCours } from '@/features/maintenance-mode/abilities/regler-la-maintenance/implementations/prisma/periode-en-cours.query'
 import {
+  changerLeMessage,
+  cloreLaPeriode,
+  ouvrirUnePeriode,
+} from '@/features/maintenance-mode/abilities/regler-la-maintenance/implementations/prisma/regler-la-maintenance.mutation'
+import {
+  AuteurId,
   type EtatDeMaintenance,
   MESSAGE_DE_MAINTENANCE_PAR_DEFAUT,
   MessageDeMaintenance,
@@ -16,7 +24,16 @@ import type { ServerActionResult } from '@/libraries/nextjs'
 
 const tentative: { resultat?: ServerActionResult<unknown> } = {}
 
-const auteurId = v4()
+const auteurId = AuteurId(v4())
+
+const regler = async (demande: DemandeDeReglage): Promise<void> => {
+  await reglerLaMaintenance({
+    lireLaPeriodeEnCours,
+    ouvrirUnePeriode,
+    changerLeMessage,
+    cloreLaPeriode,
+  })({ demande, auteurId, maintenant: new Date() })
+}
 
 const etat = async (): Promise<EtatDeMaintenance> => consulterLaMaintenance()
 
@@ -47,32 +64,23 @@ Given('aucune maintenance en cours', async () => {
 Given(
   'une maintenance en cours avec le message {string}',
   async (message: string) => {
-    await reglerLaMaintenance({
-      demande: { _tag: 'Activer', message: MessageDeMaintenance(message) },
-      auteurId,
-    })
+    await regler({ _tag: 'Activer', message: MessageDeMaintenance(message) })
   },
 )
 
 When(
   "l'administration active la maintenance avec le message {string}",
   async (message: string) => {
-    await reglerLaMaintenance({
-      demande: { _tag: 'Activer', message: MessageDeMaintenance(message) },
-      auteurId,
-    })
+    await regler({ _tag: 'Activer', message: MessageDeMaintenance(message) })
   },
 )
 
 When("l'administration active la maintenance sans message", async () => {
-  await reglerLaMaintenance({
-    demande: { _tag: 'Activer', message: null },
-    auteurId,
-  })
+  await regler({ _tag: 'Activer', message: null })
 })
 
 When("l'administration désactive la maintenance", async () => {
-  await reglerLaMaintenance({ demande: { _tag: 'Desactiver' }, auteurId })
+  await regler({ _tag: 'Desactiver' })
 })
 
 When(

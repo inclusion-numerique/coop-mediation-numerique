@@ -5,13 +5,24 @@ import { prismaClient } from '@/configuration/prisma'
 import { CoordinateurId } from '../../domain/identifiants/coordinateur-id'
 import { MediateurId } from '../../domain/identifiants/mediateur-id'
 import { type MembreAFiltrer } from './domain/index'
-import { listerLesMembresAFiltrer } from './implementations/prisma/membres-a-filtrer.query'
+import { listerLesMembresAFiltrer as listerLesMembresAFiltrerAvec } from './domain/lister-les-membres-a-filtrer'
+import {
+  lireLeDemandeur,
+  lireLesMembresAFiltrer,
+} from './implementations/prisma/membres-a-filtrer.query'
+
+const listerLesMembresAFiltrer = listerLesMembresAFiltrerAvec({
+  lireLeDemandeur,
+  lireLesMembresAFiltrer,
+})
 
 type Seme = { userId: string; mediateurId: string; coordinateurId?: string }
 
-let semes: Readonly<Record<string, Seme>> = {}
-let coordinateur: string | undefined
-let listes: readonly MembreAFiltrer[] = []
+const etat: {
+  semes: Readonly<Record<string, Seme>>
+  coordinateur?: string
+  listes: readonly MembreAFiltrer[]
+} = { semes: {}, listes: [] }
 
 const semerUnMediateur = async (
   nom: string,
@@ -44,22 +55,24 @@ const semerUnMediateur = async (
     mediateurId,
     ...(coordinateurId === undefined ? {} : { coordinateurId }),
   }
-  semes = { ...semes, [nom]: seme }
+  etat.semes = { ...etat.semes, [nom]: seme }
   return seme
 }
 
 const membre = async (nom: string): Promise<Seme> =>
-  semes[nom] ?? semerUnMediateur(nom, false)
+  etat.semes[nom] ?? semerUnMediateur(nom, false)
 
 const coordinateurId = (): string => {
-  const id = coordinateur ? semes[coordinateur]?.coordinateurId : undefined
+  const id = etat.coordinateur
+    ? etat.semes[etat.coordinateur]?.coordinateurId
+    : undefined
   assert.ok(id, 'Aucun coordinateur semé')
   return id
 }
 
 Given('un coordinateur médiateur {string} à filtrer', async (nom: string) => {
   await semerUnMediateur(nom, true)
-  coordinateur = nom
+  etat.coordinateur = nom
 })
 
 Given('{string} est membre de son équipe', async (nom: string) => {
@@ -81,29 +94,33 @@ Given('{string} a quitté son équipe', async (nom: string) => {
 })
 
 When('je liste les membres à filtrer de {string}', async (nom: string) => {
-  const demandeur = semes[nom]
+  const demandeur = etat.semes[nom]
   assert.ok(demandeur, `${nom} n'est pas semé`)
-  listes = await listerLesMembresAFiltrer({
-    coordinateurId: CoordinateurId(coordinateurId()),
+  const membres = await listerLesMembresAFiltrer({
+    equipe: {
+      coordinateurId: CoordinateurId(coordinateurId()),
+      membres: Object.entries(etat.semes)
+        .filter(([cle]) => cle !== nom)
+        .map(([, { mediateurId }]) => MediateurId(mediateurId)),
+    },
     demandeur: MediateurId(demandeur.mediateurId),
-    membres: Object.entries(semes)
-      .filter(([cle]) => cle !== nom)
-      .map(([, { mediateurId }]) => MediateurId(mediateurId)),
+    recherche: null,
   })
+  etat.listes = membres.data
 })
 
 Then('les membres à filtrer sont {string}', (attendus: string) => {
   assert.strictEqual(
-    listes.map(({ nom, situation }) => `${nom} ${situation}`).join(', '),
+    etat.listes.map(({ nom, situation }) => `${nom} ${situation}`).join(', '),
     attendus,
   )
 })
 
 After(async () => {
-  const tous = Object.values(semes)
-  semes = {}
-  coordinateur = undefined
-  listes = []
+  const tous = Object.values(etat.semes)
+  etat.semes = {}
+  delete etat.coordinateur
+  etat.listes = []
   if (tous.length === 0) return
   const coordinateurIds = tous.flatMap(({ coordinateurId }) =>
     coordinateurId ? [coordinateurId] : [],

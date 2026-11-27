@@ -17,8 +17,6 @@ export const metadata: Metadata = {
   title: metadataTitle('Mes bénéficiaires'),
 }
 
-// Route = orchestration : authentifie, interroge l'ability, applique le
-// presenter, puis délègue le rendu au composant de page pur.
 const MesBeneficiairesPage = async (props: {
   searchParams: Promise<Record<string, string | string[] | undefined>>
 }) => {
@@ -28,6 +26,7 @@ const MesBeneficiairesPage = async (props: {
   const beneficiaires = await listerBeneficiaires({
     mediateurId: MediateurId(user.mediateur.id),
     ...query,
+    maintenant: new Date(),
   })
 
   const view = presentMesBeneficiaires(beneficiaires, query.search)

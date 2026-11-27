@@ -1,13 +1,5 @@
-export type ActiviteIntrouvable = { readonly _tag: 'ActiviteIntrouvable' }
+import type { ActionNonAutorisee, ActiviteIntrouvable } from '../../../domain'
 
-export const ActiviteIntrouvable = (): ActiviteIntrouvable => ({
-  _tag: 'ActiviteIntrouvable',
-})
-
-export type ActionNonAutorisee = { readonly _tag: 'ActionNonAutorisee' }
-
-export const ActionNonAutorisee = (): ActionNonAutorisee => ({
-  _tag: 'ActionNonAutorisee',
-})
-
-export type EchecDeSuppression = ActiviteIntrouvable | ActionNonAutorisee
+export type EchecDeSupprimerUneActiviteDeCoordination =
+  | ActiviteIntrouvable
+  | ActionNonAutorisee

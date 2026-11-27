@@ -1,63 +1,55 @@
 import type { CompteRdv } from '@/features/rdvsp/domain/compte/compte-rdv'
-import type { UtilisateurCoopId } from '@/features/rdvsp/domain/identifiants/utilisateur-coop-id'
-import type { Result } from '@/libraries/result'
-import {
-  type BilanDeSynchronisation,
-  comptesEligibles,
-  type EchecDeSynchronisation,
-} from './bilan'
+import { type Result, success } from '@/libraries/result'
+import { type BilanDeSynchronisation, comptesEligibles } from './bilan'
+import type {
+  DeclencherLaSynchronisation,
+  SynchroniserTousLesComptesRdvPorts,
+} from './ports'
 
-export type LireLesComptesRdv = () => Promise<readonly CompteRdv[]>
+type Issues = Pick<BilanDeSynchronisation, 'synchronises' | 'echecs'>
 
-export type DeclencherLaSynchronisation = (input: {
-  readonly demandeur: {
-    readonly id: UtilisateurCoopId
-    readonly role: 'User'
-  }
-  readonly utilisateurId: UtilisateurCoopId
-  readonly seulementSansWebhook: false
-}) => Promise<Result<unknown, { readonly _tag: string }>>
+const aucuneIssue: Issues = { synchronises: [], echecs: [] }
 
 const synchroniser =
-  (declencher: DeclencherLaSynchronisation) =>
-  async ({
-    utilisateurId,
-  }: CompteRdv): Promise<EchecDeSynchronisation | null> => {
+  (declencher: DeclencherLaSynchronisation, maintenant: Date) =>
+  async (acquis: Issues, { utilisateurId }: CompteRdv): Promise<Issues> => {
     const resultat = await declencher({
       demandeur: { id: utilisateurId, role: 'User' },
       utilisateurId,
       seulementSansWebhook: false,
+      maintenant,
     })
 
     return resultat.success
-      ? null
-      : { utilisateurId, raison: resultat.error._tag }
+      ? { ...acquis, synchronises: [...acquis.synchronises, utilisateurId] }
+      : {
+          ...acquis,
+          echecs: [
+            ...acquis.echecs,
+            { utilisateurId, raison: resultat.error._tag },
+          ],
+        }
   }
 
 export const synchroniserTousLesComptesRdv =
-  ({
-    lireLesComptes,
-    declencher,
+  ({ lireLesComptes, declencher }: SynchroniserTousLesComptesRdvPorts) =>
+  async ({
+    maintenant,
   }: {
-    readonly lireLesComptes: LireLesComptesRdv
-    readonly declencher: DeclencherLaSynchronisation
-  }) =>
-  async (maintenant: Date): Promise<BilanDeSynchronisation> => {
+    readonly maintenant: Date
+  }): Promise<Result<BilanDeSynchronisation, never>> => {
     const comptes = await lireLesComptes()
     const eligibles = comptesEligibles(comptes, maintenant)
 
-    const echecs = await eligibles.reduce<
-      Promise<readonly EchecDeSynchronisation[]>
-    >(async (precedents, compte) => {
-      const acquis = await precedents
-      const echec = await synchroniser(declencher)(compte)
-      return echec === null ? acquis : [...acquis, echec]
-    }, Promise.resolve([]))
+    const issues = await eligibles.reduce<Promise<Issues>>(
+      async (precedentes, compte) =>
+        synchroniser(declencher, maintenant)(await precedentes, compte),
+      Promise.resolve(aucuneIssue),
+    )
 
-    return {
+    return success({
       comptes: comptes.length,
       eligibles: eligibles.length,
-      synchronises: eligibles.length - echecs.length,
-      echecs,
-    }
+      ...issues,
+    })
   }

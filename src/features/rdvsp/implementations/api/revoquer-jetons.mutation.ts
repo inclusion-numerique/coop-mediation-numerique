@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { failure, success } from '@/libraries/result'
+import { failure, messageDe, success } from '@/libraries/result'
 import { ApiIndisponible } from '../../domain/errors'
 import type { RevoquerJetons } from '../../domain/ports'
 
@@ -32,7 +32,7 @@ export const revoquerJetons =
       return failure(
         ApiIndisponible(
           axios.isAxiosError(erreur) ? (erreur.response?.status ?? 500) : 500,
-          erreur instanceof Error ? erreur.message : 'Erreur inconnue',
+          messageDe(erreur),
         ),
       )
     }

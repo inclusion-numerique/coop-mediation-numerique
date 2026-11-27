@@ -8,7 +8,7 @@ import { useEffect } from 'react'
 import type { DefaultValues } from 'react-hook-form'
 import { z } from 'zod'
 import {
-  ANNEE_NAISSANCE_MAX as anneeNaissanceMax,
+  AnneeNaissance,
   ANNEE_NAISSANCE_MIN as anneeNaissanceMin,
 } from '@/features/beneficiaire/domain/annee-naissance'
 import { effectiveTrancheAge } from '@/features/beneficiaire/domain/tranche-age'
@@ -34,21 +34,24 @@ import { RedAsterisk, RequiredFieldsDisclaimer } from '@/libraries/ui/form'
 import { Options } from '@/libraries/ui/primitives'
 import { createToast } from '@/libraries/ui/toast'
 
+const anneeSaisie = (
+  valeur: number | string | null,
+  maintenant: Date,
+): AnneeNaissance | null =>
+  valeur === null
+    ? null
+    : AnneeNaissance(maintenant).safe(
+        typeof valeur === 'string' ? Number.parseInt(valeur, 10) : valeur,
+      )
+
 export type SaisieEnCours = Readonly<Record<string, unknown>> & {
   readonly participants?: readonly unknown[]
 }
 
-// Le formulaire véhicule l'identifiant du médiateur propriétaire dans ses
-// valeurs (comme `CraValidation`) : on étend le schéma partagé localement pour
-// que la valeur validée par le moteur de formulaire s'aligne sur ce contrat,
-// sans alourdir `BeneficiaireValidation` consommé par les server actions.
 const BeneficiaireFormValidation = BeneficiaireValidation.extend({
   mediateurId: z.string(),
 })
 
-// Concern croisé injecté par la route-hub : créer ou modifier. La route lie
-// l'action (server action) de l'ability concernée ; le form reste découplé des
-// abilities et ne connaît que ce contrat de sauvegarde.
 export type EnregistrerBeneficiaire = (
   beneficiaire: BeneficiaireData,
 ) => Promise<ServerActionResult<{ id: string }>>
@@ -68,6 +71,8 @@ const craAvecBeneficiaire = (
     ? { ...cra, participants: [...(cra.participants ?? []), beneficiaire] }
     : { ...cra, beneficiaire }
 
+const anneeNaissanceMax = new Date().getFullYear()
+
 const BeneficiaireForm = ({
   defaultValues,
   save,
@@ -77,7 +82,6 @@ const BeneficiaireForm = ({
 }: {
   defaultValues: DefaultValues<BeneficiaireData> & { mediateurId: string }
   save: EnregistrerBeneficiaire
-  // If present, used to merge with state on retour redirection
   cra?: SaisieEnCours | undefined
   retour?: string | undefined
   edit?: boolean | undefined
@@ -106,7 +110,12 @@ const BeneficiaireForm = ({
     validators: { onSubmit: BeneficiaireFormValidation },
     defaultValues,
     onSubmit: async ({ value }) => {
-      const data = value as BeneficiaireData
+      const saisie = BeneficiaireFormValidation.safeParse(value)
+      if (!saisie.success) {
+        erreurEnregistrement()
+        return
+      }
+      const data = saisie.data
       try {
         const result = await save(data)
 
@@ -124,9 +133,6 @@ const BeneficiaireForm = ({
             : 'Le bénéficiaire a bien été créé.',
         })
 
-        // Les données de redirection CRA sont reconstruites à partir de la
-        // saisie du formulaire + l'identifiant retourné : `data.communeResidence`
-        // est déjà l'aperçu BAN attendu, inutile d'adapter le retour domaine.
         router.push(
           routeConstruite(
             adresseAvec(
@@ -177,15 +183,11 @@ const BeneficiaireForm = ({
       : '/coop/mes-beneficiaires',
   )
 
-  // Efface le téléphone lorsque « N'a pas de téléphone » est coché.
   const eraseTelephoneIfNeeded = ({ value }: { value?: boolean | null }) => {
     if (value === true && form.getFieldValue('telephone'))
       form.setFieldValue('telephone', null)
   }
 
-  // Dérive la tranche d'âge depuis l'année de naissance. L'adaptateur Input
-  // émet une chaîne vide au vidage d'un champ numérique : on la ramène à `null`
-  // pour rester compatible avec la validation optionnelle (number | null).
   const deriveTrancheAge = ({
     value,
   }: {
@@ -195,7 +197,12 @@ const BeneficiaireForm = ({
       form.setFieldValue('anneeNaissance', null)
       return
     }
-    const trancheAgeFromAnnee = effectiveTrancheAge(value)
+    const maintenant = new Date()
+    const trancheAgeFromAnnee = effectiveTrancheAge(
+      anneeSaisie(value ?? null, maintenant),
+      null,
+      maintenant,
+    )
     if (
       trancheAgeFromAnnee &&
       form.getFieldValue('trancheAge') !== trancheAgeFromAnnee
@@ -203,11 +210,12 @@ const BeneficiaireForm = ({
       form.setFieldValue('trancheAge', trancheAgeFromAnnee)
   }
 
-  // Aligne la tranche d'âge sur l'année déjà renseignée au montage (édition),
-  // pour que le champ tranche désactivé affiche la bonne valeur.
   useEffect(() => {
+    const maintenant = new Date()
     const trancheAgeFromAnnee = effectiveTrancheAge(
-      form.getFieldValue('anneeNaissance'),
+      anneeSaisie(form.getFieldValue('anneeNaissance') ?? null, maintenant),
+      null,
+      maintenant,
     )
     if (
       trancheAgeFromAnnee &&

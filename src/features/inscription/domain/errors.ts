@@ -1,3 +1,4 @@
+import type { LieuId } from './lieu-id'
 import type { UtilisateurId } from './utilisateur-id'
 
 export type InscriptionIntrouvable = {
@@ -32,4 +33,14 @@ export type ProfilNonChoisi = {
 export const ProfilNonChoisi = (userId: UtilisateurId): ProfilNonChoisi => ({
   _tag: 'ProfilNonChoisi',
   userId,
+})
+
+export type LieuIntrouvable = {
+  readonly _tag: 'LieuIntrouvable'
+  readonly lieuId: LieuId
+}
+
+export const LieuIntrouvable = (lieuId: LieuId): LieuIntrouvable => ({
+  _tag: 'LieuIntrouvable',
+  lieuId,
 })

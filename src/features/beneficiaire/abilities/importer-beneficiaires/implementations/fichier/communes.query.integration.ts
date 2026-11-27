@@ -43,7 +43,10 @@ describe('communes du référentiel', () => {
         ]),
     ]
 
-    const result = analyserLaFeuille(await clientDesCommunes())(feuille)
+    const result = analyserLaFeuille(await clientDesCommunes())({
+      feuille,
+      maintenant: new Date(),
+    })
 
     expect(result.rows.filter((row) => row.errors)).toEqual([])
   }, 60_000)

@@ -12,17 +12,18 @@ import {
   mediateque,
   structureEmployeuse,
 } from '@/features/lieux-activite/fixtures/lieux-de-demonstration'
+import { REINITIALISER_UNE_FIXTURE_ERRORS } from '@/features/utilisateurs/abilities/reinitialiser-une-fixture/action/reinitialiser-une-fixture.errors'
 import { ReinitialiserUneFixtureValidation } from '@/features/utilisateurs/abilities/reinitialiser-une-fixture/action/reinitialiser-une-fixture.validation'
 import { reinitialiserUneFixture as reinitialiserLaFixture } from '@/features/utilisateurs/abilities/reinitialiser-une-fixture/domain/reinitialiser-une-fixture'
-import {
-  estUneFixture,
-  reinitialiser,
-} from '@/features/utilisateurs/abilities/reinitialiser-une-fixture/implementations/prisma/reinitialiser.mutation'
+import { lireLeMarquageFixture } from '@/features/utilisateurs/abilities/reinitialiser-une-fixture/implementations/prisma/marquage-fixture.query'
+import { reinitialiser } from '@/features/utilisateurs/abilities/reinitialiser-une-fixture/implementations/prisma/reinitialiser.mutation'
+import { UtilisateurId } from '@/features/utilisateurs/domain'
 import { mediateursDesPersonas } from '@/features/utilisateurs/fixtures/personas'
 import { fromResult, withInput } from '@/libraries/nextjs'
+import { success } from '@/libraries/result'
 
 const reinitialiserUneFixture = reinitialiserLaFixture({
-  estUneFixture,
+  lireLeMarquageFixture,
   reinitialiser,
 })
 
@@ -32,26 +33,26 @@ export const reinitialiserUneFixtureAction = actionBuilder()
   .use(withInput(ReinitialiserUneFixtureValidation))
   .execute(
     fromResult(
-      ({ input }) =>
-        reinitialiserUneFixture(input.utilisateurId, {
-          employeuse: { structureCoopId: structureEmployeuse.id },
-          semerLesActivitesDansLesLieux: semerLesActivitesDuPersonaDansLesLieux(
-            mediateursDesPersonas,
-          ),
-          semerLesBeneficiaires: semerLesBeneficiairesDeDemonstration(
-            mediateursDesPersonas,
-          ),
-          semerLesCras: semerLesCrasDeDemonstration({
-            mediateurs: mediateursDesPersonas,
-            beneficiaires: referencesDesBeneficiaires,
-            lieux: { mediateque },
-          }),
-          semerLesCoordinations: semerLesCoordinationsDeDemonstration,
-        }),
-      {
-        onError: {
-          CompteNonFixture: 'Seul un utilisateur de test se réinitialise',
-        },
+      async ({ input }) => {
+        const resultat = await reinitialiserUneFixture({
+          utilisateurId: UtilisateurId.safe(input.utilisateurId),
+          demonstration: {
+            employeuse: { structureCoopId: structureEmployeuse.id },
+            semerLesActivitesDansLesLieux:
+              semerLesActivitesDuPersonaDansLesLieux(mediateursDesPersonas),
+            semerLesBeneficiaires: semerLesBeneficiairesDeDemonstration(
+              mediateursDesPersonas,
+            ),
+            semerLesCras: semerLesCrasDeDemonstration({
+              mediateurs: mediateursDesPersonas,
+              beneficiaires: referencesDesBeneficiaires,
+              lieux: { mediateque },
+            }),
+            semerLesCoordinations: semerLesCoordinationsDeDemonstration,
+          },
+        })
+        return resultat.success ? success({ nom: resultat.data.nom }) : resultat
       },
+      { onError: REINITIALISER_UNE_FIXTURE_ERRORS },
     ),
   )

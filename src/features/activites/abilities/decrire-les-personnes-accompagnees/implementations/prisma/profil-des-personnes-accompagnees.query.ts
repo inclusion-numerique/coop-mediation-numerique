@@ -1,10 +1,13 @@
 import { prismaClient } from '@/configuration/prisma'
 import { Prisma } from '@/generated/prisma/client'
 import {
+  AGE_AVANT_LA_TRANCHE_SUIVANTE,
   Effectif,
   genres,
+  PREMIERE_ANNEE_DE_NAISSANCE,
   repartitionComplete,
   statutsSociaux,
+  TRANCHE_DES_PLUS_AGES,
   tranchesDAge,
 } from '../../../../domain'
 import {
@@ -12,12 +15,7 @@ import {
   personneAccompagnee,
 } from '../../../../implementations/prisma/statistiques/statistiques.sql'
 import { valeurEnBase } from '../../../../implementations/prisma/valeur-en-base.transfer'
-import {
-  AGE_AVANT_LA_TRANCHE_SUIVANTE,
-  PREMIERE_ANNEE_DE_NAISSANCE,
-  type ProfilDesPersonnesAccompagnees,
-  TRANCHE_DES_PLUS_AGES,
-} from '../../domain'
+import type { ProfilDesPersonnesAccompagnees } from '../../domain'
 
 type Ligne = {
   readonly total: number

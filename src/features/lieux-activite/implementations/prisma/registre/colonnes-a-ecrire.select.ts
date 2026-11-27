@@ -1,3 +1,4 @@
+import type { EcritureAuRegistre } from '../../../domain/registre/ecriture-au-registre'
 import type { ColonnesDuRegistre } from './lieu.transfer'
 
 export type ColonnesAEcrire = (
@@ -61,3 +62,10 @@ export const colonnesRapporteesParLaCartographie = ({
   itinerance,
   modalitesAccompagnement,
 })
+
+export const colonnesDeLEcriture: Readonly<
+  Record<EcritureAuRegistre['_tag'], ColonnesAEcrire>
+> = {
+  FicheComplete: toutesLesColonnes,
+  IdentiteSeule: identiteDuLieu,
+}

@@ -17,11 +17,9 @@ import { MediateurId } from './mediateur-id'
 import { Nom } from './nom'
 import { Prenom } from './prenom'
 import { StatutSocial } from './statut-social'
-import {
-  TrancheAge,
-  trancheAgeForBeneficiaire,
-  trancheAgeFromAnneeNaissance,
-} from './tranche-age'
+import { TrancheAge } from './tranche-age'
+
+const maintenant = new Date('2026-06-15T12:00:00.000Z')
 
 const base = {
   id: BeneficiaireId('550e8400-e29b-41d4-a716-446655440000'),
@@ -29,8 +27,8 @@ const base = {
   genre: Genre('NonCommunique'),
   trancheAge: TrancheAge('NonCommunique'),
   statutSocial: StatutSocial('NonCommunique'),
-  creation: new Date(),
-  modification: new Date(),
+  creation: maintenant,
+  modification: maintenant,
   suppression: null,
 }
 
@@ -69,26 +67,38 @@ describe('nomAfficheDuBeneficiaire', () => {
 })
 
 describe('nomAfficheDepuisLIdentite', () => {
-  it('joins prénom and nom', () => {
-    expect(nomAfficheDepuisLIdentite({ prenom: 'Jean', nom: 'Dupont' })).toBe(
-      'Jean Dupont',
-    )
-  })
-
-  it('falls back to "Bénéficiaire anonyme" when both are absent', () => {
-    expect(nomAfficheDepuisLIdentite({ prenom: null, nom: null })).toBe(
-      'Bénéficiaire anonyme',
-    )
-    expect(nomAfficheDepuisLIdentite({})).toBe('Bénéficiaire anonyme')
-  })
-
-  it('keeps the only provided part without leaking the missing one', () => {
-    expect(nomAfficheDepuisLIdentite({ prenom: null, nom: 'Dupont' })).toBe(
-      'Dupont',
-    )
-    expect(nomAfficheDepuisLIdentite({ prenom: 'Jean', nom: null })).toBe(
-      'Jean',
-    )
+  it.each<{
+    cas: string
+    identite: { prenom?: string | null; nom?: string | null }
+    attendu: string
+  }>([
+    {
+      cas: 'joins prénom and nom',
+      identite: { prenom: 'Jean', nom: 'Dupont' },
+      attendu: 'Jean Dupont',
+    },
+    {
+      cas: 'falls back to "Bénéficiaire anonyme" when both are null',
+      identite: { prenom: null, nom: null },
+      attendu: 'Bénéficiaire anonyme',
+    },
+    {
+      cas: 'falls back to "Bénéficiaire anonyme" when both are missing',
+      identite: {},
+      attendu: 'Bénéficiaire anonyme',
+    },
+    {
+      cas: 'keeps the nom alone',
+      identite: { prenom: null, nom: 'Dupont' },
+      attendu: 'Dupont',
+    },
+    {
+      cas: 'keeps the prénom alone',
+      identite: { prenom: 'Jean', nom: null },
+      attendu: 'Jean',
+    },
+  ])('$cas', ({ identite, attendu }) => {
+    expect(nomAfficheDepuisLIdentite(identite)).toBe(attendu)
   })
 })
 
@@ -127,39 +137,15 @@ describe('beneficiaireAdresseString', () => {
 
 describe('AnneeNaissance', () => {
   it('rejects year before 1900', () => {
-    expect(() => AnneeNaissance(1899)).toThrow()
+    expect(AnneeNaissance(maintenant).safe(1899)).toBeNull()
   })
 
-  it('rejects year in the future', () => {
-    expect(() => AnneeNaissance(new Date().getFullYear() + 1)).toThrow()
+  it('rejects year after the current one', () => {
+    expect(AnneeNaissance(maintenant).safe(2027)).toBeNull()
   })
 
-  it('accepts valid year', () => {
-    expect(AnneeNaissance(1990)).toBe(1990)
-  })
-})
-
-describe('trancheAgeForBeneficiaire', () => {
-  it('returns NonCommunique without année de naissance ni tranche saisie', () => {
-    expect(trancheAgeForBeneficiaire(null, TrancheAge(null))).toBe(
-      'NonCommunique',
-    )
-  })
-
-  it('keeps the tranche saisie without année de naissance', () => {
-    expect(trancheAgeForBeneficiaire(null, TrancheAge('SoixanteDixPlus'))).toBe(
-      'SoixanteDixPlus',
-    )
-  })
-
-  it('derives the tranche from the année de naissance, over the saisie', () => {
-    const currentYear = new Date().getFullYear()
-    expect(
-      trancheAgeForBeneficiaire(
-        AnneeNaissance(currentYear - 30),
-        TrancheAge('SoixanteDixPlus'),
-      ),
-    ).toBe('VingtCinqTrenteNeuf')
+  it('accepts the current year', () => {
+    expect(AnneeNaissance(maintenant)(2026)).toBe(2026)
   })
 })
 
@@ -168,8 +154,9 @@ describe('toBeneficiaireIdentifie', () => {
   const mediateurId = MediateurId('550e8400-e29b-41d4-a716-446655440001')
   const creation = new Date('2024-01-01T10:00:00.000Z')
   const modification = new Date('2024-02-01T10:00:00.000Z')
+  const anneeNaissance = AnneeNaissance(modification)
 
-  const minimal = {
+  const minimal: Parameters<typeof toBeneficiaireIdentifie>[0] = {
     prenom: Prenom('Jean'),
     nom: Nom('Dupont'),
     contactTelephone: { _tag: 'nonRenseigne' },
@@ -180,37 +167,42 @@ describe('toBeneficiaireIdentifie', () => {
     trancheAge: TrancheAge('NonCommunique'),
     statutSocial: StatutSocial('NonCommunique'),
     notes: null,
-  } satisfies Parameters<typeof toBeneficiaireIdentifie>[0]
+  }
 
   it('builds an identified, non-suppressed beneficiaire', () => {
     expect(
-      toBeneficiaireIdentifie(minimal, {
-        id,
-        mediateurId,
-        creation,
-        modification,
-      }),
-    ).toMatchObject({
+      toBeneficiaireIdentifie(
+        {
+          ...minimal,
+          contactTelephone: {
+            _tag: 'disponible',
+            numero: Telephone('0102030405'),
+          },
+          email: Email('jean.dupont@example.com'),
+        },
+        { id, mediateurId, creation, modification },
+      ),
+    ).toEqual<BeneficiaireIdentifie>({
       id,
       mediateurId,
       anonyme: false,
-      prenom: 'Jean',
-      nom: 'Dupont',
-      trancheAge: 'NonCommunique',
+      prenom: Prenom('Jean'),
+      nom: Nom('Dupont'),
+      contactTelephone: {
+        _tag: 'disponible',
+        numero: Telephone('0102030405'),
+      },
+      email: Email('jean.dupont@example.com'),
+      anneeNaissance: null,
+      communeResidence: null,
+      notes: null,
+      genre: Genre('NonCommunique'),
+      statutSocial: StatutSocial('NonCommunique'),
+      trancheAge: TrancheAge('NonCommunique'),
       creation,
       modification,
       suppression: null,
     })
-  })
-
-  it('derives trancheAge from anneeNaissance', () => {
-    const currentYear = new Date().getFullYear()
-    expect(
-      toBeneficiaireIdentifie(
-        { ...minimal, anneeNaissance: AnneeNaissance(currentYear - 5) },
-        { id, mediateurId, creation, modification },
-      ).trancheAge,
-    ).toBe('MoinsDeDouze')
   })
 
   it('keeps the trancheAge saisie when anneeNaissance is absent', () => {
@@ -222,41 +214,27 @@ describe('toBeneficiaireIdentifie', () => {
     ).toBe('SoixanteDixPlus')
   })
 
-  it('preserves the structured value objects', () => {
-    const beneficiaire = toBeneficiaireIdentifie(
-      {
-        ...minimal,
-        contactTelephone: {
-          _tag: 'disponible',
-          numero: Telephone('0102030405'),
-        },
-        email: Email('jean.dupont@example.com'),
-      },
-      { id, mediateurId, creation, modification },
-    )
-
-    expect(beneficiaire.contactTelephone).toEqual({
-      _tag: 'disponible',
-      numero: '+33102030405',
-    })
-    expect(beneficiaire.email).toBe('jean.dupont@example.com')
-  })
-})
-
-describe('trancheAgeFromAnneeNaissance', () => {
-  const currentYear = new Date().getFullYear()
-
-  it.each([
-    { age: 5, expected: 'MoinsDeDouze' },
-    { age: 15, expected: 'DouzeDixHuit' },
-    { age: 20, expected: 'DixHuitVingtQuatre' },
-    { age: 30, expected: 'VingtCinqTrenteNeuf' },
-    { age: 50, expected: 'QuaranteCinquanteNeuf' },
-    { age: 65, expected: 'SoixanteSoixanteNeuf' },
-    { age: 75, expected: 'SoixanteDixPlus' },
-  ])('returns $expected for age $age', ({ age, expected }) => {
-    expect(
-      trancheAgeFromAnneeNaissance(AnneeNaissance(currentYear - age)),
-    ).toBe(expected)
-  })
+  it.each<{ annee: number; tranche: TrancheAge }>([
+    { annee: 2019, tranche: TrancheAge('MoinsDeDouze') },
+    { annee: 2012, tranche: TrancheAge('DouzeDixHuit') },
+    { annee: 2004, tranche: TrancheAge('DixHuitVingtQuatre') },
+    { annee: 1994, tranche: TrancheAge('VingtCinqTrenteNeuf') },
+    { annee: 1974, tranche: TrancheAge('QuaranteCinquanteNeuf') },
+    { annee: 1959, tranche: TrancheAge('SoixanteSoixanteNeuf') },
+    { annee: 1949, tranche: TrancheAge('SoixanteDixPlus') },
+  ])(
+    'derives the tranche $tranche from the année $annee at the modification, over the saisie',
+    ({ annee, tranche }) => {
+      expect(
+        toBeneficiaireIdentifie(
+          {
+            ...minimal,
+            anneeNaissance: anneeNaissance(annee),
+            trancheAge: TrancheAge('NonCommunique'),
+          },
+          { id, mediateurId, creation, modification },
+        ).trancheAge,
+      ).toBe(tranche)
+    },
+  )
 })

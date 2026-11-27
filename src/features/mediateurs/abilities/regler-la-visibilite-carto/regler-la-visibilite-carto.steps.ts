@@ -1,7 +1,9 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { prismaClient } from '@/configuration/prisma'
-import { reglerLaVisibiliteCarto } from '@/features/mediateurs/abilities/regler-la-visibilite-carto/implementations/prisma/regler-la-visibilite-carto.mutation'
+import { reglerLaVisibiliteCarto } from '@/features/mediateurs/abilities/regler-la-visibilite-carto/domain/regler-la-visibilite-carto'
+import { enregistrerLaVisibilite } from '@/features/mediateurs/abilities/regler-la-visibilite-carto/implementations/prisma/enregistrer-la-visibilite.mutation'
+import { lireLeMediateurARegler } from '@/features/mediateurs/abilities/regler-la-visibilite-carto/implementations/prisma/mediateur-a-regler.query'
 import { AuteurId, MediateurId } from '@/features/mediateurs/domain'
 import {
   semerUnMediateurVisible,
@@ -22,7 +24,10 @@ const regler = async ({
   par: 'mediateur' | 'administrateur'
 }) => {
   const semee = visibiliteSemee()
-  dernier.reglage = await reglerLaVisibiliteCarto(async () => undefined)({
+  dernier.reglage = await reglerLaVisibiliteCarto({
+    lireLeMediateur: lireLeMediateurARegler,
+    enregistrer: enregistrerLaVisibilite(async () => undefined),
+  })({
     mediateurId: MediateurId(semee.mediateurId),
     visible,
     auteurId: AuteurId(

@@ -35,7 +35,7 @@ const tranchesAge = [
 export const compteurDUuid = (root: string, index: number): string =>
   root.slice(0, -5) + index.toString(10).padStart(5, '0')
 
-type CreatedBeneficiairesForParticipantsAnonymes =
+export type CreatedBeneficiairesForParticipantsAnonymes =
   Prisma.BeneficiaireUncheckedCreateInput & {
     id: string
     mediateurId: string

@@ -1,41 +1,52 @@
 import type {
+  DispositifPersonne,
   ProfilInscription,
   UtilisateurId,
 } from '@/features/inscription/domain'
-import type { DispositifInscription } from './dispositif-inscription'
+import type { Siret } from '@/libraries/insee'
+import type { Result } from '@/libraries/result'
 
-/**
- * Lit le dispositif dans `main` et applique ce qui en découle — profil
- * d'inscription, rôle coordinateur, création du médiateur — puis rend la vue
- * domaine. L'utilisateur inconnu du dispositif rend `connue: false` plutôt que
- * `null` : l'absence est un cas nominal du parcours, pas un défaut de réponse.
- */
-export type AppliquerDispositif = (input: {
-  readonly userId: UtilisateurId
-}) => Promise<DispositifInscription>
-
-/** Crée la structure employeuse depuis le SIRET de l'utilisateur si applicable. */
-export type ImporterStructureDepuisSiret = (
+export type LireLeDispositif = (
   userId: UtilisateurId,
-) => Promise<void>
+) => Promise<DispositifPersonne>
 
-export type RattacherDepuisSiret = (input: {
+export type EnregistrerLeProfil = (input: {
   readonly userId: UtilisateurId
-  readonly siret: string
-}) => Promise<unknown>
+  readonly profil: ProfilInscription
+}) => Promise<void>
 
-export type GarantirLeRoleCoordinateur = (
-  userId: UtilisateurId,
-) => Promise<unknown>
+export type GarantieDuRoleCoordinateur =
+  | { readonly _tag: 'DejaCoordinateur' }
+  | { readonly _tag: 'HorsDuDispositif' }
+  | { readonly _tag: 'RoleCree' }
 
-/** État de l'utilisateur nécessaire pour déterminer l'étape suivante. */
+type GarantirLeRoleCoordinateur = (entree: {
+  readonly utilisateurId: UtilisateurId
+}) => Promise<Result<GarantieDuRoleCoordinateur, never>>
+
+export type GarantirLeMediateur = (userId: UtilisateurId) => Promise<void>
+
+export type LireLeSiretARattacher = (userId: UtilisateurId) => Promise<{
+  readonly siret: Siret | null
+  readonly aUneEmployeuse: boolean
+}>
+
+export type RattacherDepuisSiret<Rattachement, Echec> = (input: {
+  readonly userId: UtilisateurId
+  readonly siret: Siret
+}) => Promise<Result<Rattachement, Echec>>
+
 export type LireEtatPourEtapeSuivante = (userId: UtilisateurId) => Promise<{
   readonly profil: ProfilInscription | null
   readonly hasLieuxActivite: boolean
 }>
 
-export type InitialiserInscriptionPorts = {
-  readonly appliquerDispositif: AppliquerDispositif
-  readonly importerStructureDepuisSiret: ImporterStructureDepuisSiret
+export type InitialiserInscriptionPorts<Rattachement, Echec> = {
+  readonly lireLeDispositif: LireLeDispositif
+  readonly enregistrerLeProfil: EnregistrerLeProfil
+  readonly garantirLeRoleCoordinateur: GarantirLeRoleCoordinateur
+  readonly garantirLeMediateur: GarantirLeMediateur
+  readonly lireLeSiretARattacher: LireLeSiretARattacher
+  readonly rattacherDepuisSiret: RattacherDepuisSiret<Rattachement, Echec>
   readonly lireEtatPourEtapeSuivante: LireEtatPourEtapeSuivante
 }

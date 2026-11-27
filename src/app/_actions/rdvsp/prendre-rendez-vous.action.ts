@@ -13,6 +13,7 @@ import { beneficiaireADemander } from '@/features/rdvsp/abilities/prendre-rendez
 import { compteDuMediateur } from '@/features/rdvsp/abilities/prendre-rendez-vous/implementations/prisma/compte-du-mediateur.query'
 import { lierUsagerAuBeneficiaire } from '@/features/rdvsp/abilities/prendre-rendez-vous/implementations/prisma/lier-usager-au-beneficiaire.mutation'
 import { UtilisateurCoopId } from '@/features/rdvsp/domain/identifiants/utilisateur-coop-id'
+import { UrlRetour } from '@/features/rdvsp/domain/rdv/demande-rdv'
 import { rdvServicePublicApi } from '@/features/rdvsp/implementations/api/rdv-service-public.client'
 import { configurationRdvServicePublic } from '@/features/rdvsp/implementations/api/rdv-service-public-configuration.client'
 import { enregistrerLesJetons } from '@/features/rdvsp/implementations/prisma/jetons-du-compte.mutation'
@@ -37,19 +38,19 @@ export const prendreRendezVousAction = actionBuilder()
           }).creerDemandeRdv,
           lierUsager: lierUsagerAuBeneficiaire,
           urlDossierBeneficiaire: (id) =>
-            getServerUrl(`/coop/mes-beneficiaires/${id}/accompagnements`, {
-              absolutePath: true,
-            }),
+            UrlRetour(
+              getServerUrl(`/coop/mes-beneficiaires/${id}/accompagnements`, {
+                absolutePath: true,
+              }),
+            ),
         })({
           utilisateurId: UtilisateurCoopId(user.id),
           mediateurId: MediateurProprietaireId(mediateur.id),
           beneficiaireId: input.beneficiaireId,
         })
 
-        // Seule l'URL de prise de rendez-vous intéresse le navigateur, qui n'a
-        // qu'à s'y rendre.
         return resultat.success
-          ? { success: true as const, data: { url: resultat.data.url } }
+          ? { success: true as const, data: { url: resultat.data.creee.url } }
           : resultat
       },
       { onError: PRENDRE_RENDEZ_VOUS_ERRORS },

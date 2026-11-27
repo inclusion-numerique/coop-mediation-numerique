@@ -1,71 +1,89 @@
-import type { UtilisateurId } from '@/features/inscription/domain'
-import type { LireLEtatDeLInscription } from '@/features/inscription/domain/ports'
-import { onlyDefinedAndNotNull } from '@/libraries/collections'
-import { type Result, success } from '@/libraries/result'
 import {
-  deciderLesLieux,
-  type RenseignerLieuxActiviteError,
-} from './decider-les-lieux'
-import type {
-  EnregistrerReconciliation,
-  LireLieuxActiviteExistants,
-  TrouverStructuresCarto,
-} from './ports'
-import { type LieuActiviteInput, reconcilierLieuxActivite } from './reconcilier'
+  LieuIntrouvable,
+  type UtilisateurId,
+} from '@/features/inscription/domain'
+import { failure, type Result, success } from '@/libraries/result'
+import { deciderLesLieux } from './decider-les-lieux'
+import type { EchecDeRenseignerLieuxActivite } from './errors'
+import type { IdentifiantCartographie } from './identifiant-cartographie'
+import type { LieuDesire, LieuSoumis } from './lieu-soumis'
+import type { LieuxActiviteRenseignes } from './lieux-activite-renseignes'
+import { lieuxDesires } from './lieux-desires'
+import type { RenseignerLieuxActivitePorts } from './ports'
+import { reconcilierLieuxActivite } from './reconcilier'
 
-export type RenseignerLieuxActivitePorts<StructureCarto> = {
-  readonly lireLEtat: LireLEtatDeLInscription
-  readonly lireLieuxActiviteExistants: LireLieuxActiviteExistants
-  readonly trouverStructuresCarto: TrouverStructuresCarto<StructureCarto>
-  readonly enregistrerReconciliation: EnregistrerReconciliation<StructureCarto>
-}
+const identifiantsCarto = <Adresse>(
+  lieux: readonly LieuDesire<Adresse>[],
+): readonly IdentifiantCartographie[] =>
+  lieux.flatMap(({ structureCartographieNationaleId }) =>
+    structureCartographieNationaleId === null
+      ? []
+      : [structureCartographieNationaleId],
+  )
 
 export const renseignerLieuxActivite =
-  <StructureCarto>({
+  <Adresse extends object, StructuresCarto, Destination>({
     lireLEtat,
     lireLieuxActiviteExistants,
     trouverStructuresCarto,
+    planifierLesRattachements,
     enregistrerReconciliation,
-  }: RenseignerLieuxActivitePorts<StructureCarto>) =>
+  }: RenseignerLieuxActivitePorts<Adresse, StructuresCarto, Destination>) =>
   async ({
     command: { userId, lieuxActivite },
     maintenant,
   }: {
     readonly command: {
       readonly userId: UtilisateurId
-      readonly lieuxActivite: readonly LieuActiviteInput[]
+      readonly lieuxActivite: readonly LieuSoumis<Adresse>[]
     }
     readonly maintenant: Date
-  }): Promise<Result<void, RenseignerLieuxActiviteError>> => {
-    const decision = deciderLesLieux(
-      await lireLEtat(userId),
+  }): Promise<
+    Result<
+      LieuxActiviteRenseignes<Adresse, Destination>,
+      EchecDeRenseignerLieuxActivite
+    >
+  > => {
+    const desires = lieuxDesires(lieuxActivite)
+
+    if (!desires.success) return desires
+
+    const etatFranchi = deciderLesLieux({
+      etat: await lireLEtat(userId),
       userId,
       maintenant,
-    )
+    })
 
-    if (!decision.success) return decision
+    if (!etatFranchi.success) return etatFranchi
 
     const { aCloturer, aCreer } = reconcilierLieuxActivite(
       await lireLieuxActiviteExistants(userId),
-      lieuxActivite,
+      desires.data,
     )
 
-    const structuresCarto = await trouverStructuresCarto(
-      aCreer
-        .map(
-          ({ structureCartographieNationaleId }) =>
-            structureCartographieNationaleId,
-        )
-        .filter(onlyDefinedAndNotNull),
-    )
-
-    await enregistrerReconciliation({
-      etatFranchi: decision.data.etatFranchi,
-      userId,
-      aCloturer,
-      aCreer,
-      structuresCarto,
+    const destinations = await planifierLesRattachements({
+      lieux: aCreer,
+      structuresCarto: await trouverStructuresCarto(identifiantsCarto(aCreer)),
+      maintenant,
     })
 
-    return success<void>(undefined)
+    if (!destinations.success) return destinations
+
+    const enregistrement = await enregistrerReconciliation({
+      etatFranchi: etatFranchi.data,
+      userId,
+      aCloturer,
+      destinations: destinations.data,
+      maintenant,
+    })
+
+    if (enregistrement._tag === 'LieuDisparu')
+      return failure(LieuIntrouvable(enregistrement.lieuId))
+
+    return success({
+      etatFranchi: etatFranchi.data,
+      aCloturer,
+      aCreer,
+      destinations: destinations.data,
+    })
   }

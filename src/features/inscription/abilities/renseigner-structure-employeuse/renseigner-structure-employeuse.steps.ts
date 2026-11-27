@@ -1,10 +1,10 @@
 import assert from 'node:assert'
 import { Before, Given, Then, When } from '@cucumber/cucumber'
 import { prismaClient } from '@/configuration/prisma'
-import { type RenseignerStructureEmployeuseError } from '@/features/inscription/abilities/renseigner-structure-employeuse/domain/decider-la-structure-employeuse'
-import { type RattacherEmployeuse } from '@/features/inscription/abilities/renseigner-structure-employeuse/domain/ports'
+import type { EchecDeRenseignerStructureEmployeuse } from '@/features/inscription/abilities/renseigner-structure-employeuse/domain/errors'
+import type { RattacherEmployeuse } from '@/features/inscription/abilities/renseigner-structure-employeuse/domain/ports'
 import { renseignerStructureEmployeuse } from '@/features/inscription/abilities/renseigner-structure-employeuse/domain/renseigner-structure-employeuse'
-import { type StructureEmployeuseInput } from '@/features/inscription/abilities/renseigner-structure-employeuse/domain/structure-employeuse-input'
+import type { StructureEmployeuseRenseignee } from '@/features/inscription/abilities/renseigner-structure-employeuse/domain/structure-employeuse-renseignee'
 import { projeterEtapeFranchie } from '@/features/inscription/abilities/renseigner-structure-employeuse/implementations/prisma/projeter-etape-franchie.mutation'
 import { ProfilInscription } from '@/features/inscription/domain'
 import { getInscriptionEtat } from '@/features/inscription/implementations/prisma/get-inscription-etat.query'
@@ -12,58 +12,46 @@ import {
   seedProfilChoisi,
   utilisateurDeLInscriptionEnCours,
 } from '@/features/inscription/inscription.cucumber'
-import type { Result } from '@/libraries/result'
+import { failure, type Result, success } from '@/libraries/result'
 
-const renseignerStructureEmployeuseAvec = (
-  rattacherEmployeuse: RattacherEmployeuse,
-) =>
-  renseignerStructureEmployeuse({
-    lireLEtat: getInscriptionEtat,
-    rattacherEmployeuse,
-    projeterEtapeFranchie,
-  })
+const employeuse = 'Structure de test'
 
-let rattachable = true
-let rattachementsDemandes = 0
-let resultat: Result<void, RenseignerStructureEmployeuseError>
+const rattachement = 'Rattachée à la structure de test'
+
+const rattachable: RattacherEmployeuse<string, string, string> = async () =>
+  success(rattachement)
+
+const nonRattachable: RattacherEmployeuse<string, string, string> = async () =>
+  failure('Identité inexploitable')
+
+const contexte: {
+  rattacherEmployeuse: RattacherEmployeuse<string, string, string>
+  resultat: Result<
+    StructureEmployeuseRenseignee<string, string>,
+    EchecDeRenseignerStructureEmployeuse<string>
+  > | null
+} = { rattacherEmployeuse: rattachable, resultat: null }
 
 Before(() => {
-  rattachable = true
-  rattachementsDemandes = 0
+  contexte.rattacherEmployeuse = rattachable
+  contexte.resultat = null
 })
-
-/**
- * Port employeuse simulé : cette ability ne teste pas le rattachement — il a sa
- * propre BDD dans `features/employeuse` — mais ce qu'elle en déduit.
- */
-const rattacherEmployeuse: RattacherEmployeuse = async () => {
-  rattachementsDemandes += 1
-  return { _tag: rattachable ? 'rattachee' : 'employeuseIndisponible' }
-}
-
-const structureEmployeuseInput: StructureEmployeuseInput = {
-  nom: 'Structure de test',
-  siret: '35600000000048',
-  adresse: '1 rue de la Paix',
-  commune: 'Paris',
-  codeInsee: '75101',
-  codePostal: '75001',
-}
 
 Given('j’ai choisi le profil {string}', async (profil: string) => {
   await seedProfilChoisi(ProfilInscription.schema.parse(profil))
 })
 
 Given('l’employeuse choisie n’est pas rattachable', () => {
-  rattachable = false
+  contexte.rattacherEmployeuse = nonRattachable
 })
 
 When('je renseigne ma structure employeuse', async () => {
-  resultat = await renseignerStructureEmployeuseAvec(rattacherEmployeuse)({
-    command: {
-      userId: utilisateurDeLInscriptionEnCours(),
-      structureEmployeuse: structureEmployeuseInput,
-    },
+  contexte.resultat = await renseignerStructureEmployeuse({
+    lireLEtat: getInscriptionEtat,
+    rattacherEmployeuse: contexte.rattacherEmployeuse,
+    projeterEtapeFranchie,
+  })({
+    command: { userId: utilisateurDeLInscriptionEnCours(), employeuse },
     maintenant: new Date(),
   })
 })
@@ -80,21 +68,24 @@ Then('ma structure employeuse est renseignée', async () => {
 })
 
 Then('le rattachement à l’employeuse a été demandé', () => {
-  assert.strictEqual(rattachementsDemandes, 1)
-})
-
-Then('aucun rattachement n’a été demandé', () => {
-  assert.strictEqual(rattachementsDemandes, 0)
+  assert.ok(contexte.resultat?.success, 'Le renseignement aurait dû aboutir')
+  assert.strictEqual(contexte.resultat.data.rattachement, rattachement)
 })
 
 Then('le renseignement est refusé faute de profil choisi', () => {
-  assert.ok(!resultat.success, 'Le renseignement aurait dû être refusé')
-  assert.strictEqual(resultat.error._tag, 'ProfilNonChoisi')
+  assert.ok(
+    contexte.resultat && !contexte.resultat.success,
+    'Le renseignement aurait dû être refusé',
+  )
+  assert.strictEqual(contexte.resultat.error._tag, 'ProfilNonChoisi')
 })
 
 Then('le renseignement est refusé faute d’employeuse rattachable', () => {
-  assert.ok(!resultat.success, 'Le renseignement aurait dû être refusé')
-  assert.strictEqual(resultat.error._tag, 'EmployeuseIndisponible')
+  assert.ok(
+    contexte.resultat && !contexte.resultat.success,
+    'Le renseignement aurait dû être refusé',
+  )
+  assert.strictEqual(contexte.resultat.error._tag, 'EmployeuseNonRattachee')
 })
 
 Then('ma structure employeuse n’est pas renseignée', async () => {

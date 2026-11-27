@@ -1,4 +1,7 @@
 import { prismaClient } from '@/configuration/prisma'
+import { IdentifiantCartographie } from '../../../../domain/cartographie-nationale/ids-cartographie-nationale'
+import { LieuId } from '../../../../domain/identifiants/lieu-id'
+import { RattachementId } from '../../../../domain/identifiants/rattachement-id'
 import {
   avecIdentifiantCarto,
   inscriptionPourLIdentifiantCarto,
@@ -18,8 +21,19 @@ export const activitesEnCoursDeLUtilisateur = async (userId: string) => {
     },
   })
 
-  return activites.map(({ id, lieuInclusion }) => ({
-    id,
-    lieuInclusion: avecIdentifiantCarto(lieuInclusion),
-  }))
+  return activites.map(({ id, lieuInclusion }) => {
+    const { structureCartographieNationaleId } =
+      avecIdentifiantCarto(lieuInclusion)
+
+    return {
+      id: RattachementId(id),
+      lieuInclusion: {
+        id: LieuId(lieuInclusion.id),
+        structureCartographieNationaleId:
+          structureCartographieNationaleId === null
+            ? null
+            : IdentifiantCartographie.safe(structureCartographieNationaleId),
+      },
+    }
+  })
 }

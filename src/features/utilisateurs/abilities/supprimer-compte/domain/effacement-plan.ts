@@ -1,34 +1,153 @@
-import type { RattachementsDuCompte } from '@/features/utilisateurs/domain'
-import { coordinateurDe, mediateurDe } from '@/features/utilisateurs/domain'
-import { EffacementStep } from './effacement-report'
+import {
+  type CompteASupprimer,
+  coordinateurDe,
+  identifiantsDe,
+  type MediateurId,
+  mediateurDe,
+  retirerLeContactDesListes,
+} from '@/features/utilisateurs/domain'
+import { type EchecTechnique, type Result, success } from '@/libraries/result'
+import { EffacementStep, type NomEffacementStep } from './effacement-report'
+import type { EffacementsDuCompte } from './ports'
 
-type PlannableStep = {
+type Runner = () => Promise<Result<number, EchecTechnique>>
+
+export type EtapePlanifiee = {
   readonly step: EffacementStep
-  readonly due: (rattachements: RattachementsDuCompte) => boolean
+  readonly runner: Runner
 }
 
-const porteUnMediateur = (rattachements: RattachementsDuCompte): boolean =>
-  mediateurDe(rattachements) !== null
+export type Suppression = {
+  readonly compte: CompteASupprimer
+  readonly maintenant: Date
+}
 
-const porteUnCoordinateur = (rattachements: RattachementsDuCompte): boolean =>
-  coordinateurDe(rattachements) !== null
+type Planification = (
+  suppression: Suppression,
+  ports: EffacementsDuCompte,
+) => Runner | null
 
-const porteUneEquipe = (rattachements: RattachementsDuCompte): boolean =>
-  porteUnMediateur(rattachements) || porteUnCoordinateur(rattachements)
+const pourLeMediateur =
+  (
+    runner: (
+      mediateurId: MediateurId,
+      ports: EffacementsDuCompte,
+      maintenant: Date,
+    ) => Runner,
+  ): Planification =>
+  ({ compte, maintenant }, ports) => {
+    const mediateurId = mediateurDe(compte.rattachements)
+    return mediateurId === null ? null : runner(mediateurId, ports, maintenant)
+  }
 
-const always = (): boolean => true
+const pourLEquipe =
+  (
+    runner: (suppression: Suppression, ports: EffacementsDuCompte) => Runner,
+  ): Planification =>
+  (suppression, ports) =>
+    mediateurDe(suppression.compte.rattachements) === null &&
+    coordinateurDe(suppression.compte.rattachements) === null
+      ? null
+      : runner(suppression, ports)
 
-const ORDERED_STEPS: readonly PlannableStep[] = [
-  { step: EffacementStep('PortefeuilleBeneficiaires'), due: porteUnMediateur },
-  { step: EffacementStep('EmpreinteRdv'), due: always },
-  { step: EffacementStep('NotesAccompagnements'), due: porteUneEquipe },
-  { step: EffacementStep('AppartenancesEquipe'), due: porteUneEquipe },
-  { step: EffacementStep('LieuxActivite'), due: porteUnMediateur },
-  { step: EffacementStep('PartageStatistiques'), due: porteUneEquipe },
-  { step: EffacementStep('ListesDeDiffusion'), due: always },
+const compter = <T>(
+  resultat: Result<T, EchecTechnique>,
+  nombre: (effaces: T) => number,
+): Result<number, EchecTechnique> =>
+  resultat.success ? success(nombre(resultat.data)) : resultat
+
+const anonymiserLePortefeuille = pourLeMediateur(
+  (mediateurId, ports, maintenant) => async () =>
+    compter(
+      await ports.anonymiserPortefeuille({ mediateurId, maintenant }),
+      ({ anonymises }) => anonymises,
+    ),
+)
+
+const effacerLEmpreinteRdv: Planification =
+  ({ compte }, ports) =>
+  async () =>
+    compter(
+      await ports.effacerEmpreinteRdv({ utilisateurId: compte.id }),
+      ({ rdvsExpurges, usagersSupprimes }) => rdvsExpurges + usagersSupprimes,
+    )
+
+const effacerLesNotes = pourLEquipe(
+  ({ compte }, ports) =>
+    async () =>
+      compter(
+        await ports.effacerNotes(identifiantsDe(compte.rattachements)),
+        ({ effacees }) => effacees,
+      ),
+)
+
+const detacherDesEquipes = pourLEquipe(
+  ({ compte, maintenant }, ports) =>
+    async () => {
+      const effacement = {
+        ...identifiantsDe(compte.rattachements),
+        maintenant,
+      }
+      const tags = await ports.retirerLesTagsDUnCompte(effacement)
+      if (!tags.success) return tags
+      const { transferes, supprimes } = tags.data
+
+      return compter(
+        await ports.detacherDesEquipes(effacement),
+        ({ invitationsSupprimees, appartenancesRetirees }) =>
+          invitationsSupprimees +
+          appartenancesRetirees +
+          transferes +
+          supprimes,
+      )
+    },
+)
+
+const retirerDesLieux = pourLeMediateur(
+  (mediateurId, ports) => async () =>
+    compter(
+      await ports.retirerDesLieux({ mediateurId }),
+      ({ rattachementsSupprimes }) => rattachementsSupprimes,
+    ),
+)
+
+const revoquerLePartage = pourLEquipe(
+  ({ compte, maintenant }, ports) =>
+    async () =>
+      compter(
+        await ports.revoquerPartageStatistiques({
+          ...identifiantsDe(compte.rattachements),
+          maintenant,
+        }),
+        ({ partagesRevoques }) => partagesRevoques,
+      ),
+)
+
+const retirerDesListes: Planification =
+  ({ compte }, ports) =>
+  async () =>
+    compter(
+      await retirerLeContactDesListes(ports)({ courriel: compte.courriel }),
+      ({ listeDesUtilisateurs, contact }) =>
+        (listeDesUtilisateurs._tag === 'Retire' ? 1 : 0) +
+        (contact._tag === 'Supprime' ? 1 : 0),
+    )
+
+const PLAN_ORDONNE: readonly (readonly [NomEffacementStep, Planification])[] = [
+  ['PortefeuilleBeneficiaires', anonymiserLePortefeuille],
+  ['EmpreinteRdv', effacerLEmpreinteRdv],
+  ['NotesAccompagnements', effacerLesNotes],
+  ['AppartenancesEquipe', detacherDesEquipes],
+  ['LieuxActivite', retirerDesLieux],
+  ['PartageStatistiques', revoquerLePartage],
+  ['ListesDeDiffusion', retirerDesListes],
 ]
 
 export const effacementPlan = (
-  rattachements: RattachementsDuCompte,
-): readonly EffacementStep[] =>
-  ORDERED_STEPS.filter(({ due }) => due(rattachements)).map(({ step }) => step)
+  suppression: Suppression,
+  ports: EffacementsDuCompte,
+): readonly EtapePlanifiee[] =>
+  PLAN_ORDONNE.flatMap(([nom, planifier]) => {
+    const runner = planifier(suppression, ports)
+    return runner === null ? [] : [{ step: EffacementStep(nom), runner }]
+  })

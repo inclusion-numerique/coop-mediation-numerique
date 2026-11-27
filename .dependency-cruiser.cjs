@@ -385,7 +385,7 @@ const SOCLES = {
   domain: ['zod', 'libraries/model', 'libraries/result', '@arckit/resultset'],
   action: ['zod', 'libraries/nextjs'],
   middlewares: ['libraries/nextjs', 'next'],
-  'implementations/api': ['axios', 'zod', 'libraries/result'],
+  'implementations/api': ['axios', 'zod'],
   'implementations/api-entreprise': [
     'configuration/recherche-entreprises',
     'libraries/recherche-entreprises',
@@ -410,7 +410,6 @@ const SOCLES = {
   'implementations/prisma': [
     'configuration/prisma',
     'generated/prisma',
-    'libraries/result',
     '@arckit/resultset',
   ],
   'implementations/proconnect': ['next-auth', '@auth/core'],
@@ -509,7 +508,12 @@ const SOCLES_DES_COUCHES = {
   domain: [],
   action: OUTILS_GENERIQUES,
   middlewares: OUTILS_GENERIQUES,
-  implementations: [...VALEURS, ...OUTILS_GENERIQUES, 'libraries/date'],
+  implementations: [
+    ...VALEURS,
+    ...OUTILS_GENERIQUES,
+    'libraries/date',
+    'libraries/result',
+  ],
   ui: [...VALEURS, ...OUTILS_GENERIQUES, ...AFFICHAGE],
 }
 

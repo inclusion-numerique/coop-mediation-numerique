@@ -1,23 +1,28 @@
 import assert from 'node:assert'
 import { Then, When } from '@cucumber/cucumber'
 import { prismaClient } from '@/configuration/prisma'
-import { revoquerPartageStatistiques } from '@/features/mediateurs/abilities/revoquer-partage-statistiques/implementations/prisma/revoquer-partage-statistiques.mutation'
+import { revoquerPartageStatistiques } from '@/features/mediateurs/abilities/revoquer-partage-statistiques/domain/revoquer-partage-statistiques'
+import { revoquerLesPartages } from '@/features/mediateurs/abilities/revoquer-partage-statistiques/implementations/prisma/revoquer-partage-statistiques.mutation'
 import { rattachementsSemes } from '@/features/mediateurs/mediateurs.cucumber'
 
 const revocation: { partagesRevoques?: number } = {}
 
+const revoquer = async (): Promise<number> => {
+  const revoques = await revoquerPartageStatistiques({ revoquerLesPartages })({
+    ...rattachementsSemes(),
+    maintenant: new Date(),
+  })
+  return revoques.data.partagesRevoques
+}
+
 When('je révoque le partage de statistiques de ce compte', async () => {
-  revocation.partagesRevoques = (
-    await revoquerPartageStatistiques(rattachementsSemes())
-  ).partagesRevoques
+  revocation.partagesRevoques = await revoquer()
 })
 
 When(
   'je révoque à nouveau le partage de statistiques de ce compte',
   async () => {
-    revocation.partagesRevoques = (
-      await revoquerPartageStatistiques(rattachementsSemes())
-    ).partagesRevoques
+    revocation.partagesRevoques = await revoquer()
   },
 )
 

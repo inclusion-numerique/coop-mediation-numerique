@@ -1,0 +1,359 @@
+import { describe, expect, it } from 'vitest'
+import { CodeDepartement, CodeInsee } from '@/libraries/insee'
+import { NomAffiche } from '@/libraries/nom-affiche'
+import {
+  type Acteur,
+  type ActeurAvecCommunes,
+  ActeurId,
+  CoordinateurId,
+  Courriel,
+  Dispositif,
+  Effectif,
+  MediateurId,
+  type Mediation,
+  type MediationAvecCommunes,
+} from '../../../domain'
+import { consulterUnActeur } from './consulter-un-acteur'
+import type { RelationDEquipe } from './fiche-acteur'
+import type { Lecteur } from './lecteur'
+import type { ConsulterUnActeurPorts } from './ports'
+import type { AdhesionLue } from './relation-d-equipe'
+import type {
+  DerniereActivite,
+  StatutDActivitePublic,
+} from './statut-d-activite-public'
+
+const maintenant = new Date('2026-10-23T12:00:00Z')
+const profilCreeLe = new Date('2025-02-01T00:00:00Z')
+const lecteurId = 'd1b2c3d4-0000-4000-8000-000000000001'
+const coordinateurDuLecteur = CoordinateurId(
+  'd1b2c3d4-0000-4000-8000-000000000002',
+)
+
+const alex = {
+  acteurId: ActeurId('a1b2c3d4-0000-4000-8000-000000000002'),
+  nomAffiche: NomAffiche('Alex Durand'),
+}
+
+const mediation: MediationAvecCommunes = {
+  mediateurId: MediateurId('a1b2c3d4-0000-4000-8000-000000000001'),
+  nombreDeLieux: Effectif(2),
+  coordinateurs: [{ ...alex, communeDeLEmployeuse: CodeInsee('15014') }],
+}
+
+const mediationSituee: Mediation = {
+  ...mediation,
+  coordinateurs: [{ ...alex, departement: CodeDepartement('15') }],
+}
+
+const mediateur: ActeurAvecCommunes = {
+  acteurId: ActeurId('a1b2c3d4-0000-4000-8000-000000000003'),
+  nomAffiche: NomAffiche('Camille Martin'),
+  courriel: Courriel('camille.martin@example.org'),
+  profil: {
+    _tag: 'Mediateur',
+    dispositif: Dispositif('HorsDispositif'),
+    mediation,
+  },
+}
+
+const mediateurSitue: Acteur = {
+  ...mediateur,
+  profil: { ...mediateur.profil, mediation: mediationSituee },
+}
+
+const coordinateurSansMediation: ActeurAvecCommunes = {
+  acteurId: ActeurId('a1b2c3d4-0000-4000-8000-000000000004'),
+  nomAffiche: NomAffiche('Sacha Bernard'),
+  courriel: Courriel('sacha.bernard@example.org'),
+  profil: {
+    _tag: 'Coordinateur',
+    dispositif: Dispositif('ConseillerNumerique'),
+    coordinateurId: CoordinateurId('a1b2c3d4-0000-4000-8000-000000000005'),
+    mediation: null,
+  },
+}
+
+const coordinateurSitue: Acteur = {
+  ...coordinateurSansMediation,
+  profil: {
+    _tag: 'Coordinateur',
+    dispositif: Dispositif('ConseillerNumerique'),
+    coordinateurId: CoordinateurId('a1b2c3d4-0000-4000-8000-000000000005'),
+    mediation: null,
+  },
+}
+
+const statistiques = {
+  beneficiairesAccompagnes: Effectif(4),
+  accompagnements: Effectif(7),
+}
+
+const ports: ConsulterUnActeurPorts = {
+  lireLActeur: async () => ({ acteur: mediateur, profilCreeLe }),
+  lireLesLiensDEquipe: async () => ({
+    adhesions: [],
+    invitationEnCours: null,
+  }),
+  lireLaDerniereActivite: async () => ({ _tag: 'Jamais' }),
+  lireLesStatistiquesSur30Jours: async () => statistiques,
+}
+
+const parUnMediateur: Lecteur = {
+  _tag: 'Mediateur',
+  acteurId: ActeurId(lecteurId),
+}
+
+const parUnCoordinateur: Lecteur = {
+  _tag: 'Coordinateur',
+  acteurId: ActeurId(lecteurId),
+  coordinateurId: coordinateurDuLecteur,
+}
+
+const adhesionTerminee2025: AdhesionLue = {
+  _tag: 'Terminee',
+  debut: new Date('2025-01-01'),
+  fin: new Date('2025-06-01'),
+}
+
+const adhesionTerminee2026: AdhesionLue = {
+  _tag: 'Terminee',
+  debut: new Date('2026-01-01'),
+  fin: new Date('2026-03-01'),
+}
+
+describe('consulter un acteur', () => {
+  it('signale un acteur introuvable sans identifiant valide', async () => {
+    expect(
+      await consulterUnActeur(ports)({
+        lecteur: parUnMediateur,
+        acteurId: null,
+        maintenant,
+      }),
+    ).toEqual({
+      success: false,
+      error: { _tag: 'ActeurIntrouvable' },
+    })
+  })
+
+  it('signale un acteur introuvable quand il n’est pas visible', async () => {
+    expect(
+      await consulterUnActeur({ ...ports, lireLActeur: async () => null })({
+        lecteur: parUnMediateur,
+        acteurId: mediateur.acteurId,
+        maintenant,
+      }),
+    ).toEqual({
+      success: false,
+      error: { _tag: 'ActeurIntrouvable' },
+    })
+  })
+
+  it.each<{
+    cas: string
+    derniere: DerniereActivite
+    statut: StatutDActivitePublic
+  }>([
+    {
+      cas: 'actif avec une activité dans les 30 derniers jours',
+      derniere: { _tag: 'Le', date: new Date('2026-10-01T12:00:00Z') },
+      statut: { _tag: 'Actif' },
+    },
+    {
+      cas: 'inactif depuis sa dernière activité au-delà de 30 jours',
+      derniere: { _tag: 'Le', date: new Date('2026-09-01T12:00:00Z') },
+      statut: {
+        _tag: 'InactifDepuis',
+        derniereActivite: new Date('2026-09-01T12:00:00Z'),
+      },
+    },
+    {
+      cas: 'jamais actif sans aucune activité',
+      derniere: { _tag: 'Jamais' },
+      statut: { _tag: 'JamaisActif' },
+    },
+  ])(
+    'montre à un médiateur un acteur $cas, sans rien dire de l’équipe',
+    async ({ derniere, statut }) => {
+      expect(
+        await consulterUnActeur({
+          ...ports,
+          lireLaDerniereActivite: async () => derniere,
+        })({
+          lecteur: parUnMediateur,
+          acteurId: mediateur.acteurId,
+          maintenant,
+        }),
+      ).toEqual({
+        success: true,
+        data: {
+          acteur: mediateurSitue,
+          profilCreeLe,
+          statut,
+          regard: { _tag: 'Mediateur' },
+        },
+      })
+    },
+  )
+
+  it.each<{
+    cas: string
+    acteur: ActeurAvecCommunes
+    adhesions: readonly AdhesionLue[]
+    invitationEnCours: Date | null
+    relation: RelationDEquipe
+  }>([
+    {
+      cas: 'ne coordonne pas un acteur qui ne fait pas de médiation',
+      acteur: coordinateurSansMediation,
+      adhesions: [],
+      invitationEnCours: null,
+      relation: { _tag: 'NonCoordonnable' },
+    },
+    {
+      cas: 'ne se coordonne pas lui-même',
+      acteur: { ...mediateur, acteurId: ActeurId(lecteurId) },
+      adhesions: [],
+      invitationEnCours: null,
+      relation: { _tag: 'NonCoordonnable' },
+    },
+    {
+      cas: 'est hors équipe sans adhésion ni invitation',
+      acteur: mediateur,
+      adhesions: [],
+      invitationEnCours: null,
+      relation: { _tag: 'HorsEquipe' },
+    },
+    {
+      cas: 'est membre avec ses statistiques sur 30 jours, même invité',
+      acteur: mediateur,
+      adhesions: [{ _tag: 'EnCours' }],
+      invitationEnCours: new Date('2026-10-01'),
+      relation: { _tag: 'Membre', statistiques },
+    },
+    {
+      cas: 'est invité quand une invitation attend sa réponse',
+      acteur: mediateur,
+      adhesions: [],
+      invitationEnCours: new Date('2026-10-01'),
+      relation: { _tag: 'Invite', invitationLe: new Date('2026-10-01') },
+    },
+    {
+      cas: 'est ancien membre depuis sa dernière adhésion terminée',
+      acteur: mediateur,
+      adhesions: [adhesionTerminee2025, adhesionTerminee2026],
+      invitationEnCours: null,
+      relation: {
+        _tag: 'AncienMembre',
+        depuis: new Date('2026-01-01'),
+        fin: new Date('2026-03-01'),
+      },
+    },
+    {
+      cas: 'reste ancien membre depuis l’adhésion la plus récente, quel que soit l’ordre de lecture',
+      acteur: mediateur,
+      adhesions: [adhesionTerminee2026, adhesionTerminee2025],
+      invitationEnCours: null,
+      relation: {
+        _tag: 'AncienMembre',
+        depuis: new Date('2026-01-01'),
+        fin: new Date('2026-03-01'),
+      },
+    },
+  ])(
+    'pour un coordinateur, l’acteur $cas',
+    async ({ acteur, adhesions, invitationEnCours, relation }) => {
+      expect(
+        await consulterUnActeur({
+          ...ports,
+          lireLActeur: async () => ({ acteur, profilCreeLe }),
+          lireLesLiensDEquipe: async () => ({ adhesions, invitationEnCours }),
+        })({
+          lecteur: parUnCoordinateur,
+          acteurId: acteur.acteurId,
+          maintenant,
+        }),
+      ).toMatchObject({
+        success: true,
+        data: {
+          profilCreeLe,
+          statut: { _tag: 'JamaisActif' },
+          regard: {
+            _tag: 'Coordinateur',
+            coordinateurId: coordinateurDuLecteur,
+            relation,
+          },
+        },
+      })
+    },
+  )
+
+  it.each<{
+    cas: string
+    acteur: ActeurAvecCommunes
+    situe: Acteur
+  }>([
+    {
+      cas: 'situe le coordinateur d’un médiateur dans le département de son employeuse',
+      acteur: mediateur,
+      situe: mediateurSitue,
+    },
+    {
+      cas: 'situe le coordinateur sans employeuse dans le département par défaut',
+      acteur: {
+        ...mediateur,
+        profil: {
+          ...mediateur.profil,
+          mediation: {
+            ...mediation,
+            coordinateurs: [{ ...alex, communeDeLEmployeuse: null }],
+          },
+        },
+      },
+      situe: {
+        ...mediateur,
+        profil: {
+          ...mediateur.profil,
+          mediation: {
+            ...mediation,
+            coordinateurs: [{ ...alex, departement: CodeDepartement('75') }],
+          },
+        },
+      },
+    },
+    {
+      cas: 'situe les coordinateurs d’un coordinateur qui fait de la médiation',
+      acteur: {
+        ...coordinateurSansMediation,
+        profil: { ...coordinateurSansMediation.profil, mediation },
+      },
+      situe: {
+        ...coordinateurSansMediation,
+        profil: {
+          ...coordinateurSansMediation.profil,
+          mediation: mediationSituee,
+        },
+      },
+    },
+    {
+      cas: 'laisse sans médiation un coordinateur qui n’en fait pas',
+      acteur: coordinateurSansMediation,
+      situe: coordinateurSitue,
+    },
+  ])('$cas', async ({ acteur, situe }) => {
+    expect(
+      await consulterUnActeur({
+        ...ports,
+        lireLActeur: async () => ({ acteur, profilCreeLe }),
+      })({ lecteur: parUnMediateur, acteurId: acteur.acteurId, maintenant }),
+    ).toEqual({
+      success: true,
+      data: {
+        acteur: situe,
+        profilCreeLe,
+        statut: { _tag: 'JamaisActif' },
+        regard: { _tag: 'Mediateur' },
+      },
+    })
+  })
+})

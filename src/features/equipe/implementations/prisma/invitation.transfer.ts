@@ -27,23 +27,18 @@ export type InvitationRow = {
   readonly renvoyee: Date | null
 }
 
-const toInvite = (mediateurId: string | null): Invite | null => {
-  if (mediateurId == null) return { type: 'SansCompte' }
-  const id = MediateurId.safe(mediateurId)
-  return id === null ? null : { type: 'MediateurInscrit', mediateurId: id }
-}
+const toInvite = (mediateurId: string | null): Invite =>
+  mediateurId === null
+    ? { type: 'SansCompte' }
+    : { type: 'MediateurInscrit', mediateurId: MediateurId(mediateurId) }
 
-export const toInvitation = (row: InvitationRow): Invitation | null => {
-  const email = Courriel.safe(row.email)
-  const coordinateurId = CoordinateurId.safe(row.coordinateurId)
-  if (email === null || coordinateurId === null) return null
-
-  const invite = toInvite(row.mediateurId)
-  if (invite === null) return null
-
+export const toInvitation = (row: InvitationRow): Invitation => {
   const socle = {
-    reference: ReferenceInvitation({ email, coordinateurId }),
-    invite,
+    reference: ReferenceInvitation({
+      email: Courriel(row.email),
+      coordinateurId: CoordinateurId(row.coordinateurId),
+    }),
+    invite: toInvite(row.mediateurId),
     envoyeeLe: row.creation,
     renvoyeeLe: row.renvoyee,
   }

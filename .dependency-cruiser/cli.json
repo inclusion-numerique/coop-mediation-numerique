@@ -13,6 +13,7 @@
   "generated/prisma": ["fixtures"],
   "libraries/chemins": ["commands", "dot-env-file.ts"],
   "libraries/fixtures": ["fixtures"],
+  "libraries/result": ["index.ts"],
   "nanoid": ["secrets"],
   "node:child_process": ["commands"],
   "node:crypto": ["branch-namespace.ts"],

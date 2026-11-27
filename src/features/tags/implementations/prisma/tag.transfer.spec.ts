@@ -61,21 +61,30 @@ describe('tag transfer', () => {
     expect(tagToDomain(tagFromDomain(original))).toEqual(original)
   })
 
-  it('écarte une description vide', () => {
-    expect(
+  it('refuse une description vide', () => {
+    expect(() =>
       tagToDomain({
         ...tagFromDomain(tag({ _tag: 'National' })),
         description: '  ',
-      })?.description,
-    ).toBeNull()
+      }),
+    ).toThrow()
   })
 
-  it('écarte un tag dont le département est illisible', () => {
-    expect(
+  it('refuse un tag dont le département est illisible', () => {
+    expect(() =>
       tagToDomain({
         ...tagFromDomain(tag({ _tag: 'National' })),
         departement: 'inconnu',
       }),
-    ).toBeNull()
+    ).toThrow()
+  })
+
+  it('refuse un tag dont le nom est vide', () => {
+    expect(() =>
+      tagToDomain({
+        ...tagFromDomain(tag({ _tag: 'National' })),
+        nom: '  ',
+      }),
+    ).toThrow()
   })
 })

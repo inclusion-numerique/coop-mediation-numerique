@@ -1,7 +1,9 @@
 export {
   type Acteur,
-  type CoordinateurDeLActeur,
+  type ActeurAvecCommunes,
+  type CoordinateurAvecCommune,
   type Mediation,
+  type MediationAvecCommunes,
   type ProfilActeur,
 } from './acteur'
 export { ActeurId } from './acteur-id'
@@ -9,6 +11,8 @@ export { CoordinateurId } from './coordinateur-id'
 export { Courriel } from './courriel'
 export { Dispositif, dispositifDe } from './dispositif'
 export { Effectif } from './effectif'
-export { ActeurIntrouvable } from './errors'
+export { ActeurIntrouvable, DepartementInconnu } from './errors'
 export { MediateurId } from './mediateur-id'
+export type { CommunesDesLieux } from './ports'
 export { profilAffiche } from './profil-affiche'
+export { situerLesCoordinateurs } from './situer-les-coordinateurs'

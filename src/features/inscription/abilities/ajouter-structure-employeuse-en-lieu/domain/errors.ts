@@ -1,10 +1,9 @@
-import type { UtilisateurId } from '@/features/inscription/domain'
+import type {
+  LieuIntrouvable,
+  UtilisateurId,
+} from '@/features/inscription/domain'
+import type { EmployeuseId } from './employeuse-id'
 
-/**
- * Le « Oui/Non » porte sur l'employeuse de l'utilisateur : sans employeuse, la
- * question n'a pas d'objet. L'écran ne s'affiche qu'une fois l'employeuse
- * renseignée ; l'ability ne s'en remet pas à lui.
- */
 export type EmployeuseIntrouvable = {
   readonly _tag: 'EmployeuseIntrouvable'
   readonly userId: UtilisateurId
@@ -19,11 +18,11 @@ export const EmployeuseIntrouvable = (
 
 export type AdresseNonReconnue = {
   readonly _tag: 'AdresseNonReconnue'
-  readonly employeuseId: number
+  readonly employeuseId: EmployeuseId
 }
 
 export const AdresseNonReconnue = (
-  employeuseId: number,
+  employeuseId: EmployeuseId,
 ): AdresseNonReconnue => ({
   _tag: 'AdresseNonReconnue',
   employeuseId,
@@ -31,17 +30,31 @@ export const AdresseNonReconnue = (
 
 export type ServiceAdresseIndisponible = {
   readonly _tag: 'ServiceAdresseIndisponible'
-  readonly employeuseId: number
+  readonly employeuseId: EmployeuseId
 }
 
 export const ServiceAdresseIndisponible = (
-  employeuseId: number,
+  employeuseId: EmployeuseId,
 ): ServiceAdresseIndisponible => ({
   _tag: 'ServiceAdresseIndisponible',
   employeuseId,
 })
 
-export type AjouterStructureEmployeuseEnLieuError =
+export type EmployeuseSansDenomination = {
+  readonly _tag: 'EmployeuseSansDenomination'
+  readonly employeuseId: EmployeuseId
+}
+
+export const EmployeuseSansDenomination = (
+  employeuseId: EmployeuseId,
+): EmployeuseSansDenomination => ({
+  _tag: 'EmployeuseSansDenomination',
+  employeuseId,
+})
+
+export type EchecDAjouterStructureEmployeuseEnLieu =
   | EmployeuseIntrouvable
+  | EmployeuseSansDenomination
   | AdresseNonReconnue
   | ServiceAdresseIndisponible
+  | LieuIntrouvable

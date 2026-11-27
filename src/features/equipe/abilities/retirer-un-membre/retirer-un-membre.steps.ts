@@ -1,6 +1,7 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
-import { retirerUnMembre } from '@/features/equipe/abilities/retirer-un-membre/implementations/prisma/retirer-un-membre.mutation'
+import { retirerUnMembre as retirerUnMembreAvec } from '@/features/equipe/abilities/retirer-un-membre/domain/retirer-un-membre'
+import { archiverLAdhesion } from '@/features/equipe/abilities/retirer-un-membre/implementations/prisma/archiver-l-adhesion.mutation'
 import {
   CoordinateurId,
   MediateurId,
@@ -14,6 +15,12 @@ import {
   semerUneAdhesion,
   semerUnMediateurDEquipe,
 } from '@/features/equipe/equipe.cucumber'
+import { lireLesAdhesionsDeLaPaire } from '@/features/equipe/implementations/prisma/adhesion.query'
+
+const retirerUnMembre = retirerUnMembreAvec({
+  lireLesAdhesionsDeLaPaire,
+  archiverLAdhesion,
+})
 
 const contexte: {
   coordinateur?: CoordinateurSeme
@@ -38,6 +45,7 @@ const retirerPar = async (auteur: CoordinateurSeme) => {
       coordinateurId: CoordinateurId(auteur.coordinateurId),
     },
     auteurId: UtilisateurId(auteur.userId),
+    maintenant: new Date(),
   })
 }
 

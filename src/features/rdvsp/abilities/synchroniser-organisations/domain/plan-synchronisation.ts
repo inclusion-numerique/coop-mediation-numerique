@@ -1,11 +1,6 @@
 import type { OrganisationId } from '../../../domain/identifiants/organisation-id'
 import type { Organisation } from '../../../domain/organisation'
 
-/**
- * Ce qu'une synchronisation doit accomplir, décidé avant d'écrire quoi que ce
- * soit. Séparer la décision de son application rend la règle vérifiable sans
- * base, et rend visible ce que l'ancienne boucle impérative dissimulait.
- */
 export type PlanSynchronisation = {
   readonly aCreer: readonly Organisation[]
   readonly aMettreAJour: readonly Organisation[]
@@ -14,27 +9,12 @@ export type PlanSynchronisation = {
   readonly aDetacher: readonly OrganisationId[]
 }
 
-/**
- * Une organisation est réputée modifiée dès qu'un des champs que La Coop recopie
- * diffère. Rien d'autre n'est comparé : le reste du paramétrage de RDV Service
- * Public ne nous est pas transmis, et n'aurait aucun sens ici.
- */
 const estModifiee = (connue: Organisation, recue: Organisation): boolean =>
   connue.nom !== recue.nom ||
   connue.email !== recue.email ||
   connue.telephone !== recue.telephone ||
   connue.verticale !== recue.verticale
 
-/**
- * Confronte ce que RDV Service Public renvoie à ce que La Coop détient.
- *
- * Le détachement se décide sur **tous** les rattachements du compte, pas sur les
- * seules organisations reçues. C'est ce qui manquait : l'ancienne implémentation
- * ne cherchait les liens à retirer que parmi les organisations présentes dans la
- * réponse, ensemble dont ils faisaient partie par construction — la liste était
- * donc toujours vide, et un agent retiré d'une organisation en gardait le lien
- * indéfiniment, avec les synchronisations que cela entraîne.
- */
 export const planifierSynchronisation = ({
   recues,
   connues,
@@ -66,18 +46,6 @@ export const planifierSynchronisation = ({
   }
 }
 
-/**
- * Rattachements à retirer, sauf s'il faudrait tous les retirer.
- *
- * Une réponse vide n'est pas distinguable, ici, d'un agent qui vient d'être sorti
- * de toutes ses organisations. Le second cas est rare, le premier est un incident
- * d'API — et la sanction serait la même : un compte qui ne synchronise plus rien
- * jusqu'à la passe suivante, faute d'organisation à parcourir.
- *
- * On garde donc le cache en l'état et on laisse la passe suivante trancher. Un
- * agent réellement sorti de partout n'a de toute façon plus de rendez-vous à
- * rapporter : ne rien détacher ne lui fait rien remonter de faux.
- */
 const detachements = (
   rattachements: readonly OrganisationId[],
   idsRecus: ReadonlySet<OrganisationId>,

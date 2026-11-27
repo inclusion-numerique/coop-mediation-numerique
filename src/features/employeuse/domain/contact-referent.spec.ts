@@ -21,11 +21,7 @@ describe('ContactReferent', () => {
     })
   })
 
-  // Cas de production : le jsonb porte deux adresses distinctes et un seul nom,
-  // celui du gestionnaire. Servir le référent hiérarchique affichait « OLIVE
-  // René » avec l'adresse de quelqu'un d'autre (SA 5292, mesuré sur 746 des
-  // 3 351 utilisateurs actifs).
-  it('sert le gestionnaire quand les deux courriels désignent des personnes différentes', () => {
+  it('sert le gestionnaire, seul à porter le nom, quand les deux courriels désignent des personnes différentes', () => {
     expect(
       ContactReferent({
         nom: 'OLIVE',
@@ -35,24 +31,37 @@ describe('ContactReferent', () => {
           referent_hierarchique: 's.vignettes@cc-aspres.fr',
         },
       }),
-    ).toMatchObject({ nom: 'René OLIVE', courriel: 's.pena@cc-aspres.fr' })
+    ).toEqual({
+      _tag: 'renseigne',
+      nom: 'René OLIVE',
+      courriel: 's.pena@cc-aspres.fr',
+      telephone: null,
+    })
   })
 
-  it('retombe sur le référent hiérarchique puis sur le premier courriel disponible', () => {
+  it('retombe sur le référent hiérarchique sans gestionnaire', () => {
     expect(
       ContactReferent({
         courriels: { referent_hierarchique: 'hierarchie@x.fr' },
       }),
-    ).toMatchObject({ courriel: 'hierarchie@x.fr' })
-
-    expect(
-      ContactReferent({ courriels: { autre: 'autre@x.fr' } }),
-    ).toMatchObject({ courriel: 'autre@x.fr' })
+    ).toEqual({
+      _tag: 'renseigne',
+      nom: null,
+      courriel: 'hierarchie@x.fr',
+      telephone: null,
+    })
   })
 
-  // Un gestionnaire malformé ne doit pas priver l'affichage du référent
-  // hiérarchique, qui lui est valide.
-  it('passe au référent hiérarchique quand le gestionnaire n’est pas une adresse', () => {
+  it('retombe sur le premier courriel disponible sans gestionnaire ni référent hiérarchique', () => {
+    expect(ContactReferent({ courriels: { autre: 'autre@x.fr' } })).toEqual({
+      _tag: 'renseigne',
+      nom: null,
+      courriel: 'autre@x.fr',
+      telephone: null,
+    })
+  })
+
+  it('passe au référent hiérarchique valide quand le gestionnaire n’est pas une adresse', () => {
     expect(
       ContactReferent({
         nom: 'Piaf',
@@ -61,23 +70,26 @@ describe('ContactReferent', () => {
           referent_hierarchique: 'edith@structure.fr',
         },
       }),
-    ).toMatchObject({ courriel: 'edith@structure.fr' })
-  })
-
-  it('n’est pas renseigné quand le contact est vide, absent ou sans information', () => {
-    expect(ContactReferent(null)).toEqual({ _tag: 'nonRenseigne' })
-    expect(ContactReferent({})).toEqual({ _tag: 'nonRenseigne' })
-    expect(ContactReferent({ nom: '   ' })).toEqual({ _tag: 'nonRenseigne' })
-  })
-
-  // Le jsonb vient des producteurs Dataspace : sa forme n'est pas garantie.
-  // L'ancien `contact as MainContact` la promettait sans jamais la vérifier.
-  it('résiste à un jsonb de forme inattendue', () => {
-    expect(ContactReferent('une chaîne')).toEqual({ _tag: 'nonRenseigne' })
-    expect(ContactReferent([1, 2, 3])).toEqual({ _tag: 'nonRenseigne' })
-    expect(ContactReferent({ nom: 42, telephone: true })).toEqual({
-      _tag: 'nonRenseigne',
+    ).toEqual({
+      _tag: 'renseigne',
+      nom: 'Piaf',
+      courriel: 'edith@structure.fr',
+      telephone: null,
     })
+  })
+
+  it.each<{ cas: string; contact: unknown }>([
+    { cas: 'absent', contact: null },
+    { cas: 'vide', contact: {} },
+    { cas: 'sans information', contact: { nom: '   ' } },
+    { cas: 'une chaîne au lieu d’un jsonb objet', contact: 'une chaîne' },
+    { cas: 'un tableau au lieu d’un jsonb objet', contact: [1, 2, 3] },
+    {
+      cas: 'un jsonb aux champs mal typés',
+      contact: { nom: 42, telephone: true },
+    },
+  ])('n’est pas renseigné quand le contact est $cas', ({ contact }) => {
+    expect(ContactReferent(contact)).toEqual({ _tag: 'nonRenseigne' })
   })
 
   it('n’emporte pas le reste du contact quand un seul champ est malformé', () => {
@@ -97,15 +109,17 @@ describe('ContactReferent', () => {
         nom: 'Piaf',
         courriels: { referent_hierarchique: 'pas-une-adresse' },
       }),
-    ).toMatchObject({ courriel: null })
+    ).toEqual({
+      _tag: 'renseigne',
+      nom: 'Piaf',
+      courriel: null,
+      telephone: null,
+    })
   })
 })
 
 describe('referentAffichage', () => {
-  // Cas de production : 644 employeuses n'ont ni nom ni prénom dans leur jsonb
-  // mais bien un courriel ou un téléphone. Conditionner l'affichage au nom
-  // masquait leur bloc contact entier.
-  it('signale un référent joignable même sans nom', () => {
+  it('signale un référent joignable même sans nom, pour ne pas masquer son bloc contact', () => {
     expect(
       referentAffichage(
         ContactReferent({ courriels: { email: 'lelien26@orange.fr' } }),

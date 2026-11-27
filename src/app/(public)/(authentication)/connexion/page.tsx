@@ -2,9 +2,13 @@ import type { Metadata } from 'next'
 import { Route } from 'next'
 import { redirect } from 'next/navigation'
 import { metadataTitle } from '@/configuration/projet'
-import { getServerUrl } from '@/configuration/projet/serveur'
+import {
+  connexionParProConnect,
+  getServerUrl,
+} from '@/configuration/projet/serveur'
 import { ConnexionPage } from '@/features/authentification/abilities/se-connecter/ui/pages/ConnexionPage'
-import { moyenDeConnexion } from '@/features/authentification/implementations/next-auth/authentication-provider.client'
+import { moyenDeConnexionParCourriel } from '@/features/authentification/implementations/email/moyen-de-connexion-par-courriel.client'
+import { moyenDeConnexionProConnect } from '@/features/authentification/implementations/proconnect/moyen-de-connexion-proconnect.client'
 import { getSessionUser } from '@/features/authentification/middlewares/with-utilisateur-de-la-session'
 
 export const dynamic = 'force-dynamic'
@@ -32,7 +36,11 @@ const SigninPage = async ({
     <ConnexionPage
       error={error}
       callbackUrl={callbackUrl}
-      connexion={moyenDeConnexion}
+      connexion={
+        connexionParProConnect()
+          ? moyenDeConnexionProConnect.affichage
+          : moyenDeConnexionParCourriel.affichage
+      }
     />
   )
 }

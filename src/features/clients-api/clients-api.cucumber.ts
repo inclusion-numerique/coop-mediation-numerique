@@ -12,7 +12,9 @@ import {
 import { verifySecret } from '@/features/clients-api/implementations/secret/hash-secret.adapter'
 import { nouveauSecret } from '@/features/clients-api/implementations/secret/secret.adapter'
 import { createTestApiV1Request } from '@/libraries/json-api'
-import { creerUnClientApi } from './abilities/creer-un-client-api/implementations/prisma/creer-un-client-api.mutation'
+import { creerUnClientApi } from './abilities/creer-un-client-api/domain/creer-un-client-api'
+import { enregistrerLeClientApi } from './abilities/creer-un-client-api/implementations/prisma/enregistrer-le-client-api.mutation'
+import { nomDejaPris } from './implementations/prisma/nom-deja-pris.query'
 
 setDefaultTimeout(60_000)
 
@@ -54,10 +56,16 @@ export const semerUnClientApi = async ({
   debut?: string
   fin?: string | null
 }): Promise<ClientSeme> => {
-  const creation = await creerUnClientApi(nouveauSecret)({
-    nom: nomUnique(nom),
-    portees: portees(liste),
-    validite: { debut: jour(debut), fin: fin === null ? null : jour(fin) },
+  const creation = await creerUnClientApi({
+    leNomEstPris: nomDejaPris,
+    genererUnSecret: nouveauSecret,
+    enregistrer: enregistrerLeClientApi,
+  })({
+    definition: {
+      nom: nomUnique(nom),
+      portees: portees(liste),
+      validite: { debut: jour(debut), fin: fin === null ? null : jour(fin) },
+    },
   })
   if (!creation.success) throw new Error(`Client API non semé : ${nom}`)
   const seme = { id: creation.data.client.id, secret: creation.data.secret }

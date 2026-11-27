@@ -1,8 +1,10 @@
 import type { NextRequest } from 'next/server'
 import { utilisateurDuJetonDeSession } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
 import { jetonDeSessionDesCookies } from '@/features/authentification/implementations/session/session-token-from-cookies.query'
+import { exporterLesMembres } from '@/features/equipe/abilities/exporter-les-membres/domain/exporter-les-membres'
 import { classeurDesMembresAvec } from '@/features/equipe/abilities/exporter-les-membres/implementations/excel/classeur-equipe.classeur'
-import { exporterLesMembres } from '@/features/equipe/abilities/exporter-les-membres/implementations/prisma/exporter-les-membres.query'
+import { lireLesContratsDesMembres } from '@/features/equipe/abilities/exporter-les-membres/implementations/prisma/contrats-des-membres.query'
+import { lireLesMembresAExporter } from '@/features/equipe/abilities/exporter-les-membres/implementations/prisma/membres-a-exporter.query'
 import { membreExporte } from '@/features/equipe/abilities/exporter-les-membres/ui/presenters/membre-exporte.presenter'
 import { nomDuFichierDeLEquipe } from '@/features/equipe/abilities/exporter-les-membres/ui/presenters/nom-du-fichier.presenter'
 import { estMembreActif } from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/lister-les-membres.query'
@@ -23,9 +25,13 @@ export const GET = async (
   )
   if (!user) return new Response('Unauthorized', { status: 401 })
 
+  const maintenant = new Date()
   const criteres = criteresDeLEquipe(new URL(request.url).searchParams)
 
   const membres = await exporterLesMembres({
+    lireLesMembresAExporter,
+    lireLesContratsDesMembres,
+  })({
     coordinateurId,
     lecteur: {
       gestionnaire: gestionnaireDe(user),
@@ -36,6 +42,7 @@ export const GET = async (
       }),
     },
     criteres,
+    maintenant,
   })
 
   if (!membres.success) return new Response('Forbidden', { status: 403 })
@@ -44,6 +51,7 @@ export const GET = async (
     membres: membres.data,
     criteres,
     auteur: auteurDeLExport(user),
+    genereLe: maintenant,
   }).xlsx.writeBuffer()
 
   return new Response(donnees, {
@@ -51,7 +59,7 @@ export const GET = async (
     headers: {
       'Content-Type':
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      'Content-Disposition': `attachment; filename="${nomDuFichierDeLEquipe(new Date())}"`,
+      'Content-Disposition': `attachment; filename="${nomDuFichierDeLEquipe(maintenant)}"`,
     },
   })
 }

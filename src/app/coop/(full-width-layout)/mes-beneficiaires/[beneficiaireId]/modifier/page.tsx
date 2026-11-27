@@ -19,6 +19,7 @@ const PageModifierBeneficiaire = async (props: {
   const beneficiaire = await beneficiaireAEditer({
     beneficiaireId: BeneficiaireId(beneficiaireId),
     mediateurId: MediateurId(user.mediateur.id),
+    maintenant: new Date(),
   })
 
   if (!beneficiaire) {

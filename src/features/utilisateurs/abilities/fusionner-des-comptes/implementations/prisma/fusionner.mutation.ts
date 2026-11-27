@@ -1,7 +1,7 @@
 import { prismaClient } from '@/configuration/prisma'
 import type { SynchroniserLaPersonne } from '@/features/utilisateurs/implementations/prisma/registre-des-personnes.mutation'
 import type { Prisma } from '@/generated/prisma/client'
-import type { FusionAutorisee } from '../../domain'
+import type { FusionAutorisee, RoleDeFusion } from '../../domain'
 
 type Tx = Prisma.TransactionClient
 
@@ -10,52 +10,49 @@ const absentsDe =
   (valeur: string): boolean =>
     !presents.includes(valeur)
 
-const rolesDuCompte = (tx: Tx, id: string) =>
-  tx.user.findUniqueOrThrow({
-    where: { id },
-    select: {
-      mediateur: { select: { id: true } },
-      coordinateur: { select: { id: true } },
-    },
+type ParRole = Readonly<Record<RoleDeFusion['_tag'], () => Promise<unknown>>>
+
+const enSuite = <T>(
+  elements: readonly T[],
+  effectuer: (element: T) => Promise<unknown>,
+): Promise<void> =>
+  elements.reduce<Promise<void>>(async (precedent, element) => {
+    await precedent
+    await effectuer(element)
+  }, Promise.resolve())
+
+const creerLeRole = (tx: Tx, cibleId: string): ParRole => ({
+  Mediateur: () => tx.mediateur.create({ data: { userId: cibleId } }),
+  Coordinateur: () => tx.coordinateur.create({ data: { userId: cibleId } }),
+})
+
+const mediateurSelect = {
+  id: true,
+  coordinations: { select: { coordinateurId: true } },
+  enActivite: { select: { structureId: true } },
+  user: { select: { email: true } },
+} satisfies Prisma.MediateurSelect
+
+const coordinateurSelect = {
+  id: true,
+  invitations: { select: { email: true } },
+  mediateursCoordonnes: { select: { mediateurId: true } },
+} satisfies Prisma.CoordinateurSelect
+
+const mediateurDuCompte = (tx: Tx, userId: string) =>
+  tx.mediateur.findUniqueOrThrow({
+    where: { userId },
+    select: mediateurSelect,
   })
 
-const garantirLesRoles = async (tx: Tx, sourceId: string, cibleId: string) => {
-  const [source, cible] = await Promise.all([
-    rolesDuCompte(tx, sourceId),
-    rolesDuCompte(tx, cibleId),
-  ])
-
-  if (source.mediateur !== null && cible.mediateur === null)
-    await tx.mediateur.create({ data: { userId: cibleId } })
-  if (source.coordinateur !== null && cible.coordinateur === null)
-    await tx.coordinateur.create({ data: { userId: cibleId } })
-}
-
-const rolesDe = (tx: Tx, userId: string) =>
-  tx.user.findUniqueOrThrow({
-    where: { id: userId },
-    select: {
-      email: true,
-      mediateur: {
-        select: {
-          id: true,
-          coordinations: { select: { coordinateurId: true } },
-          enActivite: { select: { structureId: true } },
-        },
-      },
-      coordinateur: {
-        select: {
-          id: true,
-          invitations: { select: { email: true } },
-          mediateursCoordonnes: { select: { mediateurId: true } },
-        },
-      },
-    },
+const coordinateurDuCompte = (tx: Tx, userId: string) =>
+  tx.coordinateur.findUniqueOrThrow({
+    where: { userId },
+    select: coordinateurSelect,
   })
 
-type Roles = Awaited<ReturnType<typeof rolesDe>>
-type MediateurDesRoles = NonNullable<Roles['mediateur']>
-type CoordinateurDesRoles = NonNullable<Roles['coordinateur']>
+type MediateurDesRoles = Awaited<ReturnType<typeof mediateurDuCompte>>
+type CoordinateurDesRoles = Awaited<ReturnType<typeof coordinateurDuCompte>>
 
 const adresse = (email: string): Prisma.StringFilter => ({
   equals: email,
@@ -68,20 +65,6 @@ const invitationsDe = (
 ): Prisma.InvitationEquipeWhereInput => ({
   OR: [{ mediateurId }, { email: adresse(email) }],
 })
-
-const fusionnerLePartage = async (
-  tx: Tx,
-  source: { id: string; deleted: Date | null } | null,
-  cible: { id: string; deleted: Date | null } | null,
-) => {
-  if (source === null) return
-  await tx.partageStatistiques.delete({ where: { id: source.id } })
-  if (source.deleted !== null && cible !== null && cible.deleted === null)
-    await tx.partageStatistiques.update({
-      where: { id: cible.id },
-      data: { deleted: new Date() },
-    })
-}
 
 const fusionnerLesMediateurs = async (
   tx: Tx,
@@ -104,15 +87,9 @@ const fusionnerLesMediateurs = async (
     data: { mediateurId: cibleId },
   })
 
-  await fusionnerLePartage(
-    tx,
-    await tx.partageStatistiques.findUnique({
-      where: { mediateurId: sourceId },
-    }),
-    await tx.partageStatistiques.findUnique({
-      where: { mediateurId: cibleId },
-    }),
-  )
+  await tx.partageStatistiques.deleteMany({
+    where: { mediateurId: sourceId },
+  })
 
   const invitationsDeLaSource = invitationsDe(sourceId, source.email)
   const invitationsDeLaCible = invitationsDe(cibleId, cible.email)
@@ -211,15 +188,9 @@ const fusionnerLesCoordinateurs = async (
     where: { coordinateurId: source.id },
   })
 
-  await fusionnerLePartage(
-    tx,
-    await tx.partageStatistiques.findUnique({
-      where: { coordinateurId: source.id },
-    }),
-    await tx.partageStatistiques.findUnique({
-      where: { coordinateurId: cible.id },
-    }),
-  )
+  await tx.partageStatistiques.deleteMany({
+    where: { coordinateurId: source.id },
+  })
 
   await tx.activiteCoordination.updateMany({
     where: { coordinateurId: source.id },
@@ -415,35 +386,62 @@ const retirerLaSource = async (tx: Tx, sourceId: string) => {
   await tx.user.delete({ where: { id: sourceId } })
 }
 
+const fusionnerLeRole = (
+  tx: Tx,
+  sourceId: string,
+  cibleId: string,
+): ParRole => ({
+  Mediateur: async () => {
+    const [source, cible] = await Promise.all([
+      mediateurDuCompte(tx, sourceId),
+      mediateurDuCompte(tx, cibleId),
+    ])
+    await fusionnerLesMediateurs(
+      tx,
+      { email: source.user.email, mediateur: source },
+      { email: cible.user.email, mediateur: cible },
+    )
+  },
+  Coordinateur: async () => {
+    const [source, cible] = await Promise.all([
+      coordinateurDuCompte(tx, sourceId),
+      coordinateurDuCompte(tx, cibleId),
+    ])
+    await fusionnerLesCoordinateurs(tx, source, cible)
+  },
+})
+
+const revoquerLePartage = (
+  tx: Tx,
+  cibleId: string,
+  revoqueLe: Date,
+): ParRole => ({
+  Mediateur: () =>
+    tx.partageStatistiques.updateMany({
+      where: { mediateur: { userId: cibleId } },
+      data: { deleted: revoqueLe },
+    }),
+  Coordinateur: () =>
+    tx.partageStatistiques.updateMany({
+      where: { coordinateur: { userId: cibleId } },
+      data: { deleted: revoqueLe },
+    }),
+})
+
 export const fusionner =
   (synchroniserLaPersonne: SynchroniserLaPersonne) =>
-  async ({ source, cible }: FusionAutorisee): Promise<void> => {
+  async ({ source, cible, plan }: FusionAutorisee): Promise<void> => {
     await prismaClient.$transaction(
       async (tx) => {
-        await garantirLesRoles(tx, source.id, cible.id)
-
-        const [rolesSource, rolesCible] = await Promise.all([
-          rolesDe(tx, source.id),
-          rolesDe(tx, cible.id),
-        ])
-
-        if (rolesSource.mediateur !== null && rolesCible.mediateur !== null)
-          await fusionnerLesMediateurs(
-            tx,
-            { email: rolesSource.email, mediateur: rolesSource.mediateur },
-            { email: rolesCible.email, mediateur: rolesCible.mediateur },
-          )
-
-        if (
-          rolesSource.coordinateur !== null &&
-          rolesCible.coordinateur !== null
+        await enSuite(plan.rolesACreer, (role) =>
+          creerLeRole(tx, cible.id)[role._tag](),
         )
-          await fusionnerLesCoordinateurs(
-            tx,
-            rolesSource.coordinateur,
-            rolesCible.coordinateur,
-          )
-
+        await enSuite(plan.partagesARevoquer, (role) =>
+          revoquerLePartage(tx, cible.id, plan.revoqueLe)[role._tag](),
+        )
+        await enSuite(plan.rolesAFusionner, (role) =>
+          fusionnerLeRole(tx, source.id, cible.id)[role._tag](),
+        )
         await fusionnerLesPersonnes(tx, source.id, cible.id)
         await reattribuerLesTraces(tx, source.id, cible.id)
         await transfererLesLiaisons(tx, source.id, cible.id)

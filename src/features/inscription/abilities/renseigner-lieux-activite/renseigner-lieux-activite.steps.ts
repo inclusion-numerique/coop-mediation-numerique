@@ -1,42 +1,27 @@
 import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
+import { Nom } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
-import type {
-  LireLieuxActiviteExistants,
-  TrouverStructuresCarto,
-} from '@/features/inscription/abilities/renseigner-lieux-activite/domain/ports'
+import {
+  type LieuDesire,
+  RattachementId,
+} from '@/features/inscription/abilities/renseigner-lieux-activite/domain'
 import { renseignerLieuxActivite } from '@/features/inscription/abilities/renseigner-lieux-activite/domain/renseigner-lieux-activite'
-import type { RattacherAuLieuDesire } from '@/features/inscription/abilities/renseigner-lieux-activite/implementations/prisma/enregistrer-reconciliation.mutation'
 import { enregistrerReconciliation } from '@/features/inscription/abilities/renseigner-lieux-activite/implementations/prisma/enregistrer-reconciliation.mutation'
-import { ProfilInscription } from '@/features/inscription/domain'
+import { LieuId, ProfilInscription } from '@/features/inscription/domain'
 import { getInscriptionEtat } from '@/features/inscription/implementations/prisma/get-inscription-etat.query'
 import {
   seedLieuActivite,
   seedProfilChoisi,
   utilisateurDeLInscriptionEnCours,
 } from '@/features/inscription/inscription.cucumber'
-
-const renseignerLieuxActiviteAvec = <StructureCarto>({
-  trouverStructuresCarto,
-  lireLieuxActiviteExistants,
-  rattacherAuLieuDesire,
-}: {
-  readonly trouverStructuresCarto: TrouverStructuresCarto<StructureCarto>
-  readonly lireLieuxActiviteExistants: LireLieuxActiviteExistants
-  readonly rattacherAuLieuDesire: RattacherAuLieuDesire<StructureCarto>
-}) =>
-  renseignerLieuxActivite({
-    lireLEtat: getInscriptionEtat,
-    lireLieuxActiviteExistants,
-    trouverStructuresCarto,
-    enregistrerReconciliation: enregistrerReconciliation(rattacherAuLieuDesire),
-  })
+import { success } from '@/libraries/result'
 
 const etat: {
   ancienneActivite?: { readonly id: string; readonly lieuId: string }
   lieuRenseigne?: string
-  confies: string[]
+  confies: readonly string[]
 } = { confies: [] }
 
 const lireLesActivitesEnCours = async () =>
@@ -44,19 +29,28 @@ const lireLesActivitesEnCours = async () =>
     ? []
     : [
         {
-          id: etat.ancienneActivite.id,
+          id: RattachementId(etat.ancienneActivite.id),
           lieuInclusion: {
-            id: etat.ancienneActivite.lieuId,
+            id: LieuId(etat.ancienneActivite.lieuId),
             structureCartographieNationaleId: null,
           },
         },
       ]
 
+const lieuxConnus = async ({
+  lieux,
+}: {
+  readonly lieux: readonly LieuDesire<object>[]
+}) =>
+  success(
+    lieux.flatMap((lieu) => (lieu._tag === 'LieuExistant' ? [lieu.id] : [])),
+  )
+
 const confierAuRattachement = async (
   _transaction: unknown,
-  { lieu }: { readonly lieu: { readonly id?: string | null } },
+  { destinations }: { readonly destinations: readonly string[] },
 ) => {
-  if (lieu.id != null) etat.confies.push(lieu.id)
+  etat.confies = [...etat.confies, ...destinations]
 }
 
 Given('je suis un médiateur en cours d’inscription', async () => {
@@ -84,21 +78,25 @@ When(
   'je renseigne un lieu connu de la coop comme lieu d’activité',
   async () => {
     etat.lieuRenseigne = v4()
-    const resultat = await renseignerLieuxActiviteAvec({
-      trouverStructuresCarto: async () => new Map(),
+    const resultat = await renseignerLieuxActivite({
+      lireLEtat: getInscriptionEtat,
       lireLieuxActiviteExistants: lireLesActivitesEnCours,
-      rattacherAuLieuDesire: confierAuRattachement,
+      trouverStructuresCarto: async () => new Map(),
+      planifierLesRattachements: lieuxConnus,
+      enregistrerReconciliation: enregistrerReconciliation({
+        lieuDisparu: async () => null,
+        appliquerLesDestinations: confierAuRattachement,
+      }),
     })({
       command: {
         userId: utilisateurDeLInscriptionEnCours(),
         lieuxActivite: [
           {
-            id: etat.lieuRenseigne,
+            _tag: 'LieuExistant',
+            id: LieuId(etat.lieuRenseigne),
+            nom: Nom('Lieu connu'),
+            siret: null,
             structureCartographieNationaleId: null,
-            nom: 'Lieu connu',
-            adresse: '1 rue de la Paix',
-            commune: 'Paris',
-            codePostal: '75001',
           },
         ],
       },

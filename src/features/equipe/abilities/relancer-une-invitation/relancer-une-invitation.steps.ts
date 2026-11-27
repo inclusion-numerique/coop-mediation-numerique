@@ -1,6 +1,7 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
-import { relancerUneInvitation } from '@/features/equipe/abilities/relancer-une-invitation/implementations/prisma/relancer-une-invitation.mutation'
+import { relancerUneInvitation as relancerUneInvitationAvec } from '@/features/equipe/abilities/relancer-une-invitation/domain/relancer-une-invitation'
+import { enregistrerLaRelance } from '@/features/equipe/abilities/relancer-une-invitation/implementations/prisma/enregistrer-la-relance.mutation'
 import {
   CoordinateurId,
   Courriel,
@@ -14,11 +15,20 @@ import {
   semerUneInvitation,
 } from '@/features/equipe/equipe.cucumber'
 import { envoyerUneInvitation } from '@/features/equipe/implementations/email'
+import { lireLeCoordinateur } from '@/features/equipe/implementations/prisma/coordinateur.query'
+import { lireUneInvitation } from '@/features/equipe/implementations/prisma/invitation.query'
+
+const relancerUneInvitation = relancerUneInvitationAvec({
+  lireUneInvitation,
+  lireLeCoordinateur,
+  envoyerUneInvitation,
+  enregistrerLaRelance,
+})
 
 const contexte: {
   coordinateur?: CoordinateurSeme
   email?: string
-  issue?: Awaited<ReturnType<ReturnType<typeof relancerUneInvitation>>>
+  issue?: Awaited<ReturnType<typeof relancerUneInvitation>>
 } = {}
 
 const coordinateur = (): CoordinateurSeme => {
@@ -48,7 +58,7 @@ const inviter = async (
 }
 
 const relancerPar = async (auteur: CoordinateurSeme) => {
-  contexte.issue = await relancerUneInvitation({ envoyerUneInvitation })({
+  contexte.issue = await relancerUneInvitation({
     reference: ReferenceInvitation({
       email: Courriel(emailInvite()),
       coordinateurId: CoordinateurId(coordinateur().coordinateurId),
@@ -58,6 +68,7 @@ const relancerPar = async (auteur: CoordinateurSeme) => {
       coordinateurId: CoordinateurId(auteur.coordinateurId),
     },
     auteurId: UtilisateurId(auteur.userId),
+    maintenant: new Date(),
   })
 }
 

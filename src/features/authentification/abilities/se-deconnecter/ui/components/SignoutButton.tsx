@@ -13,7 +13,6 @@ const SignoutButton = ({
   ...buttonProps
 }: {
   children?: ReactNode
-  // If you want to log out from ProConnect, you need to pass the id_token_hint
   proConnectIdTokenHint?: string | null
   callbackUrl?: string
 } & ButtonProps.Common &
@@ -22,7 +21,6 @@ const SignoutButton = ({
   const onLogout = async () => {
     setIsLoading(true)
 
-    // Use server route to orchestrate provider logout and fallback
     const params = new URLSearchParams({ callbackUrl })
     window.location.href = `/deconnexion/start?${params.toString()}`
   }

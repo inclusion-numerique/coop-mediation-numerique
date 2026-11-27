@@ -1,0 +1,1 @@
+export const TAILLE_DES_LOTS_DE_RDVS = 250

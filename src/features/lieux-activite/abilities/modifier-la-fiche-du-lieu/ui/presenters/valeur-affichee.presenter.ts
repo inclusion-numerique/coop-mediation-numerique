@@ -3,8 +3,8 @@ import type {
   Presentation,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { telephoneDisplayString } from '@/libraries/telephone'
+import type { ChampCompare } from '../../../../domain/differences'
 import type { Fiche } from '../../../../domain/fiche'
-import type { ChampCompare } from '../../domain/differences'
 
 export type ValeurAffichee =
   | { readonly _tag: 'Absente' }

@@ -1,11 +1,8 @@
+import type { BeneficiaireId } from '../../../domain/identifiants/beneficiaire-id'
 import type { EvenementWebhook } from '../../../domain/webhook/evenement-webhook'
 
-/**
- * Bénéficiaire de La Coop rattaché à l'usager notifié. L'identifiant est
- * convoyé, jamais interprété : son sens appartient à la feature bénéficiaire.
- */
 export type BeneficiaireLie = {
-  readonly id: string
+  readonly id: BeneficiaireId
 }
 
 export type DecisionWebhookUsager =
@@ -13,23 +10,8 @@ export type DecisionWebhookUsager =
   | { readonly _tag: 'mettreAJour' }
   | { readonly _tag: 'anonymiserEtSupprimer' }
 
-type RaisonIgnoreUsager = 'creationDeferee' | 'usagerNonSuivi'
+export type RaisonIgnoreUsager = 'creationDeferee' | 'usagerNonSuivi'
 
-/**
- * Que faire d'une notification portant sur un usager.
- *
- * Une création n'est jamais suivie d'effet. Un usager que RDV Service Public
- * vient de créer n'est encore rattaché à aucun rendez-vous, donc à aucun
- * médiateur : La Coop n'aurait aucun moyen de décider à qui il appartient. Il
- * entrera par la synchronisation, quand le contexte sera là.
- *
- * Une mise à jour n'est appliquée que si l'usager est déjà rattaché à un
- * bénéficiaire. Autrement dit, La Coop ne tient à jour que ce qu'elle a des
- * raisons de détenir.
- *
- * Une suppression, elle, s'applique toujours : c'est un effacement demandé chez
- * le tiers, et les fiches qui en descendent doivent suivre.
- */
 export const decisionPourWebhookUsager = ({
   evenement,
   beneficiairesLies,

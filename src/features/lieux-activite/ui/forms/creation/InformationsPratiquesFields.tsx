@@ -4,9 +4,14 @@ import { withForm } from '@/libraries/formulaire/hooks'
 import { creerLieuActiviteFormOptions } from '../creer-lieu-activite.form-options'
 import { OpeningHoursFields } from './OpeningHoursFields'
 
+const proprietes: { isPending: boolean; lienDePriseDeRendezVous: string } = {
+  isPending: false,
+  lienDePriseDeRendezVous: '',
+}
+
 export const InformationsPratiquesFields = withForm({
   ...creerLieuActiviteFormOptions,
-  props: {} as { isPending: boolean; lienDePriseDeRendezVous: string },
+  props: proprietes,
   render: ({ form, isPending, lienDePriseDeRendezVous }) => (
     <>
       <p className="fr-mb-4w fr-text--sm fr-text-mention--grey">

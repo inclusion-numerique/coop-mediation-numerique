@@ -1,58 +1,90 @@
 import { describe, expect, it } from 'vitest'
-import { jetonNonExpire } from './se-deconnecter'
+import { failure, success } from '@/libraries/result'
+import { RafraichissementImpossible } from './errors'
+import type { JetonsProconnect } from './ports'
+import { seDeconnecter } from './se-deconnecter'
+import { UtilisateurId } from './utilisateur-id'
 
-const maintenant = 1_800_000_000
+const maintenant = new Date('2027-01-15T08:00:00.000Z')
 
-const jeton = (charge: string): string =>
-  `entete.${Buffer.from(charge).toString('base64url')}.signature`
+const utilisateurId = UtilisateurId('a3c1c0d2-5b7e-4f7a-9d1e-2f8b6c4d0e11')
 
-describe('jetonNonExpire', () => {
-  it('accepte un jeton qui expire au-delà de la marge', () => {
+const sansJeton: JetonsProconnect = { idToken: null, refreshToken: null }
+
+describe('se déconnecter', () => {
+  it('se déconnecte auprès de ProConnect avec un id token qui expire au-delà de la marge', async () => {
     expect(
-      jetonNonExpire(
-        jeton(JSON.stringify({ exp: maintenant + 60 })),
-        maintenant,
-      ),
-    ).toBe(true)
+      await seDeconnecter({
+        lireLesJetonsProconnect: async () => ({
+          idToken: {
+            valeur: 'id-token',
+            expiration: new Date('2027-01-15T08:01:00.000Z'),
+          },
+          refreshToken: null,
+        }),
+        rafraichirLIdToken: async () => success('id-token-rafraichi'),
+      })({ utilisateurId, maintenant }),
+    ).toEqual({
+      success: true,
+      data: { _tag: 'AupresDeProConnect', idTokenHint: 'id-token' },
+    })
   })
 
-  it('refuse un jeton qui expire dans la marge de décalage d’horloge', () => {
+  it.each<{ cas: string; jetons: JetonsProconnect }>([
+    {
+      cas: 'expire dans la marge de décalage d’horloge',
+      jetons: {
+        idToken: {
+          valeur: 'id-token',
+          expiration: new Date('2027-01-15T08:00:03.000Z'),
+        },
+        refreshToken: 'refresh-token',
+      },
+    },
+    {
+      cas: 'n’a pas d’expiration lisible',
+      jetons: {
+        idToken: { valeur: 'id-token', expiration: null },
+        refreshToken: 'refresh-token',
+      },
+    },
+    {
+      cas: 'manque',
+      jetons: { idToken: null, refreshToken: 'refresh-token' },
+    },
+  ])(
+    'se déconnecte auprès de ProConnect avec un id token rafraîchi quand l’id token $cas',
+    async ({ jetons }) => {
+      expect(
+        await seDeconnecter({
+          lireLesJetonsProconnect: async () => jetons,
+          rafraichirLIdToken: async () => success('id-token-rafraichi'),
+        })({ utilisateurId, maintenant }),
+      ).toEqual({
+        success: true,
+        data: { _tag: 'AupresDeProConnect', idTokenHint: 'id-token-rafraichi' },
+      })
+    },
+  )
+
+  it('se déconnecte localement quand le rafraîchissement échoue', async () => {
     expect(
-      jetonNonExpire(
-        jeton(JSON.stringify({ exp: maintenant + 3 })),
-        maintenant,
-      ),
-    ).toBe(false)
+      await seDeconnecter({
+        lireLesJetonsProconnect: async () => ({
+          idToken: null,
+          refreshToken: 'refresh-token',
+        }),
+        rafraichirLIdToken: async () => failure(RafraichissementImpossible()),
+      })({ utilisateurId, maintenant }),
+    ).toEqual({ success: true, data: { _tag: 'Locale' } })
   })
 
-  it('refuse un jeton déjà expiré', () => {
+  it('se déconnecte localement sans jeton ProConnect', async () => {
     expect(
-      jetonNonExpire(
-        jeton(JSON.stringify({ exp: maintenant - 60 })),
-        maintenant,
-      ),
-    ).toBe(false)
-  })
-
-  it('refuse un jeton sans charge utile', () => {
-    expect(jetonNonExpire('entete', maintenant)).toBe(false)
-  })
-
-  it('refuse une charge utile qui n’est pas du JSON', () => {
-    expect(jetonNonExpire(jeton('pas du json'), maintenant)).toBe(false)
-  })
-
-  it('refuse une charge utile sans expiration', () => {
-    expect(jetonNonExpire(jeton(JSON.stringify({})), maintenant)).toBe(false)
-  })
-
-  it('refuse une expiration qui n’est pas un nombre', () => {
-    expect(
-      jetonNonExpire(jeton(JSON.stringify({ exp: 'demain' })), maintenant),
-    ).toBe(false)
-  })
-
-  it('refuse une charge utile nulle', () => {
-    expect(jetonNonExpire(jeton('null'), maintenant)).toBe(false)
+      await seDeconnecter({
+        lireLesJetonsProconnect: async () => sansJeton,
+        rafraichirLIdToken: async () => success('id-token-rafraichi'),
+      })({ utilisateurId, maintenant }),
+    ).toEqual({ success: true, data: { _tag: 'Locale' } })
   })
 })

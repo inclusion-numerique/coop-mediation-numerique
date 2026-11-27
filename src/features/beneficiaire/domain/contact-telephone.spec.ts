@@ -23,15 +23,16 @@ describe('ContactTelephone', () => {
     })
   })
 
-  it('builds a nonRenseigne contact when nothing is provided', () => {
-    expect(ContactTelephone(undefined, undefined)).toEqual({
-      _tag: 'nonRenseigne',
-    })
-    expect(ContactTelephone(undefined, false)).toEqual({
-      _tag: 'nonRenseigne',
-    })
-    expect(ContactTelephone(undefined, null)).toEqual({
-      _tag: 'nonRenseigne',
-    })
-  })
+  it.each<{ cas: string; pasDeTelephone: boolean | null | undefined }>([
+    { cas: 'undefined', pasDeTelephone: undefined },
+    { cas: 'false', pasDeTelephone: false },
+    { cas: 'null', pasDeTelephone: null },
+  ])(
+    'builds a nonRenseigne contact without number and a $cas flag',
+    ({ pasDeTelephone }) => {
+      expect(ContactTelephone(undefined, pasDeTelephone)).toEqual({
+        _tag: 'nonRenseigne',
+      })
+    },
+  )
 })

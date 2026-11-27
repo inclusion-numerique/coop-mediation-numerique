@@ -1,14 +1,5 @@
+import type { FicheIntrouvable } from '../../../domain/errors'
 import type { LieuId } from '../../../domain/identifiants/lieu-id'
-
-export type FicheIntrouvable = {
-  readonly _tag: 'FicheIntrouvable'
-  readonly id: LieuId
-}
-
-export const FicheIntrouvable = (id: LieuId): FicheIntrouvable => ({
-  _tag: 'FicheIntrouvable',
-  id,
-})
 
 export type PublicationSansService = {
   readonly _tag: 'PublicationSansService'
@@ -30,7 +21,7 @@ export const PublicationSansAdresse = (id: LieuId): PublicationSansAdresse => ({
   id,
 })
 
-export type EchecDeModification =
+export type EchecDeModifierLaFicheDuLieu =
   | FicheIntrouvable
   | PublicationSansService
   | PublicationSansAdresse

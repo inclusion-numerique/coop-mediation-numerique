@@ -6,8 +6,10 @@ describe('StatutSocial', () => {
     expect(StatutSocial('EnEmploi')).toBe('EnEmploi')
   })
 
-  it('defaults to NonCommunique when absent', () => {
-    expect(StatutSocial(null)).toBe('NonCommunique')
-    expect(StatutSocial(undefined)).toBe('NonCommunique')
+  it.each<{ cas: string; valeur: null | undefined }>([
+    { cas: 'null', valeur: null },
+    { cas: 'undefined', valeur: undefined },
+  ])('defaults to NonCommunique when $cas', ({ valeur }) => {
+    expect(StatutSocial(valeur)).toBe('NonCommunique')
   })
 })

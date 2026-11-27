@@ -1,9 +1,7 @@
 import { prismaClient } from '@/configuration/prisma'
 import type { Prisma } from '@/generated/prisma/client'
-import type { RechercherEmployeuse } from '../../domain/rechercher-employeuse'
+import type { RechercherEmployeuse } from '../../domain/ports'
 import { employeuseSelect, employeuseToDomain } from './employeuse.transfer'
-
-const LIMITE_PAR_DEFAUT = 50
 
 const conditionsDeRecherche = (
   recherche: string,
@@ -25,7 +23,7 @@ const conditionsDeRecherche = (
 
 export const rechercherEmployeuse: RechercherEmployeuse = async ({
   recherche,
-  limite = LIMITE_PAR_DEFAUT,
+  limite,
 }) => {
   const where = conditionsDeRecherche(recherche)
 

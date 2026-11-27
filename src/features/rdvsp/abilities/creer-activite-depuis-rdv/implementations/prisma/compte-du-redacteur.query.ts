@@ -1,6 +1,6 @@
 import { prismaClient } from '@/configuration/prisma'
 import { compteRdvToDomain } from '../../../../implementations/prisma/compte-rdv.transfer'
-import type { CompteDuRedacteur } from '../../domain/creer-activite-depuis-rdv'
+import type { CompteDuRedacteur } from '../../domain/ports'
 
 export const compteDuRedacteur: CompteDuRedacteur = async (utilisateurId) => {
   const row = await prismaClient.rdvAccount.findUnique({

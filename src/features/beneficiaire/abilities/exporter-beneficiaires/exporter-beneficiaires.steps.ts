@@ -1,8 +1,8 @@
 import assert from 'node:assert'
 import { type DataTable, Given, Then, When } from '@cucumber/cucumber'
 import type { Workbook } from 'exceljs'
-import type { ListerLesBeneficiairesAExporter } from '@/features/beneficiaire/abilities/exporter-beneficiaires/domain/exporter-beneficiaires'
 import { exporterBeneficiaires } from '@/features/beneficiaire/abilities/exporter-beneficiaires/domain/exporter-beneficiaires'
+import type { ListerLesBeneficiairesAExporter } from '@/features/beneficiaire/abilities/exporter-beneficiaires/domain/ports'
 import { classeurDesBeneficiaires } from '@/features/beneficiaire/abilities/exporter-beneficiaires/implementations/excel/classeur-des-beneficiaires.classeur'
 import { listerBeneficiaires } from '@/features/beneficiaire/abilities/lister-beneficiaires/implementations/prisma/lister-beneficiaires.query'
 import {
@@ -25,13 +25,10 @@ const user: AuteurDExport = {
   role: 'Médiateur',
 }
 
-let workbook: Workbook | undefined
+const contexte: {
+  workbook?: Workbook | undefined
+} = {}
 
-// Lit la colonne « Nom » des lignes de données : ce sont les lignes situées
-// sous l'en-tête du tableau. La cellule A de l'en-tête vaut "Nom", mais la
-// section métadonnées contient aussi un libellé "Nom" (le nom de l'exportateur)
-// en amont : on retient donc la DERNIÈRE occurrence, qui est l'en-tête du
-// tableau des bénéficiaires.
 const exportedNoms = (book: Workbook | undefined): string[] => {
   const worksheet = book?.getWorksheet('Bénéficiaires')
   if (!worksheet) return []
@@ -69,22 +66,24 @@ Given(
 When(
   'je génère le classeur des bénéficiaires avec la recherche {string}',
   async (recherche: string) => {
-    workbook = await exporterBeneficiairesAvec(listerBeneficiaires)({
+    const exportation = await exporterBeneficiairesAvec(listerBeneficiaires)({
       mediateurId: testMediateurId,
       filters: { recherche },
       auteur: user,
+      maintenant: new Date(),
     })
+    contexte.workbook = exportation.data
   },
 )
 
 Then('le classeur exporté contient {int} bénéficiaire(s)', (count: number) => {
-  assert.strictEqual(exportedNoms(workbook).length, count)
+  assert.strictEqual(exportedNoms(contexte.workbook).length, count)
 })
 
 Then('le classeur exporté contient {string}', (nom: string) => {
-  assert.ok(exportedNoms(workbook).includes(nom))
+  assert.ok(exportedNoms(contexte.workbook).includes(nom))
 })
 
 Then('le classeur exporté ne contient pas {string}', (nom: string) => {
-  assert.ok(!exportedNoms(workbook).includes(nom))
+  assert.ok(!exportedNoms(contexte.workbook).includes(nom))
 })

@@ -3,18 +3,23 @@
 import { actionBuilder } from '@/configuration/nextjs'
 import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
 import { utilisateurDeLaSessionParId } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
-import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage/implementations/prisma/resoudre-un-lien-de-partage.query'
-import { utilisateurDuPartage } from '@/features/statistiques/domain/utilisateur-du-partage'
+import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage/domain'
+import { lireLePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage/implementations/prisma/partage.query'
+import { LienDePartageId } from '@/features/mediateurs/domain'
+import { utilisateurDuPartage } from '@/features/statistiques/implementations/session/utilisateur-du-partage.transfer'
 import { RechercherDesTagsDuPartageValidation } from '@/features/tags/abilities/rechercher-des-tags/action/rechercher-des-tags.validation'
 import { rechercherDesTags } from '@/features/tags/abilities/rechercher-des-tags/implementations/prisma/rechercher-des-tags.query'
-import { acteurDe, TagId } from '@/features/tags/domain'
+import { TagId } from '@/features/tags/domain'
+import { acteurDe } from '@/features/tags/implementations/session/acteur.transfer'
 import { tagAffiche } from '@/features/tags/ui/presenters/tag-affiche.presenter'
 import { withInput } from '@/libraries/nextjs'
 
 const rechercherDansLePartage = actionBuilder()
   .use(withInput(RechercherDesTagsDuPartageValidation))
   .execute(async ({ input: { partage, recherche, exclus } }) => {
-    const lien = await resoudreUnLienDePartage(partage)
+    const lien = await resoudreUnLienDePartage({ lirePartage: lireLePartage })({
+      lien: LienDePartageId.safe(partage),
+    })
     if (!lien.success) return []
     const acteur = acteurDe(
       profilDeLaSession(

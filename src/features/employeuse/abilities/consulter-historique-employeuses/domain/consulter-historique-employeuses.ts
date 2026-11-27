@@ -1,12 +1,29 @@
-import type { EmployeuseHistorique } from '../../../domain/consultation/employeuses-historique'
+import { type Result, success } from '@/libraries/result'
+import { contratsAuMoment } from '../../../domain/consultation/emploi-lu'
+import {
+  type EmployeuseHistorique,
+  employeusesHistorique,
+} from '../../../domain/consultation/employeuses-historique'
+import type { UtilisateurId } from '../../../domain/utilisateur-id'
+import type { ConsulterHistoriqueEmployeusesPorts } from './ports'
 
-/**
- * Toutes les employeuses d'un utilisateur, en cours et passées.
- *
- * Lecture d'administration : elle sert à comprendre le parcours d'un compte —
- * qui l'employait, depuis quand, et si le rattachement est encore actif. La
- * liste est vide quand l'utilisateur n'a jamais été affecté.
- */
-export type ConsulterHistoriqueEmployeuses = (input: {
-  userId: string
-}) => Promise<EmployeuseHistorique[]>
+export const consulterHistoriqueEmployeuses =
+  ({ lireLHistoriqueDEmploi }: ConsulterHistoriqueEmployeusesPorts) =>
+  async ({
+    utilisateurId,
+    maintenant,
+  }: {
+    readonly utilisateurId: UtilisateurId
+    readonly maintenant: Date
+  }): Promise<Result<readonly EmployeuseHistorique[], never>> => {
+    const historique = await lireLHistoriqueDEmploi(utilisateurId)
+
+    return success(
+      historique === null
+        ? []
+        : employeusesHistorique(
+            historique.affectations,
+            contratsAuMoment(historique.contrats, maintenant),
+          ),
+    )
+  }

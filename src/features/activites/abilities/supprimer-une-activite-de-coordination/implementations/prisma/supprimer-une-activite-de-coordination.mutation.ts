@@ -1,51 +1,26 @@
 import { addMutationLog, prismaClient } from '@/configuration/prisma'
-import { failure, type Result, success } from '@/libraries/result'
-import type {
-  ActiviteDeCoordinationId,
-  CoordinateurId,
-  UtilisateurId,
-} from '../../../../domain'
-import {
-  ActionNonAutorisee,
-  ActiviteIntrouvable,
-  type EchecDeSuppression,
-} from '../../domain'
+import type { UtilisateurId } from '../../../../domain'
+import type { SupprimerLActiviteDeCoordination } from '../../domain'
 
-export const supprimerUneActiviteDeCoordination = async ({
-  activiteId,
-  coordinateurId,
-  auteurId,
-  maintenant = new Date(),
-}: {
-  activiteId: ActiviteDeCoordinationId
-  coordinateurId: CoordinateurId | null
-  auteurId: UtilisateurId
-  maintenant?: Date
-}): Promise<Result<void, EchecDeSuppression>> => {
-  const activite = await prismaClient.activiteCoordination.findUnique({
-    where: { id: activiteId, suppression: null },
-    select: { type: true, coordinateurId: true },
-  })
+export const supprimerLActiviteDeCoordination =
+  (auteurId: UtilisateurId): SupprimerLActiviteDeCoordination =>
+  async ({ activite: { id, type, coordinateurId }, suppression }) => {
+    await prismaClient.$transaction([
+      prismaClient.activitesCoordinationTags.deleteMany({
+        where: {
+          activiteCoordinationId: id,
+          activiteCoordination: { coordinateurId, suppression: null },
+        },
+      }),
+      prismaClient.activiteCoordination.updateMany({
+        where: { id, coordinateurId, suppression: null },
+        data: { suppression, modification: suppression },
+      }),
+    ])
 
-  if (activite === null) return failure(ActiviteIntrouvable())
-  if (activite.coordinateurId !== coordinateurId)
-    return failure(ActionNonAutorisee())
-
-  await prismaClient.$transaction([
-    prismaClient.activitesCoordinationTags.deleteMany({
-      where: { activiteCoordinationId: activiteId },
-    }),
-    prismaClient.activiteCoordination.update({
-      where: { id: activiteId },
-      data: { suppression: maintenant, modification: maintenant },
-    }),
-  ])
-
-  addMutationLog({
-    userId: auteurId,
-    nom: 'SupprimerActiviteCoordination',
-    data: { type: activite.type, id: activiteId },
-  })
-
-  return success(undefined)
-}
+    addMutationLog({
+      userId: auteurId,
+      nom: 'SupprimerActiviteCoordination',
+      data: { type, id },
+    })
+  }

@@ -2,14 +2,19 @@ import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
+import { compterLesActivitesDeCoordination } from '@/features/activites/abilities/compter-les-activites-de-coordination/domain'
 import {
   type ActivitesDeCoordination,
   CoordinateurId,
 } from '@/features/activites/abilities/compter-les-activites-de-coordination/domain/index'
-import { compterLesActivitesDeCoordination } from '@/features/activites/abilities/compter-les-activites-de-coordination/implementations/prisma/activites-de-coordination.query'
+import { activitesDuCoordinateur } from '@/features/activites/abilities/compter-les-activites-de-coordination/implementations/prisma/activites-de-coordination.query'
 
-let coordinateurs: readonly { userId: string; coordinateurId: string }[] = []
-let resultat: ActivitesDeCoordination | undefined
+const etat: {
+  coordinateurs: readonly { userId: string; coordinateurId: string }[]
+  resultat?: ActivitesDeCoordination | undefined
+} = {
+  coordinateurs: [],
+}
 
 const semerUnCoordinateur = async () => {
   const userId = v4()
@@ -20,12 +25,12 @@ const semerUnCoordinateur = async () => {
     data: { userId },
     select: { id: true },
   })
-  coordinateurs = [...coordinateurs, { userId, coordinateurId }]
+  etat.coordinateurs = [...etat.coordinateurs, { userId, coordinateurId }]
   return coordinateurId
 }
 
 const coordinateurCompte = () => {
-  const [premier] = coordinateurs
+  const [premier] = etat.coordinateurs
   if (!premier) throw new Error('Aucun coordinateur semé')
   return premier.coordinateurId
 }
@@ -66,16 +71,18 @@ Given("une activité de coordination d'un autre coordinateur", async () => {
 })
 
 When('je compte ses activités de coordination', async () => {
-  resultat = await compterLesActivitesDeCoordination({
-    coordinateurId: CoordinateurId(coordinateurCompte()),
-  })
+  etat.resultat = (
+    await compterLesActivitesDeCoordination({ activitesDuCoordinateur })({
+      coordinateurId: CoordinateurId(coordinateurCompte()),
+    })
+  ).data
 })
 
 Then(
   'le cumul compte {int} animations, {int} évènement et {int} partenariat',
   (animations: number, evenements: number, partenariats: number) => {
     assert.deepStrictEqual(
-      resultat?.cumul.map(({ nombre }) => nombre),
+      etat.resultat?.cumul.map(({ nombre }) => nombre),
       [animations, evenements, partenariats],
     )
   },
@@ -83,7 +90,7 @@ Then(
 
 Then('les trimestres comptés sont {string}', (attendus: string) => {
   assert.strictEqual(
-    resultat?.trimestres
+    etat.resultat?.trimestres
       .map(({ trimestre }) => `${trimestre.annee}-${trimestre.rang}`)
       .join(', '),
     attendus,
@@ -91,9 +98,9 @@ Then('les trimestres comptés sont {string}', (attendus: string) => {
 })
 
 After(async () => {
-  const semes = coordinateurs
-  coordinateurs = []
-  resultat = undefined
+  const semes = etat.coordinateurs
+  etat.coordinateurs = []
+  etat.resultat = undefined
   if (semes.length === 0) return
 
   const coordinateurIds = semes.map(({ coordinateurId }) => coordinateurId)

@@ -89,14 +89,18 @@ const parseGenre = (
   return { error: 'Genre invalide' }
 }
 
-const parseAnneeNaissance = (anneeNaissanceRaw: number | null | undefined) => {
+const parseAnneeNaissance = (
+  anneeNaissanceRaw: number | null | undefined,
+  maintenant: Date,
+) => {
   if (!anneeNaissanceRaw) {
     return { value: null }
   }
 
-  const parsed = anneeNaissanceValidation.safeParse(anneeNaissanceRaw)
-  if (!parsed.success) {
-    return { error: parsed.error.issues[0]?.message ?? anneeNaissanceInvalide }
+  if (
+    !anneeNaissanceValidation(maintenant).safeParse(anneeNaissanceRaw).success
+  ) {
+    return { error: anneeNaissanceInvalide }
   }
 
   return { value: anneeNaissanceRaw }
@@ -143,6 +147,7 @@ const parseBeneficiaireRow = (
   feuille: FeuilleImport,
   rowNumber: number,
   communesClient: CommunesClient,
+  maintenant: Date,
 ) => {
   const nom = getCellValueAsString(feuille, rowNumber, 1)
   const prenom = getCellValueAsString(feuille, rowNumber, 2)
@@ -155,43 +160,41 @@ const parseBeneficiaireRow = (
   const genre = getCellValueAsString(feuille, rowNumber, 9)
   const notesSupplementaires = getCellValueAsString(feuille, rowNumber, 10)
 
-  const errors: ParsedBeneficiaireRow['errors'] = {}
+  const commune = communeCodeInsee
+    ? communesClient.findCommuneByInsee(communeCodeInsee)
+    : null
 
-  let commune: Commune | null = null
-
-  if (!nom) {
-    errors.nom = 'Le nom est obligatoire'
-  }
-  if (!prenom) {
-    errors.prenom = 'Le prénom est obligatoire'
-  }
-
-  if (communeCodeInsee) {
-    commune = communesClient.findCommuneByInsee(communeCodeInsee)
-    if (commune) {
-      if (commune.codePostal !== communeCodePostal) {
-        errors.communeCodePostal =
-          'Le code postal de la commune ne correspond pas'
-      }
-      if (!designeLaCommune(communeNom, commune)) {
-        errors.communeNom = 'Le nom de la commune ne correspond pas'
-      }
-    } else {
-      errors.communeCodeInsee = 'Code commune non trouvé'
-    }
-  }
+  const erreursDeCommune = !communeCodeInsee
+    ? {}
+    : commune
+      ? {
+          ...(commune.codePostal === communeCodePostal
+            ? {}
+            : {
+                communeCodePostal:
+                  'Le code postal de la commune ne correspond pas',
+              }),
+          ...(designeLaCommune(communeNom, commune)
+            ? {}
+            : { communeNom: 'Le nom de la commune ne correspond pas' }),
+        }
+      : { communeCodeInsee: 'Code commune non trouvé' }
 
   const parsedGenre = parseGenre(genre)
-  if (parsedGenre.error) {
-    errors.genre = parsedGenre.error
+
+  const parsedAnneeNaissance = parseAnneeNaissance(anneeNaissance, maintenant)
+
+  const errors: NonNullable<ParsedBeneficiaireRow['errors']> = {
+    ...(nom ? {} : { nom: 'Le nom est obligatoire' }),
+    ...(prenom ? {} : { prenom: 'Le prénom est obligatoire' }),
+    ...erreursDeCommune,
+    ...(parsedGenre.error ? { genre: parsedGenre.error } : {}),
+    ...(parsedAnneeNaissance.error
+      ? { anneeNaissance: parsedAnneeNaissance.error }
+      : {}),
   }
 
-  const parsedAnneeNaissance = parseAnneeNaissance(anneeNaissance)
-  if (parsedAnneeNaissance.error) {
-    errors.anneeNaissance = parsedAnneeNaissance.error
-  }
-
-  const result: ParsedBeneficiaireRow = {
+  return {
     values: {
       nom,
       prenom,
@@ -209,12 +212,8 @@ const parseBeneficiaireRow = (
       commune,
       anneeNaissance: parsedAnneeNaissance.value ?? null,
     },
+    ...(Object.keys(errors).length > 0 ? { errors } : {}),
   }
-
-  if (Object.entries(errors).length > 0) {
-    result.errors = errors
-  }
-  return result
 }
 
 export const importBeneficiaireWorksheetName = 'Bénéficiaires'
@@ -238,9 +237,15 @@ const numerosLignesBeneficiaires = (
 
 export const analyserLaFeuille =
   (communesClient: CommunesClient) =>
-  (feuille: FeuilleImport): Analysis => {
+  ({
+    feuille,
+    maintenant,
+  }: {
+    readonly feuille: FeuilleImport
+    readonly maintenant: Date
+  }): Analysis => {
     const rows = numerosLignesBeneficiaires(feuille).map((rowNumber) =>
-      parseBeneficiaireRow(feuille, rowNumber, communesClient),
+      parseBeneficiaireRow(feuille, rowNumber, communesClient, maintenant),
     )
 
     return {
@@ -249,7 +254,9 @@ export const analyserLaFeuille =
     }
   }
 
-export type AnalyseResponse = {
-  analysis: Analysis
-  id: string
-}
+export const AnalyseResponseSchema = z.object({
+  analysis: AnalysisSchema,
+  id: z.string(),
+})
+
+export type AnalyseResponse = z.infer<typeof AnalyseResponseSchema>

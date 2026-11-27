@@ -7,10 +7,12 @@ import { metadataTitle } from '@/configuration/projet'
 import {
   consulterLAccueil,
   selonLeProfil,
+  UtilisateurId,
 } from '@/features/accueil/abilities/consulter-l-accueil/domain/index'
-import { visiteurDe } from '@/features/accueil/abilities/consulter-l-accueil/implementations/session/visiteur.query'
+import { lireLeVisiteur } from '@/features/accueil/abilities/consulter-l-accueil/implementations/prisma/visiteur.query'
 import { AccueilPage } from '@/features/accueil/abilities/consulter-l-accueil/ui/pages/AccueilPage'
-import { compterLesActivitesDeCoordination } from '@/features/activites/abilities/compter-les-activites-de-coordination/implementations/prisma/activites-de-coordination.query'
+import { compterLesActivitesDeCoordination } from '@/features/activites/abilities/compter-les-activites-de-coordination/domain'
+import { activitesDuCoordinateur } from '@/features/activites/abilities/compter-les-activites-de-coordination/implementations/prisma/activites-de-coordination.query'
 import { activitesDeCoordinationPresentees } from '@/features/activites/abilities/compter-les-activites-de-coordination/ui/presenters/activites-de-coordination.presenter'
 import { ActivitesDeCoordination } from '@/features/activites/abilities/compter-les-activites-de-coordination/ui/slots/ActivitesDeCoordination.slot'
 import { listerLesDernieresActivites } from '@/features/activites/abilities/lister-les-dernieres-activites/implementations/prisma/dernieres-activites.query'
@@ -23,7 +25,7 @@ import { authenticateMediateurOrCoordinateur } from '@/features/authentification
 import { compterLesMembres } from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/lister-les-membres.query'
 import { ResumeDeLEquipe } from '@/features/equipe/abilities/lister-les-membres/ui/slots/ResumeDeLEquipe.slot'
 import { RAFRAICHIR_ACCUEIL_RDV_ACTION_KEY } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/action/rafraichir-accueil-rdv.key'
-import { blocRdvAccueil } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/domain/bloc-rdv-accueil'
+import { consulterRdvsAccueil } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/domain/consulter-rdvs-accueil'
 import { compteDuMediateur } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/implementations/prisma/compte-du-mediateur.query'
 import { lireDonneesAccueilRdv } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/implementations/prisma/donnees-accueil-rdv.query'
 import { RdvIntegrationErreurAlerte } from '@/features/rdvsp/abilities/consulter-rdvs-accueil/ui/slots/RdvIntegrationErreurAlerte.slot'
@@ -44,22 +46,28 @@ type SectionsDeLAccueil = {
 
 const Page = async () => {
   const user = await authenticateMediateurOrCoordinateur()
-  const accueil = consulterLAccueil(visiteurDe(user))
-  if (accueil === null) notFound()
+  const consultation = await consulterLAccueil({ lireLeVisiteur })({
+    utilisateurId: UtilisateurId(user.id),
+  })
+  if (!consultation.success) notFound()
 
-  const [{ equipe, activites }, rdv] = await Promise.all([
+  const accueil = consultation.data
+
+  const [{ equipe, activites }, consultationRdv] = await Promise.all([
     selonLeProfil<Promise<SectionsDeLAccueil>>(accueil.profil, {
       Coordinateur: async ({ coordinateurId }) => {
         const [membres, activitesDeCoordination] = await Promise.all([
           compterLesMembres({ coordinateurId }),
-          compterLesActivitesDeCoordination({ coordinateurId }),
+          compterLesActivitesDeCoordination({ activitesDuCoordinateur })({
+            coordinateurId,
+          }),
         ])
         return {
           equipe: <ResumeDeLEquipe statistiques={membres} />,
           activites: (
             <ActivitesDeCoordination
               activites={activitesDeCoordinationPresentees(
-                activitesDeCoordination,
+                activitesDeCoordination.data,
               )}
             />
           ),
@@ -80,11 +88,13 @@ const Page = async () => {
         ),
       }),
     }),
-    blocRdvAccueil({ compteDuMediateur, lireDonnees: lireDonneesAccueilRdv })(
-      UtilisateurCoopId(user.id),
-      new Date(),
-    ),
+    consulterRdvsAccueil({
+      compteDuMediateur,
+      lireDonnees: lireDonneesAccueilRdv,
+    })({ utilisateurId: UtilisateurCoopId(user.id), maintenant: new Date() }),
   ])
+
+  const rdv = consultationRdv.data
 
   return (
     <ClientBinder

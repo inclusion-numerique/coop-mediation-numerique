@@ -1,7 +1,7 @@
 import type { z } from 'zod'
 import type { ServerActionResult } from '@/libraries/nextjs'
 import { keyFor } from '@/libraries/nextjs/injection'
-import type { RenseignerStructureEmployeuseValidation } from '../domain/employeuse-choisie'
+import type { RenseignerStructureEmployeuseValidation } from './renseigner-structure-employeuse.validation'
 
 export const RENSEIGNER_STRUCTURE_EMPLOYEUSE_ACTION_KEY = keyFor<
   (

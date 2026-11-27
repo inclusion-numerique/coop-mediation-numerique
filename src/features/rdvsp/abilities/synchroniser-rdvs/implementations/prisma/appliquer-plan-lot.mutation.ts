@@ -1,4 +1,5 @@
 import { prismaClient } from '@/configuration/prisma'
+import { attraperEnEchecTechnique } from '@/libraries/result'
 import type { Rdv } from '../../../../domain/rdv/rdv'
 import {
   lieuFromDomain,
@@ -13,18 +14,8 @@ import type {
   AppliquerPlanLot,
   SupprimerMotifsOrphelins,
   SupprimerRdvs,
-} from '../../domain/synchroniser-rdvs'
+} from '../../domain/ports'
 
-/**
- * Un rendez-vous et ses participations forment un tout : les participations sont
- * remplacées, non fusionnées, parce que RDV Service Public fait autorité sur la
- * liste — un participant retiré chez eux doit disparaître ici.
- */
-/**
- * `raw_data` n'accepte que du JSON. Le passage par une sérialisation le garantit
- * plutôt que de l'affirmer par un transtypage : ce qui n'est pas sérialisable ne
- * sera pas écrit, et rien ne fera échouer la synchronisation à cause d'une trace.
- */
 const traceJson = (brut: unknown) => JSON.parse(JSON.stringify(brut ?? {}))
 
 const ecrireRdv = async (rdv: Rdv, brut: unknown) =>
@@ -47,88 +38,74 @@ const ecrireRdv = async (rdv: Rdv, brut: unknown) =>
     })
   })
 
-/**
- * L'ordre est imposé par les clés étrangères : usagers, lieux et motifs
- * existent avant les rendez-vous qui les désignent.
- */
-export const appliquerPlanLot: AppliquerPlanLot = async ({ plan, bruts }) => {
-  await prismaClient.rdvUser.createMany({
-    data: plan.usagers.aCreer.map(usagerFromDomain),
-    skipDuplicates: true,
+export const appliquerPlanLot: AppliquerPlanLot = attraperEnEchecTechnique(
+  async ({ plan, bruts }) => {
+    await prismaClient.rdvUser.createMany({
+      data: plan.usagers.aCreer.map(usagerFromDomain),
+      skipDuplicates: true,
+    })
+
+    await Promise.all(
+      plan.usagers.aMettreAJour.map((usager) =>
+        prismaClient.rdvUser.update({
+          where: { id: usager.id },
+          data: usagerFromDomain(usager),
+        }),
+      ),
+    )
+
+    await prismaClient.rdvLieu.createMany({
+      data: plan.lieux.aCreer.map(lieuFromDomain),
+      skipDuplicates: true,
+    })
+
+    await Promise.all(
+      plan.lieux.aMettreAJour.map((lieu) =>
+        prismaClient.rdvLieu.update({
+          where: { id: lieu.id },
+          data: lieuFromDomain(lieu),
+        }),
+      ),
+    )
+
+    await prismaClient.rdvMotif.createMany({
+      data: plan.motifs.aCreer.map(motifFromDomain),
+      skipDuplicates: true,
+    })
+
+    await Promise.all(
+      plan.motifs.aMettreAJour.map((motif) =>
+        prismaClient.rdvMotif.update({
+          where: { id: motif.id },
+          data: motifFromDomain(motif),
+        }),
+      ),
+    )
+
+    await [...plan.rdvs.aCreer, ...plan.rdvs.aMettreAJour].reduce(
+      async (precedent, rdv) => {
+        await precedent
+        await ecrireRdv(rdv, bruts.get(rdv.id) ?? {})
+      },
+      Promise.resolve(),
+    )
+  },
+)
+
+export const supprimerRdvs: SupprimerRdvs = attraperEnEchecTechnique(
+  async (rdvIds) => {
+    await prismaClient.rdv.deleteMany({ where: { id: { in: [...rdvIds] } } })
+  },
+)
+
+export const supprimerMotifsOrphelins: SupprimerMotifsOrphelins =
+  attraperEnEchecTechnique(async (organisationIds) => {
+    const { count } = await prismaClient.rdvMotif.deleteMany({
+      where: {
+        rdvs: { none: {} },
+        organisationId: { in: [...organisationIds] },
+      },
+    })
+
+    return count
   })
-
-  await Promise.all(
-    plan.usagers.aMettreAJour.map((usager) =>
-      prismaClient.rdvUser.update({
-        where: { id: usager.id },
-        data: usagerFromDomain(usager),
-      }),
-    ),
-  )
-
-  await prismaClient.rdvLieu.createMany({
-    data: plan.lieux.aCreer.map(lieuFromDomain),
-    skipDuplicates: true,
-  })
-
-  await Promise.all(
-    plan.lieux.aMettreAJour.map((lieu) =>
-      prismaClient.rdvLieu.update({
-        where: { id: lieu.id },
-        data: lieuFromDomain(lieu),
-      }),
-    ),
-  )
-
-  await prismaClient.rdvMotif.createMany({
-    data: plan.motifs.aCreer.map(motifFromDomain),
-    skipDuplicates: true,
-  })
-
-  await Promise.all(
-    plan.motifs.aMettreAJour.map((motif) =>
-      prismaClient.rdvMotif.update({
-        where: { id: motif.id },
-        data: motifFromDomain(motif),
-      }),
-    ),
-  )
-
-  // Séquentiel : deux rendez-vous d'un même lot peuvent partager un lieu ou un
-  // motif tout juste créés, et leurs transactions se disputeraient les lignes.
-  await [...plan.rdvs.aCreer, ...plan.rdvs.aMettreAJour].reduce(
-    async (precedent, rdv) => {
-      await precedent
-      await ecrireRdv(rdv, bruts.get(rdv.id) ?? {})
-    },
-    Promise.resolve(),
-  )
-}
-
-/** La suppression d'un rendez-vous emporte ses participations, en cascade. */
-export const supprimerRdvs: SupprimerRdvs = async (rdvIds) => {
-  await prismaClient.rdv.deleteMany({ where: { id: { in: [...rdvIds] } } })
-}
-
-/**
- * Ramasse les motifs qu'aucun rendez-vous ne référence plus.
- *
- * Le filtre par organisation borne le geste à ce que la passe a parcouru, et il
- * n'est pas facultatif : sans lui, `deleteMany` balaie toute la table et une
- * passe ramasse les motifs des comptes qu'elle ne synchronise pas.
- *
- * Une liste vide ne supprime donc rien, ce qui est le comportement voulu — une
- * passe sans organisation n'a rien parcouru et n'a rien à ramasser.
- */
-export const supprimerMotifsOrphelins: SupprimerMotifsOrphelins = async (
-  organisationIds,
-) => {
-  const { count } = await prismaClient.rdvMotif.deleteMany({
-    where: {
-      rdvs: { none: {} },
-      organisationId: { in: [...organisationIds] },
-    },
-  })
-
-  return count
-}

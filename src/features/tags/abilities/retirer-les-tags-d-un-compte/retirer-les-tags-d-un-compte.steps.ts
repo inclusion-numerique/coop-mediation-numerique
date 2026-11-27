@@ -1,6 +1,7 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { prismaClient } from '@/configuration/prisma'
+import { CoordinateurId, MediateurId, type Role } from '@/features/tags/domain'
 import {
   semerUnCoordinateur,
   semerUneActiviteTaguee,
@@ -9,10 +10,24 @@ import {
   tagEnBase,
   tagsDeLActivite,
 } from '@/features/tags/tags.cucumber'
+import { type BilanDuRetrait, bilanDuRetrait } from './domain'
+import { retirerLesTagsDUnCompte } from './domain/retirer-les-tags-d-un-compte'
+import { appliquerLeRetraitDesTags } from './implementations/prisma/retirer-les-tags-d-un-compte.mutation'
 import {
-  retirerLesTagsDUnCompte,
-  type TagsRetires,
-} from './implementations/prisma/retirer-les-tags-d-un-compte.mutation'
+  lireLesTagsDetenus,
+  lireLesTagsDuCompte,
+} from './implementations/prisma/tags-du-compte.query'
+
+const retirerEnBase = retirerLesTagsDUnCompte({
+  lireLesTagsDuCompte,
+  lireLesTagsDetenus,
+  appliquerLeRetrait: appliquerLeRetraitDesTags,
+})
+
+const retirer = async (compte: Role): Promise<BilanDuRetrait> => {
+  const retrait = await retirerEnBase({ compte, maintenant: new Date() })
+  return bilanDuRetrait(retrait.data)
+}
 
 const contexte: {
   mediateurId?: string
@@ -20,7 +35,7 @@ const contexte: {
   tagId?: string
   utilisateurs: readonly { mediateurId: string; activiteId: string }[]
   activiteId?: string
-  bilan?: TagsRetires
+  bilan?: BilanDuRetrait
 } = { utilisateurs: [] }
 
 const valeur = <T>(valeur: T | undefined): T => {
@@ -68,16 +83,16 @@ Given(
 )
 
 When('on retire les tags de ce coordinateur', async () => {
-  contexte.bilan = await retirerLesTagsDUnCompte({
-    mediateurId: null,
-    coordinateurId: valeur(contexte.coordinateurId),
+  contexte.bilan = await retirer({
+    _tag: 'Coordinateur',
+    coordinateurId: CoordinateurId(valeur(contexte.coordinateurId)),
   })
 })
 
 When('on retire les tags de ce médiateur', async () => {
-  contexte.bilan = await retirerLesTagsDUnCompte({
-    mediateurId: valeur(contexte.mediateurId),
-    coordinateurId: null,
+  contexte.bilan = await retirer({
+    _tag: 'Mediateur',
+    mediateurId: MediateurId(valeur(contexte.mediateurId)),
   })
 })
 

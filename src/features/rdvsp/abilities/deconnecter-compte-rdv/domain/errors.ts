@@ -1,15 +1,3 @@
-import type { UtilisateurCoopId } from '../../../domain/identifiants/utilisateur-coop-id'
+import type { CompteRdvIntrouvable } from '../../../domain/errors'
 
-/**
- * Le médiateur n'a aucun compte RDV Service Public à délier. Rendu en `Result`
- * plutôt que jeté : c'est un état ordinaire — un utilisateur qui n'a jamais lié
- * de compte — et non une anomalie technique.
- */
-export type CompteRdvIntrouvable = {
-  readonly _tag: 'CompteRdvIntrouvable'
-  readonly utilisateurId: UtilisateurCoopId
-}
-
-export const CompteRdvIntrouvable = (
-  utilisateurId: UtilisateurCoopId,
-): CompteRdvIntrouvable => ({ _tag: 'CompteRdvIntrouvable', utilisateurId })
+export type EchecDeDeconnecterCompteRdv = CompteRdvIntrouvable

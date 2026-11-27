@@ -14,6 +14,7 @@ import {
   AdresseLibre,
   type SuggestionDeLieu,
 } from '@/features/lieux-activite/domain/suggestion-de-lieu'
+import { success } from '@/libraries/result'
 
 const scenario: {
   lieuATrouver?: string
@@ -88,19 +89,19 @@ When(
   async () => {
     const resultat = await rechercherDesLieuxAAjouter({
       chercherDansLaCoop,
-      chercherDansLaCartographie: async () => ({
-        suggestions: scenario.cartographie,
-        nombre: NombreDeLieux(scenario.cartographie.length),
-      }),
-      chercherDansLAnnuaireDesEntreprises: async () => ({
-        suggestions: [],
-        nombre: NombreDeLieux(0),
-      }),
-    })(RechercheDeLieu('Médiathèque des Minimes'), {
+      chercherDansLaCartographie: async () =>
+        success({
+          suggestions: scenario.cartographie,
+          nombre: NombreDeLieux(scenario.cartographie.length),
+        }),
+      chercherDansLAnnuaireDesEntreprises: async () =>
+        success({ suggestions: [], nombre: NombreDeLieux(0) }),
+    })({
+      recherche: RechercheDeLieu('Médiathèque des Minimes'),
       limite: NombreDeLieux(100),
     })
 
-    scenario.suggestions = resultat.suggestions
+    scenario.suggestions = resultat.data.suggestions
   },
 )
 

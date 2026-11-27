@@ -1,5 +1,4 @@
 import {
-  type CompteASupprimer,
   estCourrielAnonymise,
   identiteAnonyme,
   type UtilisateurId,
@@ -10,7 +9,11 @@ import {
   autoriserSuppression,
   type CompteSupprime,
 } from './autoriser-la-suppression'
-import { effacementPlan } from './effacement-plan'
+import {
+  type EtapePlanifiee,
+  effacementPlan,
+  type Suppression,
+} from './effacement-plan'
 import {
   ErasedCount,
   failureReasonOf,
@@ -20,80 +23,86 @@ import {
 import {
   AccesNonCoupe,
   CompteIntrouvable,
-  type SupprimerCompteError,
+  type EchecDeSupprimerCompte,
 } from './errors'
-import { runnerDe } from './executeurs-d-etapes'
 import { motifDe } from './motif-suppression'
-import type { SupprimerCompteDependances, SupprimerComptePorts } from './ports'
+import type { EffacementsDuCompte, SupprimerComptePorts } from './ports'
 
-const runStep = async (
-  compte: CompteASupprimer,
-  ports: SupprimerComptePorts,
-  step: StepResult['step'],
-): Promise<StepResult> => {
-  try {
-    const count = await runnerDe(step, compte, ports)()
+const runStep = async ({
+  step,
+  runner,
+}: EtapePlanifiee): Promise<StepResult> => {
+  const resultat = await runner()
 
-    return count === 0
-      ? { _tag: 'skipped', step }
-      : { _tag: 'erased', step, count: ErasedCount(count) }
-  } catch (erreur) {
-    return { _tag: 'failed', step, cause: failureReasonOf(erreur) }
-  }
+  if (!resultat.success)
+    return { _tag: 'failed', step, cause: failureReasonOf(resultat.error) }
+
+  return resultat.data === 0
+    ? { _tag: 'skipped', step }
+    : { _tag: 'erased', step, count: ErasedCount(resultat.data) }
 }
 
 const executerLePlan = (
-  compte: CompteASupprimer,
-  ports: SupprimerComptePorts,
+  suppression: Suppression,
+  effacements: EffacementsDuCompte,
 ): Promise<readonly StepResult[]> =>
-  effacementPlan(compte.rattachements).reduce<Promise<readonly StepResult[]>>(
-    async (precedents, step) => [
-      ...(await precedents),
-      await runStep(compte, ports, step),
-    ],
+  effacementPlan(suppression, effacements).reduce<
+    Promise<readonly StepResult[]>
+  >(
+    async (precedents, etape) => [...(await precedents), await runStep(etape)],
     Promise.resolve([]),
   )
 
 export const supprimerCompte =
-  (dependances: SupprimerCompteDependances) =>
+  ({
+    hash,
+    lireLeCompteASupprimer,
+    couperLAcces,
+    journaliserLEffacement,
+    ...effacements
+  }: SupprimerComptePorts) =>
   async ({
     cible,
     auteur,
     maintenant,
   }: {
-    readonly cible: UtilisateurId
+    readonly cible: UtilisateurId | null
     readonly auteur: AuteurSuppression
     readonly maintenant: Date
-  }): Promise<Result<CompteSupprime, SupprimerCompteError>> => {
-    const compte = await dependances.lireLeCompteASupprimer(cible)
+  }): Promise<Result<CompteSupprime, EchecDeSupprimerCompte>> => {
+    if (cible === null) return failure(CompteIntrouvable())
 
-    if (compte === null) return failure(CompteIntrouvable(cible))
+    const compte = await lireLeCompteASupprimer(cible)
+
+    if (compte === null) return failure(CompteIntrouvable())
 
     const autorisation = autoriserSuppression(compte, auteur)
 
     if (!autorisation.success) return autorisation
 
-    try {
-      await dependances.couperLAcces({
-        utilisateurId: compte.id,
-        identite: identiteAnonyme(
-          dependances.hash(`${compte.id}-${compte.courriel}`),
-        ),
-        supprimeLe: maintenant,
-        dejaAnonymise: estCourrielAnonymise(compte.courriel),
-      })
-    } catch (erreur) {
-      return failure(AccesNonCoupe(compte.id, failureReasonOf(erreur)))
-    }
+    const identite = identiteAnonyme(hash(`${compte.id}-${compte.courriel}`))
+    const dejaAnonymise = estCourrielAnonymise(compte.courriel)
+
+    const coupure = await couperLAcces({
+      utilisateurId: compte.id,
+      identite,
+      supprimeLe: maintenant,
+      dejaAnonymise,
+    })
+
+    if (!coupure.success)
+      return failure(AccesNonCoupe(compte.id, failureReasonOf(coupure.error)))
 
     const compteSupprime: CompteSupprime = {
       id: compte.id,
       motif: motifDe(auteur),
       supprimeLe: maintenant,
-      report: report(await executerLePlan(compte, dependances)),
+      identite,
+      dejaAnonymise,
+      report: report(await executerLePlan({ compte, maintenant }, effacements)),
     }
 
-    dependances.journaliserLEffacement(compteSupprime)
+    journaliserLEffacement(compteSupprime)
 
     return success(compteSupprime)
   }

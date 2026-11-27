@@ -23,9 +23,14 @@ const semisVide: Semis = {
   tags: {},
 }
 
-let semis: Semis = semisVide
-let options: OptionsDeFiltreDesActivites | undefined
-let tagsDuPerimetre: readonly { readonly nom: string }[] = []
+const etat: {
+  semis: Semis
+  options?: OptionsDeFiltreDesActivites
+  tagsDuPerimetre: readonly { readonly nom: string }[]
+} = {
+  semis: semisVide,
+  tagsDuPerimetre: [],
+}
 
 const semerUnMediateur = async (): Promise<string> => {
   const userId = v4()
@@ -36,23 +41,26 @@ const semerUnMediateur = async (): Promise<string> => {
     data: { userId },
     select: { id: true },
   })
-  semis = {
-    ...semis,
-    userIds: [...semis.userIds, userId],
-    mediateurIds: [...semis.mediateurIds, mediateurId],
+  etat.semis = {
+    ...etat.semis,
+    userIds: [...etat.semis.userIds, userId],
+    mediateurIds: [...etat.semis.mediateurIds, mediateurId],
   }
   return mediateurId
 }
 
 const mediateurCourant = async (): Promise<string> =>
-  semis.mediateurIds[0] ?? (await semerUnMediateur())
+  etat.semis.mediateurIds[0] ?? (await semerUnMediateur())
 
 const semerUneEmployeuse = async (nom: string): Promise<number> => {
   const { id } = await prismaClient.structureAdministrativeMain.create({
     data: { denominationAntenne: nom },
     select: { id: true },
   })
-  semis = { ...semis, employeuseIds: [...semis.employeuseIds, id] }
+  etat.semis = {
+    ...etat.semis,
+    employeuseIds: [...etat.semis.employeuseIds, id],
+  }
   return id
 }
 
@@ -60,13 +68,13 @@ const semerUnTag = async (
   nom: string,
   mediateurId: string,
 ): Promise<string> => {
-  const deja = semis.tags[nom]
+  const deja = etat.semis.tags[nom]
   if (deja !== undefined) return deja
   const { id } = await prismaClient.tag.create({
     data: { nom, mediateurId },
     select: { id: true },
   })
-  semis = { ...semis, tags: { ...semis.tags, [nom]: id } }
+  etat.semis = { ...etat.semis, tags: { ...etat.semis.tags, [nom]: id } }
   return id
 }
 
@@ -114,8 +122,8 @@ const semerUneActiviteV1 = async (date: string, suppression: Date | null) =>
   })
 
 const optionsLues = (): OptionsDeFiltreDesActivites => {
-  if (options === undefined) throw new Error('Options non listées')
-  return options
+  if (etat.options === undefined) throw new Error('Options non listées')
+  return etat.options
 }
 
 const jour = (date: Date | undefined): string =>
@@ -161,7 +169,7 @@ Given(
 
 Given('le tag {string} a été supprimé', async (nom: string) => {
   await prismaClient.tag.update({
-    where: { id: semis.tags[nom] ?? '' },
+    where: { id: etat.semis.tags[nom] ?? '' },
     data: { suppression: new Date() },
   })
 })
@@ -181,7 +189,7 @@ Given(
 )
 
 When('je liste les options de filtre de mes activités', async () => {
-  options = await optionsDeFiltreDesActivites({
+  etat.options = await optionsDeFiltreDesActivites({
     mediateurId: MediateurId(await mediateurCourant()),
   })
 })
@@ -216,14 +224,17 @@ Then('les tags proposés sont {string}', (attendus: string) => {
 })
 
 When('je liste les tags les plus utilisés de mon périmètre', async () => {
-  tagsDuPerimetre = await tagsLesPlusUtilisesDuPerimetre({
+  etat.tagsDuPerimetre = await tagsLesPlusUtilisesDuPerimetre({
     type: 'Mediateur',
     mediateur: MediateurId(await mediateurCourant()),
   })
 })
 
 Then('les tags les plus utilisés sont {string}', (attendus: string) => {
-  assert.strictEqual(tagsDuPerimetre.map(({ nom }) => nom).join(', '), attendus)
+  assert.strictEqual(
+    etat.tagsDuPerimetre.map(({ nom }) => nom).join(', '),
+    attendus,
+  )
 })
 
 Then("aucun tag n'est proposé", () => {
@@ -243,9 +254,9 @@ Then("le médiateur n'a aucune activité", () => {
 })
 
 After(async () => {
-  const seme = semis
-  semis = semisVide
-  options = undefined
+  const seme = etat.semis
+  etat.semis = semisVide
+  delete etat.options
   if (seme.mediateurIds.length === 0) return
   const mediateurIds = [...seme.mediateurIds]
   await prismaClient.activitesTags.deleteMany({

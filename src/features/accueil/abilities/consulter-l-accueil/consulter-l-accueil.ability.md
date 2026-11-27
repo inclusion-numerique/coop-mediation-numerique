@@ -4,21 +4,21 @@
 
 ### Scénario: Le prénom est connu
 
-* Étant donné une médiatrice prénommée "Camille", nommée "Camille Martin", d'adresse "camille@example.org"
+* Étant donné une médiatrice prénommée "Camille", nommée "Camille Martin"
 * Quand elle consulte l'accueil
 * Alors l'accueil la salue par "Camille"
 
 ### Scénario: Seul le nom est connu
 
-* Étant donné une médiatrice prénommée " ", nommée "Camille Martin", d'adresse "camille@example.org"
+* Étant donné une médiatrice prénommée " ", nommée "Camille Martin"
 * Quand elle consulte l'accueil
 * Alors l'accueil la salue par "Camille Martin"
 
 ### Scénario: Seule l'adresse électronique est connue
 
-* Étant donné une médiatrice prénommée "", nommée "", d'adresse "camille@example.org"
+* Étant donné une médiatrice prénommée "", nommée ""
 * Quand elle consulte l'accueil
-* Alors l'accueil la salue par "camille@example.org"
+* Alors l'accueil la salue par son adresse électronique
 
 ## Règle: Un coordinateur voit l'accueil de la coordination, même s'il est aussi médiateur
 

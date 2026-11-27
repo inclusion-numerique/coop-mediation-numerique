@@ -1,41 +1,27 @@
 import { OAuth2Config } from '@auth/core/providers'
 import axios from 'axios'
-import jwt from 'jsonwebtoken'
-// La carte `exports` de next-auth déclare `./providers/*` mais pas `./providers` seul : le
-// résolveur `bundler` de TypeScript 7 la respecte, contrairement à l'ancien `node10`.
 import type { TokenEndpointHandler } from 'next-auth/providers/oauth'
 import { environnementServeur } from '@/configuration/environnement/serveur'
 import { getServerUrl } from '@/configuration/projet/serveur'
-import { proConnectProviderId } from '@/features/authentification/domain/fournisseur-proconnect'
 import { telephoneEnregistrable } from '@/libraries/telephone'
-import { proConnectClientId, proConnectHostname } from './proconnect.client'
+import {
+  proConnectClientId,
+  proConnectHostname,
+  proConnectProviderId,
+} from './proconnect.client'
+import {
+  type ProfilProConnect,
+  profilProConnectDuJeton,
+} from './profil-proconnect.transfer'
 import { stateConcordant } from './state-concordant.middleware'
 
 const issuer = `https://${proConnectHostname}`
-
-export type ProfilProConnect = {
-  sub: string
-  email: string
-  given_name: string
-  usual_name: string
-  phone_number: string
-  siret: string
-  aud: string
-  exp: number
-  iat: number
-  iss: string
-}
-
-/**
- * https://github.com/numerique-gouv/agentconnect-documentation/blob/main/doc_fs.md
- */
 
 export const ProConnectProvider = () =>
   ({
     id: proConnectProviderId,
     name: 'ProConnect',
     type: 'oauth',
-    // Allow an email user to login with Inclusion Connect
     allowDangerousEmailAccountLinking: true,
     clientId: proConnectClientId,
     clientSecret: environnementServeur().PROCONNECT_CLIENT_SECRET,
@@ -43,10 +29,7 @@ export const ProConnectProvider = () =>
     authorization: {
       url: `${issuer}/api/v2/authorize`,
       params: {
-        // https://github.com/numerique-gouv/agentconnect-documentation/blob/main/doc_fs/scope-claims.md#correspondance-entre-scope-et-claims-sur-agentconnect
         scope: 'openid given_name usual_name email phone siret',
-        // 'openid given_name usual_name email uid siret siren organizational_unit belonging_population phone chorusdt',
-
         acr_values: 'eidas1',
       },
     },
@@ -112,8 +95,7 @@ export const ProConnectProvider = () =>
               : '',
           },
         })
-        // User info returns a JWT token instead of a JSON object, we decode it
-        return jwt.decode(r.data) as ProfilProConnect
+        return profilProConnectDuJeton(r.data)
       },
     },
     profile: ({ email, sub, given_name, usual_name, phone_number, siret }) => ({

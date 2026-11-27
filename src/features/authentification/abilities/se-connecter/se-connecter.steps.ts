@@ -4,6 +4,7 @@ import {
   adresseDeRetourApresConnexion,
   pageDAccueil,
 } from '@/features/authentification/domain/page-d-accueil'
+import { RoleDeLaSession } from '@/features/authentification/domain/role-de-la-session'
 
 type Personne = Parameters<typeof pageDAccueil>[0]
 
@@ -12,31 +13,31 @@ const validee = new Date('2026-01-15')
 const personnes: Readonly<Record<string, Personne>> = {
   'visiteur sans session': null,
   administrateur: {
-    role: 'Admin',
+    role: RoleDeLaSession('Admin'),
     inscriptionValidee: null,
     mediateur: null,
     coordinateur: null,
   },
   "utilisateur dont l'inscription n'est pas validée": {
-    role: 'User',
+    role: RoleDeLaSession('User'),
     inscriptionValidee: null,
     mediateur: { id: 'mediateur' },
     coordinateur: null,
   },
   'utilisateur validé sans profil de médiateur ni coordinateur': {
-    role: 'User',
+    role: RoleDeLaSession('User'),
     inscriptionValidee: validee,
     mediateur: null,
     coordinateur: null,
   },
   'médiateur inscrit': {
-    role: 'User',
+    role: RoleDeLaSession('User'),
     inscriptionValidee: validee,
     mediateur: { id: 'mediateur' },
     coordinateur: null,
   },
   'coordinateur inscrit': {
-    role: 'User',
+    role: RoleDeLaSession('User'),
     inscriptionValidee: validee,
     mediateur: null,
     coordinateur: { id: 'coordinateur' },
@@ -52,7 +53,7 @@ const personneDecrite = (): Personne => {
 
 Given('la personne {string}', (personne: string) => {
   assert.ok(personne in personnes, `Personne inconnue : ${personne}`)
-  connexion.personne = personnes[personne]
+  connexion.personne = personnes[personne] ?? null
 })
 
 When('il arrive sur la coop', () => {

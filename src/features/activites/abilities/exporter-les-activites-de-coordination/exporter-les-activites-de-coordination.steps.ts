@@ -1,8 +1,8 @@
 import assert from 'node:assert'
 import { Then, When } from '@cucumber/cucumber'
 import { prismaClient } from '@/configuration/prisma'
-import { tagsRappeles } from '@/features/activites/abilities/exporter-les-activites-de-coordination/domain/tags-rappeles'
-import { exporterLesActivitesDeCoordination } from '@/features/activites/abilities/exporter-les-activites-de-coordination/implementations/prisma/activites-a-exporter.query'
+import { exporterLesActivitesDeCoordination } from '@/features/activites/abilities/exporter-les-activites-de-coordination/domain/exporter-les-activites-de-coordination'
+import { activitesAExporter } from '@/features/activites/abilities/exporter-les-activites-de-coordination/implementations/prisma/activites-a-exporter.query'
 import { coordinationsSemees } from '@/features/activites/activites.cucumber'
 import {
   type ActiviteDeCoordination,
@@ -14,8 +14,13 @@ import {
 } from '@/features/activites/domain'
 import { criteresDesCoordinationsDepuisLURL } from '@/features/activites/fixtures/criteres-depuis-l-url'
 
-let exportees: readonly ActiviteDeCoordination[] = []
-let rappeles: readonly TagDeLActivite[] = []
+const etat: {
+  exportees: readonly ActiviteDeCoordination[]
+  rappeles: readonly TagDeLActivite[]
+} = {
+  exportees: [],
+  rappeles: [],
+}
 
 const tagsEnBase: TagsUtilisables = async (tagIds) =>
   (
@@ -29,15 +34,16 @@ const exporter = async (
   parametres: Parameters<typeof criteresDesCoordinationsDepuisLURL>[0],
 ) => {
   const criteres = criteresDesCoordinationsDepuisLURL(parametres)
-  const [activites, tags] = await Promise.all([
-    exporterLesActivitesDeCoordination({
-      coordinateurId: CoordinateurId(coordinationsSemees().coordinateurId),
-      criteres,
-    }),
-    tagsRappeles({ criteres, tagsUtilisables: tagsEnBase }),
-  ])
-  exportees = activites
-  rappeles = tags
+  const exportation = await exporterLesActivitesDeCoordination({
+    activitesAExporter,
+    tagsUtilisables: tagsEnBase,
+  })({
+    coordinateurId: CoordinateurId(coordinationsSemees().coordinateurId),
+    criteres,
+  })
+  const { activites, tags } = exportation.data
+  etat.exportees = activites
+  etat.rappeles = tags
 }
 
 When("j'exporte mes activités de coordination", async () => {
@@ -49,12 +55,12 @@ When("j'exporte mes activités de coordination taguées « Réseau »", async ()
 })
 
 Then('{int} activités de coordination sont exportées', (attendu: number) => {
-  assert.strictEqual(exportees.length, attendu)
+  assert.strictEqual(etat.exportees.length, attendu)
 })
 
 Then("le tag « Réseau » est rappelé dans les filtres de l'export", () => {
   assert.deepStrictEqual(
-    rappeles.map(({ id }) => id),
+    etat.rappeles.map(({ id }) => id),
     [coordinationsSemees().tags.reseau],
   )
 })

@@ -1,18 +1,25 @@
 import { describe, expect, it } from 'vitest'
+import { failure, success } from '@/libraries/result'
 import type { CompteRdv } from '../../../domain/compte/compte-rdv'
 import { MessageErreurCompte } from '../../../domain/compte/compte-rdv'
 import {
   JetonAcces,
   type JetonsOAuth,
 } from '../../../domain/compte/jetons-oauth'
+import { ApiIndisponible } from '../../../domain/errors'
 import { RdvAgentId } from '../../../domain/identifiants/rdv-agent-id'
 import { RdvId } from '../../../domain/identifiants/rdv-id'
 import { UtilisateurCoopId } from '../../../domain/identifiants/utilisateur-coop-id'
-import { StatutPresence } from '../../../domain/rdv/statut-presence'
-import { statutRdvMisAJour, verifierAcces } from './mettre-a-jour-statut-rdv'
+import {
+  StatutPresence,
+  StatutPresenceModifiable,
+} from '../../../domain/rdv/statut-presence'
+import { mettreAJourStatutRdv } from './mettre-a-jour-statut-rdv'
+import type { MettreAJourStatutRdvPorts } from './ports'
 
 const agentId = RdvAgentId(4242)
 const rdvId = RdvId(77)
+const utilisateurId = UtilisateurCoopId('d10844c6-b6de-402a-a68d-f8328b1d1b0c')
 
 const jetons: JetonsOAuth = {
   acces: JetonAcces('jeton-acces'),
@@ -23,123 +30,154 @@ const jetons: JetonsOAuth = {
 
 const base = {
   agentId,
-  utilisateurId: UtilisateurCoopId('d10844c6-b6de-402a-a68d-f8328b1d1b0c'),
+  utilisateurId,
   organisationIds: [],
   organisationIdsSansWebhook: [],
   synchroniserDepuis: null,
   derniereSynchro: null,
   inclureRdvsDansActivites: false,
-} as const
+}
 
 const lie: CompteRdv = { ...base, _tag: 'lie', jetons }
 
-describe('verifierAcces', () => {
-  it('autorise le propriétaire du rendez-vous', () => {
-    const acces = verifierAcces({ compte: lie, agentIdDuRdv: agentId, rdvId })
+const enErreur: CompteRdv = {
+  ...base,
+  _tag: 'enErreur',
+  jetons,
+  erreur: MessageErreurCompte('invalid_grant'),
+}
 
-    expect(acces.success).toBe(true)
+const deconnecte: CompteRdv = {
+  ...base,
+  _tag: 'deconnecte',
+  deconnexion: new Date('2026-07-08T00:00:00.000Z'),
+}
+
+const proprietaire: MettreAJourStatutRdvPorts = {
+  contexte: async () => ({ compte: lie, agentIdDuRdv: agentId }),
+  changerStatutRdv: async () => success(StatutPresence('seen')),
+  enregistrer: async () => undefined,
+}
+
+const demande = {
+  utilisateurId,
+  rdvId,
+  statut: StatutPresenceModifiable('seen'),
+}
+
+describe('mettre à jour le statut d’un rendez-vous', () => {
+  describe('contrôle d’accès', () => {
+    it('autorise le propriétaire du rendez-vous', async () => {
+      expect(await mettreAJourStatutRdv(proprietaire)(demande)).toEqual(
+        success({
+          rdvId,
+          statut: { statutPresence: 'seen', compteRenduRegle: true },
+        }),
+      )
+    })
+
+    it('autorise un compte en erreur — c’est en réessayant qu’il en sort', async () => {
+      const resultat = await mettreAJourStatutRdv({
+        ...proprietaire,
+        contexte: async () => ({ compte: enErreur, agentIdDuRdv: agentId }),
+      })(demande)
+
+      expect(resultat).toEqual(
+        success({
+          rdvId,
+          statut: { statutPresence: 'seen', compteRenduRegle: true },
+        }),
+      )
+    })
+
+    it('refuse un médiateur sans compte, sans prétendre connaître un agent', async () => {
+      const resultat = await mettreAJourStatutRdv({
+        ...proprietaire,
+        contexte: async () => ({ compte: null, agentIdDuRdv: agentId }),
+      })(demande)
+
+      expect(resultat).toEqual(failure({ _tag: 'CompteNonLie', agentId: null }))
+    })
+
+    it('refuse un compte délié', async () => {
+      const resultat = await mettreAJourStatutRdv({
+        ...proprietaire,
+        contexte: async () => ({ compte: deconnecte, agentIdDuRdv: agentId }),
+      })(demande)
+
+      expect(resultat).toEqual(failure({ _tag: 'CompteNonLie', agentId }))
+    })
+
+    it('refuse un rendez-vous inconnu de La Coop', async () => {
+      const resultat = await mettreAJourStatutRdv({
+        ...proprietaire,
+        contexte: async () => ({ compte: lie, agentIdDuRdv: null }),
+      })(demande)
+
+      expect(resultat).toEqual(failure({ _tag: 'RdvIntrouvable', id: rdvId }))
+    })
+
+    it('refuse un rendez-vous appartenant à un autre agent, distinct d’un rendez-vous inexistant', async () => {
+      const resultat = await mettreAJourStatutRdv({
+        ...proprietaire,
+        contexte: async () => ({
+          compte: lie,
+          agentIdDuRdv: RdvAgentId(9999),
+        }),
+      })(demande)
+
+      expect(resultat).toEqual(failure({ _tag: 'RdvNonAutorise', rdvId }))
+    })
   })
 
-  it('autorise un compte en erreur — c’est en réessayant qu’il en sort', () => {
-    const acces = verifierAcces({
-      compte: {
-        ...base,
-        _tag: 'enErreur',
-        jetons,
-        erreur: MessageErreurCompte('invalid_grant'),
-      },
-      agentIdDuRdv: agentId,
-      rdvId,
-    })
+  it('laisse la base intacte quand RDV Service Public refuse le changement', async () => {
+    const resultat = await mettreAJourStatutRdv({
+      ...proprietaire,
+      changerStatutRdv: async () =>
+        failure(ApiIndisponible(503, 'maintenance')),
+    })(demande)
 
-    expect(acces.success).toBe(true)
-  })
-
-  it('refuse un médiateur sans compte, sans prétendre connaître un agent', () => {
-    const acces = verifierAcces({
-      compte: null,
-      agentIdDuRdv: agentId,
-      rdvId,
-    })
-
-    expect(acces.success).toBe(false)
-    expect(acces.success === false && acces.error).toEqual({
-      _tag: 'CompteNonLie',
-      agentId: null,
-    })
-  })
-
-  it('refuse un compte délié', () => {
-    const acces = verifierAcces({
-      compte: {
-        ...base,
-        _tag: 'deconnecte',
-        deconnexion: new Date('2026-07-08T00:00:00.000Z'),
-      },
-      agentIdDuRdv: agentId,
-      rdvId,
-    })
-
-    expect(acces.success === false && acces.error._tag).toBe('CompteNonLie')
-  })
-
-  it('refuse un rendez-vous inconnu de La Coop', () => {
-    const acces = verifierAcces({ compte: lie, agentIdDuRdv: null, rdvId })
-
-    expect(acces.success === false && acces.error._tag).toBe('RdvIntrouvable')
-  })
-
-  it('refuse un rendez-vous appartenant à un autre agent', () => {
-    const acces = verifierAcces({
-      compte: lie,
-      agentIdDuRdv: RdvAgentId(9999),
-      rdvId,
-    })
-
-    expect(acces.success === false && acces.error._tag).toBe('RdvNonAutorise')
-  })
-
-  it('distingue le rendez-vous d’autrui du rendez-vous inexistant', () => {
-    const autrui = verifierAcces({
-      compte: lie,
-      agentIdDuRdv: RdvAgentId(9999),
-      rdvId,
-    })
-    const inexistant = verifierAcces({
-      compte: lie,
-      agentIdDuRdv: null,
-      rdvId,
-    })
-
-    expect(autrui.success === false && autrui.error._tag).not.toBe(
-      inexistant.success === false && inexistant.error._tag,
+    expect(resultat).toEqual(
+      failure({
+        _tag: 'ApiIndisponible',
+        statusCode: 503,
+        message: 'maintenance',
+      }),
     )
   })
-})
 
-describe('statutRdvMisAJour', () => {
-  it('mémorise le refus de CRA quand le rendez-vous est déclaré honoré', () => {
-    expect(statutRdvMisAJour(StatutPresence('seen'))).toEqual({
-      statutPresence: 'seen',
-      compteRenduRegle: true,
-    })
-  })
-
-  it.each(['noshow', 'excused', 'revoked'] as const)(
+  it.each<[string, StatutPresence]>([
+    ['noshow', StatutPresence('noshow')],
+    ['excused', StatutPresence('excused')],
+    ['revoked', StatutPresence('revoked')],
+  ])(
     'ne mémorise aucun refus pour un rendez-vous « %s », qui n’appelle pas de CRA',
-    (statut) => {
-      expect(statutRdvMisAJour(StatutPresence(statut))).toEqual({
-        statutPresence: statut,
-        compteRenduRegle: false,
-      })
+    async (_, statutConfirme) => {
+      const resultat = await mettreAJourStatutRdv({
+        ...proprietaire,
+        changerStatutRdv: async () => success(statutConfirme),
+      })(demande)
+
+      expect(resultat).toEqual(
+        success({
+          rdvId,
+          statut: { statutPresence: statutConfirme, compteRenduRegle: false },
+        }),
+      )
     },
   )
 
-  it('retient le statut confirmé par RDV Service Public, pas celui demandé', () => {
-    // `statutRdvMisAJour` est appelée avec la réponse de l'API : si RDV Service
-    // Public a tranché autrement, c'est sa décision qui est enregistrée.
-    expect(statutRdvMisAJour(StatutPresence('unknown')).statutPresence).toBe(
-      'unknown',
+  it('retient le statut confirmé par RDV Service Public, pas celui demandé', async () => {
+    const resultat = await mettreAJourStatutRdv({
+      ...proprietaire,
+      changerStatutRdv: async () => success(StatutPresence('unknown')),
+    })(demande)
+
+    expect(resultat).toEqual(
+      success({
+        rdvId,
+        statut: { statutPresence: 'unknown', compteRenduRegle: false },
+      }),
     )
   })
 })

@@ -12,10 +12,13 @@ describe('la voie, que l’Entrepôt éclate en trois colonnes', () => {
     ).toBe('12 bis rue Foch')
   })
 
-  it('saute ce que l’Entrepôt ne renseigne pas', () => {
+  it('saute la répétition que l’Entrepôt ne renseigne pas', () => {
     expect(
       voieDuRegistre({ numeroVoie: 12, repetition: null, nomVoie: 'rue Foch' }),
     ).toBe('12 rue Foch')
+  })
+
+  it('saute le numéro que l’Entrepôt ne renseigne pas', () => {
     expect(
       voieDuRegistre({
         numeroVoie: null,

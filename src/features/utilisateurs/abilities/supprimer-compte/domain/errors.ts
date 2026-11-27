@@ -1,24 +1,14 @@
-import type {
-  RoleUtilisateur,
-  UtilisateurId,
-} from '@/features/utilisateurs/domain'
+import type { RoleProtege, UtilisateurId } from '@/features/utilisateurs/domain'
 import type { FailureReason } from './effacement-report'
 
 export type CompteIntrouvable = {
   readonly _tag: 'CompteIntrouvable'
-  readonly utilisateurId: UtilisateurId
 }
 
 export type CompteDejaSupprime = {
   readonly _tag: 'CompteDejaSupprime'
   readonly utilisateurId: UtilisateurId
   readonly depuis: Date
-}
-
-export type RoleProtege = {
-  readonly _tag: 'RoleProtege'
-  readonly utilisateurId: UtilisateurId
-  readonly role: RoleUtilisateur
 }
 
 export type AccesNonCoupe = {
@@ -32,26 +22,21 @@ export type SuppressionReserveeAuDispositif = {
   readonly utilisateurId: UtilisateurId
 }
 
-export type SupprimerCompteError =
+export type EchecDeSupprimerCompte =
   | CompteIntrouvable
   | CompteDejaSupprime
   | RoleProtege
   | SuppressionReserveeAuDispositif
   | AccesNonCoupe
 
-export const CompteIntrouvable = (
-  utilisateurId: UtilisateurId,
-): CompteIntrouvable => ({ _tag: 'CompteIntrouvable', utilisateurId })
+export const CompteIntrouvable = (): CompteIntrouvable => ({
+  _tag: 'CompteIntrouvable',
+})
 
 export const CompteDejaSupprime = (
   utilisateurId: UtilisateurId,
   depuis: Date,
 ): CompteDejaSupprime => ({ _tag: 'CompteDejaSupprime', utilisateurId, depuis })
-
-export const RoleProtege = (
-  utilisateurId: UtilisateurId,
-  role: RoleUtilisateur,
-): RoleProtege => ({ _tag: 'RoleProtege', utilisateurId, role })
 
 export const SuppressionReserveeAuDispositif = (
   utilisateurId: UtilisateurId,

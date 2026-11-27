@@ -1,3 +1,5 @@
+import type { DateDActivite } from './date-d-activite'
+
 export type AucuneThematique = { readonly _tag: 'AucuneThematique' }
 
 export const AucuneThematique = (): AucuneThematique => ({
@@ -125,3 +127,18 @@ export type RendezVousIndisponible = { readonly _tag: 'RendezVousIndisponible' }
 export const RendezVousIndisponible = (): RendezVousIndisponible => ({
   _tag: 'RendezVousIndisponible',
 })
+
+export type ActionNonAutorisee = { readonly _tag: 'ActionNonAutorisee' }
+
+export const ActionNonAutorisee = (): ActionNonAutorisee => ({
+  _tag: 'ActionNonAutorisee',
+})
+
+export type DateTropLointaine = {
+  readonly _tag: 'DateTropLointaine'
+  readonly auPlusTard: DateDActivite
+}
+
+export const DateTropLointaine = (
+  auPlusTard: DateDActivite,
+): DateTropLointaine => ({ _tag: 'DateTropLointaine', auPlusTard })

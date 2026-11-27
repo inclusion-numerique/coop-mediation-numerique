@@ -20,12 +20,6 @@ export const lieuModifie = (connu: Lieu, recu: Lieu): boolean =>
   connu.usageUnique !== recu.usageUnique ||
   connu.organisationId !== recu.organisationId
 
-/**
- * Seule l'identité est comparée. Le reste de la fiche — coordonnées, préférences
- * de notification — appartient à RDV Service Public et change sans que La Coop
- * ait à s'en émouvoir : réécrire l'usager à chaque variation de ces champs
- * ferait remonter des « mises à jour » qui n'en sont pas.
- */
 export const usagerModifie = (connu: Usager, recu: Usager): boolean =>
   connu.prenom !== recu.prenom ||
   connu.nom !== recu.nom ||
@@ -56,17 +50,6 @@ const participationsModifiees = (
 
 const nomAtelier = (rdv: Rdv): string | null => (rdv.collectif ? rdv.nom : null)
 
-/**
- * Un rendez-vous a changé si l'un de ses attributs propres a bougé, si son
- * rattachement à un motif, un lieu ou une organisation a changé, si le
- * paramétrage du lieu qu'il désigne a été retouché, ou si ses participations
- * diffèrent.
- *
- * L'organisation n'est pas comparée dans le détail, contrairement à l'ancienne
- * version : ses champs vivent dans sa propre table, réconciliée par
- * `synchroniser-organisations`. Les comparer ici faisait passer un rendez-vous
- * pour modifié parce que le numéro de téléphone de sa structure avait changé.
- */
 export const rdvModifie = (connu: Rdv, recu: Rdv): boolean =>
   connu.statutPresence !== recu.statutPresence ||
   connu.duree !== recu.duree ||
@@ -79,10 +62,6 @@ export const rdvModifie = (connu: Rdv, recu: Rdv): boolean =>
   lieuDesigneModifie(connu.lieu, recu.lieu) ||
   participationsModifiees(connu.participations, recu.participations)
 
-/**
- * Le rendez-vous porte une copie dénormalisée de son lieu : on la compare pour
- * ne pas laisser un lieu retouché derrière un rendez-vous par ailleurs identique.
- */
 const lieuDesigneModifie = (connu: Lieu | null, recu: Lieu | null): boolean => {
   if (connu === null || recu === null) {
     return connu !== recu

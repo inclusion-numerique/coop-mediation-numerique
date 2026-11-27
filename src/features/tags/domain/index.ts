@@ -1,6 +1,5 @@
 export {
   type Acteur,
-  acteurDe,
   coordinateurDe,
   type Equipe,
   mediateurDe,
@@ -23,6 +22,7 @@ export {
   type Portee,
   type TypeDePortee,
 } from './portee'
+export type { LireUnTagActif } from './ports'
 export { peutFusionnerVers, peutGerer } from './regles'
 export {
   DESCRIPTION_DU_TAG_LONGUEUR_MAX,

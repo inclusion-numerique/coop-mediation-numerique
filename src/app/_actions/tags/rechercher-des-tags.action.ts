@@ -6,7 +6,8 @@ import { profilDeLaSession } from '@/features/authentification/domain/profil-de-
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { RechercherDesTagsValidation } from '@/features/tags/abilities/rechercher-des-tags/action/rechercher-des-tags.validation'
 import { rechercherDesTags } from '@/features/tags/abilities/rechercher-des-tags/implementations/prisma/rechercher-des-tags.query'
-import { acteurDe, TagId } from '@/features/tags/domain'
+import { TagId } from '@/features/tags/domain'
+import { acteurDe } from '@/features/tags/implementations/session/acteur.transfer'
 import { tagAffiche } from '@/features/tags/ui/presenters/tag-affiche.presenter'
 import { withInput } from '@/libraries/nextjs'
 

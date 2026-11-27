@@ -1,6 +1,7 @@
 import { prismaClient } from '@/configuration/prisma'
+import { beneficiaireEnregistreDe } from '@/features/beneficiaire/implementations/prisma/beneficiaire-enregistre.transfer'
 import type { Prisma } from '@/generated/prisma/client'
-import type { ConsulterBeneficiaire } from '../../domain/consulter-beneficiaire'
+import type { ConsulterBeneficiaire } from '../../domain/ports'
 
 const beneficiaireInformationsSelect = {
   id: true,
@@ -25,16 +26,18 @@ const beneficiaireInformationsSelect = {
   accompagnementsCount: true,
 } satisfies Prisma.BeneficiaireSelect
 
-export const consulterBeneficiaire: ConsulterBeneficiaire = ({
+export const consulterBeneficiaire: ConsulterBeneficiaire = async ({
   beneficiaireId,
   mediateurId,
-}) =>
-  prismaClient.beneficiaire.findUnique({
+  maintenant,
+}) => {
+  const ligne = await prismaClient.beneficiaire.findUnique({
     where: {
       id: beneficiaireId,
-      // Seul le médiateur propriétaire peut consulter la fiche.
       mediateurId,
       suppression: null,
     },
     select: beneficiaireInformationsSelect,
   })
+  return ligne === null ? null : beneficiaireEnregistreDe(ligne, maintenant)
+}

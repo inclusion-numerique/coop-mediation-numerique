@@ -1,5 +1,10 @@
 import type { NextRequest } from 'next/server'
-import { compterLesAccompagnements } from '@/features/activites/abilities/compter-les-accompagnements/implementations/prisma/totaux-des-accompagnements.query'
+import { compterLesAccompagnements } from '@/features/activites/abilities/compter-les-accompagnements/domain'
+import {
+  activitesComptees,
+  nouvellesPersonnesComptees,
+  personnesComptees,
+} from '@/features/activites/abilities/compter-les-accompagnements/implementations/prisma/totaux-des-accompagnements.query'
 import { totauxPresentes } from '@/features/activites/abilities/compter-les-accompagnements/ui/presenters/totaux.presenter'
 import { compterLesAccompagnementsParCommune } from '@/features/activites/abilities/compter-les-accompagnements-par-commune/implementations/prisma/accompagnements-par-commune.query'
 import { parCommunePresentes } from '@/features/activites/abilities/compter-les-accompagnements-par-commune/ui/presenters/par-commune.presenter'
@@ -21,7 +26,9 @@ import { repartirLesAccompagnements } from '@/features/activites/abilities/repar
 import { repartitionPresentee } from '@/features/activites/abilities/repartir-les-accompagnements/ui/presenters/repartition.presenter'
 import { repartirLesAccompagnementsParTag } from '@/features/activites/abilities/repartir-les-accompagnements-par-tag/implementations/prisma/accompagnements-par-tag.query'
 import { parTagPresentes } from '@/features/activites/abilities/repartir-les-accompagnements-par-tag/ui/presenters/par-tag.presenter'
-import { presenceDeCrasV1 } from '@/features/activites/abilities/verifier-la-presence-de-cras-v1/implementations/prisma/presence-de-cras-v1.query'
+import { verifierLaPresenceDeCrasV1 } from '@/features/activites/abilities/verifier-la-presence-de-cras-v1/domain/verifier-la-presence-de-cras-v1'
+import { mediateurAvecCrasV1 } from '@/features/activites/abilities/verifier-la-presence-de-cras-v1/implementations/prisma/mediateur-avec-cras-v1.query'
+import { presenceDeCrasV1Presentee } from '@/features/activites/abilities/verifier-la-presence-de-cras-v1/ui/presenters/presence-de-cras-v1.presenter'
 import type { PerimetreDesStatistiques } from '@/features/activites/domain'
 import { statistiquesDuPerimetre } from '@/features/activites/implementations/prisma/statistiques/statistiques-du-perimetre.query'
 import {
@@ -38,7 +45,12 @@ import {
   utilisateurDuJetonDeSession,
 } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
 import { jetonDeSessionDesCookies } from '@/features/authentification/implementations/session/session-token-from-cookies.query'
-import { membresAFiltrerDuDemandeur } from '@/features/equipe/abilities/lister-les-membres-a-filtrer/implementations/prisma/membres-a-filtrer-du-demandeur.query'
+import { listerLesMembresAFiltrer } from '@/features/equipe/abilities/lister-les-membres-a-filtrer/domain/lister-les-membres-a-filtrer'
+import {
+  lireLeDemandeur,
+  lireLesMembresAFiltrer,
+} from '@/features/equipe/abilities/lister-les-membres-a-filtrer/implementations/prisma/membres-a-filtrer.query'
+import { demandeurDuFiltre } from '@/features/equipe/abilities/lister-les-membres-a-filtrer/implementations/session/demandeur-du-filtre.query'
 import { optionDeMembre } from '@/features/equipe/abilities/lister-les-membres-a-filtrer/ui/presenters/options-de-membres.presenter'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/rdvs-des-activites.query'
 import { classeurDesStatistiques } from '@/features/statistiques/implementations/excel/classeur-des-statistiques.classeur'
@@ -48,7 +60,15 @@ import { UtilisateurId } from '@/features/utilisateurs/domain'
 import { auteurDeLExport } from '@/features/utilisateurs/ui/presenters/auteur-de-l-export.presenter'
 
 const statistiquesDesActivites = statistiquesAvec({
-  totalCounts: source(compterLesAccompagnements, totauxPresentes),
+  totalCounts: source(
+    (demande) =>
+      compterLesAccompagnements({
+        activitesComptees,
+        personnesComptees,
+        nouvellesPersonnesComptees,
+      })(demande).then(({ data }) => data),
+    totauxPresentes,
+  ),
   periode: source(compterLesAccompagnementsParPeriode, parPeriodePresentes),
   repartition: source(repartirLesAccompagnements, repartitionPresentee),
   tags: sourceOptionnelle(repartirLesAccompagnementsParTag, parTagPresentes),
@@ -65,7 +85,10 @@ const statistiquesDesActivites = statistiquesAvec({
     compterLesPersonnesAccompagneesParCommune,
     personnesParCommunePresentees,
   ),
-  hasCrasV1: presenceDeCrasV1,
+  hasCrasV1: (perimetre) =>
+    verifierLaPresenceDeCrasV1({ mediateurAvecCrasV1 })({ perimetre }).then(
+      presenceDeCrasV1Presentee,
+    ),
 })
 
 const lecturesDeLaBarre = (
@@ -87,6 +110,7 @@ const classeurDuPerimetre = async (
   perimetre: PerimetreDesStatistiques,
   valeurs: ReturnType<typeof filtresDesStatistiques.charger>,
   membres: () => Promise<readonly { value: string; label: string }[]>,
+  maintenant: Date,
 ) => {
   const [statistiques, barre] = await Promise.all([
     statistiquesDesActivites.rassembler(
@@ -96,7 +120,7 @@ const classeurDuPerimetre = async (
       )({
         perimetre,
         criteres: criteresDesStatistiquesDesFiltres(valeurs),
-        fin: valeurs.au ?? new Date(),
+        fin: valeurs.au ?? maintenant,
       }),
     ),
     barreDesStatistiquesAvec(lecturesDeLaBarre(perimetre, membres))(
@@ -107,6 +131,16 @@ const classeurDuPerimetre = async (
   return { statistiques, etiquettes: barre.etiquettes }
 }
 
+const optionsDesMembres = async (
+  user: Parameters<typeof demandeurDuFiltre>[0],
+) => {
+  const membres = await listerLesMembresAFiltrer({
+    lireLeDemandeur,
+    lireLesMembresAFiltrer,
+  })({ ...demandeurDuFiltre(user), recherche: null })
+  return membres.data.map(optionDeMembre)
+}
+
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
@@ -114,6 +148,7 @@ export const GET = async (
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) => {
+  const maintenant = new Date()
   const administrateur = await utilisateurDuJetonDeSession(
     jetonDeSessionDesCookies(request.cookies),
   )
@@ -134,11 +169,12 @@ export const GET = async (
       ...(await classeurDuPerimetre(
         perimetre,
         filtresDesStatistiques.charger(request.nextUrl.searchParams),
-        async () =>
-          (await membresAFiltrerDuDemandeur(user)).map(optionDeMembre),
+        async () => optionsDesMembres(user),
+        maintenant,
       )),
       auteur: auteurDeLExport(administrateur),
       fuseau: user.timezone,
+      genereLe: maintenant,
     }),
   )
 
@@ -147,7 +183,7 @@ export const GET = async (
     headers: {
       'Content-Type':
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      'Content-Disposition': `attachment; filename="${nomDuFichierDesStatistiques(new Date())}"`,
+      'Content-Disposition': `attachment; filename="${nomDuFichierDesStatistiques(maintenant)}"`,
     },
   })
 }

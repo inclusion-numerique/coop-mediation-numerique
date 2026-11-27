@@ -1,20 +1,12 @@
-import type { ErreurConnexionCompte } from '../domain/connecter-compte-rdv'
+import type { EchecDeConnecterCompteRdv } from '../domain/errors'
 
 export type MotifEchecConnexion = {
   readonly error: string
   readonly error_description: string
 }
 
-/**
- * Ce que le parcours OAuth rapporte à l'écran de retour, sous la forme qu'il
- * attend : un code et une phrase, passés en paramètres d'URL.
- *
- * Chaque échec porte son propre code. Tout finissait auparavant en
- * `server_error` dès qu'une exception traversait le `try` de la route, sans que
- * l'utilisateur sache s'il devait recommencer, changer de compte ou attendre.
- */
 export const CONNECTER_COMPTE_RDV_ERRORS: Record<
-  ErreurConnexionCompte['_tag'],
+  EchecDeConnecterCompteRdv['_tag'],
   MotifEchecConnexion
 > = {
   CodeAutorisationRefuse: {
@@ -58,7 +50,6 @@ export const CONNECTER_COMPTE_RDV_ERRORS: Record<
   },
 } as const
 
-/** Le code d'autorisation n'est jamais arrivé : RDV SP n'a pas été appelé. */
 export const CODE_AUTORISATION_MANQUANT: MotifEchecConnexion = {
   error: 'invalid_oauth_code',
   error_description: 'Le code d’autorisation est manquant',

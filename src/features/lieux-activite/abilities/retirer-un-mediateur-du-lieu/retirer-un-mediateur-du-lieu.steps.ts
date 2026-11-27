@@ -1,8 +1,10 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { prismaClient } from '@/configuration/prisma'
+import { retirerUnMediateurDuLieu } from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/domain/retirer-un-mediateur-du-lieu'
 import { envoyerLeRetraitDuLieu } from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/implementations/email/envoyer-le-retrait-du-lieu.mutation'
-import { retirerUnMediateurDuLieu } from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/implementations/prisma/retirer-un-mediateur-du-lieu.mutation'
+import { trouverLeRattachementEnCours } from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/implementations/prisma/rattachement-en-cours.query'
+import { terminerLeRattachement } from '@/features/lieux-activite/abilities/retirer-un-mediateur-du-lieu/implementations/prisma/terminer-le-rattachement.mutation'
 import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
 import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
 import { UtilisateurId } from '@/features/lieux-activite/domain/identifiants/utilisateur-id'
@@ -31,10 +33,15 @@ const retirer = async (options: {
   mediateurId: string | null
   coordonneLeMediateurRetire?: boolean
 }) => {
-  dernier.retrait = await retirerUnMediateurDuLieu({ envoyerLeRetraitDuLieu })({
+  dernier.retrait = await retirerUnMediateurDuLieu({
+    trouverLeRattachementEnCours,
+    envoyerLeRetraitDuLieu,
+    terminerLeRattachement,
+  })({
     mediateurId: MediateurId(ficheSemee().mediateurRattacheId),
     lieuId: LieuId(ficheSemee().lieuId),
     auteur: auteur(options),
+    maintenant: new Date(),
   })
 }
 

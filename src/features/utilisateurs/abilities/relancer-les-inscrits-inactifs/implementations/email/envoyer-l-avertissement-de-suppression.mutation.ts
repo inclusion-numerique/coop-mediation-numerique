@@ -5,9 +5,12 @@ import {
   throwOnSendMailFailure,
 } from '@/configuration/smtp'
 import { avertissementDeSuppression } from '@/features/utilisateurs/abilities/relancer-les-inscrits-inactifs/implementations/email/avertissement-de-suppression.email'
+import { type EnvoyerLAvertissement } from '@/features/utilisateurs/domain'
 import { compileMjml } from '@/libraries/emails/rendu'
+import { attraperEnEchecTechnique } from '@/libraries/result'
+import { profilDuCourriel } from './profil-du-destinataire.transfer'
 
-export const envoyerLAvertissementDeSuppression = async ({
+const envoyer = async ({
   email,
   firstname,
   deletionDate,
@@ -51,3 +54,16 @@ export const envoyerLAvertissementDeSuppression = async ({
 
   throwOnSendMailFailure(result)
 }
+
+export const envoyerLAvertissementDeSuppression: EnvoyerLAvertissement = (
+  destinataire,
+  { suppressionLe, joursRestants },
+) =>
+  attraperEnEchecTechnique(envoyer)({
+    email: destinataire.courriel,
+    firstname: destinataire.prenom,
+    deletionDate: suppressionLe.toLocaleDateString('fr-FR'),
+    daysRemaining: joursRestants,
+    matomoCampaignId: 'nouveau_j90',
+    ...profilDuCourriel(destinataire.profil),
+  })

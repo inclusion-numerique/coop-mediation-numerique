@@ -1,7 +1,12 @@
 import { rechercherLesLieuxNationauxAction } from '@/app/_actions/statistiques/rechercher-les-lieux-nationaux.action'
 import { rechercherLesTagsCollectifsAction } from '@/app/_actions/statistiques/rechercher-les-tags-collectifs.action'
 import { metadataTitle } from '@/configuration/projet'
-import { compterLesAccompagnements } from '@/features/activites/abilities/compter-les-accompagnements/implementations/prisma/totaux-des-accompagnements.query'
+import { compterLesAccompagnements } from '@/features/activites/abilities/compter-les-accompagnements/domain'
+import {
+  activitesComptees,
+  nouvellesPersonnesComptees,
+  personnesComptees,
+} from '@/features/activites/abilities/compter-les-accompagnements/implementations/prisma/totaux-des-accompagnements.query'
 import { totauxPresentes } from '@/features/activites/abilities/compter-les-accompagnements/ui/presenters/totaux.presenter'
 import { BlocDesChiffresCles } from '@/features/activites/abilities/compter-les-accompagnements/ui/slots/BlocDesChiffresCles.slot'
 import { compterLesAccompagnementsParCommune } from '@/features/activites/abilities/compter-les-accompagnements-par-commune/implementations/prisma/accompagnements-par-commune.query'
@@ -29,7 +34,9 @@ import { BlocDesTypesDActivite } from '@/features/activites/abilities/repartir-l
 import { repartirLesAccompagnementsParTag } from '@/features/activites/abilities/repartir-les-accompagnements-par-tag/implementations/prisma/accompagnements-par-tag.query'
 import { parTagPresentes } from '@/features/activites/abilities/repartir-les-accompagnements-par-tag/ui/presenters/par-tag.presenter'
 import { BlocDesTags } from '@/features/activites/abilities/repartir-les-accompagnements-par-tag/ui/slots/BlocDesTags.slot'
-import { presenceDeCrasV1 } from '@/features/activites/abilities/verifier-la-presence-de-cras-v1/implementations/prisma/presence-de-cras-v1.query'
+import { verifierLaPresenceDeCrasV1 } from '@/features/activites/abilities/verifier-la-presence-de-cras-v1/domain/verifier-la-presence-de-cras-v1'
+import { mediateurAvecCrasV1 } from '@/features/activites/abilities/verifier-la-presence-de-cras-v1/implementations/prisma/mediateur-avec-cras-v1.query'
+import { presenceDeCrasV1Presentee } from '@/features/activites/abilities/verifier-la-presence-de-cras-v1/ui/presenters/presence-de-cras-v1.presenter'
 import { RECHERCHER_DES_TAGS_DU_CRA_KEY } from '@/features/activites/action/rechercher-des-tags.key'
 import { RECHERCHER_LES_LIEUX_DES_ACTIVITES_KEY } from '@/features/activites/action/rechercher-les-lieux-des-activites.key'
 import { PERIMETRE_NATIONAL } from '@/features/activites/domain'
@@ -55,7 +62,15 @@ import { lireLesTagsCollectifs } from '@/features/tags/abilities/lire-les-tags-v
 import { ClientBinder } from '@/libraries/nextjs/injection'
 
 const statistiquesDesActivites = statistiquesAvec({
-  totalCounts: source(compterLesAccompagnements, totauxPresentes),
+  totalCounts: source(
+    (demande) =>
+      compterLesAccompagnements({
+        activitesComptees,
+        personnesComptees,
+        nouvellesPersonnesComptees,
+      })(demande).then(({ data }) => data),
+    totauxPresentes,
+  ),
   periode: source(compterLesAccompagnementsParPeriode, parPeriodePresentes),
   repartition: source(repartirLesAccompagnements, repartitionPresentee),
   tags: sourceOptionnelle(repartirLesAccompagnementsParTag, parTagPresentes),
@@ -72,7 +87,10 @@ const statistiquesDesActivites = statistiquesAvec({
     compterLesPersonnesAccompagneesParCommune,
     personnesParCommunePresentees,
   ),
-  hasCrasV1: presenceDeCrasV1,
+  hasCrasV1: (perimetre) =>
+    verifierLaPresenceDeCrasV1({ mediateurAvecCrasV1 })({ perimetre }).then(
+      presenceDeCrasV1Presentee,
+    ),
 })
 
 export const metadata = {

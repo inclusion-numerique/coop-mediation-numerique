@@ -9,7 +9,7 @@ describe('findCommune', () => {
         { codeInsee: '39274', nom: 'Lajoux', codePostal: '01410, 39310' },
       ],
       ['01082', { codeInsee: '01082', nom: 'Chanay', codePostal: '01420' }],
-      ['99999', null], // non-existent commune
+      ['99999', null],
     ])(
       'findCommuneByInsee(%s) should return %o',
       async (inseeCode, expectedResult) => {

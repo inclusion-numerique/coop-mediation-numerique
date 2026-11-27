@@ -1,19 +1,22 @@
 import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { prismaClient } from '@/configuration/prisma'
+import { consulterUnActeur } from '@/features/mon-reseau/abilities/consulter-un-acteur/domain'
 import {
-  consulterUnActeur,
-  type QuiConsulte,
-} from '@/features/mon-reseau/abilities/consulter-un-acteur/implementations/prisma/acteur-consulte.query'
-import { Effectif } from '@/features/mon-reseau/domain'
+  lireLActeur,
+  lireLesLiensDEquipe,
+} from '@/features/mon-reseau/abilities/consulter-un-acteur/implementations/prisma'
+import { lecteurDeLaSession } from '@/features/mon-reseau/abilities/consulter-un-acteur/implementations/session/lecteur.transfer'
+import { ActeurId, Effectif } from '@/features/mon-reseau/domain'
+
+type Consultation = Awaited<ReturnType<ReturnType<typeof consulterUnActeur>>>
+
 import {
   type ActeurASemer,
   type ActeurSeme,
   semerUnActeur,
 } from '@/features/mon-reseau/mon-reseau.cucumber'
 import { subDays } from '@/libraries/date'
-
-type Consultation = Awaited<ReturnType<typeof consulterUnActeur>>
 
 const aucuneActiviteSur30Jours = async () => ({
   beneficiairesAccompagnes: Effectif(0),
@@ -60,23 +63,26 @@ const semerAlexMartin = async (acteur: ActeurASemer = {}) => {
   })
 }
 
-const quiConsulte = (): QuiConsulte => {
+const lecteur = () => {
   const { userId, coordinateurId } = leLecteur()
-  return {
+  return lecteurDeLaSession({
     id: userId,
     coordinateur: coordinateurId === null ? null : { id: coordinateurId },
-  }
+  })
 }
 
 const consulter = async (acteurId: string) => {
   etat.consultation = await consulterUnActeur({
-    quiConsulte: quiConsulte(),
-    acteurId,
+    lireLActeur,
+    lireLesLiensDEquipe,
     lireLaDerniereActivite: async () =>
       etat.derniereActivite === undefined
         ? { _tag: 'Jamais' }
         : { _tag: 'Le', date: etat.derniereActivite },
     lireLesStatistiquesSur30Jours: aucuneActiviteSur30Jours,
+  })({
+    lecteur: lecteur(),
+    acteurId: ActeurId.safe(acteurId),
     maintenant: new Date(),
   })
 }

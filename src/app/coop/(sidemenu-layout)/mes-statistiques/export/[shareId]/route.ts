@@ -1,6 +1,11 @@
 import { notFound } from 'next/navigation'
 import { NextRequest } from 'next/server'
-import { compterLesAccompagnements } from '@/features/activites/abilities/compter-les-accompagnements/implementations/prisma/totaux-des-accompagnements.query'
+import { compterLesAccompagnements } from '@/features/activites/abilities/compter-les-accompagnements/domain'
+import {
+  activitesComptees,
+  nouvellesPersonnesComptees,
+  personnesComptees,
+} from '@/features/activites/abilities/compter-les-accompagnements/implementations/prisma/totaux-des-accompagnements.query'
 import { totauxPresentes } from '@/features/activites/abilities/compter-les-accompagnements/ui/presenters/totaux.presenter'
 import { compterLesAccompagnementsParCommune } from '@/features/activites/abilities/compter-les-accompagnements-par-commune/implementations/prisma/accompagnements-par-commune.query'
 import { parCommunePresentes } from '@/features/activites/abilities/compter-les-accompagnements-par-commune/ui/presenters/par-commune.presenter'
@@ -22,7 +27,9 @@ import { repartirLesAccompagnements } from '@/features/activites/abilities/repar
 import { repartitionPresentee } from '@/features/activites/abilities/repartir-les-accompagnements/ui/presenters/repartition.presenter'
 import { repartirLesAccompagnementsParTag } from '@/features/activites/abilities/repartir-les-accompagnements-par-tag/implementations/prisma/accompagnements-par-tag.query'
 import { parTagPresentes } from '@/features/activites/abilities/repartir-les-accompagnements-par-tag/ui/presenters/par-tag.presenter'
-import { presenceDeCrasV1 } from '@/features/activites/abilities/verifier-la-presence-de-cras-v1/implementations/prisma/presence-de-cras-v1.query'
+import { verifierLaPresenceDeCrasV1 } from '@/features/activites/abilities/verifier-la-presence-de-cras-v1/domain/verifier-la-presence-de-cras-v1'
+import { mediateurAvecCrasV1 } from '@/features/activites/abilities/verifier-la-presence-de-cras-v1/implementations/prisma/mediateur-avec-cras-v1.query'
+import { presenceDeCrasV1Presentee } from '@/features/activites/abilities/verifier-la-presence-de-cras-v1/ui/presenters/presence-de-cras-v1.presenter'
 import type { PerimetreDesStatistiques } from '@/features/activites/domain'
 import { statistiquesDuPerimetre } from '@/features/activites/implementations/prisma/statistiques/statistiques-du-perimetre.query'
 import {
@@ -35,16 +42,26 @@ import { criteresDesStatistiquesDesFiltres } from '@/features/activites/ui/filtr
 import { filtresDesStatistiques } from '@/features/activites/ui/filtres/statistiques.filtre'
 import { barreDesStatistiquesAvec } from '@/features/activites/ui/presenters/barre-des-statistiques.presenter'
 import { utilisateurDeLaSessionParId } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
-import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage/implementations/prisma/resoudre-un-lien-de-partage.query'
+import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage/domain'
+import { lireLePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage/implementations/prisma/partage.query'
+import { LienDePartageId } from '@/features/mediateurs/domain'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/rdvs-des-activites.query'
-import { utilisateurDuPartage } from '@/features/statistiques/domain/utilisateur-du-partage'
 import { classeurDesStatistiques } from '@/features/statistiques/implementations/excel/classeur-des-statistiques.classeur'
+import { utilisateurDuPartage } from '@/features/statistiques/implementations/session/utilisateur-du-partage.transfer'
 import { entreeDuClasseur } from '@/features/statistiques/ui/presenters/entree-du-classeur.presenter'
 import { nomDuFichierDesStatistiques } from '@/features/statistiques/ui/presenters/nom-du-fichier.presenter'
 import { auteurDeLExport } from '@/features/utilisateurs/ui/presenters/auteur-de-l-export.presenter'
 
 const statistiquesDesActivites = statistiquesAvec({
-  totalCounts: source(compterLesAccompagnements, totauxPresentes),
+  totalCounts: source(
+    (demande) =>
+      compterLesAccompagnements({
+        activitesComptees,
+        personnesComptees,
+        nouvellesPersonnesComptees,
+      })(demande).then(({ data }) => data),
+    totauxPresentes,
+  ),
   periode: source(compterLesAccompagnementsParPeriode, parPeriodePresentes),
   repartition: source(repartirLesAccompagnements, repartitionPresentee),
   tags: sourceOptionnelle(repartirLesAccompagnementsParTag, parTagPresentes),
@@ -61,7 +78,10 @@ const statistiquesDesActivites = statistiquesAvec({
     compterLesPersonnesAccompagneesParCommune,
     personnesParCommunePresentees,
   ),
-  hasCrasV1: presenceDeCrasV1,
+  hasCrasV1: (perimetre) =>
+    verifierLaPresenceDeCrasV1({ mediateurAvecCrasV1 })({ perimetre }).then(
+      presenceDeCrasV1Presentee,
+    ),
 })
 
 const lecturesDeLaBarre = (
@@ -83,6 +103,7 @@ const classeurDuPerimetre = async (
   perimetre: PerimetreDesStatistiques,
   valeurs: ReturnType<typeof filtresDesStatistiques.charger>,
   membres: () => Promise<readonly { value: string; label: string }[]>,
+  maintenant: Date,
 ) => {
   const [statistiques, barre] = await Promise.all([
     statistiquesDesActivites.rassembler(
@@ -92,7 +113,7 @@ const classeurDuPerimetre = async (
       )({
         perimetre,
         criteres: criteresDesStatistiquesDesFiltres(valeurs),
-        fin: valeurs.au ?? new Date(),
+        fin: valeurs.au ?? maintenant,
       }),
     ),
     barreDesStatistiquesAvec(lecturesDeLaBarre(perimetre, membres))(
@@ -110,8 +131,11 @@ export const GET = async (
   request: NextRequest,
   { params }: { params: Promise<{ shareId: string }> },
 ) => {
+  const maintenant = new Date()
   const shareId = (await params).shareId
-  const partage = await resoudreUnLienDePartage(shareId)
+  const partage = await resoudreUnLienDePartage({ lirePartage: lireLePartage })(
+    { lien: LienDePartageId.safe(shareId) },
+  )
   if (!partage.success) return notFound()
 
   const user = utilisateurDuPartage(
@@ -126,15 +150,17 @@ export const GET = async (
       perimetre,
       filtresDesStatistiques.charger(request.nextUrl.searchParams),
       async () => [],
+      maintenant,
     )),
     auteur: auteurDeLExport(user),
     fuseau: user.timezone,
+    genereLe: maintenant,
   })
 
   const workbook = classeurDesStatistiques(statistiquesWorksheetInput)
 
   const data = await workbook.xlsx.writeBuffer()
-  const filename = nomDuFichierDesStatistiques(new Date())
+  const filename = nomDuFichierDesStatistiques(maintenant)
 
   return new Response(data, {
     status: 200,

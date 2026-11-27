@@ -1,36 +1,18 @@
 import { genreLabels } from '@/features/beneficiaire/domain/genre'
 import { statutSocialLabels } from '@/features/beneficiaire/domain/statut-social'
-import {
-  effectiveTrancheAge,
-  trancheAgeLabels,
-} from '@/features/beneficiaire/domain/tranche-age'
 import { InfoLabelValue } from '@/libraries/ui/components'
-import type { BeneficiaireInformations } from '../../domain/consulter-beneficiaire'
+import type { BeneficiaireInformations } from '../../domain/beneficiaire-informations'
 
 const BeneficiaireInformationsComplementaires = ({
-  beneficiaire: {
-    commune,
-    communeCodeInsee,
-    communeCodePostal,
-    genre,
-    statutSocial,
-    trancheAge,
-    anneeNaissance,
-  },
+  beneficiaire: { communeResidence, genre, statutSocial },
+  trancheAgeAffichee,
 }: {
   beneficiaire: Pick<
     BeneficiaireInformations,
-    | 'commune'
-    | 'communeCodeInsee'
-    | 'communeCodePostal'
-    | 'genre'
-    | 'statutSocial'
-    | 'trancheAge'
-    | 'anneeNaissance'
+    'communeResidence' | 'genre' | 'statutSocial'
   >
+  trancheAgeAffichee: string
 }) => {
-  const displayedTrancheAge = effectiveTrancheAge(anneeNaissance, trancheAge)
-
   return (
     <div className="fr-border--bottom fr-pt-6v fr-px-6v fr-pb-8v">
       <h4 className="fr-text--xs fr-text--bold fr-text--uppercase fr-mb-4v">
@@ -41,30 +23,22 @@ const BeneficiaireInformationsComplementaires = ({
           <InfoLabelValue
             label="Commune de résidence"
             value={
-              commune && communeCodeInsee && communeCodePostal
-                ? `${communeCodePostal} ${commune}`
-                : '-'
+              communeResidence === null
+                ? '-'
+                : `${communeResidence.codePostal} ${communeResidence.commune}`
             }
           />
         </div>
         <div className="fr-col-6">
-          <InfoLabelValue
-            label="Genre"
-            value={genre ? genreLabels[genre] : '-'}
-          />
+          <InfoLabelValue label="Genre" value={genreLabels[genre]} />
         </div>
         <div className="fr-col-6">
-          <InfoLabelValue
-            label="Tranche d’âge"
-            value={
-              displayedTrancheAge ? trancheAgeLabels[displayedTrancheAge] : '-'
-            }
-          />
+          <InfoLabelValue label="Tranche d’âge" value={trancheAgeAffichee} />
         </div>
         <div className="fr-col-6">
           <InfoLabelValue
             label="Statut social"
-            value={statutSocial ? statutSocialLabels[statutSocial] : '-'}
+            value={statutSocialLabels[statutSocial]}
           />
         </div>
       </div>

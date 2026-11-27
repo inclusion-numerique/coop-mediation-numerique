@@ -12,6 +12,7 @@ import type { SynchroniserLaPersonne } from '@/features/inscription/implementati
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { synchroniserPersonne } from '@/features/registre-des-personnes/implementations/prisma/registre-personne.mutation'
 import { fromResult, withInput } from '@/libraries/nextjs'
+import { success } from '@/libraries/result'
 
 const choisirProfilAvec = (synchroniserLaPersonne: SynchroniserLaPersonne) =>
   choisirProfil({
@@ -25,11 +26,20 @@ export const choisirProfilAction = actionBuilder()
   .use(withInput(ChoisirProfilValidation))
   .execute(
     fromResult(
-      async ({ input, user }) =>
-        choisirProfilAvec(synchroniserPersonne)(
-          { userId: UtilisateurId(user.id), role: input.role },
-          new Date(),
-        ),
+      async ({ input, user }) => {
+        const resultat = await choisirProfilAvec(synchroniserPersonne)({
+          userId: UtilisateurId(user.id),
+          role: input.role,
+          maintenant: new Date(),
+        })
+
+        return resultat.success
+          ? success({
+              role: resultat.data.role,
+              etapeSuivante: resultat.data.etapeSuivante,
+            })
+          : resultat
+      },
       { onError: CHOISIR_PROFIL_ERRORS },
     ),
   )

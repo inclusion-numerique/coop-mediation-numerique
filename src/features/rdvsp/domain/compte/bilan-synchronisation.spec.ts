@@ -15,12 +15,12 @@ const bilan = (surcharge: Partial<BilanModele> = {}): BilanModele => ({
 
 describe('derive', () => {
   it('ne compte rien quand rien n’a changé', () => {
-    expect(derive(bilan({ noop: 42 }))).toBe(0)
+    expect(derive(bilan({ noop: 42 }), true)).toBe(0)
   })
 
   it('additionne créations, mises à jour et suppressions', () => {
     expect(
-      derive(bilan({ created: 2, updated: 3, deleted: 1, noop: 99 })),
+      derive(bilan({ created: 2, updated: 3, deleted: 1, noop: 99 }), true),
     ).toBe(6)
   })
 })

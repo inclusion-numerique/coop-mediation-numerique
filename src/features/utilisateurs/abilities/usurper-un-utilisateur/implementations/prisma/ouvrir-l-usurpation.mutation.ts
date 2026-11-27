@@ -8,7 +8,7 @@ export const ouvrirLUsurpation = async ({
 }: {
   readonly jetonDeSession: string
   readonly cibleId: UtilisateurId
-  readonly usurpateurId: string
+  readonly usurpateurId: UtilisateurId
 }): Promise<void> => {
   await prismaClient.$transaction([
     prismaClient.session.deleteMany({ where: { usurperId: usurpateurId } }),

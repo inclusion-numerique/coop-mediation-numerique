@@ -5,5 +5,10 @@
   ],
   "libraries/chronometre": ["job-executors.ts"],
   "libraries/emails": ["verifier-le-bundle.ts"],
+  "libraries/result": [
+    "anonymiser-les-comptes-inactifs",
+    "inactive-users-reminders",
+    "synchroniser-les-roles-brevo"
+  ],
   "uuid": ["job-executors.ts"]
 }

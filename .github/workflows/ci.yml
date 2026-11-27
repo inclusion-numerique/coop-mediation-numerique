@@ -129,7 +129,7 @@ jobs:
       - name: Create env file
         run: cp .env.example .env
       - name: Test application with coverage
-        run: pnpm --silent exec vitest run --project unit --coverage
+        run: pnpm --silent exec vitest run --config vitest.domaine.config.ts --project unit --coverage
       - name: Upload coverage
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:

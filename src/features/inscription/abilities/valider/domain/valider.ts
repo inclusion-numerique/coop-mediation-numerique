@@ -1,47 +1,49 @@
 import type { UtilisateurId } from '@/features/inscription/domain'
 import { type Result, success } from '@/libraries/result'
-import type {
-  EffetsApresValidation,
-  EnregistrerValidation,
-  InscrireALaListeDeDiffusion,
-  LireFaitsInscription,
-} from './ports'
+import type { EchecDeValider } from './errors'
+import type { ValiderPorts } from './ports'
 import {
-  validerInscription as deciderLaValidation,
-  type ValiderInscriptionError,
+  acceptationDesInvitations,
+  type InscriptionValidee,
+  validerInscription,
 } from './valider-inscription'
 
-export type ValiderPorts = {
-  readonly lireFaitsInscription: LireFaitsInscription
-  readonly enregistrerValidation: EnregistrerValidation
-  readonly inscrireALaListeDeDiffusion: InscrireALaListeDeDiffusion
-  readonly effetsApresValidation: EffetsApresValidation
-}
-
 export const valider =
-  ({
+  <Inscription, Acceptation, Echec>({
     lireFaitsInscription,
     enregistrerValidation,
     inscrireALaListeDeDiffusion,
-    effetsApresValidation,
-  }: ValiderPorts) =>
-  async (
-    userId: UtilisateurId,
-    maintenant: Date,
-  ): Promise<Result<void, ValiderInscriptionError>> => {
-    const decision = deciderLaValidation(
-      await lireFaitsInscription(userId),
+    accepterLesInvitations,
+    signaler,
+  }: ValiderPorts<Inscription, Acceptation, Echec>) =>
+  async ({
+    userId,
+    maintenant,
+  }: {
+    readonly userId: UtilisateurId
+    readonly maintenant: Date
+  }): Promise<
+    Result<InscriptionValidee<Inscription, Acceptation, Echec>, EchecDeValider>
+  > => {
+    const validation = validerInscription({
+      faits: await lireFaitsInscription(userId),
       maintenant,
-    )
-
-    if (!decision.success) return decision
-
-    await enregistrerValidation({
-      userId,
-      aEnregistrer: decision.data.aEnregistrer,
     })
-    await inscrireALaListeDeDiffusion(userId)
-    await effetsApresValidation(userId)
 
-    return success<void>(undefined)
+    if (!validation.success) return validation
+
+    await enregistrerValidation(validation.data)
+
+    const { data: inscriptionALaListe } = await inscrireALaListeDeDiffusion({
+      utilisateurId: userId,
+    })
+
+    const acceptation = await accepterLesInvitations({ userId, maintenant })
+    if (!acceptation.success) signaler(acceptation.error)
+
+    return success({
+      ...validation.data,
+      inscriptionALaListe,
+      acceptationDesInvitations: acceptationDesInvitations(acceptation),
+    })
   }

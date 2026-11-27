@@ -5,8 +5,13 @@ import { prismaClient } from '@/configuration/prisma'
 import { listerLesDernieresActivites } from '@/features/activites/abilities/lister-les-dernieres-activites/implementations/prisma/dernieres-activites.query'
 import { MediateurId } from '@/features/activites/domain/index'
 
-let mediateurs: readonly { userId: string; mediateurId: string }[] = []
-let notes: readonly string[] = []
+const etat: {
+  mediateurs: readonly { userId: string; mediateurId: string }[]
+  notes: readonly string[]
+} = {
+  mediateurs: [],
+  notes: [],
+}
 
 const semerUnMediateur = async () => {
   const userId = v4()
@@ -17,12 +22,12 @@ const semerUnMediateur = async () => {
     data: { userId },
     select: { id: true },
   })
-  mediateurs = [...mediateurs, { userId, mediateurId }]
+  etat.mediateurs = [...etat.mediateurs, { userId, mediateurId }]
   return mediateurId
 }
 
 const mediateurConsulte = () => {
-  const [premier] = mediateurs
+  const [premier] = etat.mediateurs
   if (!premier) throw new Error('Aucun médiateur semé')
   return premier.mediateurId
 }
@@ -75,7 +80,7 @@ Given("un autre médiateur vient d'enregistrer une activité", async () => {
 })
 
 When('je liste ses dernières activités', async () => {
-  notes = (
+  etat.notes = (
     await listerLesDernieresActivites({
       mediateurId: MediateurId(mediateurConsulte()),
       rendezVousLies: () => Promise.resolve([]),
@@ -84,13 +89,13 @@ When('je liste ses dernières activités', async () => {
 })
 
 Then('les activités listées sont {string}', (attendues: string) => {
-  assert.strictEqual(notes.join(', '), attendues)
+  assert.strictEqual(etat.notes.join(', '), attendues)
 })
 
 After(async () => {
-  const semes = mediateurs
-  mediateurs = []
-  notes = []
+  const semes = etat.mediateurs
+  etat.mediateurs = []
+  etat.notes = []
   if (semes.length === 0) return
 
   const mediateurIds = semes.map(({ mediateurId }) => mediateurId)

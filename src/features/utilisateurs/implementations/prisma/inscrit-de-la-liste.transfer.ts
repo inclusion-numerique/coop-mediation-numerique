@@ -29,7 +29,6 @@ export const inscritDeLaListeSelect = {
     select: {
       ...enPosteSelect,
       isCoordinateur: true,
-      // Fin et rupture séparées : Brevo a un attribut pour chacune.
       contrats: {
         select: { id: true, dateDebut: true, dateFin: true, dateRupture: true },
       },

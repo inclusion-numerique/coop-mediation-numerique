@@ -1,33 +1,55 @@
 import type {
   InscriptionEnCours,
+  LieuId,
+  LieuIntrouvable,
   UtilisateurId,
 } from '@/features/inscription/domain'
-import type { LieuActiviteExistant, LieuActiviteInput } from './reconcilier'
+import type { LireLEtatDeLInscription } from '@/features/inscription/domain/ports'
+import type { Result } from '@/libraries/result'
+import type { IdentifiantCartographie } from './identifiant-cartographie'
+import type { LieuDesire } from './lieu-soumis'
+import type { RattachementId } from './rattachement-id'
+import type { LieuActiviteExistant } from './reconcilier'
 
-/** Lit les activités en cours de l'utilisateur (pour la réconciliation). */
-export type LireLieuxActiviteExistants = (
+type LireLieuxActiviteExistants = (
   userId: UtilisateurId,
 ) => Promise<readonly LieuActiviteExistant[]>
 
-/**
- * Résout les lieux de la carto (lecture Entrepôt) à créer, indexés par
- * l'identifiant demandé. Injectée
- * pour rester hors du chemin critique et stubbable en test — les deux clients
- * Prisma (coop / entrepôt) ne partageant pas de transaction.
- */
-export type TrouverStructuresCarto<StructureCarto> = (
-  cartoIds: readonly string[],
-) => Promise<ReadonlyMap<string, StructureCarto>>
+type TrouverStructuresCarto<StructuresCarto> = (
+  cartoIds: readonly IdentifiantCartographie[],
+) => Promise<StructuresCarto>
 
-/**
- * Applique la réconciliation en une transaction : clôt les activités retirées,
- * crée les nouvelles (id interne / structure carto locale existante / création
- * depuis la structure carto), et projette l'état franchi.
- */
-export type EnregistrerReconciliation<StructureCarto> = (input: {
+type PlanifierLesRattachements<Adresse, StructuresCarto, Destination> =
+  (input: {
+    readonly lieux: readonly LieuDesire<Adresse>[]
+    readonly structuresCarto: StructuresCarto
+    readonly maintenant: Date
+  }) => Promise<Result<readonly Destination[], LieuIntrouvable>>
+
+export type ReconciliationEnregistree =
+  | { readonly _tag: 'Enregistree' }
+  | { readonly _tag: 'LieuDisparu'; readonly lieuId: LieuId }
+
+export type EnregistrerReconciliation<Destination> = (input: {
   readonly etatFranchi: InscriptionEnCours
   readonly userId: UtilisateurId
-  readonly aCloturer: readonly string[]
-  readonly aCreer: readonly LieuActiviteInput[]
-  readonly structuresCarto: ReadonlyMap<string, StructureCarto>
-}) => Promise<void>
+  readonly aCloturer: readonly RattachementId[]
+  readonly destinations: readonly Destination[]
+  readonly maintenant: Date
+}) => Promise<ReconciliationEnregistree>
+
+export type RenseignerLieuxActivitePorts<
+  Adresse,
+  StructuresCarto,
+  Destination,
+> = {
+  readonly lireLEtat: LireLEtatDeLInscription
+  readonly lireLieuxActiviteExistants: LireLieuxActiviteExistants
+  readonly trouverStructuresCarto: TrouverStructuresCarto<StructuresCarto>
+  readonly planifierLesRattachements: PlanifierLesRattachements<
+    Adresse,
+    StructuresCarto,
+    Destination
+  >
+  readonly enregistrerReconciliation: EnregistrerReconciliation<Destination>
+}

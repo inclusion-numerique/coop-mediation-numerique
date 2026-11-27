@@ -30,10 +30,8 @@ export type EtatDeLaLiaisonDuCompte = {
 }
 
 const rdvOauthLinkAccountFlowUrl = (options: EtatDeLaLiaisonDuCompte) => {
-  // Configuration de l'OAuth
   const state = encodeSerializableState(options)
 
-  // Construction de l'URL
   return `https://${rdvServicePublicOAuthConfig.oauthHostname}/oauth/authorize?client_id=${
     rdvServicePublicOAuthConfig.clientId
   }&redirect_uri=${rdvServicePublicOAuthConfig.redirectUri}&response_type=${rdvServicePublicOAuthConfig.responseType}&scope=${rdvServicePublicOAuthConfig.scope}&state=${state}`

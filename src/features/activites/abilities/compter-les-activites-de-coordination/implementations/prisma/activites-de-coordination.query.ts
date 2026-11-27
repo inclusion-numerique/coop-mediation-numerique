@@ -1,24 +1,18 @@
 import { prismaClient } from '@/configuration/prisma'
 import {
-  type ActivitesDeCoordination,
-  type CoordinateurId,
-  decompterParTrimestre,
+  type ActivitesDuCoordinateur,
   TypeDActiviteDeCoordination,
 } from '../../domain'
 
-export const compterLesActivitesDeCoordination = async ({
+export const activitesDuCoordinateur: ActivitesDuCoordinateur = async (
   coordinateurId,
-}: {
-  coordinateurId: CoordinateurId
-}): Promise<ActivitesDeCoordination> =>
-  decompterParTrimestre(
-    (
-      await prismaClient.activiteCoordination.findMany({
-        where: { coordinateurId, suppression: null },
-        select: { type: true, date: true },
-      })
-    ).map(({ type, date }) => ({
-      type: TypeDActiviteDeCoordination(type),
-      date,
-    })),
-  )
+) =>
+  (
+    await prismaClient.activiteCoordination.findMany({
+      where: { coordinateurId, suppression: null },
+      select: { type: true, date: true },
+    })
+  ).map(({ type, date }) => ({
+    type: TypeDActiviteDeCoordination(type),
+    date,
+  }))

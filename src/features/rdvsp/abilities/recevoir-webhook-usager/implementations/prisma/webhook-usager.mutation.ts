@@ -3,18 +3,9 @@ import { Prisma } from '@/generated/prisma/client'
 import { usagerFromDomain } from '../../../../implementations/prisma/entourage.transfer'
 import type {
   AnonymiserEtSupprimerUsager,
-  BeneficiairesLiesAUsager,
   MettreAJourUsager,
-} from '../../domain/recevoir-webhook-usager'
+} from '../../domain/ports'
 import { garderUnSeulCodePostal } from './un-seul-code-postal.mutation'
-
-export const beneficiairesLiesAUsager: BeneficiairesLiesAUsager = async (
-  usagerId,
-) =>
-  await prismaClient.beneficiaire.findMany({
-    where: { rdvUserId: usagerId, suppression: null },
-    select: { id: true },
-  })
 
 export const mettreAJourUsager: MettreAJourUsager = async (usager) => {
   await prismaClient.rdvUser.update({
@@ -23,14 +14,10 @@ export const mettreAJourUsager: MettreAJourUsager = async (usager) => {
   })
 }
 
-/**
- * L'anonymisation efface l'identité et marque la suppression, sans détruire la
- * fiche : les statistiques du médiateur reposent sur des données anonymes —
- * tranche d'âge, genre — qui doivent survivre au départ de la personne.
- */
 export const anonymiserEtSupprimerUsager: AnonymiserEtSupprimerUsager = async ({
   usagerId,
   beneficiaires,
+  anonymiseLe,
 }) => {
   await prismaClient.$transaction(async (transaction) => {
     if (beneficiaires.length > 0) {
@@ -38,8 +25,8 @@ export const anonymiserEtSupprimerUsager: AnonymiserEtSupprimerUsager = async ({
         where: { id: { in: beneficiaires.map(({ id }) => id) } },
         data: {
           anonyme: true,
-          suppression: new Date(),
-          modification: new Date(),
+          suppression: anonymiseLe,
+          modification: anonymiseLe,
           rdvUserId: null,
           prenom: null,
           nom: null,
@@ -56,8 +43,6 @@ export const anonymiserEtSupprimerUsager: AnonymiserEtSupprimerUsager = async ({
       )
     }
 
-    // Les fiches déjà supprimées gardent le rattachement : il faut le rompre
-    // avant que l'usager ne disparaisse.
     await transaction.beneficiaire.updateMany({
       where: { rdvUserId: usagerId },
       data: { rdvUserId: null },

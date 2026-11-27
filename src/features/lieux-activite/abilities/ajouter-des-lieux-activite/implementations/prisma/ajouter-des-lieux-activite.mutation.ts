@@ -1,70 +1,115 @@
 import { prismaClient } from '@/configuration/prisma'
-import { type Result, success } from '@/libraries/result'
-import { LieuId } from '../../../../domain/identifiants/lieu-id'
-import type { MediateurId } from '../../../../domain/identifiants/mediateur-id'
-import type { UtilisateurId } from '../../../../domain/identifiants/utilisateur-id'
+import type { Prisma } from '@/generated/prisma/client'
+import type { LieuId } from '../../../../domain/identifiants/lieu-id'
 import {
-  type AjouterDesLieuxActivitePorts,
-  demandeDAjout,
-  type EchecDAjout,
-  identifiantsCarto,
-  type LieuDemande,
-  lieuxAMaterialiser,
+  lieuDisparu,
+  preparerLeLieu,
+} from '../../../../implementations/prisma/destination-du-lieu.mutation'
+import {
+  fromAdresse,
+  lieuFromDomain,
+} from '../../../../implementations/prisma/lieu.transfer'
+import { colonnesRapporteesParLaCartographie } from '../../../../implementations/prisma/registre/colonnes-a-ecrire.select'
+import { ecrireLeLieuAuRegistre } from '../../../../implementations/prisma/registre/ecrire-au-registre.mutation'
+import type {
+  AdresseValidee,
+  CreationDemandee,
+  DestinationDuLieu,
+  RattachementAuxLieux,
+  RattacherAuxLieux,
 } from '../../domain'
-import { rattacherAuLieu } from './rattacher-au-lieu.mutation'
+import { rattacherSiAbsent } from './destinations.mutation'
 
-const enSerie = async <Element, Resultat>(
-  elements: readonly Element[],
-  traiter: (element: Element) => Promise<Resultat>,
-): Promise<readonly Resultat[]> =>
-  elements.reduce<Promise<readonly Resultat[]>>(
-    async (precedents, element) => [
-      ...(await precedents),
-      await traiter(element),
-    ],
-    Promise.resolve([]),
-  )
+const adresseValidee = ({ adresse, localisation, banId }: AdresseValidee) => ({
+  ...fromAdresse(adresse),
+  banId,
+  latitude: localisation.latitude,
+  longitude: localisation.longitude,
+})
 
-export const ajouterDesLieuxActivite = async ({
-  demandes,
-  userId,
-  mediateurId,
-  ports,
-  maintenant = new Date(),
-}: {
-  readonly demandes: readonly LieuDemande[]
-  readonly userId: UtilisateurId
-  readonly mediateurId: MediateurId | null
-  readonly ports: AjouterDesLieuxActivitePorts
-  readonly maintenant?: Date
-}): Promise<Result<{ readonly lieux: readonly LieuId[] }, EchecDAjout>> => {
-  const demande = demandeDAjout({ mediateurId, demandes })
+const donneesDuLieu = (id: LieuId, { demande, carto }: CreationDemandee) =>
+  carto === null
+    ? {
+        id,
+        nom: demande.nom,
+        siret: demande.siret,
+        ...adresseValidee(demande),
+      }
+    : { ...lieuFromDomain(carto), ...adresseValidee(demande) }
 
-  if (!demande.success) return demande
+const creerLeLieu =
+  (transaction: Prisma.TransactionClient, maintenant: Date) =>
+  async (
+    id: LieuId,
+    creation: CreationDemandee,
+  ): Promise<{ readonly id: string }> => {
+    const cree = await transaction.lieuInclusion.create({
+      data: donneesDuLieu(id, creation),
+    })
 
-  const aMaterialiser = lieuxAMaterialiser(
-    await ports.lireLieuxDejaRattaches(demande.data.mediateurId),
-    demande.data.demandes,
-  )
+    const identifiantCartographie =
+      creation.demande.structureCartographieNationaleId
 
-  if (aMaterialiser.length === 0) return success({ lieux: [] })
+    await ecrireLeLieuAuRegistre(transaction, {
+      colonnes: colonnesRapporteesParLaCartographie,
+      ligne: {
+        ...cree,
+        inscriptionRegistre:
+          identifiantCartographie === null
+            ? null
+            : { structureCartographieNationaleId: identifiantCartographie },
+      },
+      maintenant,
+    })
 
-  const structuresCartoParId = await ports.trouverStructuresCarto(
-    identifiantsCarto(aMaterialiser),
-  )
+    return { id: cree.id }
+  }
 
-  const lieux = await prismaClient.$transaction((transaction) =>
-    enSerie(aMaterialiser, async (lieu) => {
-      const { lieuId } = await rattacherAuLieu(transaction, {
-        userId,
-        lieu,
-        structuresCartoParId,
-        maintenant,
+export const appliquerLesDestinations = async (
+  transaction: Prisma.TransactionClient,
+  {
+    utilisateurId,
+    destinations,
+    maintenant,
+  }: {
+    readonly utilisateurId: string
+    readonly destinations: readonly DestinationDuLieu<CreationDemandee>[]
+    readonly maintenant: Date
+  },
+): Promise<void> => {
+  await destinations.reduce(async (precedentes, destination) => {
+    await precedentes
+    await preparerLeLieu(transaction, destination, {
+      maintenant,
+      creer: creerLeLieu(transaction, maintenant),
+    })
+    await rattacherSiAbsent(transaction, {
+      utilisateurId,
+      lieuId: destination.id,
+      debut: maintenant,
+      creationParId: utilisateurId,
+      journaliser: () => undefined,
+    })
+  }, Promise.resolve())
+}
+
+export const rattacherAuxLieux: RattacherAuxLieux = ({
+  utilisateurId,
+  destinations,
+  ajouteLe,
+}) =>
+  prismaClient.$transaction(
+    async (transaction): Promise<RattachementAuxLieux> => {
+      const disparu = await lieuDisparu(transaction, destinations)
+
+      if (disparu !== null) return { _tag: 'LieuDisparu', lieuId: disparu }
+
+      await appliquerLesDestinations(transaction, {
+        utilisateurId,
+        destinations,
+        maintenant: ajouteLe,
       })
 
-      return LieuId(lieuId)
-    }),
+      return { _tag: 'Rattaches' }
+    },
   )
-
-  return success({ lieux })
-}

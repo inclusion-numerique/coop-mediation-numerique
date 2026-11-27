@@ -10,12 +10,6 @@ import {
   CoopPageContainer,
 } from '@/libraries/ui/components'
 
-/**
- * Shell de consultation d'un bénéficiaire. Pur affichage : il agence l'en-tête
- * (nom, année, alerte doublon) et la zone d'actions, mais ne connaît aucun
- * concern croisé — la route-hub lui injecte les boutons (activité, RDV), la
- * modale de suppression et l'effet de rafraîchissement RDV via des slots.
- */
 const BeneficiaireConsultationLayout = ({
   beneficiaire,
   hasDuplicates,

@@ -7,9 +7,11 @@ import { withForm } from '@/libraries/formulaire/hooks'
 import { optionsWithEmptyValue } from '@/libraries/ui'
 import { creerLieuActiviteFormOptions } from '../creer-lieu-activite.form-options'
 
+const proprietes: { isPending: boolean } = { isPending: false }
+
 export const DescriptionFields = withForm({
   ...creerLieuActiviteFormOptions,
-  props: {} as { isPending: boolean },
+  props: proprietes,
   render: ({ form, isPending }) => {
     const presentationResume = useSelector(
       form.store,

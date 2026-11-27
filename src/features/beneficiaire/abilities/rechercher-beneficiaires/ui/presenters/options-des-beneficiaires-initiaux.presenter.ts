@@ -1,5 +1,5 @@
 import { nomAfficheDepuisLIdentite } from '@/features/beneficiaire/domain/beneficiaire'
-import type { BeneficiairesRecherches } from '../../domain/rechercher-beneficiaires'
+import type { BeneficiairesRecherches } from '../../domain/beneficiaires-recherches'
 import {
   type BeneficiaireOption,
   toBeneficiaireData,

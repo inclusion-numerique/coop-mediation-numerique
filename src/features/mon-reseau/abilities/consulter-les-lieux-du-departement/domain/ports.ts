@@ -1,16 +1,13 @@
 import type { CodeDepartement } from '@/libraries/insee'
+import type { CommunesDesLieux } from '../../../domain'
 import type { CriteresDesLieux } from './criteres-des-lieux'
 
-type OptionDeCommune = {
-  readonly value: string
-  readonly label: string
-}
-
-export type LieuxDuDepartement<Lieux> = (options: {
-  departementCode: CodeDepartement
-  criteres: CriteresDesLieux
+type LieuxDuDepartement<Lieux> = (options: {
+  readonly departementCode: CodeDepartement
+  readonly criteres: CriteresDesLieux
 }) => Promise<Lieux>
 
-export type CommunesDesLieux = (options: {
-  departementCode: CodeDepartement
-}) => Promise<{ readonly communesOptions: readonly OptionDeCommune[] }>
+export type ConsulterLesLieuxDuDepartementPorts<Lieux, Communes> = {
+  readonly lieuxDuDepartement: LieuxDuDepartement<Lieux>
+  readonly communesDesLieux: CommunesDesLieux<Communes>
+}

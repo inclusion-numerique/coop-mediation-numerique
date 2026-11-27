@@ -58,6 +58,19 @@ export const InformationsGeneralesFormValidation = z
     }
   })
 
+const valeursInitiales: InformationsGeneralesFormData = {
+  id: '',
+  nom: '',
+  adresseBan: null,
+  lieuItinerant: null,
+  complementAdresse: null,
+  siretSearch: null,
+  nomUsage: null,
+  noSiret: null,
+  typologies: [],
+  confirmationDuPartage: null,
+}
+
 export const informationsGeneralesFormOptions = formOptions({
-  defaultValues: {} as InformationsGeneralesFormData,
+  defaultValues: valeursInitiales,
 })

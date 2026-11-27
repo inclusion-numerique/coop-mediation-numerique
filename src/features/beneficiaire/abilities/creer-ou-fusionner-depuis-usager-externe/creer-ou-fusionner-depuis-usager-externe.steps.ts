@@ -1,26 +1,34 @@
 import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { prismaClient } from '@/configuration/prisma'
-import { type UsagerExterneAFusionner } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/domain/creer-ou-fusionner-depuis-usager-externe'
-import { creerOuFusionnerBeneficiairesDepuisUsagersExternes } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/creer-ou-fusionner-depuis-usager-externe.mutation'
+import { creerOuFusionnerDepuisUsagerExterne } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/domain/creer-ou-fusionner-depuis-usager-externe'
+import type { FusionDesUsagers } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/domain/fusion-des-usagers'
+import { RdvUserId } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/domain/rdv-user-id'
+import { lireLeBeneficiaireLie } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/beneficiaire-lie.query'
+import { creerLeBeneficiaire } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/creer-le-beneficiaire.mutation'
+import { trouverUnDoublon } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/doublon-de-l-usager.query'
+import { mettreAJourLeBeneficiaire } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/mettre-a-jour-le-beneficiaire.mutation'
+import {
+  demandeNormalisee,
+  type UsagerExterneAFusionner,
+} from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/rdv-service-public/usager-externe.transfer'
 import {
   seedBeneficiaire,
   suivreLeBeneficiaire,
   testMediateurId,
 } from '@/features/beneficiaire/beneficiaire.cucumber'
 import { NOM_MAX_LENGTH } from '@/features/beneficiaire/domain/nom'
+import { success } from '@/libraries/result'
 
-type PortResult = Awaited<
-  ReturnType<
-    ReturnType<typeof creerOuFusionnerBeneficiairesDepuisUsagersExternes>
-  >
->
+type PortResult = FusionDesUsagers
 
 const createdRdvUserIds = new Set<number>()
 
-let usagers: UsagerExterneAFusionner[] = []
-let result: PortResult | undefined
-let existingBeneficiaireId: string | undefined
+const contexte: {
+  usagers: UsagerExterneAFusionner[]
+  result?: PortResult | undefined
+  existingBeneficiaireId?: string | undefined
+} = { usagers: [] }
 
 const seedRdvUser = async (id: number): Promise<void> => {
   await prismaClient.rdvUser.create({
@@ -39,7 +47,7 @@ const externalUser = (
   rdvUserId: number,
   fields: Partial<Omit<UsagerExterneAFusionner, 'rdvUserId'>> = {},
 ): UsagerExterneAFusionner => ({
-  rdvUserId,
+  rdvUserId: RdvUserId(rdvUserId),
   nom: fields.nom ?? null,
   prenom: fields.prenom ?? null,
   telephone: fields.telephone ?? null,
@@ -50,7 +58,7 @@ const externalUser = (
 
 Given('un usager externe sans bénéficiaire correspondant', async () => {
   await seedRdvUser(990_201)
-  usagers = [
+  contexte.usagers = [
     externalUser(990_201, {
       nom: 'Externe',
       prenom: 'Unique',
@@ -63,12 +71,12 @@ Given(
   'un usager externe correspondant à un bénéficiaire existant',
   async () => {
     await seedRdvUser(990_202)
-    existingBeneficiaireId = await seedBeneficiaire({
+    contexte.existingBeneficiaireId = await seedBeneficiaire({
       prenom: 'Deux',
       nom: 'Doublonexterne',
       email: 'dup-externe@example.com',
     })
-    usagers = [
+    contexte.usagers = [
       externalUser(990_202, {
         nom: 'Doublonexterne',
         prenom: 'Deux',
@@ -82,17 +90,16 @@ Given(
   'un usager externe correspondant à un bénéficiaire au téléphone legacy invalide',
   async () => {
     await seedRdvUser(990_203)
-    existingBeneficiaireId = await seedBeneficiaire({
+    contexte.existingBeneficiaireId = await seedBeneficiaire({
       prenom: 'Trois',
       nom: 'Legacyexterne',
       email: 'legacy-externe@example.com',
     })
-    // Téléphone legacy hors validation stricte, injecté hors value object.
     await prismaClient.beneficiaire.update({
-      where: { id: existingBeneficiaireId },
+      where: { id: contexte.existingBeneficiaireId },
       data: { telephone: 'NUMERO-LEGACY-INVALIDE' },
     })
-    usagers = [
+    contexte.usagers = [
       externalUser(990_203, {
         nom: 'Legacyexterne',
         prenom: 'Trois',
@@ -105,11 +112,8 @@ Given(
 Given(
   'deux usagers externes dont un provoque une erreur d’infrastructure',
   async () => {
-    // 990_204 : rdv_user seedé → création OK. 990_299 : PAS de rdv_user seedé →
-    // violation de clé étrangère à la création → usager écarté (Skipped), sans
-    // bloquer le premier.
     await seedRdvUser(990_204)
-    usagers = [
+    contexte.usagers = [
       externalUser(990_204, {
         nom: 'Valide',
         prenom: 'Quatre',
@@ -125,21 +129,29 @@ Given(
 )
 
 When('je crée ou fusionne les bénéficiaires depuis ces usagers', async () => {
-  result = await creerOuFusionnerBeneficiairesDepuisUsagersExternes({
-    communeDeLAdresse: async () => null,
-  })({
-    usagers,
-    mediateurId: testMediateurId,
-  })
-  for (const merge of result.merges) suivreLeBeneficiaire(merge.id)
+  const fusion = await creerOuFusionnerDepuisUsagerExterne({
+    lireLeBeneficiaireLie,
+    trouverUnDoublon,
+    communeDeLAdresse: async () => success(null),
+    mettreAJourLeBeneficiaire,
+    creerLeBeneficiaire,
+  })(
+    demandeNormalisee({
+      usagers: contexte.usagers,
+      mediateurId: testMediateurId,
+      maintenant: new Date(),
+    }),
+  )
+  contexte.result = fusion.data
+  fusion.data.merges.map(({ id }) => id).forEach(suivreLeBeneficiaire)
 })
 
 Then('un bénéficiaire est créé et lié à cet usager', async () => {
-  assert.ok(result)
-  assert.strictEqual(result.merges.length, 1)
-  assert.strictEqual(result.skipped.length, 0)
+  assert.ok(contexte.result)
+  assert.strictEqual(contexte.result.merges.length, 1)
+  assert.strictEqual(contexte.result.skipped.length, 0)
   const beneficiaire = await prismaClient.beneficiaire.findUniqueOrThrow({
-    where: { id: result.merges[0]?.id ?? '' },
+    where: { id: contexte.result.merges[0]?.id ?? '' },
   })
   assert.strictEqual(beneficiaire.rdvUserId, 990_201)
 })
@@ -147,35 +159,41 @@ Then('un bénéficiaire est créé et lié à cet usager', async () => {
 Then(
   'aucun nouveau bénéficiaire n’est créé et l’existant est lié à l’usager',
   async () => {
-    assert.ok(result)
-    assert.strictEqual(result.merges.length, 1)
-    assert.strictEqual(result.merges[0]?.id, existingBeneficiaireId)
+    assert.ok(contexte.result)
+    assert.strictEqual(contexte.result.merges.length, 1)
+    assert.strictEqual(
+      contexte.result.merges[0]?.id,
+      contexte.existingBeneficiaireId,
+    )
     const beneficiaire = await prismaClient.beneficiaire.findUniqueOrThrow({
-      where: { id: existingBeneficiaireId ?? '' },
+      where: { id: contexte.existingBeneficiaireId ?? '' },
     })
     assert.strictEqual(beneficiaire.rdvUserId, 990_202)
   },
 )
 
 Then('l’usager est fusionné sans erreur dans le bénéficiaire existant', () => {
-  assert.ok(result)
-  assert.strictEqual(result.skipped.length, 0)
-  assert.strictEqual(result.merges.length, 1)
-  assert.strictEqual(result.merges[0]?.id, existingBeneficiaireId)
+  assert.ok(contexte.result)
+  assert.strictEqual(contexte.result.skipped.length, 0)
+  assert.strictEqual(contexte.result.merges.length, 1)
+  assert.strictEqual(
+    contexte.result.merges[0]?.id,
+    contexte.existingBeneficiaireId,
+  )
 })
 
 Then('l’usager valide est fusionné et l’usager en échec est écarté', () => {
-  assert.ok(result)
-  assert.strictEqual(result.merges.length, 1)
-  assert.strictEqual(result.skipped.length, 1)
-  assert.strictEqual(result.skipped[0]?.rdvUserId, 990_299)
+  assert.ok(contexte.result)
+  assert.strictEqual(contexte.result.merges.length, 1)
+  assert.strictEqual(contexte.result.skipped.length, 1)
+  assert.strictEqual(contexte.result.skipped[0]?.rdvUserId, 990_299)
 })
 
 Given(
   'un usager externe au nom plus long que la limite du bénéficiaire',
   async () => {
     await seedRdvUser(990_205)
-    usagers = [
+    contexte.usagers = [
       externalUser(990_205, {
         nom: 'Tronquenom'.padEnd(NOM_MAX_LENGTH + 50, 'X'),
         prenom: 'Cinq',
@@ -187,7 +205,7 @@ Given(
 
 Given('un usager externe dont le nom et le prénom sont vides', async () => {
   await seedRdvUser(990_206)
-  usagers = [
+  contexte.usagers = [
     externalUser(990_206, {
       nom: '   ',
       prenom: '   ',
@@ -198,7 +216,7 @@ Given('un usager externe dont le nom et le prénom sont vides', async () => {
 
 Given('un usager externe né dans le futur', async () => {
   await seedRdvUser(990_207)
-  usagers = [
+  contexte.usagers = [
     externalUser(990_207, {
       nom: 'Futur',
       prenom: 'Sept',
@@ -209,33 +227,33 @@ Given('un usager externe né dans le futur', async () => {
 })
 
 Then('le bénéficiaire est créé avec un nom tronqué à la limite', async () => {
-  assert.ok(result)
-  assert.strictEqual(result.skipped.length, 0)
-  assert.strictEqual(result.merges.length, 1)
+  assert.ok(contexte.result)
+  assert.strictEqual(contexte.result.skipped.length, 0)
+  assert.strictEqual(contexte.result.merges.length, 1)
   const beneficiaire = await prismaClient.beneficiaire.findUniqueOrThrow({
-    where: { id: result.merges[0]?.id ?? '' },
+    where: { id: contexte.result.merges[0]?.id ?? '' },
   })
   assert.strictEqual(beneficiaire.nom?.length, NOM_MAX_LENGTH)
   assert.ok(beneficiaire.nom?.startsWith('Tronquenom'))
 })
 
 Then('aucun bénéficiaire n’est créé et l’usager est écarté', async () => {
-  assert.ok(result)
-  assert.strictEqual(result.merges.length, 0)
-  assert.strictEqual(result.skipped.length, 1)
-  assert.strictEqual(result.skipped[0]?.rdvUserId, 990_206)
+  assert.ok(contexte.result)
+  assert.strictEqual(contexte.result.merges.length, 0)
+  assert.strictEqual(contexte.result.skipped.length, 1)
+  assert.strictEqual(contexte.result.skipped[0]?.rdvUserId, 990_206)
   const cree = await prismaClient.beneficiaire.findFirst({
-    where: { rdvUserId: 990_206 },
+    where: { rdvUserId: RdvUserId(990_206) },
   })
   assert.strictEqual(cree, null)
 })
 
 Then('le bénéficiaire est créé sans année de naissance', async () => {
-  assert.ok(result)
-  assert.strictEqual(result.skipped.length, 0)
-  assert.strictEqual(result.merges.length, 1)
+  assert.ok(contexte.result)
+  assert.strictEqual(contexte.result.skipped.length, 0)
+  assert.strictEqual(contexte.result.merges.length, 1)
   const beneficiaire = await prismaClient.beneficiaire.findUniqueOrThrow({
-    where: { id: result.merges[0]?.id ?? '' },
+    where: { id: contexte.result.merges[0]?.id ?? '' },
   })
   assert.strictEqual(beneficiaire.anneeNaissance, null)
   assert.strictEqual(beneficiaire.trancheAge, null)
@@ -248,7 +266,7 @@ After(async () => {
     })
     createdRdvUserIds.clear()
   }
-  usagers = []
-  result = undefined
-  existingBeneficiaireId = undefined
+  contexte.usagers = []
+  contexte.result = undefined
+  contexte.existingBeneficiaireId = undefined
 })

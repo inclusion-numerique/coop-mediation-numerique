@@ -1,7 +1,9 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { prismaClient } from '@/configuration/prisma'
-import { detacherDesEquipes } from '@/features/equipe/abilities/detacher-des-equipes/implementations/prisma/detacher-des-equipes.mutation'
+import { detacherDesEquipes as detacherDesEquipesAvec } from '@/features/equipe/abilities/detacher-des-equipes/domain/detacher-des-equipes'
+import { retirerDesEquipes } from '@/features/equipe/abilities/detacher-des-equipes/implementations/prisma/retirer-des-equipes.mutation'
+import { MediateurId } from '@/features/equipe/domain'
 import {
   equipeSemee,
   semerUnMediateurCoordonne,
@@ -18,9 +20,9 @@ Given('un médiateur coordonné par un seul coordinateur', async () => {
 })
 
 When('je détache ce médiateur de ses équipes', async () => {
-  await detacherDesEquipes({
-    mediateurId: porteur(),
-    coordinateurId: null,
+  await detacherDesEquipesAvec({ retirerDesEquipes })({
+    compte: { _tag: 'Mediateur', mediateurId: MediateurId(porteur()) },
+    maintenant: new Date(),
   })
 })
 

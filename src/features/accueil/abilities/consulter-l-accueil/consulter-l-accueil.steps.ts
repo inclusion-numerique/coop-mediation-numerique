@@ -1,76 +1,86 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
+import { consulterLAccueil } from '@/features/accueil/abilities/consulter-l-accueil/domain/consulter-l-accueil'
+import { UtilisateurId } from '@/features/accueil/abilities/consulter-l-accueil/domain/utilisateur-id'
+import { lireLeVisiteur } from '@/features/accueil/abilities/consulter-l-accueil/implementations/prisma/visiteur.query'
 import {
-  type Accueil,
-  consulterLAccueil,
-} from '@/features/accueil/abilities/consulter-l-accueil/domain/index'
-import {
-  type UtilisateurConnecte,
-  visiteurDe,
-} from '@/features/accueil/abilities/consulter-l-accueil/implementations/session/visiteur.query'
+  semerUnVisiteur,
+  type VisiteurASemer,
+} from '@/features/accueil/accueil.cucumber'
 
-type Utilisateur = UtilisateurConnecte
-
-const MEDIATEUR = { id: 'a3c1c0d2-5b7e-4f7a-9d1e-2f8b6c4d0e11' }
-const COORDINATEUR = { id: 'b4d2d1e3-6c8f-4a8b-8e2f-3a9c7d5e1f22' }
-
-const utilisatrice: Utilisateur = {
-  firstName: 'Camille',
-  name: 'Camille Martin',
-  email: 'camille@example.org',
-  mediateur: MEDIATEUR,
-  coordinateur: null,
-  hasSeenOnboarding: null,
+const mediatrice: VisiteurASemer = {
+  prenom: 'Camille',
+  nom: 'Camille Martin',
+  mediateur: true,
+  coordinateur: false,
+  presentationVue: false,
 }
 
-let visiteur: Utilisateur = utilisatrice
-let accueil: Accueil | null = null
+const consultation: {
+  visiteur?: VisiteurASemer
+  email?: string
+  resultat?: Awaited<ReturnType<ReturnType<typeof consulterLAccueil>>>
+} = {}
+
+const accueil = () => {
+  assert.ok(consultation.resultat?.success, "L'accueil a échoué")
+  return consultation.resultat.data
+}
 
 Given(
-  "une médiatrice prénommée {string}, nommée {string}, d'adresse {string}",
-  (firstName: string, name: string, email: string) => {
-    visiteur = { ...utilisatrice, firstName, name, email }
+  'une médiatrice prénommée {string}, nommée {string}',
+  (prenom: string, nom: string) => {
+    consultation.visiteur = { ...mediatrice, prenom, nom }
   },
 )
 
 Given('un coordinateur qui est aussi médiateur', () => {
-  visiteur = { ...utilisatrice, coordinateur: COORDINATEUR }
+  consultation.visiteur = { ...mediatrice, coordinateur: true }
 })
 
 Given("une médiatrice qui n'a pas vu la présentation", () => {
-  visiteur = utilisatrice
+  consultation.visiteur = mediatrice
 })
 
 Given('une médiatrice qui a vu la présentation', () => {
-  visiteur = { ...utilisatrice, hasSeenOnboarding: '2026-10-01T10:00:00Z' }
+  consultation.visiteur = { ...mediatrice, presentationVue: true }
 })
 
-When(/^(?:elle|il) consulte l'accueil$/, () => {
-  accueil = consulterLAccueil(visiteurDe(visiteur))
+When(/^(?:elle|il) consulte l'accueil$/, async () => {
+  assert.ok(consultation.visiteur, 'Aucun visiteur')
+  const { id, email } = await semerUnVisiteur(consultation.visiteur)
+  consultation.email = email
+  consultation.resultat = await consulterLAccueil({ lireLeVisiteur })({
+    utilisateurId: UtilisateurId(id),
+  })
 })
 
 Then("l'accueil la salue par {string}", (attendue: string) => {
-  assert.strictEqual(accueil?.salutation, attendue)
+  assert.strictEqual(accueil().salutation, attendue)
+})
+
+Then("l'accueil la salue par son adresse électronique", () => {
+  assert.strictEqual(accueil().salutation, consultation.email)
 })
 
 Then("l'accueil est celui d'un coordinateur", () => {
-  assert.strictEqual(accueil?.profil._tag, 'Coordinateur')
+  assert.strictEqual(accueil().profil._tag, 'Coordinateur')
 })
 
 Then("l'accueil est celui d'un médiateur", () => {
-  assert.strictEqual(accueil?.profil._tag, 'Mediateur')
+  assert.strictEqual(accueil().profil._tag, 'Mediateur')
 })
 
 Then("l'accueil lui souhaite la bienvenue", () => {
-  assert.strictEqual(
-    accueil?.profil._tag === 'Mediateur' && accueil.profil.bienvenue,
-    true,
-  )
+  assert.deepStrictEqual(accueil().profil, {
+    ...accueil().profil,
+    bienvenue: true,
+  })
 })
 
 Then("l'accueil ne lui souhaite plus la bienvenue", () => {
-  assert.strictEqual(
-    accueil?.profil._tag === 'Mediateur' && accueil.profil.bienvenue,
-    false,
-  )
+  assert.deepStrictEqual(accueil().profil, {
+    ...accueil().profil,
+    bienvenue: false,
+  })
 })

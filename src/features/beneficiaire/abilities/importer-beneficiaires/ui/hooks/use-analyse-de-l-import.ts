@@ -1,16 +1,19 @@
 'use client'
 
 import { useCallback, useMemo } from 'react'
-import type { AnalyseResponse } from '../../domain/analyse-de-l-import'
+import {
+  type AnalyseResponse,
+  AnalysisSchema,
+} from '../../domain/analyse-de-l-import'
 
 const cleDeStockage = (id: string) => `beneficiaire-import-analysis-${id}`
 
 export const useAnalyseDeLImport = (id: string): AnalyseResponse | null =>
   useMemo(() => {
-    const analysis = sessionStorage.getItem(cleDeStockage(id))
-    return analysis
-      ? { analysis: JSON.parse(analysis) as AnalyseResponse['analysis'], id }
-      : null
+    const stockee = sessionStorage.getItem(cleDeStockage(id))
+    if (stockee === null) return null
+    const analysis = AnalysisSchema.safeParse(JSON.parse(stockee))
+    return analysis.success ? { analysis: analysis.data, id } : null
   }, [id])
 
 export const useEnregistrementDeLAnalyse = () =>

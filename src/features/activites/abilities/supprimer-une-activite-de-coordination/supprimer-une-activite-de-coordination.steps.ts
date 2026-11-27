@@ -2,11 +2,17 @@ import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
-import { type EchecDeSuppression } from '@/features/activites/abilities/supprimer-une-activite-de-coordination/domain/index'
-import { supprimerUneActiviteDeCoordination } from '@/features/activites/abilities/supprimer-une-activite-de-coordination/implementations/prisma/supprimer-une-activite-de-coordination.mutation'
+import {
+  type EchecDeSupprimerUneActiviteDeCoordination,
+  type SuppressionDeLActiviteDeCoordination,
+  supprimerUneActiviteDeCoordination,
+} from '@/features/activites/abilities/supprimer-une-activite-de-coordination/domain/index'
+import { activiteDeCoordinationEnregistree } from '@/features/activites/abilities/supprimer-une-activite-de-coordination/implementations/prisma/activite-de-coordination-enregistree.query'
+import { supprimerLActiviteDeCoordination } from '@/features/activites/abilities/supprimer-une-activite-de-coordination/implementations/prisma/supprimer-une-activite-de-coordination.mutation'
 import {
   ActiviteDeCoordinationId,
   CoordinateurId,
+  TypeDActiviteDeCoordination,
   UtilisateurId,
 } from '@/features/activites/domain'
 import type { Result } from '@/libraries/result'
@@ -18,8 +24,13 @@ type Semis = {
   readonly activiteId: string
 }
 
-let semis: Semis | undefined
-let resultat: Result<void, EchecDeSuppression> | undefined
+const etat: {
+  semis?: Semis
+  resultat?: Result<
+    SuppressionDeLActiviteDeCoordination,
+    EchecDeSupprimerUneActiviteDeCoordination
+  >
+} = {}
 
 const semerUnCoordinateur = async () => {
   const userId = v4()
@@ -34,15 +45,18 @@ const semerUnCoordinateur = async () => {
 }
 
 const semisCourant = (): Semis => {
-  if (!semis) throw new Error('Aucune activité semée')
-  return semis
+  if (!etat.semis) throw new Error('Aucune activité semée')
+  return etat.semis
 }
 
 const supprimerPar = async (coordinateurId: string, userId: string) => {
-  resultat = await supprimerUneActiviteDeCoordination({
+  etat.resultat = await supprimerUneActiviteDeCoordination({
+    activiteEnregistree: activiteDeCoordinationEnregistree,
+    supprimer: supprimerLActiviteDeCoordination(UtilisateurId(userId)),
+  })({
     activiteId: ActiviteDeCoordinationId(semisCourant().activiteId),
     coordinateurId: CoordinateurId(coordinateurId),
-    auteurId: UtilisateurId(userId),
+    maintenant: new Date(),
   })
 }
 
@@ -64,7 +78,7 @@ Given(
       },
       select: { id: true },
     })
-    semis = {
+    etat.semis = {
       userIds: [auteur.userId, autre.userId],
       coordinateurIds: [auteur.coordinateurId, autre.coordinateurId],
       tagId: tag.id,
@@ -83,13 +97,28 @@ When('un autre coordinateur supprime cette activité', async () => {
   await supprimerPar(coordinateurIds[1], userIds[1])
 })
 
+When(
+  'un autre coordinateur écrit la suppression de cette activité',
+  async () => {
+    const { coordinateurIds, userIds, activiteId } = semisCourant()
+    await supprimerLActiviteDeCoordination(UtilisateurId(userIds[1]))({
+      activite: {
+        id: ActiviteDeCoordinationId(activiteId),
+        type: TypeDActiviteDeCoordination('Animation'),
+        coordinateurId: CoordinateurId(coordinateurIds[1]),
+      },
+      suppression: new Date(),
+    })
+  },
+)
+
 Then("la suppression de l'activité réussit", () => {
-  assert.strictEqual(resultat?.success, true)
+  assert.strictEqual(etat.resultat?.success, true)
 })
 
 Then("la suppression de l'activité échoue avec {string}", (attendu: string) => {
   assert.strictEqual(
-    resultat?.success === false ? resultat.error._tag : null,
+    etat.resultat?.success === false ? etat.resultat.error._tag : null,
     attendu,
   )
 })
@@ -119,10 +148,19 @@ Then("l'activité n'a plus de tag", async () => {
   )
 })
 
+Then("l'activité garde son tag", async () => {
+  assert.strictEqual(
+    await prismaClient.activitesCoordinationTags.count({
+      where: { activiteCoordinationId: semisCourant().activiteId },
+    }),
+    1,
+  )
+})
+
 After(async () => {
-  const seme = semis
-  semis = undefined
-  resultat = undefined
+  const seme = etat.semis
+  delete etat.semis
+  delete etat.resultat
   if (!seme) return
 
   await prismaClient.activitesCoordinationTags.deleteMany({

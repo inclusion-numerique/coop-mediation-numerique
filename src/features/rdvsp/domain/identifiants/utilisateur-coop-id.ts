@@ -1,11 +1,6 @@
 import { z } from 'zod'
 import { defineModel, type Model } from '@/libraries/model'
 
-/**
- * Identifiant de l'utilisateur La Coop propriétaire du compte RDV. C'est le seul
- * identifiant de cette feature qui ne vienne pas de RDV Service Public, et c'est
- * lui qui porte le périmètre de propriété des requêtes (AB-3).
- */
 export const UtilisateurCoopId = defineModel(
   z.guid().brand('UtilisateurCoopId'),
 )

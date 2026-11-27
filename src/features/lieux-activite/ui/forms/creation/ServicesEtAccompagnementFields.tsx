@@ -11,9 +11,11 @@ import { optionsWithEmptyValue } from '@/libraries/ui'
 import { RedAsterisk } from '@/libraries/ui/form'
 import { creerLieuActiviteFormOptions } from '../creer-lieu-activite.form-options'
 
+const proprietes: { isPending: boolean } = { isPending: false }
+
 export const ServicesEtAccompagnementFields = withForm({
   ...creerLieuActiviteFormOptions,
-  props: {} as { isPending: boolean },
+  props: proprietes,
   render: ({ form, isPending }) => {
     const services = useSelector(form.store, (state) => state.values.services)
 

@@ -11,3 +11,7 @@ export type PerimetreNonRattache = { readonly _tag: 'PerimetreNonRattache' }
 export const PerimetreNonRattache = (): PerimetreNonRattache => ({
   _tag: 'PerimetreNonRattache',
 })
+
+export type EchecDeReglerLePartageStatistiques =
+  | AucuneStatistiqueAPartager
+  | PerimetreNonRattache

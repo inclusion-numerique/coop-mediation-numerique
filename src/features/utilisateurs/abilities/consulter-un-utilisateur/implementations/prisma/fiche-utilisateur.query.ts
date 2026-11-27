@@ -203,14 +203,11 @@ export const ficheUtilisateur = async ({
   utilisateurId,
   maintenant,
 }: {
-  readonly utilisateurId: string
+  readonly utilisateurId: UtilisateurId
   readonly maintenant: Date
 }): Promise<FicheUtilisateur | null> => {
-  const id = UtilisateurId.safe(utilisateurId)
-  if (id === null) return null
-
   const row = await prismaClient.user.findUnique({
-    where: { id },
+    where: { id: utilisateurId },
     select: ficheSelect,
   })
 

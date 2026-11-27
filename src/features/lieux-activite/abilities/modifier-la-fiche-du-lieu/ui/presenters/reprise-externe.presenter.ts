@@ -1,5 +1,5 @@
 import { libelleDeLaSource } from '@/features/lieux-activite/domain/cartographie-nationale/sources'
-import { type ChampCompare, differences } from '../../domain/differences'
+import { type ChampCompare, differences } from '../../../../domain/differences'
 import type { FicheDuLieu } from '../../domain/index'
 import { affichee, type ValeurAffichee } from './valeur-affichee.presenter'
 

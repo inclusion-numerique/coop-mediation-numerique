@@ -5,12 +5,13 @@ import {
   Service,
   Services,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
-import type { Schedule } from '@gouvfr-anct/timetable-to-osm-opening-hours'
-import { describe, expect, it } from 'vitest'
 import {
-  horairesVides,
-  safeToTimetableOpeningHours,
-} from '@/features/lieux-activite/domain/saisie/horaires-d-ouverture'
+  type DaySchedule,
+  type Schedule,
+  toTimetableOpeningHours,
+} from '@gouvfr-anct/timetable-to-osm-opening-hours'
+import { describe, expect, it } from 'vitest'
+import { horairesVides } from '@/features/lieux-activite/domain/saisie/horaires-d-ouverture'
 import {
   adresseSaisie,
   courrielsSaisis,
@@ -40,7 +41,7 @@ const ban = {
 }
 
 describe('le numéro de téléphone', () => {
-  it.each([
+  it.each<[string, string]>([
     ['01 02 03 04 05', '+33102030405'],
     ['01.02.03.04.05', '+33102030405'],
     ['0102030405', '+33102030405'],
@@ -52,7 +53,7 @@ describe('le numéro de téléphone', () => {
     expect(telephoneValide(saisi)).toBe(canonique)
   })
 
-  it.each([
+  it.each<[string, string]>([
     ['02 62 20 20 20', '+262262202020'],
     ['0269600102', '+262269600102'],
     ['06 90 00 00 01', '+590690000001'],
@@ -67,15 +68,21 @@ describe('le numéro de téléphone', () => {
     expect(telephoneValide('+32 470 44 25 43')).toBeNull()
   })
 
-  it.each([['12'], ['poste 1234'], [''], [null], [undefined]])(
-    'refuse %s',
-    (saisi) => {
-      expect(telephoneValide(saisi)).toBeNull()
-    },
-  )
+  it.each<[string | null | undefined]>([
+    ['12'],
+    ['poste 1234'],
+    [''],
+    [null],
+    [undefined],
+  ])('refuse %s', (saisi) => {
+    expect(telephoneValide(saisi)).toBeNull()
+  })
 
-  it('n’est retenu que si sa case est cochée', () => {
+  it('n’est pas retenu si sa case n’est pas cochée', () => {
     expect(telephoneSaisi(false, '01 02 03 04 05')).toBeNull()
+  })
+
+  it('est retenu si sa case est cochée', () => {
     expect(telephoneSaisi(true, '01 02 03 04 05')).toBe('+33102030405')
   })
 })
@@ -99,24 +106,26 @@ describe('les horaires', () => {
     )
   })
 
-  it('valent null quand la grille est vide et qu’il n’y a rien à commenter', () => {
-    expect(horairesSaisis(horairesVides, null)).toBeNull()
-    expect(horairesSaisis(horairesVides, '   ')).toBeNull()
-  })
+  it.each<[string | null]>([[null], ['   ']])(
+    'valent null quand la grille est vide et qu’il n’y a rien à commenter (commentaire : %s)',
+    (commentaire) => {
+      expect(horairesSaisis(horairesVides, commentaire)).toBeNull()
+    },
+  )
 
   it('valent null quand un commentaire n’a aucun créneau où s’adosser', () => {
     expect(horairesSaisis(horairesVides, 'Sur rendez-vous')).toBeNull()
   })
 
   it('gardent ouverts le jeudi et le vendredi après-midi d’une semaine qui ferme ces matins-là', () => {
-    const apresMidi = {
+    const apresMidi: DaySchedule = {
       am: { startTime: null, endTime: null, isOpen: false },
       pm: { startTime: '14:00', endTime: '18:00', isOpen: true },
-    } as const
-    const journeeContinue = {
+    }
+    const journeeContinue: DaySchedule = {
       am: { startTime: '10:00', endTime: '18:00', isOpen: true },
       pm: { startTime: null, endTime: null, isOpen: false },
-    } as const
+    }
     const grille: Schedule = {
       ...horairesVides,
       Mo: apresMidi,
@@ -127,18 +136,18 @@ describe('les horaires', () => {
       Sa: journeeContinue,
     }
 
-    const relue = safeToTimetableOpeningHours(new Date('2026-10-14'))(
-      horairesSaisis(grille, null),
+    const relue = toTimetableOpeningHours(new Date('2026-10-14'))(
+      Horaires.schema.parse(horairesSaisis(grille, null)),
     )
 
     expect(relue).toStrictEqual(grille)
   })
 
   it('nomment les jours d’une semaine ouverte tous les jours aux mêmes horaires', () => {
-    const matin = {
+    const matin: DaySchedule = {
       am: { startTime: '09:00', endTime: '12:00', isOpen: true },
       pm: { startTime: null, endTime: null, isOpen: false },
-    } as const
+    }
     const grille: Schedule = {
       Mo: matin,
       Tu: matin,
@@ -152,13 +161,13 @@ describe('les horaires', () => {
     expect(horairesSaisis(grille, null)).toBe('Mo-Su 09:00-12:00')
   })
 
-  it.each([[null], ['Fermé le premier lundi']])(
+  it.each<[string | null]>([[null], ['Fermé le premier lundi']])(
     'composent une valeur que le standard reconnaît (commentaire : %s)',
     (commentaire) => {
-      const composes = horairesSaisis(lundiMatin, commentaire)
-
-      expect(composes).not.toBeNull()
-      expect(Horaires.safe(composes ?? '')).not.toBeNull()
+      expect(
+        Horaires.schema.safeParse(horairesSaisis(lundiMatin, commentaire))
+          .success,
+      ).toBe(true)
     },
   )
 })
@@ -191,18 +200,20 @@ describe('les listes du domaine', () => {
 })
 
 describe('le complément d’adresse', () => {
-  it.each([
+  it.each<[string]>([
     ['Appt #4'],
     ['Résidence "Les Tilleuls"'],
     ['Zone d’activité 50 %'],
   ])('%s tombe seul, et l’adresse demeure', (complement) => {
-    const adresse = adresseSaisie(ban, complement)
-
-    expect(adresse).not.toBeNull()
-    expect(adresse).not.toHaveProperty('complement_adresse')
+    expect(adresseSaisie(ban, complement)).toStrictEqual({
+      voie: '12 quai du Port',
+      commune: 'Rochefort',
+      code_postal: '17300',
+      code_insee: '17299',
+    })
   })
 
-  it.each([
+  it.each<[string]>([
     ['Bâtiment B'],
     ['Bât. 3 (entrée côté parking)'],
     ['1er étage / bureau 12'],
@@ -223,7 +234,7 @@ describe('la fiche d’accessibilité', () => {
     ).toBe('https://acceslibre.beta.gouv.fr/app/erp/le-lieu')
   })
 
-  it.each([
+  it.each<[string | null]>([
     ['https://acceslibre.fr/fiche'],
     ['https://example.fr'],
     ['pas une url'],
@@ -238,9 +249,12 @@ describe('l’immatriculation', () => {
     expect(pivotSaisi('13002603200016')).toBe('13002603200016')
   })
 
-  it.each([['123'], ['W123456789'], [null]])('vaut null pour %s', (siret) => {
-    expect(pivotSaisi(siret)).toBeNull()
-  })
+  it.each<[string | null]>([['123'], ['W123456789'], [null]])(
+    'vaut null pour %s',
+    (siret) => {
+      expect(pivotSaisi(siret)).toBeNull()
+    },
+  )
 })
 
 describe('les adresses web', () => {
@@ -248,9 +262,12 @@ describe('les adresses web', () => {
     expect(urlSaisie('https://example.fr')).toBe('https://example.fr')
   })
 
-  it.each([['coucou'], [''], [null]])('écarte %s', (valeur) => {
-    expect(urlSaisie(valeur)).toBeNull()
-  })
+  it.each<[string | null]>([['coucou'], [''], [null]])(
+    'écarte %s',
+    (valeur) => {
+      expect(urlSaisie(valeur)).toBeNull()
+    },
+  )
 
   it('découpe la liste du schéma national', () => {
     expect(sitesWebSaisis('https://un.fr|https://deux.fr')).toEqual([
@@ -293,7 +310,7 @@ describe('la présentation', () => {
 })
 
 describe('l’itinérance', () => {
-  it.each([
+  it.each<[boolean | null, Itinerance[]]>([
     [true, [Itinerance.Itinerant]],
     [false, [Itinerance.Fixe]],
     [null, []],
@@ -338,7 +355,7 @@ describe('l’adresse', () => {
 })
 
 describe('une valeur non vide', () => {
-  it.each([
+  it.each<[string | null | undefined, string | null]>([
     ['  du texte  ', 'du texte'],
     ['   ', null],
     ['', null],

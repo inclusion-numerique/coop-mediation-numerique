@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import { estActeurDeLaCoop } from './acteur-de-la-coop'
+import { RoleDeLaSession } from './role-de-la-session'
 
-const compte = {
-  role: 'User' as const,
+const compte: Parameters<typeof estActeurDeLaCoop>[0] = {
+  role: RoleDeLaSession('User'),
   inscriptionValidee: '2026-01-01T00:00:00.000Z',
   mediateur: { id: 'm1' },
   coordinateur: null,
@@ -36,7 +37,7 @@ describe('acteur de la coop', () => {
   it('un administrateur en est un', () => {
     expect(
       estActeurDeLaCoop({
-        role: 'Admin',
+        role: RoleDeLaSession('Admin'),
         inscriptionValidee: null,
         mediateur: null,
         coordinateur: null,

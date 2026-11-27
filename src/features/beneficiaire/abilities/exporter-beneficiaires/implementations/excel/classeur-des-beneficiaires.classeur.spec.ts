@@ -15,7 +15,7 @@ import {
 } from '@/features/beneficiaire/domain/tranche-age'
 import type { AuteurDExport } from '@/libraries/tableur'
 import { Telephone } from '@/libraries/telephone'
-import type { BeneficiaireExportRow } from '../../domain/exporter-beneficiaires'
+import type { BeneficiaireExportRow } from '../../domain/beneficiaire-a-exporter'
 import { classeurDesBeneficiaires } from './classeur-des-beneficiaires.classeur'
 
 const user: AuteurDExport = {
@@ -32,7 +32,7 @@ const beneficiaire: BeneficiaireExportRow = {
   accompagnementsCount: 3,
   notes: null,
   telephone: Telephone('0102030405'),
-  anneeNaissance: AnneeNaissance(1990),
+  anneeNaissance: AnneeNaissance(new Date('2026-06-15T12:00:00.000Z'))(1990),
   trancheAge: TrancheAge('VingtCinqTrenteNeuf'),
   genre: Genre('Masculin'),
   statutSocial: StatutSocial('EnEmploi'),

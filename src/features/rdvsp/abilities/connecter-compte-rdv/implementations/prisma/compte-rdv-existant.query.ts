@@ -1,14 +1,7 @@
 import { prismaClient } from '@/configuration/prisma'
 import { compteRdvToDomain } from '../../../../implementations/prisma/compte-rdv.transfer'
-import type { CompteRdvExistant } from '../../domain/connecter-compte-rdv'
+import type { CompteRdvExistant } from '../../domain/ports'
 
-/**
- * Deux clés peuvent désigner le compte à reprendre : l'agent qui vient de
- * s'authentifier, et l'utilisateur La Coop qui pilote la connexion. Elles
- * divergent quand un médiateur relie un second compte RDV Service Public, ou
- * qu'un agent change de compte La Coop — d'où la recherche sur l'une **ou**
- * l'autre, comme le faisait la route de callback.
- */
 export const compteRdvExistant: CompteRdvExistant = async ({
   agentId,
   utilisateurId,

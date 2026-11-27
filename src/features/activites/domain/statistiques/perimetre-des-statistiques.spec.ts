@@ -28,6 +28,16 @@ describe('périmètre des statistiques du demandeur', () => {
     })
   })
 
+  it('un coordinateur sans profil de médiateur ne voit que son équipe', () => {
+    expect(
+      perimetreDuDemandeur({
+        mediateur: null,
+        coordinateur: COORDINATEUR,
+        equipe: [MEMBRE],
+      }),
+    ).toEqual({ type: 'Equipe', coordinateur: COORDINATEUR, membres: [MEMBRE] })
+  })
+
   it('sans profil, aucun périmètre', () => {
     expect(
       perimetreDuDemandeur({ mediateur: null, coordinateur: null, equipe: [] }),

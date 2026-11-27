@@ -1,7 +1,8 @@
 import { z } from 'zod'
 import { defineModel, type Model } from '@/libraries/model'
+import type { EchecTechnique } from '@/libraries/result'
 
-export const effacementSteps = [
+const effacementSteps = [
   'PortefeuilleBeneficiaires',
   'NotesAccompagnements',
   'EmpreinteRdv',
@@ -28,11 +29,10 @@ export const FailureReason = defineModel(
 )
 export type FailureReason = Model.TypeOf<typeof FailureReason>
 
-export const failureReasonOf = (erreur: unknown): FailureReason =>
-  FailureReason(
-    (erreur instanceof Error ? erreur.message : String(erreur)).slice(0, 500) ||
-      'Erreur sans message',
-  )
+const SANS_MESSAGE = FailureReason('Erreur sans message')
+
+export const failureReasonOf = ({ cause }: EchecTechnique): FailureReason =>
+  FailureReason.safe(cause.slice(0, 500)) ?? SANS_MESSAGE
 
 export type StepResult =
   | {
@@ -64,6 +64,3 @@ export const report = (results: readonly StepResult[]): EffacementReport => {
     ? { _tag: 'complete', results }
     : { _tag: 'partial', results, failed }
 }
-
-export const isComplete = (effacementReport: EffacementReport): boolean =>
-  effacementReport._tag === 'complete'

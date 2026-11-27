@@ -23,12 +23,14 @@ describe('statutRdv', () => {
     )
   })
 
-  it.each(['seen', 'excused', 'revoked', 'noshow'] as const)(
-    'conserve le statut « %s » d’un rendez-vous échu',
-    (statut) => {
-      expect(statutRdv(StatutPresence(statut), hier, maintenant)).toBe(statut)
-    },
-  )
+  it.each<{ statut: StatutPresence }>([
+    { statut: StatutPresence('seen') },
+    { statut: StatutPresence('excused') },
+    { statut: StatutPresence('revoked') },
+    { statut: StatutPresence('noshow') },
+  ])('conserve le statut « $statut » d’un rendez-vous échu', ({ statut }) => {
+    expect(statutRdv(statut, hier, maintenant)).toBe(statut)
+  })
 
   it('conserve un statut saisi à l’avance', () => {
     expect(statutRdv(StatutPresence('revoked'), demain, maintenant)).toBe(

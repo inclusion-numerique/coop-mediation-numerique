@@ -1,11 +1,11 @@
 import { prismaClient } from '@/configuration/prisma'
 import { departementDuCode } from '@/libraries/departement'
 import {
-  communeComptee,
   LieuActiviteId,
   NomDeStructure,
   type PerimetreDesStatistiques,
 } from '../../../../domain'
+import { communeComptee } from '../../../../implementations/prisma/statistiques/commune-comptee.transfer'
 import { dansLePerimetre } from '../../../../implementations/prisma/statistiques/perimetre-des-statistiques.sql'
 import type { LieuDesStatistiques, LieuxChoisis } from '../../domain'
 

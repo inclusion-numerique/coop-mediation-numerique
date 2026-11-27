@@ -1,0 +1,23 @@
+import type { BeneficiaireEnregistre } from '@/features/beneficiaire/domain/beneficiaire-enregistre'
+
+export type BeneficiaireInformations = Pick<
+  BeneficiaireEnregistre,
+  | 'id'
+  | 'mediateurId'
+  | 'rdvUserId'
+  | 'rdvServicePublicId'
+  | 'prenom'
+  | 'nom'
+  | 'email'
+  | 'anneeNaissance'
+  | 'notes'
+  | 'genre'
+  | 'trancheAge'
+  | 'creation'
+  | 'adresse'
+  | 'telephone'
+  | 'pasDeTelephone'
+  | 'statutSocial'
+  | 'communeResidence'
+  | 'accompagnementsCount'
+>

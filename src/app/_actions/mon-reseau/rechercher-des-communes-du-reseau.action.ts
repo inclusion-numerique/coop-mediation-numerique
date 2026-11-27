@@ -12,8 +12,7 @@ const rechercherDansLeDepartement = actionBuilder()
   .use(withInput(RechercherDesCommunesDuReseauValidation))
   .execute(async ({ input: { departement, recherche } }) =>
     optionsRecherchees(
-      (await communesDesLieux({ departementCode: departement }))
-        .communesOptions,
+      await communesDesLieux({ departementCode: departement }),
       recherche,
     ),
   )

@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import type { CompteRdv } from '../../../domain/compte/compte-rdv'
+import { failure, success } from '@/libraries/result'
+import type {
+  CompteRdv,
+  CompteRdvDeconnecte,
+} from '../../../domain/compte/compte-rdv'
 import { MessageErreurCompte } from '../../../domain/compte/compte-rdv'
 import {
   JetonAcces,
@@ -8,9 +12,11 @@ import {
 import { OrganisationId } from '../../../domain/identifiants/organisation-id'
 import { RdvAgentId } from '../../../domain/identifiants/rdv-agent-id'
 import { UtilisateurCoopId } from '../../../domain/identifiants/utilisateur-coop-id'
-import { compteApresDeconnexion } from './deconnecter-compte-rdv'
+import { deconnecterCompteRdv } from './deconnecter-compte-rdv'
 
 const maintenant = new Date('2026-08-17T16:00:00.000Z')
+const premiereDeconnexion = new Date('2026-07-08T12:00:00.000Z')
+const utilisateurId = UtilisateurCoopId('d10844c6-b6de-402a-a68d-f8328b1d1b0c')
 
 const jetons: JetonsOAuth = {
   acces: JetonAcces('jeton-acces'),
@@ -21,72 +27,68 @@ const jetons: JetonsOAuth = {
 
 const base = {
   agentId: RdvAgentId(4242),
-  utilisateurId: UtilisateurCoopId('d10844c6-b6de-402a-a68d-f8328b1d1b0c'),
+  utilisateurId,
   organisationIds: [OrganisationId(10), OrganisationId(20)],
   organisationIdsSansWebhook: [OrganisationId(20)],
   synchroniserDepuis: new Date('2026-01-15T00:00:00.000Z'),
   derniereSynchro: new Date('2026-08-16T06:00:00.000Z'),
-  inclureRdvsDansActivites: true,
-} as const
+  inclureRdvsDansActivites: false,
+}
 
-const lie: CompteRdv = { ...base, _tag: 'lie', jetons }
+const deconnecteMaintenant: CompteRdvDeconnecte = {
+  ...base,
+  _tag: 'deconnecte',
+  deconnexion: maintenant,
+}
 
-describe('compteApresDeconnexion', () => {
-  it('marque le compte déconnecté à l’instant demandé', () => {
-    const compte = compteApresDeconnexion(lie, maintenant)
+const deconnecter = (compte: CompteRdv | null) =>
+  deconnecterCompteRdv({
+    compteDeLUtilisateur: async () => compte,
+    enregistrer: async () => undefined,
+  })({ utilisateurId, maintenant })
 
-    expect(compte._tag).toBe('deconnecte')
-    expect(compte.deconnexion).toEqual(maintenant)
-  })
-
-  it('déconnecte aussi un compte en erreur', () => {
-    const compte = compteApresDeconnexion(
-      {
+describe('déconnecter un compte RDV', () => {
+  it.each<{ cas: string; compte: CompteRdv }>([
+    {
+      cas: 'délie un compte lié à l’instant demandé, sans rien perdre de ce qui permettra de reprendre',
+      compte: { ...base, _tag: 'lie', jetons },
+    },
+    {
+      cas: 'délie aussi un compte en erreur',
+      compte: {
         ...base,
         _tag: 'enErreur',
         jetons,
         erreur: MessageErreurCompte('invalid_grant'),
       },
-      maintenant,
-    )
-
-    expect(compte._tag).toBe('deconnecte')
+    },
+    {
+      cas: 'délie un compte jamais lié, sans rien exiger de plus',
+      compte: { ...base, _tag: 'nonLie' },
+    },
+  ])('$cas', async ({ compte }) => {
+    expect(await deconnecter(compte)).toEqual(success(deconnecteMaintenant))
   })
 
-  it('déconnecte un compte jamais lié, sans rien exiger de plus', () => {
-    const compte = compteApresDeconnexion(
-      { ...base, _tag: 'nonLie' },
-      maintenant,
-    )
-
-    expect(compte._tag).toBe('deconnecte')
-  })
-
-  it('conserve ce qui permettra de reprendre la synchronisation', () => {
-    const compte = compteApresDeconnexion(lie, maintenant)
-
-    expect(compte.synchroniserDepuis).toEqual(base.synchroniserDepuis)
-    expect(compte.derniereSynchro).toEqual(base.derniereSynchro)
-    expect(compte.organisationIds).toEqual(base.organisationIds)
-    expect(compte.organisationIdsSansWebhook).toEqual(
-      base.organisationIdsSansWebhook,
-    )
-  })
-
-  it('conserve les réglages d’affichage du médiateur', () => {
+  it('ne réécrit pas la date d’une déconnexion déjà actée', async () => {
     expect(
-      compteApresDeconnexion(lie, maintenant).inclureRdvsDansActivites,
-    ).toBe(true)
+      await deconnecter({
+        ...base,
+        _tag: 'deconnecte',
+        deconnexion: premiereDeconnexion,
+      }),
+    ).toEqual(
+      success({
+        ...base,
+        _tag: 'deconnecte',
+        deconnexion: premiereDeconnexion,
+      }),
+    )
   })
 
-  it('ne réécrit pas la date d’une déconnexion déjà actée', () => {
-    const premiereDeconnexion = new Date('2026-07-08T12:00:00.000Z')
-
-    const compte = compteApresDeconnexion(
-      { ...base, _tag: 'deconnecte', deconnexion: premiereDeconnexion },
-      maintenant,
+  it('refuse un médiateur qui n’a aucun compte à délier', async () => {
+    expect(await deconnecter(null)).toEqual(
+      failure({ _tag: 'CompteRdvIntrouvable', utilisateurId }),
     )
-
-    expect(compte.deconnexion).toEqual(premiereDeconnexion)
   })
 })

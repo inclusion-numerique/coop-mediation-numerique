@@ -39,6 +39,7 @@
     "next-env.d.ts",
     "next.config.ts",
     "vitest.config.ts",
+    "vitest.domaine.config.ts",
     "prisma.config.ts",
     "prisma/entrepot/prisma.config.ts",
     "src/**/*.ts",

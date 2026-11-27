@@ -2,7 +2,9 @@ import assert from 'node:assert'
 import { Page, PageSize } from '@arckit/resultset'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { type MembresDeLEquipe } from '@/features/equipe/abilities/lister-les-membres/domain/index'
-import { listerLesMembres } from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/lister-les-membres.query'
+import { listerLesMembres as listerLesMembresAvec } from '@/features/equipe/abilities/lister-les-membres/domain/lister-les-membres'
+import { lireLaCommuneDuCoordinateur } from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/commune-du-coordinateur.query'
+import { lireLesMembres } from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/lister-les-membres.query'
 import { CoordinateurId, type Lecteur } from '@/features/equipe/domain'
 import {
   type CoordinateurSeme,
@@ -12,8 +14,15 @@ import {
   semerUneInvitation,
   semerUnMediateurDEquipe,
 } from '@/features/equipe/equipe.cucumber'
+import { lireLeCoordinateur } from '@/features/equipe/implementations/prisma/coordinateur.query'
 import { criteresDeLEquipe } from '@/features/equipe/ui/filtres/equipe.filtre'
 import { subDays } from '@/libraries/date'
+
+const listerLesMembres = listerLesMembresAvec({
+  lireLeCoordinateur,
+  lireLaCommuneDuCoordinateur,
+  lireLesMembres,
+})
 
 const contexte: {
   coordinateur?: CoordinateurSeme
@@ -56,6 +65,7 @@ const consulter = async (
     criteres: criteresDeLEquipe(parametres),
     page: Page(1),
     pageSize: PageSize(50),
+    maintenant: new Date(),
   })
 }
 

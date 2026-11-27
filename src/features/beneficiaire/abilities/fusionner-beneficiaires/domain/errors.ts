@@ -23,3 +23,7 @@ export const BeneficiaireDestinationIntrouvable = (
   _tag: 'BeneficiaireDestinationIntrouvable',
   id,
 })
+
+export type EchecDeFusionnerBeneficiaires =
+  | BeneficiaireSourceIntrouvable
+  | BeneficiaireDestinationIntrouvable

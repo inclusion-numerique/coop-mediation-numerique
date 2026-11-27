@@ -30,11 +30,15 @@
 
 * Étant donné un compte médiateur avec des données rattachées
 * Quand le titulaire supprime son compte
-* Alors l'anonymisation du portefeuille est demandée pour ce médiateur
-* Et l'effacement des comptes rendus est demandé pour ce médiateur
-* Et le retrait des lieux d'activité est demandé pour ce médiateur
-* Et la révocation du partage de statistiques est demandée pour ce médiateur
-* Et l'effacement de l'empreinte RDV est demandé pour ce compte
+* Alors le constat d'effacement retient, dans l'ordre, les étapes effacées
+  | étape                     |
+  | PortefeuilleBeneficiaires |
+  | EmpreinteRdv              |
+  | NotesAccompagnements      |
+  | AppartenancesEquipe       |
+  | LieuxActivite             |
+  | PartageStatistiques       |
+  | ListesDeDiffusion         |
 
 ## Règle: Un rôle protégé ne s'efface pas
 

@@ -1,5 +1,5 @@
 import type { Paginated } from '@arckit/resultset'
-import type { BeneficiaireListItem } from '@/features/beneficiaire/abilities/lister-beneficiaires/domain/lister-beneficiaires'
+import type { BeneficiaireListItem } from '@/features/beneficiaire/abilities/lister-beneficiaires/domain/liste-des-beneficiaires'
 import {
   type BeneficiaireRow,
   toBeneficiaireRow,
@@ -13,10 +13,6 @@ type BeneficiairesPaginationView = {
   readonly hasMultiplePages: boolean
 }
 
-/**
- * ViewModel de la liste, sous forme d'union discriminée : la page se contente
- * de filtrer sur `tag`, sans logique.
- */
 export type VueDeMesBeneficiaires =
   | { readonly tag: 'empty' }
   | { readonly tag: 'noResults'; readonly recherche: string }

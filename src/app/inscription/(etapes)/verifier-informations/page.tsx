@@ -16,7 +16,6 @@ export const metadata = {
 const VerifierInformationsPageRoute = async () => {
   const user = await authenticateUser()
 
-  // If inscription is already complete (validated with a role profile), redirect to coop
   if (aTermineSonInscription(user)) {
     redirect('/coop')
   }

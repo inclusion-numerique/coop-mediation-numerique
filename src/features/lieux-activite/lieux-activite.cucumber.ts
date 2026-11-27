@@ -3,9 +3,18 @@ import { After, Given, setDefaultTimeout, Then, When } from '@cucumber/cucumber'
 import { typologiesDepuisNom } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
-import { rattacherAuLieuDesire } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/rattacher-au-lieu-desire.mutation'
+import type { LieuxAAjouterData } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/action/ajouter-des-lieux-activite.validation'
+import { depuisLePanier } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/action/panier.transfer'
+import { lieuxDemandes } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/domain'
+import { appliquerLesDestinations } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/ajouter-des-lieux-activite.mutation'
+import {
+  etatDuLieu,
+  lieuPorteurDeLaCarto,
+  nouvelIdentifiantDeLieu,
+} from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/situation-du-lieu.query'
 import { nouveauLieu } from '@/features/lieux-activite/abilities/creer-lieu-activite/action/saisie-du-lieu.transfer'
-import { creerLieuActivite } from '@/features/lieux-activite/abilities/creer-lieu-activite/implementations/prisma/creer-lieu-activite.mutation'
+import { creerLieuActivite } from '@/features/lieux-activite/abilities/creer-lieu-activite/domain/creer-lieu-activite'
+import { enregistrerLieuActivite } from '@/features/lieux-activite/abilities/creer-lieu-activite/implementations/prisma/enregistrer-lieu-activite.mutation'
 import {
   type CreerLieuActiviteData,
   CreerLieuActiviteValidation,
@@ -13,7 +22,9 @@ import {
 import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
 import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
 import { UtilisateurId } from '@/features/lieux-activite/domain/identifiants/utilisateur-id'
+import { planifierLesRattachements } from '@/features/lieux-activite/domain/rattachement/planifier-les-rattachements'
 import { horairesVides } from '@/features/lieux-activite/domain/saisie/horaires-d-ouverture'
+import { lieuxAuMemeEndroit } from '@/features/lieux-activite/implementations/prisma/lieux-au-meme-endroit.query'
 import type { Typologie } from '@/generated/prisma/client'
 
 setDefaultTimeout(60_000)
@@ -369,31 +380,51 @@ const seedLieuActivite = async (
   return id
 }
 
-const renseigner = (
-  lieux: Parameters<typeof rattacherAuLieuDesire>[1]['lieu'][],
-) =>
-  prismaClient.$transaction(async (transaction) => {
-    await lieux.reduce(async (precedents, lieu) => {
-      await precedents
-      await rattacherAuLieuDesire(transaction, {
-        userId: utilisateurCourant(),
-        lieu,
-        structuresCartoParId: new Map(),
-        maintenant: new Date(),
-      })
-    }, Promise.resolve())
+const renseigner = async (saisies: LieuxAAjouterData['lieux']) => {
+  const maintenant = new Date()
+  const lieux = lieuxDemandes(depuisLePanier(saisies))
+
+  assert.ok(lieux.success, 'Les lieux saisis auraient dû être acceptés')
+
+  const destinations = await planifierLesRattachements({
+    etatDuLieu,
+    lieuPorteurDeLaCarto,
+    lieuxAuMemeEndroit,
+    nouvelIdentifiantDeLieu,
+  })({
+    lieux: lieux.data,
+    structuresCarto: new Map(),
+    maintenant,
   })
 
-const creerUnLieuDActivite = (saisie: CreerLieuActiviteData) =>
-  creerLieuActivite({
+  assert.ok(destinations.success, 'Les lieux désirés auraient dû se résoudre')
+
+  await prismaClient.$transaction((transaction) =>
+    appliquerLesDestinations(transaction, {
+      utilisateurId: utilisateurCourant(),
+      destinations: destinations.data,
+      maintenant,
+    }),
+  )
+}
+
+const creerUnLieuDActivite = (saisie: CreerLieuActiviteData) => {
+  const maintenant = new Date()
+
+  return creerLieuActivite({
+    lieuxAuMemeEndroit,
+    enregistrer: enregistrerLieuActivite,
+  })({
     lieu: nouveauLieu(
       saisie,
       UtilisateurId(utilisateurCourant()),
-      new Date(),
+      maintenant,
       LieuId(crypto.randomUUID()),
     ),
     mediateurId: MediateurId(mediateurCourant()),
+    maintenant,
   })
+}
 
 const typologiesLues = (nom: string): string =>
   [nom, `${nom} SAS`].map((lu) => typologiesDepuisNom(lu).join()).join(';')
@@ -405,7 +436,15 @@ export const nomUnique = (prefixe: string): string => {
     : nomUnique(prefixe)
 }
 
-let lieuDisponibleId = ''
+const reconnus = {
+  lieuDisponibleId: '',
+  nomDuLieuDisponible: '',
+  siretDuLieuDisponible: '',
+  nomDuNouveauLieu: '',
+  communeDuLieuDisponible: '',
+  lieuCreeId: '',
+  lieuSupprimeId: '',
+}
 
 const cartoIdDesynchronise = () => `Coop-numérique_${v4()}`
 
@@ -418,13 +457,6 @@ const adresseDuLieuDisponible = {
   latitude: 48.86,
   longitude: 2.33,
 }
-
-let nomDuLieuDisponible = ''
-let siretDuLieuDisponible = ''
-let nomDuNouveauLieu = ''
-let communeDuLieuDisponible = ''
-let lieuCreeId = ''
-let lieuSupprimeId = ''
 
 const saisieDeCreation = (
   nom: string,
@@ -459,8 +491,8 @@ const siretDeTest = () => v4().replace(/\D/g, '').padEnd(14, '0').slice(0, 14)
 const creerEtRattacher = async (saisie: CreerLieuActiviteData) => {
   const resultat = await creerUnLieuDActivite(saisie)
   assert.ok(resultat.success, 'La création du lieu aurait dû réussir')
-  suivreLeLieu(resultat.data.id)
-  return resultat.data.id
+  suivreLeLieu(resultat.data.destination.id)
+  return resultat.data.destination.id
 }
 
 const activitesActivesPour = (structureId: string) =>
@@ -474,18 +506,20 @@ const activitesActivesPour = (structureId: string) =>
   })
 
 Given('un lieu d’activité est disponible', async () => {
-  nomDuLieuDisponible = nomUnique('Lieu disponible')
-  lieuDisponibleId = await seedLieuActivite({ nom: nomDuLieuDisponible })
+  reconnus.nomDuLieuDisponible = nomUnique('Lieu disponible')
+  reconnus.lieuDisponibleId = await seedLieuActivite({
+    nom: reconnus.nomDuLieuDisponible,
+  })
 })
 
 Given(
   'un lieu d’activité est disponible, identifié par son SIRET',
   async () => {
-    nomDuLieuDisponible = nomUnique('Lieu disponible')
-    siretDuLieuDisponible = siretDeTest()
-    lieuDisponibleId = await seedLieuActivite({
-      nom: nomDuLieuDisponible,
-      siret: siretDuLieuDisponible,
+    reconnus.nomDuLieuDisponible = nomUnique('Lieu disponible')
+    reconnus.siretDuLieuDisponible = siretDeTest()
+    reconnus.lieuDisponibleId = await seedLieuActivite({
+      nom: reconnus.nomDuLieuDisponible,
+      siret: reconnus.siretDuLieuDisponible,
     })
   },
 )
@@ -493,19 +527,21 @@ Given(
 Given(
   'un lieu d’activité est disponible, dénommé comme une mairie',
   async () => {
-    communeDuLieuDisponible = v4()
-    nomDuLieuDisponible = `Mairie de ${communeDuLieuDisponible}`
-    lieuDisponibleId = await seedLieuActivite({ nom: nomDuLieuDisponible })
+    reconnus.communeDuLieuDisponible = v4()
+    reconnus.nomDuLieuDisponible = `Mairie de ${reconnus.communeDuLieuDisponible}`
+    reconnus.lieuDisponibleId = await seedLieuActivite({
+      nom: reconnus.nomDuLieuDisponible,
+    })
   },
 )
 
 Given(
   'un lieu d’activité est disponible, portant un SIRET de provenance inconnue',
   async () => {
-    nomDuLieuDisponible = nomUnique('Lieu disponible')
-    siretDuLieuDisponible = siretDeTest()
-    lieuDisponibleId = await seedLieuActivite({
-      nom: nomDuLieuDisponible,
+    reconnus.nomDuLieuDisponible = nomUnique('Lieu disponible')
+    reconnus.siretDuLieuDisponible = siretDeTest()
+    reconnus.lieuDisponibleId = await seedLieuActivite({
+      nom: reconnus.nomDuLieuDisponible,
       siretNonVerifie: siretDeTest(),
     })
   },
@@ -514,9 +550,9 @@ Given(
 Given(
   'un lieu d’activité est disponible, enregistré sous le code INSEE de la commune',
   async () => {
-    nomDuLieuDisponible = nomUnique('Lieu disponible')
-    lieuDisponibleId = await seedLieuActivite({
-      nom: nomDuLieuDisponible,
+    reconnus.nomDuLieuDisponible = nomUnique('Lieu disponible')
+    reconnus.lieuDisponibleId = await seedLieuActivite({
+      nom: reconnus.nomDuLieuDisponible,
       adresse: { ...adresseDuLieuDisponible, codeInsee: '75056' },
     })
   },
@@ -525,9 +561,9 @@ Given(
 Given(
   'un lieu d’activité est disponible dans une commune voisine du même code postal',
   async () => {
-    nomDuLieuDisponible = nomUnique('Mairie')
-    lieuDisponibleId = await seedLieuActivite({
-      nom: nomDuLieuDisponible,
+    reconnus.nomDuLieuDisponible = nomUnique('Mairie')
+    reconnus.lieuDisponibleId = await seedLieuActivite({
+      nom: reconnus.nomDuLieuDisponible,
       adresse: {
         adresse: '2 rue de l’Eglise',
         commune: 'Village Voisin',
@@ -539,17 +575,17 @@ Given(
 )
 
 Given('un lieu d’activité non diffusible est disponible', async () => {
-  nomDuLieuDisponible = '[Non diffusible]'
-  lieuDisponibleId = await seedLieuActivite({
-    nom: nomDuLieuDisponible,
+  reconnus.nomDuLieuDisponible = '[Non diffusible]'
+  reconnus.lieuDisponibleId = await seedLieuActivite({
+    nom: reconnus.nomDuLieuDisponible,
     adresse: { ...adresseDuLieuDisponible, codeInsee: '75101' },
   })
 })
 
 Given('un lieu d’activité sans adresse est disponible', async () => {
-  nomDuLieuDisponible = nomUnique('Mairie de')
-  lieuDisponibleId = await seedLieuActivite({
-    nom: nomDuLieuDisponible,
+  reconnus.nomDuLieuDisponible = nomUnique('Mairie de')
+  reconnus.lieuDisponibleId = await seedLieuActivite({
+    nom: reconnus.nomDuLieuDisponible,
     adresse: {
       adresse: '',
       commune: 'Paris',
@@ -563,9 +599,9 @@ Given('un lieu d’activité sans adresse est disponible', async () => {
 Given(
   'un lieu d’activité est disponible, dont l’adresse est écrite en abrégé',
   async () => {
-    nomDuLieuDisponible = nomUnique('Espace numérique')
-    lieuDisponibleId = await seedLieuActivite({
-      nom: nomDuLieuDisponible,
+    reconnus.nomDuLieuDisponible = nomUnique('Espace numérique')
+    reconnus.lieuDisponibleId = await seedLieuActivite({
+      nom: reconnus.nomDuLieuDisponible,
       adresse: {
         adresse: 'PL DU HUIT MAI 1945',
         commune: 'Paris',
@@ -617,7 +653,7 @@ When(
     await renseigner([
       {
         structureCartographieNationaleId: cartoIdDesynchronise(),
-        nom: nomDuLieuDisponible,
+        nom: reconnus.nomDuLieuDisponible,
         ...adresseDuLieuDisponible,
       },
     ])
@@ -629,8 +665,8 @@ When(
   async () => {
     await renseigner([
       {
-        siret: siretDuLieuDisponible,
-        nom: `${nomDuLieuDisponible} SAS`,
+        siret: reconnus.siretDuLieuDisponible,
+        nom: `${reconnus.nomDuLieuDisponible} SAS`,
         ...adresseDuLieuDisponible,
       },
     ])
@@ -640,9 +676,9 @@ When(
 When(
   'je renseigne deux fois le nouveau lieu nommé {string}',
   async (nom: string) => {
-    nomDuNouveauLieu = nomUnique(nom)
+    reconnus.nomDuNouveauLieu = nomUnique(nom)
     const nouveauLieu = {
-      nom: nomDuNouveauLieu,
+      nom: reconnus.nomDuNouveauLieu,
       adresse: '12 rue des Lilas',
       commune: 'Lyon',
       codePostal: '69000',
@@ -659,9 +695,9 @@ When(
 Given(
   'un lieu d’activité identique a été retiré de la cartographie par la modération',
   async () => {
-    nomDuNouveauLieu = nomUnique('Point numerique')
-    lieuSupprimeId = await seedLieuActivite({
-      nom: nomDuNouveauLieu,
+    reconnus.nomDuNouveauLieu = nomUnique('Point numerique')
+    reconnus.lieuSupprimeId = await seedLieuActivite({
+      nom: reconnus.nomDuNouveauLieu,
       visiblePourCartographieNationale: true,
       supprime: true,
     })
@@ -671,9 +707,9 @@ Given(
 Given(
   'un lieu d’activité supprimé porte un nom qu’un autre lieu contient',
   async () => {
-    nomDuNouveauLieu = nomUnique('Fleury')
-    lieuSupprimeId = await seedLieuActivite({
-      nom: nomDuNouveauLieu,
+    reconnus.nomDuNouveauLieu = nomUnique('Fleury')
+    reconnus.lieuSupprimeId = await seedLieuActivite({
+      nom: reconnus.nomDuNouveauLieu,
       supprime: true,
     })
   },
@@ -682,11 +718,11 @@ Given(
 When(
   'je renseigne un lieu de l’annuaire des entreprises de même nom et même adresse, mais d’un autre SIRET',
   async () => {
-    nomDuNouveauLieu = nomDuLieuDisponible
+    reconnus.nomDuNouveauLieu = reconnus.nomDuLieuDisponible
     await renseigner([
       {
         siret: siretDeTest(),
-        nom: nomDuLieuDisponible,
+        nom: reconnus.nomDuLieuDisponible,
         ...adresseDuLieuDisponible,
       },
     ])
@@ -699,41 +735,43 @@ When(
       },
       select: { structureId: true },
     })
-    lieuCreeId = active.structureId
-    suivreLeLieu(lieuCreeId)
+    reconnus.lieuCreeId = active.structureId
+    suivreLeLieu(reconnus.lieuCreeId)
   },
 )
 
 When(
   'je crée un lieu d’activité de même nom, à une autre adresse',
   async () => {
-    nomDuNouveauLieu = nomDuLieuDisponible
+    reconnus.nomDuNouveauLieu = reconnus.nomDuLieuDisponible
     const resultat = await creerUnLieuDActivite(
-      saisieDeCreation(nomDuLieuDisponible, {
+      saisieDeCreation(reconnus.nomDuLieuDisponible, {
         adresse: '99 avenue Ailleurs',
         codeInsee: '75102',
       }),
     )
     assert.ok(resultat.success, 'La création du lieu aurait dû réussir')
-    lieuCreeId = resultat.data.id
-    suivreLeLieu(lieuCreeId)
+    reconnus.lieuCreeId = resultat.data.destination.id
+    suivreLeLieu(reconnus.lieuCreeId)
   },
 )
 
 When(
   'je crée un lieu d’activité de même nom et même adresse, sous le code INSEE de l’arrondissement',
   async () => {
-    nomDuNouveauLieu = nomDuLieuDisponible
-    lieuCreeId = await creerEtRattacher(saisieDeCreation(nomDuLieuDisponible))
+    reconnus.nomDuNouveauLieu = reconnus.nomDuLieuDisponible
+    reconnus.lieuCreeId = await creerEtRattacher(
+      saisieDeCreation(reconnus.nomDuLieuDisponible),
+    )
   },
 )
 
 When(
   'je crée un lieu d’activité de même nom et même adresse, dans ma commune',
   async () => {
-    nomDuNouveauLieu = nomDuLieuDisponible
-    lieuCreeId = await creerEtRattacher(
-      saisieDeCreation(nomDuLieuDisponible, {
+    reconnus.nomDuNouveauLieu = reconnus.nomDuLieuDisponible
+    reconnus.lieuCreeId = await creerEtRattacher(
+      saisieDeCreation(reconnus.nomDuLieuDisponible, {
         adresse: '2 rue de l’Eglise',
         commune: 'Ma Commune',
         codeInsee: '70257',
@@ -745,25 +783,29 @@ When(
 When(
   'je crée un lieu d’activité non diffusible à la même adresse',
   async () => {
-    nomDuNouveauLieu = '[Non diffusible]'
-    lieuCreeId = await creerEtRattacher(saisieDeCreation('[Non diffusible]'))
+    reconnus.nomDuNouveauLieu = '[Non diffusible]'
+    reconnus.lieuCreeId = await creerEtRattacher(
+      saisieDeCreation('[Non diffusible]'),
+    )
   },
 )
 
 When('je crée un lieu d’activité de même nom, avec une adresse', async () => {
-  nomDuNouveauLieu = nomDuLieuDisponible
-  lieuCreeId = await creerEtRattacher(saisieDeCreation(nomDuLieuDisponible))
+  reconnus.nomDuNouveauLieu = reconnus.nomDuLieuDisponible
+  reconnus.lieuCreeId = await creerEtRattacher(
+    saisieDeCreation(reconnus.nomDuLieuDisponible),
+  )
 })
 
 When(
   'je renseigne un lieu de l’annuaire des entreprises portant un SIRET',
   async () => {
-    nomDuNouveauLieu = nomUnique('Annuaire')
-    siretDuLieuDisponible = siretDeTest()
+    reconnus.nomDuNouveauLieu = nomUnique('Annuaire')
+    reconnus.siretDuLieuDisponible = siretDeTest()
     await renseigner([
       {
-        siret: siretDuLieuDisponible,
-        nom: nomDuNouveauLieu,
+        siret: reconnus.siretDuLieuDisponible,
+        nom: reconnus.nomDuNouveauLieu,
         ...adresseDuLieuDisponible,
         banId: 'ban-voie-de-test',
       },
@@ -777,14 +819,14 @@ When(
       },
       select: { structureId: true },
     })
-    lieuCreeId = active.structureId
-    suivreLeLieu(lieuCreeId)
+    reconnus.lieuCreeId = active.structureId
+    suivreLeLieu(reconnus.lieuCreeId)
   },
 )
 
 Then('le lieu créé porte l’identifiant BAN de son adresse', async () => {
   const lieu = await prismaClient.lieuInclusion.findUniqueOrThrow({
-    where: { id: lieuCreeId },
+    where: { id: reconnus.lieuCreeId },
     select: { banId: true },
   })
   assert.strictEqual(
@@ -796,10 +838,10 @@ Then('le lieu créé porte l’identifiant BAN de son adresse', async () => {
 
 Then('le lieu créé porte ce SIRET, non vérifié', async () => {
   const lieu = await prismaClient.lieuInclusion.findUniqueOrThrow({
-    where: { id: lieuCreeId },
+    where: { id: reconnus.lieuCreeId },
     select: { siret: true, synchronisationSiret: true },
   })
-  assert.strictEqual(lieu.siret, siretDuLieuDisponible)
+  assert.strictEqual(lieu.siret, reconnus.siretDuLieuDisponible)
   assert.strictEqual(
     lieu.synchronisationSiret,
     null,
@@ -810,9 +852,9 @@ Then('le lieu créé porte ce SIRET, non vérifié', async () => {
 When(
   'je crée un lieu d’activité de même nom, à la même position mais sous l’adresse complète',
   async () => {
-    nomDuNouveauLieu = nomDuLieuDisponible
-    lieuCreeId = await creerEtRattacher(
-      saisieDeCreation(nomDuLieuDisponible, {
+    reconnus.nomDuNouveauLieu = reconnus.nomDuLieuDisponible
+    reconnus.lieuCreeId = await creerEtRattacher(
+      saisieDeCreation(reconnus.nomDuLieuDisponible, {
         adresse: 'Place du 8 Mai 1945',
         latitude: 48.86,
         longitude: 2.33,
@@ -824,9 +866,9 @@ When(
 When(
   'je crée un lieu d’activité de même nom, à une autre position de la commune',
   async () => {
-    nomDuNouveauLieu = nomDuLieuDisponible
-    lieuCreeId = await creerEtRattacher(
-      saisieDeCreation(nomDuLieuDisponible, {
+    reconnus.nomDuNouveauLieu = reconnus.nomDuLieuDisponible
+    reconnus.lieuCreeId = await creerEtRattacher(
+      saisieDeCreation(reconnus.nomDuLieuDisponible, {
         adresse: 'Place du 8 Mai 1945',
         latitude: 48.873,
         longitude: 2.33,
@@ -836,36 +878,36 @@ When(
 )
 
 When('je crée un lieu d’activité que la coop ignore', async () => {
-  nomDuNouveauLieu = nomUnique('Tiers-lieu')
+  reconnus.nomDuNouveauLieu = nomUnique('Tiers-lieu')
   const resultat = await creerUnLieuDActivite(
-    saisieDeCreation(nomDuNouveauLieu),
+    saisieDeCreation(reconnus.nomDuNouveauLieu),
   )
   assert.ok(resultat.success, 'La création du lieu aurait dû réussir')
-  lieuCreeId = resultat.data.id
-  suivreLeLieu(lieuCreeId)
+  reconnus.lieuCreeId = resultat.data.destination.id
+  suivreLeLieu(reconnus.lieuCreeId)
 })
 
 When('je crée un lieu d’activité identique à ce lieu retiré', async () => {
   const resultat = await creerUnLieuDActivite(
-    saisieDeCreation(nomDuNouveauLieu),
+    saisieDeCreation(reconnus.nomDuNouveauLieu),
   )
   assert.ok(resultat.success, 'La création du lieu aurait dû réussir')
-  lieuCreeId = resultat.data.id
-  suivreLeLieu(lieuCreeId)
+  reconnus.lieuCreeId = resultat.data.destination.id
+  suivreLeLieu(reconnus.lieuCreeId)
 })
 
 When(
   'je crée un lieu d’activité dont le nom contient celui du lieu supprimé, à une autre adresse',
   async () => {
     const resultat = await creerUnLieuDActivite(
-      saisieDeCreation(`${nomDuNouveauLieu} Annexe`, {
+      saisieDeCreation(`${reconnus.nomDuNouveauLieu} Annexe`, {
         adresse: '99 avenue Ailleurs',
         codeInsee: '75102',
       }),
     )
     assert.ok(resultat.success, 'La création du lieu aurait dû réussir')
-    lieuCreeId = resultat.data.id
-    suivreLeLieu(lieuCreeId)
+    reconnus.lieuCreeId = resultat.data.destination.id
+    suivreLeLieu(reconnus.lieuCreeId)
   },
 )
 
@@ -873,16 +915,18 @@ When(
   'je crée un lieu d’activité dénommé comme la commune, à la même adresse',
   async () => {
     const resultat = await creerUnLieuDActivite(
-      saisieDeCreation(`COMMUNE DE ${communeDuLieuDisponible}`.toUpperCase()),
+      saisieDeCreation(
+        `COMMUNE DE ${reconnus.communeDuLieuDisponible}`.toUpperCase(),
+      ),
     )
     assert.ok(resultat.success, 'La création du lieu aurait dû réussir')
-    lieuCreeId = resultat.data.id
-    suivreLeLieu(lieuCreeId)
+    reconnus.lieuCreeId = resultat.data.destination.id
+    suivreLeLieu(reconnus.lieuCreeId)
   },
 )
 
 Then('le lieu créé est un de mes lieux d’activité actifs', async () => {
-  const actives = await activitesActivesPour(lieuCreeId)
+  const actives = await activitesActivesPour(reconnus.lieuCreeId)
   assert.strictEqual(
     actives.length,
     1,
@@ -890,15 +934,15 @@ Then('le lieu créé est un de mes lieux d’activité actifs', async () => {
   )
 
   const lieu = await prismaClient.lieuInclusion.findUniqueOrThrow({
-    where: { id: lieuCreeId },
+    where: { id: reconnus.lieuCreeId },
     select: { nom: true },
   })
-  assert.strictEqual(lieu.nom, nomDuNouveauLieu)
+  assert.strictEqual(lieu.nom, reconnus.nomDuNouveauLieu)
 })
 
 Then('ce lieu n’est pas visible sur la cartographie nationale', async () => {
   const lieu = await prismaClient.lieuInclusion.findUniqueOrThrow({
-    where: { id: lieuCreeId },
+    where: { id: reconnus.lieuCreeId },
     select: { visiblePourCartographieNationale: true },
   })
   assert.strictEqual(
@@ -922,21 +966,21 @@ Then('je n’ai qu’un seul lieu d’activité actif', async () => {
 
 Then('un second lieu d’activité a été créé', async () => {
   assert.notStrictEqual(
-    lieuCreeId,
-    lieuDisponibleId,
+    reconnus.lieuCreeId,
+    reconnus.lieuDisponibleId,
     'Le lieu a été rapproché de l’existant alors qu’il en est distinct',
   )
 
   const lieu = await prismaClient.lieuInclusion.findUniqueOrThrow({
-    where: { id: lieuCreeId },
+    where: { id: reconnus.lieuCreeId },
     select: { nom: true },
   })
-  assert.strictEqual(lieu.nom, nomDuNouveauLieu)
+  assert.strictEqual(lieu.nom, reconnus.nomDuNouveauLieu)
 })
 
 Then('le lieu supprimé n’a pas été relevé', async () => {
   const lieu = await prismaClient.lieuInclusion.findUniqueOrThrow({
-    where: { id: lieuSupprimeId },
+    where: { id: reconnus.lieuSupprimeId },
     select: { suppression: true },
   })
   assert.notStrictEqual(
@@ -946,8 +990,33 @@ Then('le lieu supprimé n’a pas été relevé', async () => {
   )
 })
 
+When('je renseigne ce lieu retiré en le désignant', async () => {
+  await renseigner([
+    {
+      id: reconnus.lieuSupprimeId,
+      nom: reconnus.nomDuNouveauLieu,
+      ...adresseDuLieuDisponible,
+    },
+  ])
+})
+
+Then('le lieu retiré est relevé et je l’ai rejoint', async () => {
+  const lieu = await prismaClient.lieuInclusion.findUniqueOrThrow({
+    where: { id: reconnus.lieuSupprimeId },
+    select: { suppression: true },
+  })
+  assert.strictEqual(
+    lieu.suppression,
+    null,
+    'Le lieu désigné est resté supprimé',
+  )
+
+  const actives = await activitesActivesPour(reconnus.lieuSupprimeId)
+  assert.strictEqual(actives.length, 1, 'Le médiateur n’a pas rejoint le lieu')
+})
+
 Then('ce lieu est un de mes lieux d’activité actifs', async () => {
-  const actives = await activitesActivesPour(lieuDisponibleId)
+  const actives = await activitesActivesPour(reconnus.lieuDisponibleId)
   assert.strictEqual(
     actives.length,
     1,
@@ -966,7 +1035,7 @@ Then('aucun autre lieu d’activité n’a été créé', async () => {
   })
   assert.deepStrictEqual(
     actives.map(({ structureId }) => structureId),
-    [lieuDisponibleId],
+    [reconnus.lieuDisponibleId],
     'Un lieu a été créé ou rattaché en plus du lieu renseigné',
   )
 })
@@ -984,7 +1053,7 @@ Then(
     })
 
     const rattaches = actives.filter(
-      (activite) => activite.lieuInclusion.nom === nomDuNouveauLieu,
+      (activite) => activite.lieuInclusion.nom === reconnus.nomDuNouveauLieu,
     )
     assert.strictEqual(
       rattaches.length,

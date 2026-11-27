@@ -1,7 +1,8 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
+import { accepterUneInvitation as accepterUneInvitationAvec } from '@/features/equipe/abilities/accepter-une-invitation/domain/accepter-une-invitation'
 import { type Accepteur } from '@/features/equipe/abilities/accepter-une-invitation/domain/index'
-import { accepterUneInvitation } from '@/features/equipe/abilities/accepter-une-invitation/implementations/prisma/accepter-une-invitation.mutation'
+import { enregistrerLAcceptation } from '@/features/equipe/abilities/accepter-une-invitation/implementations/prisma/enregistrer-l-acceptation.mutation'
 import {
   CoordinateurId,
   Courriel,
@@ -20,13 +21,24 @@ import {
   semerUnMediateurDEquipe,
 } from '@/features/equipe/equipe.cucumber'
 import { prevenirLeCoordinateur } from '@/features/equipe/implementations/email'
+import { lireLesAdhesionsDeLaPaire } from '@/features/equipe/implementations/prisma/adhesion.query'
+import { lireLeCoordinateur } from '@/features/equipe/implementations/prisma/coordinateur.query'
+import { lireUneInvitation } from '@/features/equipe/implementations/prisma/invitation.query'
+
+const accepterUneInvitation = accepterUneInvitationAvec({
+  lireUneInvitation,
+  lireLesAdhesionsDeLaPaire,
+  enregistrerLAcceptation,
+  lireLeCoordinateur,
+  prevenirLeCoordinateur,
+})
 
 const contexte: {
   coordinateur?: CoordinateurSeme
   invite?: MediateurSeme
   note?: MediateurSeme
   inscriptionValidee?: boolean
-  issue?: Awaited<ReturnType<ReturnType<typeof accepterUneInvitation>>>
+  issue?: Awaited<ReturnType<typeof accepterUneInvitation>>
 } = {}
 
 const coordinateur = (): CoordinateurSeme => {
@@ -83,13 +95,14 @@ const accepterPar = async (
   mediateur: MediateurSeme,
   inscriptionValidee = true,
 ) => {
-  contexte.issue = await accepterUneInvitation({ prevenirLeCoordinateur })({
+  contexte.issue = await accepterUneInvitation({
     reference: ReferenceInvitation({
       email: Courriel(invite().email),
       coordinateurId: CoordinateurId(coordinateur().coordinateurId),
     }),
     accepteur: accepteurDe(mediateur, inscriptionValidee),
     auteurId: UtilisateurId(mediateur.userId),
+    maintenant: new Date(),
   })
 }
 

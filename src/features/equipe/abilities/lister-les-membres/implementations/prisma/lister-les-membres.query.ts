@@ -1,15 +1,5 @@
-import type { Page, PageSize } from '@arckit/resultset'
 import { prismaClient } from '@/configuration/prisma'
-import { failure, type Result, success } from '@/libraries/result'
-import {
-  ConsultationNonAutorisee,
-  CoordinateurId,
-  CoordinateurIntrouvable,
-  type CriteresEquipe,
-  type Lecteur,
-  type MediateurId,
-  peutConsulterLEquipe,
-} from '../../../../domain'
+import { CoordinateurId, type MediateurId } from '../../../../domain'
 import {
   filtresEquipe,
   type LigneEquipeRow,
@@ -18,9 +8,9 @@ import {
   statistiquesEquipeSql,
   triEquipe,
 } from '../../../../implementations/prisma/ligne-equipe.sql'
-import { toLignesEquipe } from '../../../../implementations/prisma/ligne-equipe.transfer'
-import type { MembresDeLEquipe, StatistiquesEquipe } from '../../domain'
-import { coordinateurDeLEquipe } from './coordinateur-de-l-equipe.query'
+import { toLigneEquipe } from '../../../../implementations/prisma/ligne-equipe.transfer'
+import type { StatistiquesEquipe } from '../../domain'
+import type { LireLesMembres } from '../../domain/ports'
 
 const statistiquesVides: StatistiquesEquipe = {
   total: 0,
@@ -69,29 +59,13 @@ export const estMembreActif = async ({
     where: { mediateurId, coordinateurId, suppression: null },
   })) > 0
 
-export const listerLesMembres = async ({
+export const lireLesMembres: LireLesMembres = async ({
   coordinateurId,
-  lecteur,
   criteres,
   page,
   pageSize,
-  maintenant = new Date(),
-}: {
-  coordinateurId: CoordinateurId
-  lecteur: Lecteur
-  criteres: CriteresEquipe
-  page: Page
-  pageSize: PageSize
-  maintenant?: Date
-}): Promise<
-  Result<MembresDeLEquipe, ConsultationNonAutorisee | CoordinateurIntrouvable>
-> => {
-  if (!peutConsulterLEquipe(lecteur)(coordinateurId))
-    return failure(ConsultationNonAutorisee())
-
-  const coordinateur = await coordinateurDeLEquipe(coordinateurId)
-  if (coordinateur === null) return failure(CoordinateurIntrouvable())
-
+  maintenant,
+}) => {
   const cte = lignesEquipeCte({ coordinateurId, maintenant })
   const filtres = filtresEquipe(criteres)
 
@@ -109,12 +83,11 @@ export const listerLesMembres = async ({
     compterLesMembres({ coordinateurId, maintenant }),
   ])
 
-  return success({
-    coordinateur,
-    items: [...toLignesEquipe(lignes)],
+  return {
+    items: lignes.map(toLigneEquipe),
     statistiques,
     totalItems: comptage?.count ?? 0,
     currentPage: page,
     pageSize,
-  })
+  }
 }

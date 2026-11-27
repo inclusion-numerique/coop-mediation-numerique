@@ -6,12 +6,6 @@ import type { Prisma } from '@/generated/prisma/client'
 
 setDefaultTimeout(60_000)
 
-/**
- * Support Cucumber partagé pour la feature bénéficiaire.
- * Les hooks de cycle de vie vivent ici une seule fois ; les fichiers .steps.ts
- * ne définissent que Given/When/Then et s'appuient sur ces helpers, ce qui évite
- * les interférences entre hooks de plusieurs fichiers.
- */
 const UTILISATEUR_DE_TEST = 'e59fda11-a62a-4cc4-aadc-7c8ebf837026'
 
 export const testMediateurId = MediateurId(
@@ -49,12 +43,14 @@ export const nombreDeBeneficiairesDuMediateur = async (): Promise<number> =>
     })
   ).beneficiairesCount
 
-let beneficiairesCountBefore = 0
+const contexte: {
+  beneficiairesCountBefore: number
+  portefeuille?: PortefeuilleSeme | undefined
+} = { beneficiairesCountBefore: 0 }
 
 export const nombreDeBeneficiairesAuDebutDuScenario = (): number =>
-  beneficiairesCountBefore
+  contexte.beneficiairesCountBefore
 
-/** Crée un bénéficiaire de test (suivi pour nettoyage). */
 export const seedBeneficiaire = async (
   data: Partial<Prisma.BeneficiaireUncheckedCreateInput> = {},
 ): Promise<string> => {
@@ -76,7 +72,7 @@ BeforeAll({ timeout: 120_000 }, async () => {
 
 Before(async () => {
   trackedBeneficiaireIds.clear()
-  beneficiairesCountBefore = await nombreDeBeneficiairesDuMediateur()
+  contexte.beneficiairesCountBefore = await nombreDeBeneficiairesDuMediateur()
 })
 
 After(async () => {
@@ -87,23 +83,14 @@ After(async () => {
   }
 })
 
-/**
- * Portefeuille isolé pour l'ability `anonymiser-portefeuille`.
- *
- * Elle efface TOUT le portefeuille d'un médiateur : elle ne peut donc pas
- * s'exercer sur le médiateur de fixtures que se partagent les autres scénarios.
- * Un compte jetable est créé pour chaque scénario, et retiré derrière lui.
- */
 type PortefeuilleSeme = {
   readonly userId: string
   readonly mediateurId: string
 }
 
-let portefeuille: PortefeuilleSeme | undefined
-
 export const portefeuilleSeme = (): PortefeuilleSeme => {
-  if (!portefeuille) throw new Error('Aucun portefeuille semé')
-  return portefeuille
+  if (!contexte.portefeuille) throw new Error('Aucun portefeuille semé')
+  return contexte.portefeuille
 }
 
 export const semerPortefeuille = async (): Promise<PortefeuilleSeme> => {
@@ -133,14 +120,22 @@ export const semerPortefeuille = async (): Promise<PortefeuilleSeme> => {
     })),
   })
 
-  portefeuille = { userId, mediateurId: mediateur.id }
+  contexte.portefeuille = { userId, mediateurId: mediateur.id }
 
-  return portefeuille
+  return contexte.portefeuille
 }
 
+export const beneficiaireDUnAutreMediateur = async (): Promise<string> =>
+  (
+    await prismaClient.beneficiaire.findFirstOrThrow({
+      where: { mediateurId: portefeuilleSeme().mediateurId, prenom: 'Paul1' },
+      select: { id: true },
+    })
+  ).id
+
 After(async () => {
-  const semé = portefeuille
-  portefeuille = undefined
+  const semé = contexte.portefeuille
+  contexte.portefeuille = undefined
   if (!semé) return
 
   await prismaClient.beneficiaire.deleteMany({

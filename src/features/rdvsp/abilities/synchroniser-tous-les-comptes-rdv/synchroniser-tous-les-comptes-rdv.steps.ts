@@ -12,7 +12,7 @@ import {
 } from '@/features/rdvsp/rdvsp.cucumber'
 import { failure, success } from '@/libraries/result'
 import type { BilanDeSynchronisation } from './domain/bilan'
-import type { DeclencherLaSynchronisation } from './domain/synchroniser-tous-les-comptes-rdv'
+import type { DeclencherLaSynchronisation } from './domain/ports'
 
 const synchroniserTousLesComptesRdvAvec = (
   declencher: DeclencherLaSynchronisation,
@@ -27,17 +27,14 @@ const AUTRE_COMPTE = ID_TEST.compte + 41
 const MAINTENANT = new Date('2026-11-20T12:00:00.000Z')
 
 const etat: {
-  declenches: string[]
-  enEchec: Set<string>
+  enEchec: readonly string[]
   bilan: BilanDeSynchronisation | undefined
-} = { declenches: [], enEchec: new Set(), bilan: undefined }
+} = { enEchec: [], bilan: undefined }
 
-const declencher: DeclencherLaSynchronisation = async ({ utilisateurId }) => {
-  etat.declenches.push(utilisateurId)
-  return etat.enEchec.has(utilisateurId)
+const declencher: DeclencherLaSynchronisation = async ({ utilisateurId }) =>
+  etat.enEchec.includes(utilisateurId)
     ? failure({ _tag: 'SynchronisationEchouee' })
     : success(undefined)
-}
 
 const autreUtilisateur = async (): Promise<UtilisateurCoopId> => {
   const compte = await compteRdvEnBase(AUTRE_COMPTE)
@@ -46,8 +43,7 @@ const autreUtilisateur = async (): Promise<UtilisateurCoopId> => {
 }
 
 Before(() => {
-  etat.declenches = []
-  etat.enEchec = new Set()
+  etat.enEchec = []
   etat.bilan = undefined
 })
 
@@ -93,23 +89,32 @@ Given(
 )
 
 Given('la synchronisation de ce compte échoue', () => {
-  etat.enEchec.add(testUtilisateurId)
+  etat.enEchec = [...etat.enEchec, testUtilisateurId]
 })
 
 When('je synchronise tous les comptes RDV', async () => {
-  etat.bilan = await synchroniserTousLesComptesRdvAvec(declencher)(MAINTENANT)
+  const synchronisation = await synchroniserTousLesComptesRdvAvec(declencher)({
+    maintenant: MAINTENANT,
+  })
+  etat.bilan = synchronisation.data
 })
 
 Then('ce compte a été synchronisé', () => {
-  assert.ok(etat.declenches.includes(testUtilisateurId))
+  assert.ok(etat.bilan?.synchronises.includes(testUtilisateurId))
 })
 
 Then("ce compte n'a pas été synchronisé", () => {
-  assert.ok(!etat.declenches.includes(testUtilisateurId))
+  assert.ok(etat.bilan, 'La synchronisation n’a pas eu lieu')
+  assert.ok(!etat.bilan.synchronises.includes(testUtilisateurId))
+  assert.ok(
+    !etat.bilan.echecs.some(
+      ({ utilisateurId }) => utilisateurId === testUtilisateurId,
+    ),
+  )
 })
 
 Then("l'autre compte a été synchronisé", async () => {
-  assert.ok(etat.declenches.includes(await autreUtilisateur()))
+  assert.ok(etat.bilan?.synchronises.includes(await autreUtilisateur()))
 })
 
 Then("le bilan compte l'échec de ce compte", () => {

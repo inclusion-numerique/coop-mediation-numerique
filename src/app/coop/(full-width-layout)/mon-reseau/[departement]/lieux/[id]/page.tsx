@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { rechercherStructureEmployeuseAction } from '@/app/_actions/employeuse/rechercher-structure-employeuse.action'
+import { rechercherUneStructureEmployeuseAction } from '@/app/_actions/employeuse/rechercher-une-structure-employeuse.action'
 import { appliquerLesDifferencesAction } from '@/app/_actions/lieux-activite/appliquer-les-differences.action'
 import { modifierLaFicheDuLieuAction } from '@/app/_actions/lieux-activite/modifier-la-fiche-du-lieu.action'
 import { retirerUnMediateurDuLieuAction } from '@/app/_actions/lieux-activite/retirer-un-mediateur-du-lieu.action'
@@ -60,7 +60,7 @@ const LieuActiviteDetailPage = async (props: {
       >
         <ClientBinder
           bind={RECHERCHER_UN_ETABLISSEMENT_KEY}
-          to={rechercherStructureEmployeuseAction}
+          to={rechercherUneStructureEmployeuseAction}
         >
           <LieuDuReseauPage>
             <FicheDuLieuPage

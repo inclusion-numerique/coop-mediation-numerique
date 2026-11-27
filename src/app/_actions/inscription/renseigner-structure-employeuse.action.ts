@@ -2,15 +2,18 @@
 
 import { geocoder } from '@/configuration/ban'
 import { actionBuilder } from '@/configuration/nextjs'
-import { signaler } from '@/configuration/telemetry/serveur'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
-import { RenseignerStructureEmployeuseValidation } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/domain/employeuse-choisie'
-import { rattacherUneSaisie } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/domain/rattacher-une-saisie'
+import { RenseignerStructureEmployeuseValidation } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/action/renseigner-structure-employeuse.validation'
+import { identiteSaisie } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/action/saisie-employeuse.transfer'
+import { rattacherAUneEmployeuse } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/domain/rattacher-a-une-employeuse'
 import { etablissementDepuisSiret } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/api-entreprise/etablissement-depuis-siret.query'
-import type { RegistreDesPersonnes } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/prisma/rattacher-a-une-employeuse.mutation'
-import { rattacherAUneEmployeuse } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/prisma/rattacher-a-une-employeuse.mutation'
+import { statutDeConseillerNumerique } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/prisma/conseiller-numerique-en-poste.query'
+import { creerLEmployeuse } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/prisma/creer-l-employeuse.mutation'
+import { lireLesEmployeusesDuSiret } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/prisma/employeuses-du-siret.query'
+import { enregistrerLeRattachement } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/prisma/enregistrer-le-rattachement.mutation'
+import { UtilisateurId as UtilisateurIdDeLEmployeuse } from '@/features/employeuse/domain'
+import type { IdentiteEmployeuse } from '@/features/employeuse/domain/identite-employeuse'
 import { RENSEIGNER_STRUCTURE_EMPLOYEUSE_ERRORS } from '@/features/inscription/abilities/renseigner-structure-employeuse/action/renseigner-structure-employeuse.errors'
-import type { RattacherEmployeuse } from '@/features/inscription/abilities/renseigner-structure-employeuse/domain/ports'
 import { renseignerStructureEmployeuse } from '@/features/inscription/abilities/renseigner-structure-employeuse/domain/renseigner-structure-employeuse'
 import { projeterEtapeFranchie } from '@/features/inscription/abilities/renseigner-structure-employeuse/implementations/prisma/projeter-etape-franchie.mutation'
 import { UtilisateurId } from '@/features/inscription/domain'
@@ -23,42 +26,33 @@ import {
 import { fromResult, withInput } from '@/libraries/nextjs'
 import { success } from '@/libraries/result'
 
-const renseignerStructureEmployeuseAvec = (
-  rattacherEmployeuse: RattacherEmployeuse,
-) =>
-  renseignerStructureEmployeuse({
-    lireLEtat: getInscriptionEtat,
-    rattacherEmployeuse,
-    projeterEtapeFranchie,
-  })
+const rattacherAUneEmployeuseSaisie = rattacherAUneEmployeuse({
+  lireLEtablissement: etablissementDepuisSiret,
+  lireLeStatutDeConseillerNumerique: statutDeConseillerNumerique,
+  lireLesEmployeusesDuSiret,
+  creerLEmployeuse: creerLEmployeuse({ geocoder }),
+  enregistrerLeRattachement: enregistrerLeRattachement({
+    garantirLaPersonne: ensurePersonneMain,
+    synchroniserLaPersonne: synchroniserPersonne,
+  }),
+})
 
-const services = {
-  geocoder,
-  signaler,
-  etablissementDepuisSiret,
-}
+const renseigner = renseignerStructureEmployeuse({
+  lireLEtat: getInscriptionEtat,
+  rattacherEmployeuse: ({
+    userId,
+    employeuse,
+  }: {
+    readonly userId: UtilisateurId
+    readonly employeuse: IdentiteEmployeuse | null
+  }) =>
+    rattacherAUneEmployeuseSaisie({
+      userId: UtilisateurIdDeLEmployeuse(userId),
+      source: { _tag: 'Saisie', identite: employeuse },
+    }),
+  projeterEtapeFranchie,
+})
 
-const rattacherAUneEmployeuseAvec = (registre: RegistreDesPersonnes) =>
-  rattacherAUneEmployeuse({ ...services, ...registre })
-
-const rattacherUneSaisieAvec = (registre: RegistreDesPersonnes) =>
-  rattacherUneSaisie(rattacherAUneEmployeuseAvec(registre))
-
-const registreDesPersonnes = {
-  garantirLaPersonne: ensurePersonneMain,
-  synchroniserLaPersonne: synchroniserPersonne,
-}
-
-/**
- * Étape d'inscription « ma structure employeuse ».
- *
- * Le rattachement lui-même appartient à la feature employeuse, atteinte par le
- * port `rattacherEmployeuse` ; l'inscription n'ajoute que ce qui la concerne —
- * l'horodatage de l'étape franchie, qui conditionne la suite du parcours.
- *
- * L'utilisateur vient de la session, jamais de l'input : c'est ce qui remplace
- * la garde d'appartenance que portait la procédure tRPC.
- */
 export const renseignerStructureEmployeuseAction = actionBuilder()
   .use(withAuth())
   .use(withMaintenance())
@@ -66,12 +60,10 @@ export const renseignerStructureEmployeuseAction = actionBuilder()
   .execute(
     fromResult(
       async ({ input, user }) => {
-        const resultat = await renseignerStructureEmployeuseAvec(
-          rattacherUneSaisieAvec(registreDesPersonnes),
-        )({
+        const resultat = await renseigner({
           command: {
             userId: UtilisateurId(user.id),
-            structureEmployeuse: input.structure,
+            employeuse: identiteSaisie(input.structure),
           },
           maintenant: new Date(),
         })

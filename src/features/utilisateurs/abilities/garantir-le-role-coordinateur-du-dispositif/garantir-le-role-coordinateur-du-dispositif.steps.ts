@@ -2,11 +2,17 @@ import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
+import { UtilisateurId } from '@/features/utilisateurs/domain'
 import {
   semerUnCompteDeListe,
   semerUneEmployeuse,
 } from '@/features/utilisateurs/utilisateurs.cucumber'
-import { garantirLeRoleCoordinateurDuDispositif } from './implementations/prisma/garantir-le-role-coordinateur.mutation'
+import { garantirLeRoleCoordinateurDuDispositif } from './domain/garantir-le-role-coordinateur-du-dispositif'
+import { creerLeRoleCoordinateur } from './implementations/prisma/creer-le-role-coordinateur.mutation'
+import {
+  aLeRoleCoordinateur,
+  coordonneDansLeDispositif,
+} from './implementations/prisma/role-coordinateur.query'
 
 const garantie: {
   utilisateurId?: string
@@ -54,11 +60,12 @@ Given(
 )
 
 When('le rôle coordinateur du dispositif est garanti', async () => {
-  garantie.cree = (
-    await garantirLeRoleCoordinateurDuDispositif(async () => undefined)(
-      utilisateurId(),
-    )
-  ).cree
+  const resultat = await garantirLeRoleCoordinateurDuDispositif({
+    aLeRoleCoordinateur,
+    coordonneDansLeDispositif,
+    creerLeRoleCoordinateur: creerLeRoleCoordinateur(async () => undefined),
+  })({ utilisateurId: UtilisateurId(utilisateurId()) })
+  garantie.cree = resultat.data._tag === 'RoleCree'
 })
 
 Then('le rôle coordinateur est créé', async () => {

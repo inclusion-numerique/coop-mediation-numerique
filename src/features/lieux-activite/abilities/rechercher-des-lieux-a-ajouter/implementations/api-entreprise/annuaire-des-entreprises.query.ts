@@ -5,13 +5,19 @@ import {
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { rechercheApiEntreprise } from '@/configuration/recherche-entreprises'
 import { etablissementsDepuisUniteLegale } from '@/libraries/recherche-entreprises'
+import { failure, success } from '@/libraries/result'
 import { NombreDeLieux } from '../../../../domain/nombres'
 import { reconnues } from '../../../../domain/nomenclatures'
+import { SourceExterne } from '../../../../domain/registre/source-externe'
 import {
   AdresseLibre,
   type SuggestionDeLieu,
 } from '../../../../domain/suggestion-de-lieu'
-import type { ChercherDansLAnnuaireDesEntreprises } from '../../domain/ports'
+import { SourceIndisponible } from '../../domain/errors'
+import type {
+  ChercherDansLAnnuaireDesEntreprises,
+  SuggestionsDUneSource,
+} from '../../domain/ports'
 
 type Etablissement = ReturnType<typeof etablissementsDepuisUniteLegale>[number]
 
@@ -42,18 +48,25 @@ const suggestion = (etablissement: Etablissement): SuggestionDeLieu[] => {
       ]
 }
 
-export const chercherDansLAnnuaireDesEntreprises: ChercherDansLAnnuaireDesEntreprises =
-  async (recherche) => {
-    const resultat = await rechercheApiEntreprise({
-      q: recherche,
-      minimal: true,
-      include: 'complements,matching_etablissements',
-    })
+const entreprisesDeLAnnuaire = async (
+  recherche: string,
+): Promise<SuggestionsDUneSource> => {
+  const resultat = await rechercheApiEntreprise({
+    q: recherche,
+    minimal: true,
+    include: 'complements,matching_etablissements',
+  })
 
-    return {
-      suggestions: resultat.results
-        .flatMap(etablissementsDepuisUniteLegale)
-        .flatMap(suggestion),
-      nombre: NombreDeLieux(resultat.total_results),
-    }
+  return {
+    suggestions: resultat.results
+      .flatMap(etablissementsDepuisUniteLegale)
+      .flatMap(suggestion),
+    nombre: NombreDeLieux(resultat.total_results),
   }
+}
+
+export const chercherDansLAnnuaireDesEntreprises: ChercherDansLAnnuaireDesEntreprises =
+  (recherche) =>
+    entreprisesDeLAnnuaire(recherche).then(success, () =>
+      failure(SourceIndisponible(SourceExterne('Annuaire'))),
+    )

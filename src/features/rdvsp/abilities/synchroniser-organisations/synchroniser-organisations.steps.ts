@@ -1,6 +1,5 @@
 import assert from 'node:assert'
-import { Given, Then, When } from '@cucumber/cucumber'
-import type { SynchroniserOrganisations } from '@/features/rdvsp/abilities/synchroniser-organisations/domain/synchroniser-organisations'
+import { Given, Then, When, type World } from '@cucumber/cucumber'
 import { synchroniserOrganisations } from '@/features/rdvsp/abilities/synchroniser-organisations/domain/synchroniser-organisations'
 import { appliquerPlanOrganisations } from '@/features/rdvsp/abilities/synchroniser-organisations/implementations/prisma/appliquer-plan-organisations.mutation'
 import { etatOrganisations } from '@/features/rdvsp/abilities/synchroniser-organisations/implementations/prisma/etat-organisations.query'
@@ -12,7 +11,6 @@ import { ApiIndisponible } from '@/features/rdvsp/domain/errors'
 import { OrganisationId } from '@/features/rdvsp/domain/identifiants/organisation-id'
 import { NomOrganisation } from '@/features/rdvsp/domain/libelle'
 import type { Organisation } from '@/features/rdvsp/domain/organisation'
-import type { RdvServicePublicApi } from '@/features/rdvsp/domain/ports'
 import { compteRdvToDomain } from '@/features/rdvsp/implementations/prisma/compte-rdv.transfer'
 import {
   compteRdvEnBase,
@@ -27,21 +25,21 @@ import { failure, success } from '@/libraries/result'
 
 const AGENT_ID = ID_TEST.compte + 8
 
-let recues: Organisation[] = []
-let apiRefuse = false
-let resultat: Awaited<ReturnType<SynchroniserOrganisations>> | undefined
+type Monde = World & {
+  recues?: Organisation[]
+  apiRefuse?: boolean
+  resultat?: Awaited<ReturnType<ReturnType<typeof synchroniserPour>>>
+}
 
-const listerOrganisationsDouble: RdvServicePublicApi['listerOrganisations'] =
-  async () =>
-    apiRefuse
-      ? failure(ApiIndisponible(503, 'service indisponible'))
-      : success(recues)
-
-const synchroniser = synchroniserOrganisations({
-  listerOrganisations: listerOrganisationsDouble,
-  etatOrganisations,
-  appliquerPlan: appliquerPlanOrganisations,
-})
+const synchroniserPour = (monde: Monde) =>
+  synchroniserOrganisations({
+    listerOrganisations: async () =>
+      monde.apiRefuse
+        ? failure(ApiIndisponible(503, 'service indisponible'))
+        : success(monde.recues ?? []),
+    etatOrganisations,
+    appliquerPlan: appliquerPlanOrganisations,
+  })
 
 const compteUtilisable = async (): Promise<CompteRdvUtilisable> => {
   const row = await compteRdvEnBase(AGENT_ID)
@@ -52,16 +50,12 @@ const compteUtilisable = async (): Promise<CompteRdvUtilisable> => {
 }
 
 Given('un compte RDV à synchroniser sans organisation', async () => {
-  recues = []
-  apiRefuse = false
   await seedCompteRdv({ id: AGENT_ID, accessToken: 'jeton-acces' })
 })
 
 Given(
   'un compte RDV à synchroniser rattaché à l’organisation {int} nommée {string}',
   async (numero: number, nom: string) => {
-    recues = []
-    apiRefuse = false
     const organisationId = ID_TEST.organisation + numero
     await seedCompteRdv({ id: AGENT_ID, accessToken: 'jeton-acces' })
     await seedOrganisation({ id: organisationId, nom })
@@ -80,9 +74,9 @@ Given(
 
 Given(
   'RDV Service Public renvoie l’organisation {int} nommée {string}',
-  (numero: number, nom: string) => {
-    recues = [
-      ...recues,
+  function (this: Monde, numero: number, nom: string) {
+    this.recues = [
+      ...(this.recues ?? []),
       {
         id: OrganisationId(ID_TEST.organisation + numero),
         nom: NomOrganisation(nom),
@@ -94,12 +88,17 @@ Given(
   },
 )
 
-Given('RDV Service Public refusera de lister les organisations', () => {
-  apiRefuse = true
-})
+Given(
+  'RDV Service Public refusera de lister les organisations',
+  function (this: Monde) {
+    this.apiRefuse = true
+  },
+)
 
-When('je synchronise les organisations', async () => {
-  resultat = await synchroniser(await compteUtilisable())
+When('je synchronise les organisations', async function (this: Monde) {
+  this.resultat = await synchroniserPour(this)({
+    compte: await compteUtilisable(),
+  })
 })
 
 Then(
@@ -117,20 +116,26 @@ Then('l’organisation {int} n’existe pas', async (numero: number) => {
   )
 })
 
-Then('le bilan compte {int} création', (nombre: number) => {
-  assert.ok(resultat?.success, 'La synchronisation a échoué')
-  assert.strictEqual(resultat.data.bilan.created, nombre)
+Then('le bilan compte {int} création', function (this: Monde, nombre: number) {
+  assert.ok(this.resultat?.success, 'La synchronisation a échoué')
+  assert.strictEqual(this.resultat.data.bilan.created, nombre)
 })
 
-Then('le bilan compte {int} mise à jour', (nombre: number) => {
-  assert.ok(resultat?.success, 'La synchronisation a échoué')
-  assert.strictEqual(resultat.data.bilan.updated, nombre)
-})
+Then(
+  'le bilan compte {int} mise à jour',
+  function (this: Monde, nombre: number) {
+    assert.ok(this.resultat?.success, 'La synchronisation a échoué')
+    assert.strictEqual(this.resultat.data.bilan.updated, nombre)
+  },
+)
 
-Then('le bilan compte {int} organisation inchangée', (nombre: number) => {
-  assert.ok(resultat?.success, 'La synchronisation a échoué')
-  assert.strictEqual(resultat.data.bilan.noop, nombre)
-})
+Then(
+  'le bilan compte {int} organisation inchangée',
+  function (this: Monde, nombre: number) {
+    assert.ok(this.resultat?.success, 'La synchronisation a échoué')
+    assert.strictEqual(this.resultat.data.bilan.noop, nombre)
+  },
+)
 
 Then(
   'le compte est rattaché à l’organisation {int}',
@@ -154,10 +159,13 @@ Then(
   },
 )
 
-Then('la synchronisation échoue avec l’erreur {string}', (tag: string) => {
-  assert.ok(
-    resultat && !resultat.success,
-    'La synchronisation aurait dû échouer',
-  )
-  assert.strictEqual(resultat.error._tag, tag)
-})
+Then(
+  'la synchronisation échoue avec l’erreur {string}',
+  function (this: Monde, tag: string) {
+    assert.ok(
+      this.resultat && !this.resultat.success,
+      'La synchronisation aurait dû échouer',
+    )
+    assert.strictEqual(this.resultat.error._tag, tag)
+  },
+)

@@ -10,16 +10,24 @@ export type {
   Localisation,
 } from './activite-exportee'
 export { CodesPostaux } from './codes-postaux'
-export { demandeurDe } from './demandeur'
-export type {
-  MediateurNomme,
-  NomDeFiltre,
-  NomDeFiltreDeBeneficiaire,
-  NomsDesFiltresExportes,
-} from './noms-des-filtres-exportes'
+
 export {
-  type Demandeur,
-  estUnExportPersonnel,
-  mediateursAutorises,
-  perimetreDeLExport,
-} from './perimetre-de-l-export'
+  type ExportNomme,
+  exporterMesAccompagnements,
+} from './exporter-mes-accompagnements'
+export {
+  type BeneficiaireNomme,
+  type CommuneNommee,
+  type DepartementNomme,
+  type LieuNomme,
+  NomDeFiltre,
+  type NomsDesFiltresExportes,
+} from './noms-des-filtres-exportes'
+export type { Demandeur } from './perimetre-de-l-export'
+export type {
+  AccompagnementsExportes,
+  EmployeusesNommees,
+  ImportsV1Presents,
+  MediateursLus,
+  SelectionDesAccompagnements,
+} from './ports'

@@ -26,11 +26,14 @@
     ],
     "libraries/departement": [
       "app/coop/(full-width-layout)/mon-reseau/[departement]/acteurs/[userId]/page.tsx",
+      "app/coop/(full-width-layout)/mon-reseau/[departement]/acteurs/page.tsx",
       "app/coop/(full-width-layout)/mon-reseau/[departement]/lieux/[id]/page.tsx",
+      "app/coop/(full-width-layout)/mon-reseau/[departement]/lieux/page.tsx",
       "app/coop/(sidemenu-layout)/mon-reseau/[departement]/page.tsx",
       "app/coop/(sidemenu-layout)/mon-reseau/page.tsx"
     ],
     "libraries/insee": [
+      "app/api/auth/[...nextauth]/route.ts",
       "app/coop/(sidemenu-layout)/mes-outils/[slug]/page.tsx"
     ],
     "libraries/texte": [

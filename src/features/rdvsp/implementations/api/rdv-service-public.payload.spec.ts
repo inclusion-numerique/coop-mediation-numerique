@@ -384,21 +384,12 @@ const payloadsRdvCaptures = [
 
 const AGENT_ID = RdvAgentId(2732)
 
-/**
- * Confronte nos schémas aux réponses que RDV Service Public émet réellement.
- *
- * Les autres tests de cette couche partent de payloads que nous avons écrits :
- * ils vérifient que la traduction est juste, jamais que la source ressemble à ce
- * que nous attendons. C'est le seul endroit où le contrat du tiers est éprouvé.
- */
 describe('payloads réels de RDV Service Public', () => {
   it.each(payloadsRdvCaptures.map((payload) => [payload.id, payload] as const))(
     'le rendez-vous %s est accepté par le schéma',
     (_id, payload) => {
       const analyse = rdvPayload.safeParse(payload)
 
-      // Le détail de l'écart vaut mieux qu'un booléen : c'est lui qui dira quel
-      // champ a bougé chez eux.
       expect(analyse.error?.issues ?? []).toEqual([])
       expect(analyse.success).toBe(true)
     },
@@ -434,7 +425,6 @@ describe('payloads réels de RDV Service Public', () => {
   it('ne porte aucune donnée personnelle réelle', () => {
     const texte = JSON.stringify(payloadsRdvCaptures)
 
-    // Garde-fou du jour où quelqu'un rafraîchira la fixture depuis une base.
     expect(texte).not.toMatch(/@(?!example\.org)[\w.-]+\.[a-z]{2,}/i)
     expect(texte).not.toMatch(/\+33(?!600000)\d{9}/)
   })

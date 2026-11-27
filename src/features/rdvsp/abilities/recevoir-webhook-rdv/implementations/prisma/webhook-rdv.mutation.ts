@@ -7,64 +7,14 @@ import {
 import {
   participationFromDomain,
   rdvFromDomain,
-  rdvToDomain,
 } from '../../../../implementations/prisma/rdv.transfer'
 import type {
-  ComptePourWebhook,
   EnregistrerRdvDeLaNotification,
-  OrganisationConnue,
-  RdvConnuParId,
   SupprimerRdvDeLaNotification,
-} from '../../domain/recevoir-webhook-rdv'
-
-export const comptePourWebhook: ComptePourWebhook = async (agentId) => {
-  const row = await prismaClient.rdvAccount.findUnique({
-    where: { id: agentId },
-    select: {
-      syncFrom: true,
-      user: { select: { mediateur: { select: { id: true } } } },
-    },
-  })
-
-  return row === null
-    ? null
-    : {
-        synchroniserDepuis: row.syncFrom,
-        mediateurId: row.user?.mediateur?.id ?? null,
-      }
-}
-
-export const organisationConnue: OrganisationConnue = async (organisationId) =>
-  (await prismaClient.rdvOrganisation.count({
-    where: { id: organisationId },
-  })) > 0
-
-export const rdvConnuParId: RdvConnuParId = async (rdvId) => {
-  const row = await prismaClient.rdv.findUnique({
-    where: { id: rdvId },
-    include: {
-      motif: true,
-      lieu: true,
-      participations: { include: { user: true } },
-    },
-  })
-
-  return row === null
-    ? null
-    : { rdv: rdvToDomain(row), compteRenduRegle: row.compteRenduRegle }
-}
+} from '../../domain/ports'
 
 const traceJson = (brut: unknown) => JSON.parse(JSON.stringify(brut ?? {}))
 
-/**
- * Le rendez-vous et son entourage sont écrits d'un seul tenant, dans l'ordre des
- * clés étrangères. Les participations sont remplacées : RDV Service Public fait
- * autorité sur la liste des participants.
- *
- * `compteRenduRegle` n'est pas touché — la colonne appartient au médiateur, pas au
- * service. C'est ce qui permet à `decisionPourWebhookRdv` de la protéger en
- * amont sans que l'écriture la contredise.
- */
 export const enregistrerRdvDeLaNotification: EnregistrerRdvDeLaNotification =
   async ({ rdv, brut }) => {
     await prismaClient.$transaction(async (transaction) => {

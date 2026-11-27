@@ -1,7 +1,8 @@
 import assert from 'node:assert'
 import { Then, When } from '@cucumber/cucumber'
 import { prismaClient } from '@/configuration/prisma'
-import { creerUnClientApi } from '@/features/clients-api/abilities/creer-un-client-api/implementations/prisma/creer-un-client-api.mutation'
+import { creerUnClientApi } from '@/features/clients-api/abilities/creer-un-client-api/domain/creer-un-client-api'
+import { enregistrerLeClientApi } from '@/features/clients-api/abilities/creer-un-client-api/implementations/prisma/enregistrer-le-client-api.mutation'
 import {
   clientSeme,
   jour,
@@ -9,6 +10,7 @@ import {
   portees,
   retenirLeClient,
 } from '@/features/clients-api/clients-api.cucumber'
+import { nomDejaPris } from '@/features/clients-api/implementations/prisma/nom-deja-pris.query'
 import { nouveauSecret } from '@/features/clients-api/implementations/secret/secret.adapter'
 
 const creation: {
@@ -18,10 +20,16 @@ const creation: {
 When(
   "l'administration crée le client API {string} avec les permissions {string} à partir du {word}",
   async (nom: string, liste: string, debut: string) => {
-    creation.resultat = await creerUnClientApi(nouveauSecret)({
-      nom: nomUnique(nom),
-      portees: portees(liste),
-      validite: { debut: jour(debut), fin: null },
+    creation.resultat = await creerUnClientApi({
+      leNomEstPris: nomDejaPris,
+      genererUnSecret: nouveauSecret,
+      enregistrer: enregistrerLeClientApi,
+    })({
+      definition: {
+        nom: nomUnique(nom),
+        portees: portees(liste),
+        validite: { debut: jour(debut), fin: null },
+      },
     })
     if (creation.resultat.success)
       retenirLeClient(nom, {

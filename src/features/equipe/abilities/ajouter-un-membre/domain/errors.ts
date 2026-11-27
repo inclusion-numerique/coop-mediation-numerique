@@ -1,3 +1,5 @@
+import type { CoordinateurIntrouvable, DejaMembre } from '../../../domain'
+
 export type UtilisateurIntrouvable = { readonly _tag: 'UtilisateurIntrouvable' }
 
 export const UtilisateurIntrouvable = (): UtilisateurIntrouvable => ({
@@ -11,3 +13,9 @@ export type UtilisateurNonMediateur = {
 export const UtilisateurNonMediateur = (): UtilisateurNonMediateur => ({
   _tag: 'UtilisateurNonMediateur',
 })
+
+export type EchecDeAjouterUnMembre =
+  | UtilisateurIntrouvable
+  | UtilisateurNonMediateur
+  | CoordinateurIntrouvable
+  | DejaMembre

@@ -147,14 +147,18 @@ export const actionDeRelance = (
     : { _tag: 'Rien' }
 }
 
-export const relanceApres = (action: ActionDeRelance): Relance | null => {
+type ActionANoter = Extract<
+  ActionDeRelance,
+  { readonly _tag: 'Relancer' | 'Avertir' | 'Reinitialiser' }
+>
+
+export const relanceApres = (action: ActionANoter): Relance => {
   if (action._tag === 'Relancer')
     return Relance(
       action.palier === 7 ? 'J7' : action.palier === 30 ? 'J30' : 'J60',
     )
   if (action._tag === 'Avertir') return Relance('AvertissementJ90')
-  if (action._tag === 'Reinitialiser') return Relance('Aucune')
-  return null
+  return Relance('Aucune')
 }
 
 export const suppressionAnnonceeApres = (

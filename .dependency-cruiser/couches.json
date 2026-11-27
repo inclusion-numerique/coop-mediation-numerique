@@ -6,15 +6,22 @@
   "@auth/prisma-adapter": ["authentification/implementations/prisma"],
   "@gouvfr-anct/lieux-de-mediation-numerique": [
     "clients-api/abilities/lire-les-lieux-activite/implementations/api-v1",
+    "inscription/abilities/ajouter-structure-employeuse-en-lieu/action",
+    "inscription/abilities/ajouter-structure-employeuse-en-lieu/domain",
+    "inscription/abilities/renseigner-lieux-activite/action",
+    "inscription/abilities/renseigner-lieux-activite/domain",
     "lieux-activite/abilities/ajouter-des-lieux-activite/action",
     "lieux-activite/abilities/ajouter-des-lieux-activite/domain",
     "lieux-activite/abilities/ajouter-des-lieux-activite/implementations/entrepot",
-    "lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma",
     "lieux-activite/abilities/ajouter-des-lieux-activite/ui/presenters",
+    "lieux-activite/abilities/apercevoir-la-fusion/domain",
+    "lieux-activite/abilities/apercevoir-la-fusion/implementations/prisma",
+    "lieux-activite/abilities/apercevoir-la-fusion/ui/presenters",
+    "lieux-activite/abilities/appliquer-les-differences/domain",
     "lieux-activite/abilities/creer-lieu-activite/action",
+    "lieux-activite/abilities/creer-lieu-activite/domain",
     "lieux-activite/abilities/fusionner-des-lieux/domain",
     "lieux-activite/abilities/fusionner-des-lieux/implementations/prisma",
-    "lieux-activite/abilities/fusionner-des-lieux/ui/presenters",
     "lieux-activite/abilities/lister-les-lieux-du-mediateur/ui/presenters",
     "lieux-activite/abilities/modifier-la-fiche-du-lieu/action",
     "lieux-activite/abilities/modifier-la-fiche-du-lieu/domain",
@@ -46,14 +53,16 @@
   ],
   "@hookform/resolvers": ["authentification/abilities/se-connecter/ui/forms"],
   "@scalar/api-reference-react": ["clients-api/ui/pages"],
-  "axios": ["authentification/implementations/proconnect"],
+  "axios": [
+    "authentification/abilities/se-deconnecter/implementations/proconnect",
+    "authentification/implementations/proconnect"
+  ],
   "change-case": [
     "activites/abilities/compter-les-thematiques-abordees/implementations/prisma",
     "activites/implementations/prisma"
   ],
   "configuration/environnement": [
     "authentification/implementations/email",
-    "authentification/implementations/next-auth",
     "authentification/implementations/proconnect",
     "clients-api/implementations/secret",
     "rdvsp/implementations/api",
@@ -65,7 +74,6 @@
     "accueil/abilities/consulter-l-accueil/ui/components",
     "authentification/abilities/se-connecter/ui/components",
     "authentification/abilities/se-connecter/ui/pages",
-    "authentification/implementations/next-auth",
     "authentification/implementations/proconnect",
     "beneficiaire/abilities/importer-beneficiaires/ui/components",
     "clients-api/abilities/lire-les-activites/implementations/api-v1",
@@ -82,22 +90,22 @@
     "rdvsp/implementations/oauth",
     "vitrine/ui/components"
   ],
-  "configuration/smtp": ["authentification/implementations/next-auth"],
   "configuration/telemetry": [
-    "authentification/implementations/next-auth",
+    "authentification/implementations/email",
+    "authentification/implementations/proconnect",
     "beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/ban",
+    "beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma",
+    "beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/rdv-service-public",
+    "beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/telemetrie",
+    "beneficiaire/implementations/prisma",
     "clients-api/abilities/authentifier-un-client-api/implementations/api-v1",
-    "equipe/abilities/inviter-des-membres/implementations/prisma",
-    "equipe/abilities/relancer-une-invitation/implementations/prisma",
+    "employeuse/abilities/rattacher-a-une-employeuse/implementations/api-entreprise",
     "equipe/implementations/email",
     "inscription/abilities/ajouter-structure-employeuse-en-lieu/implementations/ban",
-    "rdvsp/abilities/effacer-empreinte-rdv/implementations/prisma",
+    "maintenance-mode/implementations/prisma",
+    "rdvsp/abilities/effacer-empreinte-rdv/implementations/telemetrie",
     "registre-des-personnes/implementations/prisma",
-    "utilisateurs/abilities/fusionner-des-comptes/implementations/brevo",
     "utilisateurs/implementations/brevo"
-  ],
-  "features/authentification/implementations/email/send-verification-request.mutation.ts": [
-    "authentification/implementations/next-auth"
   ],
   "features/authentification/implementations/prisma/account-tokens.mutation.ts": [
     "authentification/implementations/next-auth"
@@ -114,7 +122,7 @@
   "features/authentification/implementations/prisma/synchroniser-la-personne.mutation.ts": [
     "authentification/implementations/next-auth"
   ],
-  "features/authentification/implementations/proconnect/proconnect-provider.client.ts": [
+  "features/authentification/implementations/proconnect/proconnect.client.ts": [
     "authentification/implementations/next-auth"
   ],
   "features/utilisateurs/fixtures/personas.ts": [
@@ -129,13 +137,11 @@
   ],
   "jsonwebtoken": ["authentification/implementations/proconnect"],
   "libraries/adresse": [
-    "inscription/abilities/ajouter-structure-employeuse-en-lieu/domain",
     "lieux-activite/abilities/modifier-la-fiche-du-lieu/action",
     "lieux-activite/action"
   ],
   "libraries/ban": [
     "activites/ui/forms",
-    "beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma",
     "beneficiaire/ui/forms",
     "employeuse/abilities/rattacher-a-une-employeuse/implementations/prisma",
     "lieux-activite/abilities/ajouter-des-lieux-activite/ui/forms",
@@ -149,17 +155,17 @@
   "libraries/code-postal": [
     "activites/domain",
     "employeuse/domain",
-    "equipe/domain"
+    "equipe/domain",
+    "inscription/abilities/ajouter-structure-employeuse-en-lieu/domain"
   ],
   "libraries/collections": [
-    "inscription/abilities/renseigner-lieux-activite/domain",
     "lieux-activite/abilities/ajouter-des-lieux-activite/domain"
   ],
   "libraries/date": [
     "activites/domain",
     "clients-api/domain",
-    "mediateurs/abilities/choisir-la-visibilite-apres-rupture/domain",
     "mediateurs/abilities/consulter-le-contrat/domain",
+    "mediateurs/domain",
     "mon-reseau/abilities/consulter-un-acteur/domain",
     "utilisateurs/abilities/anonymiser-les-comptes-inactifs/domain"
   ],
@@ -167,9 +173,12 @@
     "activites/abilities/exporter-les-accompagnements-par-departement/domain",
     "activites/abilities/rechercher-les-lieux-des-statistiques/domain",
     "authentification/domain",
+    "equipe/abilities/lister-les-membres/domain",
     "lieux-activite/abilities/mesurer-la-visibilite-sur-la-cartographie/domain",
     "mon-reseau/abilities/consulter-le-reseau-du-departement/domain",
-    "mon-reseau/abilities/consulter-les-lieux-du-departement/domain"
+    "mon-reseau/abilities/consulter-les-lieux-du-departement/domain",
+    "mon-reseau/abilities/lister-les-acteurs-du-departement/domain",
+    "mon-reseau/domain"
   ],
   "libraries/etat-encode": [
     "activites/abilities/enregistrer-un-accompagnement-individuel/ui/presenters",
@@ -181,6 +190,7 @@
     "beneficiaire/ui/forms",
     "clients-api/abilities/lire-les-activites/implementations/api-v1",
     "equipe/implementations/email",
+    "rdvsp/abilities/connecter-compte-rdv/implementations/next",
     "rdvsp/implementations/oauth"
   ],
   "libraries/insee": [
@@ -188,17 +198,28 @@
     "activites/abilities/exporter-mes-accompagnements/domain",
     "activites/abilities/rechercher-les-lieux-des-statistiques/domain",
     "activites/domain",
+    "employeuse/abilities/rattacher-a-une-employeuse/action",
     "employeuse/abilities/rattacher-a-une-employeuse/domain",
+    "employeuse/abilities/rechercher-une-structure-employeuse/domain",
     "employeuse/domain",
     "equipe/abilities/lister-les-membres/domain",
     "equipe/domain",
+    "inscription/abilities/ajouter-structure-employeuse-en-lieu/domain",
+    "inscription/abilities/initialiser-inscription/domain",
+    "inscription/abilities/renseigner-lieux-activite/action",
+    "inscription/abilities/renseigner-lieux-activite/domain",
+    "lieux-activite/abilities/ajouter-des-lieux-activite/action",
+    "lieux-activite/abilities/apercevoir-la-fusion/domain",
     "lieux-activite/abilities/lister-les-mediateurs-du-lieu/domain",
     "lieux-activite/abilities/mesurer-la-visibilite-sur-la-cartographie/domain",
+    "lieux-activite/domain",
     "mon-reseau/abilities/consulter-le-reseau-du-departement/domain",
     "mon-reseau/abilities/consulter-les-lieux-du-departement/domain",
     "mon-reseau/abilities/consulter-un-acteur/domain",
     "mon-reseau/abilities/lister-les-acteurs-du-departement/domain",
     "mon-reseau/domain",
+    "tags/abilities/creer-un-tag/domain",
+    "tags/abilities/retirer-les-tags-d-un-compte/domain",
     "tags/domain",
     "utilisateurs/abilities/consulter-un-utilisateur/domain",
     "utilisateurs/domain"
@@ -211,6 +232,7 @@
     "lieux-activite/abilities/modifier-la-fiche-du-lieu/domain",
     "lieux-activite/domain",
     "mon-reseau/abilities/consulter-un-acteur/domain",
+    "mon-reseau/abilities/lister-les-acteurs-du-departement/domain",
     "mon-reseau/domain",
     "utilisateurs/domain"
   ],
@@ -220,8 +242,6 @@
     "statistiques/implementations/excel"
   ],
   "libraries/result": [
-    "inscription/abilities/renseigner-lieux-activite/action",
-    "lieux-activite/abilities/ajouter-des-lieux-activite/action",
     "lieux-activite/abilities/ajouter-des-lieux-activite/ui/forms",
     "rdvsp/abilities/consulter-rdvs-accueil/ui/slots"
   ],
@@ -230,8 +250,10 @@
     "utilisateurs/ui/presenters"
   ],
   "libraries/telephone": [
+    "beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/domain",
     "beneficiaire/abilities/detecter-doublons/domain",
     "beneficiaire/abilities/exporter-beneficiaires/domain",
+    "beneficiaire/abilities/fusionner-beneficiaires/domain",
     "beneficiaire/abilities/importer-beneficiaires/action",
     "beneficiaire/abilities/lister-beneficiaires/domain",
     "beneficiaire/action",
@@ -295,23 +317,21 @@
     "legal/abilities/consulter-les-statistiques-publiques/ui/components"
   ],
   "server-only": ["authentification/middlewares"],
-  "usehooks-ts": [
-    "beneficiaire/abilities/lister-beneficiaires/ui/components",
-    "navigation/ui/components"
-  ],
+  "usehooks-ts": ["navigation/ui/components"],
   "uuid": [
     "activites/abilities/enregistrer-une-activite-de-coordination/implementations/prisma",
     "activites/implementations/prisma",
     "authentification/implementations/prisma",
-    "beneficiaire/abilities/creer-beneficiaire/implementations/prisma",
     "beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma",
-    "beneficiaire/abilities/importer-beneficiaires/implementations/prisma",
     "inscription/abilities/choisir-profil/implementations/prisma",
     "lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma",
     "lieux-activite/abilities/creer-lieu-activite/implementations/prisma"
   ],
   "zod": [
+    "authentification/implementations/email",
+    "authentification/implementations/proconnect",
     "lieux-activite/abilities/ajouter-des-lieux-activite/implementations/entrepot",
+    "rdvsp/abilities/connecter-compte-rdv/implementations/next",
     "rdvsp/implementations/webhook"
   ]
 }

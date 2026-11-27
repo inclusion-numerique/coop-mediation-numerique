@@ -25,7 +25,7 @@ const telephoneValidation = z
   .optional()
 
 export const BeneficiaireValidation = z.object({
-  id: z.guid().nullish(), // defined if update, nullish if create
+  id: z.guid().nullish(),
   prenom: z
     .string({
       error: 'Veuillez renseigner un prénom',
@@ -50,7 +50,7 @@ export const BeneficiaireValidation = z.object({
       z.null(),
     ])
     .optional(),
-  anneeNaissance: anneeNaissanceValidation,
+  anneeNaissance: anneeNaissanceValidation(new Date()),
   adresse: z.string().nullish(),
   dejaAccompagne: z.boolean().nullish(),
   communeResidence: AdresseBanValidation.nullish(),

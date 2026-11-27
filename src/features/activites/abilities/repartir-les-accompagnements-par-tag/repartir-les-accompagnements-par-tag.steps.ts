@@ -4,19 +4,23 @@ import { demandeDeStatistiques } from '../../statistiques.cucumber'
 import { type AccompagnementsParTag } from './domain/index'
 import { repartirLesAccompagnementsParTag } from './implementations/prisma/accompagnements-par-tag.query'
 
-let parTag: AccompagnementsParTag | undefined
+const etat: {
+  parTag?: AccompagnementsParTag
+} = {}
 
 When(
   'je répartis les accompagnements de {string} par tag',
   async (nom: string) => {
-    parTag = await repartirLesAccompagnementsParTag(demandeDeStatistiques(nom))
+    etat.parTag = await repartirLesAccompagnementsParTag(
+      demandeDeStatistiques(nom),
+    )
   },
 )
 
 Then('les tags comptés sont {string}', (attendus: string) => {
-  assert.ok(parTag, 'Aucune répartition par tag')
+  assert.ok(etat.parTag, 'Aucune répartition par tag')
   assert.strictEqual(
-    parTag.map(({ tag, nombre }) => `${tag.nom} ${nombre}`).join(', '),
+    etat.parTag.map(({ tag, nombre }) => `${tag.nom} ${nombre}`).join(', '),
     attendus,
   )
 })

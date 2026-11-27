@@ -3,13 +3,9 @@ import { RdvAgentId } from '../../../../domain/identifiants/rdv-agent-id'
 import { RdvId } from '../../../../domain/identifiants/rdv-id'
 import { UsagerId } from '../../../../domain/identifiants/usager-id'
 import { StatutPresence } from '../../../../domain/rdv/statut-presence'
-import type { LireRdvPourActivite } from '../../domain/creer-activite-depuis-rdv'
+import { identiteExterneToDomain } from '../../../../implementations/prisma/usager-externe.transfer'
+import type { LireRdvPourActivite } from '../../domain/ports'
 
-/**
- * Lit le rendez-vous et ses participants sans filtre de propriétaire : c'est
- * `verifierRdv` qui tranche, et c'est ce qui permet de distinguer un rendez-vous
- * inconnu de celui d'un collègue.
- */
 export const lireRdvPourActivite: LireRdvPourActivite = async (rdvId) => {
   const row = await prismaClient.rdv.findUnique({
     where: { id: rdvId },
@@ -54,10 +50,7 @@ export const lireRdvPourActivite: LireRdvPourActivite = async (rdvId) => {
           statutPresence: StatutPresence(participation.status),
           usager: {
             id: UsagerId(participation.user.id),
-            prenom: participation.user.firstName,
-            nom: participation.user.lastName,
-            email: participation.user.email,
-            telephone: participation.user.phoneNumber,
+            ...identiteExterneToDomain(participation.user),
             adresse: participation.user.address,
             dateNaissance: participation.user.birthDate,
           },

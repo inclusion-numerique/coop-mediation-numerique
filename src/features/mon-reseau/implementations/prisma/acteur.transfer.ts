@@ -1,20 +1,16 @@
 import type { Prisma } from '@/generated/prisma/client'
-import {
-  DEPARTEMENT_PAR_DEFAUT,
-  departementDeLActeur,
-} from '@/libraries/departement'
-import { type CodeDepartement, CodeInsee } from '@/libraries/insee'
+import { CodeInsee } from '@/libraries/insee'
 import { nomAffiche } from '@/libraries/nom-affiche'
 import {
-  type Acteur,
+  type ActeurAvecCommunes,
   ActeurId,
-  type CoordinateurDeLActeur,
+  type CoordinateurAvecCommune,
   CoordinateurId,
   Courriel,
   dispositifDe,
   Effectif,
   MediateurId,
-  type Mediation,
+  type MediationAvecCommunes,
   type ProfilActeur,
 } from '../../domain'
 import { acteurVisibleWhere } from './acteur.sql'
@@ -90,58 +86,44 @@ const nomAfficheDe = ({
     courriel: email,
   })
 
-const departementDuCoordinateur = (
+const communeDeLEmployeuse = (
   personneMain: LigneCoordinateurDeLActeur['personneMain'],
-): CodeDepartement =>
-  departementDeLActeur({
-    employeuse: CodeInsee.safe(
-      personneMain?.employeuseActuelle?.codeInsee ?? '',
-    ),
-    lieux: [],
-  }) ?? DEPARTEMENT_PAR_DEFAUT
+): CodeInsee | null => {
+  const codeInsee = personneMain?.employeuseActuelle?.codeInsee ?? null
+  return codeInsee === null ? null : CodeInsee(codeInsee)
+}
 
 const versCoordinateurDeLActeur = (
   coordinateur: LigneCoordinateurDeLActeur,
-): CoordinateurDeLActeur | null => {
-  const acteurId = ActeurId.safe(coordinateur.id)
-  return acteurId === null
-    ? null
-    : {
-        acteurId,
-        nomAffiche: nomAfficheDe(coordinateur),
-        departement: departementDuCoordinateur(coordinateur.personneMain),
-      }
-}
+): CoordinateurAvecCommune => ({
+  acteurId: ActeurId(coordinateur.id),
+  nomAffiche: nomAfficheDe(coordinateur),
+  communeDeLEmployeuse: communeDeLEmployeuse(coordinateur.personneMain),
+})
 
-const versMediation = (mediateur: LigneMediateur): Mediation | null => {
-  const mediateurId = MediateurId.safe(mediateur.id)
-  const nombreDeLieux = Effectif.safe(mediateur._count.enActivite)
-  return mediateurId === null || nombreDeLieux === null
-    ? null
-    : {
-        mediateurId,
-        nombreDeLieux,
-        coordinateurs: mediateur.coordinations
-          .map(({ coordinateur }) =>
-            versCoordinateurDeLActeur(coordinateur.user),
-          )
-          .filter((coordinateur) => coordinateur !== null),
-      }
-}
+const versMediation = (mediateur: LigneMediateur): MediationAvecCommunes => ({
+  mediateurId: MediateurId(mediateur.id),
+  nombreDeLieux: Effectif(mediateur._count.enActivite),
+  coordinateurs: mediateur.coordinations.map(({ coordinateur }) =>
+    versCoordinateurDeLActeur(coordinateur.user),
+  ),
+})
 
-const versProfil = (ligne: LigneActeur): ProfilActeur | null => {
+const versProfil = (
+  ligne: LigneActeur,
+): ProfilActeur<CoordinateurAvecCommune> | null => {
   const dispositif = dispositifDe(
     ligne.personneMain?.conseillerNumeriqueEnPoste != null,
   )
   const mediation =
     ligne.mediateur === null ? null : versMediation(ligne.mediateur)
-  const coordinateurId =
-    ligne.coordinateur === null
-      ? null
-      : CoordinateurId.safe(ligne.coordinateur.id)
-
-  if (coordinateurId !== null) {
-    return { _tag: 'Coordinateur', dispositif, coordinateurId, mediation }
+  if (ligne.coordinateur !== null) {
+    return {
+      _tag: 'Coordinateur',
+      dispositif,
+      coordinateurId: CoordinateurId(ligne.coordinateur.id),
+      mediation,
+    }
   }
 
   return mediation === null
@@ -149,12 +131,15 @@ const versProfil = (ligne: LigneActeur): ProfilActeur | null => {
     : { _tag: 'Mediateur', dispositif, mediation }
 }
 
-export const versActeur = (ligne: LigneActeur): Acteur | null => {
-  const acteurId = ActeurId.safe(ligne.id)
-  const courriel = Courriel.safe(ligne.email)
+export const versActeur = (ligne: LigneActeur): ActeurAvecCommunes | null => {
   const profil = versProfil(ligne)
 
-  return acteurId === null || courriel === null || profil === null
+  return profil === null
     ? null
-    : { acteurId, nomAffiche: nomAfficheDe(ligne), courriel, profil }
+    : {
+        acteurId: ActeurId(ligne.id),
+        nomAffiche: nomAfficheDe(ligne),
+        courriel: Courriel(ligne.email),
+        profil,
+      }
 }

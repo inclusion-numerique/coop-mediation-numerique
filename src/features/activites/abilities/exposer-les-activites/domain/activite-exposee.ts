@@ -1,7 +1,10 @@
 import type {
+  ActiviteId,
   AUTONOMIES,
   GENRES,
+  LieuActiviteId,
   MATERIELS,
+  MediateurId,
   NIVEAUX_D_ATELIER,
   STATUTS_SOCIAUX,
   STRUCTURES_DE_REDIRECTION,
@@ -10,6 +13,7 @@ import type {
   TRANCHES_D_AGE,
   TYPES_D_ACTIVITE,
   TYPES_DE_LIEU,
+  UtilisateurId,
 } from '../../../domain'
 
 type Valeur<Liste extends readonly string[]> = Liste[number]
@@ -21,20 +25,20 @@ export type BeneficiaireCompte = {
 }
 
 export type ActiviteExposee = {
-  readonly id: string
+  readonly id: ActiviteId
   readonly type: Valeur<typeof TYPES_D_ACTIVITE>
   readonly suppression: Date | null
   readonly modification: Date
   readonly creation: Date
   readonly date: Date
   readonly duree: number
-  readonly structureId: string | null
+  readonly structureId: LieuActiviteId | null
   readonly lieuCodePostal: string | null
   readonly lieuCommune: string | null
   readonly lieuCodeInsee: string | null
-  readonly mediateurId: string
+  readonly mediateurId: MediateurId
   readonly typeLieu: Valeur<typeof TYPES_DE_LIEU>
-  readonly mediateur: { readonly userId: string }
+  readonly mediateur: { readonly userId: UtilisateurId }
   readonly autonomie: Valeur<typeof AUTONOMIES> | null
   readonly structureDeRedirection: Valeur<
     typeof STRUCTURES_DE_REDIRECTION

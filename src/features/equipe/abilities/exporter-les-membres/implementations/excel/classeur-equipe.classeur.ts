@@ -94,12 +94,12 @@ export const classeurEquipe = ({
   membres,
   criteres,
   auteur,
-  genereLe = new Date(),
+  genereLe,
 }: {
   membres: readonly MembreExporte[]
   criteres: CriteresEquipe
   auteur: AuteurDExport
-  genereLe?: Date
+  genereLe: Date
 }) => {
   const classeur = new Excel.Workbook()
   setWorkbookMetadata(classeur)

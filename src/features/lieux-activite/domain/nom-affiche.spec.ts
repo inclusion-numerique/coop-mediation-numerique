@@ -17,8 +17,11 @@ describe('sous quel nom un lieu se montre', () => {
     )
   })
 
-  it('ignore un nom d’usage vide ou blanc', () => {
+  it('ignore un nom d’usage blanc', () => {
     expect(nomAffiche('Tiers-lieu du Port', '   ')).toBe('Tiers-lieu du Port')
+  })
+
+  it('ignore un nom d’usage vide', () => {
     expect(nomAffiche('Tiers-lieu du Port', '')).toBe('Tiers-lieu du Port')
   })
 })

@@ -1,314 +1,267 @@
-import type {
-  BilanModele,
-  BilanSynchronisation,
-} from '@/features/rdvsp/domain/compte/bilan-synchronisation'
 import {
-  bilanSynchronisationVide,
+  type BilanSynchronisation,
   bilanVide,
   deriveTotale,
 } from '@/features/rdvsp/domain/compte/bilan-synchronisation'
 import type { CompteRdvUtilisable } from '@/features/rdvsp/domain/compte/compte-rdv'
-import type { ErreurRdvApi } from '@/features/rdvsp/domain/errors'
-import { diagnosticErreur } from '@/features/rdvsp/domain/errors'
+import {
+  type EchecDeSynchronisation,
+  messageDeLEchec,
+} from '@/features/rdvsp/domain/errors'
+import type { MediateurId } from '@/features/rdvsp/domain/identifiants/mediateur-id'
 import type { OrganisationId } from '@/features/rdvsp/domain/identifiants/organisation-id'
-import { organisationsAccessibles } from '@/features/rdvsp/domain/identifiants/organisation-id'
-import type { Result } from '@/libraries/result'
-import { success } from '@/libraries/result'
+import {
+  type PorteeDeSynchronisation,
+  porteeAccessible,
+} from '@/features/rdvsp/domain/portee-de-synchronisation'
+import type { Rapprochement } from '@/features/rdvsp/domain/rapprochement'
+import { TAILLE_DES_LOTS_DE_RDVS } from '@/features/rdvsp/domain/rdv/taille-des-lots'
+import { failure, type Result, success } from '@/libraries/result'
+import type { EchecDeSynchroniserCompteRdv } from './errors'
+import type { ReconcilierRdvs, SynchroniserCompteRdvPorts } from './ports'
+import type { PoseDeWebhook } from './poser-les-webhooks'
+import { poserLesWebhooks } from './poser-les-webhooks'
+import type { ResultatSynchronisation } from './resultat-synchronisation'
 
-export type PorteeDemandee = {
-  readonly compte: CompteRdvUtilisable
-  /**
-   * Organisations à synchroniser. Absente, la passe couvre tout ; **vide**, elle
-   * ne couvre rien — c'est le cas d'un compte dont aucune installation de webhook
-   * n'a échoué, pour lequel l'appelant n'a rien à demander.
-   */
-  readonly organisationIds?: readonly OrganisationId[]
-}
-
-export type PasseDeSynchronisation =
-  | { readonly _tag: 'sansObjet' }
+export type CompteSynchronise =
   | {
-      readonly _tag: 'aExecuter'
-      readonly toutesOrganisations: boolean
-      readonly organisationIds: readonly OrganisationId[] | undefined
+      readonly _tag: 'sansObjet'
+      readonly derive: 0
+      readonly synchroniseeLe: Date
     }
+  | (ResultatSynchronisation & {
+      readonly _tag: 'synchronise'
+      readonly synchroniseeLe: Date
+      readonly organisationIdsDetachees: readonly OrganisationId[]
+      readonly webhooks: readonly PoseDeWebhook[]
+      readonly rapprochements: readonly Rapprochement[]
+      readonly journal: string
+    })
 
-/**
- * Une portée vide n'est pas une portée totale.
- *
- * La distinction tient à un tableau vide contre une absence de tableau, et
- * l'inverser ferait resynchroniser l'intégralité d'un compte là où il n'y avait
- * rien à faire. Elle méritait d'être nommée.
- *
- * Les organisations ne sont réconciliées que lors d'une passe complète : sur une
- * portée restreinte, l'appelant sait déjà de quelles organisations il parle.
- */
-export const passePour = ({
-  organisationIds,
-}: PorteeDemandee): PasseDeSynchronisation => {
-  if (organisationIds !== undefined && organisationIds.length === 0) {
-    return { _tag: 'sansObjet' }
-  }
+const estSansObjet = (portee: PorteeDeSynchronisation): boolean =>
+  portee._tag === 'organisations' && portee.organisationIds.length === 0
 
-  return {
-    _tag: 'aExecuter',
-    toutesOrganisations: organisationIds === undefined,
-    organisationIds,
-  }
-}
-
-export type ResultatSynchronisation = {
-  readonly bilan: BilanSynchronisation
-  readonly derive: number
-  readonly organisationIdsSansWebhook: readonly OrganisationId[] | undefined
-}
-
-export type SynchroniserCompteRdv = (
-  portee: PorteeDemandee,
-) => Promise<Result<ResultatSynchronisation, ErreurRdvApi>>
-
-export type ReconcilierOrganisations = (compte: CompteRdvUtilisable) => Promise<
-  Result<
-    {
-      readonly bilan: BilanModele
-      readonly organisationIdsRecues: readonly OrganisationId[]
-    },
-    ErreurRdvApi
-  >
->
-
-export type ReconcilierRdvs = (input: {
-  readonly compte: CompteRdvUtilisable
-  readonly organisationIds?: readonly OrganisationId[]
-}) => Promise<
-  Result<
-    {
-      readonly rdvs: BilanModele
-      readonly usagers: BilanModele
-      readonly motifs: BilanModele
-      readonly lieux: BilanModele
-      readonly organisationIdsInaccessibles: readonly OrganisationId[]
-    },
-    ErreurRdvApi
-  >
->
-
-export type ReconcilierLesRdvsDuMediateur = (rattachement: {
-  readonly mediateurId: string
-  readonly journaliser: (message: string) => void
-}) => ReconcilierRdvs
-
-export type DetacherOrganisations = (input: {
-  readonly compte: CompteRdvUtilisable
-  readonly organisationIds: readonly OrganisationId[]
-}) => Promise<void>
-
-const compteVuParLaPasse = (
-  compte: CompteRdvUtilisable,
-  organisationIdsRecues: readonly OrganisationId[] | null,
-): CompteRdvUtilisable =>
-  organisationIdsRecues === null
-    ? compte
-    : { ...compte, organisationIds: organisationIdsRecues }
-
-export type ReconcilierWebhooks = (input: {
-  readonly compte: CompteRdvUtilisable
-  readonly organisationIds?: readonly OrganisationId[]
-}) => Promise<{
-  readonly bilan: BilanModele
-  readonly organisationIdsSansWebhook: readonly OrganisationId[] | undefined
-}>
-
-/**
- * Trace d'exécution, ouverte au démarrage et refermée à l'arrivée.
- *
- * La portée y est consignée dès l'ouverture : une passe restreinte ne mesure la
- * dérive que des organisations qu'elle a parcourues, et la lire comme une dérive
- * globale la sous-estime. Sans cette information, les deux sont indiscernables
- * dans `rdv_sync_logs` — c'est pourtant lui que l'administration surveille.
- * `undefined` vaut « toutes les organisations ».
- */
-export type OuvrirJournal = (input: {
-  readonly compte: CompteRdvUtilisable
-  readonly organisationIds?: readonly OrganisationId[]
-}) => Promise<{ readonly journalId: string }>
-
-export type CloturerJournal = (input: {
-  readonly journalId: string
-  readonly resultat: ResultatSynchronisation
-  readonly journal: string
-}) => Promise<void>
-
-export type EchouerJournal = (input: {
-  readonly journalId: string
-  readonly message: string
-  readonly journal: string
-}) => Promise<void>
-
-export type DependancesSynchroniserCompteRdv = {
-  readonly reconcilierOrganisations: ReconcilierOrganisations
-  readonly reconcilierRdvs: ReconcilierRdvs
-  readonly reconcilierWebhooks: ReconcilierWebhooks
-  readonly detacherOrganisations: DetacherOrganisations
-  readonly ouvrirJournal: OuvrirJournal
-  readonly cloturerJournal: CloturerJournal
-  readonly echouerJournal: EchouerJournal
-  readonly journaliser?: (message: string) => void
-}
-
-const sansObjet: ResultatSynchronisation = {
-  bilan: bilanSynchronisationVide,
+const sansObjet = (maintenant: Date): CompteSynchronise => ({
+  _tag: 'sansObjet',
   derive: 0,
-  organisationIdsSansWebhook: undefined,
+  synchroniseeLe: maintenant,
+})
+
+const bilanRdvsVide = {
+  rdvs: bilanVide,
+  usagers: bilanVide,
+  motifs: bilanVide,
+  lieux: bilanVide,
+  organisationIdsInaccessibles: [],
+  rapprochements: [],
 }
 
-/**
- * Réconcilie un compte avec RDV Service Public.
- *
- * L'ordre n'est pas indifférent : les organisations d'abord, dont les rendez-vous
- * dépendent ; les rendez-vous ensuite, qui amènent motifs, lieux et usagers ; les
- * webhooks en dernier, pour que les notifications reprennent sur un état à jour.
- *
- * Un échec est consigné puis propagé. La trace vaut mieux que le silence : c'est
- * elle que l'administration lit quand un compte cesse de se synchroniser.
- */
+const rdvsDuMediateur = (
+  reconcilierRdvs: ReconcilierRdvs,
+  compte: CompteRdvUtilisable,
+  portee: PorteeDeSynchronisation,
+  mediateurId: MediateurId | null,
+  maintenant: Date,
+): ReturnType<ReconcilierRdvs> =>
+  mediateurId === null
+    ? Promise.resolve(success(bilanRdvsVide))
+    : reconcilierRdvs({
+        compte,
+        portee,
+        mediateurId,
+        tailleLot: TAILLE_DES_LOTS_DE_RDVS,
+        maintenant,
+      })
+
+const organisationsDeLaPasse = (
+  portee: PorteeDeSynchronisation,
+  reconcilier: SynchroniserCompteRdvPorts['reconcilierOrganisations'],
+  compte: CompteRdvUtilisable,
+): ReturnType<SynchroniserCompteRdvPorts['reconcilierOrganisations']> =>
+  portee._tag === 'toutesOrganisations'
+    ? reconcilier({ compte })
+    : Promise.resolve(
+        success({
+          bilan: bilanVide,
+          organisationIdsRecues: compte.organisationIds,
+        }),
+      )
+
 export const synchroniserCompteRdv =
   ({
     reconcilierOrganisations,
     reconcilierRdvs,
-    reconcilierWebhooks,
+    listerWebhooksDeLaCoop,
+    poserWebhook,
+    relireWebhooksDeLaCoop,
+    reconfigurerWebhook,
+    destinationDesWebhooksJoignable,
+    noterLesWebhooksInvalides,
     detacherOrganisations,
     ouvrirJournal,
     cloturerJournal,
     echouerJournal,
-    journaliser = () => {
-      // Journal facultatif.
-    },
-  }: DependancesSynchroniserCompteRdv): SynchroniserCompteRdv =>
-  async (portee: PorteeDemandee) => {
-    const passe = passePour(portee)
+    noterLaSynchronisationReussie,
+  }: SynchroniserCompteRdvPorts) =>
+  async ({
+    compte,
+    mediateurId,
+    portee,
+    maintenant,
+  }: {
+    readonly compte: CompteRdvUtilisable
+    readonly mediateurId: MediateurId | null
+    readonly portee: PorteeDeSynchronisation
+    readonly maintenant: Date
+  }): Promise<Result<CompteSynchronise, EchecDeSynchroniserCompteRdv>> => {
+    const synchronisation = estSansObjet(portee)
+      ? success(sansObjet(maintenant))
+      : await (async (): Promise<
+          Result<CompteSynchronise, EchecDeSynchroniserCompteRdv>
+        > => {
+          const ouverture = await ouvrirJournal({
+            compte,
+            portee,
+            ouvertLe: maintenant,
+          })
 
-    if (passe._tag === 'sansObjet') {
-      journaliser('aucune organisation à synchroniser')
-      return success(sansObjet)
-    }
+          if (!ouverture.success) return ouverture
 
-    const { compte } = portee
-    const { journalId } = await ouvrirJournal({
-      compte,
-      ...(passe.organisationIds === undefined
-        ? {}
-        : { organisationIds: passe.organisationIds }),
+          const { journalId } = ouverture.data
+
+          const echouer = async (
+            echec: EchecDeSynchronisation,
+            lignes: readonly string[],
+          ): Promise<Result<never, EchecDeSynchroniserCompteRdv>> => {
+            const consigne = await echouerJournal({
+              journalId,
+              message: messageDeLEchec(echec),
+              journal: lignes.join('\n'),
+            })
+
+            return consigne.success ? failure(echec) : consigne
+          }
+
+          const traceOrganisations = [
+            portee._tag === 'toutesOrganisations'
+              ? 'réconciliation des organisations'
+              : 'organisations non réconciliées (passe restreinte)',
+          ]
+
+          const organisations = await organisationsDeLaPasse(
+            portee,
+            reconcilierOrganisations,
+            compte,
+          )
+
+          if (!organisations.success)
+            return echouer(organisations.error, traceOrganisations)
+
+          const traceRdvs = [
+            ...traceOrganisations,
+            'organisations réconciliées',
+            'réconciliation des rendez-vous',
+          ]
+
+          const rdvs = await rdvsDuMediateur(
+            reconcilierRdvs,
+            compte,
+            portee,
+            mediateurId,
+            maintenant,
+          )
+
+          if (!rdvs.success) return echouer(rdvs.error, traceRdvs)
+
+          const { organisationIdsInaccessibles } = rdvs.data
+
+          const traceDetachement = [
+            ...traceRdvs,
+            'rendez-vous réconciliés',
+            ...(organisationIdsInaccessibles.length > 0
+              ? [
+                  `organisations inaccessibles détachées : ${organisationIdsInaccessibles.join(', ')}`,
+                ]
+              : []),
+          ]
+
+          const detachement =
+            organisationIdsInaccessibles.length > 0
+              ? await detacherOrganisations({
+                  compte,
+                  organisationIds: organisationIdsInaccessibles,
+                })
+              : success(undefined)
+
+          if (!detachement.success)
+            return echouer(detachement.error, traceDetachement)
+
+          const traceWebhooks = [
+            ...traceDetachement,
+            'installation des webhooks',
+          ]
+
+          const webhooks = await poserLesWebhooks({
+            listerWebhooksDeLaCoop,
+            poserWebhook,
+            relireWebhooksDeLaCoop,
+            reconfigurerWebhook,
+            destinationDesWebhooksJoignable,
+            noterLesWebhooksInvalides,
+          })({
+            compte: {
+              ...compte,
+              organisationIds: organisations.data.organisationIdsRecues,
+            },
+            portee: porteeAccessible(portee, organisationIdsInaccessibles),
+          })
+
+          if (!webhooks.success) return echouer(webhooks.error, traceWebhooks)
+
+          const traceCloture = [...traceWebhooks, 'webhooks installés']
+
+          const bilan: BilanSynchronisation = {
+            organisations: organisations.data.bilan,
+            rdvs: rdvs.data.rdvs,
+            users: rdvs.data.usagers,
+            motifs: rdvs.data.motifs,
+            lieux: rdvs.data.lieux,
+            webhooks: webhooks.data.bilan,
+          }
+
+          const resultat: ResultatSynchronisation = {
+            bilan,
+            derive: deriveTotale(bilan),
+            organisationsSansWebhook: webhooks.data.organisationsSansWebhook,
+          }
+
+          const journal = traceCloture.join('\n')
+
+          const cloture = await cloturerJournal({
+            journalId,
+            resultat,
+            journal,
+          })
+
+          if (!cloture.success) return echouer(cloture.error, traceCloture)
+
+          return success({
+            _tag: 'synchronise',
+            ...resultat,
+            synchroniseeLe: maintenant,
+            organisationIdsDetachees: organisationIdsInaccessibles,
+            webhooks: webhooks.data.poses,
+            rapprochements: rdvs.data.rapprochements,
+            journal,
+          })
+        })()
+
+    if (!synchronisation.success) return synchronisation
+
+    const reussite = await noterLaSynchronisationReussie({
+      agentId: compte.agentId,
+      synchroniseeLe: synchronisation.data.synchroniseeLe,
     })
-    const lignes: string[] = []
-    const tracer = (message: string) => {
-      lignes.push(message)
-      journaliser(message)
-    }
 
-    try {
-      // Chaque étape s'annonce avant d'agir, et rend compte après. Ne tracer
-      // qu'au succès laissait un journal vide quand la première étape tombait —
-      // exactement le cas où on a besoin de savoir où on en était.
-      tracer(
-        passe.toutesOrganisations
-          ? 'réconciliation des organisations'
-          : 'organisations non réconciliées (passe restreinte)',
-      )
-
-      const organisations = passe.toutesOrganisations
-        ? await reconcilierOrganisations(compte)
-        : success({ bilan: bilanVide, organisationIdsRecues: null })
-
-      if (!organisations.success) {
-        await echouerJournal({
-          journalId,
-          message: diagnosticErreur(organisations.error),
-          journal: lignes.join('\n'),
-        })
-        return organisations
-      }
-
-      tracer('organisations réconciliées')
-      tracer('réconciliation des rendez-vous')
-
-      const rdvs = await reconcilierRdvs({
-        compte,
-        ...(passe.organisationIds === undefined
-          ? {}
-          : { organisationIds: passe.organisationIds }),
-      })
-
-      if (!rdvs.success) {
-        await echouerJournal({
-          journalId,
-          message: diagnosticErreur(rdvs.error),
-          journal: lignes.join('\n'),
-        })
-        return rdvs
-      }
-
-      tracer('rendez-vous réconciliés')
-
-      const { organisationIdsInaccessibles } = rdvs.data
-
-      if (organisationIdsInaccessibles.length > 0) {
-        tracer(
-          `organisations inaccessibles détachées : ${organisationIdsInaccessibles.join(', ')}`,
-        )
-        await detacherOrganisations({
-          compte,
-          organisationIds: organisationIdsInaccessibles,
-        })
-      }
-
-      tracer('installation des webhooks')
-
-      const organisationIdsAccessibles = organisationsAccessibles(
-        passe.organisationIds,
-        organisationIdsInaccessibles,
-      )
-
-      const webhooks = await reconcilierWebhooks({
-        compte: compteVuParLaPasse(
-          compte,
-          organisations.data.organisationIdsRecues,
-        ),
-        ...(organisationIdsAccessibles === undefined
-          ? {}
-          : { organisationIds: organisationIdsAccessibles }),
-      })
-
-      tracer('webhooks installés')
-
-      const bilan = {
-        organisations: organisations.data.bilan,
-        rdvs: rdvs.data.rdvs,
-        users: rdvs.data.usagers,
-        motifs: rdvs.data.motifs,
-        lieux: rdvs.data.lieux,
-        webhooks: webhooks.bilan,
-      }
-
-      const resultat: ResultatSynchronisation = {
-        bilan,
-        derive: deriveTotale(bilan),
-        organisationIdsSansWebhook: webhooks.organisationIdsSansWebhook,
-      }
-
-      await cloturerJournal({
-        journalId,
-        resultat,
-        journal: lignes.join('\n'),
-      })
-
-      return success(resultat)
-    } catch (erreur) {
-      await echouerJournal({
-        journalId,
-        message: erreur instanceof Error ? erreur.message : String(erreur),
-        journal: lignes.join('\n'),
-      })
-      throw erreur
-    }
+    return reussite.success ? synchronisation : reussite
   }

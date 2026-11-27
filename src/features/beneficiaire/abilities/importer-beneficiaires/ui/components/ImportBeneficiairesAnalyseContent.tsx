@@ -18,8 +18,6 @@ import { pluriel } from '@/libraries/pluriel'
 import { createToast } from '@/libraries/ui/toast'
 import { buttonLoadingClassname } from '@/libraries/ui/utils'
 
-// L'action d'import est injectée par la route (concern croisé), l'UI reste
-// découplée de l'ability.
 export type ImporterBeneficiaires = (
   analysis: AnalyseResponse['analysis'],
 ) => Promise<ServerActionResult<{ importes: number }>>
@@ -88,16 +86,12 @@ const ImportBeneficiairesAnalyseContent = ({
   useLayoutEffect(() => {
     if (!tableContainerRef.current) return
 
-    // If style.marginRight is already set, do nothing
     if (tableContainerRef.current.style.marginRight) return
 
-    // This is in a 792px container, centered.
     const emptySpace = window.innerWidth - 792
 
-    // Calculate the distance from the right edge of the container to the right edge of the window
     const distanceToWindowRight = emptySpace / 2
 
-    // Apply a negative margin-right to extend the container to the right edge of the window
     tableContainerRef.current.style.marginRight = `-${distanceToWindowRight}px`
   }, [])
 

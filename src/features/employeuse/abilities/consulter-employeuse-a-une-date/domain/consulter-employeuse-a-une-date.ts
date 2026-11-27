@@ -1,14 +1,30 @@
+import { type Result, success } from '@/libraries/result'
+import { contratsAuMoment } from '../../../domain/consultation/emploi-lu'
+import { employeuseALaDate } from '../../../domain/consultation/employeuse-a-la-date'
 import type { Employeuse } from '../../../domain/employeuse'
+import type { UtilisateurId } from '../../../domain/utilisateur-id'
+import type { ConsulterEmployeuseAUneDatePorts } from './ports'
 
-/**
- * Employeuse d'un utilisateur **à une date donnée**.
- *
- * C'est la lecture des écrits rétro-datés : un compte rendu d'activité saisi
- * aujourd'hui pour une intervention d'il y a six mois doit être rattaché à
- * l'employeuse de l'époque. Le contrat qui couvre la date fait foi ; à défaut,
- * l'employeuse courante (voir `employeuseALaDate`).
- */
-export type ConsulterEmployeuseAUneDate = (input: {
-  userId: string
-  date: Date
-}) => Promise<Employeuse | null>
+export const consulterEmployeuseAUneDate =
+  ({ lireLEmploiActuel }: ConsulterEmployeuseAUneDatePorts) =>
+  async ({
+    utilisateurId,
+    date,
+    maintenant,
+  }: {
+    readonly utilisateurId: UtilisateurId
+    readonly date: Date
+    readonly maintenant: Date
+  }): Promise<Result<Employeuse | null, never>> => {
+    const emploi = await lireLEmploiActuel(utilisateurId)
+
+    return success(
+      emploi === null
+        ? null
+        : employeuseALaDate(
+            emploi.affectationActuelle?.employeuse ?? null,
+            contratsAuMoment(emploi.contrats, maintenant),
+            date,
+          ),
+    )
+  }

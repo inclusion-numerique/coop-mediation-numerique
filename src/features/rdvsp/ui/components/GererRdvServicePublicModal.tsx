@@ -92,9 +92,6 @@ const GererRdvServicePublicModal = ({
 
     setSynchronisationEnCours(false)
 
-    // La modale garde son propre état : ses données viennent de props figées au
-    // rendu, qu'un `router.refresh()` ne remplacerait pas tant qu'elle est
-    // montée.
     if (!resultat.success) {
       setError(resultat.error)
       setStatus('enPanne')
@@ -102,8 +99,6 @@ const GererRdvServicePublicModal = ({
       return
     }
 
-    // Nulle quand la passe était sans objet : mieux vaut garder la date affichée
-    // que prétendre qu'aucune synchronisation n'a jamais eu lieu.
     if (resultat.data.synchroniseeLe !== null) {
       setLastSynced(resultat.data.synchroniseeLe)
     }

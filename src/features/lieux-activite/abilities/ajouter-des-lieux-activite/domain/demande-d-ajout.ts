@@ -1,7 +1,8 @@
 import { failure, type Result, success } from '@/libraries/result'
+import { MediateurRequis } from '../../../domain/errors'
 import type { MediateurId } from '../../../domain/identifiants/mediateur-id'
-import { type EchecDAjout, MediateurRequis, PanierVide } from './errors'
-import type { LieuDemande } from './lieu-demande'
+import type { LieuDemande } from '../../../domain/rattachement/lieu-demande'
+import { type EchecDeAjouterDesLieuxActivite, PanierVide } from './errors'
 
 export const demandeDAjout = ({
   mediateurId,
@@ -14,10 +15,9 @@ export const demandeDAjout = ({
     readonly mediateurId: MediateurId
     readonly demandes: readonly LieuDemande[]
   },
-  EchecDAjout
-> =>
-  mediateurId == null
-    ? failure(MediateurRequis)
-    : demandes.length === 0
-      ? failure(PanierVide)
-      : success({ mediateurId, demandes })
+  EchecDeAjouterDesLieuxActivite
+> => {
+  if (mediateurId == null) return failure(MediateurRequis())
+  if (demandes.length === 0) return failure(PanierVide())
+  return success({ mediateurId, demandes })
+}

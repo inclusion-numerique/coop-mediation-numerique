@@ -1,3 +1,7 @@
+import {
+  CodeInsee,
+  CodePostal,
+} from '@gouvfr-anct/lieux-de-mediation-numerique'
 import type { LieuCandidat } from '@/features/lieux-activite/domain/lieu-identite'
 import type { Prisma } from '@/generated/prisma/client'
 import { voieDuRegistre } from '../../../domain/registre/voie-du-registre'
@@ -37,8 +41,11 @@ export const candidatDuRegistre = (
         nom: inscription.nom,
         adresse: voieDuRegistre(inscription.adresse),
         commune: inscription.adresse.nomCommune,
-        codePostal: inscription.adresse.codePostal,
-        codeInsee: inscription.adresse.codeInsee,
+        codePostal: CodePostal.safe(inscription.adresse.codePostal),
+        codeInsee:
+          inscription.adresse.codeInsee === null
+            ? null
+            : CodeInsee.safe(inscription.adresse.codeInsee),
         ...coordonneesIllisibles,
         suppression: null,
         typologies: inscription.typologies,

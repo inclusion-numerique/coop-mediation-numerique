@@ -4,15 +4,10 @@ import type {
   MatchingEtablissement,
   UniteLegale,
 } from '@/libraries/recherche-entreprises'
+import { messageDe } from '@/libraries/result'
 
-// Catégorie juridique INSEE des entrepreneurs individuels (personnes physiques)
 const natureJuridiqueEntrepreneurIndividuel = '1000'
 
-/**
- * The etablissement address from the public Recherche d'entreprises API is a
- * single string "VOIE CODE_POSTAL COMMUNE" : the code postal + commune suffix
- * is stripped to recover the voie alone.
- */
 const extractVoie = ({
   adresse,
   codePostal,
@@ -83,20 +78,12 @@ const toSiretApiResponse = ({
   }
 }
 
-/**
- * Fetch etablissement data for a SIRET from the public Recherche
- * d'entreprises API (no token required). Non-diffusible structures come back
- * with a masked raison sociale ("[NON-DIFFUSIBLE]"), like every open data
- * source.
- */
 export const fetchSiretApiData = async (
   siret: string,
 ): Promise<
   SiretApiResponse | { error: { statusCode: number; message: string } }
 > => {
   try {
-    // Fast retry profile : this lookup happens while server-rendering the
-    // inscription pages, a rate-limited API must not hang the render
     const { results } = await rechercheApiEntreprise(
       {
         q: siret,
@@ -125,7 +112,7 @@ export const fetchSiretApiData = async (
     return {
       error: {
         statusCode: 500,
-        message: (error as Error).message,
+        message: messageDe(error),
       },
     }
   }

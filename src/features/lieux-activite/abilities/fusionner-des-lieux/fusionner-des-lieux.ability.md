@@ -3,6 +3,9 @@
 > Deux fiches pour un même endroit, et l'administration tranche : l'une absorbe
 > l'autre. La source disparaît définitivement — c'est un acte de modération, pas
 > une correction de saisie.
+>
+> D'où la garde d'administration, posée par l'action plutôt que par l'ability :
+> c'est l'écran qui est réservé, pas l'écriture.
 
 ## Règle: La source disparaît dans la cible
 

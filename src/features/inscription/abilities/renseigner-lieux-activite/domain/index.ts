@@ -1,4 +1,11 @@
-export { AdresseNonValidee } from './adresse-non-validee'
-export type { RenseignerLieuxActiviteError } from './decider-les-lieux'
-export type { EnregistrerReconciliation } from './ports'
-export type { AdresseValidee, LieuActiviteInput } from './reconcilier'
+export type { EchecDeRenseignerLieuxActivite } from './errors'
+export { IdentifiantCartographie } from './identifiant-cartographie'
+export type {
+  LieuDesire,
+  LieuSoumis,
+} from './lieu-soumis'
+export type {
+  EnregistrerReconciliation,
+  ReconciliationEnregistree,
+} from './ports'
+export { RattachementId } from './rattachement-id'

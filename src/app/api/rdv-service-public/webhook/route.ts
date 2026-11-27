@@ -1,28 +1,37 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { environnementServeur } from '@/configuration/environnement/serveur'
 import { signaler } from '@/configuration/telemetry/serveur'
+import { creerOuFusionnerDepuisUsagerExterne } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/domain/creer-ou-fusionner-depuis-usager-externe'
 import { communeDeLAdresse } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/ban/commune-de-l-adresse.query'
-import { creerOuFusionnerBeneficiairesDepuisUsagersExternes } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/creer-ou-fusionner-depuis-usager-externe.mutation'
+import { lireLeBeneficiaireLie } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/beneficiaire-lie.query'
+import { creerLeBeneficiaire } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/creer-le-beneficiaire.mutation'
+import { trouverUnDoublon } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/doublon-de-l-usager.query'
+import { mettreAJourLeBeneficiaire } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/mettre-a-jour-le-beneficiaire.mutation'
+import { demandeSignalee } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/rdv-service-public/demande-signalee.adapter'
+import type { DemandeDUsagersExternes } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/rdv-service-public/usager-externe.transfer'
+import { signalerLesUsagersEcartes } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/telemetrie/usagers-ecartes.adapter'
 import { messageDuWebhookRdv } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/domain/message-du-webhook-rdv'
 import { recevoirWebhookRdv } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/domain/recevoir-webhook-rdv'
 import { lireNotificationRdv } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/implementations/api/notification-rdv.params'
-import { rapprocherBeneficiairesDuRdv } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/implementations/prisma/rapprocher-beneficiaires-du-rdv.adapter'
 import {
-  comptePourWebhook,
   enregistrerRdvDeLaNotification,
-  organisationConnue,
-  rdvConnuParId,
   supprimerRdvDeLaNotification,
 } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/implementations/prisma/webhook-rdv.mutation'
+import {
+  comptePourWebhook,
+  organisationConnue,
+  rdvConnuParId,
+} from '@/features/rdvsp/abilities/recevoir-webhook-rdv/implementations/prisma/webhook-rdv.query'
 import { messageDuWebhookUsager } from '@/features/rdvsp/abilities/recevoir-webhook-usager/domain/message-du-webhook-usager'
 import { recevoirWebhookUsager } from '@/features/rdvsp/abilities/recevoir-webhook-usager/domain/recevoir-webhook-usager'
 import { lireNotificationUsager } from '@/features/rdvsp/abilities/recevoir-webhook-usager/implementations/api/notification-usager.params'
+import { beneficiairesLiesAUsager } from '@/features/rdvsp/abilities/recevoir-webhook-usager/implementations/prisma/beneficiaires-lies.query'
 import {
   anonymiserEtSupprimerUsager,
-  beneficiairesLiesAUsager,
   mettreAJourUsager,
 } from '@/features/rdvsp/abilities/recevoir-webhook-usager/implementations/prisma/webhook-usager.mutation'
 import { aiguillerNotificationWebhook } from '@/features/rdvsp/domain/webhook/aiguiller-notification-webhook'
+import { lireLesUsagersARapprocher } from '@/features/rdvsp/implementations/prisma/usagers-a-rapprocher.query'
 import { journaliserWebhook } from '@/features/rdvsp/implementations/webhook/journal-du-webhook.mutation'
 import { lireNotificationWebhook } from '@/features/rdvsp/implementations/webhook/notification-webhook.params'
 import {
@@ -30,8 +39,16 @@ import {
   signatureValide,
 } from '@/features/rdvsp/implementations/webhook/signature-du-webhook.middleware'
 
-const creerOuFusionnerLesBeneficiaires =
-  creerOuFusionnerBeneficiairesDepuisUsagersExternes({ communeDeLAdresse })
+const fusionnerLesUsagers = creerOuFusionnerDepuisUsagerExterne({
+  lireLeBeneficiaireLie,
+  trouverUnDoublon,
+  communeDeLAdresse,
+  mettreAJourLeBeneficiaire,
+  creerLeBeneficiaire,
+})
+
+const creerOuFusionnerLesUsagers = (demande: DemandeDUsagersExternes) =>
+  fusionnerLesUsagers(demandeSignalee(demande)).then(signalerLesUsagersEcartes)
 
 const recevoirLeRdv = recevoirWebhookRdv({
   lireNotification: lireNotificationRdv,
@@ -40,10 +57,8 @@ const recevoirLeRdv = recevoirWebhookRdv({
   organisationConnue,
   enregistrer: enregistrerRdvDeLaNotification,
   supprimer: supprimerRdvDeLaNotification,
-  rapprocherBeneficiaires: rapprocherBeneficiairesDuRdv(
-    creerOuFusionnerLesBeneficiaires,
-    journaliserWebhook,
-  ),
+  lireLesUsagersARapprocher,
+  rapprocherLesBeneficiaires: creerOuFusionnerLesUsagers,
 })
 
 const recevoirLUsager = recevoirWebhookUsager({
@@ -56,12 +71,22 @@ const recevoirLUsager = recevoirWebhookUsager({
 const traiter = aiguillerNotificationWebhook({
   traiterRdv: async ({ evenement, donnees }) =>
     journaliserWebhook(
-      messageDuWebhookRdv(await recevoirLeRdv({ evenement, payload: donnees })),
+      messageDuWebhookRdv(
+        await recevoirLeRdv({
+          evenement,
+          payload: donnees,
+          maintenant: new Date(),
+        }),
+      ),
     ),
   traiterUsager: async ({ evenement, donnees }) =>
     journaliserWebhook(
       messageDuWebhookUsager(
-        await recevoirLUsager({ evenement, payload: donnees }),
+        await recevoirLUsager({
+          evenement,
+          payload: donnees,
+          maintenant: new Date(),
+        }),
       ),
     ),
   journaliser: journaliserWebhook,

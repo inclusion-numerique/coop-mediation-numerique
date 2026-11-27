@@ -7,6 +7,9 @@ export {
   statutsSociaux,
 } from './beneficiaires/statut-social'
 export {
+  AGE_AVANT_LA_TRANCHE_SUIVANTE,
+  PREMIERE_ANNEE_DE_NAISSANCE,
+  TRANCHE_DES_PLUS_AGES,
   TRANCHES_D_AGE,
   TrancheDAge,
   tranchesDAge,
@@ -76,20 +79,21 @@ export { TypeDEvenement } from './coordination/type-d-evenement'
 export { TypeDeStructurePartenaire } from './coordination/type-de-structure-partenaire'
 export {
   DateDActivite,
-  DateTropLointaine,
-  dateDActiviteBornee,
   dateDActiviteDuJour,
   derniereDateDActivite,
   PREMIERE_DATE_D_ACTIVITE,
 } from './date-d-activite'
+export { dateDActiviteBornee } from './date-d-activite-bornee'
 export { DureeEnMinutes } from './duree-en-minutes'
 export { Effectif } from './effectif'
 
 export {
+  ActionNonAutorisee,
   ActiviteIntrouvable,
   AtelierSansParticipant,
   BeneficiaireEnDouble,
   BeneficiaireIntrouvable,
+  DateTropLointaine,
   LieuInutilisable,
   RendezVousIndisponible,
   TagInutilisable,
@@ -109,7 +113,7 @@ export { MediateurId } from './identifiants/mediateur-id'
 export { RdvId } from './identifiants/rdv-id'
 export { TagId } from './identifiants/tag-id'
 export { UtilisateurId } from './identifiants/utilisateur-id'
-export { Jour } from './jour'
+export { Jour, jourDe } from './jour'
 export {
   type AccompagnementIndividuel,
   type ActiviteDeMediation,
@@ -132,16 +136,22 @@ export {
 } from './mediation/activite-de-mediation'
 export { AdresseDuLieu } from './mediation/adresse-du-lieu'
 export { AUTONOMIES, Autonomie } from './mediation/autonomie'
+export {
+  creationOuModification,
+  type EcritureDeMediation,
+  ecrireLActiviteDeMediation,
+  ecritureDe,
+  enregistrementDeMediation,
+  lieuVerifie,
+  rendezVousHonore,
+  rendezVousVerifie,
+} from './mediation/enregistrement-de-mediation'
 export { MATERIELS, Materiel } from './mediation/materiel'
 export { NIVEAUX_D_ATELIER, NiveauDAtelier } from './mediation/niveau-d-atelier'
 export { PrecisionDeDemarche } from './mediation/precision-de-demarche'
 export {
-  type EmployeuseALaDate,
-  type EmployeuseDeLaDate,
   type LieuSaisi,
-  type LieuUtilisable,
   lieuDeLaSaisie,
-  type MarquerLeRendezVousHonore,
   origineDeLaSaisie,
 } from './mediation/saisie-de-mediation'
 export {
@@ -172,6 +182,18 @@ export {
 export { NomDeCommune } from './nom-de-commune'
 export { NomDeStructure } from './nom-de-structure'
 export { Notes, NotesSaisies, notesDe } from './notes'
+export type {
+  ActiviteDeMediationDuMediateur,
+  ActiviteDeMediationExistante,
+  CreerLActiviteDeMediation,
+  EmployeuseALaDate,
+  EmployeuseDeLaDate,
+  ModifierLActiviteDeMediation,
+  RendezVousDejaSaisi,
+  RendezVousDUnAutreMediateur,
+  SaisieDeMediationPorts,
+  TagsUtilisables,
+} from './ports'
 export { Precision } from './precision'
 export { LienAgent } from './rendez-vous/lien-agent'
 export { NomDuMotif } from './rendez-vous/nom-du-motif'
@@ -184,10 +206,7 @@ export {
   StatutDeRendezVous,
 } from './rendez-vous/statut-de-rendez-vous'
 export { TitreDuRendezVous } from './rendez-vous/titre-du-rendez-vous'
-export {
-  type CommuneComptee,
-  communeComptee,
-} from './statistiques/commune-comptee'
+export { type CommuneComptee } from './statistiques/commune-comptee'
 export {
   type CriteresDesStatistiques,
   type PeriodeDesStatistiques,
@@ -208,4 +227,4 @@ export {
 } from './statistiques/repartition'
 export { NomDeTag } from './tags/nom-de-tag'
 export { TAGS_PROPOSES_PAR_LE_CRA } from './tags/tags-proposes-par-le-cra'
-export { type TagsUtilisables, tagsDeLaSaisie } from './tags/tags-utilisables'
+export { tagsDeLaSaisie } from './tags/tags-utilisables'

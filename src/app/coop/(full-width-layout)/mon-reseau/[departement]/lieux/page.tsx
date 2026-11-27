@@ -21,6 +21,7 @@ import { RECHERCHER_DES_COMMUNES_DU_RESEAU_KEY } from '@/features/mon-reseau/act
 import type { ParametresDuReseau } from '@/features/mon-reseau/ui/filtres/reseau.filtre'
 import { barreDuReseau } from '@/features/mon-reseau/ui/presenters/barre-du-reseau.presenter'
 import { hrefDesLieux } from '@/features/mon-reseau/ui/presenters/liens.presenter'
+import { departementConnu } from '@/libraries/departement'
 import { ClientBinder } from '@/libraries/nextjs/injection'
 
 export const metadata: Metadata = {
@@ -38,11 +39,13 @@ const Page = async ({
 
   const { departement } = await params
   const parametres = await searchParams
-  const consultation = await consulterLesLieuxDuDepartement(
-    departement,
-    criteresDesLieuxDuReseau(parametres),
-    { lieuxDuDepartement, communesDesLieux },
-  )
+  const consultation = await consulterLesLieuxDuDepartement({
+    lieuxDuDepartement,
+    communesDesLieux,
+  })({
+    departement: departementConnu(departement),
+    criteres: criteresDesLieuxDuReseau(parametres),
+  })
 
   return consultation.success ? (
     <ClientBinder

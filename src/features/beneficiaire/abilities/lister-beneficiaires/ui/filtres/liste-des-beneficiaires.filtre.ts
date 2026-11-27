@@ -6,9 +6,16 @@ import {
   rechercheLibre,
   triParmi,
 } from '@/libraries/etat-d-url'
-import { colonnesTriablesDesBeneficiaires } from '../../domain/lister-beneficiaires'
+import type { ColonneTriableDesBeneficiaires } from '../../domain/liste-des-beneficiaires'
 
 const CHEMIN_DES_BENEFICIAIRES = '/coop/mes-beneficiaires'
+
+export const colonnesTriablesDesBeneficiaires = [
+  'nom',
+  'prenom',
+  'anneeNaissance',
+  'accompagnementsCount',
+] as const satisfies readonly ColonneTriableDesBeneficiaires[]
 
 export const paginationDesBeneficiaires = pagination({
   lignes: [10, 20, 50, 100],

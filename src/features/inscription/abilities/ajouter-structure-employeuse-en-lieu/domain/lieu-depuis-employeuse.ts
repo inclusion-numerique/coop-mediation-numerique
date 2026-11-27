@@ -1,26 +1,12 @@
-import type { AdresseBanData } from '@/libraries/adresse'
-import type { EmployeuseLue } from '.'
-
-const adresseRetenue = (
-  { adresse }: EmployeuseLue,
-  adresseBan?: AdresseBanData,
-) =>
-  adresseBan == null
-    ? {
-        adresse: adresse?.voie ?? '',
-        commune: adresse?.commune ?? '',
-        codePostal: adresse?.codePostal ?? '',
-        codeInsee: adresse?.codeInsee ?? null,
-      }
-    : {
-        adresse: adresseBan.nom,
-        commune: adresseBan.commune,
-        codePostal: adresseBan.codePostal,
-        codeInsee: adresseBan.codeInsee,
-        banId: adresseBan.id,
-        latitude: adresseBan.latitude,
-        longitude: adresseBan.longitude,
-      }
+import type { Nom } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import type {
+  AdresseDeclareeDuLieu,
+  AdresseGeocodee,
+  AdresseGeocodeeDuLieu,
+  EmployeuseLue,
+  LieuDecrit,
+  LieuDecritGeocode,
+} from './ports'
 
 const referent = ({ contactReferent }: EmployeuseLue) =>
   contactReferent._tag === 'renseigne'
@@ -31,15 +17,65 @@ const referent = ({ contactReferent }: EmployeuseLue) =>
       }
     : { nomReferent: null, courrielReferent: null, telephoneReferent: null }
 
-export const lieuDepuisEmployeuse = (
+const lieuALAdresse = <Adresse>(
   employeuse: EmployeuseLue,
-  adresseBan?: AdresseBanData,
+  nom: Nom,
+  adresse: Adresse,
+  maintenant: Date,
 ) => ({
-  nom: employeuse.denomination ?? '',
-  ...adresseRetenue(employeuse, adresseBan),
-  complementAdresse: null,
+  nom,
+  adresse,
   siret: employeuse.siret,
-  synchronisationSiret: employeuse.siret === null ? null : new Date(),
+  synchronisationSiret: employeuse.siret === null ? null : maintenant,
   rna: employeuse.rna,
   ...referent(employeuse),
 })
+
+export const lieuGeocode = ({
+  employeuse,
+  nom,
+  adresseBan,
+  maintenant,
+}: {
+  readonly employeuse: EmployeuseLue
+  readonly nom: Nom
+  readonly adresseBan: AdresseGeocodee
+  readonly maintenant: Date
+}): LieuDecritGeocode =>
+  lieuALAdresse<AdresseGeocodeeDuLieu>(
+    employeuse,
+    nom,
+    {
+      _tag: 'AdresseGeocodee',
+      voie: adresseBan.nom,
+      commune: adresseBan.commune,
+      codePostal: adresseBan.codePostal,
+      codeInsee: adresseBan.codeInsee,
+      banId: adresseBan.id,
+      latitude: adresseBan.latitude,
+      longitude: adresseBan.longitude,
+    },
+    maintenant,
+  )
+
+export const lieuALAdresseConnue = ({
+  employeuse,
+  maintenant,
+}: {
+  readonly employeuse: EmployeuseLue
+  readonly maintenant: Date
+}): LieuDecrit | null =>
+  employeuse.adresse === null || employeuse.denomination === null
+    ? null
+    : lieuALAdresse<AdresseDeclareeDuLieu>(
+        employeuse,
+        employeuse.denomination,
+        {
+          _tag: 'AdresseDeclaree',
+          voie: employeuse.adresse.voie,
+          commune: employeuse.adresse.commune,
+          codePostal: employeuse.adresse.codePostal,
+          codeInsee: employeuse.adresse.codeInsee,
+        },
+        maintenant,
+      )

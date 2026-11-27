@@ -6,7 +6,7 @@ import classNames from 'classnames'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { z } from 'zod'
-import type { AnalyseResponse } from '@/features/beneficiaire/abilities/importer-beneficiaires/domain/analyse-de-l-import'
+import { AnalyseResponseSchema } from '@/features/beneficiaire/abilities/importer-beneficiaires/domain/analyse-de-l-import'
 import { useEnregistrementDeLAnalyse } from '@/features/beneficiaire/abilities/importer-beneficiaires/ui/hooks/use-analyse-de-l-import'
 import {
   hrefDeLAnalyseDeLImport,
@@ -15,15 +15,11 @@ import {
 import { handleSubmit, useAppForm } from '@/libraries/formulaire/hooks'
 import { isBrowser } from '@/libraries/navigateur'
 
-// Create zod validation so the file is required and of type File
-// And the file must be an xlsx file
 const UploadBeneficiaireFileFormValidation = z.object({
   file: z
     .instanceof(File, { message: 'Veuillez sélectionner un fichier' })
     .refine(
       (file) =>
-        // Safari does not give file.type, we keep this validation for server side
-        // On client the file extension is set in the input element
         isBrowser ||
         file.type ===
           'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
@@ -34,22 +30,19 @@ const UploadBeneficiaireFileFormValidation = z.object({
     ),
 })
 
-type UploadBeneficiaireFileFormData = z.infer<
-  typeof UploadBeneficiaireFileFormValidation
->
+const sansFichier: { readonly file: File | null } = { file: null }
 
 const UploadBeneficiaireFileForm = () => {
   const router = useRouter()
   const enregistrerLAnalyse = useEnregistrementDeLAnalyse()
-  // Bouton actif seulement après hydratation : empêche une soumission GET native
-  // si l'utilisateur clique avant que le handler React soit monté.
   const [isInteractive, setIsInteractive] = useState(false)
   useEffect(() => setIsInteractive(true), [])
 
   const form = useAppForm({
     validators: { onSubmit: UploadBeneficiaireFileFormValidation },
-    defaultValues: {} as UploadBeneficiaireFileFormData,
+    defaultValues: sansFichier,
     onSubmit: async ({ value }) => {
+      if (value.file === null) return
       const formData = new FormData()
       formData.append('file', value.file)
 
@@ -64,11 +57,18 @@ const UploadBeneficiaireFileForm = () => {
           return
         }
 
-        const analysisData = (await response.json()) as AnalyseResponse
+        const analysisData = AnalyseResponseSchema.safeParse(
+          await response.json(),
+        )
 
-        enregistrerLAnalyse(analysisData)
+        if (!analysisData.success) {
+          router.push(hrefDeLErreurDeLImport(response.statusText))
+          return
+        }
 
-        router.push(hrefDeLAnalyseDeLImport(analysisData.id))
+        enregistrerLAnalyse(analysisData.data)
+
+        router.push(hrefDeLAnalyseDeLImport(analysisData.data.id))
       } catch {
         router.push(`/coop/mes-beneficiaires/importer/erreur`)
       }

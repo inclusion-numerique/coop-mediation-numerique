@@ -1,28 +1,14 @@
-import type { Result } from '@/libraries/result'
+import { failure, type Result, success } from '@/libraries/result'
 import type {
   CompteRdv,
   CompteRdvDeconnecte,
 } from '../../../domain/compte/compte-rdv'
+import { CompteRdvIntrouvable } from '../../../domain/errors'
 import type { UtilisateurCoopId } from '../../../domain/identifiants/utilisateur-coop-id'
-import type { CompteRdvIntrouvable } from './errors'
+import type { EchecDeDeconnecterCompteRdv } from './errors'
+import type { DeconnecterCompteRdvPorts } from './ports'
 
-export type DeconnecterCompteRdv = (input: {
-  readonly utilisateurId: UtilisateurCoopId
-}) => Promise<Result<CompteRdvDeconnecte, CompteRdvIntrouvable>>
-
-/**
- * État du compte après que le médiateur l'a délié.
- *
- * La déconnexion ne détruit que les jetons — c'est ce que l'union exprime, la
- * branche `deconnecte` n'en portant aucun. Tout le reste survit : la fenêtre de
- * synchronisation, les organisations connues et les réglages d'affichage, de
- * sorte qu'une reconnexion reprenne exactement où le médiateur s'était arrêté.
- * C'est le pendant de `compteApresConnexion`, qui préserve ces mêmes champs.
- *
- * Redéliér un compte déjà délié ne réécrit pas la date : c'est la première
- * déconnexion qui fait foi, la seconde n'étant qu'un clic sans objet.
- */
-export const compteApresDeconnexion = (
+const compteApresDeconnexion = (
   compte: CompteRdv,
   maintenant: Date,
 ): CompteRdvDeconnecte => ({
@@ -36,3 +22,23 @@ export const compteApresDeconnexion = (
   derniereSynchro: compte.derniereSynchro,
   inclureRdvsDansActivites: compte.inclureRdvsDansActivites,
 })
+
+export const deconnecterCompteRdv =
+  ({ compteDeLUtilisateur, enregistrer }: DeconnecterCompteRdvPorts) =>
+  async ({
+    utilisateurId,
+    maintenant,
+  }: {
+    readonly utilisateurId: UtilisateurCoopId
+    readonly maintenant: Date
+  }): Promise<Result<CompteRdvDeconnecte, EchecDeDeconnecterCompteRdv>> => {
+    const compte = await compteDeLUtilisateur(utilisateurId)
+
+    if (compte === null) return failure(CompteRdvIntrouvable(utilisateurId))
+
+    const deconnecte = compteApresDeconnexion(compte, maintenant)
+
+    await enregistrer(deconnecte)
+
+    return success(deconnecte)
+  }

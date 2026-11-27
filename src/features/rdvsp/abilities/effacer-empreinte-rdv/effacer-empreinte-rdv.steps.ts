@@ -1,9 +1,24 @@
 import assert from 'node:assert'
-import { Given, Then, When } from '@cucumber/cucumber'
+import { Given, Then, When, type World } from '@cucumber/cucumber'
 import { prismaClient } from '@/configuration/prisma'
-import { effacerEmpreinteRdvAvec } from '@/features/rdvsp/abilities/effacer-empreinte-rdv/implementations/prisma/effacer-empreinte-rdv.mutation'
-import type { JetonsOAuth } from '@/features/rdvsp/domain/compte/jetons-oauth'
-import { ApiIndisponible } from '@/features/rdvsp/domain/errors'
+import {
+  type BilanDeLEffacement,
+  bilanDeLEffacement,
+} from '@/features/rdvsp/abilities/effacer-empreinte-rdv/domain/bilan-de-l-effacement'
+import { effacerEmpreinteRdv } from '@/features/rdvsp/abilities/effacer-empreinte-rdv/domain/effacer-empreinte-rdv'
+import {
+  supprimerLeCompteRdv,
+  supprimerLesUsagers,
+} from '@/features/rdvsp/abilities/effacer-empreinte-rdv/implementations/prisma/effacer-empreinte-rdv.mutation'
+import {
+  compteAEffacer,
+  rendezVousDuCompte,
+  usagersOrphelinsParmi,
+} from '@/features/rdvsp/abilities/effacer-empreinte-rdv/implementations/prisma/effacer-empreinte-rdv.query'
+import {
+  ApiIndisponible,
+  type ErreurRdvApi,
+} from '@/features/rdvsp/domain/errors'
 import {
   ID_TEST,
   seedAutreMediateur,
@@ -14,24 +29,27 @@ import {
   seedUsagerRdv,
   testUtilisateurId,
 } from '@/features/rdvsp/rdvsp.cucumber'
-import { failure, success } from '@/libraries/result'
+import { failure, type Result, success } from '@/libraries/result'
 
-const rdvServicePublic: {
-  disponible: boolean
-  revocations: JetonsOAuth[]
-} = { disponible: true, revocations: [] }
+const revocationAcceptee: Result<void, ErreurRdvApi> = success(undefined)
 
-const effacerEmpreinteRdv = effacerEmpreinteRdvAvec(async (jetons) => {
-  if (!rdvServicePublic.disponible) {
-    return failure(ApiIndisponible(503, 'Service indisponible'))
-  }
-  rdvServicePublic.revocations.push(jetons)
-  return success(undefined)
+const rdvServicePublic: { revocation: Result<void, ErreurRdvApi> } = {
+  revocation: revocationAcceptee,
+}
+
+const effacer = effacerEmpreinteRdv({
+  compteAEffacer,
+  revoquerJetons: async () => rdvServicePublic.revocation,
+  signalerLaRevocationEchouee: () => undefined,
+  rendezVousDuCompte,
+  supprimerLeCompte: supprimerLeCompteRdv,
+  usagersOrphelinsParmi,
+  supprimerLesUsagers,
 })
 
-type Bilan = Awaited<ReturnType<typeof effacerEmpreinteRdv>>
-
-let bilan: Bilan | undefined
+type Monde = World & {
+  bilan?: BilanDeLEffacement
+}
 
 Given('un compte RDV avec un rendez-vous et un usager', async () => {
   await seedCompteRdv({ id: ID_TEST.compte })
@@ -45,8 +63,7 @@ Given('un compte RDV avec un rendez-vous et un usager', async () => {
 })
 
 Given('un compte RDV connecté avec un rendez-vous et un usager', async () => {
-  rdvServicePublic.disponible = true
-  rdvServicePublic.revocations = []
+  rdvServicePublic.revocation = revocationAcceptee
   await seedCompteRdv({
     id: ID_TEST.compte,
     accessToken: 'jeton-acces',
@@ -62,27 +79,17 @@ Given('un compte RDV connecté avec un rendez-vous et un usager', async () => {
 })
 
 Given('RDV Service Public est indisponible', () => {
-  rdvServicePublic.disponible = false
+  rdvServicePublic.revocation = failure(
+    ApiIndisponible(503, 'Service indisponible'),
+  )
 })
 
-Then(
-  'RDV Service Public a reçu la révocation du jeton de rafraîchissement',
-  () => {
-    assert.deepStrictEqual(
-      rdvServicePublic.revocations.map(
-        ({ rafraichissement }) => rafraichissement,
-      ),
-      ['jeton-rafraichissement'],
-    )
-  },
-)
-
-Then('les jetons RDV sont révoqués', () => {
-  assert.strictEqual(bilan?.jetonsRevoques, true)
+Then('les jetons RDV sont révoqués', function (this: Monde) {
+  assert.strictEqual(this.bilan?.jetonsRevoques, true)
 })
 
-Then('les jetons RDV ne sont pas révoqués', () => {
-  assert.strictEqual(bilan?.jetonsRevoques, false)
+Then('les jetons RDV ne sont pas révoqués', function (this: Monde) {
+  assert.strictEqual(this.bilan?.jetonsRevoques, false)
 })
 
 Given(
@@ -95,29 +102,42 @@ Given(
   },
 )
 
-When("j'efface l'empreinte RDV de ce compte", async () => {
-  bilan = await effacerEmpreinteRdv({ utilisateurId: testUtilisateurId })
+When("j'efface l'empreinte RDV de ce compte", async function (this: Monde) {
+  this.bilan = bilanDeLEffacement(
+    (await effacer({ utilisateurId: testUtilisateurId })).data,
+  )
 })
 
-When("j'efface à nouveau l'empreinte RDV de ce compte", async () => {
-  bilan = await effacerEmpreinteRdv({ utilisateurId: testUtilisateurId })
+When(
+  "j'efface à nouveau l'empreinte RDV de ce compte",
+  async function (this: Monde) {
+    this.bilan = bilanDeLEffacement(
+      (await effacer({ utilisateurId: testUtilisateurId })).data,
+    )
+  },
+)
+
+Then('le compte RDV est délié', function (this: Monde) {
+  assert.strictEqual(this.bilan?.compteDelie, true)
 })
 
-Then('le compte RDV est délié', () => {
-  assert.strictEqual(bilan?.compteDelie, true)
+Then("le compte RDV n'est pas délié", function (this: Monde) {
+  assert.strictEqual(this.bilan?.compteDelie, false)
 })
 
-Then("le compte RDV n'est pas délié", () => {
-  assert.strictEqual(bilan?.compteDelie, false)
-})
+Then(
+  "l'effacement RDV porte sur {int} rendez-vous",
+  function (this: Monde, attendu: number) {
+    assert.strictEqual(this.bilan?.rdvsExpurges, attendu)
+  },
+)
 
-Then("l'effacement RDV porte sur {int} rendez-vous", (attendu: number) => {
-  assert.strictEqual(bilan?.rdvsExpurges, attendu)
-})
-
-Then("l'effacement RDV supprime {int} usager", (attendu: number) => {
-  assert.strictEqual(bilan?.usagersSupprimes, attendu)
-})
+Then(
+  "l'effacement RDV supprime {int} usager",
+  function (this: Monde, attendu: number) {
+    assert.strictEqual(this.bilan?.usagersSupprimes, attendu)
+  },
+)
 
 Then("le compte RDV n'est plus en base", async () => {
   assert.strictEqual(

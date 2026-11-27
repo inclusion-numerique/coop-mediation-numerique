@@ -10,6 +10,7 @@ import {
 import { authenticateMediateur } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
 import { consulterBeneficiaire } from '@/features/beneficiaire/abilities/consulter-beneficiaire/implementations/prisma/consulter-beneficiaire.query'
 import ViewBeneficiaireInformationsPage from '@/features/beneficiaire/abilities/consulter-beneficiaire/ui/pages/ViewBeneficiaireInformationsPage'
+import { trancheAgeAffichee } from '@/features/beneficiaire/abilities/consulter-beneficiaire/ui/presenters/tranche-age-affichee.presenter'
 import { BoutonModifierLeBeneficiaire } from '@/features/beneficiaire/abilities/modifier-beneficiaire/ui/slots/BoutonModifierLeBeneficiaire.slot'
 import { BoutonSupprimerLeBeneficiaire } from '@/features/beneficiaire/abilities/supprimer-beneficiaires/ui/slots/BoutonSupprimerLeBeneficiaire.slot'
 import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
@@ -27,9 +28,11 @@ const BeneficiaireInformationsPage = async (props: {
   const user = await authenticateMediateur()
   const mediateurId = user.mediateur.id
 
+  const maintenant = new Date()
   const beneficiaire = await consulterBeneficiaire({
     beneficiaireId: BeneficiaireId(beneficiaireId),
     mediateurId: MediateurId(mediateurId),
+    maintenant,
   })
 
   if (!beneficiaire) {
@@ -69,6 +72,7 @@ const BeneficiaireInformationsPage = async (props: {
         thematiquesAbordees: thematiquesAbordeesPresentees(thematiquesAbordees),
         totalActivitesCount:
           chronologie.total.activites + chronologie.total.rendezVous,
+        trancheAgeAffichee: trancheAgeAffichee(beneficiaire, maintenant),
       }}
       actions={
         <>

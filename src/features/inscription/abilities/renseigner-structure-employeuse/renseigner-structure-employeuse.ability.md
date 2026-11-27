@@ -31,4 +31,3 @@ quand rattacher, et ce qu'il faut conclure d'un échec.
 * Quand je renseigne ma structure employeuse
 * Alors le renseignement est refusé faute de profil choisi
 * Et ma structure employeuse n’est pas renseignée
-* Et aucun rattachement n’a été demandé

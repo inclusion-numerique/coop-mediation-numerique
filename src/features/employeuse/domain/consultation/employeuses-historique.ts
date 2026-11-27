@@ -3,15 +3,6 @@ import { type Contrat, contratDeLEmployeuse } from '../affectation/contrat'
 import type { PeriodeEmploi } from '../affectation/periode-emploi'
 import type { Employeuse } from '../employeuse'
 
-/**
- * Une employeuse dans le parcours d'une personne : toutes celles auxquelles elle
- * est ou a été affectée, quelle que soit la source.
- *
- * `affectationActive` remplace l'ancien soft-delete coop : une affectation
- * désactivée est un emploi terminé, pas une ligne supprimée. La période reste
- * best-effort — elle vient du contrat, absent pour la moitié des affectations
- * déclarées.
- */
 export type EmployeuseHistorique = {
   readonly employeuse: Employeuse
   readonly affectationActive: boolean
@@ -24,14 +15,6 @@ const laPlusAncienne = (dates: readonly (Date | null)[]): Date | null =>
     .filter((date): date is Date => date !== null)
     .toSorted((a, b) => a.getTime() - b.getTime())[0] ?? null
 
-/**
- * Une entrée par employeuse, dans l'ordre de première rencontre.
- *
- * La déduplication n'est pas cosmétique : une même personne peut être affectée
- * à une structure deux fois — une par le dispositif, une par le déclaratif — et
- * l'admin doit y voir un seul employeur. L'emploi est en cours dès qu'une de ces
- * affectations l'est, et sa date d'entrée est la plus ancienne des deux.
- */
 export const employeusesHistorique = (
   affectations: readonly Affectation[],
   contrats: readonly Contrat[],

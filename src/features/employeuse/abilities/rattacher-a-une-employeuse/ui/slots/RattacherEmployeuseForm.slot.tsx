@@ -12,25 +12,18 @@ import { handleSubmit, useAppForm } from '@/libraries/formulaire/hooks'
 import { inject } from '@/libraries/nextjs/injection'
 import { Options } from '@/libraries/ui/primitives'
 import { createToast } from '@/libraries/ui/toast'
+import type { StructureTrouvee } from '../../action/rechercher-une-structure-employeuse.key'
 import { RENSEIGNER_STRUCTURE_EMPLOYEUSE_ACTION_KEY } from '../../action/renseigner-structure-employeuse.key'
-import {
-  RenseignerStructureEmployeuseValidation,
-  type StructureTrouvee,
-} from '../../domain/employeuse-choisie'
+import { RenseignerStructureEmployeuseValidation } from '../../action/renseigner-structure-employeuse.validation'
 import {
   StructureEmployeuseComboBox,
   StructureEmployeuseOptions,
 } from '../forms/StructureEmployeuseComboBox'
 
-/**
- * Choix d'une structure employeuse, puis rattachement.
- *
- * Deux contextes l'utilisent, et c'est `nextStepPath` qui les distingue :
- * l'inscription enchaîne sur l'étape suivante, tandis que la garde d'une page
- * qui exige une employeuse (la saisie d'un CRA) passe `null` — il n'y a alors
- * nulle part où aller, la page demandée s'affiche d'elle-même une fois la
- * garde levée, et un simple rafraîchissement suffit à la révéler.
- */
+const aucuneStructure: { readonly structure: StructureTrouvee | null } = {
+  structure: null,
+}
+
 const RattacherEmployeuseForm = ({
   nextStepPath,
 }: {
@@ -48,7 +41,7 @@ const RattacherEmployeuseForm = ({
 
   const form = useAppForm({
     validators: { onSubmit: RenseignerStructureEmployeuseValidation },
-    defaultValues: { structure: null as StructureTrouvee | null },
+    defaultValues: aucuneStructure,
     onSubmit: async ({ value: { structure } }) => {
       if (!structure) return
 
@@ -59,10 +52,6 @@ const RattacherEmployeuseForm = ({
           },
         )
 
-        // `rattachee: false` = l'employeuse n'a pas pu être garantie côté
-        // Entrepôt (géocodage ou API indisponible). Rien n'a été enregistré :
-        // on le dit et on laisse l'utilisateur réessayer plutôt que de
-        // l'avancer sans employeuse.
         if (!result.success || !result.data.rattachee) {
           erreurEnregistrement()
           return
@@ -77,8 +66,6 @@ const RattacherEmployeuseForm = ({
   })
 
   const isPending = useSelector(form.store, (state) => state.isSubmitting)
-  // La carte récapitulative n'apparaît qu'une fois le choix fait : c'est aussi
-  // ce qui autorise la soumission.
   const structureChoisie = useSelector(
     form.store,
     (state) => state.values.structure,

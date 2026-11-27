@@ -1,21 +1,27 @@
-import type { UtilisateurId } from '@/features/inscription/domain'
+import type {
+  InscriptionDejaValidee,
+  InscriptionIntrouvable,
+  ProfilNonChoisi,
+  UtilisateurId,
+} from '@/features/inscription/domain'
 
-/**
- * L'employeuse choisie n'a pas pu être rattachée : identité non exploitable
- * (ni SIRET ni commune) ou écriture `main` impossible.
- *
- * Cette erreur ne vient pas du décideur — elle ne peut se constater qu'après
- * avoir tenté le rattachement — mais elle appartient au même vocabulaire, car
- * elle a la même conséquence pour l'utilisateur : l'étape n'est pas franchie.
- */
-export type EmployeuseIndisponible = {
-  readonly _tag: 'EmployeuseIndisponible'
+export type EmployeuseNonRattachee<Cause> = {
+  readonly _tag: 'EmployeuseNonRattachee'
   readonly userId: UtilisateurId
+  readonly cause: Cause
 }
 
-export const EmployeuseIndisponible = (
+export const EmployeuseNonRattachee = <Cause>(
   userId: UtilisateurId,
-): EmployeuseIndisponible => ({
-  _tag: 'EmployeuseIndisponible',
+  cause: Cause,
+): EmployeuseNonRattachee<Cause> => ({
+  _tag: 'EmployeuseNonRattachee',
   userId,
+  cause,
 })
+
+export type EchecDeRenseignerStructureEmployeuse<Cause> =
+  | InscriptionIntrouvable
+  | ProfilNonChoisi
+  | InscriptionDejaValidee
+  | EmployeuseNonRattachee<Cause>

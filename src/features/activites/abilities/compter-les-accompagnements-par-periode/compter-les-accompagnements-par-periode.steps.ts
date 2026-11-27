@@ -6,16 +6,18 @@ import { demandeDeStatistiques } from '../../statistiques.cucumber'
 import type { AccompagnementsParPeriode } from './domain/index'
 import { compterLesAccompagnementsParPeriode } from './implementations/prisma/accompagnements-par-periode.query'
 
-let parPeriode: AccompagnementsParPeriode | undefined
+const etat: {
+  parPeriode?: AccompagnementsParPeriode
+} = {}
 
 const comptes = (): AccompagnementsParPeriode => {
-  assert.ok(parPeriode, 'Aucun compte par période')
-  return parPeriode
+  assert.ok(etat.parPeriode, 'Aucun compte par période')
+  return etat.parPeriode
 }
 
 const compter = async (nom: string, debut: Jour | null, fin: Jour) => {
   const fenetre = fenetreDe({ debut, fin })
-  parPeriode = await compterLesAccompagnementsParPeriode({
+  etat.parPeriode = await compterLesAccompagnementsParPeriode({
     ...demandeDeStatistiques(nom),
     parJour: fenetre,
     parMois: fenetre,

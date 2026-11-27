@@ -8,7 +8,9 @@ export type SourcesDesOptions = {
     codesInsee: readonly string[],
   ) => Promise<readonly SelectOption[]>
   readonly lieux: (ids: readonly string[]) => Promise<readonly SelectOption[]>
-  readonly nomDeLEmployeuse: (id: number) => Promise<string | null>
+  readonly nomDeLEmployeuse: (
+    id: FiltresUtilisateurs['employeuses'][number],
+  ) => Promise<string | null>
   readonly coordinateurs: (
     ids: FiltresUtilisateurs['coordinateurs'],
   ) => Promise<readonly CoordinateurAChoisir[]>

@@ -1,16 +1,20 @@
 import assert from 'node:assert'
 import { Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
-import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage/implementations/prisma/resoudre-un-lien-de-partage.query'
+import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage/domain'
+import { lireLePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage/implementations/prisma/partage.query'
+import { LienDePartageId } from '@/features/mediateurs/domain'
 import { compteSeme } from '@/features/mediateurs/mediateurs.cucumber'
 
-type Issue = Awaited<ReturnType<typeof resoudreUnLienDePartage>>
+type Issue = Awaited<ReturnType<ReturnType<typeof resoudreUnLienDePartage>>>
 
 const derniere: { resolution?: Issue } = {}
 
 const ouvrir = async (lien: string | undefined) => {
   if (lien === undefined) throw new Error('Aucun partage semé pour ce rôle')
-  derniere.resolution = await resoudreUnLienDePartage(lien)
+  derniere.resolution = await resoudreUnLienDePartage({
+    lirePartage: lireLePartage,
+  })({ lien: LienDePartageId.safe(lien) })
 }
 
 When('un internaute ouvre le lien de ce partage', async () => {

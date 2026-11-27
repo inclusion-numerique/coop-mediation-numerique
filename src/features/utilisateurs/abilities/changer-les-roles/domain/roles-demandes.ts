@@ -1,10 +1,6 @@
+import type { RolesDemandes } from '@/features/utilisateurs/domain'
 import { failure, type Result, success } from '@/libraries/result'
 import { AucunRoleDemande } from './errors'
-
-export type RolesDemandes =
-  | { readonly mediateur: true; readonly coordinateur: false }
-  | { readonly mediateur: false; readonly coordinateur: true }
-  | { readonly mediateur: true; readonly coordinateur: true }
 
 export const rolesDemandes = ({
   mediateur,

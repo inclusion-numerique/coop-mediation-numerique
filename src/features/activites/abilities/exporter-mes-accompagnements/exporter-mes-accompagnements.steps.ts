@@ -4,9 +4,19 @@ import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
 import { criteresDesActivitesDepuisLURL } from '@/features/activites/fixtures/criteres-depuis-l-url'
 import { CoordinateurId, MediateurId } from '../../domain'
-import type { Demandeur, ExportDesAccompagnements } from './domain'
-import { exporterMesAccompagnements } from './implementations/prisma/accompagnements-a-exporter.query'
-import { nomsDesFiltresExportes } from './implementations/prisma/noms-des-filtres-exportes.query'
+import {
+  type Demandeur,
+  type ExportDesAccompagnements,
+  type ExportNomme,
+  exporterMesAccompagnements,
+  type NomsDesFiltresExportes,
+} from './domain'
+import {
+  accompagnementsExportes,
+  importsV1Presents,
+} from './implementations/prisma/accompagnements-exportes.query'
+import { employeusesNommees } from './implementations/prisma/employeuses-nommees.query'
+import { mediateursLus } from './implementations/prisma/mediateurs-lus.query'
 
 type Seme = { readonly userId: string; readonly mediateurId: string }
 
@@ -18,7 +28,7 @@ const contexte: {
   demandeur?: Demandeur
   exporte?: ExportDesAccompagnements
   employeuses: Readonly<Record<string, number>>
-  noms?: Awaited<ReturnType<typeof nomsDesFiltresExportes>>
+  noms?: NomsDesFiltresExportes
   recherches: readonly string[]
 } = { userIds: [], coordinateurIds: [], employeuses: {}, recherches: [] }
 
@@ -48,19 +58,32 @@ const recherche =
     return resultat
   }
 
-const nommer = async (parametres: Record<string, string>) => {
+const exporterAvec = async (
+  parametres: Record<string, string>,
+): Promise<ExportNomme> => {
   assert.ok(contexte.demandeur, 'Aucun demandeur semé')
-  contexte.noms = await nomsDesFiltresExportes({
-    demandeur: contexte.demandeur,
-    criteres: criteresDesActivitesDepuisLURL(parametres),
-    lieuxDesActivites: recherche('lieux', []),
+  const exporte = await exporterMesAccompagnements({
+    accompagnementsExportes,
+    importsV1Presents,
+    mediateursLus,
+    employeusesNommees,
+    lieuxNommes: recherche('lieux', []),
     communesEtDepartements: recherche('territoire', {
-      communesOptions: [],
-      departementsOptions: [],
+      communes: [],
+      departements: [],
     }),
     tagsUtilisables: recherche('tags', []),
-    beneficiaires: recherche('beneficiaires', []),
+    beneficiairesNommes: recherche('beneficiaires', []),
+  })({
+    demandeur: contexte.demandeur,
+    criteres: criteresDesActivitesDepuisLURL(parametres),
   })
+  assert.ok(exporte.success, 'Export refusé')
+  return exporte.data
+}
+
+const nommer = async (parametres: Record<string, string>) => {
+  contexte.noms = (await exporterAvec(parametres)).noms
 }
 
 type Identite = { readonly firstName?: string; readonly lastName?: string }
@@ -291,7 +314,7 @@ Then('les employeuses nommées sont {string}', (attendues: string) => {
 Then('seule la médiatrice {string} est nommée', (nom: string) => {
   assert.ok(contexte.noms, 'Aucun filtre nommé')
   assert.deepStrictEqual(contexte.noms.mediateurs, [
-    { label: nom, value: { mediateurId: moi().mediateurId } },
+    { mediateurId: moi().mediateurId, nom, ancien: false },
   ])
 })
 
@@ -300,11 +323,7 @@ Then("aucun nom de filtre n'a été recherché", () => {
 })
 
 const exporter = async (parametres: Record<string, string>) => {
-  assert.ok(contexte.demandeur, 'Aucun demandeur semé')
-  contexte.exporte = await exporterMesAccompagnements({
-    demandeur: contexte.demandeur,
-    criteres: criteresDesActivitesDepuisLURL(parametres),
-  })
+  contexte.exporte = (await exporterAvec(parametres)).exportDes
 }
 
 When("j'exporte mes accompagnements", async () => {

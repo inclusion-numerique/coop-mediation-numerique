@@ -1,213 +1,129 @@
 import { prismaClient } from '@/configuration/prisma'
 import type { Prisma } from '@/generated/prisma/client'
-import {
-  CoordinateurId,
-  MediateurId,
-  NomDuTag,
-  TagId,
-} from '../../../../domain'
-import {
-  essaimageDesTagsDuCoordinateur,
-  type TagDetenu,
-  tagDAccueil,
-} from '../../domain'
+import type { AppliquerLeRetraitDesTags } from '../../domain/ports'
+import type {
+  CopieDeTag,
+  RepriseDeTag,
+  RetraitDesTags,
+} from '../../domain/retrait-des-tags'
 
 type Transaction = Prisma.TransactionClient
 
-type TagModele = {
-  readonly id: string
-  readonly nom: string
-  readonly description: string | null
-  readonly departement: string | null
-}
-
-export type TagsRetires = {
-  readonly transferes: number
-  readonly supprimes: number
-}
-
-const AUCUN: TagsRetires = { transferes: 0, supprimes: 0 }
-
-const marquerSupprimes = async (
-  transaction: Transaction,
-  where: Prisma.TagWhereInput,
-  maintenant: Date,
-): Promise<number> => {
-  const { count } = await transaction.tag.updateMany({
-    where: { ...where, suppression: null },
-    data: { suppression: maintenant, modification: maintenant },
-  })
-
-  return count
-}
-
-const mediateursUtilisateurs = async (
-  transaction: Transaction,
-  tagId: string,
-): Promise<readonly MediateurId[]> =>
-  (
-    await transaction.activitesTags.findMany({
-      where: { tagId },
-      select: { activite: { select: { mediateurId: true } } },
-    })
-  ).map(({ activite }) => MediateurId(activite.mediateurId))
-
-const tagsDetenus = (
-  lignes: readonly { id: string; nom: string }[],
-): readonly TagDetenu[] =>
-  lignes.flatMap(({ id, nom }) => {
-    const nomDuTag = NomDuTag.safe(nom)
-    return nomDuTag === null ? [] : [{ id: TagId(id), nom: nomDuTag }]
-  })
-
-const tagDuMediateur = async (
-  transaction: Transaction,
-  mediateurId: MediateurId,
-  modele: TagModele,
-): Promise<string> => {
-  const detenus = await transaction.tag.findMany({
-    where: { mediateurId, suppression: null },
-    select: { id: true, nom: true },
-  })
-  const nom = NomDuTag.safe(modele.nom)
-  const existant = nom === null ? null : tagDAccueil(tagsDetenus(detenus), nom)
-
-  if (existant !== null) return existant
-
-  const { id } = await transaction.tag.create({
-    data: {
-      nom: modele.nom,
-      description: modele.description,
-      departement: modele.departement,
-      mediateurId,
-    },
-    select: { id: true },
-  })
-
-  return id
+type Deplacement = {
+  readonly depuis: string
+  readonly mediateurId: string
+  readonly vers: string
 }
 
 const deplacerLesLiens = async (
   transaction: Transaction,
-  {
-    depuisTagId,
-    versTagId,
-    mediateurId,
-  }: {
-    readonly depuisTagId: string
-    readonly versTagId: string
-    readonly mediateurId: MediateurId
-  },
+  { depuis, mediateurId, vers }: Deplacement,
 ): Promise<void> => {
   const liens = await transaction.activitesTags.findMany({
-    where: { tagId: depuisTagId, activite: { mediateurId } },
+    where: { tagId: depuis, activite: { mediateurId } },
     select: { activiteId: true },
   })
 
   await transaction.activitesTags.createMany({
-    data: liens.map(({ activiteId }) => ({ activiteId, tagId: versTagId })),
+    data: liens.map(({ activiteId }) => ({ activiteId, tagId: vers })),
     skipDuplicates: true,
   })
 
   await transaction.activitesTags.deleteMany({
     where: {
-      tagId: depuisTagId,
+      tagId: depuis,
       activiteId: { in: liens.map(({ activiteId }) => activiteId) },
     },
   })
 }
 
-const essaimer = async (
+const deplacer = (
   transaction: Transaction,
-  modele: TagModele,
-  destinataires: readonly MediateurId[],
-): Promise<number> => {
-  await destinataires.reduce<Promise<void>>(async (precedents, mediateurId) => {
+  deplacements: readonly Deplacement[],
+): Promise<void> =>
+  deplacements.reduce<Promise<void>>(async (precedents, deplacement) => {
     await precedents
-
-    await deplacerLesLiens(transaction, {
-      depuisTagId: modele.id,
-      versTagId: await tagDuMediateur(transaction, mediateurId, modele),
-      mediateurId,
-    })
+    await deplacerLesLiens(transaction, deplacement)
   }, Promise.resolve())
 
-  return destinataires.length
-}
-
-const retirerLesTagsDuCoordinateur = async (
+const creerLaCopie = async (
   transaction: Transaction,
-  coordinateurId: CoordinateurId,
-  maintenant: Date,
-): Promise<TagsRetires> => {
-  const tags = await transaction.tag.findMany({
-    where: { coordinateurId, suppression: null },
-    select: { id: true, nom: true, description: true, departement: true },
+  { mediateurId, nom, description, departement, depuis }: CopieDeTag,
+): Promise<void> => {
+  const { id } = await transaction.tag.create({
+    data: { nom, description, departement, mediateurId },
+    select: { id: true },
   })
 
-  const transferes = await tags.reduce<Promise<number>>(
-    async (precedent, tag) => {
-      const total = await precedent
-      const essaimage = essaimageDesTagsDuCoordinateur(
-        await mediateursUtilisateurs(transaction, tag.id),
-      )
-
-      return essaimage._tag === 'supprime'
-        ? total
-        : total + (await essaimer(transaction, tag, essaimage.vers))
-    },
-    Promise.resolve(0),
+  await deplacer(
+    transaction,
+    depuis.map((tagId) => ({ depuis: tagId, mediateurId, vers: id })),
   )
-
-  return {
-    transferes,
-    supprimes: await marquerSupprimes(
-      transaction,
-      { coordinateurId },
-      maintenant,
-    ),
-  }
 }
 
-const retirerLesTagsDuMediateur = async (
+const supprimerLesTagsActifs = async (
   transaction: Transaction,
-  mediateurId: MediateurId,
-  maintenant: Date,
-): Promise<TagsRetires> => ({
-  transferes: 0,
-  supprimes: await marquerSupprimes(transaction, { mediateurId }, maintenant),
-})
+  { supprimeLe, supprimes }: RetraitDesTags,
+): Promise<ReadonlySet<string>> =>
+  new Set(
+    (
+      await transaction.tag.updateManyAndReturn({
+        where: { id: { in: [...supprimes] }, suppression: null },
+        data: { suppression: supprimeLe, modification: supprimeLe },
+        select: { id: true },
+      })
+    ).map(({ id }) => id),
+  )
 
-export const retirerLesTagsDUnCompte = ({
-  mediateurId,
-  coordinateurId,
-  maintenant = new Date(),
-}: {
-  readonly mediateurId: string | null
-  readonly coordinateurId: string | null
-  readonly maintenant?: Date
-}): Promise<TagsRetires> =>
+const ciblesActives = async (
+  transaction: Transaction,
+  reprises: readonly RepriseDeTag[],
+): Promise<ReadonlySet<string>> =>
+  new Set(
+    (
+      await transaction.tag.findMany({
+        where: {
+          id: { in: reprises.map(({ vers }) => vers) },
+          suppression: null,
+        },
+        select: { id: true },
+      })
+    ).map(({ id }) => id),
+  )
+
+const copiesDesTagsSupprimes = (
+  copies: readonly CopieDeTag[],
+  supprimes: ReadonlySet<string>,
+): readonly CopieDeTag[] =>
+  copies
+    .map((copie) => ({
+      ...copie,
+      depuis: copie.depuis.filter((tagId) => supprimes.has(tagId)),
+    }))
+    .filter(({ depuis }) => depuis.length > 0)
+
+export const appliquerLeRetraitDesTags: AppliquerLeRetraitDesTags = async (
+  retrait,
+) =>
   prismaClient.$transaction(async (transaction) => {
-    const duMediateur =
-      mediateurId === null
-        ? AUCUN
-        : await retirerLesTagsDuMediateur(
-            transaction,
-            MediateurId(mediateurId),
-            maintenant,
-          )
+    const supprimes = await supprimerLesTagsActifs(transaction, retrait)
+    const cibles = await ciblesActives(transaction, retrait.reprises)
 
-    const duCoordinateur =
-      coordinateurId === null
-        ? AUCUN
-        : await retirerLesTagsDuCoordinateur(
-            transaction,
-            CoordinateurId(coordinateurId),
-            maintenant,
-          )
+    const copies = copiesDesTagsSupprimes(retrait.copies, supprimes)
+    const reprises = retrait.reprises.filter(
+      ({ depuis, vers }) => supprimes.has(depuis) && cibles.has(vers),
+    )
+
+    await copies.reduce<Promise<void>>(async (precedentes, copie) => {
+      await precedentes
+      await creerLaCopie(transaction, copie)
+    }, Promise.resolve())
+
+    await deplacer(transaction, reprises)
 
     return {
-      transferes: duMediateur.transferes + duCoordinateur.transferes,
-      supprimes: duMediateur.supprimes + duCoordinateur.supprimes,
+      supprimes: retrait.supprimes.filter((tagId) => supprimes.has(tagId)),
+      copies,
+      reprises,
     }
   })

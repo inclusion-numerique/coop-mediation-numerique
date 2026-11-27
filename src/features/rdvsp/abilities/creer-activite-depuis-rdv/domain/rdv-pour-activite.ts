@@ -1,26 +1,22 @@
-import { z } from 'zod'
-import { defineModel, type Model } from '@/libraries/model'
+import type { BeneficiaireId } from '../../../domain/identifiants/beneficiaire-id'
+import type { MediateurId } from '../../../domain/identifiants/mediateur-id'
 import type { RdvAgentId } from '../../../domain/identifiants/rdv-agent-id'
 import type { RdvId } from '../../../domain/identifiants/rdv-id'
 import type { UsagerId } from '../../../domain/identifiants/usager-id'
+import type {
+  EmailExterne,
+  NomExterne,
+  PrenomExterne,
+  TelephoneExterne,
+} from '../../../domain/identite'
 import type { StatutPresence } from '../../../domain/rdv/statut-presence'
 
-export const MediateurRedacteurId = defineModel(
-  z.guid().brand('MediateurRedacteurId'),
-)
-export type MediateurRedacteurId = Model.TypeOf<typeof MediateurRedacteurId>
-
-/**
- * Identité d'un usager telle qu'elle sera transmise à la feature bénéficiaire.
- * Les champs restent des chaînes brutes : c'est le domaine bénéficiaire qui les
- * valide, cette ability ne fait que les convoyer (IS-2).
- */
 export type UsagerDuRdv = {
   readonly id: UsagerId
-  readonly prenom: string
-  readonly nom: string
-  readonly email: string | null
-  readonly telephone: string | null
+  readonly prenom: PrenomExterne | null
+  readonly nom: NomExterne | null
+  readonly email: EmailExterne | null
+  readonly telephone: TelephoneExterne | null
   readonly adresse: string | null
   readonly dateNaissance: Date | null
 }
@@ -33,11 +29,6 @@ export type ParticipationDuRdv = {
 export type RdvPourActivite = {
   readonly id: RdvId
   readonly agentId: RdvAgentId
-  /**
-   * Statut du rendez-vous entier. C'est le seul que La Coop sait écrire : son
-   * écran de saisie appelle `update_status` sur le rendez-vous, jamais sur une
-   * participation. Une participation restée `unknown` doit donc s'y référer.
-   */
   readonly statutPresence: StatutPresence
   readonly participations: readonly ParticipationDuRdv[]
   readonly debut: Date
@@ -46,21 +37,13 @@ export type RdvPourActivite = {
   readonly collectif: boolean
 }
 
-/**
- * Fiche rendue par la feature bénéficiaire après création ou fusion, puis
- * transmise telle quelle à la feature activités pour pré-remplir le CRA.
- *
- * Déclaration locale du contrat d'échange, et non import de leurs types : cette
- * ability n'interprète aucun de ces champs, elle les convoie d'une feature à
- * l'autre. Les tenir ici rend visible, si la forme change, qui doit s'y adapter.
- */
 export type BeneficiaireFusionne = {
-  readonly id: string
+  readonly id: BeneficiaireId
   readonly prenom: string | null
   readonly nom: string | null
   readonly email: string | null
   readonly telephone: string | null
-  readonly mediateurId: string
+  readonly mediateurId: MediateurId
   readonly adresse: string | null
   readonly anneeNaissance: number | null
   readonly commune: string | null

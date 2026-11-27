@@ -12,7 +12,7 @@ import type { WidgetRdvAccueil } from '../../domain/widget-rdv'
 import { RdvIntegrationErreurAlerte } from './RdvIntegrationErreurAlerte.slot'
 import RdvsAccueil from './RdvsAccueil.slot'
 
-export default {
+const meta: Meta<typeof RdvsAccueil> = {
   title: 'Coop/Accueil/RdvsAccueil',
   component: RdvsAccueil,
   decorators: [
@@ -23,7 +23,9 @@ export default {
       return <Story />
     },
   ],
-} as Meta<typeof RdvsAccueil>
+}
+
+export default meta
 
 type Story = StoryObj<typeof RdvsAccueil>
 
@@ -126,10 +128,6 @@ export const ParticipantInconnu: Story = {
   },
 }
 
-/**
- * Les deux états que le bloc pouvait déjà porter, mais que le composant ne
- * savait pas rendre : le rendu initial les traitait dans la page.
- */
 export const Alerte: Story = {
   args: {
     user,

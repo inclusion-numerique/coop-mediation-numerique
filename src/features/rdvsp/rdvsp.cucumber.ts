@@ -6,11 +6,6 @@ import { EmailExterne } from './domain/identite'
 
 setDefaultTimeout(60_000)
 
-/**
- * Support Cucumber partagé pour la feature RDV Service Public.
- * Les hooks de cycle de vie vivent ici une seule fois ; les fichiers .steps.ts
- * ne définissent que Given/When/Then et s'appuient sur ces helpers.
- */
 export const testUtilisateurId = UtilisateurCoopId(
   'e10e5c5f-4713-4a14-bba8-3b6051b3b4a2',
 )
@@ -33,16 +28,6 @@ const semerLeMediateurDeTest = async (
   })
 }
 
-/**
- * Plage réservée aux identifiants de test.
- *
- * Tous les identifiants de cette feature viennent de RDV Service Public, et la
- * base locale porte une copie de la production : un identifiant choisi au hasard
- * peut désigner une vraie ligne. Les créations lèveraient une erreur, mais les
- * upserts — organisations, usagers — écraseraient silencieusement la donnée. On
- * se place donc au-delà de tout ce que RDV Service Public a attribué à ce jour
- * (le maximum observé est de l'ordre du million).
- */
 export const ID_TEST = {
   compte: 9_900_000,
   rdv: 9_910_000,
@@ -67,7 +52,6 @@ export const emailUtilisateurDeTest = async (): Promise<EmailExterne> =>
     ).email,
   )
 
-/** Crée un compte RDV de test, suivi pour nettoyage. */
 export const seedCompteRdv = async (
   data: Partial<Prisma.RdvAccountUncheckedCreateInput> & { id: number },
 ): Promise<number> => {
@@ -88,11 +72,6 @@ const organisationsSuivies = new Set<number>()
 const rdvsSuivis = new Set<number>()
 const utilisateursSuivis = new Set<string>()
 
-/**
- * Compte RDV appartenant à un autre médiateur. `rdv_accounts.user_id` étant
- * unique, un second compte suppose un second utilisateur : c'est précisément la
- * situation que les scénarios d'autorisation doivent reproduire.
- */
 export const seedCompteRdvAutreMediateur = async ({
   id,
 }: {
@@ -112,11 +91,6 @@ export const seedCompteRdvAutreMediateur = async ({
   return id
 }
 
-/**
- * Crée un rendez-vous de test et son organisation. Les valeurs non signifiantes
- * pour le scénario sont fixées ici une fois : ce que le scénario décrit ne doit
- * porter que ce qui compte pour lui.
- */
 export const seedRdv = async ({
   id,
   rdvAccountId,
@@ -169,10 +143,6 @@ export const suivreUsagerRdv = (usagerId: number): void => {
   usagersSuivis.add(usagerId)
 }
 
-/**
- * Bénéficiaire de test rattaché au médiateur de fixture, ou à un autre lorsque
- * le scénario éprouve la propriété.
- */
 export const seedBeneficiaire = async ({
   mediateurId = testMediateurId,
   ...data
@@ -190,11 +160,6 @@ export const seedBeneficiaire = async ({
 
 const mediateursSuivis = new Set<string>()
 
-/**
- * Médiateur distinct de celui de fixture, pour les scénarios de propriété.
- * `beneficiaires.mediateur_id` étant une clé étrangère, il faut un vrai
- * médiateur, donc un vrai utilisateur.
- */
 export const seedAutreMediateur = async (): Promise<string> => {
   const utilisateur = await prismaClient.user.create({
     data: {
@@ -214,7 +179,6 @@ export const seedAutreMediateur = async (): Promise<string> => {
   return mediateur.id
 }
 
-/** Usager RDV Service Public préexistant, rattaché ensuite à un bénéficiaire. */
 export const seedUsagerRdv = async (id: number): Promise<number> => {
   await prismaClient.rdvUser.upsert({
     where: { id },
@@ -314,10 +278,6 @@ export const rattachementsDuCompte = async (
     })
   ).map(({ organisationId }) => organisationId)
 
-/**
- * Participation d'un usager à un rendez-vous. Pas de suivi propre : la relation
- * est en `onDelete: Cascade`, la suppression du rendez-vous l'emporte.
- */
 export const seedParticipation = async ({
   id,
   rdvId,
@@ -372,19 +332,12 @@ Before(async () => {
   beneficiairesSuivis.clear()
   usagersSuivis.clear()
   mediateursSuivis.clear()
-  // Les scénarios écrivent tous sur le même utilisateur de fixture : on repart
-  // d'un utilisateur sans compte RDV, sinon la recherche « par agent ou par
-  // utilisateur » retrouverait le compte d'un scénario précédent.
   await prismaClient.rdvAccount.deleteMany({
     where: { userId: testUtilisateurId },
   })
 })
 
-// L'ordre suit les clés étrangères : bénéficiaires avant usagers, rendez-vous
-// avant comptes et organisations, comptes avant utilisateurs.
 After(async () => {
-  // Les bénéficiaires créés par la fusion depuis un usager RDV ne passent pas par
-  // `seedBeneficiaire` : on les retrouve par l'usager auquel ils sont rattachés.
   await prismaClient.beneficiaire.deleteMany({
     where: {
       OR: [
@@ -393,12 +346,6 @@ After(async () => {
       ],
     },
   })
-  // Les rendez-vous d'abord : leurs participations référencent les usagers et
-  // disparaissent en cascade avec eux. L'inverse viole la clé étrangère et laisse
-  // des résidus qui bloquent le `resetFixtureUser` de la session suivante.
-  // Le nettoyage vise aussi tout rendez-vous rattaché à un compte de test, et pas
-  // seulement ceux passés par `seedRdv` : la synchronisation en crée elle-même, et
-  // ceux-là n'ont jamais été déclarés ici.
   await prismaClient.rdv.deleteMany({
     where: {
       OR: [
@@ -410,8 +357,6 @@ After(async () => {
   await prismaClient.rdvUser.deleteMany({
     where: { id: { in: [...usagersSuivis] } },
   })
-  // Les rattachements référencent le compte et l'organisation : ils partent avant
-  // les deux.
   await prismaClient.rdvAccountOrganisation.deleteMany({
     where: {
       OR: [
@@ -420,7 +365,6 @@ After(async () => {
       ],
     },
   })
-  // Les journaux de synchronisation référencent le compte sans cascade.
   await prismaClient.rdvSyncLog.deleteMany({
     where: { rdvAccountId: { in: [...comptesSuivis] } },
   })
@@ -429,8 +373,6 @@ After(async () => {
       OR: [{ id: { in: [...comptesSuivis] } }, { userId: testUtilisateurId }],
     },
   })
-  // Motifs et lieux référencent l'organisation. Ils sont créés par le code testé,
-  // jamais par un helper de seed : on les retrouve par leur organisation.
   await prismaClient.rdvMotif.deleteMany({
     where: { organisationId: { in: [...organisationsSuivies] } },
   })
@@ -448,12 +390,6 @@ After(async () => {
   })
 })
 
-/**
- * Participation d'un usager à un rendez-vous.
- *
- * C'est elle qui décide de l'orphelinage : tant qu'une participation désigne un
- * usager, il ne peut pas être supprimé — la contrainte de clé étrangère l'interdit.
- */
 export const seedParticipationRdv = async ({
   id,
   rdvId,

@@ -2,18 +2,22 @@ import type {
   AdresseCourriel,
   ContactAImporter,
 } from '@/features/utilisateurs/domain'
+import type { EchecTechnique, Result } from '@/libraries/result'
 import type { IdentifiantDImport } from './identifiant-d-import'
-import type { TailleDeLot } from './taille-de-lot'
+import type { LectureDesInscrits } from './synchronisation'
+
+type LireLesInscrits = () => Promise<LectureDesInscrits>
+
+export type ImporterUnLot = (
+  lot: readonly ContactAImporter[],
+) => Promise<Result<IdentifiantDImport, EchecTechnique>>
+
+type RetirerUnLot = (
+  lot: readonly AdresseCourriel[],
+) => Promise<Result<void, EchecTechnique>>
 
 export type SynchroniserLesRolesBrevoPorts = {
-  readonly importer: {
-    readonly tailleMax: TailleDeLot
-    readonly envoyer: (
-      lot: readonly ContactAImporter[],
-    ) => Promise<IdentifiantDImport>
-  }
-  readonly retirer: {
-    readonly tailleMax: TailleDeLot
-    readonly envoyer: (lot: readonly AdresseCourriel[]) => Promise<void>
-  }
+  readonly lireLesInscrits: LireLesInscrits
+  readonly importerUnLot: ImporterUnLot
+  readonly retirerUnLot: RetirerUnLot
 }

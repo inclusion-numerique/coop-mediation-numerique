@@ -2,8 +2,16 @@ import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
+import { UtilisateurId } from '@/features/utilisateurs/domain'
 import { semerUnCompteDeListe } from '@/features/utilisateurs/utilisateurs.cucumber'
-import { deconnecterUnUtilisateur } from './implementations/prisma/deconnecter-un-utilisateur.mutation'
+import { deconnecterUnUtilisateur as deconnecter } from './domain/deconnecter-un-utilisateur'
+import { compteExiste } from './implementations/prisma/compte-existe.query'
+import { fermerLesSessions } from './implementations/prisma/fermer-les-sessions.mutation'
+
+const deconnecterUnUtilisateur = (utilisateurId: string) =>
+  deconnecter({ compteExiste, fermerLesSessions })({
+    utilisateurId: UtilisateurId.safe(utilisateurId),
+  })
 
 const deconnexion: {
   utilisateurId?: string

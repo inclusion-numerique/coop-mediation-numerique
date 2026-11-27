@@ -5,15 +5,22 @@ import { retirerUnMembreAction } from '@/app/_actions/equipe/retirer-un-membre.a
 import { supprimerUnAncienMembreAction } from '@/app/_actions/equipe/supprimer-un-ancien-membre.action'
 import { rechercherUnLieuActiviteAction } from '@/app/_actions/lieux-activite/rechercher-un-lieu-activite.action'
 import { metadataTitle } from '@/configuration/projet'
-import { compterLesAccompagnements } from '@/features/activites/abilities/compter-les-accompagnements/implementations/prisma/totaux-des-accompagnements.query'
+import { compterLesAccompagnements } from '@/features/activites/abilities/compter-les-accompagnements/domain'
+import {
+  activitesComptees,
+  nouvellesPersonnesComptees,
+  personnesComptees,
+} from '@/features/activites/abilities/compter-les-accompagnements/implementations/prisma/totaux-des-accompagnements.query'
 import {
   CoordinateurId as CoordinateurIdDesActivites,
   criteresSurLaPeriode,
-  Jour,
+  jourDe,
   MediateurId as MediateurIdDesActivites,
 } from '@/features/activites/domain'
 import { authenticateMediateurOrCoordinateur } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
-import { consulterEmployeuseAUneDate } from '@/features/employeuse/abilities/consulter-employeuse-a-une-date/implementations/prisma/consulter-employeuse-a-une-date.query'
+import { consulterEmployeuseAUneDate } from '@/features/employeuse/abilities/consulter-employeuse-a-une-date/domain/consulter-employeuse-a-une-date'
+import { UtilisateurId as UtilisateurIdDeLEmployeuse } from '@/features/employeuse/domain'
+import { lireLEmploiActuel } from '@/features/employeuse/implementations/prisma/emploi-actuel.query'
 import { emploiEmployeuseAffichage } from '@/features/employeuse/ui/presenters/employeuse-emploi.presenter'
 import ActeurStructureEmployeuse from '@/features/employeuse/ui/slots/ActeurStructureEmployeuse.slot'
 import { SUPPRIMER_UN_ANCIEN_MEMBRE_ACTION_KEY } from '@/features/equipe/abilities/supprimer-un-ancien-membre/action/supprimer-un-ancien-membre.key'
@@ -23,15 +30,21 @@ import { triDesLieuxDuMediateur } from '@/features/lieux-activite/abilities/list
 import { RECHERCHER_UN_LIEU_ACTIVITE_ACTION_KEY } from '@/features/lieux-activite/abilities/rechercher-un-lieu-activite/action/rechercher-un-lieu-activite.key'
 import { MediateurId as MediateurIdDesLieux } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
 import { LieuxRepliables } from '@/features/lieux-activite/ui/slots/LieuxRepliables.slot'
-import { consulterLeContrat } from '@/features/mediateurs/abilities/consulter-le-contrat/implementations/prisma/contrat.query'
+import { consulterLeContrat } from '@/features/mediateurs/abilities/consulter-le-contrat/domain/consulter-le-contrat'
+import { lireLesContrats } from '@/features/mediateurs/abilities/consulter-le-contrat/implementations/prisma/contrat.query'
 import { CarteContrat } from '@/features/mediateurs/abilities/consulter-le-contrat/ui/slots/CarteContrat.slot'
 import { UtilisateurId } from '@/features/mediateurs/domain'
 import {
   INVITER_L_ACTEUR_DANS_L_EQUIPE_KEY,
   RETIRER_L_ACTEUR_DE_L_EQUIPE_KEY,
 } from '@/features/mon-reseau/abilities/consulter-un-acteur/action/actions-sur-l-acteur.key'
-import { consulterUnActeur } from '@/features/mon-reseau/abilities/consulter-un-acteur/implementations/prisma/acteur-consulte.query'
+import { consulterUnActeur } from '@/features/mon-reseau/abilities/consulter-un-acteur/domain'
+import {
+  lireLActeur,
+  lireLesLiensDEquipe,
+} from '@/features/mon-reseau/abilities/consulter-un-acteur/implementations/prisma'
 import { nomDeLActeur } from '@/features/mon-reseau/abilities/consulter-un-acteur/implementations/prisma/nom-de-l-acteur.query'
+import { lecteurDeLaSession } from '@/features/mon-reseau/abilities/consulter-un-acteur/implementations/session/lecteur.transfer'
 import { FicheActeurPage } from '@/features/mon-reseau/abilities/consulter-un-acteur/ui/pages/FicheActeurPage'
 import {
   ancienMembreDe,
@@ -39,6 +52,7 @@ import {
   encartDeLEmployeuse,
 } from '@/features/mon-reseau/abilities/consulter-un-acteur/ui/presenters/fiche-acteur.presenter'
 import { TitreDeSection } from '@/features/mon-reseau/abilities/consulter-un-acteur/ui/slots/TitreDeSection.slot'
+import { ActeurId } from '@/features/mon-reseau/domain'
 import { rendezVousAuxStatutsSql } from '@/features/rdvsp/abilities/lister-les-rdvs-des-activites/implementations/prisma/rdvs-des-activites.query'
 import { derniereActiviteDeLUtilisateur } from '@/features/utilisateurs/implementations/prisma/derniere-activite.query'
 import { departementDuCode } from '@/libraries/departement'
@@ -60,17 +74,23 @@ export const generateMetadata = async ({
 const lireLesStatistiquesSur30Jours = async (
   coordinateurId: string,
   mediateurId: string,
-  periode: { readonly du: string; readonly au: string },
+  periode: { readonly du: Date; readonly au: Date },
 ) => {
-  const { accompagnements, personnes } = await compterLesAccompagnements({
+  const {
+    data: { accompagnements, personnes },
+  } = await compterLesAccompagnements({
+    activitesComptees,
+    personnesComptees,
+    nouvellesPersonnesComptees,
+  })({
     perimetre: {
       type: 'Equipe',
       coordinateur: CoordinateurIdDesActivites(coordinateurId),
       membres: [MediateurIdDesActivites(mediateurId)],
     },
     criteres: criteresSurLaPeriode({
-      du: Jour.safe(periode.du),
-      au: Jour.safe(periode.au),
+      du: jourDe(periode.du),
+      au: jourDe(periode.au),
     }),
     rendezVousAuxStatuts: rendezVousAuxStatutsSql,
   })
@@ -86,10 +106,13 @@ const Page = async ({ params }: Parametres) => {
   const departement = departementDuCode(code)
   const maintenant = new Date()
   const consultation = await consulterUnActeur({
-    quiConsulte,
-    acteurId: userId,
+    lireLActeur,
+    lireLesLiensDEquipe,
     lireLaDerniereActivite: derniereActiviteDeLUtilisateur,
     lireLesStatistiquesSur30Jours,
+  })({
+    lecteur: lecteurDeLaSession(quiConsulte),
+    acteurId: ActeurId.safe(userId),
     maintenant,
   })
 
@@ -98,8 +121,12 @@ const Page = async ({ params }: Parametres) => {
   const fiche = consultation.data
   const { acteur, regard } = fiche
   const mediation = acteur.profil.mediation
-  const [employeuse, lieux, contrat] = await Promise.all([
-    consulterEmployeuseAUneDate({ userId: acteur.acteurId, date: maintenant }),
+  const [employeuse, lieux, consultationDuContrat] = await Promise.all([
+    consulterEmployeuseAUneDate({ lireLEmploiActuel })({
+      utilisateurId: UtilisateurIdDeLEmployeuse(acteur.acteurId),
+      date: maintenant,
+      maintenant,
+    }).then(({ data }) => data),
     mediation === null
       ? null
       : listerLesLieuxDuMediateur({
@@ -107,12 +134,15 @@ const Page = async ({ params }: Parametres) => {
           tri: triDesLieuxDuMediateur,
         }),
     contratVisible(acteur, regard)
-      ? consulterLeContrat({
+      ? consulterLeContrat({ lireLesContrats })({
           utilisateurId: UtilisateurId(acteur.acteurId),
           maintenant,
         })
       : null,
   ])
+  const contrat = consultationDuContrat?.success
+    ? consultationDuContrat.data
+    : null
   const ancienMembre = ancienMembreDe(regard)
   const encart = encartDeLEmployeuse(acteur, regard)
 

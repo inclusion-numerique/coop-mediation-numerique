@@ -14,15 +14,8 @@ import { configurationRdvServicePublic } from '@/features/rdvsp/implementations/
 import { enregistrerLesJetons } from '@/features/rdvsp/implementations/prisma/jetons-du-compte.mutation'
 import { jetonsCourants } from '@/features/rdvsp/implementations/prisma/jetons-du-compte.query'
 import { fromResult, withInput } from '@/libraries/nextjs'
+import { success } from '@/libraries/result'
 
-/**
- * Composition de l'ability avec ses adaptateurs réels, partagée par la server
- * action et par le routeur des comptes rendus d'activité : deux appelants, deux
- * couches, et rien qui signalerait que les copies doivent rester identiques.
- *
- * À importer par ce chemin explicite : le module tire Prisma et la configuration
- * de l'API, qu'un composant client ne doit jamais embarquer.
- */
 const mettreAJourLeStatutDuRdv = mettreAJourStatutRdv({
   contexte: contexteMiseAJourStatut,
   changerStatutRdv: rdvServicePublicApi({
@@ -39,12 +32,15 @@ export const mettreAJourStatutRdvAction = actionBuilder()
   .use(withInput(MettreAJourStatutRdvValidation))
   .execute(
     fromResult(
-      async ({ user, input }) =>
-        mettreAJourLeStatutDuRdv({
+      async ({ user, input }) => {
+        const miseAJour = await mettreAJourLeStatutDuRdv({
           utilisateurId: UtilisateurCoopId(user.id),
           rdvId: input.rdvId,
           statut: input.statut,
-        }),
+        })
+
+        return miseAJour.success ? success(miseAJour.data.statut) : miseAJour
+      },
       { onError: METTRE_A_JOUR_STATUT_RDV_ERRORS },
     ),
   )

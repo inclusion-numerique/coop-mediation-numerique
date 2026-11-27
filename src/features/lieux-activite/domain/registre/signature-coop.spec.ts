@@ -33,8 +33,11 @@ describe('la marque que la coop laisse sur une inscription', () => {
     })
   })
 
-  it('ne réattribue la source que sur une écriture de valeurs métier', () => {
+  it('ne réattribue pas la source en retirant une inscription', () => {
     expect(retraitCoop(maintenant)).not.toHaveProperty('source')
+  })
+
+  it('ne réattribue pas la source en dépubliant une inscription', () => {
     expect(depublicationCoop(maintenant)).not.toHaveProperty('source')
   })
 })

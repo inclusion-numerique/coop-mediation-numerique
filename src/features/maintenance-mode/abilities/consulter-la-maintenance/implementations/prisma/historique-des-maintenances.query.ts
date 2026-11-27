@@ -1,9 +1,7 @@
 import { prismaClient } from '@/configuration/prisma'
 import type { PeriodeDeMaintenance } from '@/features/maintenance-mode/domain'
-import {
-  periodeDeMaintenance,
-  periodeDeMaintenanceSelect,
-} from '../../../../implementations/prisma/periode-de-maintenance.select'
+import { periodeDeMaintenanceSelect } from '@/features/maintenance-mode/implementations/prisma/periode-de-maintenance.select'
+import { periodeDeMaintenance } from '@/features/maintenance-mode/implementations/prisma/periode-de-maintenance.transfer'
 
 const TAILLE_DE_L_HISTORIQUE = 20
 

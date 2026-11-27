@@ -1,86 +1,109 @@
-import type { UtilisateurId } from '@/features/inscription/domain'
+import {
+  LieuIntrouvable,
+  type UtilisateurId,
+} from '@/features/inscription/domain'
 import { failure, type Result, success } from '@/libraries/result'
-import { EmployeuseId } from './employeuse-id'
+import type { EmployeuseEnLieu } from './employeuse-en-lieu'
 import {
   AdresseNonReconnue,
-  type AjouterStructureEmployeuseEnLieuError,
+  type EchecDAjouterStructureEmployeuseEnLieu,
   EmployeuseIntrouvable,
+  EmployeuseSansDenomination,
   ServiceAdresseIndisponible,
 } from './errors'
-import { lieuDepuisEmployeuse } from './lieu-depuis-employeuse'
-import type {
-  ConsulterEmployeuseActuelle,
-  DetacherDuLieuDecrit,
-  Geocodage,
-  GeocoderLAdresse,
-  LireLAdresseDeLEmployeuse,
-  RattacherAuLieuDecrit,
-} from './ports'
-
-export type AjouterStructureEmployeuseEnLieuPorts = {
-  readonly lireLAdresseDeLEmployeuse: LireLAdresseDeLEmployeuse
-  readonly geocoderLAdresse: GeocoderLAdresse
-  readonly consulterEmployeuseActuelle: ConsulterEmployeuseActuelle
-  readonly rattacherAuLieuDecrit: RattacherAuLieuDecrit
-  readonly detacherDuLieuDecrit: DetacherDuLieuDecrit
-}
-
-const adresseDuLieuAMaterialiser = async (
-  structureEmployeuseId: EmployeuseId,
-  {
-    lireLAdresseDeLEmployeuse,
-    geocoderLAdresse,
-  }: AjouterStructureEmployeuseEnLieuPorts,
-): Promise<Geocodage> => {
-  const adresse = await lireLAdresseDeLEmployeuse(structureEmployeuseId)
-
-  return adresse == null
-    ? { _tag: 'AdresseInconnue' }
-    : geocoderLAdresse(adresse)
-}
+import { lieuALAdresseConnue, lieuGeocode } from './lieu-depuis-employeuse'
+import type { AjouterStructureEmployeuseEnLieuPorts, Geocodage } from './ports'
 
 export const ajouterStructureEmployeuseEnLieu =
-  (ports: AjouterStructureEmployeuseEnLieuPorts) =>
+  <Destination>({
+    consulterEmployeuseActuelle,
+    lireLAdresseDeLEmployeuse,
+    geocoderLAdresse,
+    destinationDuLieuDecrit,
+    rattacherAuLieuDecrit,
+    lieuCorreleAuLieuDecrit,
+    detacherDuLieu,
+  }: AjouterStructureEmployeuseEnLieuPorts<Destination>) =>
   async ({
     userId,
     estLieuActivite,
+    maintenant,
   }: {
     readonly userId: UtilisateurId
     readonly estLieuActivite: boolean
-  }): Promise<Result<void, AjouterStructureEmployeuseEnLieuError>> => {
-    const actuelle = await ports.consulterEmployeuseActuelle({ userId })
+    readonly maintenant: Date
+  }): Promise<
+    Result<
+      EmployeuseEnLieu<Destination>,
+      EchecDAjouterStructureEmployeuseEnLieu
+    >
+  > => {
+    const actuelle = await consulterEmployeuseActuelle({ userId })
 
     if (actuelle === null) return failure(EmployeuseIntrouvable(userId))
 
     const { employeuse } = actuelle
-    const structureEmployeuseId = EmployeuseId(employeuse.id)
+    const employeuseId = employeuse.id
     const trace = { userId, structureId: employeuse.id }
 
     if (!estLieuActivite) {
-      await ports.detacherDuLieuDecrit({
-        userId,
-        lieu: lieuDepuisEmployeuse(employeuse),
-        trace,
-      })
-      return success<void>(undefined)
+      const lieu = lieuALAdresseConnue({ employeuse, maintenant })
+
+      if (lieu === null)
+        return success({
+          _tag: 'DetacheeDesLieux',
+          lieu,
+          trace,
+          lieuDetache: null,
+        })
+
+      const { data: lieuDetache } = await lieuCorreleAuLieuDecrit({ lieu })
+
+      if (lieuDetache !== null)
+        await detacherDuLieu({
+          utilisateurId: userId,
+          lieuId: lieuDetache,
+          trace,
+          maintenant,
+        })
+
+      return success({ _tag: 'DetacheeDesLieux', lieu, trace, lieuDetache })
     }
 
-    const geocodage = await adresseDuLieuAMaterialiser(
-      structureEmployeuseId,
-      ports,
-    )
+    const nom = employeuse.denomination
+
+    if (nom === null) return failure(EmployeuseSansDenomination(employeuseId))
+
+    const adresse = await lireLAdresseDeLEmployeuse(employeuseId)
+    const geocodage: Geocodage =
+      adresse === null
+        ? { _tag: 'AdresseInconnue' }
+        : await geocoderLAdresse(adresse)
 
     if (geocodage._tag === 'ServiceIndisponible')
-      return failure(ServiceAdresseIndisponible(structureEmployeuseId))
+      return failure(ServiceAdresseIndisponible(employeuseId))
 
     if (geocodage._tag === 'AdresseInconnue')
-      return failure(AdresseNonReconnue(structureEmployeuseId))
+      return failure(AdresseNonReconnue(employeuseId))
 
-    await ports.rattacherAuLieuDecrit({
-      userId,
-      lieu: lieuDepuisEmployeuse(employeuse, geocodage.adresse),
-      trace,
+    const lieu = lieuGeocode({
+      employeuse,
+      nom,
+      adresseBan: geocodage.adresse,
+      maintenant,
     })
 
-    return success<void>(undefined)
+    const { data: destination } = await destinationDuLieuDecrit({ lieu })
+
+    const rattachement = await rattacherAuLieuDecrit({
+      utilisateurId: userId,
+      destination,
+      trace,
+      maintenant,
+    })
+
+    if (rattachement._tag === 'LieuDisparu')
+      return failure(LieuIntrouvable(rattachement.lieuId))
+
+    return success({ _tag: 'RattacheeCommeLieu', lieu, trace, destination })
   }

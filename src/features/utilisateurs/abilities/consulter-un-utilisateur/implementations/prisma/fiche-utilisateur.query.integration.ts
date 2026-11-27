@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { prismaClient } from '@/configuration/prisma'
-import { mediateurDe } from '@/features/utilisateurs/domain'
+import { mediateurDe, UtilisateurId } from '@/features/utilisateurs/domain'
 import { ficheUtilisateur } from './fiche-utilisateur.query'
 
 const ids = {
@@ -91,7 +91,7 @@ const marquerLaSuppression = (suppression: Date | null) =>
 
 const compteursDe = async (utilisateurId: string) => {
   const fiche = await ficheUtilisateur({
-    utilisateurId,
+    utilisateurId: UtilisateurId(utilisateurId),
     maintenant: new Date(),
   })
   const mediateur = fiche === null ? null : mediateurDe(fiche.rattachements)

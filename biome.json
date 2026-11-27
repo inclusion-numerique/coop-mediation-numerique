@@ -333,6 +333,27 @@
       }
     },
     {
+      "includes": [
+        "src/features/**/domain/**",
+        "!src/features/**/domain/**/*.spec.ts"
+      ],
+      "plugins": ["./biome/domaine-pur.grit", "./biome/ports-du-domaine.grit"]
+    },
+    {
+      "includes": ["src/features/**/domain/**/*.spec.ts"],
+      "plugins": ["./biome/tests-du-domaine.grit"],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noConditionalExpect": "error",
+            "useExpect": "error",
+            "noFocusedTests": "error",
+            "noSkippedTests": "error"
+          }
+        }
+      }
+    },
+    {
       "includes": ["src/libraries/**"],
       "linter": {
         "rules": {

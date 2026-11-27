@@ -1,25 +1,14 @@
 import { prismaClient } from '@/configuration/prisma'
-import type { CoordinateurId, MediateurId } from '@/features/mediateurs/domain'
+import { partageDuProprietaire } from '../../../../implementations/prisma/partage-du-proprietaire.query'
+import type { RevoquerLesPartages } from '../../domain/ports'
 
-export const revoquerPartageStatistiques = async ({
-  mediateurId,
-  coordinateurId,
-  maintenant = new Date(),
-}: {
-  readonly mediateurId: MediateurId | null
-  readonly coordinateurId: CoordinateurId | null
-  readonly maintenant?: Date
-}): Promise<{ readonly partagesRevoques: number }> => {
-  const proprietaires = [
-    ...(mediateurId === null ? [] : [{ mediateurId }]),
-    ...(coordinateurId === null ? [] : [{ coordinateurId }]),
-  ]
-
-  if (proprietaires.length === 0) return { partagesRevoques: 0 }
-
+export const revoquerLesPartages: RevoquerLesPartages = async ({
+  proprietaires,
+  revoqueLe,
+}) => {
   const { count } = await prismaClient.partageStatistiques.updateMany({
-    where: { deleted: null, OR: proprietaires },
-    data: { deleted: maintenant },
+    where: { deleted: null, OR: proprietaires.map(partageDuProprietaire) },
+    data: { deleted: revoqueLe },
   })
 
   return { partagesRevoques: count }

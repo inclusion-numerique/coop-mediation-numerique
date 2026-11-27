@@ -24,7 +24,7 @@ describe('ce que la coop verse à la cartographie nationale', () => {
   })
 
   describe('un champ facultatif invalide se perd, le lieu reste', () => {
-    it.each([
+    it.each<[string, unknown]>([
       ['horaires', 'tous les jours sauf le mardi'],
       ['prise_rdv', 'appelez-nous'],
       ['fiche_acces_libre', 'https://acceslibre.fr/fiche'],
@@ -34,17 +34,14 @@ describe('ce que la coop verse à la cartographie nationale', () => {
       ['typologies', ['PAS_UNE_TYPOLOGIE']],
       ['source', '   '],
     ])('%s', (champ, valeur) => {
-      const resultat = publie({ [champ]: valeur })
-
-      expect(resultat.success).toBe(true)
-      expect(
-        resultat.success && (resultat.data as Record<string, unknown>)[champ],
-      ).toBeUndefined()
+      expect(LieuPublieSchema.parse(lieu({ [champ]: valeur }))).toMatchObject({
+        [champ]: undefined,
+      })
     })
   })
 
   describe('un champ obligatoire invalide retire le lieu', () => {
-    it.each([
+    it.each<[string, unknown]>([
       ['nom', '   '],
       ['adresse', { voie: '', code_postal: '51100', commune: 'Reims' }],
       ['adresse', undefined],
@@ -56,43 +53,63 @@ describe('ce que la coop verse à la cartographie nationale', () => {
   })
 
   it('garde le contact quand plusieurs sites web sont déclarés', () => {
-    const resultat = publie({
-      contact: {
-        telephone: '+33180059880',
-        courriels: ['contact@example.fr'],
-        site_web: ['https://un.example.fr', 'https://deux.example.fr'],
-      },
-    })
+    const resultat = LieuPublieSchema.parse(
+      lieu({
+        contact: {
+          telephone: '+33180059880',
+          courriels: ['contact@example.fr'],
+          site_web: ['https://un.example.fr', 'https://deux.example.fr'],
+        },
+      }),
+    )
 
-    expect(resultat.success && resultat.data.contact).toMatchObject({
+    expect(resultat.contact).toMatchObject({
       telephone: '+33180059880',
       site_web: ['https://deux.example.fr', 'https://un.example.fr'],
     })
   })
 
   it('perd le contact entier si un site web en contient plusieurs', () => {
-    const resultat = publie({
-      contact: {
-        telephone: '+33180059880',
-        site_web: ['https://un.example.fr|https://deux.example.fr'],
-      },
-    })
+    const resultat = LieuPublieSchema.parse(
+      lieu({
+        contact: {
+          telephone: '+33180059880',
+          site_web: ['https://un.example.fr|https://deux.example.fr'],
+        },
+      }),
+    )
 
-    expect(resultat.success && resultat.data.contact).toBeUndefined()
+    expect(resultat.contact).toBeUndefined()
   })
 
   it('dédoublonne et ordonne les listes', () => {
-    const resultat = publie({
-      services: [
-        Service.UtilisationSecuriseeDuNumerique,
-        Service.AideAuxDemarchesAdministratives,
-        Service.AideAuxDemarchesAdministratives,
-      ],
-    })
+    const resultat = LieuPublieSchema.parse(
+      lieu({
+        services: [
+          Service.UtilisationSecuriseeDuNumerique,
+          Service.AideAuxDemarchesAdministratives,
+          Service.AideAuxDemarchesAdministratives,
+        ],
+      }),
+    )
 
-    expect(resultat.success && resultat.data.services).toEqual([
+    expect(resultat.services).toEqual([
       Service.AideAuxDemarchesAdministratives,
       Service.UtilisationSecuriseeDuNumerique,
     ])
+  })
+
+  it('dédoublonne et ordonne les autres formations et labels', () => {
+    expect(
+      LieuPublieSchema.parse(
+        lieu({
+          autres_formations_labels: [
+            'Label maison',
+            'Atelier local',
+            'Label maison',
+          ],
+        }),
+      ).autres_formations_labels,
+    ).toEqual(['Atelier local', 'Label maison'])
   })
 })

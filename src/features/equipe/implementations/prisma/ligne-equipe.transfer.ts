@@ -14,15 +14,15 @@ import {
   roleMembre,
   type StatutMembre,
   type StructureEmployeuseMembre,
-  type TypeDeStatut,
+  TypeDeStatut,
   UtilisateurId,
   Voie,
 } from '../../domain'
 import type { LigneEquipeRow } from './ligne-equipe.sql'
-import { lue } from './lue.transfer'
+import { facultative, lue } from './lue.transfer'
 
 const statuts: Readonly<
-  Record<TypeDeStatut, (row: LigneEquipeRow) => StatutMembre>
+  Record<StatutMembre['type'], (row: LigneEquipeRow) => StatutMembre>
 > = {
   Invitation: ({ depuis }) => ({ type: 'Invitation', envoyeeLe: depuis }),
   Actif: ({ derniere_activite }) =>
@@ -47,28 +47,20 @@ const statuts: Readonly<
   }),
 }
 
-const estUnStatut = (statut: string): statut is TypeDeStatut =>
-  Object.hasOwn(statuts, statut)
-
-const toPersonne = (row: LigneEquipeRow): PersonneDeLEquipe => {
-  const utilisateurId =
-    row.user_id === null ? null : UtilisateurId.safe(row.user_id)
-  const mediateurId =
-    row.mediateur_id === null ? null : MediateurId.safe(row.mediateur_id)
-  return utilisateurId === null || mediateurId === null
+const toPersonne = (row: LigneEquipeRow): PersonneDeLEquipe =>
+  row.user_id === null || row.mediateur_id === null
     ? { type: 'SansCompte' }
     : {
         type: 'Inscrite',
-        mediateurId,
+        mediateurId: MediateurId(row.mediateur_id),
         profil: {
-          utilisateurId,
-          prenom: lue(Prenom, row.first_name),
-          nom: lue(Nom, row.last_name),
-          telephone: lue(Telephone, row.phone),
+          utilisateurId: UtilisateurId(row.user_id),
+          prenom: facultative(Prenom, row.first_name),
+          nom: facultative(Nom, row.last_name),
+          telephone: facultative(Telephone, row.phone),
           role: roleMembre(row.is_conseiller_numerique === true),
         },
       }
-}
 
 const toAdresse = (row: LigneEquipeRow): AdresseStructure => {
   const commune = lue(Commune, row.structure_employeuse_commune)
@@ -95,22 +87,14 @@ const toStructureEmployeuse = (
     : { type: 'Connue', nom, adresse }
 }
 
-export const toLigneEquipe = (row: LigneEquipeRow): LigneEquipe | null => {
-  const email = Courriel.safe(row.email)
-  return email !== null && estUnStatut(row.statut)
-    ? {
-        email,
-        statut: statuts[row.statut](row),
-        personne: toPersonne(row),
-        structureEmployeuse: toStructureEmployeuse(row),
-      }
-    : null
+const toStatut = (row: LigneEquipeRow): StatutMembre => {
+  const type: StatutMembre['type'] = TypeDeStatut(row.statut)
+  return statuts[type](row)
 }
 
-export const toLignesEquipe = (
-  rows: readonly LigneEquipeRow[],
-): readonly LigneEquipe[] =>
-  rows.flatMap((row) => {
-    const ligne = toLigneEquipe(row)
-    return ligne === null ? [] : [ligne]
-  })
+export const toLigneEquipe = (row: LigneEquipeRow): LigneEquipe => ({
+  email: Courriel(row.email),
+  statut: toStatut(row),
+  personne: toPersonne(row),
+  structureEmployeuse: toStructureEmployeuse(row),
+})

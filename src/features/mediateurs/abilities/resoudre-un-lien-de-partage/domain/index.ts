@@ -1,2 +1,1 @@
-export { LienIntrouvable } from './errors'
-export type { PartageResolu } from './partage-resolu'
+export { resoudreUnLienDePartage } from './resoudre-un-lien-de-partage'

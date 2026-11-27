@@ -30,15 +30,29 @@ export const filtreDesRoles = filtreDeChoix({
   },
 })
 
+const libelleDuFiltre = (filtre: (typeof filtresStatut)[number]): string =>
+  libelleDuStatut(statutDuFiltre(filtre))
+
 export const filtreDuStatut = filtreDeChoixUnique({
   titre: 'Statut',
   cle: 'statut',
-  choix: Object.fromEntries(
-    filtresStatut.map((filtre) => [
-      filtre,
-      libelleDuStatut(statutDuFiltre(filtre)),
-    ]),
-  ) as Record<(typeof filtresStatut)[number], string>,
+  choix: {
+    inscription0: libelleDuFiltre('inscription0'),
+    inscription7: libelleDuFiltre('inscription7'),
+    inscription30: libelleDuFiltre('inscription30'),
+    inscription60: libelleDuFiltre('inscription60'),
+    inscription90: libelleDuFiltre('inscription90'),
+    nouveau0: libelleDuFiltre('nouveau0'),
+    nouveau7: libelleDuFiltre('nouveau7'),
+    nouveau30: libelleDuFiltre('nouveau30'),
+    nouveau60: libelleDuFiltre('nouveau60'),
+    nouveau90: libelleDuFiltre('nouveau90'),
+    actif: libelleDuFiltre('actif'),
+    inactif30: libelleDuFiltre('inactif30'),
+    inactif90: libelleDuFiltre('inactif90'),
+    inactif180: libelleDuFiltre('inactif180'),
+    deleted: libelleDuFiltre('deleted'),
+  },
 })
 
 export const filtreDuDispositif = filtreDeChoixUnique({

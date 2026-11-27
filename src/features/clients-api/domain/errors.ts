@@ -1,18 +1,19 @@
+import type { NomDuClientApi } from './nom-du-client-api'
+
 export type ClientApiIntrouvable = {
   readonly _tag: 'ClientApiIntrouvable'
-  readonly clientApiId: string
 }
 
-export const ClientApiIntrouvable = (
-  clientApiId: string,
-): ClientApiIntrouvable => ({ _tag: 'ClientApiIntrouvable', clientApiId })
+export const ClientApiIntrouvable = (): ClientApiIntrouvable => ({
+  _tag: 'ClientApiIntrouvable',
+})
 
 export type NomDejaPris = {
   readonly _tag: 'NomDejaPris'
-  readonly nom: string
+  readonly nom: NomDuClientApi
 }
 
-export const NomDejaPris = (nom: string): NomDejaPris => ({
+export const NomDejaPris = (nom: NomDuClientApi): NomDejaPris => ({
   _tag: 'NomDejaPris',
   nom,
 })

@@ -14,7 +14,11 @@ import { clientDesCommunes } from '@/features/beneficiaire/abilities/importer-be
 
 const analyseImportBeneficiairesExcel = async (
   feuille: FeuilleImport,
-): Promise<Analysis> => analyserLaFeuille(await clientDesCommunes())(feuille)
+): Promise<Analysis> =>
+  analyserLaFeuille(await clientDesCommunes())({
+    feuille,
+    maintenant: new Date(),
+  })
 
 const tailleMaximaleDuFichier = 5 * 1024 * 1024
 

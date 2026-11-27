@@ -1,21 +1,15 @@
 import { describe, expect, it } from 'vitest'
 import {
-  contratsToDomain,
+  contratsLus,
+  emploiActuelLu,
   employeuseToDomain,
+  historiqueDEmploiLu,
   type PersonneEmployeusePayload,
-  personneToEmployeuseActuelle,
 } from './employeuse.transfer'
 
 type AffectationRow = PersonneEmployeusePayload['affectationsEmploi'][number]
 type EmployeuseRow = AffectationRow['structureAdministrative']
 
-/**
- * Ce transfer est en lecture seule : l'employeuse n'est pas écrite par cette
- * ability (les écritures arrivent avec `renseigner-employeuse`), donc pas de
- * round-trip possible. On couvre à la place les deux extrêmes de la ligne — la
- * plus complète et la plus dépouillée — puisque c'est là que les nullités de
- * `main` se transforment en états du domaine.
- */
 const ligneComplete: EmployeuseRow = {
   id: 42,
   createdAt: new Date('2020-01-01'),
@@ -97,8 +91,6 @@ describe('employeuseToDomain', () => {
     ).toBe('ASSOCIATION DES TESTS')
   })
 
-  // La donnée de `main` est produite par d'autres : un SIRET illisible ne doit
-  // pas faire échouer la lecture de toute l'employeuse.
   it('écarte un SIRET hors format sans perdre le reste', () => {
     const employeuse = employeuseToDomain({
       ...ligneComplete,
@@ -109,15 +101,10 @@ describe('employeuseToDomain', () => {
   })
 })
 
-describe('contratsToDomain', () => {
-  // Deux contrats successifs chez le même employeur restent deux périodes : c'est
-  // ce qui permet de savoir laquelle couvre une date passée.
-  it('conserve chaque contrat, y compris chez la même employeuse', () => {
-    // Horloge explicite : le classement d'un contrat dépend désormais de la date
-    // à laquelle on le regarde, et un test ne doit pas dépendre du jour où il
-    // s'exécute.
-    const contrats = contratsToDomain(
-      [
+describe('contratsLus', () => {
+  it('lit chaque contrat avec ses dates, y compris chez la même employeuse', () => {
+    expect(
+      contratsLus([
         {
           structureAdministrative: ligneComplete,
           dateDebut: new Date('2024-01-01'),
@@ -128,26 +115,28 @@ describe('contratsToDomain', () => {
           structureAdministrative: ligneComplete,
           dateDebut: new Date('2026-01-01'),
           dateFin: null,
-          dateRupture: null,
+          dateRupture: new Date('2026-06-01'),
         },
-      ],
-      new Date('2026-06-01'),
-    )
-
-    expect(contrats.map(({ periode }) => periode)).toEqual([
+      ]),
+    ).toEqual([
       {
-        _tag: 'terminee',
+        employeuse: employeuseToDomain(ligneComplete),
         debut: new Date('2024-01-01'),
         fin: new Date('2024-12-31'),
+        rupture: null,
       },
-      { _tag: 'enCours', debut: new Date('2026-01-01'), finPrevue: null },
+      {
+        employeuse: employeuseToDomain(ligneComplete),
+        debut: new Date('2026-01-01'),
+        fin: null,
+        rupture: new Date('2026-06-01'),
+      },
     ])
-    expect(contrats.every(({ employeuse }) => employeuse.id === 42)).toBe(true)
   })
 
   it('écarte les contrats sans structure', () => {
     expect(
-      contratsToDomain([
+      contratsLus([
         {
           structureAdministrative: null,
           dateDebut: new Date('2026-01-01'),
@@ -159,33 +148,57 @@ describe('contratsToDomain', () => {
   })
 })
 
-describe('personneToEmployeuseActuelle', () => {
-  it('compose la personne chargée en employeuse courante', () => {
-    const actuelle = personneToEmployeuseActuelle({
-      employeuseActuelle: {
-        source: 'coop',
-        structureAdministrative: ligneComplete,
-      },
-      contrats: [
-        {
+describe('emploiActuelLu', () => {
+  it('lit l’affectation actuelle et les contrats de la personne', () => {
+    expect(
+      emploiActuelLu({
+        employeuseActuelle: {
+          source: 'coop',
           structureAdministrative: ligneComplete,
-          dateDebut: new Date('2026-03-01'),
-          dateFin: null,
-          dateRupture: null,
         },
-      ],
-    })
-
-    expect(actuelle?.employeuse.id).toBe(42)
-    expect(actuelle?.source).toBe('coop')
-    expect(actuelle?.periode).toEqual({
-      _tag: 'enCours',
-      debut: new Date('2026-03-01'),
-      finPrevue: null,
+        contrats: [],
+      }),
+    ).toEqual({
+      affectationActuelle: {
+        employeuse: employeuseToDomain(ligneComplete),
+        source: 'coop',
+      },
+      contrats: [],
     })
   })
 
-  it('n’a pas d’employeuse sans personne', () => {
-    expect(personneToEmployeuseActuelle(null)).toBeNull()
+  it('n’a pas d’affectation actuelle sans employeuse actuelle', () => {
+    expect(emploiActuelLu({ employeuseActuelle: null, contrats: [] })).toEqual({
+      affectationActuelle: null,
+      contrats: [],
+    })
+  })
+})
+
+describe('historiqueDEmploiLu', () => {
+  it('lit les affectations et les contrats de la personne', () => {
+    expect(
+      historiqueDEmploiLu({
+        affectationsEmploi: [
+          {
+            source: 'idposte',
+            estActive: false,
+            createdAt: new Date('2025-01-01'),
+            structureAdministrative: ligneComplete,
+          },
+        ],
+        contrats: [],
+      }),
+    ).toEqual({
+      affectations: [
+        {
+          employeuse: employeuseToDomain(ligneComplete),
+          source: 'idposte',
+          active: false,
+          depuis: new Date('2025-01-01'),
+        },
+      ],
+      contrats: [],
+    })
   })
 })

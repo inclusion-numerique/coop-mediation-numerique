@@ -10,16 +10,13 @@ import type { NomUsage } from '../../../domain/identite-sirene'
 import type { Lieu } from '../../../domain/lieu'
 import { servicesALaPublication } from '../../../domain/registre/publication'
 import { ModifieParUtilisateur } from '../../../domain/registre/tracabilite'
+import type { SectionDeLaFiche } from '../../../domain/section-de-la-fiche'
 import {
   contactAvecJoignabilite,
   contactAvecSitesWeb,
   modalitesApres,
 } from './contact-de-la-fiche'
-import type {
-  Modification,
-  ModificationLieu,
-  SectionDeLaFiche,
-} from './modification-lieu'
+import type { Modification, ModificationLieu } from './modification-lieu'
 
 const visibiliteCartographie = (
   fiche: Fiche,

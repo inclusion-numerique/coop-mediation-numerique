@@ -4,6 +4,7 @@ export {
   adherer,
   adhesionActive,
   archiver,
+  type NouvelleAdhesion,
 } from './adhesion'
 export { Commune } from './commune'
 export type { CoordinateurDeLEquipe } from './coordinateur-de-l-equipe'
@@ -33,10 +34,7 @@ export { Courriel } from './identite/courriel'
 export { Nom } from './identite/nom'
 export { NomAffiche, nomAffiche } from './identite/nom-affiche'
 export { Prenom } from './identite/prenom'
-export type {
-  EnvoyerUneInvitation,
-  PrevenirLeCoordinateur,
-} from './invitation/envois'
+export type { EnvoiDInvitation } from './invitation/envoi-d-invitation'
 export {
   exigerEnAttente,
   exigerUneRelancePossible,
@@ -48,6 +46,7 @@ export {
   LienInvitation,
   PREFIXE_DU_LIEN_D_INVITATION,
 } from './invitation/lien-invitation'
+export { type Prevenance, prevenanceDe } from './invitation/prevenance'
 export { ReferenceInvitation } from './invitation/reference-invitation'
 export { type Lecteur, peutConsulterLEquipe } from './lecteur'
 export {
@@ -58,10 +57,18 @@ export {
   type StructureEmployeuseMembre,
 } from './ligne-equipe'
 export { NomStructure } from './nom-structure'
+export type {
+  EnvoyerUneInvitation,
+  InvitationLue,
+  LireLeCoordinateur,
+  LireLesAdhesionsDeLaPaire,
+  LireUneInvitation,
+  PrevenirLeCoordinateur,
+} from './ports'
 export { RoleMembre, roleMembre } from './role-membre'
 export {
   SEUIL_INACTIVITE_EN_JOURS,
   type StatutMembre,
-  type TypeDeStatut,
+  TypeDeStatut,
 } from './statut-membre'
 export { Voie } from './voie'

@@ -34,8 +34,6 @@ const ValiderInscriptionForm = ({
 }) => {
   const router = useRouter()
 
-  // Si l'acceptation des CGU n'est pas requise (déjà acceptée), on la
-  // pré-remplit ; sinon l'utilisateur doit cocher la case au récapitulatif.
   const defaultValues: DefaultValues<ValiderFormData> = {
     cguAcceptee: !mustAcceptCgu,
   }
@@ -69,8 +67,6 @@ const ValiderInscriptionForm = ({
   const isSubmitting = useSelector(form.store, (state) => state.isSubmitting)
   const isHydrated = useHydrated()
 
-  // Bouton désactivé tant que la page n'est pas interactive : sans cela, un
-  // clic trop précoce est silencieusement perdu à l'hydratation.
   const isPending = isSubmitting || !isHydrated
 
   return (

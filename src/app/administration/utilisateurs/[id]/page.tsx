@@ -11,12 +11,18 @@ import { supprimerCompteAction } from '@/app/_actions/utilisateurs/supprimer-com
 import { usurperUnUtilisateurAction } from '@/app/_actions/utilisateurs/usurper-un-utilisateur.action'
 import { environnementServeur } from '@/configuration/environnement/serveur'
 import { metadataTitle } from '@/configuration/projet'
-import { compterLesAccompagnements } from '@/features/activites/abilities/compter-les-accompagnements/implementations/prisma/totaux-des-accompagnements.query'
+import { compterLesAccompagnements } from '@/features/activites/abilities/compter-les-accompagnements/domain'
+import {
+  activitesComptees,
+  nouvellesPersonnesComptees,
+  personnesComptees,
+} from '@/features/activites/abilities/compter-les-accompagnements/implementations/prisma/totaux-des-accompagnements.query'
 import { totauxPresentes } from '@/features/activites/abilities/compter-les-accompagnements/ui/presenters/totaux.presenter'
 import { compterLesAccompagnementsParLieu } from '@/features/activites/abilities/compter-les-accompagnements-par-lieu/implementations/prisma/accompagnements-par-lieu.query'
 import { parLieuPresentes } from '@/features/activites/abilities/compter-les-accompagnements-par-lieu/ui/presenters/par-lieu.presenter'
+import { compterLesActivitesDeCoordination } from '@/features/activites/abilities/compter-les-activites-de-coordination/domain'
 import { CoordinateurId as CoordinateurDesActivitesDeCoordination } from '@/features/activites/abilities/compter-les-activites-de-coordination/domain/index'
-import { compterLesActivitesDeCoordination } from '@/features/activites/abilities/compter-les-activites-de-coordination/implementations/prisma/activites-de-coordination.query'
+import { activitesDuCoordinateur } from '@/features/activites/abilities/compter-les-activites-de-coordination/implementations/prisma/activites-de-coordination.query'
 import { activitesDeCoordinationPresentees } from '@/features/activites/abilities/compter-les-activites-de-coordination/ui/presenters/activites-de-coordination.presenter'
 import { decrireLesActivitesDuPerimetre } from '@/features/activites/abilities/decrire-les-activites-du-perimetre/implementations/prisma/activites-du-perimetre.query'
 import { decrireLesPersonnesAccompagnees } from '@/features/activites/abilities/decrire-les-personnes-accompagnees/implementations/prisma/profil-des-personnes-accompagnees.query'
@@ -30,10 +36,14 @@ import {
   authenticateAdmin,
   authenticateUser,
 } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
-import { consulterHistoriqueEmployeuses } from '@/features/employeuse/abilities/consulter-historique-employeuses/implementations/prisma/consulter-historique-employeuses.query'
+import { consulterHistoriqueEmployeuses } from '@/features/employeuse/abilities/consulter-historique-employeuses/domain/consulter-historique-employeuses'
+import { lireLHistoriqueDEmploi } from '@/features/employeuse/abilities/consulter-historique-employeuses/implementations/prisma/historique-d-emploi.query'
 import { historiqueEmployeusesAffichage } from '@/features/employeuse/abilities/consulter-historique-employeuses/ui/presenters/historique-employeuses.presenter'
 import { HistoriqueDesEmployeuses } from '@/features/employeuse/abilities/consulter-historique-employeuses/ui/slots/HistoriqueDesEmployeuses.slot'
-import { listerLesMembres } from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/lister-les-membres.query'
+import { UtilisateurId as UtilisateurIdDeLEmployeuse } from '@/features/employeuse/domain'
+import { listerLesMembres } from '@/features/equipe/abilities/lister-les-membres/domain/lister-les-membres'
+import { lireLaCommuneDuCoordinateur } from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/commune-du-coordinateur.query'
+import { lireLesMembres } from '@/features/equipe/abilities/lister-les-membres/implementations/prisma/lister-les-membres.query'
 import {
   type ParametresDeLaListe,
   requeteDeLaListe,
@@ -46,6 +56,7 @@ import { default as BoutonSupprimerUnAncienMembre } from '@/features/equipe/abil
 import { ANNULER_UNE_INVITATION_ACTION_KEY } from '@/features/equipe/action/annuler-une-invitation.key'
 import { RELANCER_UNE_INVITATION_ACTION_KEY } from '@/features/equipe/action/relancer-une-invitation.key'
 import { CoordinateurId } from '@/features/equipe/domain'
+import { lireLeCoordinateur } from '@/features/equipe/implementations/prisma/coordinateur.query'
 import { gestionnaireDe } from '@/features/equipe/implementations/session'
 import { default as ActionsDuMembre } from '@/features/equipe/ui/slots/ActionsDuMembre.slot'
 import { AvertissementsEtatInscription } from '@/features/inscription/ui/slots/AvertissementsEtatInscription.slot'
@@ -76,7 +87,11 @@ import { SUPPRIMER_LE_COMPTE_ACTION_KEY } from '@/features/utilisateurs/abilitie
 import { BoutonSupprimerLeCompte } from '@/features/utilisateurs/abilities/supprimer-compte/ui/slots/BoutonSupprimerLeCompte.slot'
 import { USURPER_UN_UTILISATEUR_ACTION_KEY } from '@/features/utilisateurs/abilities/usurper-un-utilisateur/action/usurper-un-utilisateur.key'
 import { BoutonUsurper } from '@/features/utilisateurs/abilities/usurper-un-utilisateur/ui/slots/BoutonUsurper.slot'
-import { coordinateurDe, mediateurDe } from '@/features/utilisateurs/domain'
+import {
+  coordinateurDe,
+  mediateurDe,
+  UtilisateurId,
+} from '@/features/utilisateurs/domain'
 import { ClientBinder } from '@/libraries/nextjs/injection'
 
 export const metadata = {
@@ -88,12 +103,18 @@ export const revalidate = 0
 const sectionEquipe = async (
   fiche: FicheUtilisateur,
   searchParams: ParametresDeLaListe,
+  maintenant: Date,
 ): Promise<ReactNode> => {
   const coordinateur = coordinateurDe(fiche.rattachements)
   if (coordinateur === null) return null
 
   const administrateur = await authenticateUser()
   const membres = await listerLesMembres({
+    lireLeCoordinateur,
+    lireLaCommuneDuCoordinateur,
+    lireLesMembres,
+  })({
+    maintenant,
     coordinateurId: CoordinateurId(coordinateur.id),
     lecteur: {
       gestionnaire: gestionnaireDe(administrateur),
@@ -146,9 +167,11 @@ const activitesDeCoordinationEnCumul = async (
   if (coordinateurId === null) return null
 
   const presentees = activitesDeCoordinationPresentees(
-    await compterLesActivitesDeCoordination({
-      coordinateurId: CoordinateurDesActivitesDeCoordination(coordinateurId),
-    }),
+    (
+      await compterLesActivitesDeCoordination({ activitesDuCoordinateur })({
+        coordinateurId: CoordinateurDesActivitesDeCoordination(coordinateurId),
+      })
+    ).data,
   )
 
   return (
@@ -160,6 +183,7 @@ const activitesDeCoordinationEnCumul = async (
 const sectionStatistiques = async (
   fiche: FicheUtilisateur,
   periode: PeriodeChoisie,
+  maintenant: Date,
 ): Promise<ReactNode> => {
   const perimetre = perimetreDeLUtilisateur(
     await utilisateurDeLaSessionParId(fiche.id),
@@ -184,7 +208,11 @@ const sectionStatistiques = async (
     coordination,
     { premiere, derniere },
   ] = await Promise.all([
-    compterLesAccompagnements(demande).then(totauxPresentes),
+    compterLesAccompagnements({
+      activitesComptees,
+      personnesComptees,
+      nouvellesPersonnesComptees,
+    })(demande).then(({ data }) => totauxPresentes(data)),
     repartirLesAccompagnements(demande).then(repartitionPresentee),
     decrireLesPersonnesAccompagnees(demande).then(profilPresente),
     compterLesAccompagnementsParLieu(demande).then(parLieuPresentes),
@@ -200,6 +228,7 @@ const sectionStatistiques = async (
       derniere={derniere}
       periode={periode}
       statistiques={{ totaux, repartition, profil, lieux, coordination }}
+      maintenant={maintenant}
     />
   )
 }
@@ -214,19 +243,26 @@ const Page = async (props: {
     props.searchParams,
   ])
 
+  const maintenant = new Date()
+  const utilisateurId = UtilisateurId.safe(id)
+  if (utilisateurId === null) notFound()
+
   const fiche = await ficheUtilisateur({
-    utilisateurId: id,
-    maintenant: new Date(),
+    utilisateurId,
+    maintenant,
   })
   if (fiche === null) notFound()
 
   const mediateur = mediateurDe(fiche.rattachements)
 
   const [equipe, lieux, employeuses, statistiques] = await Promise.all([
-    sectionEquipe(fiche, searchParams),
+    sectionEquipe(fiche, searchParams, maintenant),
     sectionLieux(fiche),
-    consulterHistoriqueEmployeuses({ userId: fiche.id }),
-    sectionStatistiques(fiche, periodeChoisieDans(searchParams)),
+    consulterHistoriqueEmployeuses({ lireLHistoriqueDEmploi })({
+      utilisateurId: UtilisateurIdDeLEmployeuse(fiche.id),
+      maintenant,
+    }).then(({ data }) => data),
+    sectionStatistiques(fiche, periodeChoisieDans(searchParams), maintenant),
   ])
 
   return (

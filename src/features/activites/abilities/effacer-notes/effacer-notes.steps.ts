@@ -8,7 +8,9 @@ import {
 } from '@/features/activites/activites.cucumber'
 import { CoordinateurId, MediateurId } from '@/features/activites/domain'
 
-let effacees: number | undefined
+const etat: {
+  effacees?: number
+} = {}
 
 const cible = () => ({
   mediateurId: MediateurId(comptesRendusSemes().mediateurId),
@@ -20,19 +22,19 @@ Given('des comptes rendus porteurs de texte libre', async () => {
 })
 
 When("j'efface le texte libre de ces comptes rendus", async () => {
-  effacees = (await effacerNotes(cible())).effacees
+  etat.effacees = (await effacerNotes(cible())).effacees
 })
 
 When("j'efface à nouveau le texte libre de ces comptes rendus", async () => {
-  effacees = (await effacerNotes(cible())).effacees
+  etat.effacees = (await effacerNotes(cible())).effacees
 })
 
 Then("l'effacement porte sur {int} comptes rendus", (attendu: number) => {
-  assert.strictEqual(effacees, attendu)
+  assert.strictEqual(etat.effacees, attendu)
 })
 
 Then("l'effacement porte sur {int} compte rendu", (attendu: number) => {
-  assert.strictEqual(effacees, attendu)
+  assert.strictEqual(etat.effacees, attendu)
 })
 
 Then('aucun compte rendu ne porte plus de texte libre', async () => {

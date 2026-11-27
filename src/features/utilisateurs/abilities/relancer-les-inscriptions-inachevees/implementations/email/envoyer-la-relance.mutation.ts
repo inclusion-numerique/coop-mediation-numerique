@@ -5,9 +5,11 @@ import {
   throwOnSendMailFailure,
 } from '@/configuration/smtp'
 import { relance } from '@/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees/implementations/email/relance.email'
+import type { EnvoyerLaRelance } from '@/features/utilisateurs/domain'
 import { compileMjml } from '@/libraries/emails/rendu'
+import { attraperEnEchecTechnique } from '@/libraries/result'
 
-export const envoyerLaRelance = async ({
+const envoyer = async ({
   email,
   firstname,
   totalUsers,
@@ -35,3 +37,13 @@ export const envoyerLaRelance = async ({
 
   throwOnSendMailFailure(result)
 }
+
+export const envoyerLaRelance =
+  (totalInscrits: number): EnvoyerLaRelance =>
+  ({ courriel, prenom }, palier) =>
+    attraperEnEchecTechnique(envoyer)({
+      email: courriel,
+      firstname: prenom,
+      totalUsers: totalInscrits,
+      matomoCampaignId: `finaliser_inscription_j${palier}`,
+    })

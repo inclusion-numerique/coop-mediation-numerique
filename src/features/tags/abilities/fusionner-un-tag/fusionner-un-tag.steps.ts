@@ -13,20 +13,23 @@ import {
   tagsDeLActivite,
   tagsDeLActiviteDeCoordination,
 } from '@/features/tags/tags.cucumber'
-import type { DestinationDeFusion } from './domain'
-import { destinationsDeFusion } from './implementations/prisma/destinations-de-fusion.query'
-import { fusionnerUnTag } from './implementations/prisma/fusionner-un-tag.mutation'
+import { fusionnerUnTag } from './domain/fusionner-un-tag'
+import { reporterLeTag } from './implementations/prisma/reporter-le-tag.mutation'
+import { lireLesTagsDeLaFusion } from './implementations/prisma/tags-de-la-fusion.query'
+
+const fusionnerEnBase = fusionnerUnTag({
+  lireLesTags: lireLesTagsDeLaFusion,
+  reporter: reporterLeTag,
+})
 
 const contexte: {
   acteur?: Acteur
   coordinateurId?: string
   sourceId?: string
   destinationId?: string
-  autreTagId?: string
   activiteId?: string
   activiteCoordinationId?: string
-  issue?: Awaited<ReturnType<typeof fusionnerUnTag>>
-  proposees?: readonly DestinationDeFusion[]
+  issue?: Awaited<ReturnType<typeof fusionnerEnBase>>
 } = {}
 
 const valeur = <T>(valeur: T | undefined): T => {
@@ -97,13 +100,8 @@ Given('un tag personnel de ce coordinateur de destination', async () => {
   })
 })
 
-Given("un tag personnel d'un autre médiateur", async () => {
-  const { mediateurId } = await semerUnMediateur()
-  contexte.autreTagId = await semerUnTag({ mediateurId })
-})
-
 When('ce médiateur fusionne son tag dans le tag de destination', async () => {
-  contexte.issue = await fusionnerUnTag({
+  contexte.issue = await fusionnerEnBase({
     acteur: valeur(contexte.acteur),
     sourceId: TagId(valeur(contexte.sourceId)),
     destinationId: TagId(valeur(contexte.destinationId)),
@@ -113,22 +111,13 @@ When('ce médiateur fusionne son tag dans le tag de destination', async () => {
 When(
   'ce coordinateur fusionne son tag dans le tag de destination',
   async () => {
-    contexte.issue = await fusionnerUnTag({
+    contexte.issue = await fusionnerEnBase({
       acteur: valeur(contexte.acteur),
       sourceId: TagId(valeur(contexte.sourceId)),
       destinationId: TagId(valeur(contexte.destinationId)),
     })
   },
 )
-
-When('ce médiateur cherche où fusionner son tag', async () => {
-  contexte.proposees = await destinationsDeFusion({
-    acteur: valeur(contexte.acteur),
-    sourceId: TagId(valeur(contexte.sourceId)),
-    recherche: '',
-    limite: 1000,
-  })
-})
 
 Then('la fusion du tag réussit', () => {
   assert.strictEqual(contexte.issue?.success, true)
@@ -160,18 +149,3 @@ Then("le tag fusionné n'existe plus", async () => {
 Then('le tag à fusionner existe toujours', async () => {
   assert.notStrictEqual(await tagEnBase(valeur(contexte.sourceId)), null)
 })
-
-const proposes = (): readonly string[] =>
-  valeur(contexte.proposees).map(({ tag }) => tag.id)
-
-Then('le tag de destination est proposé', () => {
-  assert.ok(proposes().includes(valeur(contexte.destinationId)))
-})
-
-Then(
-  "ni le tag à fusionner ni le tag de l'autre médiateur ne sont proposés",
-  () => {
-    assert.ok(!proposes().includes(valeur(contexte.sourceId)))
-    assert.ok(!proposes().includes(valeur(contexte.autreTagId)))
-  },
-)

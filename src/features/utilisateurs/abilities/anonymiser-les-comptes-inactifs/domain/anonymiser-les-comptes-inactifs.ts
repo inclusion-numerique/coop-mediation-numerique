@@ -1,42 +1,74 @@
 import type { UtilisateurId } from '@/features/utilisateurs/domain'
+import { type Result, success } from '@/libraries/result'
 import { type CompteAExaminer, derniereActivite } from './compte-a-examiner'
 import { type EtapeInactivite, etapeInactivite } from './etape-inactivite'
-import type { AnonymiserLesComptesInactifsDependances } from './ports'
+import type { AnonymiserLesComptesInactifsPorts } from './ports'
+
+type Issue =
+  | { readonly _tag: 'Fait' }
+  | { readonly _tag: 'Echec'; readonly cause: string }
+
+type IssueDeLExamen = Issue | { readonly _tag: 'Simule' }
 
 export type CompteExamine = {
   readonly utilisateurId: UtilisateurId
-  readonly etape: EtapeInactivite['_tag']
-} & (
-  | { readonly issue: 'simule' | 'fait' }
-  | { readonly issue: 'echec'; readonly cause: string }
-)
+  readonly etape: EtapeInactivite
+  readonly issue: IssueDeLExamen
+}
 
-const agir = async (
+const FAIT: Issue = { _tag: 'Fait' }
+
+const echec = (cause: string): Issue => ({ _tag: 'Echec', cause })
+
+const avertir = async (
+  compte: CompteAExaminer,
+  dateDeSuppression: Date,
+  maintenant: Date,
+  {
+    avertirDeLaSuppression,
+    noterLAvertissement,
+  }: AnonymiserLesComptesInactifsPorts,
+): Promise<Issue> => {
+  const avertissement = await avertirDeLaSuppression({
+    courriel: compte.courriel,
+    prenom: compte.prenom,
+    dateDeSuppression,
+  })
+  if (!avertissement.success) return echec(avertissement.error.cause)
+
+  const note = await noterLAvertissement(compte.id, maintenant)
+  return note.success ? FAIT : echec(note.error.cause)
+}
+
+const supprimer = async (
+  compte: CompteAExaminer,
+  maintenant: Date,
+  { supprimerLeCompte }: AnonymiserLesComptesInactifsPorts,
+): Promise<Issue> => {
+  const suppression = await supprimerLeCompte({
+    utilisateurId: compte.id,
+    maintenant,
+  })
+  return suppression.success ? FAIT : echec(suppression.error.motif)
+}
+
+const agir = (
   compte: CompteAExaminer,
   etape: EtapeInactivite,
   maintenant: Date,
-  dependances: AnonymiserLesComptesInactifsDependances,
-): Promise<void> => {
-  if (etape._tag === 'aAvertir') {
-    await dependances.avertirDeLaSuppression({
-      courriel: compte.courriel,
-      prenom: compte.prenom,
-      dateDeSuppression: etape.dateDeSuppression,
-    })
-    await dependances.noterLAvertissement(compte.id, maintenant)
-    return
-  }
-
-  if (etape._tag === 'aSupprimer') {
-    await dependances.supprimerLeCompte(compte.id)
-  }
+  ports: AnonymiserLesComptesInactifsPorts,
+): Promise<Issue> => {
+  if (etape._tag === 'aAvertir')
+    return avertir(compte, etape.dateDeSuppression, maintenant, ports)
+  if (etape._tag === 'aSupprimer') return supprimer(compte, maintenant, ports)
+  return Promise.resolve(FAIT)
 }
 
 const examiner =
   (
     maintenant: Date,
     simuler: boolean,
-    dependances: AnonymiserLesComptesInactifsDependances,
+    ports: AnonymiserLesComptesInactifsPorts,
   ) =>
   async (compte: CompteAExaminer): Promise<CompteExamine> => {
     const etape = etapeInactivite({
@@ -45,41 +77,45 @@ const examiner =
       maintenant,
     })
 
-    if (simuler) {
-      return { utilisateurId: compte.id, etape: etape._tag, issue: 'simule' }
-    }
+    if (simuler)
+      return { utilisateurId: compte.id, etape, issue: { _tag: 'Simule' } }
 
-    return agir(compte, etape, maintenant, dependances).then(
-      (): CompteExamine => ({
-        utilisateurId: compte.id,
-        etape: etape._tag,
-        issue: 'fait',
-      }),
-      (erreur: unknown): CompteExamine => ({
-        utilisateurId: compte.id,
-        etape: etape._tag,
-        issue: 'echec',
-        cause: erreur instanceof Error ? erreur.message : String(erreur),
-      }),
-    )
+    return {
+      utilisateurId: compte.id,
+      etape,
+      issue: await agir(compte, etape, maintenant, ports),
+    }
   }
 
 export const anonymiserLesComptesInactifs =
-  (dependances: AnonymiserLesComptesInactifsDependances) =>
+  ({
+    lireLesComptesAExaminer,
+    avertirDeLaSuppression,
+    noterLAvertissement,
+    supprimerLeCompte,
+  }: AnonymiserLesComptesInactifsPorts) =>
   async ({
     maintenant,
     simuler,
   }: {
     readonly maintenant: Date
     readonly simuler: boolean
-  }): Promise<readonly CompteExamine[]> => {
-    const comptes = await dependances.lireLesComptesAExaminer(maintenant)
+  }): Promise<Result<readonly CompteExamine[], never>> => {
+    const comptes = await lireLesComptesAExaminer(maintenant)
+    const examinerLeCompte = examiner(maintenant, simuler, {
+      lireLesComptesAExaminer,
+      avertirDeLaSuppression,
+      noterLAvertissement,
+      supprimerLeCompte,
+    })
 
-    return comptes.reduce<Promise<readonly CompteExamine[]>>(
-      async (precedents, compte) => [
-        ...(await precedents),
-        await examiner(maintenant, simuler, dependances)(compte),
-      ],
-      Promise.resolve([]),
+    return success(
+      await comptes.reduce<Promise<readonly CompteExamine[]>>(
+        async (precedents, compte) => [
+          ...(await precedents),
+          await examinerLeCompte(compte),
+        ],
+        Promise.resolve([]),
+      ),
     )
   }

@@ -1,6 +1,7 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { TagId } from '@/features/tags/domain'
+import { lireUnTagActif } from '@/features/tags/implementations/prisma/tag-actif.query'
 import {
   acteurCoordinateur,
   acteurMediateur,
@@ -13,14 +14,20 @@ import {
   tagsDeLActivite,
   tagsDeLActiviteDeCoordination,
 } from '@/features/tags/tags.cucumber'
-import { supprimerUnTag } from './implementations/prisma/supprimer-un-tag.mutation'
+import { supprimerUnTag } from './domain/supprimer-un-tag'
+import { effacerUnTag } from './implementations/prisma/effacer-un-tag.mutation'
+
+const supprimerEnBase = supprimerUnTag({
+  lireUnTagActif,
+  effacer: effacerUnTag,
+})
 
 const contexte: {
   proprietaire?: { mediateurId?: string; coordinateurId?: string }
   tagId?: string
   activiteId?: string
   activiteCoordinationId?: string
-  issue?: Awaited<ReturnType<typeof supprimerUnTag>>
+  issue?: Awaited<ReturnType<typeof supprimerEnBase>>
 } = {}
 
 const tagId = (): string => {
@@ -61,7 +68,7 @@ Given('un tag national', async () => {
 
 When('ce médiateur supprime ce tag', async () => {
   assert.ok(contexte.proprietaire?.mediateurId)
-  contexte.issue = await supprimerUnTag({
+  contexte.issue = await supprimerEnBase({
     tagId: TagId(tagId()),
     acteur: acteurMediateur({ mediateurId: contexte.proprietaire.mediateurId }),
   })
@@ -69,7 +76,7 @@ When('ce médiateur supprime ce tag', async () => {
 
 When('ce coordinateur supprime ce tag', async () => {
   assert.ok(contexte.proprietaire?.coordinateurId)
-  contexte.issue = await supprimerUnTag({
+  contexte.issue = await supprimerEnBase({
     tagId: TagId(tagId()),
     acteur: acteurCoordinateur({
       coordinateurId: contexte.proprietaire.coordinateurId,
@@ -79,7 +86,7 @@ When('ce coordinateur supprime ce tag', async () => {
 
 When('un autre médiateur supprime ce tag', async () => {
   const { mediateurId } = await semerUnMediateur()
-  contexte.issue = await supprimerUnTag({
+  contexte.issue = await supprimerEnBase({
     tagId: TagId(tagId()),
     acteur: acteurMediateur({ mediateurId }),
   })
@@ -87,7 +94,7 @@ When('un autre médiateur supprime ce tag', async () => {
 
 When('un coordinateur supprime ce tag', async () => {
   const { coordinateurId } = await semerUnCoordinateur()
-  contexte.issue = await supprimerUnTag({
+  contexte.issue = await supprimerEnBase({
     tagId: TagId(tagId()),
     acteur: acteurCoordinateur({ coordinateurId, departement: '69' }),
   })

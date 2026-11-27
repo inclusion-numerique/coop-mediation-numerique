@@ -4,7 +4,8 @@ import { rechercherDesCommunesDuReseauAction } from '@/app/_actions/mon-reseau/r
 import { metadataTitle } from '@/configuration/projet'
 import { authenticateMediateurOrCoordinateur } from '@/features/authentification/middlewares/with-utilisateur-authentifie'
 import { communesDesLieux } from '@/features/lieux-activite/abilities/lister-les-lieux-du-departement/implementations/prisma/communes-des-lieux.query'
-import { listerLesActeursDuDepartement } from '@/features/mon-reseau/abilities/lister-les-acteurs-du-departement/implementations/prisma/acteurs-listes.query'
+import { listerLesActeursDuDepartement } from '@/features/mon-reseau/abilities/lister-les-acteurs-du-departement/domain/lister-les-acteurs-du-departement'
+import { acteursDuDepartement } from '@/features/mon-reseau/abilities/lister-les-acteurs-du-departement/implementations/prisma'
 import {
   criteresDesActeursDuReseau,
   filtresDesActeursDuReseau,
@@ -16,6 +17,7 @@ import { RECHERCHER_DES_COMMUNES_DU_RESEAU_KEY } from '@/features/mon-reseau/act
 import type { ParametresDuReseau } from '@/features/mon-reseau/ui/filtres/reseau.filtre'
 import { barreDuReseau } from '@/features/mon-reseau/ui/presenters/barre-du-reseau.presenter'
 import { hrefDesActeurs } from '@/features/mon-reseau/ui/presenters/liens.presenter'
+import { departementConnu } from '@/libraries/departement'
 import { ClientBinder } from '@/libraries/nextjs/injection'
 
 export const metadata: Metadata = {
@@ -33,11 +35,13 @@ const Page = async ({
 
   const { departement } = await params
   const parametres = await searchParams
-  const consultation = await listerLesActeursDuDepartement(
-    departement,
-    criteresDesActeursDuReseau(parametres),
-    { communesDesLieux },
-  )
+  const consultation = await listerLesActeursDuDepartement({
+    acteursDuDepartement,
+    communesDesLieux,
+  })({
+    departement: departementConnu(departement),
+    criteres: criteresDesActeursDuReseau(parametres),
+  })
 
   return consultation.success ? (
     <ClientBinder

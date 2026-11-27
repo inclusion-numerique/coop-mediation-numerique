@@ -1,7 +1,12 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
-import { ajouterUnMembre } from '@/features/equipe/abilities/ajouter-un-membre/implementations/prisma/ajouter-un-membre.mutation'
+import { ajouterUnMembre as ajouterUnMembreAvec } from '@/features/equipe/abilities/ajouter-un-membre/domain/ajouter-un-membre'
+import { enregistrerLAdhesion } from '@/features/equipe/abilities/ajouter-un-membre/implementations/prisma/enregistrer-l-adhesion.mutation'
 import { mediateursAAjouter } from '@/features/equipe/abilities/ajouter-un-membre/implementations/prisma/mediateurs-a-ajouter.query'
+import {
+  coordinateurExiste,
+  lireLUtilisateurAAjouter,
+} from '@/features/equipe/abilities/ajouter-un-membre/implementations/prisma/utilisateur-a-ajouter.query'
 import { CoordinateurId, UtilisateurId } from '@/features/equipe/domain'
 import {
   adhesionsDe,
@@ -13,6 +18,14 @@ import {
   semerUneInvitation,
   semerUnMediateurDEquipe,
 } from '@/features/equipe/equipe.cucumber'
+import { lireLesAdhesionsDeLaPaire } from '@/features/equipe/implementations/prisma/adhesion.query'
+
+const ajouterUnMembre = ajouterUnMembreAvec({
+  lireLUtilisateurAAjouter,
+  coordinateurExiste,
+  lireLesAdhesionsDeLaPaire,
+  enregistrerLAdhesion,
+})
 
 const contexte: {
   premiere?: CoordinateurSeme

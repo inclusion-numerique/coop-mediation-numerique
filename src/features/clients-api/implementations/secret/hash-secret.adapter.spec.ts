@@ -12,7 +12,7 @@ describe('hashSecret', () => {
     it('should return a hashed secret as a hex string', () => {
       const hashedSecret = hashSecret(plainSecret)
       expect(typeof hashedSecret).toBe('string')
-      expect(hashedSecret.length).toBeGreaterThan(0) // Check that it's not empty
+      expect(hashedSecret.length).toBeGreaterThan(0)
     })
   })
 

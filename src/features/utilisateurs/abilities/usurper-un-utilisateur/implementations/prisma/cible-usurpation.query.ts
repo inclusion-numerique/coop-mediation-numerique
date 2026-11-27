@@ -4,7 +4,7 @@ import {
   jalon,
   MediateurId,
   nomAffiche,
-  origineDuCompte,
+  OrigineCompte,
   rattachements,
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
@@ -13,11 +13,8 @@ import { roleLu } from '../../../../implementations/prisma/role.transfer'
 import type { CibleUsurpation, CompteDeTest } from '../../domain'
 
 export const cibleUsurpation = async (
-  utilisateurId: string,
+  id: UtilisateurId,
 ): Promise<CibleUsurpation | null> => {
-  const id = UtilisateurId.safe(utilisateurId)
-  if (id === null) return null
-
   const row = await prismaClient.user.findUnique({
     where: { id, deleted: null },
     select: {
@@ -38,7 +35,7 @@ export const cibleUsurpation = async (
     : {
         id,
         nom: nomAffiche(identiteToDomain(row)),
-        origine: origineDuCompte(row.isFixture),
+        origine: OrigineCompte(row.isFixture ? 'Fixture' : 'Reel'),
         role: roleLu(row.role),
         inscription: jalon(row.inscriptionValidee),
         rattachements: rattachements(

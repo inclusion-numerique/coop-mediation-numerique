@@ -3,6 +3,7 @@ import {
   type EtatDeMaintenance,
   messageAffiche,
   peutModifierPendantLaMaintenance,
+  type RoleDuCompte,
 } from './etat-de-maintenance'
 import {
   MESSAGE_DE_MAINTENANCE_PAR_DEFAUT,
@@ -13,7 +14,7 @@ const inactive: EtatDeMaintenance = { _tag: 'Inactive' }
 const active: EtatDeMaintenance = { _tag: 'Active', message: null }
 
 describe('maintenance', () => {
-  it.each(['Admin', 'User'] as const)(
+  it.each<RoleDuCompte>(['Admin', 'User'])(
     'laisse modifier le rôle %s hors maintenance',
     (role) => {
       expect(peutModifierPendantLaMaintenance({ role, etat: inactive })).toBe(
@@ -45,5 +46,9 @@ describe('maintenance', () => {
 
   it('affiche le message par défaut d’une maintenance sans message', () => {
     expect(messageAffiche(active)).toBe(MESSAGE_DE_MAINTENANCE_PAR_DEFAUT)
+  })
+
+  it('affiche le message par défaut hors maintenance', () => {
+    expect(messageAffiche(inactive)).toBe(MESSAGE_DE_MAINTENANCE_PAR_DEFAUT)
   })
 })

@@ -2,6 +2,8 @@ import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import {
   Adresse,
+  CodeInsee,
+  CodePostal,
   Contact,
   DispositifProgrammesNationaux,
   FormationsLabels,
@@ -24,22 +26,31 @@ import type {
   LieuDemande,
   LieuExistant,
 } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/domain'
-import { ajouterDesLieuxActivite } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/ajouter-des-lieux-activite.mutation'
+import { ajouterDesLieuxActivite } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/domain/ajouter-des-lieux-activite'
+import { rattacherAuxLieux } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/ajouter-des-lieux-activite.mutation'
+import {
+  detacherDuLieu,
+  rattacherAuLieuDecrit,
+} from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/lieu-decrit.mutation'
 import { lireLieuxDejaRattaches } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/lieux-deja-rattaches.query'
 import {
-  detacherDuLieuDecrit,
-  type LieuDecrit,
-  rattacherAuLieuDecrit,
-} from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/rattacher-au-lieu-decrit.mutation'
+  etatDuLieu,
+  lieuPorteurDeLaCarto,
+  nouvelIdentifiantDeLieu,
+} from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/implementations/prisma/situation-du-lieu.query'
 import {
   IdentifiantCartographie,
   IdsCartographieNationale,
 } from '@/features/lieux-activite/domain/cartographie-nationale/ids-cartographie-nationale'
+import { destinationDuLieuDecrit } from '@/features/lieux-activite/domain/destination-du-lieu-decrit'
 import type { Fiche } from '@/features/lieux-activite/domain/fiche'
 import { BanId } from '@/features/lieux-activite/domain/identifiants/ban-id'
 import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
 import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
 import { UtilisateurId } from '@/features/lieux-activite/domain/identifiants/utilisateur-id'
+import { lieuCorreleAuLieuDecrit } from '@/features/lieux-activite/domain/lieu-correle-au-lieu-decrit'
+import type { LieuDecritGeocode } from '@/features/lieux-activite/domain/lieu-decrit'
+import { lieuxAuMemeEndroit } from '@/features/lieux-activite/implementations/prisma/lieux-au-meme-endroit.query'
 import {
   effacerDuRegistre,
   lieuxSemes,
@@ -48,7 +59,7 @@ import {
   utilisateurCourant,
 } from '@/features/lieux-activite/lieux-activite.cucumber'
 
-type Issue = Awaited<ReturnType<typeof ajouterDesLieuxActivite>>
+type Issue = Awaited<ReturnType<ReturnType<typeof ajouterDesLieuxActivite>>>
 
 const dernier: {
   ajout?: Issue
@@ -56,28 +67,35 @@ const dernier: {
 } = {}
 const lieuxDeTest: string[] = []
 
-const ports = {
-  lireLieuxDejaRattaches,
-  trouverStructuresCarto: async () => new Map(),
-}
-
 const ajouter = async (
   demandes: readonly LieuDemande[],
   mediateurId: string | null,
   structuresCarto: ReadonlyMap<string, LieuCarto> = new Map(),
 ) => {
   dernier.ajout = await ajouterDesLieuxActivite({
+    lireLieuxDejaRattaches,
+    trouverStructuresCarto: async () => structuresCarto,
+    etatDuLieu,
+    lieuPorteurDeLaCarto,
+    lieuxAuMemeEndroit,
+    nouvelIdentifiantDeLieu,
+    rattacherAuxLieux,
+  })({
     demandes,
-    userId: UtilisateurId(lieuxSemes().userId),
+    utilisateurId: UtilisateurId(lieuxSemes().userId),
     mediateurId: mediateurId == null ? null : MediateurId(mediateurId),
-    ports: { ...ports, trouverStructuresCarto: async () => structuresCarto },
+    maintenant: new Date(),
   })
 
-  if (dernier.ajout.success) lieuxDeTest.push(...dernier.ajout.data.lieux)
+  if (dernier.ajout.success)
+    lieuxDeTest.push(...dernier.ajout.data.lieuxRattaches)
 }
 
 const lieuSaisi = (partie: Partial<LieuACreer> = {}): LieuACreer => ({
+  _tag: 'LieuACreer',
   nom: Nom('Tiers-lieu du Port'),
+  siret: null,
+  structureCartographieNationaleId: null,
   adresse: Adresse({
     voie: '12 quai du Port',
     commune: 'Rochefort',
@@ -93,7 +111,10 @@ const lieuConnu = (
   id: string,
   partie: Partial<LieuExistant> = {},
 ): LieuExistant => ({
+  _tag: 'LieuExistant',
   nom: Nom('Tiers-lieu du Port'),
+  siret: null,
+  structureCartographieNationaleId: null,
   id: LieuId(id),
   ...partie,
 })
@@ -113,8 +134,8 @@ Given('un lieu référencé dans la coop', async () => {
       nom: Nom('Médiathèque du Centre'),
       adresse: '5 place de la Mairie',
       commune: 'Rochefort',
-      codePostal: '17300',
-      codeInsee: '17299',
+      codePostal: CodePostal('17300'),
+      codeInsee: CodeInsee('17299'),
       banId: '17299_0123_00005',
     },
     select: { id: true },
@@ -453,16 +474,18 @@ const etat: {
   commune?: string
 } = { nom: '', utilisateurs: [] }
 
-const lieuDecrit = (nom: string): LieuDecrit => ({
-  nom,
-  adresse: '1 Rue de la Paix',
-  commune: 'Paris',
-  codePostal: '75001',
-  codeInsee: '75101',
-  banId: '75101_7038_00001',
-  latitude: 48.869_36,
-  longitude: 2.331_08,
-  complementAdresse: null,
+const lieuDecrit = (nom: string): LieuDecritGeocode => ({
+  nom: Nom(nom),
+  adresse: {
+    _tag: 'AdresseGeocodee',
+    voie: '1 Rue de la Paix',
+    commune: 'Paris',
+    codePostal: CodePostal('75001'),
+    codeInsee: CodeInsee('75101'),
+    banId: BanId('75101_7038_00001'),
+    latitude: 48.869_36,
+    longitude: 2.331_08,
+  },
   siret: null,
   synchronisationSiret: null,
   rna: null,
@@ -484,12 +507,19 @@ const semerUnMediateur = async (): Promise<string> => {
   return utilisateurId
 }
 
-const rattacher = async (utilisateurId: string, nom = etat.nom) =>
-  rattacherAuLieuDecrit({
-    userId: utilisateurId,
-    lieu: lieuDecrit(nom),
+const rattacher = async (utilisateurId: string, nom = etat.nom) => {
+  const destination = await destinationDuLieuDecrit({
+    lieuxAuMemeEndroit,
+    nouvelIdentifiantDeLieu,
+  })({ lieu: lieuDecrit(nom) })
+
+  return rattacherAuLieuDecrit({
+    utilisateurId,
+    destination: destination.data,
     trace: { userId: utilisateurId },
+    maintenant: new Date(),
   })
+}
 
 const rattachementsActifs = (utilisateurId: string) =>
   prismaClient.mediateurEnActivite.findMany({
@@ -527,8 +557,8 @@ Given(
         typologies: ['MUNI'],
         adresse: '1 rue de la Paix',
         commune: 'Paris',
-        codePostal: '75001',
-        codeInsee: '75101',
+        codePostal: CodePostal('75001'),
+        codeInsee: CodeInsee('75101'),
         banId: '75101_0001_00001',
       },
       select: { id: true },
@@ -556,11 +586,17 @@ When('mon collègue se rattache au même lieu décrit', async () => {
 
 When('je me détache du lieu décrit', async () => {
   const utilisateurId = utilisateurCourant()
-  await detacherDuLieuDecrit({
-    userId: utilisateurId,
+  const correle = await lieuCorreleAuLieuDecrit({ lieuxAuMemeEndroit })({
     lieu: lieuDecrit(etat.nom),
-    trace: { userId: utilisateurId },
   })
+
+  if (correle.data !== null)
+    await detacherDuLieu({
+      utilisateurId,
+      lieuId: correle.data,
+      trace: { userId: utilisateurId },
+      maintenant: new Date(),
+    })
 })
 
 Then('je suis rattaché au lieu décrit', async () => {

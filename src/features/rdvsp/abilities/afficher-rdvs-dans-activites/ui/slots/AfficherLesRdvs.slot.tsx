@@ -24,9 +24,6 @@ const AfficherLesRdvs = ({
 
   const [synchronisationEnCours, setSynchronisationEnCours] = useState(false)
 
-  // L'effet est joué deux fois en mode strict, et un remontage suffirait à
-  // relancer une passe déjà en vol. Deux passes concurrentes sur le même compte
-  // se disputeraient les mêmes lignes : on n'en laisse partir qu'une.
   const rattrapageLance = useRef(false)
 
   useEffect(() => {
@@ -53,16 +50,10 @@ const AfficherLesRdvs = ({
       afficher: option.target.checked,
     })
 
-    // Les filtres portés par l'URL cèdent la main au réglage : les garder ferait
-    // dépendre l'affichage de deux sources qui peuvent se contredire.
     router.replace(routeConstruite(sansLesFiltresDesRendezVous), {
       scroll: false,
     })
 
-    // `replace` ne refait un rendu serveur que si l'URL change. Sur une page
-    // ouverte sans paramètre — le cas courant — elle ne bouge pas, et la liste
-    // restait telle quelle : le réglage était enregistré, mais l'écran ne
-    // montrait rien de nouveau jusqu'au rechargement suivant.
     router.refresh()
   }
 

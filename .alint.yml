@@ -591,3 +591,23 @@ rules:
       - "src/features/**/domain/index.ts"
       - "src/features/**/implementations/*/index.ts"
     pattern: '(?m)^(''use (client|server)''|"use (client|server)"|import |const |let |var |function |async |class |enum |interface |type |declare |export (const|let|var|function|async|class|enum|interface|default|declare)\b|export type [A-Za-z_$][\w$]*\s*[<=])'
+
+  - id: ports-d-un-orchestrateur
+    kind: for_each_dir
+    level: error
+    message: "Un orchestrateur d'ability, domain/<ability>.ts, a ses ports à côté de lui, dans domain/ports.ts (AB-8)"
+    select: "src/features/*/abilities/*"
+    require:
+      - kind: for_each_file
+        select: "{path}/domain/{basename}.ts"
+        require:
+          - kind: file_exists
+            paths: "{path}/domain/ports.ts"
+
+  - id: pas-de-fixtures-dans-le-domaine
+    kind: file_absent
+    level: error
+    message: "Pas de fixtures de test dans le domaine : un test unitaire écrit ses valeurs (AB-9, TS-8)"
+    paths:
+      - "src/features/**/domain/fixtures.ts"
+      - "src/features/**/domain/**/fixtures.ts"

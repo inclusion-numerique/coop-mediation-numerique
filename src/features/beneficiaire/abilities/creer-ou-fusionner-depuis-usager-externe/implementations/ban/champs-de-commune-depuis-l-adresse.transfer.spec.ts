@@ -1,5 +1,6 @@
 import { describe, expect, test } from 'vitest'
 import { communeDuResultat } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/ban/champs-de-commune-depuis-l-adresse.transfer'
+import { CommuneResidence } from '@/features/beneficiaire/domain/commune-residence'
 import type { Feature } from '@/libraries/ban'
 
 const evreuxFeature: Feature = {
@@ -25,11 +26,13 @@ const evreuxFeature: Feature = {
 
 describe('communeDuResultat', () => {
   test('maps a BAN feature to the commune trio', () => {
-    expect(communeDuResultat(evreuxFeature)).toEqual({
-      commune: 'Évreux',
-      communeCodePostal: '27000',
-      communeCodeInsee: '27229',
-    })
+    expect(communeDuResultat(evreuxFeature)).toEqual(
+      CommuneResidence({
+        commune: 'Évreux',
+        codePostal: '27000',
+        codeInsee: '27229',
+      }),
+    )
   })
 
   test('returns null when the address is not geocoded', () => {

@@ -25,12 +25,14 @@ import { Options } from '@/libraries/ui/primitives'
 import { informationsGeneralesFormOptions } from './informations-generales.form-data'
 import { SiretSearchComboBox, SiretSearchOptions } from './SiretSearchComboBox'
 
+const proprietes: {
+  isPending: boolean
+  hasActiveEmployees?: boolean
+} = { isPending: false }
+
 export const InformationsGeneralesEditionFields = withForm({
   ...informationsGeneralesFormOptions,
-  props: {} as {
-    isPending: boolean
-    hasActiveEmployees?: boolean
-  },
+  props: proprietes,
   render: ({ form, isPending, hasActiveEmployees }) => {
     const noSiret = useSelector(
       form.store,

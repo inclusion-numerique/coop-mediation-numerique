@@ -1,41 +1,29 @@
 import { PrismaAdapter } from '@auth/prisma-adapter'
-import type { Awaitable } from 'next-auth'
 import type { Adapter, AdapterAccount, AdapterUser } from 'next-auth/adapters'
 import { v4 } from 'uuid'
 import { extendedPrismaClient, prismaClient } from '@/configuration/prisma'
-import { proConnectProviderId } from '@/features/authentification/domain/fournisseur-proconnect'
 import type { SynchroniserLaPersonne } from '@/features/authentification/implementations/prisma/synchroniser-la-personne.mutation'
 
-/**
- * Ensuring that needed methods are defined when creating adapter
- */
-const createAdapter = (): Adapter & {
+const adapterAvecLesMethodesRequises = (): Adapter & {
   createUser: Exclude<Adapter['createUser'], undefined>
   deleteSession: Exclude<Adapter['deleteSession'], undefined>
-  linkAccount: (
-    account: AdapterAccount,
-  ) => Promise<void> | Awaitable<AdapterAccount | null | undefined>
 } => {
   const prismaAdapter = PrismaAdapter(extendedPrismaClient)
 
-  const { createUser, deleteSession, linkAccount } = prismaAdapter
+  const { createUser, deleteSession } = prismaAdapter
 
   if (!createUser) throw new Error('prismaAdapter.createUser is undefined')
   if (!deleteSession)
     throw new Error('prismaAdapter.deleteSession is undefined')
-  if (!linkAccount) throw new Error('prismaAdapter.linkAccount is undefined')
 
   return {
     ...prismaAdapter,
     createUser,
     deleteSession,
-    linkAccount: linkAccount as (
-      account: AdapterAccount,
-    ) => Promise<void> | Awaitable<AdapterAccount | null | undefined>,
   }
 }
 
-const prismaAdapter = createAdapter()
+const prismaAdapter = adapterAvecLesMethodesRequises()
 
 const creerLeCompte =
   (synchroniserLaPersonne: SynchroniserLaPersonne) =>
@@ -46,27 +34,46 @@ const creerLeCompte =
       return compte
     })
 
-// ⚠️ Keycloak returns non standard fields that are expected to be ignored by the client
-const removeNonStandardFields = <T extends AdapterAccount>(data: T): T => ({
-  ...data,
-  refresh_expires_in: undefined,
-  'not-before-policy': undefined,
+const compteALier = (account: AdapterAccount) => ({
+  userId: account.userId,
+  type: account.type,
+  provider: account.provider,
+  providerAccountId: account.providerAccountId,
+  refresh_token: account.refresh_token ?? null,
+  access_token: account.access_token ?? null,
+  expires_at: account.expires_at ?? null,
+  token_type: account.token_type ?? null,
+  scope: account.scope ?? null,
+  id_token: account.id_token ?? null,
+  session_state: account.session_state ?? null,
 })
 
-export const nextAuthAdapter = (
-  synchroniserLaPersonne: SynchroniserLaPersonne,
-) =>
+const ENREGISTREMENT_INTROUVABLE = 'P2025'
+
+const estUneSessionDejaSupprimee = (error: unknown): boolean =>
+  typeof error === 'object' &&
+  error !== null &&
+  'code' in error &&
+  error.code === ENREGISTREMENT_INTROUVABLE
+
+export const nextAuthAdapter = ({
+  synchroniserLaPersonne,
+  fournisseurQuiVerifieLAdresse,
+}: {
+  synchroniserLaPersonne: SynchroniserLaPersonne
+  fournisseurQuiVerifieLAdresse: string
+}) =>
   ({
     ...prismaAdapter,
     createUser: async (user: Omit<AdapterUser, 'id'>) => {
-      const { provider, ...rest } = user as Omit<AdapterUser, 'id'> & {
-        // We pass the provider along
-        provider: typeof proConnectProviderId
-      }
+      const {
+        provider,
+        ...rest
+      }: Omit<AdapterUser, 'id'> & { readonly provider?: unknown } = user
 
       const info = { id: v4(), ...rest }
 
-      if (provider === proConnectProviderId) {
+      if (provider === fournisseurQuiVerifieLAdresse) {
         return creerLeCompte(synchroniserLaPersonne)({
           ...info,
           emailVerified: new Date(),
@@ -74,25 +81,15 @@ export const nextAuthAdapter = (
       }
       return creerLeCompte(synchroniserLaPersonne)(info)
     },
-    // Better handle case of missing session when deleting. It should not crash auth process.
     deleteSession: async (sessionToken) => {
       try {
         await prismaAdapter.deleteSession(sessionToken)
       } catch (error) {
-        // See https://www.prisma.io/docs/reference/api-reference/error-reference#p2025
-        if (
-          error &&
-          typeof error === 'object' &&
-          'code' in error &&
-          error.code === 'P2025'
-        ) {
-          // Ok, the session was already destroyed by another process
-          return
-        }
+        if (estUneSessionDejaSupprimee(error)) return
         throw error
       }
     },
-    // Custom link account
-    linkAccount: (account: AdapterAccount) =>
-      prismaAdapter.linkAccount(removeNonStandardFields(account)),
+    linkAccount: async (account: AdapterAccount) => {
+      await prismaClient.account.create({ data: compteALier(account) })
+    },
   }) satisfies Adapter

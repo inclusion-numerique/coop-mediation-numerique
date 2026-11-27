@@ -1,10 +1,8 @@
-export const MediateurRequis = {
-  _tag: 'MediateurRequis',
-} as const
+import type { LieuIntrouvable, MediateurRequis } from '../../../domain/errors'
 
-export const PanierVide = {
-  _tag: 'PanierVide',
-} as const
+export type PanierVide = { readonly _tag: 'PanierVide' }
+
+export const PanierVide = (): PanierVide => ({ _tag: 'PanierVide' })
 
 export type AdresseNonValidee = {
   readonly _tag: 'AdresseNonValidee'
@@ -16,7 +14,8 @@ export const AdresseNonValidee = (nom: string): AdresseNonValidee => ({
   nom,
 })
 
-export type EchecDAjout =
-  | typeof MediateurRequis
-  | typeof PanierVide
+export type EchecDeAjouterDesLieuxActivite =
+  | MediateurRequis
+  | PanierVide
   | AdresseNonValidee
+  | LieuIntrouvable

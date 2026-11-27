@@ -1,35 +1,30 @@
 import type {
-  CompteARelancer,
   DestinataireDeRelance,
-  EffacementImpossible,
-  PalierDeRelance,
-  Relance,
-  UtilisateurId,
+  EnvoyerLAvertissement,
+  EnvoyerLAvisDEffacement,
+  LireLesComptesARelancer,
+  NoterLaRelance,
+  SupprimerLeCompte,
 } from '@/features/utilisateurs/domain'
+import type { EchecTechnique, Result } from '@/libraries/result'
+import type { BienDemarrer, RelanceDuCompte } from './relance-du-nouvel-inscrit'
 
-type NoterLaRelance = (
-  utilisateurId: UtilisateurId,
-  relance: Relance,
-  suppressionAnnoncee: Date | null,
-) => Promise<void>
+export type EnvoyerBienDemarrer = (
+  destinataire: DestinataireDeRelance,
+  relance: BienDemarrer,
+) => Promise<Result<void, EchecTechnique>>
 
-import type { Result } from '@/libraries/result'
+export type EnvoyerLaRelanceDuCompte = (
+  destinataire: DestinataireDeRelance,
+  relance: RelanceDuCompte,
+) => Promise<Result<void, EchecTechnique>>
 
 export type RelancerLesInscritsInactifsPorts = {
-  readonly envoyerLaRelance: (
-    destinataire: DestinataireDeRelance,
-    palier: PalierDeRelance,
-  ) => Promise<void>
-  readonly envoyerLAvertissement: (
-    destinataire: DestinataireDeRelance,
-    echeance: { readonly suppressionLe: Date; readonly joursRestants: number },
-  ) => Promise<void>
-  readonly envoyerLAvisDEffacement: (
-    destinataire: DestinataireDeRelance,
-  ) => Promise<void>
-  readonly supprimerLeCompte: (
-    utilisateurId: UtilisateurId,
-  ) => Promise<Result<void, EffacementImpossible>>
-  readonly lireLesComptesARelancer: () => Promise<readonly CompteARelancer[]>
+  readonly lireLesComptesARelancer: LireLesComptesARelancer
+  readonly envoyerBienDemarrer: EnvoyerBienDemarrer
+  readonly envoyerLaRelanceDuCompte: EnvoyerLaRelanceDuCompte
+  readonly envoyerLAvertissement: EnvoyerLAvertissement
+  readonly envoyerLAvisDEffacement: EnvoyerLAvisDEffacement
+  readonly supprimerLeCompte: SupprimerLeCompte
   readonly noterLaRelance: NoterLaRelance
 }

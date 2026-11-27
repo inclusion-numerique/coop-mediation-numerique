@@ -1,42 +1,37 @@
 import { prismaClient } from '@/configuration/prisma'
-import type { LieuInclusion, Prisma } from '@/generated/prisma/client'
-import { unionArrays } from '@/libraries/collections'
-import { failure, type Result, success } from '@/libraries/result'
+import type { Prisma } from '@/generated/prisma/client'
 import type { LieuId } from '../../../../domain/identifiants/lieu-id'
-import { toutesLesColonnes } from '../../../../implementations/prisma/registre/colonnes-a-ecrire.select'
+import { colonnesDeLEcriture } from '../../../../implementations/prisma/registre/colonnes-a-ecrire.select'
 import { ecrireLeLieuAuRegistre } from '../../../../implementations/prisma/registre/ecrire-au-registre.mutation'
 import { inscriptionPourLIdentifiantCarto } from '../../../../implementations/prisma/registre/identifiants-carto.query'
 import { retirerDuRegistre } from '../../../../implementations/prisma/registre/retirer-du-registre.mutation'
-import { type EchecDeFusion, LieuIntrouvable } from '../../domain'
+import type { FicheFusionnable, FusionDeLieux } from '../../domain'
+import type { FusionDesLieux, FusionnerLesLieux } from '../../domain/ports'
+import { colonnesDeLaFicheFusionnee } from './fiche-fusionnable.transfer'
 
 type PrismaTransaction = Prisma.TransactionClient
 
-const mergeMediateursEnActivite =
-  (prisma: PrismaTransaction) =>
-  async (sourceStructureId: string, targetStructureId: string) => {
-    const targetActivites = await prisma.mediateurEnActivite.findMany({
-      where: {
-        structureId: targetStructureId,
-        suppression: null,
-        fin: null,
-      },
-      select: { mediateurId: true },
-    })
-    const targetMediateurIds = targetActivites.map((a) => a.mediateurId)
+const transfererLesMediateurs = async (
+  prisma: PrismaTransaction,
+  {
+    source,
+    cible,
+    mediateursATransferer,
+  }: Pick<FusionDeLieux, 'source' | 'cible' | 'mediateursATransferer'>,
+) => {
+  await prisma.mediateurEnActivite.updateMany({
+    where: {
+      structureId: source,
+      suppression: null,
+      mediateurId: { in: [...mediateursATransferer] },
+    },
+    data: { structureId: cible },
+  })
 
-    await prisma.mediateurEnActivite.updateMany({
-      where: {
-        structureId: sourceStructureId,
-        suppression: null,
-        mediateurId: { notIn: targetMediateurIds },
-      },
-      data: { structureId: targetStructureId },
-    })
-
-    await prisma.mediateurEnActivite.deleteMany({
-      where: { structureId: sourceStructureId },
-    })
-  }
+  await prisma.mediateurEnActivite.deleteMany({
+    where: { structureId: source },
+  })
+}
 
 const mergeActivitesLieu =
   (prisma: PrismaTransaction) =>
@@ -47,72 +42,23 @@ const mergeActivitesLieu =
     })
   }
 
-const legs = <Champ extends keyof LieuInclusion>(
-  source: LieuInclusion,
-  target: LieuInclusion,
-  champ: Champ,
-): LieuInclusion[Champ] => target[champ] ?? source[champ]
-
-const fusionnerLesChamps =
-  (prisma: PrismaTransaction) =>
-  async (sourceStructureId: string, targetStructureId: string) => {
-    const [source, target] = await Promise.all([
-      prisma.lieuInclusion.findUnique({ where: { id: sourceStructureId } }),
-      prisma.lieuInclusion.findUnique({ where: { id: targetStructureId } }),
-    ])
-
-    if (!source || !target) return
-
-    await prisma.lieuInclusion.update({
-      where: { id: targetStructureId },
-      data: {
-        typologies: unionArrays(target.typologies, source.typologies),
-        services: unionArrays(target.services, source.services),
-        publicsSpecifiquementAdresses: unionArrays(
-          target.publicsSpecifiquementAdresses,
-          source.publicsSpecifiquementAdresses,
-        ),
-        priseEnChargeSpecifique: unionArrays(
-          target.priseEnChargeSpecifique,
-          source.priseEnChargeSpecifique,
-        ),
-        fraisACharge: unionArrays(target.fraisACharge, source.fraisACharge),
-        dispositifProgrammesNationaux: unionArrays(
-          target.dispositifProgrammesNationaux,
-          source.dispositifProgrammesNationaux,
-        ),
-        formationsLabels: unionArrays(
-          target.formationsLabels,
-          source.formationsLabels,
-        ),
-        autresFormationsLabels: unionArrays(
-          target.autresFormationsLabels,
-          source.autresFormationsLabels,
-        ),
-        itinerance: unionArrays(target.itinerance, source.itinerance),
-        modalitesAcces: unionArrays(
-          target.modalitesAcces,
-          source.modalitesAcces,
-        ),
-        modalitesAccompagnement: unionArrays(
-          target.modalitesAccompagnement,
-          source.modalitesAccompagnement,
-        ),
-        courriels: unionArrays(target.courriels, source.courriels),
-        visiblePourCartographieNationale:
-          target.visiblePourCartographieNationale &&
-          source.visiblePourCartographieNationale,
-        nomReferent: legs(source, target, 'nomReferent'),
-        courrielReferent: legs(source, target, 'courrielReferent'),
-        telephoneReferent: legs(source, target, 'telephoneReferent'),
-        v1Imported: legs(source, target, 'v1Imported'),
-        v1StructureId: legs(source, target, 'v1StructureId'),
-        v1StructureIdPg: legs(source, target, 'v1StructureIdPg'),
-        v1PermanenceId: legs(source, target, 'v1PermanenceId'),
-        modification: new Date(),
-      },
-    })
-  }
+const ecrireLaFicheFusionnee = async (
+  prisma: PrismaTransaction,
+  {
+    cible,
+    fiche,
+    maintenant,
+  }: {
+    readonly cible: string
+    readonly fiche: FicheFusionnable
+    readonly maintenant: Date
+  },
+) => {
+  await prisma.lieuInclusion.update({
+    where: { id: cible },
+    data: { ...colonnesDeLaFicheFusionnee(fiche), modification: maintenant },
+  })
+}
 
 const deleteStructure =
   (prisma: PrismaTransaction) => async (structureId: string) => {
@@ -121,54 +67,62 @@ const deleteStructure =
     })
   }
 
-const fusionnerAuRegistre =
-  (prisma: PrismaTransaction) =>
-  async (sourceStructureId: string, targetStructureId: string) => {
-    const maintenant = new Date()
+const fusionnerAuRegistre = async (
+  prisma: PrismaTransaction,
+  {
+    source,
+    cible,
+    fusionneLe,
+    ecritureAuRegistre,
+  }: Pick<
+    FusionDeLieux,
+    'source' | 'cible' | 'fusionneLe' | 'ecritureAuRegistre'
+  >,
+) => {
+  await retirerDuRegistre(prisma, { lieuId: source, maintenant: fusionneLe })
 
-    await retirerDuRegistre(prisma, { lieuId: sourceStructureId, maintenant })
+  const fusionne = await prisma.lieuInclusion.findUniqueOrThrow({
+    where: { id: cible },
+    include: { inscriptionRegistre: inscriptionPourLIdentifiantCarto },
+  })
 
-    const fusionne = await prisma.lieuInclusion.findUnique({
-      where: { id: targetStructureId },
-      include: { inscriptionRegistre: inscriptionPourLIdentifiantCarto },
+  await ecrireLeLieuAuRegistre(prisma, {
+    ligne: fusionne,
+    colonnes: colonnesDeLEcriture[ecritureAuRegistre._tag],
+    maintenant: fusionneLe,
+  })
+}
+
+const existe = async (
+  prisma: PrismaTransaction,
+  lieu: LieuId,
+): Promise<boolean> =>
+  (await prisma.lieuInclusion.count({ where: { id: lieu } })) === 1
+
+const lieuDisparu = async (
+  prisma: PrismaTransaction,
+  { source, cible }: Pick<FusionDeLieux, 'source' | 'cible'>,
+): Promise<LieuId | null> => {
+  if (!(await existe(prisma, source))) return source
+  return (await existe(prisma, cible)) ? null : cible
+}
+
+export const fusionnerLesLieux: FusionnerLesLieux = async (fusion) =>
+  prismaClient.$transaction(async (prisma): Promise<FusionDesLieux> => {
+    const { source, cible, fusionneLe, fiche } = fusion
+    const disparu = await lieuDisparu(prisma, fusion)
+
+    if (disparu !== null) return { _tag: 'LieuDisparu', lieuId: disparu }
+
+    await transfererLesMediateurs(prisma, fusion)
+    await mergeActivitesLieu(prisma)(source, cible)
+    await ecrireLaFicheFusionnee(prisma, {
+      cible,
+      fiche,
+      maintenant: fusionneLe,
     })
+    await fusionnerAuRegistre(prisma, fusion)
+    await deleteStructure(prisma)(source)
 
-    if (!fusionne) return
-
-    await ecrireLeLieuAuRegistre(prisma, {
-      ligne: fusionne,
-      colonnes: toutesLesColonnes,
-      maintenant,
-    })
-  }
-
-export const fusionnerDesLieux = async (
-  { source, cible }: { readonly source: LieuId; readonly cible: LieuId },
-  options?: { timeout?: number },
-): Promise<Result<void, EchecDeFusion>> =>
-  prismaClient.$transaction(
-    async (prisma): Promise<Result<void, EchecDeFusion>> => {
-      const [lieuSource, lieuCible] = await Promise.all([
-        prisma.lieuInclusion.findUnique({
-          where: { id: source },
-          select: { id: true },
-        }),
-        prisma.lieuInclusion.findUnique({
-          where: { id: cible },
-          select: { id: true },
-        }),
-      ])
-
-      if (lieuSource == null) return failure(LieuIntrouvable(source))
-      if (lieuCible == null) return failure(LieuIntrouvable(cible))
-
-      await mergeMediateursEnActivite(prisma)(source, cible)
-      await mergeActivitesLieu(prisma)(source, cible)
-      await fusionnerLesChamps(prisma)(source, cible)
-      await fusionnerAuRegistre(prisma)(source, cible)
-      await deleteStructure(prisma)(source)
-
-      return success(undefined)
-    },
-    options?.timeout === undefined ? {} : { timeout: options.timeout },
-  )
+    return { _tag: 'Fusionnes' }
+  })

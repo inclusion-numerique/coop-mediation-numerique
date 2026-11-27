@@ -9,6 +9,7 @@ import type {
 } from '@/features/utilisateurs/domain'
 import { defineModel, type Model } from '@/libraries/model'
 import { failure, type Result, success } from '@/libraries/result'
+import { UsurpationHorsFixtures } from './errors'
 
 export const PorteeUsurpation = defineModel(
   z.enum(['FixturesSeulement', 'TousLesComptes']).brand('PorteeUsurpation'),
@@ -30,11 +31,11 @@ export type CompteDeTest = {
   readonly nom: NomAffiche
 }
 
-export type UsurpationHorsFixtures = { readonly _tag: 'UsurpationHorsFixtures' }
-
-export const UsurpationHorsFixtures = (): UsurpationHorsFixtures => ({
-  _tag: 'UsurpationHorsFixtures',
-})
+export type UsurpationOuverte = {
+  readonly jetonDeSession: string
+  readonly cible: CibleUsurpation
+  readonly usurpateurId: UtilisateurId
+}
 
 export const autoriserUsurpation = (
   cible: CibleUsurpation,

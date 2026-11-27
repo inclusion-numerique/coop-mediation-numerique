@@ -10,6 +10,7 @@ import {
   type DureeEnMinutes,
   dateDActiviteBornee,
   dateDActiviteDuJour,
+  type EcritureDeMediation,
   type EmployeuseALaDate,
   type Equipement,
   type LieuSaisi,
@@ -45,9 +46,9 @@ export type SaisieIndividuelle = {
   readonly orientation: Orientation
 }
 
-export type AccompagnementEnregistre = {
-  readonly id: ActiviteId
-  readonly type: 'Individuel'
+export type AccompagnementIndividuelEnregistre = {
+  readonly ecriture: EcritureDeMediation<AccompagnementIndividuel>
+  readonly rendezVousHonore: RdvId | null
 }
 
 export const beneficiaireAccompagneDe = (

@@ -95,10 +95,6 @@ const lieu: Lieu = {
   usageUnique: false,
 }
 
-/**
- * Reconstitue la ligne complète : `raw_data`, les colonnes de traçabilité et le
- * libellé du motif ne traversent pas `rdvFromDomain`.
- */
 const ligneMotif = (motifDomaine: Motif) => ({
   id: motifDomaine.id,
   name: motifDomaine.nom,

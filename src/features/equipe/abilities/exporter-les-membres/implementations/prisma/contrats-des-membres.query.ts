@@ -1,11 +1,7 @@
 import { prismaClient } from '@/configuration/prisma'
-import type { UtilisateurId } from '../../../../domain'
-import {
-  type ContratMembre,
-  contratEnCours,
-  type LigneContrat,
-  TypeContrat,
-} from '../../domain'
+import { UtilisateurId } from '../../../../domain'
+import { type LigneContrat, TypeContrat } from '../../domain'
+import type { LireLesContratsDesMembres } from '../../domain/ports'
 
 type ContratRow = {
   readonly type: string | null
@@ -15,16 +11,15 @@ type ContratRow = {
 }
 
 const toLigneContrat = (row: ContratRow): LigneContrat => ({
-  type: TypeContrat.safe(row.type) ?? TypeContrat('NonCommunique'),
+  type: TypeContrat(row.type),
   debut: row.dateDebut,
   fin: row.dateFin,
   rompuLe: row.dateRupture,
 })
 
-export const contratsDesMembres = async (
-  utilisateurIds: readonly UtilisateurId[],
-  maintenant: Date,
-): Promise<ReadonlyMap<string, ContratMembre>> => {
+export const lireLesContratsDesMembres: LireLesContratsDesMembres = async (
+  utilisateurIds,
+) => {
   if (utilisateurIds.length === 0) return new Map()
 
   const personnes = await prismaClient.personneMain.findMany({
@@ -43,9 +38,10 @@ export const contratsDesMembres = async (
   })
 
   return new Map(
-    personnes.flatMap(({ coopId, contrats }) => {
-      const contrat = contratEnCours(contrats.map(toLigneContrat), maintenant)
-      return coopId === null || contrat === null ? [] : [[coopId, contrat]]
-    }),
+    personnes.flatMap(({ coopId, contrats }) =>
+      coopId === null
+        ? []
+        : [[UtilisateurId(coopId), contrats.map(toLigneContrat)]],
+    ),
   )
 }

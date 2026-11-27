@@ -1,6 +1,6 @@
 import { prismaClient } from '@/configuration/prisma'
 import { compteRdvToDomain } from '../../../../implementations/prisma/compte-rdv.transfer'
-import type { CompteDuMediateur } from '../../domain/prendre-rendez-vous'
+import type { CompteDuMediateur } from '../../domain/ports'
 
 export const compteDuMediateur: CompteDuMediateur = async (utilisateurId) => {
   const row = await prismaClient.rdvAccount.findUnique({

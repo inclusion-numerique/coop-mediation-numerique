@@ -1,40 +1,27 @@
-import { ReactNode } from 'react'
-// recharts 3 sépare les deux contrats : `TooltipProps` décrit ce que l'on passe au composant
-// <Tooltip>, tandis que `TooltipContentProps` y ajoute ce que le contenu reçoit du contexte
-// (`payload`, `label`, `active`). Un rendu de tooltip personnalisé relève du second.
 import type { TooltipContentProps } from 'recharts'
-import {
+import type {
   NameType,
   ValueType,
 } from 'recharts/types/component/DefaultTooltipContent'
 import { onlyDefinedAndNotNull } from '@/libraries/collections'
 import { numberToString } from '@/libraries/nombre'
 
-const CustomTooltip = <TValue extends ValueType, TName extends NameType>({
+const CustomTooltip = ({
   active,
   payload,
   label,
-  // Formatter is a function that takes the value, name, and the payload and returns a string
   formatter,
   labelFormatter,
-}: TooltipContentProps<TValue, TName>) => {
+}: TooltipContentProps<ValueType, NameType>) => {
   if (active && payload && payload.length > 0) {
-    const title = labelFormatter
-      ? labelFormatter(label, payload)
-      : (label as ReactNode)
+    const title = labelFormatter ? labelFormatter(label, payload) : label
 
     return (
       <div className="infobulle-de-graphique">
         <p className="infobulle-de-graphique__titre">{title}</p>
         {payload.map((item, index) => {
           const formatedName = formatter
-            ? formatter(
-                item.value as TValue,
-                item.name as TName,
-                item,
-                index,
-                payload,
-              )
+            ? formatter(item.value, item.name, item, index, payload)
             : item.name
 
           return (
@@ -42,13 +29,7 @@ const CustomTooltip = <TValue extends ValueType, TName extends NameType>({
               {onlyDefinedAndNotNull(formatedName) ? (
                 <span>
                   {formatter
-                    ? formatter(
-                        item.value as TValue,
-                        item.name as TName,
-                        item,
-                        index,
-                        payload,
-                      )
+                    ? formatter(item.value, item.name, item, index, payload)
                     : item.name}
                 </span>
               ) : null}

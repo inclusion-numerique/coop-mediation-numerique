@@ -5,11 +5,13 @@ import { demandeDeStatistiques } from '../../statistiques.cucumber'
 import { type ProfilDesPersonnesAccompagnees } from './domain/index'
 import { decrireLesPersonnesAccompagnees } from './implementations/prisma/profil-des-personnes-accompagnees.query'
 
-let profil: ProfilDesPersonnesAccompagnees | undefined
+const etat: {
+  profil?: ProfilDesPersonnesAccompagnees
+} = {}
 
 const decrites = (): ProfilDesPersonnesAccompagnees => {
-  assert.ok(profil, 'Aucun profil')
-  return profil
+  assert.ok(etat.profil, 'Aucun profil')
+  return etat.profil
 }
 
 const enTexte = (lignes: Repartition<string>): string =>
@@ -18,7 +20,9 @@ const enTexte = (lignes: Repartition<string>): string =>
 When(
   'je décris les personnes accompagnées par {string}',
   async (nom: string) => {
-    profil = await decrireLesPersonnesAccompagnees(demandeDeStatistiques(nom))
+    etat.profil = await decrireLesPersonnesAccompagnees(
+      demandeDeStatistiques(nom),
+    )
   },
 )
 

@@ -11,7 +11,7 @@ export type StatistiquesEquipe = {
   readonly conseillersNumeriques: number
 }
 
-export type CoordinateurDeLaListe = CoordinateurDeLEquipe & {
+type CoordinateurDeLaListe = CoordinateurDeLEquipe & {
   readonly departementCode: CodeDepartement
 }
 

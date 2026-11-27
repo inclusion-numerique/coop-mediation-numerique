@@ -4,7 +4,6 @@ import {
   exigerEnAttente,
   type Invitation,
   type InvitationDejaTraitee,
-  type InvitationEnAttente,
   type MediateurId,
 } from '../../../domain'
 import { InscriptionNonValidee, MauvaisDestinataire } from './errors'
@@ -17,16 +16,11 @@ export type Accepteur =
     }
   | { readonly type: 'InscriptionEnCours'; readonly email: Courriel }
 
-export type Acceptation = {
-  readonly invitation: InvitationEnAttente
-  readonly mediateurId: MediateurId
-}
-
-export const accepter = (
+export const mediateurQuiAccepte = (
   invitation: Invitation,
   accepteur: Accepteur,
 ): Result<
-  Acceptation,
+  MediateurId,
   MauvaisDestinataire | InscriptionNonValidee | InvitationDejaTraitee
 > => {
   if (accepteur.email !== invitation.reference.email)
@@ -35,10 +29,5 @@ export const accepter = (
     return failure(InscriptionNonValidee())
 
   const enAttente = exigerEnAttente(invitation)
-  return enAttente.success
-    ? success({
-        invitation: enAttente.data,
-        mediateurId: accepteur.mediateurId,
-      })
-    : enAttente
+  return enAttente.success ? success(accepteur.mediateurId) : enAttente
 }

@@ -1,50 +1,106 @@
-import type { EmployeuseId } from '../../../domain/employeuse-id'
+import type { Siret } from '@/libraries/insee'
+import { failure, type Result, success } from '@/libraries/result'
 import type { IdentiteEmployeuse } from '../../../domain/identite-employeuse'
+import type { UtilisateurId } from '../../../domain/utilisateur-id'
+import { employeuseExistante } from './employeuse-du-siret'
+import {
+  type EchecDeRattacherAUneEmployeuse,
+  IdentiteInexploitable,
+  type SireneIndisponible,
+  UtilisateurIntrouvable,
+} from './errors'
+import type { EtablissementSirene } from './etablissement-sirene'
+import { MotifSansRattachement } from './motif-sans-rattachement'
+import type { LireLEtablissement, RattacherAUneEmployeusePorts } from './ports'
+import type { Rattachement } from './rattachement'
+import type { SourceDuRattachement } from './source-du-rattachement'
 
-/**
- * Rattacher une personne à son employeuse courante.
- *
- * C'est l'unique écriture d'employeuse de la coop, partagée par les trois
- * chemins qui l'affirment : le choix Sirene à l'inscription, l'import par SIRET
- * et les claims ProConnect. Ils ne diffèrent que par la provenance de
- * l'identité — d'où un seul cas d'usage, et trois appelants.
- *
- * Rattacher, c'est affirmer l'employeur **courant** : les autres affectations
- * `source='coop'` de la personne sont désactivées (décision ADR-002 —
- * `est_active` porte l'employeuse courante, la coop en maintient la sémantique).
- * Les affectations d'une autre source, notamment `idposte`, ne sont jamais
- * touchées : elles appartiennent à l'Entrepôt.
- */
-type RattachementEmployeuse =
-  | { readonly _tag: 'rattachee'; readonly employeuseId: EmployeuseId }
-  /**
-   * L'employeuse n'a pas pu être garantie dans `main` (géocodage ou API
-   * indisponible). Volontairement non bloquant : le chemin d'écriture appelant
-   * ne doit pas échouer pour autant, et la dérive résiduelle est rattrapée par
-   * le job de complétion.
-   */
-  | { readonly _tag: 'employeuseIndisponible' }
-  /**
-   * L'établissement existe mais ne fait pas une employeuse : fermé, ou sans
-   * identité exploitable. Distinct de l'indisponibilité — ici, réessayer ne
-   * changera rien.
-   */
-  | { readonly _tag: 'identiteInexploitable' }
+type IdentiteRetenue = Result<
+  IdentiteEmployeuse,
+  SireneIndisponible | IdentiteInexploitable
+>
 
-export type RattacherAUneEmployeuse = (input: {
-  userId: string
-  identite: IdentiteEmployeuse
-}) => Promise<RattachementEmployeuse>
+const identiteRetenue = (
+  identite: IdentiteEmployeuse | null,
+): IdentiteRetenue =>
+  identite === null ? failure(IdentiteInexploitable()) : success(identite)
 
-/**
- * Même rattachement, à partir du seul SIRET : l'identité est résolue chez
- * SIRENE avant d'être confiée au cas d'usage.
- */
-export type EstConseillerNumeriqueEnPoste = (
-  userId: string,
-) => Promise<boolean | null>
+const identiteDeLEtablissement = (
+  etablissement: EtablissementSirene,
+): IdentiteRetenue =>
+  etablissement._tag === 'Ferme'
+    ? failure(IdentiteInexploitable())
+    : identiteRetenue(etablissement.identite)
 
-export type RattacherAUneEmployeuseDepuisSiret = (input: {
-  userId: string
-  siret: string
-}) => Promise<RattachementEmployeuse>
+const identiteDuSiret = async (
+  lireLEtablissement: LireLEtablissement,
+  siret: Siret,
+): Promise<IdentiteRetenue> => {
+  const etablissement = await lireLEtablissement(siret)
+
+  return etablissement.success
+    ? identiteDeLEtablissement(etablissement.data)
+    : etablissement
+}
+
+export const rattacherAUneEmployeuse =
+  ({
+    lireLEtablissement,
+    lireLeStatutDeConseillerNumerique,
+    lireLesEmployeusesDuSiret,
+    creerLEmployeuse,
+    enregistrerLeRattachement,
+  }: RattacherAUneEmployeusePorts) =>
+  async ({
+    userId,
+    source,
+  }: {
+    readonly userId: UtilisateurId
+    readonly source: SourceDuRattachement
+  }): Promise<Result<Rattachement, EchecDeRattacherAUneEmployeuse>> => {
+    const rattacher = async (
+      identite: IdentiteRetenue,
+    ): Promise<Result<Rattachement, EchecDeRattacherAUneEmployeuse>> => {
+      if (!identite.success) return identite
+
+      const existante = employeuseExistante(
+        await lireLesEmployeusesDuSiret(identite.data.siret),
+        identite.data.denomination,
+      )
+      const employeuseId = existante ?? (await creerLEmployeuse(identite.data))
+
+      await enregistrerLeRattachement({ userId, employeuseId })
+
+      return success({
+        _tag: 'Rattachee',
+        userId,
+        employeuseId,
+        employeuseCreee: existante === null ? identite.data : null,
+      })
+    }
+
+    if (source._tag === 'Saisie')
+      return rattacher(identiteRetenue(source.identite))
+
+    if (source._tag === 'Siret')
+      return rattacher(await identiteDuSiret(lireLEtablissement, source.siret))
+
+    if (source.siret === null)
+      return success({
+        _tag: 'SansRattachement',
+        motif: MotifSansRattachement('SiretAbsent'),
+      })
+
+    const statut = await lireLeStatutDeConseillerNumerique(userId)
+
+    if (statut._tag === 'CompteInconnu')
+      return failure(UtilisateurIntrouvable())
+
+    if (statut._tag === 'EnPoste')
+      return success({
+        _tag: 'SansRattachement',
+        motif: MotifSansRattachement('ConseillerNumeriqueEnPoste'),
+      })
+
+    return rattacher(await identiteDuSiret(lireLEtablissement, source.siret))
+  }

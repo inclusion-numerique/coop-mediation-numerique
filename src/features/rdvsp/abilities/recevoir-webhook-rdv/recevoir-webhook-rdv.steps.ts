@@ -1,15 +1,17 @@
 import assert from 'node:assert'
-import { Given, Then, When } from '@cucumber/cucumber'
-import type { RecevoirWebhookRdv } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/domain/recevoir-webhook-rdv'
+import { Given, Then, When, type World } from '@cucumber/cucumber'
+import { messageDuWebhookRdv } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/domain/message-du-webhook-rdv'
 import { recevoirWebhookRdv } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/domain/recevoir-webhook-rdv'
 import { lireNotificationRdv } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/implementations/api/notification-rdv.params'
 import {
-  comptePourWebhook,
   enregistrerRdvDeLaNotification,
-  organisationConnue,
-  rdvConnuParId,
   supprimerRdvDeLaNotification,
 } from '@/features/rdvsp/abilities/recevoir-webhook-rdv/implementations/prisma/webhook-rdv.mutation'
+import {
+  comptePourWebhook,
+  organisationConnue,
+  rdvConnuParId,
+} from '@/features/rdvsp/abilities/recevoir-webhook-rdv/implementations/prisma/webhook-rdv.query'
 import { EvenementWebhook } from '@/features/rdvsp/domain/webhook/evenement-webhook'
 import {
   ID_TEST,
@@ -20,6 +22,7 @@ import {
   seedRdv,
   suivreUsagerRdv,
 } from '@/features/rdvsp/rdvsp.cucumber'
+import { success } from '@/libraries/result'
 
 const AGENT_ID = ID_TEST.compte + 11
 const RDV_ID = ID_TEST.rdv + 400
@@ -28,7 +31,9 @@ const USAGER_ID = ID_TEST.usager + 400
 const PARTICIPATION_ID = ID_TEST.participation + 400
 const MOTIF_ID = ID_TEST.organisation + 401
 
-let resultat: Awaited<ReturnType<RecevoirWebhookRdv>> | undefined
+type Monde = World & {
+  resultat?: Awaited<ReturnType<typeof recevoir>>
+}
 
 const recevoir = recevoirWebhookRdv({
   lireNotification: lireNotificationRdv,
@@ -37,13 +42,10 @@ const recevoir = recevoirWebhookRdv({
   organisationConnue,
   enregistrer: enregistrerRdvDeLaNotification,
   supprimer: supprimerRdvDeLaNotification,
-  // Le rapprochement des bénéficiaires a ses propres scénarios.
-  rapprocherBeneficiaires: async () => {
-    // Volontairement inerte.
-  },
+  lireLesUsagersARapprocher: async () => success([]),
+  rapprocherLesBeneficiaires: async () => success({ skipped: [] }),
 })
 
-/** Payload tel que RDV Service Public l'émet, catégorie de motif en chaîne comprise. */
 const notification = ({
   debut = '2026-09-01T09:00:00.000Z',
   statut = 'unknown',
@@ -134,16 +136,12 @@ Given(
   },
 )
 
-// Seule la synchronisation crée les organisations : une notification peut donc
-// arriver avant elle, et ne doit pas faire échouer la route.
 Given('un compte notifié sans son organisation', async () => {
   await seedCompteRdv({ id: AGENT_ID, accessToken: 'jeton-acces' })
   suivreUsagerRdv(USAGER_ID)
 })
 
-Given('aucun compte notifié', () => {
-  // Le hook Before a déjà retiré tout compte de l'utilisateur de test.
-})
+Given('aucun compte notifié', () => undefined)
 
 Given('le rendez-vous notifié est déjà enregistré', async () => {
   await seedRdv({
@@ -157,8 +155,6 @@ Given('le rendez-vous notifié est déjà enregistré', async () => {
 Given(
   'le rendez-vous notifié est déjà enregistré avec un CRA écarté',
   async () => {
-    // Le motif doit exister et être rattaché : sans lui, le rendez-vous en base
-    // diffère de la notification et rien n'est jamais « sans changement ».
     await seedMotif({ id: MOTIF_ID, organisationId: ORGANISATION_ID })
     await seedRdv({
       id: RDV_ID,
@@ -171,65 +167,84 @@ Given(
   },
 )
 
-When('RDV Service Public notifie la création d’un rendez-vous', async () => {
-  resultat = await recevoir({
-    evenement: EvenementWebhook('created'),
-    payload: notification(),
-  })
-})
+When(
+  'RDV Service Public notifie la création d’un rendez-vous',
+  async function (this: Monde) {
+    this.resultat = await recevoir({
+      evenement: EvenementWebhook('created'),
+      maintenant: new Date(),
+      payload: notification(),
+    })
+  },
+)
 
-When('RDV Service Public notifie un rendez-vous illisible', async () => {
-  resultat = await recevoir({
-    evenement: EvenementWebhook('updated'),
-    payload: { id: 'pas un identifiant' },
-  })
-})
+When(
+  'RDV Service Public notifie un rendez-vous illisible',
+  async function (this: Monde) {
+    this.resultat = await recevoir({
+      evenement: EvenementWebhook('updated'),
+      maintenant: new Date(),
+      payload: { id: 'pas un identifiant' },
+    })
+  },
+)
 
 When(
   'RDV Service Public notifie un rendez-vous du {string}',
-  async (jour: string) => {
-    resultat = await recevoir({
+  async function (this: Monde, jour: string) {
+    this.resultat = await recevoir({
       evenement: EvenementWebhook('updated'),
+      maintenant: new Date(),
       payload: notification({ debut: `${jour}T09:00:00.000Z` }),
     })
   },
 )
 
-When('RDV Service Public notifie ce rendez-vous sans changement', async () => {
-  resultat = await recevoir({
-    evenement: EvenementWebhook('updated'),
-    payload: notification(),
-  })
-})
+When(
+  'RDV Service Public notifie ce rendez-vous sans changement',
+  async function (this: Monde) {
+    this.resultat = await recevoir({
+      evenement: EvenementWebhook('updated'),
+      maintenant: new Date(),
+      payload: notification(),
+    })
+  },
+)
 
 When(
   'RDV Service Public notifie ce rendez-vous au statut {string}',
-  async (statut: string) => {
-    resultat = await recevoir({
+  async function (this: Monde, statut: string) {
+    this.resultat = await recevoir({
       evenement: EvenementWebhook('updated'),
+      maintenant: new Date(),
       payload: notification({ statut }),
     })
   },
 )
 
-When('RDV Service Public notifie la suppression du rendez-vous', async () => {
-  resultat = await recevoir({
-    evenement: EvenementWebhook('destroyed'),
-    payload: notification(),
-  })
-})
+When(
+  'RDV Service Public notifie la suppression du rendez-vous',
+  async function (this: Monde) {
+    this.resultat = await recevoir({
+      evenement: EvenementWebhook('destroyed'),
+      maintenant: new Date(),
+      payload: notification(),
+    })
+  },
+)
 
-Then('la notification est traitée', () => {
-  assert.strictEqual(resultat?._tag, 'traite')
+Then('la notification est traitée', function (this: Monde) {
+  assert.ok(this.resultat, 'Aucune notification reçue')
+  assert.match(messageDuWebhookRdv(this.resultat), /^rendez-vous /)
 })
 
 Then(
   'la notification est ignorée pour la raison {string}',
-  (raison: string) => {
-    assert.strictEqual(resultat?._tag, 'ignore')
+  function (this: Monde, raison: string) {
+    assert.ok(this.resultat, 'Aucune notification reçue')
     assert.strictEqual(
-      resultat._tag === 'ignore' ? resultat.raison : undefined,
-      raison,
+      messageDuWebhookRdv(this.resultat),
+      `notification ignorée : ${raison}`,
     )
   },
 )

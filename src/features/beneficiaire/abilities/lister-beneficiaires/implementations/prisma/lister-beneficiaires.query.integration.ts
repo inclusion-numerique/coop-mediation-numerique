@@ -67,7 +67,10 @@ const marquerLaSuppression = (suppression: Date | null) =>
 
 const accompagnementsDesBeneficiaires = async () =>
   (
-    await listerBeneficiaires({ mediateurId: MediateurId(ids.mediateur) })
+    await listerBeneficiaires({
+      mediateurId: MediateurId(ids.mediateur),
+      maintenant: new Date(),
+    })
   ).items.map(({ accompagnementsCount }) => accompagnementsCount)
 
 describe('accompagnements des bénéficiaires dans la liste du médiateur', () => {

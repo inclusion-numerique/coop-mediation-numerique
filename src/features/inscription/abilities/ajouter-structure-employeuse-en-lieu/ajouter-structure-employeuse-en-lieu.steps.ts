@@ -1,30 +1,33 @@
 import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
+import { Nom } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
 import type {
+  AdresseGeocodee,
   EmployeuseLue,
   Geocodage,
-  GeocoderLAdresse,
 } from '@/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/domain'
+import { BanId } from '@/features/inscription/abilities/ajouter-structure-employeuse-en-lieu/domain/ban-id'
 import {
   seedEmployeuseMain,
   utilisateurDeLInscriptionEnCours,
 } from '@/features/inscription/inscription.cucumber'
-import type { AdresseBanData } from '@/libraries/adresse'
+import { CodePostal } from '@/libraries/code-postal'
+import { CodeInsee } from '@/libraries/insee'
+import { success } from '@/libraries/result'
 import { ajouterStructureEmployeuseEnLieu } from './domain/ajouter-structure-employeuse-en-lieu'
+import { EmployeuseId } from './domain/employeuse-id'
 import { lireLAdresseDeLEmployeuse } from './implementations/prisma/adresse-de-l-employeuse.query'
 
 const nomEmployeuse = 'Employeuse lieu d’activité'
 
-const ADRESSE_RECONNUE: AdresseBanData = {
-  id: '75101_7038_00001',
-  label: '1 Rue de la Paix 75001 Paris',
+const ADRESSE_RECONNUE: AdresseGeocodee = {
+  id: BanId('75101_7038_00001'),
   nom: '1 Rue de la Paix',
   commune: 'Paris',
-  codePostal: '75001',
-  codeInsee: '75101',
-  contexte: '75, Paris, Île-de-France',
+  codePostal: CodePostal('75001'),
+  codeInsee: CodeInsee('75101'),
   latitude: 48.869_36,
   longitude: 2.331_08,
 }
@@ -34,46 +37,51 @@ const ADRESSE_RECONNUE_PAR_LA_BAN: Geocodage = {
   adresse: ADRESSE_RECONNUE,
 }
 
-type LieuConfie = {
-  readonly nom: string
-  readonly adresse: string
-  readonly banId?: string
-  readonly latitude?: number
-  readonly longitude?: number
-}
-
 const etat: {
   geocodage: Geocodage
-  employeuse?: EmployeuseLue
-  refus: string | null
-  rattaches: LieuConfie[]
-  detaches: LieuConfie[]
+  employeuse: { readonly employeuse: EmployeuseLue } | null
+  resultat: Awaited<ReturnType<ReturnType<typeof declarerAvec>>> | null
 } = {
   geocodage: ADRESSE_RECONNUE_PAR_LA_BAN,
-  refus: null,
-  rattaches: [],
-  detaches: [],
+  employeuse: null,
+  resultat: null,
 }
 
-const geocoderLAdresse: GeocoderLAdresse = async () => etat.geocodage
-
-const consulterEmployeuseActuelle = async () =>
-  etat.employeuse === undefined ? null : { employeuse: etat.employeuse }
+const declarerAvec = (
+  geocodage: Geocodage,
+  consultation: { readonly employeuse: EmployeuseLue } | null,
+) =>
+  ajouterStructureEmployeuseEnLieu({
+    lireLAdresseDeLEmployeuse,
+    geocoderLAdresse: async () => geocodage,
+    consulterEmployeuseActuelle: async () => consultation,
+    destinationDuLieuDecrit: async ({ lieu }) => success(lieu),
+    rattacherAuLieuDecrit: async () => ({ _tag: 'Rattaches' }),
+    lieuCorreleAuLieuDecrit: async () => success(null),
+    detacherDuLieu: async () => undefined,
+  })
 
 const declarer = async (estLieuActivite: boolean) => {
-  const resultat = await ajouterStructureEmployeuseEnLieu({
-    lireLAdresseDeLEmployeuse,
-    geocoderLAdresse,
-    consulterEmployeuseActuelle,
-    rattacherAuLieuDecrit: async ({ lieu }) => {
-      etat.rattaches.push(lieu)
-    },
-    detacherDuLieuDecrit: async ({ lieu }) => {
-      etat.detaches.push(lieu)
-    },
-  })({ userId: utilisateurDeLInscriptionEnCours(), estLieuActivite })
-  etat.refus = resultat.success ? null : resultat.error._tag
+  etat.resultat = await declarerAvec(
+    etat.geocodage,
+    etat.employeuse,
+  )({
+    userId: utilisateurDeLInscriptionEnCours(),
+    estLieuActivite,
+    maintenant: new Date(),
+  })
 }
+
+const lieuRattache = () => {
+  assert.ok(
+    etat.resultat?.success && etat.resultat.data._tag === 'RattacheeCommeLieu',
+    'Aucun lieu n’a été confié au rattachement',
+  )
+  return etat.resultat.data.destination
+}
+
+const refus = (): string | null =>
+  etat.resultat && !etat.resultat.success ? etat.resultat.error._tag : null
 
 Given('je suis médiateur', async () => {
   await prismaClient.mediateur.create({
@@ -84,17 +92,19 @@ Given('je suis médiateur', async () => {
 Given('j’ai une structure employeuse', async () => {
   const id = await seedEmployeuseMain({ nom: nomEmployeuse })
   etat.employeuse = {
-    id,
-    denomination: nomEmployeuse,
-    siret: null,
-    rna: null,
-    adresse: {
-      voie: '1 rue de la Paix',
-      commune: 'Paris',
-      codePostal: '75001',
-      codeInsee: '75101',
+    employeuse: {
+      id: EmployeuseId(id),
+      denomination: Nom(nomEmployeuse),
+      siret: null,
+      rna: null,
+      adresse: {
+        voie: '1 rue de la Paix',
+        commune: 'Paris',
+        codePostal: CodePostal('75001'),
+        codeInsee: CodeInsee('75101'),
+      },
+      contactReferent: { _tag: 'nonRenseigne' },
     },
-    contactReferent: { _tag: 'nonRenseigne' },
   }
 })
 
@@ -121,44 +131,42 @@ When(
 )
 
 Then('ma structure employeuse est confiée au rattachement', () => {
-  assert.deepStrictEqual(
-    etat.rattaches.map(({ nom }) => nom),
-    [nomEmployeuse],
-  )
+  assert.strictEqual(lieuRattache().nom, nomEmployeuse)
 })
 
 Then('ma structure employeuse est confiée au détachement', () => {
-  assert.deepStrictEqual(
-    etat.detaches.map(({ nom }) => nom),
-    [nomEmployeuse],
+  assert.ok(
+    etat.resultat?.success && etat.resultat.data._tag === 'DetacheeDesLieux',
+    'La structure employeuse n’a pas été confiée au détachement',
   )
+  assert.strictEqual(etat.resultat.data.lieu?.nom, nomEmployeuse)
 })
 
 Then('rien n’est confié au rattachement', () => {
-  assert.deepStrictEqual(etat.rattaches, [])
+  assert.ok(
+    etat.resultat && !etat.resultat.success,
+    'La déclaration aurait dû être refusée',
+  )
 })
 
 Then('la déclaration m’est refusée faute d’adresse reconnue', () => {
-  assert.strictEqual(etat.refus, 'AdresseNonReconnue')
+  assert.strictEqual(refus(), 'AdresseNonReconnue')
 })
 
 Then('la déclaration m’est refusée faute de service d’adresse', () => {
-  assert.strictEqual(etat.refus, 'ServiceAdresseIndisponible')
+  assert.strictEqual(refus(), 'ServiceAdresseIndisponible')
 })
 
 Then('le lieu confié porte l’adresse de la Base Adresse Nationale', () => {
-  const [lieu] = etat.rattaches
-  assert.ok(lieu, 'Aucun lieu n’a été confié au rattachement')
-  assert.strictEqual(lieu.adresse, ADRESSE_RECONNUE.nom)
-  assert.strictEqual(lieu.banId, ADRESSE_RECONNUE.id)
-  assert.strictEqual(lieu.latitude, ADRESSE_RECONNUE.latitude)
-  assert.strictEqual(lieu.longitude, ADRESSE_RECONNUE.longitude)
+  const { adresse } = lieuRattache()
+  assert.strictEqual(adresse.voie, ADRESSE_RECONNUE.nom)
+  assert.strictEqual(adresse.banId, ADRESSE_RECONNUE.id)
+  assert.strictEqual(adresse.latitude, ADRESSE_RECONNUE.latitude)
+  assert.strictEqual(adresse.longitude, ADRESSE_RECONNUE.longitude)
 })
 
 After(() => {
   etat.geocodage = ADRESSE_RECONNUE_PAR_LA_BAN
-  delete etat.employeuse
-  etat.refus = null
-  etat.rattaches = []
-  etat.detaches = []
+  etat.employeuse = null
+  etat.resultat = null
 })

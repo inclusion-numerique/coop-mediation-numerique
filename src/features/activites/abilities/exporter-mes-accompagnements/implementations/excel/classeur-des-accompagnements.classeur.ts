@@ -39,7 +39,7 @@ export const classeurDesAccompagnements = ({
   lignes,
   total,
   fuseau,
-  date = new Date(),
+  date,
 }: {
   readonly demandeur: AuteurDExport
   readonly filtres: readonly LibelleDeFiltre[]
@@ -47,7 +47,7 @@ export const classeurDesAccompagnements = ({
   readonly lignes: readonly (readonly Cellule[])[]
   readonly total: number
   readonly fuseau: string
-  readonly date?: Date
+  readonly date: Date
 }): Excel.Workbook => {
   const classeur = new Excel.Workbook()
   setWorkbookMetadata(classeur)({ worksheetGenerationDate: date })

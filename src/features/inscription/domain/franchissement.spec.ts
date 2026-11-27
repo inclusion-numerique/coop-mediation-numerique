@@ -20,13 +20,19 @@ describe('Franchissement', () => {
     expect(Franchissement(undefined)).toEqual({ _tag: 'aFranchir' })
   })
 
-  it('estFranchi distingue les deux variantes', () => {
+  it('estFranchi reconnaît une étape franchie', () => {
     expect(estFranchi(Franchissement(now))).toBe(true)
+  })
+
+  it('estFranchi reconnaît une étape à franchir', () => {
     expect(estFranchi(Franchissement(null))).toBe(false)
   })
 
-  it('dateDeFranchissement renvoie la date ou null', () => {
+  it('dateDeFranchissement renvoie la date d’une étape franchie', () => {
     expect(dateDeFranchissement(Franchissement(now))).toBe(now)
+  })
+
+  it('dateDeFranchissement renvoie null pour une étape à franchir', () => {
     expect(dateDeFranchissement(Franchissement(null))).toBeNull()
   })
 })

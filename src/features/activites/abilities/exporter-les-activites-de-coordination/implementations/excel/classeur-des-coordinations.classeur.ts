@@ -15,17 +15,17 @@ export const classeurDesCoordinations = ({
   filtres,
   auteur,
   fuseau,
-  genereLe = new Date(),
+  genereLe,
 }: {
   entetes: readonly string[]
   lignes: readonly (readonly Cellule[])[]
   filtres: readonly (readonly string[])[]
   auteur: AuteurDExport
   fuseau: string
-  genereLe?: Date
+  genereLe: Date
 }): Excel.Workbook => {
   const classeur = new Excel.Workbook()
-  setWorkbookMetadata(classeur)
+  setWorkbookMetadata(classeur)({ worksheetGenerationDate: genereLe })
 
   const feuille = classeur.addWorksheet('Activités de coordination')
   addExportMetadata(feuille)({

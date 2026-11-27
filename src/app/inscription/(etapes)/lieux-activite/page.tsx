@@ -27,7 +27,6 @@ export const metadata = {
 const LieuxActivitePageRoute = async () => {
   const user = await authenticateUser()
 
-  // If inscription is already complete (validated with a role profile), redirect to coop
   if (aTermineSonInscription(user)) {
     redirect('/coop')
   }
@@ -36,9 +35,6 @@ const LieuxActivitePageRoute = async () => {
     redirect('/inscription/initialiser')
   }
 
-  // Les lieux déjà rattachés, projetés vers l'input du formulaire. Ils portent
-  // tous un id — c'est lui qui porte la réconciliation, et c'est lui qui les
-  // dispense d'une adresse validée : rien ne sera réécrit de la leur.
   const lieuxActivite = await listerLesLieuxPourLInscription({
     mediateurId: MediateurId(user.mediateur.id),
   })

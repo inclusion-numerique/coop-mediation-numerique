@@ -7,28 +7,37 @@ import { contenuDuClasseur } from './lignes-du-classeur.presenter'
 
 type NomsDesFiltres = {
   readonly beneficiaires: readonly {
-    readonly label: string
-    readonly value: { readonly id?: string | null } | null
+    readonly id: string
+    readonly nom: string
   }[]
   readonly mediateurs: readonly {
-    readonly label: string
-    readonly value: { readonly mediateurId: string } | null
+    readonly mediateurId: string
+    readonly nom: string
+    readonly ancien: boolean
   }[]
   readonly employeuses: readonly {
     readonly id: number
     readonly nom: string | null
   }[]
   readonly communes: readonly {
-    readonly label: string
-    readonly value: string
+    readonly codeInsee: string
+    readonly nom: string
   }[]
   readonly departements: readonly {
-    readonly label: string
-    readonly value: string
+    readonly code: string
+    readonly nom: string
   }[]
-  readonly lieux: readonly { readonly label: string; readonly value: string }[]
+  readonly lieux: readonly { readonly id: string; readonly nom: string }[]
   readonly tags: readonly { readonly id: string; readonly nom: string }[]
 }
+
+export const libelleDuMediateur = ({
+  nom,
+  ancien,
+}: {
+  readonly nom: string
+  readonly ancien: boolean
+}): string => (ancien ? `Ancien membre - ${nom}` : nom)
 
 const libelles = (noms: readonly { label: string; value: string }[]) =>
   new Map(noms.map(({ value, label }) => [value, label]))
@@ -41,9 +50,18 @@ const etiquettesDuClasseur = (
     { chemin: '', parametres: {} },
     valeurs,
     {
-      lieux: libelles(noms.lieux),
-      communes: libelles(noms.communes),
-      departements: libelles(noms.departements),
+      lieux: libelles(
+        noms.lieux.map(({ id, nom }) => ({ value: id, label: nom })),
+      ),
+      communes: libelles(
+        noms.communes.map(({ codeInsee, nom }) => ({
+          value: codeInsee,
+          label: nom,
+        })),
+      ),
+      departements: libelles(
+        noms.departements.map(({ code, nom }) => ({ value: code, label: nom })),
+      ),
       tags: libelles(
         noms.tags.map(({ id, nom }) => ({ value: id, label: nom })),
       ),
@@ -54,14 +72,13 @@ const etiquettesDuClasseur = (
         })),
       ),
       mediateurs: libelles(
-        noms.mediateurs.flatMap(({ label, value }) =>
-          value === null ? [] : [{ value: value.mediateurId, label }],
-        ),
+        noms.mediateurs.map(({ mediateurId, nom, ancien }) => ({
+          value: mediateurId,
+          label: libelleDuMediateur({ nom, ancien }),
+        })),
       ),
       beneficiaires: libelles(
-        noms.beneficiaires.flatMap(({ label, value }) =>
-          value?.id ? [{ value: value.id, label }] : [],
-        ),
+        noms.beneficiaires.map(({ id, nom }) => ({ value: id, label: nom })),
       ),
     },
   )

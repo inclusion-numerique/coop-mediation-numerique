@@ -1,5 +1,3 @@
-import type { Prisma } from '@/generated/prisma/client'
-
 export const inscriptionPourLIdentifiantCarto = {
   select: { structureCartographieNationaleId: true },
 }
@@ -23,15 +21,3 @@ export const avecIdentifiantCarto = <T extends AvecInscription>(
       inscriptionRegistre?.structureCartographieNationaleId ?? null,
   }
 }
-
-export const lieuCoopPorteurDeLaCarto = async (
-  transaction: Prisma.TransactionClient,
-  identifiant: string,
-): Promise<{ readonly id: string } | null> =>
-  transaction.lieuInclusion.findFirst({
-    where: {
-      suppression: null,
-      inscriptionRegistre: { structureCartographieNationaleId: identifiant },
-    },
-    select: { id: true },
-  })

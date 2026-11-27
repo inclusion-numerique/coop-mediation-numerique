@@ -6,8 +6,11 @@ import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { FUSIONNER_UN_TAG_ERRORS } from '@/features/tags/abilities/fusionner-un-tag/action/fusionner-un-tag.errors'
 import { FusionnerUnTagValidation } from '@/features/tags/abilities/fusionner-un-tag/action/fusionner-un-tag.validation'
-import { fusionnerUnTag } from '@/features/tags/abilities/fusionner-un-tag/implementations/prisma/fusionner-un-tag.mutation'
-import { acteurDe, TagId } from '@/features/tags/domain'
+import { fusionnerUnTag } from '@/features/tags/abilities/fusionner-un-tag/domain/fusionner-un-tag'
+import { reporterLeTag } from '@/features/tags/abilities/fusionner-un-tag/implementations/prisma/reporter-le-tag.mutation'
+import { lireLesTagsDeLaFusion } from '@/features/tags/abilities/fusionner-un-tag/implementations/prisma/tags-de-la-fusion.query'
+import { TagId } from '@/features/tags/domain'
+import { acteurDe } from '@/features/tags/implementations/session/acteur.transfer'
 import { fromResult, withInput } from '@/libraries/nextjs'
 import { success } from '@/libraries/result'
 
@@ -19,12 +22,17 @@ export const fusionnerUnTagAction = actionBuilder()
     fromResult(
       async ({ user, input }) => {
         const fusion = await fusionnerUnTag({
+          lireLesTags: lireLesTagsDeLaFusion,
+          reporter: reporterLeTag,
+        })({
           acteur: acteurDe(profilDeLaSession(user)),
           sourceId: TagId(input.sourceId),
           destinationId: TagId(input.destinationId),
         })
 
-        return fusion.success ? success({ nom: fusion.data.nom }) : fusion
+        return fusion.success
+          ? success({ nom: fusion.data.source.nom })
+          : fusion
       },
       { onError: FUSIONNER_UN_TAG_ERRORS },
     ),

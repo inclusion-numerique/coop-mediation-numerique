@@ -10,14 +10,18 @@ import { optionsDEmployeuses } from '@/features/activites/abilities/rechercher-l
 import { EmployeuseId } from '@/features/activites/domain/index'
 import { perimetreDesEmployeusesDe } from '@/features/activites/implementations/session/perimetre.query'
 import { utilisateurDeLaSessionParId } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
-import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage/implementations/prisma/resoudre-un-lien-de-partage.query'
-import { utilisateurDuPartage } from '@/features/statistiques/domain/utilisateur-du-partage'
+import { resoudreUnLienDePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage/domain'
+import { lireLePartage } from '@/features/mediateurs/abilities/resoudre-un-lien-de-partage/implementations/prisma/partage.query'
+import { LienDePartageId } from '@/features/mediateurs/domain'
+import { utilisateurDuPartage } from '@/features/statistiques/implementations/session/utilisateur-du-partage.transfer'
 import { withInput } from '@/libraries/nextjs'
 
 const rechercherDansLePartage = actionBuilder()
   .use(withInput(RechercherLesEmployeusesDuPartageValidation))
   .execute(async ({ input: { partage, recherche, exclues } }) => {
-    const lien = await resoudreUnLienDePartage(partage)
+    const lien = await resoudreUnLienDePartage({ lirePartage: lireLePartage })({
+      lien: LienDePartageId.safe(partage),
+    })
     if (!lien.success) return []
     return optionsDEmployeuses(
       await rechercherLesEmployeusesDesActivites({

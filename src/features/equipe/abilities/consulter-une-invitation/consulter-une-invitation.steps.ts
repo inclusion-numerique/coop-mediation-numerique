@@ -1,7 +1,8 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
+import { consulterUneInvitation as consulterUneInvitationAvec } from '@/features/equipe/abilities/consulter-une-invitation/domain/consulter-une-invitation'
 import { type VueInvitation } from '@/features/equipe/abilities/consulter-une-invitation/domain/index'
-import { consulterUneInvitation } from '@/features/equipe/abilities/consulter-une-invitation/implementations/prisma/consulter-une-invitation.query'
+import { compterLesMembresActifs } from '@/features/equipe/abilities/consulter-une-invitation/implementations/prisma/membres-actifs.query'
 import {
   CoordinateurId,
   Courriel,
@@ -18,6 +19,14 @@ import {
   codeInvitation,
   referenceDuCode,
 } from '@/features/equipe/implementations/email/lien-invitation.transfer'
+import { lireLeCoordinateur } from '@/features/equipe/implementations/prisma/coordinateur.query'
+import { lireUneInvitation } from '@/features/equipe/implementations/prisma/invitation.query'
+
+const consulterUneInvitation = consulterUneInvitationAvec({
+  lireUneInvitation,
+  lireLeCoordinateur,
+  compterLesMembresActifs,
+})
 
 const contexte: {
   coordinateur?: CoordinateurSeme
@@ -61,7 +70,7 @@ const semer = async ({
 }
 
 const ouvrir = async (session: string | null) => {
-  contexte.vue = await consulterUneInvitation({
+  const consultation = await consulterUneInvitation({
     reference: referenceDuCode(
       codeInvitation(
         ReferenceInvitation({
@@ -72,6 +81,7 @@ const ouvrir = async (session: string | null) => {
     ),
     session: session === null ? null : Courriel(session),
   })
+  contexte.vue = consultation.data
 }
 
 Given(

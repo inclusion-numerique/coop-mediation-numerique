@@ -15,13 +15,16 @@ import {
   semerUnMediateur,
   tagEnBase,
 } from '@/features/tags/tags.cucumber'
-import { creerUnTag } from './implementations/prisma/creer-un-tag.mutation'
+import { creerUnTag } from './domain/creer-un-tag'
+import { enregistrerUnTag } from './implementations/prisma/enregistrer-un-tag.mutation'
+
+const creerEnBase = creerUnTag({ enregistrer: enregistrerUnTag })
 
 const contexte: {
   acteur?: Acteur
   mediateurId?: string
   coordinateurId?: string
-  issue?: Awaited<ReturnType<typeof creerUnTag>>
+  issue?: Awaited<ReturnType<typeof creerEnBase>>
 } = {}
 
 const acteur = (): Acteur => {
@@ -30,7 +33,7 @@ const acteur = (): Acteur => {
 }
 
 const creer = async (nom: string, visibilite: VisibiliteChoisie) => {
-  contexte.issue = await creerUnTag({
+  contexte.issue = await creerEnBase({
     acteur: acteur(),
     nom: NomDuTag(nom),
     description: null,

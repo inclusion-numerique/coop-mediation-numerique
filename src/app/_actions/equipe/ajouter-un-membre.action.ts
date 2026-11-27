@@ -5,9 +5,16 @@ import { withAdmin } from '@/features/authentification/middlewares/with-admin'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
 import { AJOUTER_UN_MEMBRE_ERRORS } from '@/features/equipe/abilities/ajouter-un-membre/action/ajouter-un-membre.errors'
 import { AjouterUnMembreValidation } from '@/features/equipe/abilities/ajouter-un-membre/action/ajouter-un-membre.validation'
-import { ajouterUnMembre } from '@/features/equipe/abilities/ajouter-un-membre/implementations/prisma/ajouter-un-membre.mutation'
+import { ajouterUnMembre } from '@/features/equipe/abilities/ajouter-un-membre/domain/ajouter-un-membre'
+import { enregistrerLAdhesion } from '@/features/equipe/abilities/ajouter-un-membre/implementations/prisma/enregistrer-l-adhesion.mutation'
+import {
+  coordinateurExiste,
+  lireLUtilisateurAAjouter,
+} from '@/features/equipe/abilities/ajouter-un-membre/implementations/prisma/utilisateur-a-ajouter.query'
 import { CoordinateurId, UtilisateurId } from '@/features/equipe/domain'
+import { lireLesAdhesionsDeLaPaire } from '@/features/equipe/implementations/prisma/adhesion.query'
 import { fromResult, withInput } from '@/libraries/nextjs'
+import { success } from '@/libraries/result'
 
 export const ajouterUnMembreAction = actionBuilder()
   .use(withAuth())
@@ -15,12 +22,19 @@ export const ajouterUnMembreAction = actionBuilder()
   .use(withInput(AjouterUnMembreValidation))
   .execute(
     fromResult(
-      async ({ user, input }) =>
-        ajouterUnMembre({
+      async ({ user, input }) => {
+        const ajout = await ajouterUnMembre({
+          lireLUtilisateurAAjouter,
+          coordinateurExiste,
+          lireLesAdhesionsDeLaPaire,
+          enregistrerLAdhesion,
+        })({
           utilisateurId: UtilisateurId(input.utilisateurId),
           coordinateurId: CoordinateurId(input.coordinateurId),
           auteurId: UtilisateurId(user.id),
-        }),
+        })
+        return ajout.success ? success(undefined) : ajout
+      },
       { onError: AJOUTER_UN_MEMBRE_ERRORS },
     ),
   )

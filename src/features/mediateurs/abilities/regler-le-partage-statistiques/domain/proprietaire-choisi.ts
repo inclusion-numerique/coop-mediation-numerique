@@ -6,15 +6,16 @@ import {
   type Rattachements,
 } from '@/features/mediateurs/domain'
 import { failure, type Result, success } from '@/libraries/result'
-import { AucuneStatistiqueAPartager, PerimetreNonRattache } from './errors'
+import {
+  AucuneStatistiqueAPartager,
+  type EchecDeReglerLePartageStatistiques,
+  PerimetreNonRattache,
+} from './errors'
 
 export const proprietaireChoisi = (
   rattachements: Rattachements,
   perimetre: PerimetrePartage,
-): Result<
-  ProprietairePartage,
-  AucuneStatistiqueAPartager | PerimetreNonRattache
-> => {
+): Result<ProprietairePartage, EchecDeReglerLePartageStatistiques> => {
   if (proprietairesPossibles(rattachements).length === 0)
     return failure(AucuneStatistiqueAPartager())
 

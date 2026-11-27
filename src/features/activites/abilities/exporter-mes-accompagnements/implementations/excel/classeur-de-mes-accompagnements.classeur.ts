@@ -22,6 +22,7 @@ export const classeurDeMesAccompagnements = ({
   auteur,
   fuseau,
   presenter,
+  date,
 }: {
   readonly criteres: CriteresDesActivites
   readonly noms: NomsDesFiltresExportes
@@ -29,9 +30,11 @@ export const classeurDeMesAccompagnements = ({
   readonly auteur: Parameters<typeof classeurDesAccompagnements>[0]['demandeur']
   readonly fuseau: string
   readonly presenter: Presenter
+  readonly date: Date
 }) =>
   classeurDesAccompagnements({
     demandeur: auteur,
     ...presenter({ criteres, noms, exportDes, fuseau }),
     fuseau,
+    date,
   })

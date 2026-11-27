@@ -1,5 +1,5 @@
 import type { Workbook, Worksheet } from 'exceljs'
-import { beforeAll, describe, expect, it } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { numberToPercentage } from '@/libraries/nombre'
 import { computeProportion } from '@/libraries/proportions'
 import {
@@ -515,24 +515,20 @@ const communesBeneficiaires = {
   length: 3,
 }
 
+const feuilleDesStatistiques = (workbook: Workbook): Worksheet => {
+  const feuille = workbook.getWorksheet('Statistiques')
+  if (!feuille) throw new Error('Worksheet "Statistiques" not found')
+  return feuille
+}
+
 const range = ({ start, length }: { start: number; length: number }) => {
   return `in Statistiques worksheet from row ${start} to ${start + length}`
 }
 
 describe('build statistiques worksheet for médiateur', () => {
-  let workbook: Workbook
-  let worksheet: Worksheet
-
-  beforeAll(() => {
-    workbook = classeurDesStatistiques(
-      STATISTIQUES_WORKSHEET_INPUT_FOR_MEDIATEUR,
-    )
-    const generatedWorksheet = workbook.getWorksheet('Statistiques')
-    if (!generatedWorksheet) {
-      throw new Error('Worksheet "Statistiques" not found')
-    }
-    worksheet = generatedWorksheet
-  })
+  const worksheet = feuilleDesStatistiques(
+    classeurDesStatistiques(STATISTIQUES_WORKSHEET_INPUT_FOR_MEDIATEUR),
+  )
 
   it('should create a workbook with Statistiques worksheet', () => {
     expect(worksheet).toBeDefined()
@@ -993,19 +989,9 @@ describe('build statistiques worksheet for médiateur', () => {
 })
 
 describe('build statistiques worksheet for coordinateur', () => {
-  let workbook: Workbook
-  let worksheet: Worksheet
-
-  beforeAll(() => {
-    workbook = classeurDesStatistiques(
-      STATISTIQUES_WORKSHEET_INPUT_FOR_COORDINATEUR,
-    )
-    const generatedWorksheet = workbook.getWorksheet('Statistiques')
-    if (!generatedWorksheet) {
-      throw new Error('Worksheet "Statistiques" not found')
-    }
-    worksheet = generatedWorksheet
-  })
+  const worksheet = feuilleDesStatistiques(
+    classeurDesStatistiques(STATISTIQUES_WORKSHEET_INPUT_FOR_COORDINATEUR),
+  )
 
   it('should contains médiateur filter in Statistiques worksheet in row 16 when', () => {
     const rows = worksheet

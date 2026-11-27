@@ -6,7 +6,10 @@ import {
   jointuresDesStatistiques,
   personneAccompagnee,
 } from '../../../../implementations/prisma/statistiques/statistiques.sql'
-import { nouvellesComptees, type TotauxDesAccompagnements } from '../../domain'
+import type {
+  ActivitesEtAccompagnementsComptes,
+  PersonnesComptees,
+} from '../../domain'
 
 type LigneDesActivites = {
   readonly activites: number
@@ -21,9 +24,9 @@ type LigneDesPersonnes = {
   readonly suivies: number
 }
 
-const activites = async (
+export const activitesComptees = async (
   demande: DemandeDeStatistiques,
-): Promise<LigneDesActivites> => {
+): Promise<ActivitesEtAccompagnementsComptes> => {
   const [ligne] = await prismaClient.$queryRaw<LigneDesActivites[]>`
     SELECT
       COUNT(*)::int AS activites,
@@ -33,31 +36,37 @@ const activites = async (
       COALESCE(SUM(act.accompagnements_count) FILTER (WHERE act.type = 'collectif'), 0)::int AS accompagnements_collectifs
     FROM activites act ${jointuresDesStatistiques(demande.criteres)}
     WHERE ${activitesRetenues(demande)}`
-  return (
-    ligne ?? {
-      activites: 0,
-      individuelles: 0,
-      collectives: 0,
-      accompagnements: 0,
-      accompagnements_collectifs: 0,
-    }
-  )
+  return {
+    activites: {
+      total: Effectif(ligne?.activites ?? 0),
+      individuelles: Effectif(ligne?.individuelles ?? 0),
+      collectives: Effectif(ligne?.collectives ?? 0),
+    },
+    accompagnements: {
+      total: Effectif(ligne?.accompagnements ?? 0),
+      collectifs: Effectif(ligne?.accompagnements_collectifs ?? 0),
+    },
+  }
 }
 
-const personnes = async (
+export const personnesComptees = async (
   demande: DemandeDeStatistiques,
-): Promise<LigneDesPersonnes> => {
+): Promise<PersonnesComptees> => {
   const [ligne] = await prismaClient.$queryRaw<LigneDesPersonnes[]>`
     SELECT
       COUNT(*)::int AS personnes,
       COUNT(*) FILTER (WHERE ben.anonyme = false)::int AS suivies
     FROM beneficiaires ben
     WHERE ${personneAccompagnee(demande)}`
-  return ligne ?? { personnes: 0, suivies: 0 }
+  return {
+    total: Effectif(ligne?.personnes ?? 0),
+    suivies: Effectif(ligne?.suivies ?? 0),
+  }
 }
 
-const nouvelles = async (demande: DemandeDeStatistiques): Promise<number> => {
-  if (!nouvellesComptees(demande.criteres.periode)) return 0
+export const nouvellesPersonnesComptees = async (
+  demande: DemandeDeStatistiques,
+): Promise<Effectif> => {
   const [ligne] = await prismaClient.$queryRaw<{ nouvelles: number }[]>`
     SELECT COUNT(*)::int AS nouvelles
     FROM accompagnements acc
@@ -65,31 +74,5 @@ const nouvelles = async (demande: DemandeDeStatistiques): Promise<number> => {
       ${jointuresDesStatistiques(demande.criteres)}
     WHERE acc.premier_accompagnement = true
       AND ${activitesRetenues(demande)}`
-  return ligne?.nouvelles ?? 0
-}
-
-export const compterLesAccompagnements = async (
-  demande: DemandeDeStatistiques,
-): Promise<TotauxDesAccompagnements> => {
-  const [desActivites, desPersonnes, nouvellesPersonnes] = await Promise.all([
-    activites(demande),
-    personnes(demande),
-    nouvelles(demande),
-  ])
-  return {
-    activites: {
-      total: Effectif(desActivites.activites),
-      individuelles: Effectif(desActivites.individuelles),
-      collectives: Effectif(desActivites.collectives),
-    },
-    accompagnements: {
-      total: Effectif(desActivites.accompagnements),
-      collectifs: Effectif(desActivites.accompagnements_collectifs),
-    },
-    personnes: {
-      total: Effectif(desPersonnes.personnes),
-      suivies: Effectif(desPersonnes.suivies),
-      nouvelles: Effectif(nouvellesPersonnes),
-    },
-  }
+  return Effectif(ligne?.nouvelles ?? 0)
 }

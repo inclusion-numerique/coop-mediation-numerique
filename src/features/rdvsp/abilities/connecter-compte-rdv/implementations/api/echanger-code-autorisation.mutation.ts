@@ -1,13 +1,13 @@
 import axios from 'axios'
 import { z } from 'zod'
-import { failure, success } from '@/libraries/result'
+import { failure, messageDe, success } from '@/libraries/result'
 import {
   JetonAcces,
   JetonRafraichissement,
   PorteeOAuth,
 } from '../../../../domain/compte/jetons-oauth'
-import type { EchangerCodeAutorisation } from '../../domain/connecter-compte-rdv'
 import { CodeAutorisationRefuse } from '../../domain/errors'
+import type { EchangerCodeAutorisation } from '../../domain/ports'
 
 const reponseJetons = z.object({
   access_token: z.string().min(1),
@@ -30,13 +30,6 @@ export type EchangerCodeAutorisationConfig = {
   readonly maintenant?: () => Date
 }
 
-/**
- * Échange le code d'autorisation contre le premier jeu de jetons.
- *
- * Cet appel ne passe pas par le port `RdvServicePublicApi` : il ne s'authentifie
- * pas avec un compte — il en crée les conditions — et vise l'endpoint OAuth, non
- * l'API métier. Seule cette ability en a l'usage, il vit donc chez elle.
- */
 export const echangerCodeAutorisation =
   ({
     hostname,
@@ -83,7 +76,7 @@ export const echangerCodeAutorisation =
         CodeAutorisationRefuse(
           axios.isAxiosError(erreur)
             ? (erreur.response?.data?.error_description ?? erreur.message)
-            : 'Erreur inconnue',
+            : messageDe(erreur),
         ),
       )
     }

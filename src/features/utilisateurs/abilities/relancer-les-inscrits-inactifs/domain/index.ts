@@ -1,1 +1,5 @@
-export type { RelancerLesInscritsInactifsPorts } from './ports'
+export type {
+  EnvoyerBienDemarrer,
+  EnvoyerLaRelanceDuCompte,
+  RelancerLesInscritsInactifsPorts,
+} from './ports'

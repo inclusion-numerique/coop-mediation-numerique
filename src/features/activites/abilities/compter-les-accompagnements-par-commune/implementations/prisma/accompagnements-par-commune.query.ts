@@ -1,5 +1,6 @@
 import { prismaClient } from '@/configuration/prisma'
-import { communeComptee, Effectif } from '../../../../domain'
+import { Effectif } from '../../../../domain'
+import { communeComptee } from '../../../../implementations/prisma/statistiques/commune-comptee.transfer'
 import {
   activitesRetenues,
   type DemandeDeStatistiques,

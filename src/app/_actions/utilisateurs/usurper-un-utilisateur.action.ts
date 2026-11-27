@@ -3,6 +3,7 @@
 import { environnementServeur } from '@/configuration/environnement/serveur'
 import { actionBuilder } from '@/configuration/nextjs'
 import { adresseDeRetourApresConnexion } from '@/features/authentification/domain/page-d-accueil'
+import { RoleDeLaSession } from '@/features/authentification/domain/role-de-la-session'
 import { getAuthenticatedSessionToken } from '@/features/authentification/implementations/session/session-token-from-cookies.query'
 import { withAdmin } from '@/features/authentification/middlewares/with-admin'
 import { withAuth } from '@/features/authentification/middlewares/with-auth'
@@ -12,7 +13,7 @@ import { PorteeUsurpation } from '@/features/utilisateurs/abilities/usurper-un-u
 import { usurperUnUtilisateur as usurper } from '@/features/utilisateurs/abilities/usurper-un-utilisateur/domain/usurper-un-utilisateur'
 import { cibleUsurpation } from '@/features/utilisateurs/abilities/usurper-un-utilisateur/implementations/prisma/cible-usurpation.query'
 import { ouvrirLUsurpation } from '@/features/utilisateurs/abilities/usurper-un-utilisateur/implementations/prisma/ouvrir-l-usurpation.mutation'
-import { identifiantsDe } from '@/features/utilisateurs/domain'
+import { identifiantsDe, UtilisateurId } from '@/features/utilisateurs/domain'
 import { fromResult, withInput } from '@/libraries/nextjs'
 import { success } from '@/libraries/result'
 
@@ -29,8 +30,8 @@ export const usurperUnUtilisateurAction = actionBuilder()
     fromResult(
       async ({ input, user }) => {
         const resultat = await usurperUnUtilisateur({
-          utilisateurId: input.utilisateurId,
-          usurpateurId: user.id,
+          utilisateurId: UtilisateurId.safe(input.utilisateurId),
+          usurpateurId: UtilisateurId(user.id),
           jetonDeSession: await getAuthenticatedSessionToken(),
           portee: PorteeUsurpation(
             environnementServeur().SUDO_USURPATION
@@ -41,14 +42,14 @@ export const usurperUnUtilisateurAction = actionBuilder()
 
         if (!resultat.success) return resultat
 
-        const cible = resultat.data
+        const { cible } = resultat.data
         const { mediateurId, coordinateurId } = identifiantsDe(
           cible.rattachements,
         )
         return success({
           nom: cible.nom,
           redirection: adresseDeRetourApresConnexion({
-            role: cible.role,
+            role: RoleDeLaSession(cible.role),
             inscriptionValidee:
               cible.inscription._tag === 'Le' ? cible.inscription.date : null,
             mediateur: mediateurId === null ? null : { id: mediateurId },

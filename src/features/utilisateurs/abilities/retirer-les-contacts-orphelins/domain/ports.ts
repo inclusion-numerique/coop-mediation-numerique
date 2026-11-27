@@ -1,10 +1,12 @@
-import type { AdresseCourriel } from '@/features/utilisateurs/domain'
-import type { ContactBrevo, RetraitDeLaListe } from './contacts'
+import type {
+  PortsDuRetraitDuContact,
+  UtilisateurId,
+} from '@/features/utilisateurs/domain'
 
-export type RetirerLesContactsOrphelinsPorts = {
-  readonly listerLesContacts: () => Promise<readonly ContactBrevo[]>
-  readonly supprimerLeContact: (courriel: AdresseCourriel) => Promise<void>
-  readonly retirerLeContactDeLaListe: (
-    courriel: AdresseCourriel,
-  ) => Promise<RetraitDeLaListe>
+type InscritsVivantsParmi = (
+  identifiants: readonly UtilisateurId[],
+) => Promise<ReadonlySet<UtilisateurId>>
+
+export type RetirerLesContactsOrphelinsPorts = PortsDuRetraitDuContact & {
+  readonly inscritsVivantsParmi: InscritsVivantsParmi
 }

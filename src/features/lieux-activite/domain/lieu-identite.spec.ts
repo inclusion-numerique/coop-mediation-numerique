@@ -1,3 +1,7 @@
+import {
+  CodeInsee,
+  CodePostal,
+} from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { describe, expect, it } from 'vitest'
 import {
   correler,
@@ -9,8 +13,8 @@ const lieu = (donnees: Partial<LieuAMaterialiser> = {}): LieuAMaterialiser => ({
   nom: 'Maison France Services',
   adresse: '1 rue de la Paix',
   commune: 'Paris',
-  codePostal: '75001',
-  codeInsee: '75101',
+  codePostal: CodePostal('75001'),
+  codeInsee: CodeInsee('75101'),
   latitude: 48.869,
   longitude: 2.331,
   ...donnees,
@@ -21,8 +25,8 @@ const candidat = (donnees: Partial<LieuCandidat> = {}): LieuCandidat => ({
   nom: 'Maison France Services',
   adresse: '1 rue de la Paix',
   commune: 'Paris',
-  codePostal: '75001',
-  codeInsee: '75101',
+  codePostal: CodePostal('75001'),
+  codeInsee: CodeInsee('75101'),
   latitude: 48.869,
   longitude: 2.331,
   suppression: null,
@@ -43,14 +47,11 @@ describe('correler', () => {
   })
 
   describe('le SIRET ne participe pas à la reconnaissance', () => {
-    // Une association dont le siège est à Paris déclare légitimement ce SIRET
-    // pour son antenne de Nantes. Le type d'entrée ne le porte donc même plus :
-    // ces cas se jouent entièrement sur l'endroit.
     it('deux implantations d’une même structure restent deux lieux', () => {
       const antenneNantaise = lieu({
         commune: 'Nantes',
-        codePostal: '44000',
-        codeInsee: '44109',
+        codePostal: CodePostal('44000'),
+        codeInsee: CodeInsee('44109'),
         adresse: '4 rue de la Distillerie',
         latitude: 47.218,
         longitude: -1.554,
@@ -68,7 +69,7 @@ describe('correler', () => {
 
   describe('la commune se reconnaît au-delà du code INSEE', () => {
     it('rapproche l’arrondissement et la commune (Paris, Lyon, Marseille)', () => {
-      const sousLeCodeCommune = candidat({ codeInsee: '75056' })
+      const sousLeCodeCommune = candidat({ codeInsee: CodeInsee('75056') })
 
       expect(correler([sousLeCodeCommune], lieu())).toMatchObject({
         id: 'candidat-1',
@@ -78,7 +79,7 @@ describe('correler', () => {
     it('sépare deux communes partageant un code postal', () => {
       const villageVoisin = candidat({
         commune: 'Anthy-sur-Léman',
-        codeInsee: '74012',
+        codeInsee: CodeInsee('74012'),
         latitude: 46.361,
         longitude: 6.443,
       })
@@ -99,7 +100,6 @@ describe('correler', () => {
     })
 
     it('rapproche deux libellés d’adresse différents à moins de 50 mètres', () => {
-      // « PL DU HUIT MAI 1945 » et « Place du 8 Mai 1945 » : mêmes coordonnées.
       const memeEndroitAutreLibelle = lieu({
         adresse: 'PL DU HUIT MAI 1945',
         latitude: 48.8692,
@@ -192,6 +192,32 @@ describe('correler', () => {
       expect(correler([candidat()], nomPlusLong)).toMatchObject({
         forte: false,
       })
+    })
+  })
+
+  describe('la typologie oppose deux établissements différents', () => {
+    it('sépare deux lieux dont les typologies déclarées diffèrent', () => {
+      expect(
+        correler(
+          [candidat({ typologies: ['BIB'] })],
+          lieu({ typologies: ['CAF'] }),
+        ),
+      ).toBeNull()
+    })
+
+    it('rapproche deux lieux qui déclarent la même typologie', () => {
+      expect(
+        correler(
+          [candidat({ typologies: ['BIB'] })],
+          lieu({ typologies: ['BIB'] }),
+        ),
+      ).toMatchObject({ id: 'candidat-1' })
+    })
+
+    it('ignore une typologie inconnue du standard plutôt que de refuser le lieu', () => {
+      expect(
+        correler([candidat({ typologies: ['PAS_UNE_TYPOLOGIE'] })], lieu()),
+      ).toMatchObject({ id: 'candidat-1' })
     })
   })
 

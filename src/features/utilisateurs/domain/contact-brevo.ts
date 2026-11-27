@@ -42,10 +42,6 @@ export const situationDansLeDispositif = (
         : 'ConseillerNumerique',
   )
 
-/**
- * Dates du contrat le plus récent, séparées car Brevo a un attribut pour chacune.
- * `null` = date absente (CDI, contrat non rompu, aucun contrat) : elle est effacée chez Brevo.
- */
 export type DatesDeContrat = {
   readonly fin: Date | null
   readonly rupture: Date | null
@@ -102,7 +98,7 @@ const reglesDesRoles: readonly {
   },
 ]
 
-export const rolesBrevoDe = (inscrit: Tenue): readonly RoleBrevo[] =>
+const rolesBrevoDe = (inscrit: Tenue): readonly RoleBrevo[] =>
   reglesDesRoles.filter(({ tenu }) => tenu(inscrit)).map(({ role }) => role)
 
 export const contactASynchroniser = (
@@ -124,4 +120,12 @@ export const contactASynchroniser = (
           contrat: inscrit.contrat,
         },
       }
+}
+
+export const contactAInscrire = (
+  inscrit: InscritDeLaListe | null,
+): ContactAImporter | null => {
+  if (inscrit === null) return null
+  const contact = contactASynchroniser(inscrit)
+  return contact._tag === 'AImporter' ? contact.contact : null
 }

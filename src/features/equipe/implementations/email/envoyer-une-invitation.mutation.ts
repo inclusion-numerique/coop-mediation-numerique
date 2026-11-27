@@ -4,10 +4,17 @@ import {
   expediteur,
   throwOnSendMailFailure,
 } from '@/configuration/smtp'
+import { signaler } from '@/configuration/telemetry/serveur'
 import { invitationDUnMediateur } from '@/features/equipe/implementations/email/invitation-d-un-mediateur.email'
 import { invitationDUnNouveauMediateur } from '@/features/equipe/implementations/email/invitation-d-un-nouveau-mediateur.email'
 import { compileMjml } from '@/libraries/emails/rendu'
-import { type InvitationEnAttente, type NomAffiche } from '../../domain'
+import { failure, success } from '@/libraries/result'
+import {
+  EnvoiEchoue,
+  type EnvoyerUneInvitation,
+  type InvitationEnAttente,
+  type NomAffiche,
+} from '../../domain'
 import { lienInvitation } from './lien-invitation.transfer'
 
 const gabarits = {
@@ -15,7 +22,7 @@ const gabarits = {
   MediateurInscrit: invitationDUnMediateur,
 } as const
 
-export const envoyerUneInvitation = async ({
+const envoyer = async ({
   invitation,
   de,
 }: {
@@ -36,4 +43,14 @@ export const envoyerUneInvitation = async ({
   })
 
   throwOnSendMailFailure(resultat)
+}
+
+export const envoyerUneInvitation: EnvoyerUneInvitation = async (envoi) => {
+  try {
+    await envoyer(envoi)
+    return success(undefined)
+  } catch (erreur) {
+    signaler(erreur)
+    return failure(EnvoiEchoue())
+  }
 }

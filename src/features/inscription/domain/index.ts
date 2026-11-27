@@ -1,12 +1,12 @@
 export {
   type DispositifPersonne,
-  dispositifInconnu,
   profilDepuisDispositif,
 } from './dispositif-personne'
 
 export {
   InscriptionDejaValidee,
   InscriptionIntrouvable,
+  LieuIntrouvable,
   ProfilNonChoisi,
 } from './errors'
 export {
@@ -22,14 +22,13 @@ export {
   estNonDemarree,
   estValidee,
 } from './etat-de-l-inscription'
-export {
-  estFranchi,
-  Franchissement,
-} from './franchissement'
+export { Franchissement } from './franchissement'
+export { LieuId } from './lieu-id'
 export type { InscriptionContexte } from './parcours-d-inscription'
 export {
   etapeSuivante,
   parcoursDInscription,
+  premiereEtape,
 } from './parcours-d-inscription'
 export { prochaineEtape } from './prochaine-etape'
 export {

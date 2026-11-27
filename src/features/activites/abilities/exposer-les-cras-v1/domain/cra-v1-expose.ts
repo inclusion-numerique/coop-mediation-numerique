@@ -1,7 +1,13 @@
+import type {
+  ConseillerNumeriqueV1Id,
+  CraV1Id,
+  StructureV1Id,
+} from './identifiants-v1'
+
 export type CraV1Expose = {
-  readonly id: string
+  readonly id: CraV1Id
   readonly importedAt: Date
-  readonly v1ConseillerNumeriqueId: string
+  readonly v1ConseillerNumeriqueId: ConseillerNumeriqueV1Id
   readonly canal: string
   readonly activite: string
   readonly nbParticipants: number
@@ -34,7 +40,7 @@ export type CraV1Expose = {
   readonly annotation: string | null
   readonly createdAt: Date
   readonly updatedAt: Date | null
-  readonly structureId: string | null
+  readonly structureId: StructureV1Id | null
   readonly structureIdPg: number | null
   readonly structureType: string | null
   readonly structureStatut: string | null

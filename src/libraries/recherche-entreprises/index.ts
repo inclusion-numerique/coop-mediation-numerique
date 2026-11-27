@@ -3,7 +3,10 @@ export type {
   UniteLegale,
 } from './api-entreprise-api-models'
 
-export { etablissementsDepuisUniteLegale } from './etablissements-depuis-unite-legale'
+export {
+  type EtablissementDepuisUniteLegale,
+  etablissementsDepuisUniteLegale,
+} from './etablissements-depuis-unite-legale'
 export type {
   RechercheApiEntrepriseQueryParams,
   RechercheApiEntrepriseRetryOptions,

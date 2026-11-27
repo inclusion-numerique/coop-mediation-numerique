@@ -7,15 +7,17 @@ import {
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { prismaClient } from '@/configuration/prisma'
 import { nouveauLieu } from '@/features/lieux-activite/abilities/creer-lieu-activite/action/saisie-du-lieu.transfer'
-import { creerLieuActivite } from '@/features/lieux-activite/abilities/creer-lieu-activite/implementations/prisma/creer-lieu-activite.mutation'
+import { creerLieuActivite } from '@/features/lieux-activite/abilities/creer-lieu-activite/domain/creer-lieu-activite'
+import { enregistrerLieuActivite } from '@/features/lieux-activite/abilities/creer-lieu-activite/implementations/prisma/enregistrer-lieu-activite.mutation'
 import type { CreerLieuActiviteData } from '@/features/lieux-activite/action/creer-lieu-activite.validation'
 import { LieuId } from '@/features/lieux-activite/domain/identifiants/lieu-id'
 import { MediateurId } from '@/features/lieux-activite/domain/identifiants/mediateur-id'
 import { UtilisateurId } from '@/features/lieux-activite/domain/identifiants/utilisateur-id'
 import { horairesVides } from '@/features/lieux-activite/domain/saisie/horaires-d-ouverture'
+import { lieuxAuMemeEndroit } from '@/features/lieux-activite/implementations/prisma/lieux-au-meme-endroit.query'
 import { ficheSemee } from '@/features/lieux-activite/lieux-activite.cucumber'
 
-type Issue = Awaited<ReturnType<typeof creerLieuActivite>>
+type Issue = Awaited<ReturnType<ReturnType<typeof creerLieuActivite>>>
 
 const dernier: { creation?: Issue; lieuxCreesIds: string[] } = {
   lieuxCreesIds: [],
@@ -59,18 +61,26 @@ const creer = async (
   mediateurId: string | null,
   quoi: CreerLieuActiviteData = saisie,
 ) => {
+  const maintenant = new Date()
   dernier.creation = await creerLieuActivite({
+    lieuxAuMemeEndroit,
+    enregistrer: enregistrerLieuActivite,
+  })({
     lieu: nouveauLieu(
       quoi,
       UtilisateurId(ficheSemee().userIds[0] ?? ''),
-      new Date(),
+      maintenant,
       LieuId(crypto.randomUUID()),
     ),
     mediateurId: mediateurId == null ? null : MediateurId(mediateurId),
+    maintenant,
   })
 
   if (dernier.creation.success)
-    dernier.lieuxCreesIds = [...dernier.lieuxCreesIds, dernier.creation.data.id]
+    dernier.lieuxCreesIds = [
+      ...dernier.lieuxCreesIds,
+      dernier.creation.data.destination.id,
+    ]
 }
 
 const lieuCree = (rang: number): string => dernier.lieuxCreesIds[rang - 1] ?? ''

@@ -49,11 +49,6 @@ const jetonsMinimaux = {
   portee: null,
 }
 
-/**
- * Reconstitue la ligne à partir des scalaires : les organisations sont une
- * relation, et `CompteRdvRow` n'énumère que les colonnes que la lecture
- * consulte — ni `metadata` ni les horodatages système n'en font partie.
- */
 const toRow = (compte: CompteRdv): CompteRdvRow => ({
   ...compteRdvFromDomain(compte),
   organisations: compte.organisationIds.map((organisationId) => ({

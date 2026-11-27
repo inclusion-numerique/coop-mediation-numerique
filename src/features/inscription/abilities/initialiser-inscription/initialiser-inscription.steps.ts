@@ -2,12 +2,10 @@ import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
-import {
-  type DispositifInscription,
-  initialiserInscription,
-} from '@/features/inscription/abilities/initialiser-inscription/domain'
+import { initialiserInscription } from '@/features/inscription/abilities/initialiser-inscription/domain/initialiser-inscription'
 import { lireEtatPourEtapeSuivante } from '@/features/inscription/abilities/initialiser-inscription/implementations/prisma/etat-pour-etape-suivante.query'
 import {
+  type DispositifPersonne,
   type EtapeDInscription,
   ProfilInscription,
 } from '@/features/inscription/domain'
@@ -15,21 +13,34 @@ import {
   seedLieuActivite,
   utilisateurDeLInscriptionEnCours,
 } from '@/features/inscription/inscription.cucumber'
+import { success } from '@/libraries/result'
 
-// Seuls les ports à effets (dispositif, SIRET) sont fakés ; la lecture d'état
-// passe par l'adapteur Prisma RÉEL sur la base seedée (BDD hybride).
-let dispositif: DispositifInscription = {
-  connue: false,
-  estConseillerNumerique: false,
+const contexte: {
+  dispositif: DispositifPersonne
+  etapeSuivante: EtapeDInscription | null
+} = {
+  dispositif: {
+    connue: false,
+    estConseillerNumerique: false,
+    estCoordinateur: false,
+  },
+  etapeSuivante: null,
 }
-let etapeSuivante: EtapeDInscription | null = null
 
 Given('le dispositif ne connaît pas l’utilisateur', () => {
-  dispositif = { connue: false, estConseillerNumerique: false }
+  contexte.dispositif = {
+    connue: false,
+    estConseillerNumerique: false,
+    estCoordinateur: false,
+  }
 })
 
 Given('le dispositif connaît l’utilisateur comme conseiller numérique', () => {
-  dispositif = { connue: true, estConseillerNumerique: true }
+  contexte.dispositif = {
+    connue: true,
+    estConseillerNumerique: true,
+    estCoordinateur: false,
+  }
 })
 
 Given('l’utilisateur n’a ni profil ni lieu d’activité', async () => {
@@ -75,20 +86,22 @@ Given(
 )
 
 When('j’initialise l’inscription', async () => {
-  const { nextStep } = await initialiserInscription(
-    { userId: utilisateurDeLInscriptionEnCours() },
-    {
-      appliquerDispositif: async () => dispositif,
-      importerStructureDepuisSiret: async () => undefined,
-      lireEtatPourEtapeSuivante,
-    },
-  )
-  etapeSuivante = nextStep
+  const initialisation = await initialiserInscription({
+    lireLeDispositif: async () => contexte.dispositif,
+    enregistrerLeProfil: async () => undefined,
+    garantirLeRoleCoordinateur: async () =>
+      success({ _tag: 'HorsDuDispositif' }),
+    garantirLeMediateur: async () => undefined,
+    lireLeSiretARattacher: async () => ({ siret: null, aUneEmployeuse: false }),
+    rattacherDepuisSiret: async () => success(undefined),
+    lireEtatPourEtapeSuivante,
+  })({ userId: utilisateurDeLInscriptionEnCours() })
+  contexte.etapeSuivante = initialisation.data.nextStep
 })
 
 Then(
   'l’étape suivante de l’initialisation est {string}',
   (expected: string) => {
-    assert.strictEqual(etapeSuivante, expected)
+    assert.strictEqual(contexte.etapeSuivante, expected)
   },
 )

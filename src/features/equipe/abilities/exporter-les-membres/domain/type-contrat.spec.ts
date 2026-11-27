@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { TypeContrat } from './type-contrat'
 
 describe('type de contrat', () => {
-  it.each(['CDD', 'CDI', 'CDP', 'PEC'])('reconnaît %s', (type) => {
+  it.each<string>(['CDD', 'CDI', 'CDP', 'PEC'])('reconnaît %s', (type) => {
     expect(TypeContrat(type)).toBe(type)
   })
 

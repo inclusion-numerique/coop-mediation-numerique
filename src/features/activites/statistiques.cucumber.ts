@@ -25,43 +25,52 @@ type Personne = {
   readonly coordinateurId: string | null
 }
 
-let personnes: Readonly<Record<string, Personne>> = {}
-let membres: Readonly<Record<string, readonly string[]>> = {}
-let lieux: Readonly<Record<string, string>> = {}
-let rendezVous: readonly { id: number; compte: number; statut: string }[] = []
-let tags: Readonly<Record<string, string>> = {}
-let employeuses: Readonly<Record<string, number>> = {}
+const etat: {
+  personnes: Readonly<Record<string, Personne>>
+  membres: Readonly<Record<string, readonly string[]>>
+  lieux: Readonly<Record<string, string>>
+  rendezVous: readonly { id: number; compte: number; statut: string }[]
+  tags: Readonly<Record<string, string>>
+  employeuses: Readonly<Record<string, number>>
+} = {
+  personnes: {},
+  membres: {},
+  lieux: {},
+  rendezVous: [],
+  tags: {},
+  employeuses: {},
+}
 
 const employeuseNommee = async (nom: string): Promise<number> => {
-  const existante = employeuses[nom]
+  const existante = etat.employeuses[nom]
   if (existante) return existante
   const { id } = await prismaClient.structureAdministrativeMain.create({
     data: { denominationAntenne: nom },
     select: { id: true },
   })
-  employeuses = { ...employeuses, [nom]: id }
+  etat.employeuses = { ...etat.employeuses, [nom]: id }
   return id
 }
 
 const tagNomme = async (nom: string, mediateurId: string): Promise<string> => {
-  const existant = tags[nom]
+  const existant = etat.tags[nom]
   if (existant) return existant
   const { id } = await prismaClient.tag.create({
     data: { nom, mediateurId },
     select: { id: true },
   })
-  tags = { ...tags, [nom]: id }
+  etat.tags = { ...etat.tags, [nom]: id }
   return id
 }
 
 export const tagSeme = (nom: string): string => {
-  const id = tags[nom]
+  const id = etat.tags[nom]
   assert.ok(id, `Tag inconnu : ${nom}`)
   return id
 }
 
 export const lieuSeme = (nom: string): string => {
-  const id = lieux[nom]
+  const id = etat.lieux[nom]
   assert.ok(id, `Lieu inconnu : ${nom}`)
   return id
 }
@@ -110,12 +119,12 @@ const semerUnRendezVous = async (
       rawData: {},
     },
   })
-  rendezVous = [...rendezVous, { id, compte: compte.id, statut }]
+  etat.rendezVous = [...etat.rendezVous, { id, compte: compte.id, statut }]
   return id
 }
 
 const personne = (nom: string): Personne => {
-  const trouvee = personnes[nom]
+  const trouvee = etat.personnes[nom]
   assert.ok(trouvee, `Personne inconnue : ${nom}`)
   return trouvee
 }
@@ -157,12 +166,12 @@ const semerUnePersonne = async (
       ).id
     : null
   const semee = { userId, mediateurId, coordinateurId }
-  personnes = { ...personnes, [nom]: semee }
+  etat.personnes = { ...etat.personnes, [nom]: semee }
   return semee
 }
 
 const lieuNomme = async (nom: string): Promise<string> => {
-  const existant = lieux[nom]
+  const existant = etat.lieux[nom]
   if (existant) return existant
   const { id } = await prismaClient.lieuInclusion.create({
     data: {
@@ -174,7 +183,7 @@ const lieuNomme = async (nom: string): Promise<string> => {
     },
     select: { id: true },
   })
-  lieux = { ...lieux, [nom]: id }
+  etat.lieux = { ...etat.lieux, [nom]: id }
   return id
 }
 
@@ -326,9 +335,12 @@ Given(
         mediateurId: mediateurDe(membre),
       },
     })
-    membres = {
-      ...membres,
-      [coordinateur]: [...(membres[coordinateur] ?? []), mediateurDe(membre)],
+    etat.membres = {
+      ...etat.membres,
+      [coordinateur]: [
+        ...(etat.membres[coordinateur] ?? []),
+        mediateurDe(membre),
+      ],
     }
   },
 )
@@ -343,9 +355,12 @@ Given(
         suppression: new Date(`${jour}T00:00:00.000Z`),
       },
     })
-    membres = {
-      ...membres,
-      [coordinateur]: [...(membres[coordinateur] ?? []), mediateurDe(membre)],
+    etat.membres = {
+      ...etat.membres,
+      [coordinateur]: [
+        ...(etat.membres[coordinateur] ?? []),
+        mediateurDe(membre),
+      ],
     }
   },
 )
@@ -376,13 +391,13 @@ export const perimetreDe = (nom: string): PerimetreDesStatistiques => {
         coordinateur: CoordinateurId(coordinateurId),
         membres: [
           ...(mediateurId === null ? [] : [mediateurId]),
-          ...(membres[nom] ?? []),
+          ...(etat.membres[nom] ?? []),
         ].map((id) => MediateurId(id)),
       }
 }
 
 const rendezVousSemesAuxStatuts = (statuts: readonly string[]) => {
-  const ids = rendezVous
+  const ids = etat.rendezVous
     .filter(({ statut }) => statuts.includes(statut))
     .map(({ id }) => id)
   return Prisma.sql`SELECT unnest(${ids}::int[])`
@@ -407,8 +422,8 @@ export const parametresDuTableau = (
         .split(',')
         .map((element) => element.trim())
         .map((element) =>
-          personnes[element]?.mediateurId
-            ? personnes[element].mediateurId
+          etat.personnes[element]?.mediateurId
+            ? etat.personnes[element].mediateurId
             : element,
         )
         .join(','),
@@ -416,17 +431,17 @@ export const parametresDuTableau = (
   )
 
 After(async () => {
-  const semees = Object.values(personnes)
-  const lieuxSemes = Object.values(lieux)
-  const rendezVousSemes = rendezVous
-  rendezVous = []
-  const tagsSemes = Object.values(tags)
-  tags = {}
-  const employeusesSemees = Object.values(employeuses)
-  employeuses = {}
-  personnes = {}
-  membres = {}
-  lieux = {}
+  const semees = Object.values(etat.personnes)
+  const lieuxSemes = Object.values(etat.lieux)
+  const rendezVousSemes = etat.rendezVous
+  etat.rendezVous = []
+  const tagsSemes = Object.values(etat.tags)
+  etat.tags = {}
+  const employeusesSemees = Object.values(etat.employeuses)
+  etat.employeuses = {}
+  etat.personnes = {}
+  etat.membres = {}
+  etat.lieux = {}
   if (semees.length === 0) return
   const mediateurIds = semees.flatMap(({ mediateurId }) =>
     mediateurId === null ? [] : [mediateurId],

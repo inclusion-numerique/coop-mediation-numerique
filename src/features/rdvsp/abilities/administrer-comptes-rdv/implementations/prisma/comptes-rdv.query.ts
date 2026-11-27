@@ -73,10 +73,9 @@ export const comptesRdv = async (): Promise<ComptesAdministres> => {
         user,
       ): user is typeof user & {
         rdvAccount: NonNullable<typeof user.rdvAccount>
-      } => user.rdvAccount !== null, // only here for typescript safety, it is guaranteed by the query where clause
+      } => user.rdvAccount !== null,
     )
     .sort(
-      // sort by number of rdvs descending
       (a, b) =>
         (b.rdvAccount._count.rdvs ?? 0) - (a.rdvAccount._count.rdvs ?? 0),
     )
@@ -97,8 +96,6 @@ export const comptesRdv = async (): Promise<ComptesAdministres> => {
 
       return {
         ...user,
-        // L'état du compte est décidé par le domaine : cinq situations distinctes
-        // là où l'écran se contentait d'un booléen « des jetons, ou pas ».
         sante: santeDuCompte(
           compteRdvToDomain({
             ...user.rdvAccount,

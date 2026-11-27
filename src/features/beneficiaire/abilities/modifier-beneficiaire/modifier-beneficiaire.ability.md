@@ -20,6 +20,20 @@
 * Quand je modifie un bénéficiaire inexistant
 * Alors la modification échoue avec l'erreur "BeneficiaireNotFound"
 
+### Scénario: Modifier le bénéficiaire d'un autre médiateur échoue
+
+* Étant donné un bénéficiaire enregistré pour un autre médiateur
+* Quand je modifie le bénéficiaire de l'autre médiateur
+* Alors la modification échoue avec l'erreur "BeneficiaireNotFound"
+* Et le bénéficiaire de l'autre médiateur garde son identité
+
+### Scénario: L'écriture de la modification n'atteint pas le bénéficiaire d'un autre médiateur
+
+* Étant donné un bénéficiaire enregistré pour un autre médiateur
+* Quand l'écriture de la modification vise le bénéficiaire de l'autre médiateur au nom de ce médiateur
+* Alors l'écriture de la modification est refusée
+* Et le bénéficiaire de l'autre médiateur garde son identité
+
 ## Règle: La tranche d'âge saisie sans année de naissance est conservée
 
 ### Scénario: Renseigner la tranche d'âge sans année de naissance

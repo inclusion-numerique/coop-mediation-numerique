@@ -1,10 +1,8 @@
 import { prismaClient } from '@/configuration/prisma'
 import type { EtatDeMaintenance } from '@/features/maintenance-mode/domain'
-import {
-  periodeDeMaintenance,
-  periodeDeMaintenanceSelect,
-  periodeEnCoursWhere,
-} from './periode-de-maintenance.select'
+import { periodeDeMaintenanceSelect } from './periode-de-maintenance.select'
+import { periodeDeMaintenance } from './periode-de-maintenance.transfer'
+import { periodeEnCoursWhere } from './periode-en-cours.where'
 
 export const consulterLaMaintenance = async (): Promise<EtatDeMaintenance> => {
   const enCours = await prismaClient.maintenance.findFirst({

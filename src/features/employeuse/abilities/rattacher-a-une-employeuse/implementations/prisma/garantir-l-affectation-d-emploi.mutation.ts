@@ -5,7 +5,6 @@ const COOP_SOURCE = 'coop'
 
 type PrismaLike = Prisma.TransactionClient
 
-// Upsert d'une affectation coop : crée la ligne si absente, (ré)active/désactive selon `estActive`.
 export const ensureAffectationEmploiMain = async (
   {
     personneId,

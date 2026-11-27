@@ -1,24 +1,17 @@
 import type { Route } from 'next'
 import { notFound, redirect } from 'next/navigation'
-import { AuthenticationError } from '@/features/authentification/domain/errors'
 import {
   estCoordinateur,
   estMediateur,
   type UtilisateurCoordinateur,
   type UtilisateurMediateur,
 } from '@/features/authentification/domain/profils-d-utilisateur'
+import { AuthenticationError } from '@/features/authentification/implementations/session/session-token-from-cookies.query'
 import {
   getAuthenticatedSessionUser,
   getSessionUser,
 } from '@/features/authentification/middlewares/with-utilisateur-de-la-session'
 
-/**
- * This gets the session user from request cache and redirects to login
- * with correct callback url if user is not found
- *
- * This should be called in Layout and Page components and be the first
- * call in those components for better readability of authentication logic.
- */
 export const authenticateUser = async (redirectTo: Route = '/connexion') => {
   try {
     return await getAuthenticatedSessionUser()

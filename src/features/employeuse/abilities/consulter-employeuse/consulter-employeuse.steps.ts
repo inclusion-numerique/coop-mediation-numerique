@@ -1,7 +1,8 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
-import type { EmployeuseConsultee } from '@/features/employeuse/abilities/consulter-employeuse/domain/consulter-employeuse'
-import { consulterEmployeuse } from '@/features/employeuse/abilities/consulter-employeuse/implementations/prisma/consulter-employeuse.query'
+import { consulterEmployeuse } from '@/features/employeuse/abilities/consulter-employeuse/domain/consulter-employeuse'
+import type { EmployeuseConsultee } from '@/features/employeuse/abilities/consulter-employeuse/domain/employeuse-consultee'
+import { lireLEmployeuse } from '@/features/employeuse/abilities/consulter-employeuse/implementations/prisma/employeuse-et-ses-affectations.query'
 import { EmployeuseId } from '@/features/employeuse/domain/employeuse-id'
 import {
   desactiverAffectations,
@@ -12,7 +13,11 @@ import {
 } from '@/features/employeuse/employeuse.cucumber'
 
 const employeuses = new Map<string, number>()
-let fiche: EmployeuseConsultee | null = null
+const contexte: {
+  fiche: EmployeuseConsultee | null
+} = {
+  fiche: null,
+}
 
 const employeuseId = (nom: string): number => {
   const id = employeuses.get(nom)
@@ -52,9 +57,6 @@ Given(
   async (nom: string, sources: number) => {
     employeuses.set(nom, await seedEmployeuseMain(nom))
     const userId = await seedUtilisateur()
-    // Séquentiel et non parallèle : les trois `seedAffectation` créent la MÊME
-    // `main.personne`, et les lancer de front les fait se marcher dessus sur la
-    // clé d'unicité.
     await (['coop', 'idposte', 'aidants-connect'] as const)
       .slice(0, sources)
       .reduce(
@@ -80,21 +82,22 @@ Given("l'employeuse {string} a été supprimée", async (nom: string) => {
 })
 
 When('je consulte la fiche de {string}', async (nom: string) => {
-  fiche = await consulterEmployeuse({
+  const { data } = await consulterEmployeuse({ lireLEmployeuse })({
     employeuseId: EmployeuseId(employeuseId(nom)),
   })
+  contexte.fiche = data
 })
 
 Then('la fiche porte le nom {string}', (nom: string) => {
-  assert.ok(fiche, 'Aucune fiche')
-  assert.strictEqual(fiche.employeuse.denomination, nom)
+  assert.ok(contexte.fiche, 'Aucune fiche')
+  assert.strictEqual(contexte.fiche.employeuse.denomination, nom)
 })
 
 Then('la fiche compte {int} personne(s) employée(s)', (attendu: number) => {
-  assert.ok(fiche, 'Aucune fiche')
-  assert.strictEqual(fiche.personnesEmployees.length, attendu)
+  assert.ok(contexte.fiche, 'Aucune fiche')
+  assert.strictEqual(contexte.fiche.personnesEmployees.length, attendu)
 })
 
 Then("aucune fiche n'est trouvée", () => {
-  assert.strictEqual(fiche, null)
+  assert.strictEqual(contexte.fiche, null)
 })

@@ -1,20 +1,35 @@
 import {
+  type CoordinateurId,
   coordinateurDe,
+  type InscriptionALaListe,
   mediateurDe,
   type RattachementsDuCompte,
+  type UtilisateurId,
 } from '@/features/utilisateurs/domain'
 import { failure, type Result, success } from '@/libraries/result'
+import { NonCoordinateur } from './errors'
 
-export type NonCoordinateur = { readonly _tag: 'NonCoordinateur' }
+export type Activation =
+  | { readonly _tag: 'DejaActivee' }
+  | {
+      readonly _tag: 'Activee'
+      readonly utilisateurId: UtilisateurId
+      readonly coordinateurId: CoordinateurId
+      readonly inscription: InscriptionALaListe
+    }
 
-export type Activation = 'AActiver' | 'DejaActivee'
+type DecisionDActivation =
+  | { readonly _tag: 'DejaActivee' }
+  | { readonly _tag: 'AActiver'; readonly coordinateurId: CoordinateurId }
 
 export const activationDe = (
   rattachements: RattachementsDuCompte,
-): Result<Activation, NonCoordinateur> => {
-  if (coordinateurDe(rattachements) === null)
-    return failure({ _tag: 'NonCoordinateur' })
+): Result<DecisionDActivation, NonCoordinateur> => {
+  const coordinateurId = coordinateurDe(rattachements)
+  if (coordinateurId === null) return failure(NonCoordinateur())
   return success(
-    mediateurDe(rattachements) === null ? 'AActiver' : 'DejaActivee',
+    mediateurDe(rattachements) === null
+      ? { _tag: 'AActiver', coordinateurId }
+      : { _tag: 'DejaActivee' },
   )
 }

@@ -2,11 +2,18 @@ import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
-import { supprimerUneActiviteDeMediation } from '@/features/activites/abilities/supprimer-une-activite-de-mediation/implementations/prisma/supprimer-une-activite-de-mediation.mutation'
+import {
+  type EchecDeSupprimerUneActiviteDeMediation,
+  type SuppressionDeLActiviteDeMediation,
+  supprimerUneActiviteDeMediation,
+} from '@/features/activites/abilities/supprimer-une-activite-de-mediation/domain/index'
+import { activiteDeMediationDuMediateur } from '@/features/activites/abilities/supprimer-une-activite-de-mediation/implementations/prisma/activite-de-mediation-du-mediateur.query'
+import { supprimerLActiviteDeMediation } from '@/features/activites/abilities/supprimer-une-activite-de-mediation/implementations/prisma/supprimer-une-activite-de-mediation.mutation'
 import {
   ActiviteId,
-  type ActiviteIntrouvable,
+  BeneficiaireId,
   MediateurId,
+  TypeDActivite,
   UtilisateurId,
 } from '@/features/activites/domain'
 import type { Result } from '@/libraries/result'
@@ -23,8 +30,13 @@ type Semis = {
   readonly anonymes: readonly string[]
 }
 
-let semis: Semis | undefined
-let resultat: Result<void, ActiviteIntrouvable> | undefined
+const etat: {
+  semis?: Semis
+  resultat?: Result<
+    SuppressionDeLActiviteDeMediation,
+    EchecDeSupprimerUneActiviteDeMediation
+  >
+} = {}
 
 const semerUnMediateur = async (): Promise<Mediateur> => {
   const userId = v4()
@@ -86,8 +98,8 @@ const semerDesAnonymes = (mediateurId: string, nombre: number) =>
   )
 
 const semisCourant = (): Semis => {
-  if (!semis) throw new Error('Aucune activité de médiation semée')
-  return semis
+  if (!etat.semis) throw new Error('Aucune activité de médiation semée')
+  return etat.semis
 }
 
 const activiteSemee = (libelle: string): string => {
@@ -97,10 +109,13 @@ const activiteSemee = (libelle: string): string => {
 }
 
 const supprimerPar = async (mediateur: Mediateur, activiteId: string) => {
-  resultat = await supprimerUneActiviteDeMediation({
+  etat.resultat = await supprimerUneActiviteDeMediation({
+    activiteDuMediateur: activiteDeMediationDuMediateur,
+    supprimer: supprimerLActiviteDeMediation(UtilisateurId(mediateur.userId)),
+  })({
     activiteId: ActiviteId(activiteId),
     mediateurId: MediateurId(mediateur.mediateurId),
-    auteurId: UtilisateurId(mediateur.userId),
+    maintenant: new Date(),
   })
 }
 
@@ -128,7 +143,7 @@ Given(
       },
       select: { id: true },
     })
-    semis = {
+    etat.semis = {
       ...contexte,
       activites: { principale: activite.id },
       suivis: [],
@@ -165,7 +180,7 @@ Given(
       },
       select: { id: true },
     })
-    semis = {
+    etat.semis = {
       ...contexte,
       activites: { principale: activite.id },
       suivis,
@@ -230,7 +245,7 @@ const semerUnSuiviAccompagne = async (
       }),
     ]),
   )
-  semis = {
+  etat.semis = {
     ...contexte,
     activites: Object.fromEntries(activites),
     suivis: [suivi],
@@ -275,19 +290,36 @@ When('un autre médiateur supprime cette activité de médiation', async () => {
   await supprimerPar(semisCourant().autre, activiteSemee('principale'))
 })
 
+When(
+  'un autre médiateur écrit la suppression de cette activité de médiation',
+  async () => {
+    const { autre, anonymes } = semisCourant()
+    await supprimerLActiviteDeMediation(UtilisateurId(autre.userId))({
+      activite: {
+        id: ActiviteId(activiteSemee('principale')),
+        type: TypeDActivite('Individuel'),
+        mediateurId: MediateurId(autre.mediateurId),
+        suivis: [],
+        anonymesOrphelins: anonymes.map(BeneficiaireId),
+      },
+      suppression: new Date(),
+    })
+  },
+)
+
 When("le médiateur supprime l'accompagnement du 3 mars", async () => {
   await supprimerPar(semisCourant().auteur, activiteSemee('3 mars'))
 })
 
 Then("la suppression de l'activité de médiation réussit", () => {
-  assert.strictEqual(resultat?.success, true)
+  assert.strictEqual(etat.resultat?.success, true)
 })
 
 Then(
   "la suppression de l'activité de médiation échoue avec {string}",
   (attendu: string) => {
     assert.strictEqual(
-      resultat?.success === false ? resultat.error._tag : null,
+      etat.resultat?.success === false ? etat.resultat.error._tag : null,
       attendu,
     )
   },
@@ -327,6 +359,21 @@ Then(
   },
 )
 
+Then(
+  "l'activité de médiation garde son accompagnement et son tag",
+  async () => {
+    const activiteId = activiteSemee('principale')
+    const [accompagnements, tags] = await Promise.all([
+      prismaClient.accompagnement.count({ where: { activiteId } }),
+      prismaClient.activitesTags.count({ where: { activiteId } }),
+    ])
+    assert.deepStrictEqual(
+      { accompagnements, tags },
+      { accompagnements: 1, tags: 1 },
+    )
+  },
+)
+
 const anonymesRestants = () =>
   prismaClient.beneficiaire.count({
     where: { id: { in: [...semisCourant().anonymes] } },
@@ -334,6 +381,10 @@ const anonymesRestants = () =>
 
 Then("la personne anonyme n'existe plus", async () => {
   assert.strictEqual(await anonymesRestants(), 0)
+})
+
+Then('la personne anonyme existe toujours', async () => {
+  assert.strictEqual(await anonymesRestants(), 1)
 })
 
 Then("les personnes anonymes n'existent plus", async () => {
@@ -399,9 +450,9 @@ Then(
 )
 
 After(async () => {
-  const seme = semis
-  semis = undefined
-  resultat = undefined
+  const seme = etat.semis
+  delete etat.semis
+  delete etat.resultat
   if (!seme) return
 
   const mediateurIds = [seme.auteur.mediateurId, seme.autre.mediateurId]

@@ -2,7 +2,7 @@ import { Page, PageSize, type Paginated } from '@arckit/resultset'
 import type { Meta, StoryObj } from '@storybook/react'
 import { expect, within } from 'storybook/test'
 import { SUPPRIMER_DES_BENEFICIAIRES_KEY } from '@/features/beneficiaire/abilities/lister-beneficiaires/action/supprimer-des-beneficiaires.key'
-import type { BeneficiaireListItem } from '@/features/beneficiaire/abilities/lister-beneficiaires/domain/lister-beneficiaires'
+import type { BeneficiaireListItem } from '@/features/beneficiaire/abilities/lister-beneficiaires/domain/liste-des-beneficiaires'
 import { presentMesBeneficiaires } from '@/features/beneficiaire/abilities/lister-beneficiaires/ui/presenters/lister-beneficiaires.presenter'
 import { AnneeNaissance } from '@/features/beneficiaire/domain/annee-naissance'
 import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
@@ -38,7 +38,9 @@ const beneficiaireListItem = (
     anneeNaissance:
       overrides.anneeNaissance === null
         ? null
-        : AnneeNaissance(overrides.anneeNaissance ?? 1990),
+        : AnneeNaissance(new Date('2026-06-15T12:00:00.000Z'))(
+            overrides.anneeNaissance ?? 1990,
+          ),
     trancheAge: TrancheAge(null),
     genre: Genre(null),
     statutSocial: StatutSocial(null),
@@ -83,9 +85,6 @@ const items = [
   }),
 ]
 
-// La page reçoit la suppression par clé : les stories fournissent une doublure
-// plutôt que la vraie server action, qui tirerait tout le graphe serveur dans le
-// bundle du navigateur.
 const supprimerBeneficiaires = async () => ({
   success: true as const,
   data: undefined,

@@ -1,6 +1,4 @@
-export {
-  type MembreAFiltrer,
-  type MembreLu,
-  membresDansLOrdre,
+export type {
+  EquipeAFiltrer,
+  MembreAFiltrer,
 } from './membre-a-filtrer'
-export { membresRecherches } from './recherche-de-membres'

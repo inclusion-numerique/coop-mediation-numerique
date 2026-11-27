@@ -3,8 +3,15 @@ import { environnementServeur } from '@/configuration/environnement/serveur'
 import { signaler } from '@/configuration/telemetry/serveur'
 import { utilisateurDuJetonDeSession } from '@/features/authentification/implementations/prisma/utilisateur-de-la-session.query'
 import { jetonDeSessionDesCookies } from '@/features/authentification/implementations/session/session-token-from-cookies.query'
+import { creerOuFusionnerDepuisUsagerExterne } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/domain/creer-ou-fusionner-depuis-usager-externe'
 import { communeDeLAdresse } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/ban/commune-de-l-adresse.query'
-import { creerOuFusionnerBeneficiairesDepuisUsagersExternes } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/creer-ou-fusionner-depuis-usager-externe.mutation'
+import { lireLeBeneficiaireLie } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/beneficiaire-lie.query'
+import { creerLeBeneficiaire } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/creer-le-beneficiaire.mutation'
+import { trouverUnDoublon } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/doublon-de-l-usager.query'
+import { mettreAJourLeBeneficiaire } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/mettre-a-jour-le-beneficiaire.mutation'
+import { demandeSignalee } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/rdv-service-public/demande-signalee.adapter'
+import type { DemandeDUsagersExternes } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/rdv-service-public/usager-externe.transfer'
+import { signalerLesUsagersEcartes } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/telemetrie/usagers-ecartes.adapter'
 import {
   CODE_AUTORISATION_MANQUANT,
   CONNECTER_COMPTE_RDV_ERRORS,
@@ -12,21 +19,18 @@ import {
 import { CodeAutorisation } from '@/features/rdvsp/abilities/connecter-compte-rdv/domain/code-autorisation'
 import { connecterCompteRdv } from '@/features/rdvsp/abilities/connecter-compte-rdv/domain/connecter-compte-rdv'
 import {
-  type DestinationsDeRetour,
   issuesDuRetour,
   motifDiagnostic,
 } from '@/features/rdvsp/abilities/connecter-compte-rdv/domain/retour-connexion'
 import { echangerCodeAutorisation } from '@/features/rdvsp/abilities/connecter-compte-rdv/implementations/api/echanger-code-autorisation.mutation'
+import { destinationsDeRetour } from '@/features/rdvsp/abilities/connecter-compte-rdv/implementations/next/destinations-de-retour.params'
 import { redirection } from '@/features/rdvsp/abilities/connecter-compte-rdv/implementations/next/redirection.transfer'
 import { compteRdvExistant } from '@/features/rdvsp/abilities/connecter-compte-rdv/implementations/prisma/compte-rdv-existant.query'
 import { enregistrerCompteConnecte } from '@/features/rdvsp/abilities/connecter-compte-rdv/implementations/prisma/enregistrer-compte-connecte.mutation'
-import { consignerLEchec } from '@/features/rdvsp/abilities/declencher-synchronisation/domain/consigner-l-echec'
 import { declencherSynchronisation } from '@/features/rdvsp/abilities/declencher-synchronisation/domain/declencher-synchronisation'
 import { compteACible } from '@/features/rdvsp/abilities/declencher-synchronisation/implementations/prisma/compte-a-cible.query'
-import { lancerSynchronisation } from '@/features/rdvsp/abilities/declencher-synchronisation/implementations/prisma/lancer-synchronisation.adapter'
 import { marquerEchecDeSynchronisation } from '@/features/rdvsp/abilities/declencher-synchronisation/implementations/prisma/marquer-echec.mutation'
-import { synchroniserLeCompte } from '@/features/rdvsp/abilities/synchroniser-compte-rdv/domain/synchroniser-le-compte'
-import { compteASynchroniser } from '@/features/rdvsp/abilities/synchroniser-compte-rdv/implementations/prisma/compte-a-synchroniser.query'
+import { synchroniserCompteRdv } from '@/features/rdvsp/abilities/synchroniser-compte-rdv/domain/synchroniser-compte-rdv'
 import { detacherOrganisations } from '@/features/rdvsp/abilities/synchroniser-compte-rdv/implementations/prisma/detacher-organisations.mutation'
 import {
   cloturerJournal,
@@ -35,7 +39,7 @@ import {
 } from '@/features/rdvsp/abilities/synchroniser-compte-rdv/implementations/prisma/journal-synchronisation.mutation'
 import { noterLaSynchronisationReussie } from '@/features/rdvsp/abilities/synchroniser-compte-rdv/implementations/prisma/synchronisation-reussie.mutation'
 import { noterLesWebhooksInvalides } from '@/features/rdvsp/abilities/synchroniser-compte-rdv/implementations/prisma/webhooks-invalides.mutation'
-import { reconcilierWebhooks } from '@/features/rdvsp/abilities/synchroniser-compte-rdv/implementations/webhook/reconcilier-webhooks.adapter'
+import { destinationDesWebhooksJoignable } from '@/features/rdvsp/abilities/synchroniser-compte-rdv/implementations/webhook/destination-des-webhooks.query'
 import { synchroniserOrganisations } from '@/features/rdvsp/abilities/synchroniser-organisations/domain/synchroniser-organisations'
 import { appliquerPlanOrganisations } from '@/features/rdvsp/abilities/synchroniser-organisations/implementations/prisma/appliquer-plan-organisations.mutation'
 import { etatOrganisations } from '@/features/rdvsp/abilities/synchroniser-organisations/implementations/prisma/etat-organisations.query'
@@ -49,8 +53,6 @@ import {
   etatConnuDuLot,
   rdvsDejaImportes,
 } from '@/features/rdvsp/abilities/synchroniser-rdvs/implementations/prisma/etat-connu.query'
-import { rapprocherBeneficiaires } from '@/features/rdvsp/abilities/synchroniser-rdvs/implementations/prisma/rapprocher-beneficiaires.adapter'
-import { echecDefinitif } from '@/features/rdvsp/domain/compte/echec-de-synchronisation'
 import { UtilisateurCoopId } from '@/features/rdvsp/domain/identifiants/utilisateur-coop-id'
 import { EmailExterne } from '@/features/rdvsp/domain/identite'
 import { rdvServicePublicApi } from '@/features/rdvsp/implementations/api/rdv-service-public.client'
@@ -62,10 +64,7 @@ import {
 } from '@/features/rdvsp/implementations/oauth/rdvsp-oauth-callback.client'
 import { enregistrerLesJetons } from '@/features/rdvsp/implementations/prisma/jetons-du-compte.mutation'
 import { jetonsCourants } from '@/features/rdvsp/implementations/prisma/jetons-du-compte.query'
-import {
-  decodeSerializableState,
-  type EncodedState,
-} from '@/libraries/etat-encode'
+import { lireLesUsagersARapprocher } from '@/features/rdvsp/implementations/prisma/usagers-a-rapprocher.query'
 
 const rdvServicePublic = rdvServicePublicApi({
   ...configurationRdvServicePublic(),
@@ -73,50 +72,50 @@ const rdvServicePublic = rdvServicePublicApi({
   jetonsCourants,
 })
 
-const declencher = consignerLEchec(
-  declencherSynchronisation({
-    compteACible,
-    lancer: lancerSynchronisation(
-      synchroniserLeCompte({
-        lireLeCompte: compteASynchroniser,
-        reconcilierOrganisations: synchroniserOrganisations({
-          listerOrganisations: rdvServicePublic.listerOrganisations,
-          etatOrganisations,
-          appliquerPlan: appliquerPlanOrganisations,
-        }),
-        reconcilierLesRdvsDuMediateur: ({ mediateurId, journaliser }) =>
-          synchroniserRdvs({
-            listerRdvs: rdvServicePublic.listerRdvs,
-            rdvsDejaImportes,
-            etatConnuDuLot,
-            appliquerPlan: appliquerPlanLot,
-            supprimerRdvs,
-            supprimerMotifsOrphelins,
-            rapprocherBeneficiaires: rapprocherBeneficiaires({
-              mediateurId,
-              creerOuFusionner:
-                creerOuFusionnerBeneficiairesDepuisUsagersExternes({
-                  communeDeLAdresse,
-                }),
-              journaliser,
-            }),
-          }),
-        reconcilierWebhooks: reconcilierWebhooks({
-          api: rdvServicePublic,
-          noterLesWebhooksInvalides,
-        }),
-        detacherOrganisations,
-        ouvrirJournal,
-        cloturerJournal,
-        echouerJournal,
-        noterLaSynchronisationReussie,
-      }),
-    ),
-    signaler,
-    echecDefinitif,
+const fusionnerLesUsagers = creerOuFusionnerDepuisUsagerExterne({
+  lireLeBeneficiaireLie,
+  trouverUnDoublon,
+  communeDeLAdresse,
+  mettreAJourLeBeneficiaire,
+  creerLeBeneficiaire,
+})
+
+const creerOuFusionnerLesUsagers = (demande: DemandeDUsagersExternes) =>
+  fusionnerLesUsagers(demandeSignalee(demande)).then(signalerLesUsagersEcartes)
+
+const declencher = declencherSynchronisation({
+  compteACible,
+  synchroniser: synchroniserCompteRdv({
+    reconcilierOrganisations: synchroniserOrganisations({
+      listerOrganisations: rdvServicePublic.listerOrganisations,
+      etatOrganisations,
+      appliquerPlan: appliquerPlanOrganisations,
+    }),
+    reconcilierRdvs: synchroniserRdvs({
+      listerRdvs: rdvServicePublic.listerRdvs,
+      rdvsDejaImportes,
+      etatConnuDuLot,
+      appliquerPlan: appliquerPlanLot,
+      supprimerRdvs,
+      supprimerMotifsOrphelins,
+      lireLesUsagersARapprocher,
+      rapprocherLesBeneficiaires: creerOuFusionnerLesUsagers,
+    }),
+    listerWebhooksDeLaCoop: rdvServicePublic.listerWebhooksDeLaCoop,
+    poserWebhook: rdvServicePublic.poserWebhook,
+    relireWebhooksDeLaCoop: rdvServicePublic.listerWebhooksDeLaCoop,
+    reconfigurerWebhook: rdvServicePublic.reconfigurerWebhook,
+    destinationDesWebhooksJoignable,
+    noterLesWebhooksInvalides,
+    detacherOrganisations,
+    ouvrirJournal,
+    cloturerJournal,
+    echouerJournal,
+    noterLaSynchronisationReussie,
   }),
-  marquerEchecDeSynchronisation(),
-)
+  marquerEchec: marquerEchecDeSynchronisation,
+  signaler,
+})
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -139,9 +138,7 @@ export const GET = async (request: NextRequest) => {
     )
   }
 
-  const { succes, echec } = issuesDuRetour(
-    decodeSerializableState(state as EncodedState<DestinationsDeRetour>, {}),
-  )
+  const { succes, echec } = issuesDuRetour(destinationsDeRetour(state))
 
   const refus = searchParams.get('error')
 
@@ -159,6 +156,7 @@ export const GET = async (request: NextRequest) => {
   }
 
   const utilisateurId = UtilisateurCoopId(user.id)
+  const maintenant = new Date()
 
   const connexion = await connecterCompteRdv({
     echangerCode: echangerCodeAutorisation({
@@ -175,6 +173,7 @@ export const GET = async (request: NextRequest) => {
     utilisateurId,
     emailUtilisateur: EmailExterne(user.email),
     code: CodeAutorisation(code),
+    maintenant,
   })
 
   if (!connexion.success) {
@@ -191,6 +190,7 @@ export const GET = async (request: NextRequest) => {
     demandeur: { id: utilisateurId, role: user.role },
     utilisateurId,
     seulementSansWebhook: false,
+    maintenant,
   }).catch((erreur: unknown) => signaler(erreur))
 
   return redirection(succes)

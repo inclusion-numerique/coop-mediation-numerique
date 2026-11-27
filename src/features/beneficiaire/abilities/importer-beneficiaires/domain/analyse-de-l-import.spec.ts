@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import type { Genre } from '@/features/beneficiaire/domain/genre'
 import {
   AnalysisSchema,
   analyserLaFeuille,
@@ -6,18 +7,36 @@ import {
 } from './analyse-de-l-import'
 import type { FeuilleImport, ValeurCellule } from './feuille-import'
 
-const communes = [
-  { codeInsee: '32057', nom: 'Blaziert', codePostal: '32100' },
-  { codeInsee: '01053', nom: 'Bourg-en-Bresse', codePostal: '01000' },
-  { codeInsee: '77251', nom: 'Lieusaint', codePostal: '77127' },
-]
+const maintenant = new Date('2026-06-15T12:00:00.000Z')
 
-const communesClient: CommunesClient = {
-  findCommuneByInsee: (code) =>
-    communes.find(({ codeInsee }) => codeInsee === code) ?? null,
+const blaziert: CommunesClient = {
+  findCommuneByInsee: () => ({
+    codeInsee: '32057',
+    nom: 'Blaziert',
+    codePostal: '32100',
+  }),
 }
 
-const analyser = analyserLaFeuille(communesClient)
+const bourgEnBresse: CommunesClient = {
+  findCommuneByInsee: () => ({
+    codeInsee: '01053',
+    nom: 'Bourg-en-Bresse',
+    codePostal: '01000',
+  }),
+}
+
+const lieusaint: CommunesClient = {
+  findCommuneByInsee: () => ({
+    codeInsee: '77251',
+    nom: 'Lieusaint',
+    codePostal: '77127',
+  }),
+}
+
+const sansCommune: CommunesClient = { findCommuneByInsee: () => null }
+
+const analyser = (communesClient: CommunesClient, feuille: FeuilleImport) =>
+  analyserLaFeuille(communesClient)({ feuille, maintenant })
 
 const enTetes: FeuilleImport = [
   ['Instructions'],
@@ -59,7 +78,7 @@ const lignesAvecErreurs = [
 
 describe('analyse de la feuille d’import', () => {
   it('analyse la ligne d’exemple du modèle', () => {
-    expect(analyser(feuilleDepuisLignes([ligneDExemple]))).toEqual({
+    expect(analyser(blaziert, feuilleDepuisLignes([ligneDExemple]))).toEqual({
       status: 'ok',
       rows: [
         {
@@ -91,13 +110,16 @@ describe('analyse de la feuille d’import', () => {
 
   it('produit une analyse conforme à son schéma', () => {
     expect(
-      AnalysisSchema.safeParse(analyser(feuilleDepuisLignes([ligneDExemple])))
-        .error,
+      AnalysisSchema.safeParse(
+        analyser(blaziert, feuilleDepuisLignes([ligneDExemple])),
+      ).error,
     ).toBe(undefined)
   })
 
   it('signale les lignes en erreur', () => {
-    expect(analyser(feuilleDepuisLignes(lignesAvecErreurs))).toEqual({
+    expect(
+      analyser(bourgEnBresse, feuilleDepuisLignes(lignesAvecErreurs)),
+    ).toEqual({
       status: 'error',
       rows: [
         {
@@ -173,14 +195,16 @@ describe('analyse de la feuille d’import', () => {
 
   it('produit une analyse en erreur conforme à son schéma', () => {
     expect(
-      AnalysisSchema.safeParse(analyser(feuilleDepuisLignes(lignesAvecErreurs)))
-        .error,
+      AnalysisSchema.safeParse(
+        analyser(bourgEnBresse, feuilleDepuisLignes(lignesAvecErreurs)),
+      ).error,
     ).toBe(undefined)
   })
 
   it('lit un code postal numérique et ignore une ligne vide', () => {
     expect(
       analyser(
+        blaziert,
         feuilleDepuisLignes([
           [
             'Exemple',
@@ -227,7 +251,10 @@ describe('analyse de la feuille d’import', () => {
   })
 
   it('refuse une année de naissance lue comme un numéro de série Excel', () => {
-    const result = analyser(feuilleDepuisLignes([['Exemple', 'Léa', 25_569]]))
+    const result = analyser(
+      sansCommune,
+      feuilleDepuisLignes([['Exemple', 'Léa', 25_569]]),
+    )
 
     expect({
       status: result.status,
@@ -246,6 +273,7 @@ describe('analyse de la feuille d’import', () => {
 
   it('accepte une commune homonyme désignée par son nom et son code postal', () => {
     const result = analyser(
+      lieusaint,
       feuilleDepuisLignes([
         ['Exemple', 'Léa', 1970, 'Lieusaint (77127)', '77251', '77127'],
       ]),
@@ -263,6 +291,7 @@ describe('analyse de la feuille d’import', () => {
   it('accepte encore le nom seul des modèles déjà téléchargés', () => {
     expect(
       analyser(
+        lieusaint,
         feuilleDepuisLignes([
           ['Exemple', 'Léa', 1970, 'Lieusaint', '77251', '77127'],
         ]),
@@ -273,6 +302,7 @@ describe('analyse de la feuille d’import', () => {
   it("refuse le libellé d'une autre commune homonyme", () => {
     expect(
       analyser(
+        lieusaint,
         feuilleDepuisLignes([
           ['Exemple', 'Léa', 1970, 'Lieusaint (50700)', '77251', '77127'],
         ]),
@@ -284,6 +314,7 @@ describe('analyse de la feuille d’import', () => {
 
   it('refuse un nom porté par plusieurs communes tant que le code postal manque', () => {
     const result = analyser(
+      sansCommune,
       feuilleDepuisLignes([
         [
           'Exemple',
@@ -302,6 +333,67 @@ describe('analyse de la feuille d’import', () => {
     }).toEqual({
       commune: null,
       errors: { communeCodeInsee: 'Code commune non trouvé' },
+    })
+  })
+})
+
+describe('analyse des saisies de la feuille d’import', () => {
+  it.each<{ saisie: string; genre: Genre }>([
+    { saisie: 'Masculin', genre: 'Masculin' },
+    { saisie: 'Féminin', genre: 'Feminin' },
+    { saisie: 'Non communiqué', genre: 'NonCommunique' },
+  ])('lit le genre $saisie comme $genre', ({ saisie, genre }) => {
+    expect(
+      analyser(
+        sansCommune,
+        feuilleDepuisLignes([
+          ['Exemple', 'Léa', null, null, null, null, null, null, saisie],
+        ]),
+      ).rows,
+    ).toMatchObject([{ parsed: { genre } }])
+  })
+
+  it('refuse un genre inconnu', () => {
+    expect(
+      analyser(
+        sansCommune,
+        feuilleDepuisLignes([
+          ['Exemple', 'Léa', null, null, null, null, null, null, 'Autre'],
+        ]),
+      ).rows,
+    ).toMatchObject([
+      { parsed: { genre: null }, errors: { genre: 'Genre invalide' } },
+    ])
+  })
+
+  it('refuse un code postal qui n’est pas celui de la commune', () => {
+    expect(
+      analyser(
+        blaziert,
+        feuilleDepuisLignes([
+          ['Exemple', 'Léa', 1970, 'Blaziert', '32057', '32200'],
+        ]),
+      ).rows,
+    ).toMatchObject([
+      {
+        errors: {
+          communeCodePostal: 'Le code postal de la commune ne correspond pas',
+        },
+      },
+    ])
+  })
+
+  it('lit une année de naissance saisie en texte', () => {
+    expect(
+      analyser(sansCommune, feuilleDepuisLignes([['Exemple', 'Léa', '1970']]))
+        .rows,
+    ).toMatchObject([{ parsed: { anneeNaissance: 1970 } }])
+  })
+
+  it('ne trouve aucun bénéficiaire dans une feuille réduite à ses instructions', () => {
+    expect(analyser(sansCommune, [['Instructions']])).toEqual({
+      status: 'ok',
+      rows: [],
     })
   })
 })

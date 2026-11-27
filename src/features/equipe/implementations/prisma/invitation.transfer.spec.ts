@@ -8,7 +8,11 @@ import {
   type InvitationRefusee,
 } from '../../domain/invitation/invitation'
 import { ReferenceInvitation } from '../../domain/invitation/reference-invitation'
-import { fromInvitation, toInvitation } from './invitation.transfer'
+import {
+  fromInvitation,
+  type InvitationRow,
+  toInvitation,
+} from './invitation.transfer'
 
 const coordinateurId = CoordinateurId('550e8400-e29b-41d4-a716-446655440001')
 
@@ -67,9 +71,13 @@ describe('transfert d’une invitation', () => {
     expect(invitation?.statut).toBe('Acceptee')
   })
 
-  it('écarte une ligne dont l’email est inexploitable', () => {
-    expect(
-      toInvitation({ ...fromInvitation(invitationEnAttente), email: 'x' }),
-    ).toBeNull()
+  it.each<[string, Partial<InvitationRow>]>([
+    ['l’email est inexploitable', { email: 'x' }],
+    ['l’identifiant du coordinateur est illisible', { coordinateurId: 'x' }],
+    ['l’identifiant du médiateur est illisible', { mediateurId: 'x' }],
+  ])('refuse une ligne dont %s', (_, invalide) => {
+    expect(() =>
+      toInvitation({ ...fromInvitation(invitationEnAttente), ...invalide }),
+    ).toThrow()
   })
 })

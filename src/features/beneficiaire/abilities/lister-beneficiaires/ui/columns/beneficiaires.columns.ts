@@ -1,10 +1,6 @@
-import type { ColonneTriableDesBeneficiaires } from '@/features/beneficiaire/abilities/lister-beneficiaires/domain/lister-beneficiaires'
+import type { ColonneTriableDesBeneficiaires } from '@/features/beneficiaire/abilities/lister-beneficiaires/domain/liste-des-beneficiaires'
 import type { BeneficiaireRow } from '../presenters/ligne-du-beneficiaire.presenter'
 
-/**
- * Description déclarative des colonnes triables. `tri` est aligné sur le champ
- * de tri du domaine et sur la clé d'affichage du `BeneficiaireRow`.
- */
 export type BeneficiaireColumn = {
   readonly tri: ColonneTriableDesBeneficiaires
   readonly field: keyof Pick<

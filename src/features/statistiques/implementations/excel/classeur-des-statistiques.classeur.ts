@@ -245,7 +245,7 @@ export type EntreeDuClasseurDesStatistiques = {
   filters: Parameters<ReturnType<typeof addFilters>>[0]
   statistiques: StatistiquesDuClasseur
   fuseau: string
-  worksheetGenerationDate?: Date
+  worksheetGenerationDate: Date
 }
 
 export const classeurDesStatistiques = ({
@@ -253,7 +253,7 @@ export const classeurDesStatistiques = ({
   filters,
   statistiques,
   fuseau,
-  worksheetGenerationDate = new Date(),
+  worksheetGenerationDate,
 }: EntreeDuClasseurDesStatistiques): Excel.Workbook => {
   const workbook = new Excel.Workbook()
 

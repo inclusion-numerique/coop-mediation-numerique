@@ -1,7 +1,7 @@
 import assert from 'node:assert'
 import { Page, PageSize, Search, Sort } from '@arckit/resultset'
 import { Given, Then, When } from '@cucumber/cucumber'
-import type { EmployeuseListee } from '@/features/employeuse/abilities/lister-employeuses/domain/lister-employeuses'
+import type { EmployeuseListee } from '@/features/employeuse/abilities/lister-employeuses/domain/employeuse-listee'
 import { listerEmployeuses } from '@/features/employeuse/abilities/lister-employeuses/implementations/prisma/lister-employeuses.query'
 import {
   seedAffectation,
@@ -10,12 +10,18 @@ import {
 } from '@/features/employeuse/employeuse.cucumber'
 
 const employeuses = new Map<string, number>()
-let listees: EmployeuseListee[] = []
-let total = 0
-let pages = 0
+const contexte: {
+  listees: EmployeuseListee[]
+  total: number
+  pages: number
+} = {
+  listees: [],
+  total: 0,
+  pages: 0,
+}
 
 const employeuseListee = (nom: string): EmployeuseListee => {
-  const trouvee = listees.find(
+  const trouvee = contexte.listees.find(
     ({ employeuse }) => employeuse.denomination === nom,
   )
   assert.ok(trouvee, `« ${nom} » ne figure pas dans la page listée`)
@@ -26,10 +32,11 @@ Given(
   "l'annuaire contient les employeuses {string}, {string} et {string}",
   async (premiere: string, deuxieme: string, troisieme: string) => {
     employeuses.clear()
-    listees = []
-    for (const nom of [premiere, deuxieme, troisieme]) {
+    contexte.listees = []
+    await [premiere, deuxieme, troisieme].reduce(async (precedente, nom) => {
+      await precedente
       employeuses.set(nom, await seedEmployeuseMain(nom))
-    }
+    }, Promise.resolve())
   },
 )
 
@@ -58,9 +65,12 @@ const lister = async (recherche: string, parPage: number) => {
     page: Page(1),
     pageSize: PageSize(parPage),
   })
-  listees = resultat.items
-  total = resultat.totalItems
-  pages = Math.max(Math.ceil(resultat.totalItems / resultat.pageSize), 1)
+  contexte.listees = resultat.items
+  contexte.total = resultat.totalItems
+  contexte.pages = Math.max(
+    Math.ceil(resultat.totalItems / resultat.pageSize),
+    1,
+  )
 }
 
 When(
@@ -71,19 +81,19 @@ When(
 )
 
 Then('la page listée contient {int} employeuse(s)', (attendu: number) => {
-  assert.strictEqual(listees.length, attendu)
+  assert.strictEqual(contexte.listees.length, attendu)
 })
 
 Then('le total annoncé est de {int} employeuses', (attendu: number) => {
-  assert.strictEqual(total, attendu)
+  assert.strictEqual(contexte.total, attendu)
 })
 
 Then('le nombre de pages annoncé est {int}', (attendu: number) => {
-  assert.strictEqual(pages, attendu)
+  assert.strictEqual(contexte.pages, attendu)
 })
 
 Then('la première employeuse listée est {string}', (nom: string) => {
-  assert.strictEqual(listees[0]?.employeuse.denomination, nom)
+  assert.strictEqual(contexte.listees[0]?.employeuse.denomination, nom)
 })
 
 Then(

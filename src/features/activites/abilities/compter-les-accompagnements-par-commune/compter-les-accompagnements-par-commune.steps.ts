@@ -5,7 +5,9 @@ import { demandeDeStatistiques } from '../../statistiques.cucumber'
 import { type AccompagnementsParCommune } from './domain/index'
 import { compterLesAccompagnementsParCommune } from './implementations/prisma/accompagnements-par-commune.query'
 
-let parCommune: AccompagnementsParCommune | undefined
+const etat: {
+  parCommune?: AccompagnementsParCommune
+} = {}
 
 const enTexte = (commune: CommuneComptee): string =>
   commune.type === 'NonCommuniquee'
@@ -15,16 +17,16 @@ const enTexte = (commune: CommuneComptee): string =>
 When(
   'je compte les accompagnements de {string} par commune',
   async (nom: string) => {
-    parCommune = await compterLesAccompagnementsParCommune(
+    etat.parCommune = await compterLesAccompagnementsParCommune(
       demandeDeStatistiques(nom),
     )
   },
 )
 
 Then('les communes comptées sont {string}', (attendues: string) => {
-  assert.ok(parCommune, 'Aucun compte par commune')
+  assert.ok(etat.parCommune, 'Aucun compte par commune')
   assert.strictEqual(
-    parCommune
+    etat.parCommune
       .map(({ commune, nombre }) => `${enTexte(commune)} ${nombre}`)
       .join(', '),
     attendues,

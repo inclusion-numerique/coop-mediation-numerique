@@ -4,11 +4,6 @@ import InscriptionCard from '@/features/inscription/ui/components/InscriptionCar
 import { IconInSquare, InfoLabelValue } from '@/libraries/ui/components'
 import type { VerifierInformationsPageData } from '../presenters/verifier-informations.presenter'
 
-/**
- * Écran de vérification des informations : purement présentationnel. La route
- * ne fait qu'appeler `getVerifierInformationsPageData` et passer le résultat —
- * le composant ne connaît ni le flow ni le `SessionUser`, seulement ce qu'il affiche.
- */
 const VerifierInformationsPage = ({
   data: { profilLabel, name, email, backHref, nextStepPath },
   carteEmployeuse,

@@ -3,23 +3,13 @@ import {
   UtilisateurIntrouvable,
 } from '@/features/utilisateurs/domain'
 import { failure, type Result, success } from '@/libraries/result'
+import type { EchecDUsurperUnUtilisateur } from './errors'
+import type { UsurperUnUtilisateurPorts } from './ports'
 import {
   autoriserUsurpation,
-  type CibleUsurpation,
   type PorteeUsurpation,
-  type UsurpationHorsFixtures,
+  type UsurpationOuverte,
 } from './usurpation'
-
-export type UsurperUnUtilisateurPorts = {
-  readonly lireLaCible: (
-    utilisateurId: string,
-  ) => Promise<CibleUsurpation | null>
-  readonly ouvrirLUsurpation: (usurpation: {
-    readonly jetonDeSession: string
-    readonly cibleId: UtilisateurId
-    readonly usurpateurId: string
-  }) => Promise<void>
-}
 
 export const usurperUnUtilisateur =
   ({ lireLaCible, ouvrirLUsurpation }: UsurperUnUtilisateurPorts) =>
@@ -29,20 +19,20 @@ export const usurperUnUtilisateur =
     jetonDeSession,
     portee,
   }: {
-    readonly utilisateurId: string
-    readonly usurpateurId: string
+    readonly utilisateurId: UtilisateurId | null
+    readonly usurpateurId: UtilisateurId
     readonly jetonDeSession: string
     readonly portee: PorteeUsurpation
-  }): Promise<
-    Result<CibleUsurpation, UtilisateurIntrouvable | UsurpationHorsFixtures>
-  > => {
+  }): Promise<Result<UsurpationOuverte, EchecDUsurperUnUtilisateur>> => {
+    if (utilisateurId === null) return failure(UtilisateurIntrouvable())
+
     const cible = await lireLaCible(utilisateurId)
-    if (cible === null) return failure(UtilisateurIntrouvable(utilisateurId))
+    if (cible === null) return failure(UtilisateurIntrouvable())
 
     const autorisation = autoriserUsurpation(cible, portee)
     if (!autorisation.success) return autorisation
 
     await ouvrirLUsurpation({ jetonDeSession, cibleId: cible.id, usurpateurId })
 
-    return success(cible)
+    return success({ jetonDeSession, cible, usurpateurId })
   }

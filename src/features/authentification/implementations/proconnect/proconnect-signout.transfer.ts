@@ -8,11 +8,6 @@ export type ProconnectSignoutState = {
   nonce: string
 }
 
-/**
- * After proconnect signout, we redirect to our callbackUrl with the state
- * This will only signout the user from proconnect, not from the app.
- * The proconnectSignoutRedirectPath callback will destroy the session and redirect to the callbackUrl
- */
 export const generateProconnectSignoutUrl = ({
   callbackUrl: _callbackUrl,
   idTokenHint,
@@ -20,13 +15,6 @@ export const generateProconnectSignoutUrl = ({
   idTokenHint: string
   callbackUrl: string
 }) => {
-  // ProConnect does not support dynamic state parameter so we remove state from the url
-  // https://github.com/numerique-gouv/proconnect-documentation/blob/main/doc_fs/implementation_technique.md#243-vérification-du-state
-  // const state = encodeSerializableState({
-  //   callbackUrl,
-  //   nonce: v4(),
-  // })
-
   const postLogoutRedirectUri = getServerUrl(proconnectSignoutRedirectPath, {
     absolutePath: true,
   })

@@ -1,11 +1,5 @@
-import {
-  format,
-  parseISO,
-  startOfMonth,
-  subDays,
-  subMonths,
-} from '@/libraries/date'
-import { Jour } from './jour'
+import { parseISO, startOfMonth, subDays, subMonths } from '@/libraries/date'
+import { type Jour, jourDe } from './jour'
 
 export type FenetreDesGraphiques =
   | { readonly type: 'Glissante'; readonly fin: Jour }
@@ -16,8 +10,6 @@ export type BornesDeLaSerie = { readonly du: Jour; readonly au: Jour }
 const JOURS_D_UNE_FENETRE_GLISSANTE = 30
 
 const MOIS_D_UNE_FENETRE_GLISSANTE = 12
-
-const jour = (date: Date): Jour => Jour(format(date, 'yyyy-MM-dd'))
 
 export const fenetreDe = ({
   debut,
@@ -34,14 +26,16 @@ export const joursDeLaFenetre = (
   du:
     fenetre.type === 'Bornee'
       ? fenetre.debut
-      : jour(subDays(parseISO(fenetre.fin), JOURS_D_UNE_FENETRE_GLISSANTE - 1)),
+      : jourDe(
+          subDays(parseISO(fenetre.fin), JOURS_D_UNE_FENETRE_GLISSANTE - 1),
+        ),
   au: fenetre.fin,
 })
 
 export const moisDeLaFenetre = (
   fenetre: FenetreDesGraphiques,
 ): BornesDeLaSerie => ({
-  du: jour(
+  du: jourDe(
     startOfMonth(
       fenetre.type === 'Bornee'
         ? parseISO(fenetre.debut)

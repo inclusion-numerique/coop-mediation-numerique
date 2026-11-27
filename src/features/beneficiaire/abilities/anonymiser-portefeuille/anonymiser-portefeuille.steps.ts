@@ -6,8 +6,11 @@ import {
   portefeuilleSeme,
   semerPortefeuille,
 } from '@/features/beneficiaire/beneficiaire.cucumber'
+import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
 
-let anonymises: number | undefined
+const contexte: {
+  anonymises?: number | undefined
+} = {}
 
 Given('un portefeuille de deux bénéficiaires identifiés', async () => {
   await semerPortefeuille()
@@ -26,28 +29,41 @@ Given('un portefeuille de deux bénéficiaires de Nice', async () => {
 })
 
 When("j'anonymise le portefeuille de ce médiateur", async () => {
-  anonymises = (
+  contexte.anonymises = (
     await anonymiserPortefeuille({
-      mediateurId: portefeuilleSeme().mediateurId,
+      mediateurId: MediateurId(portefeuilleSeme().mediateurId),
+      maintenant: new Date(),
     })
   ).anonymises
 })
 
 When("j'anonymise à nouveau le portefeuille de ce médiateur", async () => {
-  anonymises = (
+  contexte.anonymises = (
     await anonymiserPortefeuille({
-      mediateurId: portefeuilleSeme().mediateurId,
+      mediateurId: MediateurId(portefeuilleSeme().mediateurId),
+      maintenant: new Date(),
     })
   ).anonymises
 })
 
 Then("l'anonymisation porte sur {int} bénéficiaire", (attendu: number) => {
-  assert.strictEqual(anonymises, attendu)
+  assert.strictEqual(contexte.anonymises, attendu)
 })
 
 Then("l'anonymisation porte sur {int} bénéficiaires", (attendu: number) => {
-  assert.strictEqual(anonymises, attendu)
+  assert.strictEqual(contexte.anonymises, attendu)
 })
+
+const anonymise = {
+  prenom: null,
+  nom: null,
+  telephone: null,
+  email: null,
+  notes: null,
+  adresse: null,
+  anonyme: true,
+  supprime: true,
+}
 
 Then("les bénéficiaires du portefeuille n'ont plus d'identité", async () => {
   const beneficiaires = await prismaClient.beneficiaire.findMany({
@@ -64,17 +80,13 @@ Then("les bénéficiaires du portefeuille n'ont plus d'identité", async () => {
     },
   })
 
-  assert.strictEqual(beneficiaires.length, 2)
-  for (const beneficiaire of beneficiaires) {
-    assert.strictEqual(beneficiaire.prenom, null)
-    assert.strictEqual(beneficiaire.nom, null)
-    assert.strictEqual(beneficiaire.telephone, null)
-    assert.strictEqual(beneficiaire.email, null)
-    assert.strictEqual(beneficiaire.notes, null)
-    assert.strictEqual(beneficiaire.adresse, null)
-    assert.strictEqual(beneficiaire.anonyme, true)
-    assert.ok(beneficiaire.suppression)
-  }
+  assert.deepStrictEqual(
+    beneficiaires.map(({ suppression, ...identite }) => ({
+      ...identite,
+      supprime: suppression !== null,
+    })),
+    [anonymise, anonymise],
+  )
 })
 
 Then(
@@ -85,11 +97,14 @@ Then(
       select: { anneeNaissance: true, commune: true, genre: true },
     })
 
-    for (const beneficiaire of beneficiaires) {
-      assert.strictEqual(beneficiaire.anneeNaissance, 1980)
-      assert.strictEqual(beneficiaire.commune, 'Reims')
-      assert.strictEqual(beneficiaire.genre, 'Masculin')
-    }
+    assert.deepStrictEqual(
+      beneficiaires,
+      beneficiaires.map(() => ({
+        anneeNaissance: 1980,
+        commune: 'Reims',
+        genre: 'Masculin',
+      })),
+    )
   },
 )
 

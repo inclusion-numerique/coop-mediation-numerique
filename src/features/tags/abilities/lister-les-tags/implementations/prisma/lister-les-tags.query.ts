@@ -51,12 +51,10 @@ export const listerLesTags = async ({
   ])
 
   return {
-    items: lignes.flatMap((ligne) => {
-      const tag = tagToDomain(ligne)
-      return tag === null
-        ? []
-        : [{ tag, accompagnements: Effectif(ligne.accompagnements) }]
-    }),
+    items: lignes.map((ligne) => ({
+      tag: tagToDomain(ligne),
+      accompagnements: Effectif(ligne.accompagnements),
+    })),
     totalItems: Number(total),
     currentPage: page,
     pageSize,

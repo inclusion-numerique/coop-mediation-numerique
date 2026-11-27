@@ -23,3 +23,20 @@
 
 * Quand je supprime un bénéficiaire inexistant
 * Alors la suppression échoue avec l'erreur "AucunBeneficiaireValide"
+
+## Règle: Un médiateur n'anonymise jamais le bénéficiaire d'un autre médiateur
+
+### Scénario: Le bénéficiaire d'un autre médiateur est ignoré
+
+* Étant donné un bénéficiaire enregistré pour ce médiateur
+* Et un bénéficiaire enregistré pour un autre médiateur
+* Quand je supprime ces deux bénéficiaires
+* Alors la suppression retire 1 bénéficiaire
+* Et le bénéficiaire est anonymisé et marqué supprimé
+* Et le bénéficiaire de l'autre médiateur garde son identité
+
+### Scénario: L'écriture de l'anonymisation n'atteint pas le bénéficiaire d'un autre médiateur
+
+* Étant donné un bénéficiaire enregistré pour un autre médiateur
+* Quand l'anonymisation de ce bénéficiaire est écrite au nom de ce médiateur
+* Alors le bénéficiaire de l'autre médiateur garde son identité

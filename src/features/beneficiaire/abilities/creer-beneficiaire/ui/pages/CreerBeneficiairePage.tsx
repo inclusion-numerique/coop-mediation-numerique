@@ -13,11 +13,6 @@ import {
 } from '@/libraries/ui/components'
 import type { SaisieEnCours } from '../../../../ui/forms/BeneficiaireForm'
 
-/**
- * Composant de page pur : rend le formulaire de création et son chrome.
- * L'orchestration (auth, décodage du CRA en cours, liaison de l'action) vit
- * dans la route Next. L'action `save` est injectée — l'ability reste découplée.
- */
 export type SaisieDuCraEncodee = EncodedState<SaisieEnCours>
 
 export const CreerBeneficiairePage = ({

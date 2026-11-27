@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import type { ProductionCoordinateur, ProductionMediateur } from './production'
 import {
   aProduit,
   coordinateurEstVierge,
@@ -14,7 +15,7 @@ const coordinateurVierge = {
 }
 
 describe('production d’un compte', () => {
-  it.each([
+  it.each<[ProductionMediateur, boolean]>([
     [{ activites: true, beneficiaires: false }, false],
     [{ activites: false, beneficiaires: true }, false],
     [mediateurVierge, true],
@@ -22,7 +23,7 @@ describe('production d’un compte', () => {
     expect(mediateurEstVierge(production)).toBe(vierge)
   })
 
-  it.each([
+  it.each<[ProductionCoordinateur, boolean]>([
     [{ ...coordinateurVierge, equipe: true }, false],
     [{ ...coordinateurVierge, activitesCoordination: true }, false],
     [{ ...coordinateurVierge, invitationsEnAttente: true }, false],

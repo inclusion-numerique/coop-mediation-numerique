@@ -1,6 +1,7 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
-import { consulterEmployeuseAUneDate } from '@/features/employeuse/abilities/consulter-employeuse-a-une-date/implementations/prisma/consulter-employeuse-a-une-date.query'
+import { consulterEmployeuseAUneDate } from '@/features/employeuse/abilities/consulter-employeuse-a-une-date/domain/consulter-employeuse-a-une-date'
+import { UtilisateurId } from '@/features/employeuse/domain'
 import type { Employeuse } from '@/features/employeuse/domain/employeuse'
 import {
   seedAffectation,
@@ -8,12 +9,17 @@ import {
   seedEmployeuseMain,
   seedUtilisateur,
 } from '@/features/employeuse/employeuse.cucumber'
+import { lireLEmploiActuel } from '@/features/employeuse/implementations/prisma/emploi-actuel.query'
 
-// État local à cette ability : les phrasés Cucumber sont globaux, et une ability
-// ne s'appuie pas sur les steps d'une autre (duplication découplée assumée).
-let utilisateurId: string
+const contexte: {
+  utilisateurId: string
+  employeuseALaDate: Employeuse | null
+} = {
+  utilisateurId: '',
+  employeuseALaDate: null,
+}
+
 const employeusesParNom = new Map<string, number>()
-let employeuseALaDate: Employeuse | null = null
 
 const employeuseNommee = async (nom: string): Promise<number> => {
   const existante = employeusesParNom.get(nom)
@@ -26,7 +32,7 @@ const employeuseNommee = async (nom: string): Promise<number> => {
 
 const nouvelUtilisateur = async (): Promise<void> => {
   employeusesParNom.clear()
-  utilisateurId = await seedUtilisateur()
+  contexte.utilisateurId = await seedUtilisateur()
 }
 
 Given(
@@ -34,7 +40,7 @@ Given(
   async (nom: string, debut: string, fin: string) => {
     await nouvelUtilisateur()
     await seedContrat({
-      userId: utilisateurId,
+      userId: contexte.utilisateurId,
       employeuseId: await employeuseNommee(nom),
       debut: new Date(debut),
       fin: new Date(fin),
@@ -47,7 +53,7 @@ Given(
   async (nom: string, debut: string) => {
     await nouvelUtilisateur()
     await seedContrat({
-      userId: utilisateurId,
+      userId: contexte.utilisateurId,
       employeuseId: await employeuseNommee(nom),
       debut: new Date(debut),
       fin: null,
@@ -59,7 +65,7 @@ Given(
   'ce même utilisateur employé par {string} depuis le {string}',
   async (nom: string, debut: string) => {
     await seedContrat({
-      userId: utilisateurId,
+      userId: contexte.utilisateurId,
       employeuseId: await employeuseNommee(nom),
       debut: new Date(debut),
       fin: null,
@@ -71,7 +77,7 @@ Given(
   'ce même utilisateur employé par {string} du {string} au {string}',
   async (nom: string, debut: string, fin: string) => {
     await seedContrat({
-      userId: utilisateurId,
+      userId: contexte.utilisateurId,
       employeuseId: await employeuseNommee(nom),
       debut: new Date(debut),
       fin: new Date(fin),
@@ -84,7 +90,7 @@ Given(
   async (nom: string) => {
     await nouvelUtilisateur()
     await seedAffectation({
-      userId: utilisateurId,
+      userId: contexte.utilisateurId,
       employeuseId: await employeuseNommee(nom),
       source: 'coop',
     })
@@ -96,17 +102,19 @@ Given('un utilisateur sans employeuse connue', async () => {
 })
 
 When('je consulte son employeuse au {string}', async (date: string) => {
-  employeuseALaDate = await consulterEmployeuseAUneDate({
-    userId: utilisateurId,
+  const { data } = await consulterEmployeuseAUneDate({ lireLEmploiActuel })({
+    utilisateurId: UtilisateurId(contexte.utilisateurId),
     date: new Date(date),
+    maintenant: new Date(),
   })
+  contexte.employeuseALaDate = data
 })
 
 Then("l'employeuse à cette date est {string}", (nom: string) => {
-  assert.ok(employeuseALaDate, 'Aucune employeuse à cette date')
-  assert.strictEqual(employeuseALaDate.denomination, nom)
+  assert.ok(contexte.employeuseALaDate, 'Aucune employeuse à cette date')
+  assert.strictEqual(contexte.employeuseALaDate.denomination, nom)
 })
 
 Then("il n'a pas d'employeuse à cette date", () => {
-  assert.strictEqual(employeuseALaDate, null)
+  assert.strictEqual(contexte.employeuseALaDate, null)
 })

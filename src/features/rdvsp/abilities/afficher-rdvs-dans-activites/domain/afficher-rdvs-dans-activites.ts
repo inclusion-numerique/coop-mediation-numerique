@@ -1,21 +1,32 @@
-import type { Result } from '@/libraries/result'
+import { failure, type Result, success } from '@/libraries/result'
+import { CompteRdvIntrouvable } from '../../../domain/errors'
 import type { UtilisateurCoopId } from '../../../domain/identifiants/utilisateur-coop-id'
+import type { EchecDAfficherRdvsDansActivites } from './errors'
+import type { AfficherRdvsDansActivitesPorts } from './ports'
 
-export type ErreurAffichageRdvs = { readonly _tag: 'CompteRdvIntrouvable' }
-
-export const CompteRdvIntrouvable = (): ErreurAffichageRdvs => ({
-  _tag: 'CompteRdvIntrouvable',
-})
-
-/**
- * Préférence d'affichage : les rendez-vous RDV Service Public apparaissent-ils
- * dans la liste des activités.
- *
- * Elle est portée par le compte RDV et non par l'utilisateur, ce qui la rend
- * indisponible tant qu'aucun compte n'est connecté — d'où l'échec explicite
- * plutôt qu'un silence.
- */
-export type AfficherRdvsDansActivites = (input: {
+export type AffichageDesRdvs = {
   readonly utilisateurId: UtilisateurCoopId
   readonly afficher: boolean
-}) => Promise<Result<void, ErreurAffichageRdvs>>
+}
+
+export const afficherRdvsDansActivites =
+  ({
+    compteRdvExiste,
+    enregistrerLAffichage,
+  }: AfficherRdvsDansActivitesPorts) =>
+  async ({
+    utilisateurId,
+    afficher,
+  }: {
+    readonly utilisateurId: UtilisateurCoopId
+    readonly afficher: boolean
+  }): Promise<Result<AffichageDesRdvs, EchecDAfficherRdvsDansActivites>> => {
+    if (!(await compteRdvExiste(utilisateurId)))
+      return failure(CompteRdvIntrouvable(utilisateurId))
+
+    const affichage: AffichageDesRdvs = { utilisateurId, afficher }
+
+    await enregistrerLAffichage(affichage)
+
+    return success(affichage)
+  }

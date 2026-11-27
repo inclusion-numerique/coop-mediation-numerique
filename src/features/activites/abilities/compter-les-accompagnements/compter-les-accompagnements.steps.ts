@@ -4,26 +4,42 @@ import {
   demandeDeStatistiques,
   parametresDuTableau,
 } from '../../statistiques.cucumber'
-import { anonymes, type TotauxDesAccompagnements } from './domain/index'
-import { compterLesAccompagnements } from './implementations/prisma/totaux-des-accompagnements.query'
+import {
+  anonymes,
+  compterLesAccompagnements,
+  type TotauxDesAccompagnements,
+} from './domain/index'
+import {
+  activitesComptees,
+  nouvellesPersonnesComptees,
+  personnesComptees,
+} from './implementations/prisma/totaux-des-accompagnements.query'
 
-let totaux: TotauxDesAccompagnements | undefined
+const compter = compterLesAccompagnements({
+  activitesComptees,
+  personnesComptees,
+  nouvellesPersonnesComptees,
+})
+
+const etat: {
+  totaux?: TotauxDesAccompagnements
+} = {}
 
 const comptes = (): TotauxDesAccompagnements => {
-  assert.ok(totaux, 'Aucun compte')
-  return totaux
+  assert.ok(etat.totaux, 'Aucun compte')
+  return etat.totaux
 }
 
 When('je compte les accompagnements de {string}', async (nom: string) => {
-  totaux = await compterLesAccompagnements(demandeDeStatistiques(nom))
+  etat.totaux = (await compter(demandeDeStatistiques(nom))).data
 })
 
 When(
   'je compte les accompagnements de {string} avec :',
   async (nom: string, criteres: DataTable) => {
-    totaux = await compterLesAccompagnements(
-      demandeDeStatistiques(nom, parametresDuTableau(criteres)),
-    )
+    etat.totaux = (
+      await compter(demandeDeStatistiques(nom, parametresDuTableau(criteres)))
+    ).data
   },
 )
 

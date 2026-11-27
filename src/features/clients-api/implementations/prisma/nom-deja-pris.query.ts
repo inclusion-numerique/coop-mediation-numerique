@@ -1,15 +1,10 @@
 import { prismaClient } from '@/configuration/prisma'
-import type { NomDuClientApi } from '@/features/clients-api/domain'
+import type { LeNomEstPris } from '@/features/clients-api/domain'
 
-export const nomDejaPris = async (
-  nom: NomDuClientApi,
-  saufClientApiId?: string,
-): Promise<boolean> =>
+export const nomDejaPris: LeNomEstPris = async ({ nom, saufClientApiId }) =>
   (await prismaClient.apiClient.count({
     where: {
       name: nom,
-      ...(saufClientApiId === undefined
-        ? {}
-        : { id: { not: saufClientApiId } }),
+      ...(saufClientApiId === null ? {} : { id: { not: saufClientApiId } }),
     },
   })) > 0

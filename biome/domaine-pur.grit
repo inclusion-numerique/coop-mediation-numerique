@@ -1,0 +1,41 @@
+language js
+
+or {
+  `new Date()` as $x where {
+    register_diagnostic(span=$x, message="DM-11 : le domaine reçoit l'instant par son entrée maintenant: Date ; seul le point d'entrée lit l'horloge.")
+  },
+  `Date.now()` as $x where {
+    register_diagnostic(span=$x, message="DM-11 : le domaine reçoit l'instant par son entrée maintenant: Date ; seul le point d'entrée lit l'horloge.")
+  },
+  JsClassDeclaration() as $x where {
+    register_diagnostic(span=$x, message="DM-12 : pas de classe dans le domaine : un type et des fonctions.")
+  },
+  JsClassExpression() as $x where {
+    register_diagnostic(span=$x, message="DM-12 : pas de classe dans le domaine : un type et des fonctions.")
+  },
+  JsThrowStatement() as $x where {
+    register_diagnostic(span=$x, message="DM-12 : le domaine ne lève pas d'exception : il rend un Result.")
+  },
+  JsTryStatement() as $x where {
+    register_diagnostic(span=$x, message="DM-12 : le domaine n'attrape pas d'exception : un port qui peut échouer rend un Result.")
+  },
+  JsTryFinallyStatement() as $x where {
+    register_diagnostic(span=$x, message="DM-12 : le domaine n'attrape pas d'exception : un port qui peut échouer rend un Result.")
+  },
+  `$p.catch($h)` as $x where {
+    $h <: or {
+      JsArrowFunctionExpression(),
+      JsFunctionExpression()
+    },
+    register_diagnostic(span=$x, message="DM-12 : le domaine n'attrape pas d'exception : un port qui peut échouer rend un Result.")
+  },
+  `$p.then($ok, $ko)` as $x where {
+    register_diagnostic(span=$x, message="DM-12 : le domaine n'attrape pas d'exception : un port qui peut échouer rend un Result.")
+  },
+  JsObjectBindingPatternShorthandProperty(init=JsInitializerClause()) as $x where {
+    register_diagnostic(span=$x, message="AB-9 : pas de valeur par défaut dans le domaine.")
+  },
+  JsFormalParameter(initializer=JsInitializerClause()) as $x where {
+    register_diagnostic(span=$x, message="AB-9 : pas de valeur par défaut dans le domaine.")
+  }
+}

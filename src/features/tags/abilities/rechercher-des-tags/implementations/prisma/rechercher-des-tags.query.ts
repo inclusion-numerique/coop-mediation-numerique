@@ -56,8 +56,5 @@ export const rechercherDesTags = async ({
     LIMIT ${limite}
   `
 
-  return lignes.flatMap((ligne) => {
-    const tag = tagToDomain(ligne)
-    return tag === null ? [] : [tag]
-  })
+  return lignes.map(tagToDomain)
 }

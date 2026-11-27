@@ -1,34 +1,23 @@
 import type { BeneficiaireAEditer } from '@/features/beneficiaire/abilities/modifier-beneficiaire/domain/beneficiaire-a-editer'
 import { nomAfficheDepuisLIdentite } from '@/features/beneficiaire/domain/beneficiaire'
+import type { CommuneResidence } from '@/features/beneficiaire/domain/commune-residence'
 import type { BeneficiaireData } from '@/features/beneficiaire/ui/forms/beneficiaire.validation'
 import { telephoneDisplayString } from '@/libraries/telephone'
 
-/**
- * Construit l'aperçu BAN (option du select commune) à partir des champs commune
- * persistés. `undefined` tant que la commune n'est pas complètement renseignée.
- */
-const beneficiaireCommuneResidenceToPreviewBanData = ({
-  commune,
-  communeCodeInsee,
-  communeCodePostal,
-}: Pick<
-  BeneficiaireAEditer,
-  'communeCodePostal' | 'communeCodeInsee' | 'commune'
->) =>
-  commune && communeCodePostal && communeCodeInsee
-    ? // We only need data for preview in UI
-      {
-        id: communeCodeInsee, // Used as key in select component
-        nom: commune,
-        codePostal: communeCodePostal,
-        codeInsee: communeCodeInsee,
-        commune,
+const apercuDeLaCommune = (communeResidence: CommuneResidence | null) =>
+  communeResidence === null
+    ? undefined
+    : {
+        id: communeResidence.codeInsee,
+        nom: communeResidence.commune,
+        codePostal: communeResidence.codePostal,
+        codeInsee: communeResidence.codeInsee,
+        commune: communeResidence.commune,
         latitude: 0,
         longitude: 0,
         contexte: '',
-        label: commune,
+        label: communeResidence.commune,
       }
-    : undefined
 
 export type VueDeModificationDuBeneficiaire = {
   beneficiaireId: string
@@ -39,11 +28,6 @@ export type VueDeModificationDuBeneficiaire = {
   }
 }
 
-/**
- * Met en forme l'état persisté pour le formulaire de modification : valeurs par
- * défaut, aperçu de la commune (BAN) et nom d'affichage. Pure, sans accès
- * données — l'orchestration vit dans la route.
- */
 export const presentBeneficiaireAModifier = ({
   id,
   mediateurId,
@@ -58,16 +42,8 @@ export const presentBeneficiaireAModifier = ({
   telephone,
   pasDeTelephone,
   statutSocial,
-  commune,
-  communeCodePostal,
-  communeCodeInsee,
+  communeResidence,
 }: BeneficiaireAEditer): VueDeModificationDuBeneficiaire => {
-  const communeResidence = beneficiaireCommuneResidenceToPreviewBanData({
-    commune,
-    communeCodeInsee,
-    communeCodePostal,
-  })
-
   return {
     beneficiaireId: id,
     displayName: nomAfficheDepuisLIdentite({ prenom, nom }),
@@ -79,7 +55,7 @@ export const presentBeneficiaireAModifier = ({
       genre,
       adresse,
       notes,
-      communeResidence,
+      communeResidence: apercuDeLaCommune(communeResidence),
       anneeNaissance,
       pasDeTelephone,
       telephone: telephone ? telephoneDisplayString(telephone) : telephone,

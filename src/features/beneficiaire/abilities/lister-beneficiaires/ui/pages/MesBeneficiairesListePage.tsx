@@ -7,12 +7,6 @@ import type { VueDeMesBeneficiaires } from '../presenters/lister-beneficiaires.p
 
 const BASE_HREF = '/coop/mes-beneficiaires'
 
-/**
- * Composant de page pur : rend la vue déjà calculée, sans aucun accès données.
- * L'orchestration (auth, requête de l'ability, presenter) vit dans la route Next,
- * qui fournit aussi la server action de suppression — voir
- * DeleteBulkBeneficiairesModalContent pour la raison.
- */
 export const MesBeneficiairesListePage = ({
   view,
   liens,
@@ -20,7 +14,6 @@ export const MesBeneficiairesListePage = ({
   view: VueDeMesBeneficiaires
   liens: LiensDeLaListe
 }) => {
-  // Aucun bénéficiaire enregistré : ni recherche ni table.
   if (view.tag === 'empty') return <BeneficiairesEmpty />
 
   return (

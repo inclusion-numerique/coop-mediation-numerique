@@ -1,21 +1,20 @@
 import assert from 'node:assert'
-import { Given, Then, When } from '@cucumber/cucumber'
+import { Given, Then, When, type World } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import {
   BeneficiaireCibleId,
   MediateurProprietaireId,
 } from '@/features/rdvsp/abilities/prendre-rendez-vous/domain/beneficiaire-cible'
-import type { PrendreRendezVous } from '@/features/rdvsp/abilities/prendre-rendez-vous/domain/prendre-rendez-vous'
 import { prendreRendezVous } from '@/features/rdvsp/abilities/prendre-rendez-vous/domain/prendre-rendez-vous'
 import { beneficiaireADemander } from '@/features/rdvsp/abilities/prendre-rendez-vous/implementations/prisma/beneficiaire-a-demander.query'
 import { compteDuMediateur } from '@/features/rdvsp/abilities/prendre-rendez-vous/implementations/prisma/compte-du-mediateur.query'
 import { lierUsagerAuBeneficiaire } from '@/features/rdvsp/abilities/prendre-rendez-vous/implementations/prisma/lier-usager-au-beneficiaire.mutation'
 import { ApiIndisponible } from '@/features/rdvsp/domain/errors'
 import { UsagerId } from '@/features/rdvsp/domain/identifiants/usager-id'
-import type { RdvServicePublicApi } from '@/features/rdvsp/domain/ports'
 import {
   DemandeRdvId,
   UrlPriseRdv,
+  UrlRetour,
   type UsagerDeLaDemande,
 } from '@/features/rdvsp/domain/rdv/demande-rdv'
 import {
@@ -35,56 +34,48 @@ import { failure, success } from '@/libraries/result'
 const AGENT_ID = ID_TEST.compte + 5
 const USAGER_RENDU = ID_TEST.usager + 2
 
-let beneficiaireId: string | undefined
-let usagerRecu: UsagerDeLaDemande | undefined
-let apiRefuse = false
-let resultat: Awaited<ReturnType<PrendreRendezVous>> | undefined
+type Monde = World & {
+  beneficiaireId?: string
+  usagerRecu?: UsagerDeLaDemande
+  apiRefuse?: boolean
+  resultat?: Awaited<ReturnType<ReturnType<typeof prendreRendezVous>>>
+}
 
-/** Retient l'usager transmis : c'est lui que les scénarios interrogent. */
-const creerDemandeRdvDouble: RdvServicePublicApi['creerDemandeRdv'] = async (
-  _compte,
-  demande,
-) => {
-  usagerRecu = demande.usager
+const planifierPour = (monde: Monde) =>
+  prendreRendezVous({
+    beneficiaireADemander,
+    compteDuMediateur,
+    creerDemandeRdv: async (_compte, demande) => {
+      monde.usagerRecu = demande.usager
 
-  if (apiRefuse) {
-    return failure(ApiIndisponible(503, 'service indisponible'))
-  }
+      if (monde.apiRefuse) {
+        return failure(ApiIndisponible(503, 'service indisponible'))
+      }
 
-  const usagerId =
-    demande.usager._tag === 'existant'
-      ? demande.usager.id
-      : UsagerId(USAGER_RENDU)
+      const usagerId =
+        demande.usager._tag === 'existant'
+          ? demande.usager.id
+          : UsagerId(USAGER_RENDU)
 
-  suivreUsagerRdv(usagerId)
+      suivreUsagerRdv(usagerId)
 
-  return success({
-    id: DemandeRdvId(1),
-    usagerId,
-    url: UrlPriseRdv('https://rdv.anct.gouv.fr/prendre-rdv/1'),
-    rdvId: null,
+      return success({
+        id: DemandeRdvId(1),
+        usagerId,
+        url: UrlPriseRdv('https://rdv.anct.gouv.fr/prendre-rdv/1'),
+        rdvId: null,
+      })
+    },
+    lierUsager: lierUsagerAuBeneficiaire,
+    urlDossierBeneficiaire: (id) =>
+      UrlRetour(
+        `https://coop.test/coop/mes-beneficiaires/${id}/accompagnements`,
+      ),
   })
-}
 
-const planifier = prendreRendezVous({
-  beneficiaireADemander,
-  compteDuMediateur,
-  creerDemandeRdv: creerDemandeRdvDouble,
-  lierUsager: lierUsagerAuBeneficiaire,
-  urlDossierBeneficiaire: (id) =>
-    `https://coop.test/coop/mes-beneficiaires/${id}/accompagnements`,
-})
-
-const reinitialiser = () => {
-  usagerRecu = undefined
-  apiRefuse = false
-  beneficiaireId = undefined
-}
-
-Given('un bénéficiaire suivi sans usager RDV', async () => {
-  reinitialiser()
+Given('un bénéficiaire suivi sans usager RDV', async function (this: Monde) {
   await seedCompteRdv({ id: AGENT_ID, accessToken: 'jeton-acces' })
-  beneficiaireId = await seedBeneficiaire({
+  this.beneficiaireId = await seedBeneficiaire({
     prenom: 'Jean',
     nom: 'Dupont',
     email: 'jean.dupont@example.com',
@@ -93,11 +84,10 @@ Given('un bénéficiaire suivi sans usager RDV', async () => {
 
 Given(
   'un bénéficiaire suivi déjà rattaché à l’usager RDV {int}',
-  async (usagerId: number) => {
-    reinitialiser()
+  async function (this: Monde, usagerId: number) {
     await seedCompteRdv({ id: AGENT_ID, accessToken: 'jeton-acces' })
     await seedUsagerRdv(usagerId)
-    beneficiaireId = await seedBeneficiaire({
+    this.beneficiaireId = await seedBeneficiaire({
       prenom: 'Jean',
       nom: 'Dupont',
       rdvUserId: usagerId,
@@ -105,24 +95,24 @@ Given(
   },
 )
 
-Given('un bénéficiaire suivi sans identité', async () => {
-  reinitialiser()
+Given('un bénéficiaire suivi sans identité', async function (this: Monde) {
   await seedCompteRdv({ id: AGENT_ID, accessToken: 'jeton-acces' })
-  beneficiaireId = await seedBeneficiaire({ anonyme: true })
+  this.beneficiaireId = await seedBeneficiaire({ anonyme: true })
 })
 
-Given('un bénéficiaire suivi par un autre médiateur', async () => {
-  reinitialiser()
-  await seedCompteRdv({ id: AGENT_ID, accessToken: 'jeton-acces' })
-  beneficiaireId = await seedBeneficiaire({
-    prenom: 'Jean',
-    nom: 'Dupont',
-    mediateurId: await seedAutreMediateur(),
-  })
-})
+Given(
+  'un bénéficiaire suivi par un autre médiateur',
+  async function (this: Monde) {
+    await seedCompteRdv({ id: AGENT_ID, accessToken: 'jeton-acces' })
+    this.beneficiaireId = await seedBeneficiaire({
+      prenom: 'Jean',
+      nom: 'Dupont',
+      mediateurId: await seedAutreMediateur(),
+    })
+  },
+)
 
 Given('aucun bénéficiaire à planifier', async () => {
-  reinitialiser()
   await seedCompteRdv({ id: AGENT_ID, accessToken: 'jeton-acces' })
 })
 
@@ -130,74 +120,92 @@ Given('aucun compte RDV pour planifier', async () => {
   await supprimerCompteRdvDuMediateur()
 })
 
-Given('RDV Service Public refusera la demande', () => {
-  apiRefuse = true
+Given('RDV Service Public refusera la demande', function (this: Monde) {
+  this.apiRefuse = true
 })
 
-When('je planifie un rendez-vous avec ce bénéficiaire', async () => {
-  assert.ok(beneficiaireId, 'Aucun bénéficiaire à planifier')
-  resultat = await planifier({
-    utilisateurId: testUtilisateurId,
-    mediateurId: MediateurProprietaireId(testMediateurId),
-    beneficiaireId: BeneficiaireCibleId(beneficiaireId),
-  })
-})
+When(
+  'je planifie un rendez-vous avec ce bénéficiaire',
+  async function (this: Monde) {
+    assert.ok(this.beneficiaireId, 'Aucun bénéficiaire à planifier')
+    this.resultat = await planifierPour(this)({
+      utilisateurId: testUtilisateurId,
+      mediateurId: MediateurProprietaireId(testMediateurId),
+      beneficiaireId: BeneficiaireCibleId(this.beneficiaireId),
+    })
+  },
+)
 
-When('je planifie un rendez-vous avec un bénéficiaire inexistant', async () => {
-  resultat = await planifier({
-    utilisateurId: testUtilisateurId,
-    mediateurId: MediateurProprietaireId(testMediateurId),
-    beneficiaireId: BeneficiaireCibleId(v4()),
-  })
-})
+When(
+  'je planifie un rendez-vous avec un bénéficiaire inexistant',
+  async function (this: Monde) {
+    this.resultat = await planifierPour(this)({
+      utilisateurId: testUtilisateurId,
+      mediateurId: MediateurProprietaireId(testMediateurId),
+      beneficiaireId: BeneficiaireCibleId(v4()),
+    })
+  },
+)
 
-Then('RDV Service Public reçoit une identité à créer', () => {
-  assert.strictEqual(usagerRecu?._tag, 'aCreer')
+Then('RDV Service Public reçoit une identité à créer', function (this: Monde) {
+  assert.strictEqual(this.usagerRecu?._tag, 'aCreer')
 })
 
 Then(
   'RDV Service Public reçoit l’usager existant {int}',
-  (usagerId: number) => {
-    assert.deepStrictEqual(usagerRecu, { _tag: 'existant', id: usagerId })
+  function (this: Monde, usagerId: number) {
+    assert.deepStrictEqual(this.usagerRecu, { _tag: 'existant', id: usagerId })
   },
 )
 
-Then('le bénéficiaire est rattaché à l’usager rendu', async () => {
-  assert.ok(beneficiaireId)
-  assert.strictEqual(
-    (await beneficiaireEnBase(beneficiaireId))?.rdvUserId,
-    USAGER_RENDU,
-  )
-})
+Then(
+  'le bénéficiaire est rattaché à l’usager rendu',
+  async function (this: Monde) {
+    assert.ok(this.beneficiaireId)
+    assert.strictEqual(
+      (await beneficiaireEnBase(this.beneficiaireId))?.rdvUserId,
+      USAGER_RENDU,
+    )
+  },
+)
 
 Then(
   'le bénéficiaire reste rattaché à l’usager {int}',
-  async (usagerId: number) => {
-    assert.ok(beneficiaireId)
+  async function (this: Monde, usagerId: number) {
+    assert.ok(this.beneficiaireId)
     assert.strictEqual(
-      (await beneficiaireEnBase(beneficiaireId))?.rdvUserId,
+      (await beneficiaireEnBase(this.beneficiaireId))?.rdvUserId,
       usagerId,
     )
   },
 )
 
-Then('la demande aboutit', () => {
-  assert.ok(resultat?.success, 'La demande a échoué')
+Then('la demande aboutit', function (this: Monde) {
+  assert.ok(this.resultat?.success, 'La demande a échoué')
 })
 
-Then('la demande échoue avec l’erreur {string}', (tag: string) => {
-  assert.ok(resultat && !resultat.success, 'La demande aurait dû échouer')
-  assert.strictEqual(resultat.error._tag, tag)
+Then(
+  'la demande échoue avec l’erreur {string}',
+  function (this: Monde, tag: string) {
+    assert.ok(
+      this.resultat && !this.resultat.success,
+      'La demande aurait dû échouer',
+    )
+    assert.strictEqual(this.resultat.error._tag, tag)
+  },
+)
+
+Then('RDV Service Public n’a reçu aucune demande', function (this: Monde) {
+  assert.strictEqual(this.usagerRecu, undefined)
 })
 
-Then('RDV Service Public n’a reçu aucune demande', () => {
-  assert.strictEqual(usagerRecu, undefined)
-})
-
-Then('le bénéficiaire n’est rattaché à aucun usager', async () => {
-  assert.ok(beneficiaireId)
-  assert.strictEqual(
-    (await beneficiaireEnBase(beneficiaireId))?.rdvUserId,
-    null,
-  )
-})
+Then(
+  'le bénéficiaire n’est rattaché à aucun usager',
+  async function (this: Monde) {
+    assert.ok(this.beneficiaireId)
+    assert.strictEqual(
+      (await beneficiaireEnBase(this.beneficiaireId))?.rdvUserId,
+      null,
+    )
+  },
+)

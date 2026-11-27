@@ -1,24 +1,19 @@
 import { prismaClient } from '@/configuration/prisma'
-import {
-  type DispositifPersonne,
-  dispositifInconnu,
-} from '@/features/inscription/domain'
+import type { LireLeDispositif } from '@/features/inscription/abilities/initialiser-inscription/domain'
+import type { DispositifPersonne } from '@/features/inscription/domain'
+
+const dispositifInconnu: DispositifPersonne = {
+  connue: false,
+  estConseillerNumerique: false,
+  estCoordinateur: false,
+}
 
 type DispositifRow = {
   est_conseiller_numerique: boolean
   est_coordinateur: boolean
 }
 
-/**
- * Ce que le dispositif dit d'une personne, lu dans `main` au lieu d'être demandé
- * à l'API Dataspace : « connue du dispositif » y remplace « trouvée dans l'API ».
- *
- * `main.*` est qualifié explicitement : le `search_path` (`coop,public`) ne
- * l'inclut pas.
- */
-export const dispositifDepuisMain = async (
-  userId: string,
-): Promise<DispositifPersonne> => {
+export const dispositifDepuisMain: LireLeDispositif = async (userId) => {
   const [row] = await prismaClient.$queryRaw<DispositifRow[]>`
     SELECT
       EXISTS (

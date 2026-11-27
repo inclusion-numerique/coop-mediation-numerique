@@ -14,11 +14,8 @@ import { Prenom } from '@/features/beneficiaire/domain/prenom'
 import { StatutSocial } from '@/features/beneficiaire/domain/statut-social'
 import { TrancheAge } from '@/features/beneficiaire/domain/tranche-age'
 import { Telephone } from '@/libraries/telephone'
-import type { BeneficiaireAImporter } from '../domain/importer-beneficiaires'
+import type { BeneficiaireAImporter } from '../domain/beneficiaire-a-importer'
 
-// Récupère la valeur d'un value object si elle est valide, sinon `null` : les
-// champs optionnels d'un fichier importé sont tolérés (une donnée invalide est
-// ignorée, pas bloquante).
 const parseOptional = <S extends z.ZodType>(
   schema: S,
   value: unknown,
@@ -27,13 +24,6 @@ const parseOptional = <S extends z.ZodType>(
   return result.success ? result.data : null
 }
 
-/**
- * Projette une ligne de fichier analysée vers un bénéficiaire à importer.
- * Le prénom et le nom sont obligatoires : une ligne dont l'un est manquant ou
- * invalide n'est pas importable (`null`). Les champs optionnels invalides
- * (e-mail, téléphone, notes) sont ignorés ; l'année, la commune et le genre ont
- * déjà été validés par l'analyse.
- */
 const toBeneficiaireAImporter = (
   row: ParsedBeneficiaireRow,
 ): BeneficiaireAImporter | null => {
@@ -53,7 +43,7 @@ const toBeneficiaireAImporter = (
     anneeNaissance:
       row.parsed.anneeNaissance == null
         ? null
-        : AnneeNaissance(row.parsed.anneeNaissance),
+        : AnneeNaissance(new Date())(row.parsed.anneeNaissance),
     communeResidence: row.parsed.commune
       ? CommuneResidence({
           commune: row.parsed.commune.nom,

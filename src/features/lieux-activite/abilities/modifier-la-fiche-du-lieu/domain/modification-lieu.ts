@@ -22,6 +22,7 @@ import {
 import type { VisibiliteCartographie } from '../../../domain/cartographie-nationale/visibilite-cartographie'
 import type { BanId } from '../../../domain/identifiants/ban-id'
 import type { NomUsage } from '../../../domain/identite-sirene'
+import type { SectionDeLaFiche } from '../../../domain/section-de-la-fiche'
 
 export type ModificationLieu =
   | {
@@ -68,8 +69,6 @@ export type ModificationLieu =
       readonly publicsSpecifiquementAdresses: PublicsSpecifiquementAdresses
       readonly priseEnChargeSpecifique: PrisesEnChargeSpecifiques
     }
-
-export type SectionDeLaFiche = ModificationLieu['section']
 
 export type Modification<Section extends SectionDeLaFiche> = Extract<
   ModificationLieu,

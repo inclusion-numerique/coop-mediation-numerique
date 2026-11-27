@@ -4,14 +4,14 @@ import { Nom } from '@/features/beneficiaire/domain/nom'
 import { Prenom } from '@/features/beneficiaire/domain/prenom'
 import { findDuplicatesForBeneficiaire } from '@/features/beneficiaire/implementations/prisma/find-duplicates-for-beneficiaire.query'
 import { Telephone } from '@/libraries/telephone'
-import type { DetecterLesDoublons } from '../../domain/detecter-doublons'
+import type { DetecterLesDoublons } from '../../domain/ports'
 
 export const findDuplicatesForBeneficiaireById: DetecterLesDoublons = async ({
   beneficiaireId,
   mediateurId,
+  maintenant,
 }) => {
   const beneficiaire = await prismaClient.beneficiaire.findUnique({
-    // Owner-scopée : seul le médiateur propriétaire détecte les doublons.
     where: { id: beneficiaireId, mediateurId, suppression: null },
     select: { nom: true, prenom: true, telephone: true, email: true },
   })
@@ -31,5 +31,6 @@ export const findDuplicatesForBeneficiaireById: DetecterLesDoublons = async ({
     },
     withConflictingFields: 'include',
     fuzzyMatching: true,
+    maintenant,
   })
 }

@@ -1,32 +1,23 @@
 import type {
-  AdresseCourriel,
-  CompteARelancer,
-  DestinataireDeRelance,
-  PalierDeRelance,
-  Relance,
+  EnvoyerLAvertissement,
+  EnvoyerLAvisDEffacement,
+  EnvoyerLaRelance,
+  LireLesComptesARelancer,
+  NoterLaRelance,
+  PortsDuRetraitDuContact,
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
+import type { EchecTechnique, Result } from '@/libraries/result'
 
-type NoterLaRelance = (
+type EffacerLInscription = (
   utilisateurId: UtilisateurId,
-  relance: Relance,
-  suppressionAnnoncee: Date | null,
-) => Promise<void>
+) => Promise<Result<void, EchecTechnique>>
 
-export type RelancerLesInscriptionsInacheveesPorts = {
-  readonly envoyerLaRelance: (
-    destinataire: DestinataireDeRelance,
-    palier: PalierDeRelance,
-  ) => Promise<void>
-  readonly envoyerLAvertissement: (
-    destinataire: DestinataireDeRelance,
-    echeance: { readonly suppressionLe: Date; readonly joursRestants: number },
-  ) => Promise<void>
-  readonly envoyerLAvisDEffacement: (
-    destinataire: DestinataireDeRelance,
-  ) => Promise<void>
-  readonly effacerLInscription: (utilisateurId: UtilisateurId) => Promise<void>
-  readonly retirerDesListes: (courriel: AdresseCourriel) => Promise<void>
-  readonly lireLesComptesARelancer: () => Promise<readonly CompteARelancer[]>
+export type RelancerLesInscriptionsInacheveesPorts = PortsDuRetraitDuContact & {
+  readonly lireLesComptesARelancer: LireLesComptesARelancer
+  readonly envoyerLaRelance: EnvoyerLaRelance
+  readonly envoyerLAvertissement: EnvoyerLAvertissement
+  readonly envoyerLAvisDEffacement: EnvoyerLAvisDEffacement
+  readonly effacerLInscription: EffacerLInscription
   readonly noterLaRelance: NoterLaRelance
 }

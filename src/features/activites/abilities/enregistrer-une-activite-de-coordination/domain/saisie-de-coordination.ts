@@ -26,10 +26,9 @@ export type SaisieDeCoordination =
   | SaisieDe<Evenement>
   | SaisieDe<Partenariat>
 
-export type ActiviteEnregistree = {
-  readonly id: ActiviteDeCoordinationId
-  readonly type: ActiviteDeCoordination['_tag']
-}
+export type EcritureDeCoordination =
+  | { readonly _tag: 'Creation'; readonly activite: ActiviteDeCoordination }
+  | { readonly _tag: 'Modification'; readonly activite: ActiviteDeCoordination }
 
 export const activiteDeLaSaisie = ({
   saisie,

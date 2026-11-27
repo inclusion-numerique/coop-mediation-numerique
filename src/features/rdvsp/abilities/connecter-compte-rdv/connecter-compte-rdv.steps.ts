@@ -1,10 +1,6 @@
 import assert from 'node:assert'
-import { Given, Then, When } from '@cucumber/cucumber'
+import { Given, Then, When, type World } from '@cucumber/cucumber'
 import { CodeAutorisation } from '@/features/rdvsp/abilities/connecter-compte-rdv/domain/code-autorisation'
-import type {
-  ConnecterCompteRdv,
-  EchangerCodeAutorisation,
-} from '@/features/rdvsp/abilities/connecter-compte-rdv/domain/connecter-compte-rdv'
 import { connecterCompteRdv } from '@/features/rdvsp/abilities/connecter-compte-rdv/domain/connecter-compte-rdv'
 import { CodeAutorisationRefuse } from '@/features/rdvsp/abilities/connecter-compte-rdv/domain/errors'
 import { compteRdvExistant } from '@/features/rdvsp/abilities/connecter-compte-rdv/implementations/prisma/compte-rdv-existant.query'
@@ -21,7 +17,6 @@ import {
   NomExterne,
   PrenomExterne,
 } from '@/features/rdvsp/domain/identite'
-import type { RdvServicePublicApi } from '@/features/rdvsp/domain/ports'
 import {
   compteRdvEnBase,
   emailUtilisateurDeTest,
@@ -42,33 +37,25 @@ const jetonsEchanges: JetonsOAuth = {
   portee: null,
 }
 
-let agentAttendu: Agent | undefined
-let echangeRefuse = false
-let resultat: Awaited<ReturnType<ConnecterCompteRdv>> | undefined
+type Monde = World & {
+  agentAttendu?: Agent
+  echangeRefuse?: boolean
+  resultat?: Awaited<ReturnType<ReturnType<typeof connecterPour>>>
+}
 
-/**
- * L'API RDV Service Public est doublée — la base, elle, est bien réelle (DV-2) :
- * ces scénarios valident le comportement Prisma de l'ability, pas le transport
- * HTTP, qui appartient à l'adaptateur.
- */
-const echangerCodeDouble: EchangerCodeAutorisation = async () =>
-  echangeRefuse
-    ? failure(CodeAutorisationRefuse('invalid_grant'))
-    : success(jetonsEchanges)
-
-const identifierAgentDouble: RdvServicePublicApi['identifierAgent'] =
-  async () => {
-    assert.ok(agentAttendu, 'Aucun agent RDV Service Public défini')
-    return success(agentAttendu)
-  }
-
-const connecter = connecterCompteRdv({
-  echangerCode: echangerCodeDouble,
-  identifierAgent: identifierAgentDouble,
-  compteExistant: compteRdvExistant,
-  enregistrer: enregistrerCompteConnecte,
-  maintenant: () => MAINTENANT,
-})
+const connecterPour = (monde: Monde) =>
+  connecterCompteRdv({
+    echangerCode: async () =>
+      monde.echangeRefuse
+        ? failure(CodeAutorisationRefuse('invalid_grant'))
+        : success(jetonsEchanges),
+    identifierAgent: async () => {
+      assert.ok(monde.agentAttendu, 'Aucun agent RDV Service Public défini')
+      return success(monde.agentAttendu)
+    },
+    compteExistant: compteRdvExistant,
+    enregistrer: enregistrerCompteConnecte,
+  })
 
 const agentAvecEmail = (email: string): Agent => ({
   id: RdvAgentId(AGENT_ID),
@@ -77,22 +64,23 @@ const agentAvecEmail = (email: string): Agent => ({
   nom: NomExterne('RDV'),
 })
 
-Given('un agent RDV Service Public portant l’e-mail du médiateur', async () => {
-  echangeRefuse = false
-  agentAttendu = agentAvecEmail(await emailUtilisateurDeTest())
-})
-
 Given(
-  'un agent RDV Service Public portant l’e-mail {string}',
-  (email: string) => {
-    echangeRefuse = false
-    agentAttendu = agentAvecEmail(email)
+  'un agent RDV Service Public portant l’e-mail du médiateur',
+  async function (this: Monde) {
+    this.agentAttendu = agentAvecEmail(await emailUtilisateurDeTest())
   },
 )
 
-Given('un code d’autorisation refusé', () => {
-  echangeRefuse = true
-  agentAttendu = agentAvecEmail('agent@example.com')
+Given(
+  'un agent RDV Service Public portant l’e-mail {string}',
+  function (this: Monde, email: string) {
+    this.agentAttendu = agentAvecEmail(email)
+  },
+)
+
+Given('un code d’autorisation refusé', function (this: Monde) {
+  this.echangeRefuse = true
+  this.agentAttendu = agentAvecEmail('agent@example.com')
 })
 
 Given(
@@ -143,18 +131,19 @@ Given(
   },
 )
 
-When('je connecte mon compte RDV Service Public', async () => {
+When('je connecte mon compte RDV Service Public', async function (this: Monde) {
   suivreCompteRdv(AGENT_ID)
-  resultat = await connecter({
+  this.resultat = await connecterPour(this)({
     utilisateurId: testUtilisateurId,
     emailUtilisateur: await emailUtilisateurDeTest(),
     code: CodeAutorisation('code-oauth'),
+    maintenant: MAINTENANT,
   })
 })
 
-Then('le compte est lié', () => {
-  assert.ok(resultat?.success, 'La connexion a échoué')
-  assert.strictEqual(resultat.data._tag, 'lie')
+Then('le compte est lié', function (this: Monde) {
+  assert.ok(this.resultat?.success, 'La connexion a échoué')
+  assert.strictEqual(this.resultat.data.compte._tag, 'lie')
 })
 
 Then('le compte est enregistré avec les jetons reçus', async () => {
@@ -212,10 +201,16 @@ Then(
   },
 )
 
-Then('la connexion échoue avec l’erreur {string}', (tag: string) => {
-  assert.ok(resultat && !resultat.success, 'La connexion aurait dû échouer')
-  assert.strictEqual(resultat.error._tag, tag)
-})
+Then(
+  'la connexion échoue avec l’erreur {string}',
+  function (this: Monde, tag: string) {
+    assert.ok(
+      this.resultat && !this.resultat.success,
+      'La connexion aurait dû échouer',
+    )
+    assert.strictEqual(this.resultat.error._tag, tag)
+  },
+)
 
 Then('aucun compte RDV n’est enregistré', async () => {
   assert.strictEqual(await compteRdvEnBase(AGENT_ID), null)

@@ -80,7 +80,13 @@ describe('activité de coordination', () => {
 
   it("compte les structures partenaires d'un partenariat", () => {
     expect(partenairesDe(partenariat)).toBe(2)
+  })
+
+  it("ne compte aucune structure partenaire hors d'un partenariat", () => {
     expect(partenairesDe(animation)).toBe(0)
+  })
+
+  it('ne compte aucun participant dans un partenariat', () => {
     expect(participantsDe(partenariat)).toBe(0)
   })
 })

@@ -1,21 +1,29 @@
 import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
-import { rattacherAUneEmployeuse } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/prisma/rattacher-a-une-employeuse.mutation'
+import { SireneIndisponible } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/domain/errors'
+import { rattacherAUneEmployeuse } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/domain/rattacher-a-une-employeuse'
+import { statutDeConseillerNumerique } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/prisma/conseiller-numerique-en-poste.query'
+import { creerLEmployeuse } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/prisma/creer-l-employeuse.mutation'
+import { lireLesEmployeusesDuSiret } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/prisma/employeuses-du-siret.query'
+import { enregistrerLeRattachement } from '@/features/employeuse/abilities/rattacher-a-une-employeuse/implementations/prisma/enregistrer-le-rattachement.mutation'
 import { IdentiteEmployeuse } from '@/features/employeuse/domain/identite-employeuse'
+import { UtilisateurId } from '@/features/employeuse/domain/utilisateur-id'
 import {
   affectationsDe,
   seedAffectation,
   seedEmployeuseMain,
   seedUtilisateur,
 } from '@/features/employeuse/employeuse.cucumber'
+import { failure } from '@/libraries/result'
 
-// État local à cette ability (les phrasés Cucumber sont globaux).
-let inscritId: string
+const contexte: {
+  inscritId: string
+} = {
+  inscritId: '',
+}
+
 const employeuses = new Map<string, { id: number; siret: string }>()
 
-// Les employeuses sont enregistrées AVANT le rattachement, avec le SIRET et la dénomination que
-// l'identité portera : la garantie les retrouve alors par leur clé métier, sans géocodage — donc
-// sans appel réseau, et le scénario reste déterministe.
 const identitePour = (nom: string): IdentiteEmployeuse => {
   const employeuse = employeuses.get(nom)
   assert.ok(employeuse, `L'employeuse « ${nom} » n'a pas été enregistrée`)
@@ -39,7 +47,7 @@ const employeuseId = (nom: string): number => {
 }
 
 const affectation = async (nom: string, source: string) => {
-  const affectations = await affectationsDe(inscritId)
+  const affectations = await affectationsDe(contexte.inscritId)
   return affectations.find(
     (candidate) =>
       candidate.structureAdministrativeId === employeuseId(nom) &&
@@ -55,14 +63,14 @@ Given(
 )
 
 Given('un utilisateur nouvellement inscrit', async () => {
-  inscritId = await seedUtilisateur()
+  contexte.inscritId = await seedUtilisateur()
 })
 
 Given(
   'ce utilisateur affecté par le dispositif à {string}',
   async (nom: string) => {
     await seedAffectation({
-      userId: inscritId,
+      userId: contexte.inscritId,
       employeuseId: employeuseId(nom),
       source: 'idposte',
     })
@@ -70,29 +78,33 @@ Given(
 )
 
 const rattacher = rattacherAUneEmployeuse({
-  geocoder: async () => null,
-  signaler: () => undefined,
-  garantirLaPersonne: ({ coopUserId, email }, transaction) =>
-    transaction.personneMain.upsert({
-      where: { coopId: coopUserId },
-      create: { coopId: coopUserId, contact: { coop: { email } } },
-      update: {},
-      select: { id: true },
-    }),
-  synchroniserLaPersonne: async () => undefined,
+  lireLEtablissement: async () => failure(SireneIndisponible()),
+  lireLeStatutDeConseillerNumerique: statutDeConseillerNumerique,
+  lireLesEmployeusesDuSiret,
+  creerLEmployeuse: creerLEmployeuse({ geocoder: async () => null }),
+  enregistrerLeRattachement: enregistrerLeRattachement({
+    garantirLaPersonne: ({ coopUserId, email }, transaction) =>
+      transaction.personneMain.upsert({
+        where: { coopId: coopUserId },
+        create: { coopId: coopUserId, contact: { coop: { email } } },
+        update: {},
+        select: { id: true },
+      }),
+    synchroniserLaPersonne: async () => undefined,
+  }),
 })
 
 When('je le rattache à {string}', async (nom: string) => {
   await rattacher({
-    userId: inscritId,
-    identite: identitePour(nom),
+    userId: UtilisateurId(contexte.inscritId),
+    source: { _tag: 'Saisie', identite: identitePour(nom) },
   })
 })
 
 When('je le rattache à nouveau à {string}', async (nom: string) => {
   await rattacher({
-    userId: inscritId,
-    identite: identitePour(nom),
+    userId: UtilisateurId(contexte.inscritId),
+    source: { _tag: 'Saisie', identite: identitePour(nom) },
   })
 })
 
@@ -111,7 +123,7 @@ Then('son rattachement à {string} est terminé', async (nom: string) => {
 Then(
   'il a {int} rattachement(s) déclaré(s) par la coop',
   async (attendu: number) => {
-    const affectations = await affectationsDe(inscritId)
+    const affectations = await affectationsDe(contexte.inscritId)
     assert.strictEqual(
       affectations.filter(({ source }) => source === 'coop').length,
       attendu,

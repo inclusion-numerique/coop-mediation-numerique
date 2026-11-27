@@ -1,4 +1,3 @@
-/** sources found in dataset as of 01/02/2026 */
 const cartographieNationaleSourcesLabels = {
   fredo: 'Fredo',
   'Conseil Départemental de la Charente-Maritime':
@@ -26,12 +25,12 @@ const cartographieNationaleSourcesLabels = {
 export type CartographieNationaleKnownSource =
   keyof typeof cartographieNationaleSourcesLabels
 
-export const coopCartographieNationaleSource =
-  'Coop numérique' as const satisfies CartographieNationaleKnownSource
+export const coopCartographieNationaleSource: CartographieNationaleKnownSource =
+  'Coop numérique'
 
-export const libelleDeLaSource = (
-  source: CartographieNationaleKnownSource | string,
-) =>
-  cartographieNationaleSourcesLabels[
-    source as CartographieNationaleKnownSource
-  ] ?? source
+const libellesDesSources: ReadonlyMap<string, string> = new Map(
+  Object.entries(cartographieNationaleSourcesLabels),
+)
+
+export const libelleDeLaSource = (source: string): string =>
+  libellesDesSources.get(source) ?? source

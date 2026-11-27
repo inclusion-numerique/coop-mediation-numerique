@@ -1,20 +1,26 @@
-export { demandeDAjout } from './demande-d-ajout'
-export {
-  AdresseNonValidee,
-  type EchecDAjout,
-} from './errors'
-export { identifiantsCarto } from './identifiants-carto'
-export { type LieuCarto, lieuDepuisCarto } from './lieu-carto'
+export type { DestinationDuLieu } from '../../../domain/destination-du-lieu'
+export type {
+  LieuPorteurDeLaCarto,
+  LireLEtatDuLieu,
+} from '../../../domain/ports'
+export type { CreationDemandee } from '../../../domain/rattachement/creation-demandee'
+export { type LieuCarto } from '../../../domain/rattachement/lieu-carto'
 export {
   type AdresseValidee,
-  estExistant,
   type LieuACreer,
   type LieuDemande,
   type LieuExistant,
-} from './lieu-demande'
-export { lieuxAMaterialiser } from './lieux-a-materialiser'
+} from '../../../domain/rattachement/lieu-demande'
+
+export { type EchecDeAjouterDesLieuxActivite } from './errors'
+
+export {
+  type LieuSoumis,
+  lieuxDemandes,
+} from './lieu-soumis'
 export type {
-  AjouterDesLieuxActivitePorts,
   LireLieuxDejaRattaches,
+  RattachementAuxLieux,
+  RattacherAuxLieux,
   TrouverStructuresCarto,
 } from './ports'

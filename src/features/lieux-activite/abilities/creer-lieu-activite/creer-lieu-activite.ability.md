@@ -160,6 +160,19 @@ résultat — mais c’est une garde de l’écran, pas une preuve : rien n’em
 venir directement, ni d’y ressaisir un lieu que la recherche n’avait pas su
 rendre. La corrélation reste donc le dernier rempart.
 
+> Le jugement « deux fiches désignent le même endroit » appartient au standard
+> `@gouvfr-anct/lieux-de-mediation-numerique`, d'où la coop, mednum-cli et les
+> producteurs de données le tirent : deux règles concurrentes feraient deux
+> vérités. La coop n'y ajoute que ce que le standard ne peut pas savoir. Son
+> seuil, d'abord : 80, celui de la cartographie nationale établi sur ses 21 000
+> lieux, dernier palier qui n'admet aucune paire aux dénominations franchement
+> divergentes. Le départage ensuite : un lieu actif avant un lieu supprimé, le
+> mieux noté, puis le plus ancien. Une typologie que le standard ne connaît pas
+> est laissée de côté plutôt que de faire refuser le lieu, et à défaut de
+> typologie le standard la déduit de la dénomination : opposer « France services
+> de Fleury » à « Mairie de Fleury » crée au pire un doublon, là où les confondre
+> rattacherait quelqu'un à l'établissement d'un autre.
+
 ### Scénario: Créer un lieu déjà connu sous une autre dénomination rattache l’existant
 
 * Étant donné je suis un médiateur

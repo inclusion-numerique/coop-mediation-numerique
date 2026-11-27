@@ -5,14 +5,7 @@ import {
   listeDesUtilisateurs,
 } from '@/features/utilisateurs/implementations/brevo/brevo-api.client'
 import { brevoApiThrottle } from '@/features/utilisateurs/implementations/brevo/brevo-api-throttle.client'
-import { deleteBrevoContact } from '@/features/utilisateurs/implementations/brevo/delete-brevo-contact.mutation'
-import { deleteBrevoContactIfOrphan } from '@/features/utilisateurs/implementations/brevo/delete-brevo-contact-if-orphan.mutation'
-import { removeBrevoContactFromList } from '@/features/utilisateurs/implementations/brevo/remove-brevo-contact-from-list.mutation'
-import type {
-  CompteDuContact,
-  ContactBrevo,
-  RetirerLesContactsOrphelinsPorts,
-} from '../../domain'
+import type { CompteDuContact, ContactBrevo } from '../../domain'
 
 type PageDeContacts = {
   readonly contacts: readonly {
@@ -66,17 +59,5 @@ const lireAPartirDe = async (
     : [...contacts, ...(await lireAPartirDe(offset + TAILLE_DE_PAGE))]
 }
 
-export const contactsBrevoPorts: RetirerLesContactsOrphelinsPorts = {
-  listerLesContacts: () => lireAPartirDe(0),
-  supprimerLeContact: async (courriel) => {
-    await deleteBrevoContact(courriel)
-  },
-  retirerLeContactDeLaListe: async (courriel) => {
-    const retire = await removeBrevoContactFromList(
-      courriel,
-      listeDesUtilisateurs,
-    )
-    await deleteBrevoContactIfOrphan(courriel)
-    return retire ? { _tag: 'Retire' } : { _tag: 'DejaAbsent' }
-  },
-}
+export const listerLesContacts = (): Promise<readonly ContactBrevo[]> =>
+  lireAPartirDe(0)

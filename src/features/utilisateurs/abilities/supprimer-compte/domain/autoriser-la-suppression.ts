@@ -1,16 +1,17 @@
-import type {
-  CompteASupprimer,
-  UtilisateurId,
+import {
+  type CompteASupprimer,
+  estRoleProtege,
+  type IdentiteAnonyme,
+  RoleProtege,
+  type UtilisateurId,
 } from '@/features/utilisateurs/domain'
-import { estRoleProtege } from '@/features/utilisateurs/domain'
 import { failure, type Result, success } from '@/libraries/result'
 import type { AuteurSuppression } from './auteur-suppression'
 import type { EffacementReport } from './effacement-report'
 import {
   CompteDejaSupprime,
-  RoleProtege,
+  type EchecDeSupprimerCompte,
   SuppressionReserveeAuDispositif,
-  type SupprimerCompteError,
 } from './errors'
 import type { MotifSuppression } from './motif-suppression'
 
@@ -18,13 +19,15 @@ export type CompteSupprime = {
   readonly id: UtilisateurId
   readonly motif: MotifSuppression
   readonly supprimeLe: Date
+  readonly identite: IdentiteAnonyme
+  readonly dejaAnonymise: boolean
   readonly report: EffacementReport
 }
 
 export const autoriserSuppression = (
   compte: CompteASupprimer,
   auteur: AuteurSuppression,
-): Result<CompteASupprimer, SupprimerCompteError> => {
+): Result<CompteASupprimer, EchecDeSupprimerCompte> => {
   if (estRoleProtege(compte.role)) {
     return failure(RoleProtege(compte.id, compte.role))
   }

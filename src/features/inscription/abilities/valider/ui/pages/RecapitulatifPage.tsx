@@ -164,8 +164,6 @@ const RecapitulatifPage = ({
             </span>
           }
         />
-        {/* Les lieux sont affichés dans l'ordre inverse (le plus récent en haut) dans la formulaire lieux activité, on reproduit cela pour */}
-        {/* que l'affichage soit cohérent */}
         {cartesDesLieux.toReversed()}
       </>
     )}

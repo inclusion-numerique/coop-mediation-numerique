@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import type { BeneficiaireInformations } from '@/features/beneficiaire/abilities/consulter-beneficiaire/domain/consulter-beneficiaire'
+import type { BeneficiaireInformations } from '@/features/beneficiaire/abilities/consulter-beneficiaire/domain/beneficiaire-informations'
 import BeneficiaireCoordonnees from '@/features/beneficiaire/abilities/consulter-beneficiaire/ui/components/BeneficiaireCoordonnees'
 import BeneficiaireInformationsComplementaires from '@/features/beneficiaire/abilities/consulter-beneficiaire/ui/components/BeneficiaireInformationsComplementaires'
 import BeneficiaireNotes from '@/features/beneficiaire/abilities/consulter-beneficiaire/ui/components/BeneficiaireNotes'
@@ -13,12 +13,16 @@ export type BeneficiaireInformationsPageData = {
   beneficiaire: BeneficiaireInformations
   thematiquesAbordees: readonly ThematiqueAbordee[]
   totalActivitesCount: number
+  trancheAgeAffichee: string
 }
 
-// `actions` : boutons d'en-tête (modifier, supprimer) — concerns croisés
-// injectés par la route-hub, l'ability reste découplée.
 const ViewBeneficiaireInformationsPage = ({
-  data: { beneficiaire, thematiquesAbordees, totalActivitesCount },
+  data: {
+    beneficiaire,
+    thematiquesAbordees,
+    totalActivitesCount,
+    trancheAgeAffichee,
+  },
   actions,
 }: {
   data: BeneficiaireInformationsPageData
@@ -42,7 +46,10 @@ const ViewBeneficiaireInformationsPage = ({
       </div>
       <BeneficiaireThematiques thematiques={thematiquesAbordees} />
       <BeneficiaireCoordonnees beneficiaire={beneficiaire} />
-      <BeneficiaireInformationsComplementaires beneficiaire={beneficiaire} />
+      <BeneficiaireInformationsComplementaires
+        beneficiaire={beneficiaire}
+        trancheAgeAffichee={trancheAgeAffichee}
+      />
       <BeneficiaireNotes notes={beneficiaire.notes} />
     </div>
   </>

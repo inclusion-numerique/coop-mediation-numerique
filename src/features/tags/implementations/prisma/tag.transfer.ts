@@ -24,7 +24,7 @@ export type ColonnesDePortee = Pick<
   'mediateurId' | 'coordinateurId' | 'departement' | 'equipe'
 >
 
-const porteeToDomain = (row: ColonnesDePortee): Portee | null => {
+const porteeToDomain = (row: ColonnesDePortee): Portee => {
   if (row.equipe === true && row.coordinateurId !== null)
     return {
       _tag: 'Equipe',
@@ -46,25 +46,18 @@ const porteeToDomain = (row: ColonnesDePortee): Portee | null => {
         coordinateurId: CoordinateurId(row.coordinateurId),
       },
     }
-  if (row.departement === null) return { _tag: 'National' }
-
-  const departement = CodeDepartement.safe(row.departement)
-  return departement === null ? null : { _tag: 'Departemental', departement }
+  return row.departement === null
+    ? { _tag: 'National' }
+    : { _tag: 'Departemental', departement: CodeDepartement(row.departement) }
 }
 
-export const tagToDomain = (row: TagRow): Tag | null => {
-  const nom = NomDuTag.safe(row.nom)
-  const portee = porteeToDomain(row)
-
-  return nom === null || portee === null
-    ? null
-    : {
-        id: TagId(row.id),
-        nom,
-        description: DescriptionDuTag.safe(row.description ?? ''),
-        portee,
-      }
-}
+export const tagToDomain = (row: TagRow): Tag => ({
+  id: TagId(row.id),
+  nom: NomDuTag(row.nom),
+  description:
+    row.description === null ? null : DescriptionDuTag(row.description),
+  portee: porteeToDomain(row),
+})
 
 const AUCUNE_PORTEE: ColonnesDePortee = {
   mediateurId: null,
