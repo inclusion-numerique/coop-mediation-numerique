@@ -17,11 +17,11 @@ import {
 import { CodeAutorisation } from '@/features/rdvsp/abilities/connecter-compte-rdv/domain/code-autorisation'
 import { connecterCompteRdv } from '@/features/rdvsp/abilities/connecter-compte-rdv/domain/connecter-compte-rdv'
 import {
-  type DestinationsDeRetour,
   issuesDuRetour,
   motifDiagnostic,
 } from '@/features/rdvsp/abilities/connecter-compte-rdv/domain/retour-connexion'
 import { echangerCodeAutorisation } from '@/features/rdvsp/abilities/connecter-compte-rdv/implementations/api/echanger-code-autorisation.mutation'
+import { destinationsDeRetour } from '@/features/rdvsp/abilities/connecter-compte-rdv/implementations/next/destinations-de-retour.params'
 import { redirection } from '@/features/rdvsp/abilities/connecter-compte-rdv/implementations/next/redirection.transfer'
 import { compteRdvExistant } from '@/features/rdvsp/abilities/connecter-compte-rdv/implementations/prisma/compte-rdv-existant.query'
 import { enregistrerCompteConnecte } from '@/features/rdvsp/abilities/connecter-compte-rdv/implementations/prisma/enregistrer-compte-connecte.mutation'
@@ -63,10 +63,6 @@ import {
 import { enregistrerLesJetons } from '@/features/rdvsp/implementations/prisma/jetons-du-compte.mutation'
 import { jetonsCourants } from '@/features/rdvsp/implementations/prisma/jetons-du-compte.query'
 import { lireLesUsagersARapprocher } from '@/features/rdvsp/implementations/prisma/usagers-a-rapprocher.query'
-import {
-  decodeSerializableState,
-  type EncodedState,
-} from '@/libraries/etat-encode'
 
 const rdvServicePublic = rdvServicePublicApi({
   ...configurationRdvServicePublic(),
@@ -141,9 +137,7 @@ export const GET = async (request: NextRequest) => {
     )
   }
 
-  const { succes, echec } = issuesDuRetour(
-    decodeSerializableState(state as EncodedState<DestinationsDeRetour>, {}),
-  )
+  const { succes, echec } = issuesDuRetour(destinationsDeRetour(state))
 
   const refus = searchParams.get('error')
 
@@ -161,6 +155,7 @@ export const GET = async (request: NextRequest) => {
   }
 
   const utilisateurId = UtilisateurCoopId(user.id)
+  const maintenant = new Date()
 
   const connexion = await connecterCompteRdv({
     echangerCode: echangerCodeAutorisation({
@@ -177,7 +172,7 @@ export const GET = async (request: NextRequest) => {
     utilisateurId,
     emailUtilisateur: EmailExterne(user.email),
     code: CodeAutorisation(code),
-    maintenant: new Date(),
+    maintenant,
   })
 
   if (!connexion.success) {
@@ -194,7 +189,7 @@ export const GET = async (request: NextRequest) => {
     demandeur: { id: utilisateurId, role: user.role },
     utilisateurId,
     seulementSansWebhook: false,
-    maintenant: new Date(),
+    maintenant,
   }).catch((erreur: unknown) => signaler(erreur))
 
   return redirection(succes)

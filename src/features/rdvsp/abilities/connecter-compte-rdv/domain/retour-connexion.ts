@@ -1,8 +1,8 @@
 import type { EchecDeConnecterCompteRdv } from './errors'
 
 export type DestinationsDeRetour = {
-  readonly redirectToSuccess?: string
-  readonly redirectToError?: string
+  readonly redirectToSuccess?: string | undefined
+  readonly redirectToError?: string | undefined
 }
 
 export type IssuesDuRetour = {

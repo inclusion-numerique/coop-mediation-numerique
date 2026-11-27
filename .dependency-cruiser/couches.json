@@ -182,6 +182,7 @@
     "beneficiaire/ui/forms",
     "clients-api/abilities/lire-les-activites/implementations/api-v1",
     "equipe/implementations/email",
+    "rdvsp/abilities/connecter-compte-rdv/implementations/next",
     "rdvsp/implementations/oauth"
   ],
   "libraries/insee": [
@@ -317,6 +318,7 @@
     "authentification/implementations/email",
     "authentification/implementations/proconnect",
     "lieux-activite/abilities/ajouter-des-lieux-activite/implementations/entrepot",
+    "rdvsp/abilities/connecter-compte-rdv/implementations/next",
     "rdvsp/implementations/webhook"
   ]
 }

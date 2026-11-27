@@ -7,15 +7,13 @@ import { rdvToDomain } from '../../../../implementations/api/rdv-service-public.
 import { AucunAgent } from '../../domain/errors'
 import type { LireNotificationRdv } from '../../domain/ports'
 
+const avecMotif = z.looseObject({ motif: z.looseObject({}) })
+
 const sansCategorieDeMotif = (payload: unknown): unknown => {
-  if (typeof payload !== 'object' || payload === null) {
-    return payload
-  }
+  const lu = avecMotif.safeParse(payload)
 
-  const { motif } = payload as { motif?: unknown }
-
-  return typeof motif === 'object' && motif !== null
-    ? { ...payload, motif: { ...motif, motif_category: null } }
+  return lu.success
+    ? { ...lu.data, motif: { ...lu.data.motif, motif_category: null } }
     : payload
 }
 
