@@ -18,7 +18,8 @@ export const lireLaCommuneDuCoordinateur: LireLaCommuneDuCoordinateur = async (
     },
   })
 
-  return CodeInsee.safe(
-    coordinateur?.user.personneMain?.employeuseActuelle?.codeInsee ?? '',
-  )
+  const codeInsee =
+    coordinateur?.user.personneMain?.employeuseActuelle?.codeInsee ?? null
+
+  return codeInsee === null ? null : CodeInsee(codeInsee)
 }

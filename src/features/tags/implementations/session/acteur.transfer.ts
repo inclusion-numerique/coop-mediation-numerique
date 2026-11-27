@@ -23,7 +23,7 @@ const equipe = ({
   nom,
 }: ProfilDeLActeur['equipes'][number]): Equipe => ({
   coordinateurId: CoordinateurId(coordinateurId),
-  coordonneePar: NomDuCoordinateur.safe(nom ?? ''),
+  coordonneePar: nom === null ? null : NomDuCoordinateur(nom),
 })
 
 const sansDoublon = (equipes: readonly Equipe[]): readonly Equipe[] =>
@@ -41,5 +41,6 @@ export const acteurDe = (profil: ProfilDeLActeur): Acteur => ({
       : CoordinateurId(profil.coordinateurId),
   ),
   equipes: sansDoublon(profil.equipes.map(equipe)),
-  departement: CodeDepartement.safe(profil.departement ?? ''),
+  departement:
+    profil.departement === null ? null : CodeDepartement(profil.departement),
 })

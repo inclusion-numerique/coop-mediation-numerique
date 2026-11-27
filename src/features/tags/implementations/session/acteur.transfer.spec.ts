@@ -39,8 +39,18 @@ describe('acteur de la session', () => {
     expect(acteurDe({ ...profil, departement: '2A' }).departement).toBe('2A')
   })
 
-  it('n’a pas de département quand celui du profil est invalide', () => {
-    expect(acteurDe({ ...profil, departement: 'ZZ' }).departement).toBeNull()
+  it('n’a pas de département quand le profil n’en porte pas', () => {
+    expect(acteurDe(profil).departement).toBeNull()
+  })
+
+  it('refuse un département invalide', () => {
+    expect(() => acteurDe({ ...profil, departement: 'ZZ' })).toThrow()
+  })
+
+  it('refuse un nom de coordinateur vide', () => {
+    expect(() =>
+      acteurDe({ ...profil, equipes: [{ coordinateurId, nom: ' ' }] }),
+    ).toThrow()
   })
 
   it('reprend le rôle de coordinateur d’un profil qui ne fait pas de médiation', () => {

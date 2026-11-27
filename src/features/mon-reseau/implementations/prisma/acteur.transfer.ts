@@ -90,13 +90,18 @@ const nomAfficheDe = ({
     courriel: email,
   })
 
+const communeDeLEmployeuse = (
+  personneMain: LigneCoordinateurDeLActeur['personneMain'],
+): CodeInsee | null => {
+  const codeInsee = personneMain?.employeuseActuelle?.codeInsee ?? null
+  return codeInsee === null ? null : CodeInsee(codeInsee)
+}
+
 const departementDuCoordinateur = (
   personneMain: LigneCoordinateurDeLActeur['personneMain'],
 ): CodeDepartement =>
   departementDeLActeur({
-    employeuse: CodeInsee.safe(
-      personneMain?.employeuseActuelle?.codeInsee ?? '',
-    ),
+    employeuse: communeDeLEmployeuse(personneMain),
     lieux: [],
   }) ?? DEPARTEMENT_PAR_DEFAUT
 
