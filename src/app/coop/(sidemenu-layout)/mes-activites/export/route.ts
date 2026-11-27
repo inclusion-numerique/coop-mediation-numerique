@@ -1,8 +1,5 @@
 import type { NextRequest } from 'next/server'
-import {
-  demandeurDe,
-  exporterMesAccompagnements,
-} from '@/features/activites/abilities/exporter-mes-accompagnements/domain'
+import { exporterMesAccompagnements } from '@/features/activites/abilities/exporter-mes-accompagnements/domain'
 import { classeurDeMesAccompagnements } from '@/features/activites/abilities/exporter-mes-accompagnements/implementations/excel/classeur-de-mes-accompagnements.classeur'
 import {
   accompagnementsExportes,
@@ -10,6 +7,7 @@ import {
 } from '@/features/activites/abilities/exporter-mes-accompagnements/implementations/prisma/accompagnements-exportes.query'
 import { employeusesNommees } from '@/features/activites/abilities/exporter-mes-accompagnements/implementations/prisma/employeuses-nommees.query'
 import { mediateursLus } from '@/features/activites/abilities/exporter-mes-accompagnements/implementations/prisma/mediateurs-lus.query'
+import { demandeurDe } from '@/features/activites/abilities/exporter-mes-accompagnements/implementations/session/demandeur.transfer'
 import { classeurPresenteAvec } from '@/features/activites/abilities/exporter-mes-accompagnements/ui/presenters/export.presenter'
 import { nomDuFichierDesAccompagnements } from '@/features/activites/abilities/exporter-mes-accompagnements/ui/presenters/nom-du-fichier.presenter'
 import { tagsUtilisablesDepuis } from '@/features/activites/implementations/prisma/fournisseurs-de-la-saisie.transfer'

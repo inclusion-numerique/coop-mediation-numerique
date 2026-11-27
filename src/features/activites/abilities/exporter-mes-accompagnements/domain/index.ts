@@ -10,7 +10,6 @@ export type {
   Localisation,
 } from './activite-exportee'
 export { CodesPostaux } from './codes-postaux'
-export { demandeurDe } from './demandeur'
 export type { EchecDExporterMesAccompagnements } from './errors'
 export {
   type ExportNomme,
