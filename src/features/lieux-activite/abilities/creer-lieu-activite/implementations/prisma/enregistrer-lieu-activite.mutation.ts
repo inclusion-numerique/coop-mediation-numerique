@@ -15,8 +15,8 @@ import { ecrireAuRegistre } from '../../../../implementations/prisma/registre/ec
 import type {
   EnregistrementDuLieu,
   EnregistrerLieuActivite,
-  RattachementDuMediateur,
 } from '../../domain/ports'
+import type { RattachementDuMediateur } from '../../domain/rattachement-du-mediateur'
 
 const rattacher = async (
   transaction: Prisma.TransactionClient,

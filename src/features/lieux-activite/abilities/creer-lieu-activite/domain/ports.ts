@@ -1,8 +1,7 @@
 import type { LieuId } from '../../../domain/identifiants/lieu-id'
 import type { LieuxAuMemeEndroit } from '../../../domain/ports'
 import type { LieuCree } from './lieu-cree'
-
-export type RattachementDuMediateur = 'Rattache' | 'DejaRattache'
+import type { RattachementDuMediateur } from './rattachement-du-mediateur'
 
 export type EnregistrementDuLieu =
   | {
