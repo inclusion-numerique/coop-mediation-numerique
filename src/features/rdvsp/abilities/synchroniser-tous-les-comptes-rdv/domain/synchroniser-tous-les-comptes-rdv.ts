@@ -1,18 +1,18 @@
 import type { CompteRdv } from '@/features/rdvsp/domain/compte/compte-rdv'
 import { type Result, success } from '@/libraries/result'
-import {
-  type BilanDeSynchronisation,
-  type CompteEnEchec,
-  comptesEligibles,
-} from './bilan'
+import { type BilanDeSynchronisation, comptesEligibles } from './bilan'
 import type {
   DeclencherLaSynchronisation,
   SynchroniserTousLesComptesRdvPorts,
 } from './ports'
 
+type Issues = Pick<BilanDeSynchronisation, 'synchronises' | 'echecs'>
+
+const aucuneIssue: Issues = { synchronises: [], echecs: [] }
+
 const synchroniser =
   (declencher: DeclencherLaSynchronisation, maintenant: Date) =>
-  async ({ utilisateurId }: CompteRdv): Promise<CompteEnEchec | null> => {
+  async (acquis: Issues, { utilisateurId }: CompteRdv): Promise<Issues> => {
     const resultat = await declencher({
       demandeur: { id: utilisateurId, role: 'User' },
       utilisateurId,
@@ -21,8 +21,14 @@ const synchroniser =
     })
 
     return resultat.success
-      ? null
-      : { utilisateurId, raison: resultat.error._tag }
+      ? { ...acquis, synchronises: [...acquis.synchronises, utilisateurId] }
+      : {
+          ...acquis,
+          echecs: [
+            ...acquis.echecs,
+            { utilisateurId, raison: resultat.error._tag },
+          ],
+        }
   }
 
 export const synchroniserTousLesComptesRdv =
@@ -35,19 +41,15 @@ export const synchroniserTousLesComptesRdv =
     const comptes = await lireLesComptes()
     const eligibles = comptesEligibles(comptes, maintenant)
 
-    const echecs = await eligibles.reduce<Promise<readonly CompteEnEchec[]>>(
-      async (precedents, compte) => {
-        const acquis = await precedents
-        const echec = await synchroniser(declencher, maintenant)(compte)
-        return echec === null ? acquis : [...acquis, echec]
-      },
-      Promise.resolve([]),
+    const issues = await eligibles.reduce<Promise<Issues>>(
+      async (precedentes, compte) =>
+        synchroniser(declencher, maintenant)(await precedentes, compte),
+      Promise.resolve(aucuneIssue),
     )
 
     return success({
       comptes: comptes.length,
       eligibles: eligibles.length,
-      synchronises: eligibles.length - echecs.length,
-      echecs,
+      ...issues,
     })
   }

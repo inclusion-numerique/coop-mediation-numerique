@@ -13,7 +13,7 @@ export type CompteEnEchec = {
 export type BilanDeSynchronisation = {
   readonly comptes: number
   readonly eligibles: number
-  readonly synchronises: number
+  readonly synchronises: readonly UtilisateurCoopId[]
   readonly echecs: readonly CompteEnEchec[]
 }
 

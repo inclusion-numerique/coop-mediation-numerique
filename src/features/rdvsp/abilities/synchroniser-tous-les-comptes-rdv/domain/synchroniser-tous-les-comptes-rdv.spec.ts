@@ -77,7 +77,12 @@ describe('synchroniser tous les comptes RDV', () => {
     })({ maintenant })
 
     expect(bilan).toEqual(
-      success({ comptes: 5, eligibles: 2, synchronises: 2, echecs: [] }),
+      success({
+        comptes: 5,
+        eligibles: 2,
+        synchronises: [operationnel.utilisateurId, jetonExpire.utilisateurId],
+        echecs: [],
+      }),
     )
   })
 
@@ -91,7 +96,7 @@ describe('synchroniser tous les comptes RDV', () => {
       success({
         comptes: 5,
         eligibles: 2,
-        synchronises: 0,
+        synchronises: [],
         echecs: [
           {
             utilisateurId: operationnel.utilisateurId,
@@ -113,7 +118,7 @@ describe('synchroniser tous les comptes RDV', () => {
     })({ maintenant })
 
     expect(bilan).toEqual(
-      success({ comptes: 0, eligibles: 0, synchronises: 0, echecs: [] }),
+      success({ comptes: 0, eligibles: 0, synchronises: [], echecs: [] }),
     )
   })
 })

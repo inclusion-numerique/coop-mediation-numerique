@@ -119,12 +119,12 @@ export const executeSyncRdvspData = async (_job: SyncRdvspDataJob) => {
   }
 
   output(
-    `Completed RDVSP sync. Synced ${bilan.synchronises}/${bilan.eligibles} eligible users out of ${bilan.comptes} with RDV account`,
+    `Completed RDVSP sync. Synced ${bilan.synchronises.length}/${bilan.eligibles} eligible users out of ${bilan.comptes} with RDV account`,
   )
 
   return {
     totalUsers: bilan.comptes,
     eligibleUsers: bilan.eligibles,
-    synced: bilan.synchronises,
+    synced: bilan.synchronises.length,
   }
 }
