@@ -2,11 +2,12 @@ import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
+import { compterLesActivitesDeCoordination } from '@/features/activites/abilities/compter-les-activites-de-coordination/domain'
 import {
   type ActivitesDeCoordination,
   CoordinateurId,
 } from '@/features/activites/abilities/compter-les-activites-de-coordination/domain/index'
-import { compterLesActivitesDeCoordination } from '@/features/activites/abilities/compter-les-activites-de-coordination/implementations/prisma/activites-de-coordination.query'
+import { activitesDuCoordinateur } from '@/features/activites/abilities/compter-les-activites-de-coordination/implementations/prisma/activites-de-coordination.query'
 
 const etat: {
   coordinateurs: readonly { userId: string; coordinateurId: string }[]
@@ -70,9 +71,11 @@ Given("une activité de coordination d'un autre coordinateur", async () => {
 })
 
 When('je compte ses activités de coordination', async () => {
-  etat.resultat = await compterLesActivitesDeCoordination({
-    coordinateurId: CoordinateurId(coordinateurCompte()),
-  })
+  etat.resultat = (
+    await compterLesActivitesDeCoordination({ activitesDuCoordinateur })({
+      coordinateurId: CoordinateurId(coordinateurCompte()),
+    })
+  ).data
 })
 
 Then(

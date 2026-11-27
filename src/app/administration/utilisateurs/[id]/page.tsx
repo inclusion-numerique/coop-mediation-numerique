@@ -15,8 +15,9 @@ import { compterLesAccompagnements } from '@/features/activites/abilities/compte
 import { totauxPresentes } from '@/features/activites/abilities/compter-les-accompagnements/ui/presenters/totaux.presenter'
 import { compterLesAccompagnementsParLieu } from '@/features/activites/abilities/compter-les-accompagnements-par-lieu/implementations/prisma/accompagnements-par-lieu.query'
 import { parLieuPresentes } from '@/features/activites/abilities/compter-les-accompagnements-par-lieu/ui/presenters/par-lieu.presenter'
+import { compterLesActivitesDeCoordination } from '@/features/activites/abilities/compter-les-activites-de-coordination/domain'
 import { CoordinateurId as CoordinateurDesActivitesDeCoordination } from '@/features/activites/abilities/compter-les-activites-de-coordination/domain/index'
-import { compterLesActivitesDeCoordination } from '@/features/activites/abilities/compter-les-activites-de-coordination/implementations/prisma/activites-de-coordination.query'
+import { activitesDuCoordinateur } from '@/features/activites/abilities/compter-les-activites-de-coordination/implementations/prisma/activites-de-coordination.query'
 import { activitesDeCoordinationPresentees } from '@/features/activites/abilities/compter-les-activites-de-coordination/ui/presenters/activites-de-coordination.presenter'
 import { decrireLesActivitesDuPerimetre } from '@/features/activites/abilities/decrire-les-activites-du-perimetre/implementations/prisma/activites-du-perimetre.query'
 import { decrireLesPersonnesAccompagnees } from '@/features/activites/abilities/decrire-les-personnes-accompagnees/implementations/prisma/profil-des-personnes-accompagnees.query'
@@ -154,9 +155,11 @@ const activitesDeCoordinationEnCumul = async (
   if (coordinateurId === null) return null
 
   const presentees = activitesDeCoordinationPresentees(
-    await compterLesActivitesDeCoordination({
-      coordinateurId: CoordinateurDesActivitesDeCoordination(coordinateurId),
-    }),
+    (
+      await compterLesActivitesDeCoordination({ activitesDuCoordinateur })({
+        coordinateurId: CoordinateurDesActivitesDeCoordination(coordinateurId),
+      })
+    ).data,
   )
 
   return (

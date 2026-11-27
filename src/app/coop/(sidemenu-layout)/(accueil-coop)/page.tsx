@@ -11,7 +11,8 @@ import {
 } from '@/features/accueil/abilities/consulter-l-accueil/domain/index'
 import { lireLeVisiteur } from '@/features/accueil/abilities/consulter-l-accueil/implementations/prisma/visiteur.query'
 import { AccueilPage } from '@/features/accueil/abilities/consulter-l-accueil/ui/pages/AccueilPage'
-import { compterLesActivitesDeCoordination } from '@/features/activites/abilities/compter-les-activites-de-coordination/implementations/prisma/activites-de-coordination.query'
+import { compterLesActivitesDeCoordination } from '@/features/activites/abilities/compter-les-activites-de-coordination/domain'
+import { activitesDuCoordinateur } from '@/features/activites/abilities/compter-les-activites-de-coordination/implementations/prisma/activites-de-coordination.query'
 import { activitesDeCoordinationPresentees } from '@/features/activites/abilities/compter-les-activites-de-coordination/ui/presenters/activites-de-coordination.presenter'
 import { ActivitesDeCoordination } from '@/features/activites/abilities/compter-les-activites-de-coordination/ui/slots/ActivitesDeCoordination.slot'
 import { listerLesDernieresActivites } from '@/features/activites/abilities/lister-les-dernieres-activites/implementations/prisma/dernieres-activites.query'
@@ -57,14 +58,16 @@ const Page = async () => {
       Coordinateur: async ({ coordinateurId }) => {
         const [membres, activitesDeCoordination] = await Promise.all([
           compterLesMembres({ coordinateurId }),
-          compterLesActivitesDeCoordination({ coordinateurId }),
+          compterLesActivitesDeCoordination({ activitesDuCoordinateur })({
+            coordinateurId,
+          }),
         ])
         return {
           equipe: <ResumeDeLEquipe statistiques={membres} />,
           activites: (
             <ActivitesDeCoordination
               activites={activitesDeCoordinationPresentees(
-                activitesDeCoordination,
+                activitesDeCoordination.data,
               )}
             />
           ),
