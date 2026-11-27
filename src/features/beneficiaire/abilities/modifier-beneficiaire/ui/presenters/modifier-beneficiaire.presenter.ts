@@ -1,29 +1,23 @@
 import type { BeneficiaireAEditer } from '@/features/beneficiaire/abilities/modifier-beneficiaire/domain/beneficiaire-a-editer'
 import { nomAfficheDepuisLIdentite } from '@/features/beneficiaire/domain/beneficiaire'
+import type { CommuneResidence } from '@/features/beneficiaire/domain/commune-residence'
 import type { BeneficiaireData } from '@/features/beneficiaire/ui/forms/beneficiaire.validation'
 import { telephoneDisplayString } from '@/libraries/telephone'
 
-const beneficiaireCommuneResidenceToPreviewBanData = ({
-  commune,
-  communeCodeInsee,
-  communeCodePostal,
-}: Pick<
-  BeneficiaireAEditer,
-  'communeCodePostal' | 'communeCodeInsee' | 'commune'
->) =>
-  commune && communeCodePostal && communeCodeInsee
-    ? {
-        id: communeCodeInsee,
-        nom: commune,
-        codePostal: communeCodePostal,
-        codeInsee: communeCodeInsee,
-        commune,
+const apercuDeLaCommune = (communeResidence: CommuneResidence | null) =>
+  communeResidence === null
+    ? undefined
+    : {
+        id: communeResidence.codeInsee,
+        nom: communeResidence.commune,
+        codePostal: communeResidence.codePostal,
+        codeInsee: communeResidence.codeInsee,
+        commune: communeResidence.commune,
         latitude: 0,
         longitude: 0,
         contexte: '',
-        label: commune,
+        label: communeResidence.commune,
       }
-    : undefined
 
 export type VueDeModificationDuBeneficiaire = {
   beneficiaireId: string
@@ -48,16 +42,8 @@ export const presentBeneficiaireAModifier = ({
   telephone,
   pasDeTelephone,
   statutSocial,
-  commune,
-  communeCodePostal,
-  communeCodeInsee,
+  communeResidence,
 }: BeneficiaireAEditer): VueDeModificationDuBeneficiaire => {
-  const communeResidence = beneficiaireCommuneResidenceToPreviewBanData({
-    commune,
-    communeCodeInsee,
-    communeCodePostal,
-  })
-
   return {
     beneficiaireId: id,
     displayName: nomAfficheDepuisLIdentite({ prenom, nom }),
@@ -69,7 +55,7 @@ export const presentBeneficiaireAModifier = ({
       genre,
       adresse,
       notes,
-      communeResidence,
+      communeResidence: apercuDeLaCommune(communeResidence),
       anneeNaissance,
       pasDeTelephone,
       telephone: telephone ? telephoneDisplayString(telephone) : telephone,

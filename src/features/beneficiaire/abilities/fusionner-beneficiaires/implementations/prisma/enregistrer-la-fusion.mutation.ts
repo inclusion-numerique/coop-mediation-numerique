@@ -1,5 +1,6 @@
 import { prismaClient } from '@/configuration/prisma'
 import type { EnregistrerLaFusion } from '../../domain/ports'
+import { donneesDeLaDestinationEnBase } from './donnees-de-la-destination.transfer'
 
 export const enregistrerLaFusion: EnregistrerLaFusion = async ({
   sourceId,
@@ -13,7 +14,7 @@ export const enregistrerLaFusion: EnregistrerLaFusion = async ({
     await tx.beneficiaire.update({
       where: { id: destinationId, mediateurId, suppression: null },
       data: {
-        ...donneesDeLaDestination,
+        ...donneesDeLaDestinationEnBase(donneesDeLaDestination),
         modification: now,
         creation,
       },

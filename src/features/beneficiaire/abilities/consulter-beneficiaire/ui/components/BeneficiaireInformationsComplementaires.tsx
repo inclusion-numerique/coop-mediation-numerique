@@ -4,22 +4,12 @@ import { InfoLabelValue } from '@/libraries/ui/components'
 import type { BeneficiaireInformations } from '../../domain/beneficiaire-informations'
 
 const BeneficiaireInformationsComplementaires = ({
-  beneficiaire: {
-    commune,
-    communeCodeInsee,
-    communeCodePostal,
-    genre,
-    statutSocial,
-  },
+  beneficiaire: { communeResidence, genre, statutSocial },
   trancheAgeAffichee,
 }: {
   beneficiaire: Pick<
     BeneficiaireInformations,
-    | 'commune'
-    | 'communeCodeInsee'
-    | 'communeCodePostal'
-    | 'genre'
-    | 'statutSocial'
+    'communeResidence' | 'genre' | 'statutSocial'
   >
   trancheAgeAffichee: string
 }) => {
@@ -33,17 +23,14 @@ const BeneficiaireInformationsComplementaires = ({
           <InfoLabelValue
             label="Commune de résidence"
             value={
-              commune && communeCodeInsee && communeCodePostal
-                ? `${communeCodePostal} ${commune}`
-                : '-'
+              communeResidence === null
+                ? '-'
+                : `${communeResidence.codePostal} ${communeResidence.commune}`
             }
           />
         </div>
         <div className="fr-col-6">
-          <InfoLabelValue
-            label="Genre"
-            value={genre ? genreLabels[genre] : '-'}
-          />
+          <InfoLabelValue label="Genre" value={genreLabels[genre]} />
         </div>
         <div className="fr-col-6">
           <InfoLabelValue label="Tranche d’âge" value={trancheAgeAffichee} />
@@ -51,7 +38,7 @@ const BeneficiaireInformationsComplementaires = ({
         <div className="fr-col-6">
           <InfoLabelValue
             label="Statut social"
-            value={statutSocial ? statutSocialLabels[statutSocial] : '-'}
+            value={statutSocialLabels[statutSocial]}
           />
         </div>
       </div>

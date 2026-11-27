@@ -3,11 +3,15 @@ import { expect, within } from 'storybook/test'
 import BeneficiaireConsultationLayout from '@/features/beneficiaire/abilities/consulter-beneficiaire/ui/layouts/BeneficiaireConsultationLayout'
 import { AnneeNaissance } from '@/features/beneficiaire/domain/annee-naissance'
 import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
+import { CommuneResidence } from '@/features/beneficiaire/domain/commune-residence'
 import { Email } from '@/features/beneficiaire/domain/email'
+import { Genre } from '@/features/beneficiaire/domain/genre'
 import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
 import { Nom } from '@/features/beneficiaire/domain/nom'
 import { Notes } from '@/features/beneficiaire/domain/notes'
 import { Prenom } from '@/features/beneficiaire/domain/prenom'
+import { StatutSocial } from '@/features/beneficiaire/domain/statut-social'
+import { TrancheAge } from '@/features/beneficiaire/domain/tranche-age'
 import { Telephone } from '@/libraries/telephone'
 import ViewBeneficiaireInformationsPage, {
   type BeneficiaireInformationsPageData,
@@ -48,16 +52,14 @@ const beneficiaireSansInformations = {
   email: null,
   anneeNaissance: null,
   notes: null,
-  genre: null,
-  trancheAge: null,
+  genre: Genre('NonCommunique'),
+  trancheAge: TrancheAge('NonCommunique'),
   creation: new Date('2024-01-01'),
   adresse: null,
   telephone: null,
   pasDeTelephone: null,
-  statutSocial: null,
-  commune: null,
-  communeCodePostal: null,
-  communeCodeInsee: null,
+  statutSocial: StatutSocial('NonCommunique'),
+  communeResidence: null,
   accompagnementsCount: 0,
 } satisfies BeneficiaireInformationsPageData['beneficiaire']
 
@@ -86,16 +88,18 @@ const beneficiaireAvecInformations = {
   email: Email('jean.maximal@coop-numerique.incubateur.anct.gouv.fr'),
   anneeNaissance: AnneeNaissance(new Date('2024-01-01'))(1987),
   notes: Notes('Notes de Jean Maximal'),
-  genre: 'Masculin',
-  trancheAge: 'QuaranteCinquanteNeuf',
+  genre: Genre('Masculin'),
+  trancheAge: TrancheAge('QuaranteCinquanteNeuf'),
   creation: new Date('2024-01-01'),
   adresse: '1 rue de la Paix',
   telephone: Telephone('0123456789'),
   pasDeTelephone: false,
-  statutSocial: 'EnEmploi',
-  commune: 'Paris',
-  communeCodePostal: '75001',
-  communeCodeInsee: '75101',
+  statutSocial: StatutSocial('EnEmploi'),
+  communeResidence: CommuneResidence({
+    commune: 'Paris',
+    codePostal: '75001',
+    codeInsee: '75101',
+  }),
   accompagnementsCount: 6,
 } satisfies BeneficiaireInformationsPageData['beneficiaire']
 

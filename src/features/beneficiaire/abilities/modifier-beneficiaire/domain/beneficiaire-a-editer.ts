@@ -15,7 +15,5 @@ export type BeneficiaireAEditer = Pick<
   | 'telephone'
   | 'pasDeTelephone'
   | 'statutSocial'
-  | 'commune'
-  | 'communeCodePostal'
-  | 'communeCodeInsee'
+  | 'communeResidence'
 >

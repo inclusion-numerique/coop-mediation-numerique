@@ -1,10 +1,14 @@
 import { describe, expect, it } from 'vitest'
 import { AnneeNaissance } from '@/features/beneficiaire/domain/annee-naissance'
 import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
+import { CommuneResidence } from '@/features/beneficiaire/domain/commune-residence'
 import { Email } from '@/features/beneficiaire/domain/email'
+import { Genre } from '@/features/beneficiaire/domain/genre'
 import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
 import { Nom } from '@/features/beneficiaire/domain/nom'
 import { Prenom } from '@/features/beneficiaire/domain/prenom'
+import { StatutSocial } from '@/features/beneficiaire/domain/statut-social'
+import { TrancheAge } from '@/features/beneficiaire/domain/tranche-age'
 import { Telephone } from '@/libraries/telephone'
 import type { BeneficiaireAFusionner } from './beneficiaire-a-fusionner'
 import { fusionnerBeneficiaires } from './fusionner-beneficiaires'
@@ -23,17 +27,15 @@ const vide: BeneficiaireAFusionner = {
   telephone: null,
   email: null,
   adresse: null,
-  commune: null,
-  communeCodePostal: null,
-  communeCodeInsee: null,
+  communeResidence: null,
   notes: null,
   pasDeTelephone: null,
   anneeNaissance: null,
   rdvServicePublicId: null,
   rdvUserId: null,
-  genre: null,
-  trancheAge: null,
-  statutSocial: null,
+  genre: Genre('NonCommunique'),
+  trancheAge: TrancheAge('NonCommunique'),
+  statutSocial: StatutSocial('NonCommunique'),
   creation: new Date('2025-03-10T08:00:00.000Z'),
 }
 
@@ -43,6 +45,12 @@ const marie: BeneficiaireAFusionner = {
   nom: Nom('Martin'),
   email: Email('marie@example.com'),
   adresse: '3 rue de la République',
+  communeResidence: CommuneResidence({
+    commune: 'Lyon',
+    codePostal: '69002',
+    codeInsee: '69382',
+  }),
+  genre: Genre('Feminin'),
   pasDeTelephone: true,
   anneeNaissance: AnneeNaissance(maintenant)(1990),
   creation: new Date('2025-01-05T08:00:00.000Z'),
@@ -58,7 +66,7 @@ const jeanne: BeneficiaireAFusionner = {
 }
 
 describe('fusionner des bénéficiaires', () => {
-  it('garde les valeurs renseignées de la destination, comble les autres depuis la source et retient la création la plus ancienne', async () => {
+  it('garde les valeurs renseignées de la destination, comble les autres (non communiquées comprises) depuis la source et retient la création la plus ancienne', async () => {
     expect(
       await fusionnerBeneficiaires({
         lireLesBeneficiairesAFusionner: async () => ({
@@ -79,6 +87,12 @@ describe('fusionner des bénéficiaires', () => {
           telephone: Telephone('+33600000000'),
           email: Email('marie@example.com'),
           adresse: '3 rue de la République',
+          communeResidence: CommuneResidence({
+            commune: 'Lyon',
+            codePostal: '69002',
+            codeInsee: '69382',
+          }),
+          genre: Genre('Feminin'),
           pasDeTelephone: false,
           anneeNaissance: AnneeNaissance(maintenant)(1990),
         },

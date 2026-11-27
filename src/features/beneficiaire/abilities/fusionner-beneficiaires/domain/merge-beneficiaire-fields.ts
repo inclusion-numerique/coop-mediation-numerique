@@ -6,9 +6,7 @@ const fieldsToMerge = [
   'telephone',
   'email',
   'adresse',
-  'commune',
-  'communeCodePostal',
-  'communeCodeInsee',
+  'communeResidence',
   'notes',
   'pasDeTelephone',
   'anneeNaissance',
@@ -24,8 +22,12 @@ export type MergeableBeneficiaire = Pick<
   (typeof fieldsToMerge)[number]
 >
 
+const NON_COMMUNIQUE = 'NonCommunique'
+
 const estRenseignee = (value: unknown): boolean =>
-  value != null && (typeof value !== 'string' || value.trim() !== '')
+  value != null &&
+  value !== NON_COMMUNIQUE &&
+  (typeof value !== 'string' || value.trim() !== '')
 
 export const mergeBeneficiaireFields = (
   source: MergeableBeneficiaire,

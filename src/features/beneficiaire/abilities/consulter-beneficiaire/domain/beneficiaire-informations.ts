@@ -18,8 +18,6 @@ export type BeneficiaireInformations = Pick<
   | 'telephone'
   | 'pasDeTelephone'
   | 'statutSocial'
-  | 'commune'
-  | 'communeCodePostal'
-  | 'communeCodeInsee'
+  | 'communeResidence'
   | 'accompagnementsCount'
 >
