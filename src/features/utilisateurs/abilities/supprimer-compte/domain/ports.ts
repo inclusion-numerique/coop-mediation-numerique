@@ -12,6 +12,7 @@ import type { CompteSupprime } from './autoriser-la-suppression'
 
 export type AnonymiserPortefeuille = (input: {
   readonly mediateurId: MediateurId
+  readonly maintenant: Date
 }) => Promise<Result<{ readonly anonymises: number }, EchecTechnique>>
 
 export type EffacerNotes = (

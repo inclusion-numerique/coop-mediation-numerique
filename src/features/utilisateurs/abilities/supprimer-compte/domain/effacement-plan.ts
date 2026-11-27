@@ -29,11 +29,15 @@ type Planification = (
 
 const pourLeMediateur =
   (
-    runner: (mediateurId: MediateurId, ports: EffacementsDuCompte) => Runner,
+    runner: (
+      mediateurId: MediateurId,
+      ports: EffacementsDuCompte,
+      maintenant: Date,
+    ) => Runner,
   ): Planification =>
-  ({ compte }, ports) => {
+  ({ compte, maintenant }, ports) => {
     const mediateurId = mediateurDe(compte.rattachements)
-    return mediateurId === null ? null : runner(mediateurId, ports)
+    return mediateurId === null ? null : runner(mediateurId, ports, maintenant)
   }
 
 const pourLEquipe =
@@ -53,9 +57,9 @@ const compter = <T>(
   resultat.success ? success(nombre(resultat.data)) : resultat
 
 const anonymiserLePortefeuille = pourLeMediateur(
-  (mediateurId, ports) => async () =>
+  (mediateurId, ports, maintenant) => async () =>
     compter(
-      await ports.anonymiserPortefeuille({ mediateurId }),
+      await ports.anonymiserPortefeuille({ mediateurId, maintenant }),
       ({ anonymises }) => anonymises,
     ),
 )
