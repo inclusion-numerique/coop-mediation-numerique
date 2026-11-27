@@ -1,3 +1,4 @@
+import { Nom } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { describe, expect, it } from 'vitest'
 import {
   Franchissement,
@@ -13,6 +14,7 @@ import type {
   LieuConnu,
   LieuDesire,
   LieuNouveau,
+  LieuNouveauSoumis,
   LieuSoumis,
 } from './lieu-soumis'
 import type { RenseignerLieuxActivitePorts } from './ports'
@@ -63,7 +65,11 @@ const validee: InscriptionEtat = {
   inscriptionValidee: acceptationCgu,
 }
 
-const adresseGeocodee = '12 rue de la Paix, 51100 Reims'
+type AdresseDeTest = { readonly adresse: string }
+
+const adresseGeocodee: AdresseDeTest = {
+  adresse: '12 rue de la Paix, 51100 Reims',
+}
 
 const lieu1 = LieuId('9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d')
 
@@ -76,34 +82,52 @@ const carto1 = IdentifiantCartographie('carto-1')
 const carto2 = IdentifiantCartographie('carto-2')
 
 const connu = (id: LieuId, nom: string): LieuConnu => ({
-  _tag: 'LieuConnu',
+  _tag: 'LieuExistant',
   id,
-  nom,
+  nom: Nom(nom),
   siret: null,
   structureCartographieNationaleId: null,
 })
 
 const carto = (
   structureCartographieNationaleId: IdentifiantCartographie,
-): LieuNouveau<string> => ({
-  _tag: 'LieuNouveau',
-  nom: 'Lieu carto',
+): LieuNouveau<AdresseDeTest> => ({
+  _tag: 'LieuACreer',
+  nom: Nom('Lieu carto'),
   siret: null,
   structureCartographieNationaleId,
-  adresse: adresseGeocodee,
+  ...adresseGeocodee,
 })
 
-const nouveau = (nom: string): LieuNouveau<string> => ({
-  _tag: 'LieuNouveau',
-  nom,
+const cartoSoumis = (
+  structureCartographieNationaleId: IdentifiantCartographie,
+): LieuNouveauSoumis<AdresseDeTest> => ({
+  _tag: 'LieuACreer',
+  nom: Nom('Lieu carto'),
+  siret: null,
+  structureCartographieNationaleId,
+  adresseValidee: adresseGeocodee,
+})
+
+const nouveau = (nom: string): LieuNouveau<AdresseDeTest> => ({
+  _tag: 'LieuACreer',
+  nom: Nom(nom),
   siret: null,
   structureCartographieNationaleId: null,
-  adresse: adresseGeocodee,
+  ...adresseGeocodee,
 })
 
-const sansAdresse = (nom: string): LieuNouveau<string | null> => ({
-  ...nouveau(nom),
-  adresse: null,
+const nouveauSoumis = (nom: string): LieuNouveauSoumis<AdresseDeTest> => ({
+  _tag: 'LieuACreer',
+  nom: Nom(nom),
+  siret: null,
+  structureCartographieNationaleId: null,
+  adresseValidee: adresseGeocodee,
+})
+
+const sansAdresse = (nom: string): LieuNouveauSoumis<AdresseDeTest> => ({
+  ...nouveauSoumis(nom),
+  adresseValidee: null,
 })
 
 const existant = (
@@ -118,7 +142,7 @@ const destinations = ['destination-1']
 
 const lieuIntrouvable = LieuId('7c9e6679-7425-40de-944b-e07fc1f90ae7')
 
-const ports: RenseignerLieuxActivitePorts<string, string, string> = {
+const ports: RenseignerLieuxActivitePorts<AdresseDeTest, string, string> = {
   lireLEtat: async () => enCours,
   lireLieuxActiviteExistants: async () => [],
   trouverStructuresCarto: async () => 'structures carto',
@@ -128,7 +152,7 @@ const ports: RenseignerLieuxActivitePorts<string, string, string> = {
 
 const avecExistants = (
   existants: readonly LieuActiviteExistant[],
-): RenseignerLieuxActivitePorts<string, string, string> => ({
+): RenseignerLieuxActivitePorts<AdresseDeTest, string, string> => ({
   ...ports,
   lireLieuxActiviteExistants: async () => existants,
 })
@@ -137,9 +161,9 @@ describe('renseigner les lieux d’activité', () => {
   it.each<{
     cas: string
     existants: readonly LieuActiviteExistant[]
-    lieux: readonly LieuSoumis<string>[]
+    lieux: readonly LieuSoumis<AdresseDeTest>[]
     aCloturer: readonly RattachementId[]
-    aCreer: readonly LieuDesire<string>[]
+    aCreer: readonly LieuDesire<AdresseDeTest>[]
   }>([
     {
       cas: 'ne change rien quand les lieux soumis sont déjà ceux de l’utilisateur',
@@ -158,14 +182,14 @@ describe('renseigner les lieux d’activité', () => {
     {
       cas: 'crée un lieu identifié par la cartographie nationale',
       existants: [],
-      lieux: [carto(carto1)],
+      lieux: [cartoSoumis(carto1)],
       aCloturer: [],
       aCreer: [carto(carto1)],
     },
     {
       cas: 'crée un nouveau lieu dont l’adresse a été validée',
       existants: [],
-      lieux: [nouveau('Nouveau lieu')],
+      lieux: [nouveauSoumis('Nouveau lieu')],
       aCloturer: [],
       aCreer: [nouveau('Nouveau lieu')],
     },
@@ -179,7 +203,7 @@ describe('renseigner les lieux d’activité', () => {
     {
       cas: 'clôt l’activité dont le lieu, désigné par la cartographie, n’est plus soumis',
       existants: [existant(lieu1, carto1)],
-      lieux: [carto(carto2)],
+      lieux: [cartoSoumis(carto2)],
       aCloturer: [activite1],
       aCreer: [carto(carto2)],
     },
@@ -193,7 +217,7 @@ describe('renseigner les lieux d’activité', () => {
     {
       cas: 'ne recrée pas l’activité d’un lieu déjà rattaché par son id de cartographie',
       existants: [existant(lieu1, carto1)],
-      lieux: [carto(carto1)],
+      lieux: [cartoSoumis(carto1)],
       aCloturer: [],
       aCreer: [],
     },
@@ -216,21 +240,21 @@ describe('renseigner les lieux d’activité', () => {
     {
       cas: 'ne crée qu’une activité pour un même lieu de cartographie soumis deux fois',
       existants: [],
-      lieux: [carto(carto1), carto(carto1)],
+      lieux: [cartoSoumis(carto1), cartoSoumis(carto1)],
       aCloturer: [],
       aCreer: [carto(carto1)],
     },
     {
       cas: 'ne crée qu’une activité pour un même nouveau lieu nommé deux fois',
       existants: [],
-      lieux: [nouveau('Lieu neuf'), nouveau('Lieu neuf')],
+      lieux: [nouveauSoumis('Lieu neuf'), nouveauSoumis('Lieu neuf')],
       aCloturer: [],
       aCreer: [nouveau('Lieu neuf')],
     },
     {
       cas: 'distingue deux lieux soumis que rien ne confond',
       existants: [],
-      lieux: [connu(lieu1, 'Lieu 1'), nouveau('Lieu 2')],
+      lieux: [connu(lieu1, 'Lieu 1'), nouveauSoumis('Lieu 2')],
       aCloturer: [],
       aCreer: [connu(lieu1, 'Lieu 1'), nouveau('Lieu 2')],
     },
@@ -268,7 +292,11 @@ describe('renseigner les lieux d’activité', () => {
     ).toEqual(failure({ _tag: erreur, userId }))
   })
 
-  it.each<{ cas: string; lieux: readonly LieuSoumis<string>[]; nom: string }>([
+  it.each<{
+    cas: string
+    lieux: readonly LieuSoumis<AdresseDeTest>[]
+    nom: string
+  }>([
     {
       cas: 'refuse de créer un lieu dont l’adresse n’a pas été validée',
       lieux: [connu(lieu1, 'Lieu 1'), sansAdresse('Neuf')],

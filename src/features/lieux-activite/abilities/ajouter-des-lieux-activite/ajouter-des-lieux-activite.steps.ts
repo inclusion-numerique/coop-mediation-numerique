@@ -92,7 +92,10 @@ const ajouter = async (
 }
 
 const lieuSaisi = (partie: Partial<LieuACreer> = {}): LieuACreer => ({
+  _tag: 'LieuACreer',
   nom: Nom('Tiers-lieu du Port'),
+  siret: null,
+  structureCartographieNationaleId: null,
   adresse: Adresse({
     voie: '12 quai du Port',
     commune: 'Rochefort',
@@ -108,7 +111,10 @@ const lieuConnu = (
   id: string,
   partie: Partial<LieuExistant> = {},
 ): LieuExistant => ({
+  _tag: 'LieuExistant',
   nom: Nom('Tiers-lieu du Port'),
+  siret: null,
+  structureCartographieNationaleId: null,
   id: LieuId(id),
   ...partie,
 })

@@ -1,5 +1,6 @@
 import assert from 'node:assert'
 import { After, Given, Then, When } from '@cucumber/cucumber'
+import { Nom } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
 import {
@@ -39,9 +40,11 @@ const lireLesActivitesEnCours = async () =>
 const lieuxConnus = async ({
   lieux,
 }: {
-  readonly lieux: readonly LieuDesire<never>[]
+  readonly lieux: readonly LieuDesire<object>[]
 }) =>
-  success(lieux.flatMap((lieu) => (lieu._tag === 'LieuConnu' ? [lieu.id] : [])))
+  success(
+    lieux.flatMap((lieu) => (lieu._tag === 'LieuExistant' ? [lieu.id] : [])),
+  )
 
 const confierAuRattachement = async (
   _transaction: unknown,
@@ -89,9 +92,9 @@ When(
         userId: utilisateurDeLInscriptionEnCours(),
         lieuxActivite: [
           {
-            _tag: 'LieuConnu',
+            _tag: 'LieuExistant',
             id: LieuId(etat.lieuRenseigne),
-            nom: 'Lieu connu',
+            nom: Nom('Lieu connu'),
             siret: null,
             structureCartographieNationaleId: null,
           },

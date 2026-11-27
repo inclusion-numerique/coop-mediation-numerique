@@ -1,5 +1,7 @@
+import { Nom } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { describe, expect, it } from 'vitest'
 import { LieuId } from '@/features/inscription/domain'
+import { Siret } from '@/libraries/insee'
 import { IdentifiantCartographie } from '../domain'
 import { lieuxSoumis, type SaisieDuLieu } from './lieux-soumis.transfer'
 
@@ -11,7 +13,7 @@ const saisie: SaisieDuLieu = {
   codeInsee: '17299',
 }
 
-const adresseValidee = ({ adresse }: SaisieDuLieu) => adresse
+const adresseValidee = ({ adresse }: SaisieDuLieu) => ({ adresse })
 
 const adresseRefusee = () => null
 
@@ -25,9 +27,9 @@ describe('la saisie des lieux devient une liste de lieux soumis', () => {
       ]),
     ).toEqual([
       {
-        _tag: 'LieuConnu',
+        _tag: 'LieuExistant',
         id: LieuId(CONNU),
-        nom: 'Tiers-lieu du Port',
+        nom: Nom('Tiers-lieu du Port'),
         siret: null,
         structureCartographieNationaleId: IdentifiantCartographie('carto-1'),
       },
@@ -39,11 +41,11 @@ describe('la saisie des lieux devient une liste de lieux soumis', () => {
       lieuxSoumis(adresseValidee)([{ ...saisie, siret: '12345678900011' }]),
     ).toEqual([
       {
-        _tag: 'LieuNouveau',
-        nom: 'Tiers-lieu du Port',
-        siret: '12345678900011',
+        _tag: 'LieuACreer',
+        nom: Nom('Tiers-lieu du Port'),
+        siret: Siret('12345678900011'),
         structureCartographieNationaleId: null,
-        adresse: '12 quai du Port',
+        adresseValidee: { adresse: '12 quai du Port' },
       },
     ])
   })
@@ -51,11 +53,11 @@ describe('la saisie des lieux devient une liste de lieux soumis', () => {
   it('laisse au domaine un nouveau lieu dont l’adresse est refusée', () => {
     expect(lieuxSoumis(adresseRefusee)([saisie])).toEqual([
       {
-        _tag: 'LieuNouveau',
-        nom: 'Tiers-lieu du Port',
+        _tag: 'LieuACreer',
+        nom: Nom('Tiers-lieu du Port'),
         siret: null,
         structureCartographieNationaleId: null,
-        adresse: null,
+        adresseValidee: null,
       },
     ])
   })
@@ -67,11 +69,11 @@ describe('la saisie des lieux devient une liste de lieux soumis', () => {
       ]),
     ).toEqual([
       {
-        _tag: 'LieuNouveau',
-        nom: 'Tiers-lieu du Port',
+        _tag: 'LieuACreer',
+        nom: Nom('Tiers-lieu du Port'),
         siret: null,
         structureCartographieNationaleId: null,
-        adresse: '12 quai du Port',
+        adresseValidee: { adresse: '12 quai du Port' },
       },
     ])
   })

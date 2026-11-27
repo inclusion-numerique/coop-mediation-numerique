@@ -4,6 +4,7 @@ import {
   Nom,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { describe, expect, it } from 'vitest'
+import { Siret } from '@/libraries/insee'
 import { IdentifiantCartographie } from '../../../domain/cartographie-nationale/ids-cartographie-nationale'
 import { BanId } from '../../../domain/identifiants/ban-id'
 import { LieuId } from '../../../domain/identifiants/lieu-id'
@@ -40,6 +41,7 @@ const localisation = Localisation({ latitude: 45.94, longitude: -0.96 })
 const banId = BanId('17299_0123_00012')
 
 const nouveau = {
+  _tag: 'LieuACreer',
   nom: Nom('Tiers-lieu du Port'),
   siret: null,
   structureCartographieNationaleId: null,
@@ -56,6 +58,7 @@ describe('le panier soumis devient une liste de lieux soumis', () => {
       ]),
     ).toEqual([
       {
+        _tag: 'LieuExistant',
         id: LieuId(CONNU),
         nom: Nom('Tiers-lieu du Port'),
         siret: null,
@@ -100,7 +103,7 @@ describe('le panier soumis devient une liste de lieux soumis', () => {
     ).toEqual([
       {
         ...nouveau,
-        siret: '13002603200016',
+        siret: Siret('13002603200016'),
         structureCartographieNationaleId: IdentifiantCartographie('dora__abc'),
       },
     ])

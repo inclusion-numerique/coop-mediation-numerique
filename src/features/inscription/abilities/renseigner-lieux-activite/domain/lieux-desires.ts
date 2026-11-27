@@ -2,19 +2,19 @@ import { failure, type Result, success } from '@/libraries/result'
 import { AdresseNonValidee } from './errors'
 import type { LieuDesire, LieuSoumis } from './lieu-soumis'
 
-const lieuDesire = <Adresse>(
+const lieuDesire = <Adresse extends object>(
   lieu: LieuSoumis<Adresse>,
 ): Result<LieuDesire<Adresse>, AdresseNonValidee> => {
-  if (lieu._tag === 'LieuConnu') return success(lieu)
+  if (lieu._tag === 'LieuExistant') return success(lieu)
 
-  const { adresse } = lieu
+  const { adresseValidee, ...identite } = lieu
 
-  return adresse === null
+  return adresseValidee === null
     ? failure(AdresseNonValidee(lieu.nom))
-    : success({ ...lieu, adresse })
+    : success({ ...identite, ...adresseValidee })
 }
 
-export const lieuxDesires = <Adresse>(
+export const lieuxDesires = <Adresse extends object>(
   lieux: readonly LieuSoumis<Adresse>[],
 ): Result<readonly LieuDesire<Adresse>[], AdresseNonValidee> =>
   lieux.reduce<Result<readonly LieuDesire<Adresse>[], AdresseNonValidee>>(

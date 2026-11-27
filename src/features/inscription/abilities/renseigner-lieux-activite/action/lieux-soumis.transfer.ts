@@ -1,4 +1,6 @@
+import { Nom } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { LieuId } from '@/features/inscription/domain'
+import { Siret } from '@/libraries/insee'
 import { IdentifiantCartographie, type LieuSoumis } from '../domain'
 import type { RenseignerLieuxActiviteData } from './renseigner-lieux-activite.validation'
 
@@ -9,8 +11,8 @@ const identiteSaisie = ({
   siret,
   structureCartographieNationaleId,
 }: SaisieDuLieu) => ({
-  nom,
-  siret: siret ?? null,
+  nom: Nom(nom),
+  siret: siret == null ? null : Siret.safe(siret),
   structureCartographieNationaleId:
     structureCartographieNationaleId == null
       ? null
@@ -18,17 +20,19 @@ const identiteSaisie = ({
 })
 
 export const lieuxSoumis =
-  <Adresse>(adresseValidee: (saisie: SaisieDuLieu) => Adresse | null) =>
+  <Adresse extends object>(
+    adresseValidee: (saisie: SaisieDuLieu) => Adresse | null,
+  ) =>
   (saisies: readonly SaisieDuLieu[]): readonly LieuSoumis<Adresse>[] =>
     saisies.map((saisie) =>
       saisie.id == null
         ? {
-            _tag: 'LieuNouveau',
+            _tag: 'LieuACreer',
             ...identiteSaisie(saisie),
-            adresse: adresseValidee(saisie),
+            adresseValidee: adresseValidee(saisie),
           }
         : {
-            _tag: 'LieuConnu',
+            _tag: 'LieuExistant',
             ...identiteSaisie(saisie),
             id: LieuId(saisie.id),
           },

@@ -10,7 +10,6 @@ import { renseignerLieuxActivite } from '@/features/inscription/abilities/rensei
 import { enregistrerReconciliation } from '@/features/inscription/abilities/renseigner-lieux-activite/implementations/prisma/enregistrer-reconciliation.mutation'
 import { UtilisateurId } from '@/features/inscription/domain'
 import { getInscriptionEtat } from '@/features/inscription/implementations/prisma/get-inscription-etat.query'
-import { lieuDemande } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/action/lieu-desire.transfer'
 import { adresseValidee } from '@/features/lieux-activite/abilities/ajouter-des-lieux-activite/action/panier.transfer'
 import type {
   AdresseValidee,
@@ -58,8 +57,7 @@ export const renseignerLieuxActiviteAction = actionBuilder()
           lireLEtat: getInscriptionEtat,
           lireLieuxActiviteExistants: activitesEnCoursDeLUtilisateur,
           trouverStructuresCarto: structuresCartoParIds,
-          planifierLesRattachements: ({ lieux, ...reste }) =>
-            planifier({ ...reste, lieux: lieux.map(lieuDemande) }),
+          planifierLesRattachements: planifier,
           enregistrerReconciliation: enregistrerReconciliation({
             lieuDisparu,
             appliquerLesDestinations,

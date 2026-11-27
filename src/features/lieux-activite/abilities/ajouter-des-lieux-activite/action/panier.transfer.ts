@@ -1,4 +1,5 @@
 import { Nom } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import { Siret } from '@/libraries/insee'
 import { IdentifiantCartographie } from '../../../domain/cartographie-nationale/ids-cartographie-nationale'
 import { BanId } from '../../../domain/identifiants/ban-id'
 import { LieuId } from '../../../domain/identifiants/lieu-id'
@@ -17,7 +18,7 @@ const identite = ({
   structureCartographieNationaleId,
 }: LieuDuPanier) => ({
   nom: Nom(nom),
-  ...(siret === undefined ? {} : { siret }),
+  siret: siret == null ? null : Siret.safe(siret),
   structureCartographieNationaleId:
     structureCartographieNationaleId == null
       ? null
@@ -71,6 +72,6 @@ export const depuisLePanier = (
 ): readonly LieuSoumis[] =>
   lieux.map((lieu) =>
     lieu.id == null
-      ? { ...identite(lieu), ...adresseSoumise(lieu) }
-      : { ...identite(lieu), id: LieuId(lieu.id) },
+      ? { _tag: 'LieuACreer', ...identite(lieu), ...adresseSoumise(lieu) }
+      : { _tag: 'LieuExistant', ...identite(lieu), id: LieuId(lieu.id) },
   )

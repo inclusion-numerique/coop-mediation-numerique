@@ -20,7 +20,7 @@ const estDefini = <T>(valeur: T | null): valeur is T => valeur !== null
 
 const identifiantInterne = <Adresse>(
   lieu: LieuDesire<Adresse>,
-): LieuId | null => (lieu._tag === 'LieuConnu' ? lieu.id : null)
+): LieuId | null => (lieu._tag === 'LieuExistant' ? lieu.id : null)
 
 const identite = <Adresse>(lieu: LieuDesire<Adresse>): string => {
   const id = identifiantInterne(lieu)

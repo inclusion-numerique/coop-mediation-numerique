@@ -22,7 +22,7 @@ const identifiantsCarto = <Adresse>(
   )
 
 export const renseignerLieuxActivite =
-  <Adresse, StructuresCarto, Destination>({
+  <Adresse extends object, StructuresCarto, Destination>({
     lireLEtat,
     lireLieuxActiviteExistants,
     trouverStructuresCarto,

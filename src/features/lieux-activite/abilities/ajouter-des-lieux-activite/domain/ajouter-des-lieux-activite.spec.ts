@@ -42,7 +42,7 @@ import type {
 import { SourceCartographie } from '../../../domain/registre/tracabilite'
 import { ajouterDesLieuxActivite } from './ajouter-des-lieux-activite'
 import type { LieuDejaRattache } from './lieu-deja-rattache'
-import type { LieuSoumis } from './lieu-soumis'
+import type { LieuNouveauSoumis, LieuSoumis } from './lieu-soumis'
 import type { AjouterDesLieuxActivitePorts } from './ports'
 
 const LIEU_A = LieuId('0927f824-b84d-4840-ae2e-e4a96a7a519b')
@@ -54,16 +54,22 @@ const CANDIDAT = LieuId('8d9e2f4a-5b6c-4d7e-8f90-1a2b3c4d5e6f')
 const NOUVEAU = LieuId('6f1e2d3c-4b5a-4987-8a6b-5c4d3e2f1a0b')
 const CARTO = IdentifiantCartographie('c-1')
 
-const identite = { nom: Nom('Maison France Services') }
+const identite = {
+  nom: Nom('Maison France Services'),
+  siret: null,
+  structureCartographieNationaleId: null,
+}
 
 const connu = (
   partie: Partial<LieuExistant> & { id: LieuId },
 ): LieuExistant => ({
+  _tag: 'LieuExistant',
   ...identite,
   ...partie,
 })
 
 const aCreer = (partie: Partial<LieuACreer> = {}): LieuACreer => ({
+  _tag: 'LieuACreer',
   ...identite,
   adresse: Adresse({
     voie: '12 rue de la Paix',
@@ -523,7 +529,11 @@ describe('ajouter des lieux d’activité', () => {
     ).toEqual(failure({ _tag: 'LieuIntrouvable', lieuId: LIEU_A }))
   })
 
-  it.each<{ cas: string; manque: Partial<LieuSoumis>; nom: string }>([
+  it.each<{
+    cas: string
+    manque: Partial<LieuNouveauSoumis>
+    nom: string
+  }>([
     {
       cas: 'refuse un lieu à créer sans adresse validée',
       manque: { adresse: null },

@@ -32,7 +32,7 @@ const donneesDuLieu = (id: LieuId, { demande, carto }: CreationDemandee) =>
     ? {
         id,
         nom: demande.nom,
-        siret: demande.siret ?? null,
+        siret: demande.siret,
         ...adresseValidee(demande),
       }
     : { ...lieuFromDomain(carto), ...adresseValidee(demande) }
@@ -48,7 +48,7 @@ const creerLeLieu =
     })
 
     const identifiantCartographie =
-      creation.demande.structureCartographieNationaleId ?? null
+      creation.demande.structureCartographieNationaleId
 
     await ecrireLeLieuAuRegistre(transaction, {
       colonnes: colonnesRapporteesParLaCartographie,

@@ -5,13 +5,14 @@ import type {
 import { failure, type Result, success } from '@/libraries/result'
 import type { BanId } from '../../../domain/identifiants/ban-id'
 import type {
+  IdentiteDuLieuDemande,
   LieuDemande,
   LieuExistant,
 } from '../../../domain/rattachement/lieu-demande'
 import { AdresseNonValidee } from './errors'
 
-export type LieuNouveauSoumis = Omit<LieuExistant, 'id'> & {
-  readonly id?: null
+export type LieuNouveauSoumis = IdentiteDuLieuDemande & {
+  readonly _tag: 'LieuACreer'
   readonly adresse: Adresse | null
   readonly localisation: Localisation | null
   readonly banId: BanId | null
@@ -19,12 +20,10 @@ export type LieuNouveauSoumis = Omit<LieuExistant, 'id'> & {
 
 export type LieuSoumis = LieuExistant | LieuNouveauSoumis
 
-const estConnu = (lieu: LieuSoumis): lieu is LieuExistant => lieu.id != null
-
 const lieuDemande = (
   lieu: LieuSoumis,
 ): Result<LieuDemande, AdresseNonValidee> => {
-  if (estConnu(lieu)) return success(lieu)
+  if (lieu._tag === 'LieuExistant') return success(lieu)
 
   const { adresse, localisation, banId } = lieu
 
