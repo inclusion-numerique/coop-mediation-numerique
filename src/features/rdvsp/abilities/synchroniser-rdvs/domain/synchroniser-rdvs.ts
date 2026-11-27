@@ -230,7 +230,7 @@ export const synchroniserRdvs =
           maintenant,
         })
 
-        return success(cumuler(acquis.data, plan, rapprochement))
+        return success(cumuler(acquis.data, plan, rapprochement.data))
       },
       Promise.resolve(success(cumulVide)),
     )

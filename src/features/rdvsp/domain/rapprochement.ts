@@ -1,3 +1,4 @@
+import { type Result, success } from '@/libraries/result'
 import { messageDeLEchec } from './errors'
 import type { MediateurId } from './identifiants/mediateur-id'
 import type { UsagerId } from './identifiants/usager-id'
@@ -29,28 +30,28 @@ export const rapprocherLesUsagers =
     readonly usagerIds: readonly UsagerId[]
     readonly mediateurId: MediateurId | null
     readonly maintenant: Date
-  }): Promise<Rapprochement> => {
+  }): Promise<Result<Rapprochement, never>> => {
     if (mediateurId === null || usagerIds.length === 0) {
-      return { _tag: 'sansObjet' }
+      return success({ _tag: 'sansObjet' })
     }
 
     const usagers = await lireLesUsagersARapprocher(usagerIds)
 
     if (!usagers.success) {
-      return {
+      return success({
         _tag: 'echoue',
         usagerIds,
         mediateurId,
         message: messageDeLEchec(usagers.error),
-      }
+      })
     }
 
     const demande = { usagers: usagers.data, mediateurId, maintenant }
     const rapprochement = await rapprocherLesBeneficiaires(demande)
 
-    return {
+    return success({
       _tag: 'reussi',
       ...demande,
       ecartes: rapprochement.data.skipped.length,
-    }
+    })
   }

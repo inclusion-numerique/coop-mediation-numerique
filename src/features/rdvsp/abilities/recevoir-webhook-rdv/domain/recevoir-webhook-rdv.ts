@@ -77,18 +77,20 @@ export const recevoirWebhookRdv =
 
     await enregistrer({ rdv, brut: payload })
 
+    const rapprochement = await rapprocherLesUsagers({
+      lireLesUsagersARapprocher,
+      rapprocherLesBeneficiaires,
+    })({
+      usagerIds: rdv.participations.map(
+        (participation) => participation.usagerId,
+      ),
+      mediateurId: compte.mediateurId,
+      maintenant,
+    })
+
     return success({
       _tag: 'enregistre',
       rdv,
-      rapprochement: await rapprocherLesUsagers({
-        lireLesUsagersARapprocher,
-        rapprocherLesBeneficiaires,
-      })({
-        usagerIds: rdv.participations.map(
-          (participation) => participation.usagerId,
-        ),
-        mediateurId: compte.mediateurId,
-        maintenant,
-      }),
+      rapprochement: rapprochement.data,
     })
   }
