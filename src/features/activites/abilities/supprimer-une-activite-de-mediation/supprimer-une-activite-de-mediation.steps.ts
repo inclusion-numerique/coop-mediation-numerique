@@ -11,7 +11,9 @@ import { activiteDeMediationDuMediateur } from '@/features/activites/abilities/s
 import { supprimerLActiviteDeMediation } from '@/features/activites/abilities/supprimer-une-activite-de-mediation/implementations/prisma/supprimer-une-activite-de-mediation.mutation'
 import {
   ActiviteId,
+  BeneficiaireId,
   MediateurId,
+  TypeDActivite,
   UtilisateurId,
 } from '@/features/activites/domain'
 import type { Result } from '@/libraries/result'
@@ -288,6 +290,23 @@ When('un autre médiateur supprime cette activité de médiation', async () => {
   await supprimerPar(semisCourant().autre, activiteSemee('principale'))
 })
 
+When(
+  'un autre médiateur écrit la suppression de cette activité de médiation',
+  async () => {
+    const { autre, anonymes } = semisCourant()
+    await supprimerLActiviteDeMediation(UtilisateurId(autre.userId))({
+      activite: {
+        id: ActiviteId(activiteSemee('principale')),
+        type: TypeDActivite('Individuel'),
+        mediateurId: MediateurId(autre.mediateurId),
+        suivis: [],
+        anonymesOrphelins: anonymes.map(BeneficiaireId),
+      },
+      suppression: new Date(),
+    })
+  },
+)
+
 When("le médiateur supprime l'accompagnement du 3 mars", async () => {
   await supprimerPar(semisCourant().auteur, activiteSemee('3 mars'))
 })
@@ -340,6 +359,21 @@ Then(
   },
 )
 
+Then(
+  "l'activité de médiation garde son accompagnement et son tag",
+  async () => {
+    const activiteId = activiteSemee('principale')
+    const [accompagnements, tags] = await Promise.all([
+      prismaClient.accompagnement.count({ where: { activiteId } }),
+      prismaClient.activitesTags.count({ where: { activiteId } }),
+    ])
+    assert.deepStrictEqual(
+      { accompagnements, tags },
+      { accompagnements: 1, tags: 1 },
+    )
+  },
+)
+
 const anonymesRestants = () =>
   prismaClient.beneficiaire.count({
     where: { id: { in: [...semisCourant().anonymes] } },
@@ -347,6 +381,10 @@ const anonymesRestants = () =>
 
 Then("la personne anonyme n'existe plus", async () => {
   assert.strictEqual(await anonymesRestants(), 0)
+})
+
+Then('la personne anonyme existe toujours', async () => {
+  assert.strictEqual(await anonymesRestants(), 1)
 })
 
 Then("les personnes anonymes n'existent plus", async () => {

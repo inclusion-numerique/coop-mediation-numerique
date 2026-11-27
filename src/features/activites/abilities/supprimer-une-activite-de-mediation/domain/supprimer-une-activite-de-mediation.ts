@@ -18,13 +18,13 @@ const estOrphelin = ({
   autresAccompagnements,
 }: ParticipantDeLActivite): boolean => anonyme && autresAccompagnements === 0
 
-const aSupprimer = ({
+const aSupprimer = (
+  { id, type, participants }: ActiviteDeMediationLue,
+  mediateurId: MediateurId,
+): ActiviteDeMediationASupprimer => ({
   id,
   type,
-  participants,
-}: ActiviteDeMediationLue): ActiviteDeMediationASupprimer => ({
-  id,
-  type,
+  mediateurId,
   suivis: participants
     .filter(({ anonyme }) => !anonyme)
     .map(({ beneficiaireId }) => beneficiaireId),
@@ -53,7 +53,7 @@ export const supprimerUneActiviteDeMediation =
     const activite = await activiteDuMediateur({ id: activiteId, mediateurId })
     if (activite === null) return failure(ActiviteIntrouvable())
     const suppression = {
-      activite: aSupprimer(activite),
+      activite: aSupprimer(activite, mediateurId),
       suppression: maintenant,
     }
     await supprimer(suppression)

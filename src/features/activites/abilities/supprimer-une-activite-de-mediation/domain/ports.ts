@@ -20,6 +20,7 @@ export type ActiviteDeMediationLue = {
 export type ActiviteDeMediationASupprimer = {
   readonly id: ActiviteId
   readonly type: TypeDActivite
+  readonly mediateurId: MediateurId
   readonly suivis: readonly BeneficiaireId[]
   readonly anonymesOrphelins: readonly BeneficiaireId[]
 }

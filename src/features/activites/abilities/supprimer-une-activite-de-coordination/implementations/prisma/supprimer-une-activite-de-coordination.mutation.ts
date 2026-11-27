@@ -4,13 +4,16 @@ import type { SupprimerLActiviteDeCoordination } from '../../domain'
 
 export const supprimerLActiviteDeCoordination =
   (auteurId: UtilisateurId): SupprimerLActiviteDeCoordination =>
-  async ({ activite: { id, type }, suppression }) => {
+  async ({ activite: { id, type, coordinateurId }, suppression }) => {
     await prismaClient.$transaction([
       prismaClient.activitesCoordinationTags.deleteMany({
-        where: { activiteCoordinationId: id },
+        where: {
+          activiteCoordinationId: id,
+          activiteCoordination: { coordinateurId, suppression: null },
+        },
       }),
-      prismaClient.activiteCoordination.update({
-        where: { id },
+      prismaClient.activiteCoordination.updateMany({
+        where: { id, coordinateurId, suppression: null },
         data: { suppression, modification: suppression },
       }),
     ])

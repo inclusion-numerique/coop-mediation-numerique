@@ -55,6 +55,7 @@ const lue: ActiviteDeMediationLue = {
 const activite: ActiviteDeMediationASupprimer = {
   id: activiteId,
   type: TypeDActivite('Collectif'),
+  mediateurId,
   suivis: [SUIVI],
   anonymesOrphelins: [ORPHELIN],
 }

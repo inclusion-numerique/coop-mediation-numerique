@@ -22,6 +22,13 @@
 * Alors la suppression de l'activité échoue avec "ActionNonAutorisee"
 * Et l'activité n'est pas marquée supprimée
 
+### Scénario: L'écriture de la suppression ignore l'activité d'un autre coordinateur
+
+* Étant donné une activité de coordination taguée, enregistrée par un coordinateur
+* Quand un autre coordinateur écrit la suppression de cette activité
+* Alors l'activité n'est pas marquée supprimée
+* Et l'activité garde son tag
+
 ### Scénario: Une activité déjà supprimée est introuvable
 
 * Étant donné une activité de coordination taguée, enregistrée par un coordinateur

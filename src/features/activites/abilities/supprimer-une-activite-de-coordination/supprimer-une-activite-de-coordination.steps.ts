@@ -12,6 +12,7 @@ import { supprimerLActiviteDeCoordination } from '@/features/activites/abilities
 import {
   ActiviteDeCoordinationId,
   CoordinateurId,
+  TypeDActiviteDeCoordination,
   UtilisateurId,
 } from '@/features/activites/domain'
 import type { Result } from '@/libraries/result'
@@ -96,6 +97,21 @@ When('un autre coordinateur supprime cette activité', async () => {
   await supprimerPar(coordinateurIds[1], userIds[1])
 })
 
+When(
+  'un autre coordinateur écrit la suppression de cette activité',
+  async () => {
+    const { coordinateurIds, userIds, activiteId } = semisCourant()
+    await supprimerLActiviteDeCoordination(UtilisateurId(userIds[1]))({
+      activite: {
+        id: ActiviteDeCoordinationId(activiteId),
+        type: TypeDActiviteDeCoordination('Animation'),
+        coordinateurId: CoordinateurId(coordinateurIds[1]),
+      },
+      suppression: new Date(),
+    })
+  },
+)
+
 Then("la suppression de l'activité réussit", () => {
   assert.strictEqual(etat.resultat?.success, true)
 })
@@ -129,6 +145,15 @@ Then("l'activité n'a plus de tag", async () => {
       where: { activiteCoordinationId: semisCourant().activiteId },
     }),
     0,
+  )
+})
+
+Then("l'activité garde son tag", async () => {
+  assert.strictEqual(
+    await prismaClient.activitesCoordinationTags.count({
+      where: { activiteCoordinationId: semisCourant().activiteId },
+    }),
+    1,
   )
 })
 

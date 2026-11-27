@@ -48,6 +48,14 @@
 * Alors la suppression de l'activité de médiation échoue avec "ActiviteIntrouvable"
 * Et l'activité de médiation n'est pas marquée supprimée
 
+### Scénario: L'écriture de la suppression ignore l'activité d'un autre médiateur
+
+* Étant donné un médiateur ayant accompagné une personne anonyme au lieu d'activité
+* Quand un autre médiateur écrit la suppression de cette activité de médiation
+* Alors l'activité de médiation n'est pas marquée supprimée
+* Et l'activité de médiation garde son accompagnement et son tag
+* Et la personne anonyme existe toujours
+
 ### Scénario: Une activité déjà supprimée est introuvable
 
 * Étant donné un médiateur ayant accompagné une personne anonyme au lieu d'activité
