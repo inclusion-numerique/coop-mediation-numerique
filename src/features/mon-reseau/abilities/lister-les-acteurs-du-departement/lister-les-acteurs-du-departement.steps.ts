@@ -10,7 +10,7 @@ import {
 import { departementConnu } from '@/libraries/departement'
 import { criteresDesActeursDuReseau } from './ui/filtres/acteurs-du-reseau.filtre'
 
-const communesDesLieux = async () => ({ communesOptions: [] })
+const communesDesLieux = async () => []
 
 type Consultation = Awaited<
   ReturnType<ReturnType<typeof listerLesActeursDuDepartement>>

@@ -53,7 +53,7 @@ const Page = async ({
         barre={barreDuReseau({
           filtres: filtresDesActeursDuReseau,
           adresse: { chemin: hrefDesActeurs(departement), parametres },
-          communes: consultation.data.communes.communesOptions,
+          communes: consultation.data.communes,
         })}
         pages={pagesDesActeursDuReseau(
           { chemin: hrefDesActeurs(departement), parametres },

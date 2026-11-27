@@ -6,7 +6,7 @@ export const communesDesLieux = async ({
   departementCode,
 }: {
   departementCode: string
-}) => {
+}): Promise<readonly OptionChoisie[]> => {
   const communes = await prismaClient.$queryRaw<
     {
       code: string
@@ -30,14 +30,8 @@ export const communesDesLieux = async ({
     ORDER BY commune ASC
   `
 
-  const communesOptions: OptionChoisie[] = communes.map(
-    ({ code, code_postal, commune }) => ({
-      value: code,
-      label: `${commune} · ${code_postal}`,
-    }),
-  )
-
-  return {
-    communesOptions,
-  }
+  return communes.map(({ code, code_postal, commune }) => ({
+    value: code,
+    label: `${commune} · ${code_postal}`,
+  }))
 }

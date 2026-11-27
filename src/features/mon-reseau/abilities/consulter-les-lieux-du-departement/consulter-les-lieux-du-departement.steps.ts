@@ -21,7 +21,7 @@ const annuaireVide = async ({
   return { items: [], totalItems: 0 }
 }
 
-const aucuneCommune = async () => ({ communesOptions: [] })
+const aucuneCommune = async () => []
 
 const consulterLesLieux = (code: string, parametres: ParametresDuReseau) =>
   consulterLesLieuxDuDepartement({
