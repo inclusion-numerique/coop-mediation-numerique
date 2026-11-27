@@ -1,16 +1,18 @@
-type Coordination = { mediateurId: string }
+type Coordination = { readonly mediateurId: string }
 
 type UserCoordinateur = {
-  coordinateur?: {
-    mediateursCoordonnes: Coordination[]
-    ancienMediateursCoordonnes: Coordination[]
+  readonly coordinateur?: {
+    readonly mediateursCoordonnes: readonly Coordination[]
+    readonly ancienMediateursCoordonnes: readonly Coordination[]
   } | null
 }
 
 const idDuMediateur = ({ mediateurId }: Coordination) => mediateurId
 
 export const mediateurCoordonnesIdsFor = (user: {
-  coordinateur?: { mediateursCoordonnes: Coordination[] } | null
+  readonly coordinateur?: {
+    readonly mediateursCoordonnes: readonly Coordination[]
+  } | null
 }) => (user.coordinateur?.mediateursCoordonnes ?? []).map(idDuMediateur)
 
 export const mediateurCoordonnesEtAnciensIdsFor = (user: UserCoordinateur) => [

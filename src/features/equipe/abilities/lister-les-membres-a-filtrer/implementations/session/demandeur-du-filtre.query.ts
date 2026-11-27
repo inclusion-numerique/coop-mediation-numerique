@@ -1,6 +1,6 @@
 import { CoordinateurId } from '../../../../domain/identifiants/coordinateur-id'
 import { MediateurId } from '../../../../domain/identifiants/mediateur-id'
-import { mediateurCoordonnesEtAnciensIdsFor } from '../../../../domain/mediateurs-coordonnes'
+import { mediateurCoordonnesEtAnciensIdsFor } from '../../../../implementations/session/mediateurs-coordonnes.transfer'
 import type { EquipeAFiltrer } from '../../domain'
 
 type Coordination = { mediateurId: string }

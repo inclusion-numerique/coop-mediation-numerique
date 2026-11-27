@@ -21,7 +21,7 @@ import { beneficiairesProposes } from '@/features/beneficiaire/abilities/recherc
 import { optionsDesBeneficiairesInitiaux } from '@/features/beneficiaire/abilities/rechercher-beneficiaires/ui/presenters/options-des-beneficiaires-initiaux.presenter'
 import { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
 import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
-import { mediateurCoordonnesEtAnciensIdsFor } from '@/features/equipe/domain/mediateurs-coordonnes'
+import { mediateurCoordonnesEtAnciensIdsFor } from '@/features/equipe/implementations/session/mediateurs-coordonnes.transfer'
 import { communesDuMediateur } from '@/features/lieux-activite/abilities/lister-les-options-de-lieux/implementations/prisma/communes-du-mediateur.query'
 import { getLieuxDesActivitesOptions } from '@/features/lieux-activite/abilities/lister-les-options-de-lieux/implementations/prisma/options-de-lieux-des-activites.query'
 import { tagsVisiblesPar } from '@/features/tags/abilities/lire-les-tags-visibles/implementations/prisma/tags-visibles-par.query'
