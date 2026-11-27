@@ -1,5 +1,5 @@
 import assert from 'node:assert'
-import { After, Given, Then, When } from '@cucumber/cucumber'
+import { type DataTable, Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
 import { AuteurId, UtilisateurId } from '@/features/utilisateurs/domain'
@@ -16,43 +16,17 @@ import { compteASupprimer } from './implementations/prisma/compte-a-supprimer.qu
 import { couperAcces } from './implementations/prisma/couper-acces.mutation'
 import { logEffacementReport } from './implementations/prisma/log-effacement-report.mutation'
 
-const demandes: {
-  portefeuille: string[]
-  notes: (string | null)[]
-  lieux: string[]
-  partage: (string | null)[]
-  empreinteRdv: string[]
-} = { portefeuille: [], notes: [], lieux: [], partage: [], empreinteRdv: [] }
-
 const ports: EffacementsDuCompte & { readonly hash: Hash } = {
-  anonymiserPortefeuille: async ({ mediateurId }) => {
-    demandes.portefeuille.push(mediateurId)
-    return success({ anonymises: 0 })
-  },
-  effacerNotes: async ({ mediateurId }) => {
-    demandes.notes.push(mediateurId)
-    return success({ effacees: 0 })
-  },
-  effacerEmpreinteRdv: async ({ utilisateurId }) => {
-    demandes.empreinteRdv.push(utilisateurId)
-    return success({
-      compteDelie: false,
-      rdvsExpurges: 0,
-      usagersSupprimes: 0,
-    })
-  },
-  retirerLesTagsDUnCompte: async () => success({ transferes: 0, supprimes: 0 }),
+  anonymiserPortefeuille: async () => success({ anonymises: 1 }),
+  effacerNotes: async () => success({ effacees: 1 }),
+  effacerEmpreinteRdv: async () =>
+    success({ compteDelie: true, rdvsExpurges: 1, usagersSupprimes: 0 }),
+  retirerLesTagsDUnCompte: async () => success({ transferes: 0, supprimes: 1 }),
   detacherDesEquipes: async () =>
     success({ invitationsSupprimees: 0, appartenancesRetirees: 0 }),
-  retirerDesLieux: async ({ mediateurId }) => {
-    demandes.lieux.push(mediateurId)
-    return success({ rattachementsSupprimes: 0 })
-  },
-  revoquerPartageStatistiques: async ({ mediateurId }) => {
-    demandes.partage.push(mediateurId)
-    return success({ partagesRevoques: 0 })
-  },
-  retirerLeContactDeLaListe: async () => success({ _tag: 'DejaAbsent' }),
+  retirerDesLieux: async () => success({ rattachementsSupprimes: 1 }),
+  revoquerPartageStatistiques: async () => success({ partagesRevoques: 1 }),
+  retirerLeContactDeLaListe: async () => success({ _tag: 'Retire' }),
   lireLaPresenceDuContact: async () => success({ _tag: 'Introuvable' }),
   supprimerLeContact: async () => success(undefined),
   hash,
@@ -223,33 +197,17 @@ Then('une reconnexion ProConnect ne retrouve plus le compte', async () => {
   )
 })
 
-Then("l'anonymisation du portefeuille est demandée pour ce médiateur", () => {
-  assert.deepStrictEqual(demandes.portefeuille, [compteSeme().mediateurId])
-})
-
-Then("l'effacement des comptes rendus est demandé pour ce médiateur", () => {
-  assert.deepStrictEqual(demandes.notes, [compteSeme().mediateurId])
-})
-
-Then("le retrait des lieux d'activité est demandé pour ce médiateur", () => {
-  assert.deepStrictEqual(demandes.lieux, [compteSeme().mediateurId])
-})
-
 Then(
-  'la révocation du partage de statistiques est demandée pour ce médiateur',
-  () => {
-    assert.deepStrictEqual(demandes.partage, [compteSeme().mediateurId])
+  "le constat d'effacement retient, dans l'ordre, les étapes effacées",
+  (etapes: DataTable) => {
+    const { effacement } = scenario
+    assert.ok(effacement?.success, "L'effacement a échoué")
+    assert.deepStrictEqual(
+      effacement.data.report.results.map((resultat) => [
+        resultat._tag,
+        resultat.step,
+      ]),
+      etapes.hashes().map(({ étape }) => ['erased', étape]),
+    )
   },
 )
-
-Then("l'effacement de l'empreinte RDV est demandé pour ce compte", () => {
-  assert.deepStrictEqual(demandes.empreinteRdv, [compteSeme().userId])
-})
-
-After(() => {
-  demandes.portefeuille = []
-  demandes.notes = []
-  demandes.lieux = []
-  demandes.partage = []
-  demandes.empreinteRdv = []
-})

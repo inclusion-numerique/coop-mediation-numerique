@@ -15,8 +15,8 @@ export const aTermineSonInscription = (
   user.inscriptionValidee != null &&
   (user.mediateur != null || user.coordinateur != null)
 
-export const pageDAccueil = (user?: UserRedirectionInfo | null) => {
-  if (!user) {
+export const pageDAccueil = (user: UserRedirectionInfo | null) => {
+  if (user === null) {
     return '/'
   }
 
@@ -32,9 +32,9 @@ export const pageDAccueil = (user?: UserRedirectionInfo | null) => {
 }
 
 export const adresseDeRetourApresConnexion = (
-  user?: UserRedirectionInfo | null,
+  user: UserRedirectionInfo | null,
 ) => {
-  if (!user) {
+  if (user === null) {
     return '/connexion'
   }
 

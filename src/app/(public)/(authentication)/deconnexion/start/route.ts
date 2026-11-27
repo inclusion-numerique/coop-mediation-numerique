@@ -14,10 +14,7 @@ import type { ProconnectSignoutState } from '@/features/authentification/impleme
 import { generateProconnectSignoutUrl } from '@/features/authentification/implementations/proconnect/proconnect-signout.transfer'
 import { jetonDeSessionDesCookies } from '@/features/authentification/implementations/session/session-token-from-cookies.query'
 import { cheminInterne } from '@/libraries/chemin-interne'
-import {
-  type EncodedState,
-  encodeSerializableState,
-} from '@/libraries/etat-encode'
+import { encodeSerializableState } from '@/libraries/etat-encode'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -63,7 +60,7 @@ export const GET = async (request: NextRequest) => {
   const state = encodeSerializableState<ProconnectSignoutState>({
     callbackUrl,
     nonce: v4(),
-  }) as EncodedState<ProconnectSignoutState>
+  })
 
   return redirectionVers(
     getServerUrl(`/deconnexion/callback?state=${encodeURIComponent(state)}`, {

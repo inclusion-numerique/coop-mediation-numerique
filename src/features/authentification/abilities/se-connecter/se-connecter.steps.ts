@@ -53,7 +53,7 @@ const personneDecrite = (): Personne => {
 
 Given('la personne {string}', (personne: string) => {
   assert.ok(personne in personnes, `Personne inconnue : ${personne}`)
-  connexion.personne = personnes[personne]
+  connexion.personne = personnes[personne] ?? null
 })
 
 When('il arrive sur la coop', () => {
