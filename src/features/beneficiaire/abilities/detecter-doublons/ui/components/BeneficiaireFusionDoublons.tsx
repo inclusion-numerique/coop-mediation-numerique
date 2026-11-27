@@ -40,7 +40,6 @@ const fusionDataFromFusionItems = ({
       keep,
       duplicate: duplicates.find((duplicate) => duplicate.id === id),
     }))
-    // only here for typesafety, should never happen
     .filter(
       (
         element,

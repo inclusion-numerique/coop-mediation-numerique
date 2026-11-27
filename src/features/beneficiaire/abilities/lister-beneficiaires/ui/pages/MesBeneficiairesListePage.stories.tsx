@@ -85,9 +85,6 @@ const items = [
   }),
 ]
 
-// La page reçoit la suppression par clé : les stories fournissent une doublure
-// plutôt que la vraie server action, qui tirerait tout le graphe serveur dans le
-// bundle du navigateur.
 const supprimerBeneficiaires = async () => ({
   success: true as const,
   data: undefined,

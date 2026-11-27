@@ -11,7 +11,6 @@ export const findDuplicatesForBeneficiaireById: DetecterLesDoublons = async ({
   mediateurId,
 }) => {
   const beneficiaire = await prismaClient.beneficiaire.findUnique({
-    // Owner-scopée : seul le médiateur propriétaire détecte les doublons.
     where: { id: beneficiaireId, mediateurId, suppression: null },
     select: { nom: true, prenom: true, telephone: true, email: true },
   })

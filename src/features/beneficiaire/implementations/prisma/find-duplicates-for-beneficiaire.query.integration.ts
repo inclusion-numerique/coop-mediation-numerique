@@ -28,7 +28,6 @@ const withBrandedFields = (fixture: {
 const UTILISATEUR = '4f59e05a-ce35-4c17-81fb-1716152596aa'
 const testMediateurId = '31825eb3-b6cb-4c1d-a272-5a5768304a96'
 
-// Test beneficiaires with similar names for fuzzy matching tests
 const beneficiaireMueller = beneficiaire({
   id: 'e1111111-1111-1111-1111-111111111111',
   prenom: 'Hans',
@@ -45,7 +44,6 @@ const beneficiaireMuller = beneficiaire({
   mediateurId: testMediateurId,
 })
 
-// Test beneficiaires with exact match (same normalized name)
 const beneficiaireJeanPierre = beneficiaire({
   id: 'e3333333-3333-3333-3333-333333333333',
   prenom: 'Jean-Pierre',
@@ -62,7 +60,6 @@ const beneficiaireJeanPierreNoHyphen = beneficiaire({
   mediateurId: testMediateurId,
 })
 
-// Test beneficiaires with same email (should always match)
 const beneficiaireSameEmail1 = beneficiaire({
   id: 'e5555555-5555-5555-5555-555555555555',
   prenom: 'Alice',
@@ -81,9 +78,6 @@ const beneficiaireSameEmail2 = beneficiaire({
   mediateurId: testMediateurId,
 })
 
-// Frontière de transfert : un candidat legacy dont le téléphone ne satisfait
-// plus la validation stricte (numéro non valide selon libphonenumber). La cible
-// le matche sur nom + email (≥ 2 champs).
 const beneficiaireLegacyTarget = beneficiaire({
   id: 'e7777777-7777-7777-7777-777777777777',
   prenom: 'Bob',
@@ -100,8 +94,6 @@ const beneficiaireLegacyBadPhone = beneficiaire({
   mediateurId: testMediateurId,
 })
 
-// Téléphone legacy invalide injecté en base (hors value object, comme la donnée
-// pourrie réelle) : la colonne Prisma est un `String` non brandé.
 const legacyInvalidTelephone = 'NUMERO-LEGACY-INVALIDE'
 
 describe('findDuplicateForBeneficiaire', () => {
@@ -124,7 +116,6 @@ describe('findDuplicateForBeneficiaire', () => {
       },
     })
 
-    // Clean up test beneficiaires
     await prismaClient.beneficiaire.deleteMany({
       where: {
         id: {
@@ -142,7 +133,6 @@ describe('findDuplicateForBeneficiaire', () => {
       },
     })
 
-    // Create test beneficiaires
     await prismaClient.beneficiaire.createMany({
       data: [
         beneficiaireMueller,
@@ -156,7 +146,6 @@ describe('findDuplicateForBeneficiaire', () => {
       ],
     })
 
-    // Injecte un téléphone legacy invalide (hors value object) sur le candidat
     await prismaClient.beneficiaire.update({
       where: { id: beneficiaireLegacyBadPhone.id },
       data: { telephone: legacyInvalidTelephone },
@@ -164,7 +153,6 @@ describe('findDuplicateForBeneficiaire', () => {
   })
 
   afterAll(async () => {
-    // Clean up test beneficiaires
     await prismaClient.beneficiaire.deleteMany({
       where: {
         id: {
@@ -191,8 +179,6 @@ describe('findDuplicateForBeneficiaire', () => {
         fuzzyMatching: false,
       })
 
-      // "Jean-Pierre" and "Jean Pierre" normalize to same value (jeanpierre)
-      // So they should match with exact matching
       expect(duplicates).toHaveLength(1)
       expect(duplicates[0]?.id).toBe(beneficiaireJeanPierreNoHyphen.id)
     })
@@ -204,8 +190,6 @@ describe('findDuplicateForBeneficiaire', () => {
         fuzzyMatching: false,
       })
 
-      // "Mueller" and "Müller" (-> "Muller" after unaccent) are different
-      // With only same prenom "Hans", they don't have 2 matching fields
       expect(duplicates).toHaveLength(0)
     })
 
@@ -229,8 +213,6 @@ describe('findDuplicateForBeneficiaire', () => {
         fuzzyMatching: true,
       })
 
-      // With fuzzy matching, "Mueller" and "Muller" (from "Müller") should be similar enough
-      // Combined with same prenom "Hans", they should have 2 matching fields
       expect(duplicates).toHaveLength(1)
       expect(duplicates[0]?.id).toBe(beneficiaireMuller.id)
     })
@@ -260,15 +242,12 @@ describe('findDuplicateForBeneficiaire', () => {
 
   describe('withConflictingFields behavior', () => {
     it('should exclude conflicts when withConflictingFields is exclude', async () => {
-      // beneficiaireSameEmail1 and beneficiaireSameEmail2 have same email+phone
-      // but different nom and prenom, so they conflict
       const duplicates = await findDuplicateForBeneficiaire({
         beneficiaire: withBrandedFields(beneficiaireSameEmail1),
         withConflictingFields: 'exclude',
         fuzzyMatching: false,
       })
 
-      // Should not find duplicates because nom and prenom conflict
       expect(duplicates).toHaveLength(0)
     })
 
@@ -279,7 +258,6 @@ describe('findDuplicateForBeneficiaire', () => {
         fuzzyMatching: false,
       })
 
-      // Should find duplicate despite conflicting nom and prenom
       expect(duplicates).toHaveLength(1)
       expect(duplicates[0]?.id).toBe(beneficiaireSameEmail2.id)
     })
@@ -287,9 +265,6 @@ describe('findDuplicateForBeneficiaire', () => {
 
   describe('résilience aux données legacy invalides', () => {
     it('ne throw pas sur un candidat au téléphone legacy invalide et le rend avec téléphone null', async () => {
-      // Avant le passage en `.safe`, la construction du value object Telephone
-      // sur la donnée pourrie faisait échouer toute la détection (et, en prod,
-      // toute la synchro RDVSP du compte).
       const duplicates = await findDuplicateForBeneficiaire({
         beneficiaire: withBrandedFields(beneficiaireLegacyTarget),
         withConflictingFields: 'include',

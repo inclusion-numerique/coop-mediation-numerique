@@ -15,7 +15,7 @@ const createCommuneReadline = () => {
   const fileStream = createReadStream(filePath)
   const readline = createInterface({
     input: fileStream,
-    crlfDelay: Number.POSITIVE_INFINITY, // Recognize all instances of CR LF ('\r\n') in input as a single line break
+    crlfDelay: Number.POSITIVE_INFINITY,
   })
   return readline
 }
@@ -29,7 +29,6 @@ const parseCommuneCsvLine = (line: string): Commune => {
   }
 }
 
-// CodeInsee, Commune, CodePostal
 type SerializedCommune = [string, string, string]
 
 const chargerLesCommunes = once(
@@ -46,7 +45,7 @@ const chargerLesCommunes = once(
 
 const cleanupCommuneCodePostal = (commune: Commune) => {
   if (commune.codePostal.startsWith('"') && commune.codePostal.endsWith('"')) {
-    commune.codePostal = commune.codePostal.slice(1, -1).trim() // Remove quotes and trim whitespace
+    commune.codePostal = commune.codePostal.slice(1, -1).trim()
   }
   return commune
 }

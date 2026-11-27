@@ -17,8 +17,6 @@ export const metadata: Metadata = {
   title: metadataTitle('Mes bénéficiaires'),
 }
 
-// Route = orchestration : authentifie, interroge l'ability, applique le
-// presenter, puis délègue le rendu au composant de page pur.
 const MesBeneficiairesPage = async (props: {
   searchParams: Promise<Record<string, string | string[] | undefined>>
 }) => {

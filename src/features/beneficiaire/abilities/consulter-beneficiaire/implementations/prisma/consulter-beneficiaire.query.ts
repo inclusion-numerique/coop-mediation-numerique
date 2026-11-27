@@ -32,7 +32,6 @@ export const consulterBeneficiaire: ConsulterBeneficiaire = ({
   prismaClient.beneficiaire.findUnique({
     where: {
       id: beneficiaireId,
-      // Seul le médiateur propriétaire peut consulter la fiche.
       mediateurId,
       suppression: null,
     },

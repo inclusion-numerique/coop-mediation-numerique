@@ -19,9 +19,6 @@ import { RATTRAPER_RDVS_SANS_WEBHOOK_ACTION_KEY } from '@/features/rdvsp/action/
 import RefreshRdvDataOnLoad from '@/features/rdvsp/ui/slots/RefreshRdvDataOnLoad.slot'
 import { ClientBinder } from '@/libraries/nextjs/injection'
 
-// Route hub : lit le bénéficiaire (ability consulter-beneficiaire) et ses doublons
-// (ability detecter-doublons), puis compose les concerns croisés (activité, RDV,
-// suppression, refresh) qu'elle injecte au shell de consultation via des slots.
 const BeneficiaireLayout = async (
   props: PropsWithChildren<{
     params: Promise<{ beneficiaireId: string }>

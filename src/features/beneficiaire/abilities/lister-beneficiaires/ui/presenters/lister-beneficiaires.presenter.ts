@@ -13,10 +13,6 @@ type BeneficiairesPaginationView = {
   readonly hasMultiplePages: boolean
 }
 
-/**
- * ViewModel de la liste, sous forme d'union discriminée : la page se contente
- * de filtrer sur `tag`, sans logique.
- */
 export type VueDeMesBeneficiaires =
   | { readonly tag: 'empty' }
   | { readonly tag: 'noResults'; readonly recherche: string }

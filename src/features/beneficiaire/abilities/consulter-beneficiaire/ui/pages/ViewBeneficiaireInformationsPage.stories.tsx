@@ -125,12 +125,10 @@ export const AvecInformations: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement)
-    // It finds tags with count 1 without the count
     await expect(
       canvas.getByText('Culture numérique', { selector: '.fr-tag' }),
     ).toBeInTheDocument()
 
-    // It finds the tags with count > 1 with the count
     await expect(
       canvas.getByText(
         (_, element) =>

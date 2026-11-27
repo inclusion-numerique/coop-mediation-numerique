@@ -28,7 +28,6 @@ export const beneficiaireAEditer: LireBeneficiaireAEditer = ({
   prismaClient.beneficiaire.findUnique({
     where: {
       id: beneficiaireId,
-      // Seul le médiateur propriétaire peut éditer la fiche.
       mediateurId,
       suppression: null,
     },

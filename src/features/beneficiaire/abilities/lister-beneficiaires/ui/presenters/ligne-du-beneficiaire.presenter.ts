@@ -1,10 +1,6 @@
 import type { BeneficiaireListItem } from '@/features/beneficiaire/abilities/lister-beneficiaires/domain/liste-des-beneficiaires'
 import { numberToString } from '@/libraries/nombre'
 
-/**
- * Ligne d'affichage de la table : projection plate (chaînes prêtes à rendre)
- * d'un `BeneficiaireListItem`. La table ne manipule que ce VM, jamais le domaine.
- */
 export type BeneficiaireRow = {
   readonly id: string
   readonly href: `/coop/mes-beneficiaires/${string}`

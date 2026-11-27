@@ -2,20 +2,6 @@ import { prismaClient } from '@/configuration/prisma'
 import { Prisma } from '@/generated/prisma/client'
 import { garderUnSeulCodePostal } from '../../../../implementations/prisma/un-seul-code-postal.mutation'
 
-/**
- * Anonymise TOUT le portefeuille d'un médiateur, à la suppression de son compte.
- *
- * Même effacement que la suppression de bénéficiaires à l'unité — identité
- * effacée, valeur statistique conservée : année de naissance, commune, genre,
- * tranche d'âge et statut social restent, parce que les accompagnements qui s'y
- * rattachent doivent continuer de compter dans les statistiques territoriales.
- *
- * `rdvUserId` est détaché ici, et c'est ce détachement qui rend les usagers RDV
- * Service Public orphelins : sans lui, la charge RDV qui suit n'aurait rien à
- * supprimer.
- *
- * Idempotent : le filtre `suppression: null` rend le second passage vide.
- */
 export const anonymiserPortefeuille = async ({
   mediateurId,
   maintenant = new Date(),

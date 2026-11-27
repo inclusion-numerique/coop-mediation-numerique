@@ -15,8 +15,6 @@ export type BeneficiaireInformationsPageData = {
   totalActivitesCount: number
 }
 
-// `actions` : boutons d'en-tête (modifier, supprimer) — concerns croisés
-// injectés par la route-hub, l'ability reste découplée.
 const ViewBeneficiaireInformationsPage = ({
   data: { beneficiaire, thematiquesAbordees, totalActivitesCount },
   actions,

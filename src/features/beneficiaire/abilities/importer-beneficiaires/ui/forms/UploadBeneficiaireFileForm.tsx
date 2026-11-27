@@ -15,15 +15,11 @@ import {
 import { handleSubmit, useAppForm } from '@/libraries/formulaire/hooks'
 import { isBrowser } from '@/libraries/navigateur'
 
-// Create zod validation so the file is required and of type File
-// And the file must be an xlsx file
 const UploadBeneficiaireFileFormValidation = z.object({
   file: z
     .instanceof(File, { message: 'Veuillez sélectionner un fichier' })
     .refine(
       (file) =>
-        // Safari does not give file.type, we keep this validation for server side
-        // On client the file extension is set in the input element
         isBrowser ||
         file.type ===
           'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
@@ -41,8 +37,6 @@ type UploadBeneficiaireFileFormData = z.infer<
 const UploadBeneficiaireFileForm = () => {
   const router = useRouter()
   const enregistrerLAnalyse = useEnregistrementDeLAnalyse()
-  // Bouton actif seulement après hydratation : empêche une soumission GET native
-  // si l'utilisateur clique avant que le handler React soit monté.
   const [isInteractive, setIsInteractive] = useState(false)
   useEffect(() => setIsInteractive(true), [])
 

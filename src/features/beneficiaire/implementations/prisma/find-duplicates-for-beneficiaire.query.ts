@@ -38,10 +38,6 @@ type RawDuplicate = {
   communeCodeInsee: string | null
 }
 
-// Frontière de transfert : les candidats sont des fiches legacy (base Entrepôt)
-// qui peuvent ne plus satisfaire la validation stricte des value objects. On
-// construit donc en `.safe` (invalide → null) pour ne JAMAIS faire échouer la
-// détection de doublons — un seul candidat corrompu ne doit pas tout bloquer.
 const toCommuneResidence = (row: RawDuplicate): CommuneResidence | null =>
   row.commune && row.communeCodePostal && row.communeCodeInsee
     ? CommuneResidence.safe({
@@ -52,8 +48,6 @@ const toCommuneResidence = (row: RawDuplicate): CommuneResidence | null =>
       })
     : null
 
-// `id` invalide → candidat non mergeable → on écarte la ligne (retour null,
-// filtré côté appelant). Les autres champs invalides deviennent simplement null.
 const toDuplicateBeneficiaire = (
   row: RawDuplicate,
 ): DuplicateBeneficiaire | null => {
