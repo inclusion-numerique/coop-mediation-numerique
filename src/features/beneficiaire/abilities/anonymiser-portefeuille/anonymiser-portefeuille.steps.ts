@@ -6,6 +6,7 @@ import {
   portefeuilleSeme,
   semerPortefeuille,
 } from '@/features/beneficiaire/beneficiaire.cucumber'
+import { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
 
 const contexte: {
   anonymises?: number | undefined
@@ -30,7 +31,8 @@ Given('un portefeuille de deux bénéficiaires de Nice', async () => {
 When("j'anonymise le portefeuille de ce médiateur", async () => {
   contexte.anonymises = (
     await anonymiserPortefeuille({
-      mediateurId: portefeuilleSeme().mediateurId,
+      mediateurId: MediateurId(portefeuilleSeme().mediateurId),
+      maintenant: new Date(),
     })
   ).anonymises
 })
@@ -38,7 +40,8 @@ When("j'anonymise le portefeuille de ce médiateur", async () => {
 When("j'anonymise à nouveau le portefeuille de ce médiateur", async () => {
   contexte.anonymises = (
     await anonymiserPortefeuille({
-      mediateurId: portefeuilleSeme().mediateurId,
+      mediateurId: MediateurId(portefeuilleSeme().mediateurId),
+      maintenant: new Date(),
     })
   ).anonymises
 })

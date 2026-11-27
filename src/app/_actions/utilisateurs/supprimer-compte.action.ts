@@ -113,7 +113,9 @@ const detacherDesEquipes = async ({
 }
 
 const supprimerComptePorts: EffacementsDuCompte = {
-  anonymiserPortefeuille: attraperEnEchecTechnique(anonymiserPortefeuille),
+  anonymiserPortefeuille: attraperEnEchecTechnique(({ mediateurId }) =>
+    anonymiserPortefeuille({ mediateurId, maintenant: new Date() }),
+  ),
   effacerNotes: attraperEnEchecTechnique(effacerNotes),
   effacerEmpreinteRdv: attraperEnEchecTechnique(effacerLEmpreinteRdv),
   retirerLesTagsDUnCompte: attraperEnEchecTechnique(

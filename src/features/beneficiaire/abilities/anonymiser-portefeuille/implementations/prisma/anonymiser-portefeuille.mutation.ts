@@ -1,13 +1,14 @@
 import { prismaClient } from '@/configuration/prisma'
 import { Prisma } from '@/generated/prisma/client'
+import type { MediateurId } from '../../../../domain/mediateur-id'
 import { garderUnSeulCodePostal } from '../../../../implementations/prisma/un-seul-code-postal.mutation'
 
 export const anonymiserPortefeuille = async ({
   mediateurId,
-  maintenant = new Date(),
+  maintenant,
 }: {
-  readonly mediateurId: string
-  readonly maintenant?: Date
+  readonly mediateurId: MediateurId
+  readonly maintenant: Date
 }): Promise<{ readonly anonymises: number }> => {
   const { count } = await prismaClient.$transaction(async (transaction) => {
     const anonymises = await transaction.beneficiaire.updateMany({
