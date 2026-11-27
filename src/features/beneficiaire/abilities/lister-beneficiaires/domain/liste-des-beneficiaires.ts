@@ -1,4 +1,3 @@
-import type { Page, PageSize, Paginated, Search, Sort } from '@arckit/resultset'
 import type { AnneeNaissance } from '@/features/beneficiaire/domain/annee-naissance'
 import type { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
 import type { CommuneResidence } from '@/features/beneficiaire/domain/commune-residence'
@@ -34,12 +33,3 @@ export type ColonneTriableDesBeneficiaires =
   | 'prenom'
   | 'anneeNaissance'
   | 'accompagnementsCount'
-
-export type ListerBeneficiaires = (input: {
-  mediateurId: MediateurId
-  search?: Search
-  page?: Page
-  pageSize?: PageSize
-  sort?: Sort<ColonneTriableDesBeneficiaires>
-  excludeIds?: readonly BeneficiaireId[]
-}) => Promise<Paginated<BeneficiaireListItem>>

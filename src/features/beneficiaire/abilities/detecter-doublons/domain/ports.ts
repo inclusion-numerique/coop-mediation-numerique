@@ -4,11 +4,11 @@ import type { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
 import type { BeneficiaireDoublon } from './beneficiaire-doublon'
 
 export type DetecterLesDoublons = (input: {
-  beneficiaireId: BeneficiaireId
-  mediateurId: MediateurId
+  readonly beneficiaireId: BeneficiaireId
+  readonly mediateurId: MediateurId
 }) => Promise<DuplicateBeneficiaire[]>
 
 export type DetecterDoublons = (input: {
-  mediateurId: MediateurId
-  fuzzyMatching?: boolean
+  readonly mediateurId: MediateurId
+  readonly fuzzyMatching?: boolean
 }) => Promise<{ count: number; duplicates: BeneficiaireDoublon[] }>

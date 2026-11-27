@@ -1,5 +1,5 @@
 import Notice from '@codegouvfr/react-dsfr/Notice'
-import { type DetecterDoublons } from '@/features/beneficiaire/abilities/detecter-doublons/domain/lectures-des-doublons'
+import type { DetecterDoublons } from '@/features/beneficiaire/abilities/detecter-doublons/domain/ports'
 import { contentId } from '@/libraries/liens-d-evitement'
 import { SkipLinksPortal } from '@/libraries/liens-d-evitement/composants'
 import { numberToString } from '@/libraries/nombre'

@@ -4,11 +4,11 @@ import { CommuneResidence } from '@/features/beneficiaire/domain/commune-residen
 import { Nom } from '@/features/beneficiaire/domain/nom'
 import { Prenom } from '@/features/beneficiaire/domain/prenom'
 import type { Prisma } from '@/generated/prisma/client'
+import type { BeneficiaireTrouve } from '../../domain/beneficiaires-recherches'
 import type {
-  BeneficiaireTrouve,
   ProposerDesBeneficiaires,
   RechercherBeneficiaires,
-} from '../../domain/beneficiaires-recherches'
+} from '../../domain/ports'
 
 const searchSelect = {
   id: true,

@@ -1,6 +1,6 @@
 import { prismaClient } from '@/configuration/prisma'
 import type { Prisma } from '@/generated/prisma/client'
-import type { LireBeneficiaireAEditer } from '../../domain/beneficiaire-a-editer'
+import type { LireBeneficiaireAEditer } from '../../domain/ports'
 
 const beneficiaireAEditerSelect = {
   id: true,

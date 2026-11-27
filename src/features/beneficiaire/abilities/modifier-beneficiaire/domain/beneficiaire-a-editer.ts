@@ -1,6 +1,4 @@
 import type { BeneficiaireEnregistre } from '@/features/beneficiaire/domain/beneficiaire-enregistre'
-import type { BeneficiaireId } from '@/features/beneficiaire/domain/beneficiaire-id'
-import type { MediateurId } from '@/features/beneficiaire/domain/mediateur-id'
 
 export type BeneficiaireAEditer = Pick<
   BeneficiaireEnregistre,
@@ -21,8 +19,3 @@ export type BeneficiaireAEditer = Pick<
   | 'communeCodePostal'
   | 'communeCodeInsee'
 >
-
-export type LireBeneficiaireAEditer = (input: {
-  beneficiaireId: BeneficiaireId
-  mediateurId: MediateurId
-}) => Promise<BeneficiaireAEditer | null>

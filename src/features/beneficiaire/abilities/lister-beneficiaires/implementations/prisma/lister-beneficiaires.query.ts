@@ -27,8 +27,8 @@ import { Telephone } from '@/libraries/telephone'
 import type {
   BeneficiaireListItem,
   ColonneTriableDesBeneficiaires,
-  ListerBeneficiaires,
 } from '../../domain/liste-des-beneficiaires'
+import type { ListerBeneficiaires } from '../../domain/ports'
 
 const DEFAULT_PAGE_SIZE = PageSize(20)
 
