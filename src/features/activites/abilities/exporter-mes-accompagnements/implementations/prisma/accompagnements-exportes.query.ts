@@ -1,14 +1,14 @@
 import { prismaClient } from '@/configuration/prisma'
 import { Prisma } from '@/generated/prisma/client'
-import type {
-  CoordinateurId,
-  CriteresDesActivites,
-  MediateurId,
-} from '../../../../domain'
 import { filtreDesActivites } from '../../../../implementations/prisma/criteres-des-activites.sql'
 import { enPosteSql } from '../../../../implementations/prisma/statistiques/conseiller-numerique-en-poste.sql'
 import { dansLaPeriodeDAppartenance } from '../../../../implementations/prisma/statistiques/periode-d-appartenance.sql'
-import type { ActiviteExportee } from '../../domain'
+import type {
+  AccompagnementsExportes,
+  ActiviteExportee,
+  ImportsV1Presents,
+  SelectionDesAccompagnements,
+} from '../../domain'
 import {
   activiteExporteeDe,
   activiteExporteeSelect,
@@ -24,11 +24,7 @@ type Curseur = {
 
 type Retenue = Curseur & { readonly conseiller_numerique: boolean }
 
-type Selection = {
-  readonly perimetre: readonly MediateurId[]
-  readonly coordinateurId: CoordinateurId | null
-  readonly criteres: CriteresDesActivites
-}
+type Selection = SelectionDesAccompagnements
 
 const apres = (curseur: Curseur | null): Prisma.Sql =>
   curseur === null
@@ -85,14 +81,10 @@ const lotsDepuis = async (
     : lotsDepuis(selection, derniere, cumul)
 }
 
-export const accompagnementsExportes = (
-  selection: Selection,
-): Promise<readonly ActiviteExportee[]> => lotsDepuis(selection, null, [])
+export const accompagnementsExportes: AccompagnementsExportes = (selection) =>
+  lotsDepuis(selection, null, [])
 
-export const importsV1Presents = async (
-  mediateurs: readonly MediateurId[],
-): Promise<boolean> =>
-  mediateurs.length > 0 &&
+export const importsV1Presents: ImportsV1Presents = async (mediateurs) =>
   (await prismaClient.activite.findFirst({
     where: { mediateurId: { in: [...mediateurs] }, v1CraId: { not: null } },
     select: { id: true },

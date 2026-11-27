@@ -11,6 +11,11 @@ export type {
 } from './activite-exportee'
 export { CodesPostaux } from './codes-postaux'
 export { demandeurDe } from './demandeur'
+export type { EchecDExporterMesAccompagnements } from './errors'
+export {
+  type ExportNomme,
+  exporterMesAccompagnements,
+} from './exporter-mes-accompagnements'
 export type {
   MediateurNomme,
   NomDeFiltre,
@@ -23,3 +28,15 @@ export {
   mediateursAutorises,
   perimetreDeLExport,
 } from './perimetre-de-l-export'
+export type {
+  AccompagnementsExportes,
+  BeneficiairesNommes,
+  CommunesEtDepartements,
+  EmployeusesNommees,
+  ExporterMesAccompagnementsPorts,
+  ImportsV1Presents,
+  LieuxNommes,
+  MediateurLu,
+  MediateursLus,
+  SelectionDesAccompagnements,
+} from './ports'

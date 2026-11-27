@@ -1,11 +1,19 @@
 import type { NextRequest } from 'next/server'
-import { demandeurDe } from '@/features/activites/abilities/exporter-mes-accompagnements/domain'
+import {
+  demandeurDe,
+  exporterMesAccompagnements,
+} from '@/features/activites/abilities/exporter-mes-accompagnements/domain'
 import { classeurDeMesAccompagnements } from '@/features/activites/abilities/exporter-mes-accompagnements/implementations/excel/classeur-de-mes-accompagnements.classeur'
-import { exporterMesAccompagnements } from '@/features/activites/abilities/exporter-mes-accompagnements/implementations/prisma/accompagnements-a-exporter.query'
-import { nomsDesFiltresExportes } from '@/features/activites/abilities/exporter-mes-accompagnements/implementations/prisma/noms-des-filtres-exportes.query'
+import {
+  accompagnementsExportes,
+  importsV1Presents,
+} from '@/features/activites/abilities/exporter-mes-accompagnements/implementations/prisma/accompagnements-exportes.query'
+import { employeusesNommees } from '@/features/activites/abilities/exporter-mes-accompagnements/implementations/prisma/employeuses-nommees.query'
+import { mediateursLus } from '@/features/activites/abilities/exporter-mes-accompagnements/implementations/prisma/mediateurs-lus.query'
 import { classeurPresenteAvec } from '@/features/activites/abilities/exporter-mes-accompagnements/ui/presenters/export.presenter'
 import { nomDuFichierDesAccompagnements } from '@/features/activites/abilities/exporter-mes-accompagnements/ui/presenters/nom-du-fichier.presenter'
 import { tagsUtilisablesDepuis } from '@/features/activites/implementations/prisma/fournisseurs-de-la-saisie.transfer'
+import { dansLaPeriodeDAppartenance } from '@/features/activites/implementations/prisma/statistiques/periode-d-appartenance.sql'
 import { criteresDesFiltres } from '@/features/activites/ui/filtres/activites.filtre'
 import { filtresDeToutesLesActivites } from '@/features/activites/ui/filtres/toutes-les-activites.filtre'
 import { profilDeLaSession } from '@/features/authentification/domain/profil-de-la-session'
@@ -56,27 +64,31 @@ export const GET = async (
     coordinateurId: user.coordinateur?.id ?? null,
     equipe: mediateurCoordonnesEtAnciensIdsFor(user),
   })
-  const [exportDes, noms] = await Promise.all([
-    exporterMesAccompagnements({ demandeur, criteres }),
-    nomsDesFiltresExportes({
-      demandeur,
-      criteres,
-      lieuxDesActivites: getLieuxDesActivitesOptions,
-      communesEtDepartements: communesDuMediateur,
-      tagsUtilisables: tagsUtilisablesDepuis(
-        tagsVisiblesPar(acteurDe(profilDeLaSession(user))),
+  const exporte = await exporterMesAccompagnements({
+    accompagnementsExportes,
+    importsV1Presents,
+    mediateursLus,
+    employeusesNommees,
+    lieuxNommes: ({ mediateurs, mediateurId, coordinateurId }) =>
+      getLieuxDesActivitesOptions({
+        mediateurIds: [...mediateurs],
+        ...(mediateurId === null ? {} : { mediateurId }),
+        perimetreDesActivites: dansLaPeriodeDAppartenance(coordinateurId),
+      }),
+    communesEtDepartements: communesDuMediateur,
+    tagsUtilisables: tagsUtilisablesDepuis(
+      tagsVisiblesPar(acteurDe(profilDeLaSession(user))),
+    ),
+    beneficiairesNommes: async ({ mediateurId, ids }) =>
+      optionsDesBeneficiairesInitiaux(
+        await beneficiairesProposes({
+          mediateurId: MediateurId(mediateurId),
+          includeBeneficiaireIds: ids.map(BeneficiaireId),
+        }),
       ),
-      beneficiaires: async (ids) =>
-        user.mediateur
-          ? optionsDesBeneficiairesInitiaux(
-              await beneficiairesProposes({
-                mediateurId: MediateurId(user.mediateur.id),
-                includeBeneficiaireIds: ids.map(BeneficiaireId),
-              }),
-            )
-          : [],
-    }),
-  ])
+  })({ demandeur, criteres })
+  if (!exporte.success) return new Response('Not found', { status: 404 })
+  const { exportDes, noms } = exporte.data
   const classeur = classeurDeMesAccompagnements({
     criteres,
     noms,
