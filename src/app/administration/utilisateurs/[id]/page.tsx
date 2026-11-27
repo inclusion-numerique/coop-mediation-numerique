@@ -87,7 +87,11 @@ import { SUPPRIMER_LE_COMPTE_ACTION_KEY } from '@/features/utilisateurs/abilitie
 import { BoutonSupprimerLeCompte } from '@/features/utilisateurs/abilities/supprimer-compte/ui/slots/BoutonSupprimerLeCompte.slot'
 import { USURPER_UN_UTILISATEUR_ACTION_KEY } from '@/features/utilisateurs/abilities/usurper-un-utilisateur/action/usurper-un-utilisateur.key'
 import { BoutonUsurper } from '@/features/utilisateurs/abilities/usurper-un-utilisateur/ui/slots/BoutonUsurper.slot'
-import { coordinateurDe, mediateurDe } from '@/features/utilisateurs/domain'
+import {
+  coordinateurDe,
+  mediateurDe,
+  UtilisateurId,
+} from '@/features/utilisateurs/domain'
 import { ClientBinder } from '@/libraries/nextjs/injection'
 
 export const metadata = {
@@ -240,8 +244,11 @@ const Page = async (props: {
   ])
 
   const maintenant = new Date()
+  const utilisateurId = UtilisateurId.safe(id)
+  if (utilisateurId === null) notFound()
+
   const fiche = await ficheUtilisateur({
-    utilisateurId: id,
+    utilisateurId,
     maintenant,
   })
   if (fiche === null) notFound()

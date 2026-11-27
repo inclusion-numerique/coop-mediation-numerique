@@ -8,6 +8,7 @@ import { ficheUtilisateur } from '@/features/utilisateurs/abilities/consulter-un
 import { FUSIONNER_DES_COMPTES_ACTION_KEY } from '@/features/utilisateurs/abilities/fusionner-des-comptes/action/fusionner-des-comptes.key'
 import { RECHERCHER_DES_COMPTES_A_FUSIONNER_ACTION_KEY } from '@/features/utilisateurs/abilities/rechercher-des-comptes-a-fusionner/action/rechercher-des-comptes-a-fusionner.key'
 import { ChoixDuCompteAFusionner } from '@/features/utilisateurs/abilities/rechercher-des-comptes-a-fusionner/ui/slots/ChoixDuCompteAFusionner.slot'
+import { UtilisateurId } from '@/features/utilisateurs/domain'
 import { ClientBinder } from '@/libraries/nextjs/injection'
 
 export const metadata = {
@@ -17,8 +18,11 @@ export const metadata = {
 const Page = async (props: { params: Promise<{ id: string }> }) => {
   await authenticateAdmin()
   const { id } = await props.params
+  const utilisateurId = UtilisateurId.safe(id)
+  if (utilisateurId === null) notFound()
+
   const cible = await ficheUtilisateur({
-    utilisateurId: id,
+    utilisateurId,
     maintenant: new Date(),
   })
   if (cible === null) notFound()

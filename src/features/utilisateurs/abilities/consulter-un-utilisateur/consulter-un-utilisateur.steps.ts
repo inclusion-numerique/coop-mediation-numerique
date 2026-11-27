@@ -2,6 +2,7 @@ import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { v4 } from 'uuid'
 import { prismaClient } from '@/configuration/prisma'
+import { UtilisateurId } from '@/features/utilisateurs/domain'
 import { libelleDuStatut } from '@/features/utilisateurs/ui/presenters/statut-compte.presenter'
 import {
   type CompteSeme,
@@ -25,11 +26,12 @@ const fiche = (): FicheUtilisateur => {
   return consultation.fiche
 }
 
-const consulter = async (utilisateurId: string) => {
-  consultation.fiche = await ficheUtilisateur({
-    utilisateurId,
-    maintenant: new Date(),
-  })
+const consulter = async (identifiant: string) => {
+  const utilisateurId = UtilisateurId.safe(identifiant)
+  consultation.fiche =
+    utilisateurId === null
+      ? null
+      : await ficheUtilisateur({ utilisateurId, maintenant: new Date() })
 }
 
 Given('un compte médiateur à consulter', async () => {
