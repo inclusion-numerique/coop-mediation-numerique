@@ -7,6 +7,7 @@ import {
   adresseSaisie,
   complementAdresseSaisi,
 } from '@/features/lieux-activite/domain/saisie/saisie'
+import { Siret } from '@/libraries/insee'
 import { IdentifiantCartographie } from '../../../../domain/cartographie-nationale/ids-cartographie-nationale'
 import { LieuId } from '../../../../domain/identifiants/lieu-id'
 import { MediateurId } from '../../../../domain/identifiants/mediateur-id'
@@ -48,7 +49,7 @@ export const lieuAFusionnerToDomain = (
   id: LieuId(structure.id),
   nom: Nom(structure.nom),
   adresse: adresseDuLieu(structure),
-  siret: structure.siret,
+  siret: structure.siret === null ? null : Siret(structure.siret),
   rna: structure.rna,
   structureCartographieNationaleId: IdentifiantCartographie.safe(
     structure.inscriptionRegistre?.structureCartographieNationaleId ?? '',

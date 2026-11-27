@@ -207,6 +207,7 @@
     "inscription/abilities/renseigner-lieux-activite/action",
     "inscription/abilities/renseigner-lieux-activite/domain",
     "lieux-activite/abilities/ajouter-des-lieux-activite/action",
+    "lieux-activite/abilities/apercevoir-la-fusion/domain",
     "lieux-activite/abilities/lister-les-mediateurs-du-lieu/domain",
     "lieux-activite/abilities/mesurer-la-visibilite-sur-la-cartographie/domain",
     "lieux-activite/domain",

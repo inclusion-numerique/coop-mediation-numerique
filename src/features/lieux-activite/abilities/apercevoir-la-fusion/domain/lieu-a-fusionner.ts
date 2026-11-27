@@ -3,6 +3,7 @@ import type {
   Courriel,
   Nom,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
+import type { Siret } from '@/libraries/insee'
 import type { IdentifiantCartographie } from '../../../domain/cartographie-nationale/ids-cartographie-nationale'
 import type { LieuId } from '../../../domain/identifiants/lieu-id'
 import type { MediateurId } from '../../../domain/identifiants/mediateur-id'
@@ -30,7 +31,7 @@ export type LieuAFusionner = ChampsPartageables & {
   readonly id: LieuId
   readonly nom: Nom
   readonly adresse: Adresse | null
-  readonly siret: string | null
+  readonly siret: Siret | null
   readonly rna: string | null
   readonly structureCartographieNationaleId: IdentifiantCartographie | null
 }

@@ -5,6 +5,7 @@ import {
   Nom,
 } from '@gouvfr-anct/lieux-de-mediation-numerique'
 import { describe, expect, it } from 'vitest'
+import { Siret } from '@/libraries/insee'
 import { IdentifiantCartographie } from '../../../../domain/cartographie-nationale/ids-cartographie-nationale'
 import { LieuId } from '../../../../domain/identifiants/lieu-id'
 import { MediateurId } from '../../../../domain/identifiants/mediateur-id'
@@ -160,7 +161,7 @@ describe('lieu à fusionner lu en base', () => {
         code_insee: '51454',
         complement_adresse: ComplementAdresse('Bâtiment B'),
       }),
-      siret: '55217862900135',
+      siret: Siret('55217862900135'),
       rna: 'W511234567',
       structureCartographieNationaleId: IdentifiantCartographie('carto-42'),
       typologies: ['BIB'],
