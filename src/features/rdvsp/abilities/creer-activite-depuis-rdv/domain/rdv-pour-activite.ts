@@ -1,3 +1,5 @@
+import type { BeneficiaireId } from '../../../domain/identifiants/beneficiaire-id'
+import type { MediateurId } from '../../../domain/identifiants/mediateur-id'
 import type { RdvAgentId } from '../../../domain/identifiants/rdv-agent-id'
 import type { RdvId } from '../../../domain/identifiants/rdv-id'
 import type { UsagerId } from '../../../domain/identifiants/usager-id'
@@ -36,12 +38,12 @@ export type RdvPourActivite = {
 }
 
 export type BeneficiaireFusionne = {
-  readonly id: string
+  readonly id: BeneficiaireId
   readonly prenom: string | null
   readonly nom: string | null
   readonly email: string | null
   readonly telephone: string | null
-  readonly mediateurId: string
+  readonly mediateurId: MediateurId
   readonly adresse: string | null
   readonly anneeNaissance: number | null
   readonly commune: string | null

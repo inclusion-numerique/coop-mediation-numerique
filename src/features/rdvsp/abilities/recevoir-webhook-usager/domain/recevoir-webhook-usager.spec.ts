@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { failure, success } from '@/libraries/result'
 import { PayloadInexploitable } from '../../../domain/errors'
+import { BeneficiaireId } from '../../../domain/identifiants/beneficiaire-id'
 import { UsagerId } from '../../../domain/identifiants/usager-id'
 import {
   EmailExterne,
@@ -10,6 +11,9 @@ import {
 import type { Usager } from '../../../domain/usager'
 import { EvenementWebhook } from '../../../domain/webhook/evenement-webhook'
 import type { RecevoirWebhookUsagerPorts } from './ports'
+
+const beneficiaireLie = BeneficiaireId('3f2504e0-4f89-41d3-9a0c-0305e82c3301')
+
 import { recevoirWebhookUsager } from './recevoir-webhook-usager'
 
 const usager: Usager = {
@@ -44,7 +48,7 @@ const sansBeneficiaire: RecevoirWebhookUsagerPorts = {
 
 const avecBeneficiaire: RecevoirWebhookUsagerPorts = {
   ...sansBeneficiaire,
-  beneficiairesLies: async () => [{ id: 'b1' }],
+  beneficiairesLies: async () => [{ id: beneficiaireLie }],
 }
 
 const creation = { evenement: EvenementWebhook('created'), payload: {} }
@@ -98,7 +102,7 @@ describe('recevoir une notification portant sur un usager', () => {
       success({
         _tag: 'anonymiseEtSupprime',
         usagerId: UsagerId(200),
-        beneficiaires: [{ id: 'b1' }],
+        beneficiaires: [{ id: beneficiaireLie }],
       }),
     )
   })

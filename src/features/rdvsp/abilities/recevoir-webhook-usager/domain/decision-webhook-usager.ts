@@ -1,7 +1,8 @@
+import type { BeneficiaireId } from '../../../domain/identifiants/beneficiaire-id'
 import type { EvenementWebhook } from '../../../domain/webhook/evenement-webhook'
 
 export type BeneficiaireLie = {
-  readonly id: string
+  readonly id: BeneficiaireId
 }
 
 export type DecisionWebhookUsager =

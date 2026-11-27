@@ -8,6 +8,7 @@ import type {
 } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/domain/ports'
 import { compteDuRedacteur } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/implementations/prisma/compte-du-redacteur.query'
 import { lireRdvPourActivite } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/implementations/prisma/lire-rdv-pour-activite.query'
+import { BeneficiaireId } from '@/features/rdvsp/domain/identifiants/beneficiaire-id'
 import { MediateurId } from '@/features/rdvsp/domain/identifiants/mediateur-id'
 import { RdvId } from '@/features/rdvsp/domain/identifiants/rdv-id'
 import { StatutPresence } from '@/features/rdvsp/domain/rdv/statut-presence'
@@ -47,7 +48,7 @@ const creerActiviteDepuisUnRdv = creerActiviteDepuisRdvAvec(
     ]
     return success({
       merges: usagers.map(({ prenom, nom, email, telephone, adresse }) => ({
-        id: v4(),
+        id: BeneficiaireId(v4()),
         prenom,
         nom,
         email,
