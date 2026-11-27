@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   ClientApiId,
   type DefinitionDuClientApi,
+  NomDejaPris,
   NomDuClientApi,
   PorteeApi,
 } from '@/features/clients-api/domain'
@@ -51,7 +52,7 @@ describe('modifier un client API', () => {
       await modifier({ existe: true, nomPris: true, identifiant: clientApiId }),
     ).toEqual({
       success: false,
-      error: { _tag: 'NomDejaPris', nom: 'Tableau de bord' },
+      error: NomDejaPris(NomDuClientApi('Tableau de bord')),
     })
   })
 

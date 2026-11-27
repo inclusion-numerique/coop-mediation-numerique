@@ -3,6 +3,7 @@ import {
   type ClientApi,
   ClientApiId,
   type DefinitionDuClientApi,
+  NomDejaPris,
   NomDuClientApi,
   PorteeApi,
 } from '@/features/clients-api/domain'
@@ -39,7 +40,7 @@ describe('créer un client API', () => {
   it('refuse un nom déjà pris', async () => {
     expect(await creer(true)).toEqual({
       success: false,
-      error: { _tag: 'NomDejaPris', nom: 'Tableau de bord' },
+      error: NomDejaPris(NomDuClientApi('Tableau de bord')),
     })
   })
 })
