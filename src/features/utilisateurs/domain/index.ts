@@ -121,6 +121,7 @@ export {
   estRoleProtege,
   RoleUtilisateur,
 } from './role-utilisateur'
+export type { AuteurDuChangement } from './roles/auteur-du-changement'
 export {
   type CompteAReaffecter,
   type CoordinateurAReaffecter,

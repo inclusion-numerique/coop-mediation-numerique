@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
+  type AuteurDuChangement,
   AuteurId,
   type CompteAReaffecter,
   type CoordinateurAReaffecter,
@@ -11,7 +12,6 @@ import {
   rattachements,
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
-import type { AuteurDuChangement } from './auteur-du-changement'
 import { changerLesRoles } from './changer-les-roles'
 
 const utilisateurId = UtilisateurId('0d1a1e7e-1f2b-4c3d-8e4f-5a6b7c8d9e0f')
@@ -160,13 +160,13 @@ describe('changer les rôles', () => {
       success: true,
       data: {
         utilisateurId,
-        auteurId: administrateurId,
+        auteur: administrateur,
         plan: { operations },
       },
     })
   })
 
-  it('applique les mêmes règles sans auteur quand le système décide du changement', async () => {
+  it('applique les mêmes règles quand le système décide du changement, et l’en retient pour auteur', async () => {
     expect(
       await changerLesRolesDe(compte(mediateurVierge, null))({
         utilisateurId,
@@ -178,7 +178,7 @@ describe('changer les rôles', () => {
       success: true,
       data: {
         utilisateurId,
-        auteurId: null,
+        auteur: { _tag: 'systeme' },
         plan: { operations: [{ _tag: 'AjouterCoordinateur' }] },
       },
     })

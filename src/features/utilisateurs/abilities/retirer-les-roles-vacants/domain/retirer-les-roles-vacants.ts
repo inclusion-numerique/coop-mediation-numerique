@@ -40,7 +40,7 @@ const retirer =
 
     const changement: RolesChanges = {
       utilisateurId: compte.id,
-      auteurId: null,
+      auteur: { _tag: 'systeme' },
       plan: plan.data,
     }
 

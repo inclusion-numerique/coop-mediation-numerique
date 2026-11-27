@@ -1,11 +1,11 @@
 import {
+  type AuteurDuChangement,
   planDeChangement,
   type RolesChanges,
   type UtilisateurId,
   UtilisateurIntrouvable,
 } from '@/features/utilisateurs/domain'
 import { failure, type Result, success } from '@/libraries/result'
-import type { AuteurDuChangement } from './auteur-du-changement'
 import type { EchecDeChangerLesRoles } from './errors'
 import type { ChangerLesRolesPorts } from './ports'
 import { rolesDemandes } from './roles-demandes'
@@ -40,8 +40,7 @@ export const changerLesRoles =
 
     const changement: RolesChanges = {
       utilisateurId: compte.id,
-      auteurId:
-        auteur._tag === 'administrateur' ? auteur.administrateurId : null,
+      auteur,
       plan: plan.data,
     }
 

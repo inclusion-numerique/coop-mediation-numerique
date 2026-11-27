@@ -46,13 +46,13 @@ const retirerAvec = (compteLu: CompteAReaffecter | null) =>
 
 const coordinationRetiree = {
   utilisateurId: premier,
-  auteurId: null,
+  auteur: { _tag: 'systeme' },
   plan: { operations: [{ _tag: 'RetirerCoordinateur', coordinateurId }] },
 }
 
 const mediationRetiree = {
   utilisateurId: premier,
-  auteurId: null,
+  auteur: { _tag: 'systeme' },
   plan: { operations: [{ _tag: 'RetirerMediateur', mediateurId }] },
 }
 

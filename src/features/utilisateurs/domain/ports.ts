@@ -1,6 +1,5 @@
 import type { EchecTechnique, Result } from '@/libraries/result'
 import type { EchecDeRelance, SuppressionRefusee } from './errors'
-import type { AuteurId } from './identifiants/auteur-id'
 import type { UtilisateurId } from './identifiants/utilisateur-id'
 import type {
   CompteARelancer,
@@ -10,6 +9,7 @@ import type { PalierDeRelance, Relance } from './relances/relance'
 import type {
   CompteAReaffecter,
   PlanDeChangement,
+  RolesChanges,
 } from './roles/plan-de-changement'
 
 export type LireLesComptesARelancer = () => Promise<readonly CompteARelancer[]>
@@ -59,8 +59,4 @@ export type AppliquerLePlan = (
   plan: PlanDeChangement,
 ) => Promise<void>
 
-export type JournaliserLeChangement = (changement: {
-  readonly utilisateurId: UtilisateurId
-  readonly auteurId: AuteurId | null
-  readonly plan: PlanDeChangement
-}) => void
+export type JournaliserLeChangement = (changement: RolesChanges) => void

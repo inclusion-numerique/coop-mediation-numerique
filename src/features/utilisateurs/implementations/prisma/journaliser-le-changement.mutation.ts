@@ -1,21 +1,20 @@
 import { addMutationLog } from '@/configuration/prisma'
 import type {
+  AuteurDuChangement,
   AuteurId,
-  PlanDeChangement,
-  UtilisateurId,
+  JournaliserLeChangement,
 } from '@/features/utilisateurs/domain'
 
-export const journaliserLeChangement = ({
+const auteurJournalise = (auteur: AuteurDuChangement): AuteurId | null =>
+  auteur._tag === 'administrateur' ? auteur.administrateurId : null
+
+export const journaliserLeChangement: JournaliserLeChangement = ({
   utilisateurId,
-  auteurId,
+  auteur,
   plan,
-}: {
-  readonly utilisateurId: UtilisateurId
-  readonly auteurId: AuteurId | null
-  readonly plan: PlanDeChangement
-}): void =>
+}) =>
   addMutationLog({
-    userId: auteurId,
+    userId: auteurJournalise(auteur),
     nom: 'ChangerRoles',
     data: {
       id: utilisateurId,

@@ -5,7 +5,6 @@ import {
   RoleNonVierge,
   RoleProtege,
 } from '../errors'
-import type { AuteurId } from '../identifiants/auteur-id'
 import type { CoordinateurId } from '../identifiants/coordinateur-id'
 import type { MediateurId } from '../identifiants/mediateur-id'
 import type { UtilisateurId } from '../identifiants/utilisateur-id'
@@ -21,6 +20,7 @@ import {
   type Rattachements,
 } from '../rattachements'
 import { estRoleProtege, type RoleUtilisateur } from '../role-utilisateur'
+import type { AuteurDuChangement } from './auteur-du-changement'
 
 export type RolesDemandes =
   | { readonly mediateur: true; readonly coordinateur: false }
@@ -60,7 +60,7 @@ export type PlanDeChangement = {
 
 export type RolesChanges = {
   readonly utilisateurId: UtilisateurId
-  readonly auteurId: AuteurId | null
+  readonly auteur: AuteurDuChangement
   readonly plan: PlanDeChangement
 }
 
