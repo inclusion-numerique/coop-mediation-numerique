@@ -1,12 +1,18 @@
 import { describe, expect, it } from 'vitest'
-import { montreLEquipe } from './proprietaire-du-partage'
+import { coordinationDuPartage } from './proprietaire-du-partage'
 
-describe('propriétaire du partage', () => {
-  it('montre son équipe quand il partage en coordinateur', () => {
-    expect(montreLEquipe({ _tag: 'Coordinateur' })).toBe(true)
+const coordination = { equipe: ['membre'] }
+
+describe('coordination du partage', () => {
+  it('garde la coordination quand le propriétaire partage en coordinateur', () => {
+    expect(coordinationDuPartage({ _tag: 'Coordinateur' }, coordination)).toBe(
+      coordination,
+    )
   })
 
-  it('ne montre pas d’équipe quand il partage en médiateur', () => {
-    expect(montreLEquipe({ _tag: 'Mediateur' })).toBe(false)
+  it('efface la coordination quand le propriétaire partage en médiateur', () => {
+    expect(
+      coordinationDuPartage({ _tag: 'Mediateur' }, coordination),
+    ).toBeNull()
   })
 })

@@ -1,5 +1,5 @@
 import {
-  montreLEquipe,
+  coordinationDuPartage,
   type ProprietaireDuPartage,
 } from '../../domain/proprietaire-du-partage'
 
@@ -12,5 +12,5 @@ export const utilisateurDuPartage = <
   ...utilisateur,
   emplois: [],
   rdvAccount: null,
-  coordinateur: montreLEquipe(proprietaire) ? utilisateur.coordinateur : null,
+  coordinateur: coordinationDuPartage(proprietaire, utilisateur.coordinateur),
 })
