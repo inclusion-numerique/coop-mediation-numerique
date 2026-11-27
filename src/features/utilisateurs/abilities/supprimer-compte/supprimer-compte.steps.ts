@@ -52,7 +52,9 @@ const ports: EffacementsDuCompte & { readonly hash: Hash } = {
     demandes.partage.push(mediateurId)
     return success({ partagesRevoques: 0 })
   },
-  retirerDesListesDeDiffusion: async () => success(false),
+  retirerLeContactDeLaListe: async () => success({ _tag: 'DejaAbsent' }),
+  lireLaPresenceDuContact: async () => success({ _tag: 'Introuvable' }),
+  supprimerLeContact: async () => success(undefined),
   hash,
 }
 

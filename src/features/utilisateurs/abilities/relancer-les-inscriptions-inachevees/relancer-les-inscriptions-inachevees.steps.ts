@@ -70,7 +70,9 @@ When('les inscriptions inachevées sont relancées', async () => {
       id === relance.utilisateurId
         ? effacerLInscription(async () => undefined)(id)
         : success(undefined),
-    retirerDesListes: async () => success(undefined),
+    retirerLeContactDeLaListe: async () => success({ _tag: 'DejaAbsent' }),
+    lireLaPresenceDuContact: async () => success({ _tag: 'Introuvable' }),
+    supprimerLeContact: async () => success(undefined),
   })({ maintenant: new Date() })
   relance.rapports = resultat.data
 })

@@ -8,6 +8,7 @@ export {
 export type {
   CompteAFusionner,
   FusionAutorisee,
+  FusionEffectuee,
 } from './compte-a-fusionner'
 export type { CompteTrouve } from './compte-trouve'
 export type { LireLesComptesAApercevoir } from './ports'

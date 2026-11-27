@@ -94,7 +94,9 @@ const dependances = (
     success({ invitationsSupprimees: 1, appartenancesRetirees: 1 }),
   retirerDesLieux: async () => success({ rattachementsSupprimes: 2 }),
   revoquerPartageStatistiques: async () => success({ partagesRevoques: 1 }),
-  retirerDesListesDeDiffusion: async () => success(true),
+  retirerLeContactDeLaListe: async () => success({ _tag: 'Retire' }),
+  lireLaPresenceDuContact: async () => success({ _tag: 'Present', listes: 1 }),
+  supprimerLeContact: async () => success(undefined),
 })
 
 const supprimer = (deps: SupprimerComptePorts, auteur: AuteurSuppression) =>
@@ -173,7 +175,8 @@ describe('supprimer un compte', () => {
       await supprimer(
         {
           ...dependances(compteOrdinaire),
-          retirerDesListesDeDiffusion: async () => success(false),
+          retirerLeContactDeLaListe: async () =>
+            success({ _tag: 'DejaAbsent' }),
         },
         titulaire,
       ),
@@ -235,6 +238,69 @@ describe('supprimer un compte', () => {
             failed: ['EmpreinteRdv'],
           },
         },
+      })
+    },
+  )
+
+  it('compte le retrait de la liste et la suppression du contact qui n’est plus dans aucune liste', async () => {
+    expect(
+      await supprimer(
+        {
+          ...dependances(compteOrdinaire),
+          lireLaPresenceDuContact: async () =>
+            success({ _tag: 'Present', listes: 0 }),
+        },
+        titulaire,
+      ),
+    ).toMatchObject({
+      success: true,
+      data: {
+        report: {
+          _tag: 'complete',
+          results: [
+            { _tag: 'erased', step: 'EmpreinteRdv', count: 3 },
+            { _tag: 'erased', step: 'ListesDeDiffusion', count: 2 },
+          ],
+        },
+      },
+    })
+  })
+
+  it.each<{ cas: string; defaillant: Partial<SupprimerComptePorts> }>([
+    {
+      cas: 'le retrait de la liste',
+      defaillant: {
+        retirerLeContactDeLaListe: async () =>
+          failure(EchecTechnique('Brevo indisponible')),
+      },
+    },
+    {
+      cas: 'la lecture des listes du contact',
+      defaillant: {
+        lireLaPresenceDuContact: async () =>
+          failure(EchecTechnique('Brevo indisponible')),
+      },
+    },
+    {
+      cas: 'la suppression du contact',
+      defaillant: {
+        lireLaPresenceDuContact: async () =>
+          success({ _tag: 'Present', listes: 0 }),
+        supprimerLeContact: async () =>
+          failure(EchecTechnique('Brevo indisponible')),
+      },
+    },
+  ])(
+    'retient l’échec des listes de diffusion quand échoue $cas',
+    async ({ defaillant }) => {
+      expect(
+        await supprimer(
+          { ...dependances(compteOrdinaire), ...defaillant },
+          titulaire,
+        ),
+      ).toMatchObject({
+        success: true,
+        data: { report: { _tag: 'partial', failed: ['ListesDeDiffusion'] } },
       })
     },
   )

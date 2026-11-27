@@ -34,7 +34,6 @@ import {
 } from '@/features/tags/abilities/retirer-les-tags-d-un-compte/implementations/prisma/tags-du-compte.query'
 import { role } from '@/features/tags/domain'
 import { relancerLesInscriptionsInachevees } from '@/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees/domain/relancer-les-inscriptions-inachevees'
-import { retirerDesListes } from '@/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees/implementations/brevo/retirer-des-listes.mutation'
 import { relancesDInscriptionParCourriel } from '@/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees/implementations/email/relances-d-inscription-par-courriel.adapter'
 import { effacerLInscription } from '@/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees/implementations/prisma'
 import { inscriptionsInachevees } from '@/features/utilisateurs/abilities/relancer-les-inscriptions-inachevees/implementations/prisma/inscriptions-inachevees.query'
@@ -48,7 +47,6 @@ import type {
   EffacementsDuCompte,
 } from '@/features/utilisateurs/abilities/supprimer-compte/domain/ports'
 import { supprimerCompte } from '@/features/utilisateurs/abilities/supprimer-compte/domain/supprimer-compte'
-import { retirerDesListesDeDiffusion } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/brevo/retirer-des-listes-de-diffusion.mutation'
 import { hash } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/crypto/hash.adapter'
 import { compteASupprimer } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/prisma/compte-a-supprimer.query'
 import { couperAcces } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/prisma/couper-acces.mutation'
@@ -58,6 +56,11 @@ import {
   SuppressionRefusee,
   type UtilisateurId,
 } from '@/features/utilisateurs/domain'
+import {
+  retirerLeContactDeLaListe,
+  supprimerLeContact,
+} from '@/features/utilisateurs/implementations/brevo/contact-brevo.mutation'
+import { lireLaPresenceDuContact } from '@/features/utilisateurs/implementations/brevo/contact-brevo.query'
 import { compterLesInscrits } from '@/features/utilisateurs/implementations/prisma/compter-les-inscrits.query'
 import { noterLaRelance } from '@/features/utilisateurs/implementations/prisma/noter-la-relance.mutation'
 import type {
@@ -135,7 +138,9 @@ const lancerLesRelancesDInscription = async (
     lireLesComptesARelancer: inscriptionsInachevees,
     noterLaRelance: noterLaRelance('Inscription'),
     effacerLInscription: effacerLInscription(retirerDuRegistre),
-    retirerDesListes,
+    retirerLeContactDeLaListe,
+    lireLaPresenceDuContact,
+    supprimerLeContact,
   })({ maintenant })
   return resultat.data
 }
@@ -193,7 +198,9 @@ const supprimerComptePorts: EffacementsDuCompte = {
       return { partagesRevoques: revocation.data.partagesRevoques }
     },
   ),
-  retirerDesListesDeDiffusion,
+  retirerLeContactDeLaListe,
+  lireLaPresenceDuContact,
+  supprimerLeContact,
 }
 
 const resume = (rapports: readonly RapportDeRelance[]) => ({

@@ -3,7 +3,6 @@ export type { CompteSupprime } from './autoriser-la-suppression'
 export type { NomEffacementStep } from './effacement-report'
 export type {
   Hash,
-  RetirerDesListesDeDiffusion,
   SupprimerComptePorts,
 } from './ports'
 export { RetentionPolicy } from './retention-policy'

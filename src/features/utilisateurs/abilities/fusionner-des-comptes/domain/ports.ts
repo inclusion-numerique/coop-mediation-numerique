@@ -1,5 +1,5 @@
 import type {
-  AdresseCourriel,
+  PortsDuRetraitDuContact,
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
 import type { CompteApercu } from './apercu-de-fusion'
@@ -15,14 +15,9 @@ export type LireLesComptesAFusionner = (ids: {
 
 export type Fusionner = (fusion: FusionAutorisee) => Promise<void>
 
-export type RetirerLaSourceDesListes = (
-  courriel: AdresseCourriel,
-) => Promise<void>
-
-export type FusionnerDesComptesPorts = {
+export type FusionnerDesComptesPorts = PortsDuRetraitDuContact & {
   readonly lireLesComptesAFusionner: LireLesComptesAFusionner
   readonly fusionner: Fusionner
-  readonly retirerLaSourceDesListes: RetirerLaSourceDesListes
 }
 
 export type LireLesComptesAApercevoir = (ids: {

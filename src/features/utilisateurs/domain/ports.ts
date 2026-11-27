@@ -1,6 +1,11 @@
 import type { EchecTechnique, Result } from '@/libraries/result'
+import type {
+  PresenceDuContact,
+  RetraitDeLaListe,
+} from './contacts/contact-des-listes'
 import type { EchecDeRelance, SuppressionRefusee } from './errors'
 import type { UtilisateurId } from './identifiants/utilisateur-id'
+import type { AdresseCourriel } from './identite/adresse-courriel'
 import type {
   CompteARelancer,
   DestinataireDeRelance,
@@ -60,3 +65,21 @@ export type AppliquerLePlan = (
 ) => Promise<void>
 
 export type JournaliserLeChangement = (changement: RolesChanges) => void
+
+export type RetirerLeContactDeLaListe = (
+  courriel: AdresseCourriel,
+) => Promise<Result<RetraitDeLaListe, EchecTechnique>>
+
+export type LireLaPresenceDuContact = (
+  courriel: AdresseCourriel,
+) => Promise<Result<PresenceDuContact, EchecTechnique>>
+
+export type SupprimerLeContact = (
+  courriel: AdresseCourriel,
+) => Promise<Result<void, EchecTechnique>>
+
+export type PortsDuRetraitDuContact = {
+  readonly retirerLeContactDeLaListe: RetirerLeContactDeLaListe
+  readonly lireLaPresenceDuContact: LireLaPresenceDuContact
+  readonly supprimerLeContact: SupprimerLeContact
+}

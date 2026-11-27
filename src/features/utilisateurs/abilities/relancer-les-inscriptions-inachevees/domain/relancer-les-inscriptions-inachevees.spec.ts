@@ -58,7 +58,9 @@ const ports = (
   envoyerLAvertissement: async () => success(undefined),
   envoyerLAvisDEffacement: async () => success(undefined),
   effacerLInscription: async () => success(undefined),
-  retirerDesListes: async () => success(undefined),
+  retirerLeContactDeLaListe: async () => success({ _tag: 'Retire' }),
+  lireLaPresenceDuContact: async () => success({ _tag: 'Present', listes: 0 }),
+  supprimerLeContact: async () => success(undefined),
   noterLaRelance: async () => success(undefined),
 })
 
@@ -174,7 +176,19 @@ describe('relancer les inscriptions inachevées', () => {
     {
       cas: 'le retrait des listes de diffusion',
       compteLu: aEffacer,
-      defaillant: { retirerDesListes: async () => echecTechnique },
+      defaillant: { retirerLeContactDeLaListe: async () => echecTechnique },
+      action: { _tag: 'Effacer' },
+    },
+    {
+      cas: 'la lecture des listes du contact',
+      compteLu: aEffacer,
+      defaillant: { lireLaPresenceDuContact: async () => echecTechnique },
+      action: { _tag: 'Effacer' },
+    },
+    {
+      cas: 'la suppression du contact sorti de toutes les listes',
+      compteLu: aEffacer,
+      defaillant: { supprimerLeContact: async () => echecTechnique },
       action: { _tag: 'Effacer' },
     },
     {

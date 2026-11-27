@@ -1,10 +1,10 @@
 import type {
-  AdresseCourriel,
   CompteASupprimer,
   CourrielHash,
   IdentifiantsRattaches,
   IdentiteAnonyme,
   MediateurId,
+  PortsDuRetraitDuContact,
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
 import type { EchecTechnique, Result } from '@/libraries/result'
@@ -65,10 +65,6 @@ export type RevoquerPartageStatistiques = (
   input: EffacementDatee,
 ) => Promise<Result<{ readonly partagesRevoques: number }, EchecTechnique>>
 
-export type RetirerDesListesDeDiffusion = (
-  courriel: AdresseCourriel,
-) => Promise<Result<boolean, EchecTechnique>>
-
 export type Hash = (seed: string) => CourrielHash
 
 export type LireLeCompteASupprimer = (
@@ -84,7 +80,7 @@ export type CouperLAcces = (input: {
 
 export type JournaliserLEffacement = (compte: CompteSupprime) => void
 
-export type EffacementsDuCompte = {
+export type EffacementsDuCompte = PortsDuRetraitDuContact & {
   readonly anonymiserPortefeuille: AnonymiserPortefeuille
   readonly effacerNotes: EffacerNotes
   readonly effacerEmpreinteRdv: EffacerEmpreinteRdv
@@ -92,7 +88,6 @@ export type EffacementsDuCompte = {
   readonly detacherDesEquipes: DetacherDesEquipes
   readonly retirerDesLieux: RetirerDesLieux
   readonly revoquerPartageStatistiques: RevoquerPartageStatistiques
-  readonly retirerDesListesDeDiffusion: RetirerDesListesDeDiffusion
 }
 
 export type SupprimerComptePorts = EffacementsDuCompte & {

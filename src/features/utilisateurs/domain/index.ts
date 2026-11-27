@@ -15,6 +15,13 @@ export {
   type SituationDansLeDispositif,
   situationDansLeDispositif,
 } from './contact-brevo'
+export type {
+  PresenceDuContact,
+  RetraitDeLaListe,
+  RetraitDuContact,
+  SortDuContact,
+} from './contacts/contact-des-listes'
+export { retirerLeContactDesListes } from './contacts/retrait-du-contact'
 export { Dispositif, dispositifDe, estEnPoste } from './dispositif'
 export {
   CompteSupprime,
@@ -75,11 +82,15 @@ export type {
   EnvoyerLAvisDEffacement,
   EnvoyerLaRelance,
   JournaliserLeChangement,
+  LireLaPresenceDuContact,
   LireLeCompteAReaffecter,
   LireLesComptesARelancer,
   NoterLaRelance,
   PortsDeRelance,
+  PortsDuRetraitDuContact,
+  RetirerLeContactDeLaListe,
   SupprimerLeCompte,
+  SupprimerLeContact,
 } from './ports'
 export {
   aProduit,

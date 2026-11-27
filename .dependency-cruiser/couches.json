@@ -97,8 +97,6 @@
     "maintenance-mode/implementations/prisma",
     "rdvsp/abilities/effacer-empreinte-rdv/implementations/telemetrie",
     "registre-des-personnes/implementations/prisma",
-    "utilisateurs/abilities/fusionner-des-comptes/implementations/brevo",
-    "utilisateurs/abilities/retirer-les-contacts-orphelins/implementations/brevo",
     "utilisateurs/implementations/brevo"
   ],
   "features/authentification/implementations/prisma/account-tokens.mutation.ts": [

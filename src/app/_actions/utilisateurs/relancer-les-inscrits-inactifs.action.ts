@@ -45,7 +45,6 @@ import type {
   EffacementsDuCompte,
 } from '@/features/utilisateurs/abilities/supprimer-compte/domain/ports'
 import { supprimerCompte } from '@/features/utilisateurs/abilities/supprimer-compte/domain/supprimer-compte'
-import { retirerDesListesDeDiffusion } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/brevo/retirer-des-listes-de-diffusion.mutation'
 import { hash } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/crypto/hash.adapter'
 import { compteASupprimer } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/prisma/compte-a-supprimer.query'
 import { couperAcces } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/prisma/couper-acces.mutation'
@@ -54,6 +53,11 @@ import {
   SuppressionRefusee,
   type UtilisateurId,
 } from '@/features/utilisateurs/domain'
+import {
+  retirerLeContactDeLaListe,
+  supprimerLeContact,
+} from '@/features/utilisateurs/implementations/brevo/contact-brevo.mutation'
+import { lireLaPresenceDuContact } from '@/features/utilisateurs/implementations/brevo/contact-brevo.query'
 import { compterLesInscrits } from '@/features/utilisateurs/implementations/prisma/compter-les-inscrits.query'
 import { noterLaRelance } from '@/features/utilisateurs/implementations/prisma/noter-la-relance.mutation'
 import type { SynchroniserLaPersonne } from '@/features/utilisateurs/implementations/prisma/registre-des-personnes.mutation'
@@ -171,7 +175,9 @@ const supprimerComptePorts: EffacementsDuCompte = {
       return { partagesRevoques: revocation.data.partagesRevoques }
     },
   ),
-  retirerDesListesDeDiffusion,
+  retirerLeContactDeLaListe,
+  lireLaPresenceDuContact,
+  supprimerLeContact,
 }
 
 export const relancerLesInscritsInactifsAction = actionBuilder()

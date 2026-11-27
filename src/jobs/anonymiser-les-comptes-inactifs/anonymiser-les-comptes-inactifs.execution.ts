@@ -40,7 +40,6 @@ import type {
   EffacementsDuCompte,
 } from '@/features/utilisateurs/abilities/supprimer-compte/domain/ports'
 import { supprimerCompte } from '@/features/utilisateurs/abilities/supprimer-compte/domain/supprimer-compte'
-import { retirerDesListesDeDiffusion } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/brevo/retirer-des-listes-de-diffusion.mutation'
 import { hash } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/crypto/hash.adapter'
 import { compteASupprimer } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/prisma/compte-a-supprimer.query'
 import { couperAcces } from '@/features/utilisateurs/abilities/supprimer-compte/implementations/prisma/couper-acces.mutation'
@@ -49,6 +48,11 @@ import {
   SuppressionRefusee,
   type UtilisateurId,
 } from '@/features/utilisateurs/domain'
+import {
+  retirerLeContactDeLaListe,
+  supprimerLeContact,
+} from '@/features/utilisateurs/implementations/brevo/contact-brevo.mutation'
+import { lireLaPresenceDuContact } from '@/features/utilisateurs/implementations/brevo/contact-brevo.query'
 import type { SynchroniserLaPersonne } from '@/features/utilisateurs/implementations/prisma/registre-des-personnes.mutation'
 import type { JobExecutor } from '@/jobs/jobs'
 import { output } from '@/jobs/output'
@@ -131,7 +135,9 @@ const supprimerComptePorts: EffacementsDuCompte = {
       return { partagesRevoques: revocation.data.partagesRevoques }
     },
   ),
-  retirerDesListesDeDiffusion,
+  retirerLeContactDeLaListe,
+  lireLaPresenceDuContact,
+  supprimerLeContact,
 }
 
 const supprimerLeCompte = async ({

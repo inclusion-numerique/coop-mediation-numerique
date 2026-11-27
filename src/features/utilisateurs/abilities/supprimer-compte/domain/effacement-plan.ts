@@ -4,6 +4,7 @@ import {
   identifiantsDe,
   type MediateurId,
   mediateurDe,
+  retirerLeContactDesListes,
 } from '@/features/utilisateurs/domain'
 import { type EchecTechnique, type Result, success } from '@/libraries/result'
 import { EffacementStep, type NomEffacementStep } from './effacement-report'
@@ -122,8 +123,10 @@ const retirerDesListes: Planification =
   ({ compte }, ports) =>
   async () =>
     compter(
-      await ports.retirerDesListesDeDiffusion(compte.courriel),
-      (retire) => (retire ? 1 : 0),
+      await retirerLeContactDesListes(ports)({ courriel: compte.courriel }),
+      ({ listeDesUtilisateurs, contact }) =>
+        (listeDesUtilisateurs._tag === 'Retire' ? 1 : 0) +
+        (contact._tag === 'Supprime' ? 1 : 0),
     )
 
 const PLAN_ORDONNE: readonly (readonly [NomEffacementStep, Planification])[] = [

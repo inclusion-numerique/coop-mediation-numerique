@@ -1,9 +1,11 @@
 import { describe, expect, it } from 'vitest'
 import {
   AdresseCourriel,
+  type RetraitDuContact,
   RoleUtilisateur,
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
+import { EchecTechnique, failure, success } from '@/libraries/result'
 import type { CompteAFusionner } from './compte-a-fusionner'
 import type { EchecDeFusionnerDesComptes } from './errors'
 import { fusionnerDesComptes } from './fusionner-des-comptes'
@@ -35,8 +37,16 @@ const fusion = (
       cible: cibleLue,
     }),
     fusionner: async () => undefined,
-    retirerLaSourceDesListes: async () => undefined,
+    retirerLeContactDeLaListe: async () => success({ _tag: 'Retire' }),
+    lireLaPresenceDuContact: async () =>
+      success({ _tag: 'Present', listes: 0 }),
+    supprimerLeContact: async () => success(undefined),
   })
+
+const sourceRetiree: RetraitDuContact = {
+  listeDesUtilisateurs: { _tag: 'Retire' },
+  contact: { _tag: 'Supprime' },
+}
 
 const fusionnerEntre = (
   sourceLue: CompteAFusionner | null,
@@ -47,14 +57,39 @@ describe('fusionner des comptes', () => {
   it('fusionne deux comptes distincts', async () => {
     expect(await fusionnerEntre(source, cible)).toEqual({
       success: true,
-      data: { source, cible },
+      data: { source, cible, retraitDeLaSource: sourceRetiree },
+    })
+  })
+
+  it('fusionne même quand la source ne peut être retirée des listes, et retient l’échec', async () => {
+    expect(
+      await fusionnerDesComptes({
+        lireLesComptesAFusionner: async () => ({ source, cible }),
+        fusionner: async () => undefined,
+        retirerLeContactDeLaListe: async () =>
+          failure(EchecTechnique('Brevo indisponible')),
+        lireLaPresenceDuContact: async () =>
+          success({ _tag: 'Present', listes: 0 }),
+        supprimerLeContact: async () => success(undefined),
+      })({ sourceId: UN, cibleId: DEUX }),
+    ).toEqual({
+      success: true,
+      data: {
+        source,
+        cible,
+        retraitDeLaSource: EchecTechnique('Brevo indisponible'),
+      },
     })
   })
 
   it('accepte une source déjà supprimée', async () => {
     expect(await fusionnerEntre({ ...source, supprime: true }, cible)).toEqual({
       success: true,
-      data: { source: { ...source, supprime: true }, cible },
+      data: {
+        source: { ...source, supprime: true },
+        cible,
+        retraitDeLaSource: sourceRetiree,
+      },
     })
   })
 

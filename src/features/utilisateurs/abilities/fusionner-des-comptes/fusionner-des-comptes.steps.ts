@@ -2,10 +2,14 @@ import assert from 'node:assert'
 import { Given, Then, When } from '@cucumber/cucumber'
 import { prismaClient } from '@/configuration/prisma'
 import { fusionnerDesComptes } from '@/features/utilisateurs/abilities/fusionner-des-comptes/domain/fusionner-des-comptes'
-import { retirerLaSourceDesListes } from '@/features/utilisateurs/abilities/fusionner-des-comptes/implementations/brevo/retirer-la-source-des-listes.mutation'
 import { comptesAFusionner } from '@/features/utilisateurs/abilities/fusionner-des-comptes/implementations/prisma/comptes-a-fusionner.query'
 import { fusionner } from '@/features/utilisateurs/abilities/fusionner-des-comptes/implementations/prisma/fusionner.mutation'
 import { UtilisateurId } from '@/features/utilisateurs/domain'
+import {
+  retirerLeContactDeLaListe,
+  supprimerLeContact,
+} from '@/features/utilisateurs/implementations/brevo/contact-brevo.mutation'
+import { lireLaPresenceDuContact } from '@/features/utilisateurs/implementations/brevo/contact-brevo.query'
 import type { SynchroniserLaPersonne } from '@/features/utilisateurs/implementations/prisma/registre-des-personnes.mutation'
 import {
   type CompteSeme,
@@ -18,7 +22,9 @@ const fusionnerDesComptesAvec = (
   fusionnerDesComptes({
     lireLesComptesAFusionner: comptesAFusionner,
     fusionner: fusionner(synchroniserLaPersonne),
-    retirerLaSourceDesListes,
+    retirerLeContactDeLaListe,
+    lireLaPresenceDuContact,
+    supprimerLeContact,
   })
 
 const fusion: {

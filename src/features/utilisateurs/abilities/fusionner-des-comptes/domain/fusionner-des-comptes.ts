@@ -1,6 +1,9 @@
-import type { UtilisateurId } from '@/features/utilisateurs/domain'
+import {
+  retirerLeContactDesListes,
+  type UtilisateurId,
+} from '@/features/utilisateurs/domain'
 import { failure, type Result, success } from '@/libraries/result'
-import { autoriserFusion, type FusionAutorisee } from './compte-a-fusionner'
+import { autoriserFusion, type FusionEffectuee } from './compte-a-fusionner'
 import {
   CibleIntrouvable,
   type EchecDeFusionnerDesComptes,
@@ -12,7 +15,9 @@ export const fusionnerDesComptes =
   ({
     lireLesComptesAFusionner,
     fusionner,
-    retirerLaSourceDesListes,
+    retirerLeContactDeLaListe,
+    lireLaPresenceDuContact,
+    supprimerLeContact,
   }: FusionnerDesComptesPorts) =>
   async ({
     sourceId,
@@ -20,7 +25,7 @@ export const fusionnerDesComptes =
   }: {
     readonly sourceId: UtilisateurId | null
     readonly cibleId: UtilisateurId | null
-  }): Promise<Result<FusionAutorisee, EchecDeFusionnerDesComptes>> => {
+  }): Promise<Result<FusionEffectuee, EchecDeFusionnerDesComptes>> => {
     if (sourceId === null) return failure(SourceIntrouvable())
     if (cibleId === null) return failure(CibleIntrouvable())
 
@@ -36,7 +41,14 @@ export const fusionnerDesComptes =
     if (!autorisation.success) return autorisation
 
     await fusionner(autorisation.data)
-    await retirerLaSourceDesListes(source.courriel)
+    const retrait = await retirerLeContactDesListes({
+      retirerLeContactDeLaListe,
+      lireLaPresenceDuContact,
+      supprimerLeContact,
+    })({ courriel: source.courriel })
 
-    return success(autorisation.data)
+    return success({
+      ...autorisation.data,
+      retraitDeLaSource: retrait.success ? retrait.data : retrait.error,
+    })
   }

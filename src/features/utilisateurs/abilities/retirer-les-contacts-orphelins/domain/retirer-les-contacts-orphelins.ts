@@ -1,11 +1,14 @@
-import type { AdresseCourriel } from '@/features/utilisateurs/domain'
+import {
+  type AdresseCourriel,
+  type RetraitDuContact,
+  retirerLeContactDesListes,
+} from '@/features/utilisateurs/domain'
 import { type EchecTechnique, type Result, success } from '@/libraries/result'
 import {
   type ContactBrevo,
   comptesRattaches,
   contactsAReconcilier,
   orphelinsParmi,
-  type PresenceDuContact,
 } from './contacts'
 import type { RetirerLesContactsOrphelinsPorts } from './ports'
 
@@ -51,8 +54,21 @@ const appliquer = (
     }
   }, Promise.resolve(AUCUNE_ISSUE))
 
-const estSansListe = (presence: PresenceDuContact): boolean =>
-  presence._tag === 'Present' && presence.listes === 0
+const ISSUE_DU_RETRAIT: Readonly<
+  Record<
+    RetraitDuContact['listeDesUtilisateurs']['_tag'],
+    Readonly<Record<RetraitDuContact['contact']['_tag'], IssueDuContact>>
+  >
+> = {
+  Retire: { Conserve: 'Retire', Supprime: 'RetireEtSupprime' },
+  DejaAbsent: { Conserve: 'Inchange', Supprime: 'Supprime' },
+}
+
+const issueDuRetrait = ({
+  listeDesUtilisateurs,
+  contact,
+}: RetraitDuContact): IssueDuContact =>
+  ISSUE_DU_RETRAIT[listeDesUtilisateurs._tag][contact._tag]
 
 export const retirerLesContactsOrphelins =
   ({
@@ -79,19 +95,17 @@ export const retirerLesContactsOrphelins =
       return suppression.success ? success('Supprime') : suppression
     }
 
+    const retirerDesListes = retirerLeContactDesListes({
+      retirerLeContactDeLaListe,
+      lireLaPresenceDuContact,
+      supprimerLeContact,
+    })
+
     const retirer = async (
       courriel: AdresseCourriel,
     ): Promise<Result<IssueDuContact, EchecTechnique>> => {
-      const retrait = await retirerLeContactDeLaListe(courriel)
-      if (!retrait.success) return retrait
-      if (retrait.data._tag === 'DejaAbsent') return success('Inchange')
-
-      const presence = await lireLaPresenceDuContact(courriel)
-      if (!presence.success) return presence
-      if (!estSansListe(presence.data)) return success('Retire')
-
-      const suppression = await supprimerLeContact(courriel)
-      return suppression.success ? success('RetireEtSupprime') : suppression
+      const retrait = await retirerDesListes({ courriel })
+      return retrait.success ? success(issueDuRetrait(retrait.data)) : retrait
     }
 
     const suppressions = await appliquer(anonymises, supprimer)
@@ -105,7 +119,11 @@ export const retirerLesContactsOrphelins =
           retraits.parIssue.Retire.includes(courriel) ||
           retraits.parIssue.RetireEtSupprime.includes(courriel),
       ),
-      orphelinsSupprimes: retraits.parIssue.RetireEtSupprime,
+      orphelinsSupprimes: orphelins.filter(
+        (courriel) =>
+          retraits.parIssue.RetireEtSupprime.includes(courriel) ||
+          retraits.parIssue.Supprime.includes(courriel),
+      ),
       echecs: [...suppressions.echecs, ...retraits.echecs],
     })
   }

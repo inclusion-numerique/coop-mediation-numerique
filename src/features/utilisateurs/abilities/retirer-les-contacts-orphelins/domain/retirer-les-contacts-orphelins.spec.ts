@@ -114,6 +114,26 @@ describe('retirer les contacts orphelins', () => {
     })
   })
 
+  it('supprime sans le compter comme retiré un orphelin déjà sorti de la liste qui n’est plus dans aucune liste', async () => {
+    expect(
+      await retirerLesContactsOrphelins({
+        ...ports,
+        retirerLeContactDeLaListe: async () => success({ _tag: 'DejaAbsent' }),
+        lireLaPresenceDuContact: async () =>
+          success({ _tag: 'Present', listes: 0 }),
+      })({ contacts }),
+    ).toEqual({
+      success: true,
+      data: {
+        contacts: 5,
+        anonymisesSupprimes: [courrielAnonymise],
+        orphelinsRetires: [],
+        orphelinsSupprimes: [courrielInconnu, courrielParti],
+        echecs: [],
+      },
+    })
+  })
+
   it('ne supprime pas un orphelin retiré que Brevo ne connaît plus', async () => {
     expect(
       await retirerLesContactsOrphelins({

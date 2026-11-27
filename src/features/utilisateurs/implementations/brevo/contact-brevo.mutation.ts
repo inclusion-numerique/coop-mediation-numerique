@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { brevoActif } from '@/configuration/brevo'
 import { signaler } from '@/configuration/telemetry/serveur'
 import {
   cleApiBrevo,
@@ -44,6 +45,7 @@ const sortirDeLaListe = brevoApiThrottle((courriel: string) =>
 )
 
 export const supprimerLeContact: SupprimerLeContact = async (courriel) => {
+  if (!brevoActif()) return success(undefined)
   try {
     await effacerLeContact(courriel)
     return success(undefined)
@@ -57,6 +59,7 @@ export const supprimerLeContact: SupprimerLeContact = async (courriel) => {
 export const retirerLeContactDeLaListe: RetirerLeContactDeLaListe = async (
   courriel,
 ) => {
+  if (!brevoActif()) return success({ _tag: 'DejaAbsent' })
   try {
     await sortirDeLaListe(courriel)
     return success({ _tag: 'Retire' })

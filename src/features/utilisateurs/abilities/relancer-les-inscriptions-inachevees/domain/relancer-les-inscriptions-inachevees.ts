@@ -1,6 +1,7 @@
 import {
   deroulerLesRelances,
   type RelancesDeroulees,
+  retirerLeContactDesListes,
 } from '@/features/utilisateurs/domain'
 import { type Result, success } from '@/libraries/result'
 import type { RelancerLesInscriptionsInacheveesPorts } from './ports'
@@ -12,7 +13,9 @@ export const relancerLesInscriptionsInachevees =
     envoyerLAvertissement,
     envoyerLAvisDEffacement,
     effacerLInscription,
-    retirerDesListes,
+    retirerLeContactDeLaListe,
+    lireLaPresenceDuContact,
+    supprimerLeContact,
     noterLaRelance,
   }: RelancerLesInscriptionsInacheveesPorts) =>
   async ({
@@ -30,7 +33,11 @@ export const relancerLesInscriptionsInachevees =
           )
           if (!effacement.success) return effacement
 
-          const retrait = await retirerDesListes(destinataire.courriel)
+          const retrait = await retirerLeContactDesListes({
+            retirerLeContactDeLaListe,
+            lireLaPresenceDuContact,
+            supprimerLeContact,
+          })({ courriel: destinataire.courriel })
           if (!retrait.success) return retrait
 
           return envoyerLAvisDEffacement(destinataire)

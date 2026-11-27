@@ -1,11 +1,17 @@
 import {
   type AdresseCourriel,
   estRoleProtege,
+  type RetraitDuContact,
   RoleProtege,
   type RoleUtilisateur,
   type UtilisateurId,
 } from '@/features/utilisateurs/domain'
-import { failure, type Result, success } from '@/libraries/result'
+import {
+  type EchecTechnique,
+  failure,
+  type Result,
+  success,
+} from '@/libraries/result'
 import {
   CibleSupprimee,
   type EchecDeFusionnerDesComptes,
@@ -35,4 +41,8 @@ export const autoriserFusion = (
   if (estRoleProtege(cible.role))
     return failure(RoleProtege(cible.id, cible.role))
   return success({ source, cible })
+}
+
+export type FusionEffectuee = FusionAutorisee & {
+  readonly retraitDeLaSource: RetraitDuContact | EchecTechnique
 }
