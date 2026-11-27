@@ -13,7 +13,7 @@ export type TrouverLeRattachementEnCours = (rattachement: {
 
 export type TerminerLeRattachement = (fin: FinDuRattachement) => Promise<void>
 
-export type EnvoyerLeRetraitDuLieu = (retrait: AvisDeRetrait) => Promise<void>
+type EnvoyerLeRetraitDuLieu = (retrait: AvisDeRetrait) => Promise<void>
 
 export type RetirerUnMediateurDuLieuPorts = {
   readonly trouverLeRattachementEnCours: TrouverLeRattachementEnCours

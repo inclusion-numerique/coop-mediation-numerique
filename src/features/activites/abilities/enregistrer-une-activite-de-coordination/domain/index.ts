@@ -2,10 +2,7 @@ export { enregistrerUneActiviteDeCoordination } from './enregistrer-une-activite
 export type { EchecDEnregistrerUneActiviteDeCoordination } from './errors'
 export type {
   ActiviteDeCoordinationDuCoordinateur,
-  ActiviteDeCoordinationExistante,
   EcrireLActiviteDeCoordination,
-  EnregistrerUneActiviteDeCoordinationPorts,
-  NouvelIdentifiantDeCoordination,
 } from './ports'
 export type {
   EcritureDeCoordination,

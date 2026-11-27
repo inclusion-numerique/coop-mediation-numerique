@@ -2,7 +2,7 @@ import { z } from 'zod'
 import { defineModel, type Model } from '@/libraries/model'
 import type { EchecTechnique } from '@/libraries/result'
 
-export const effacementSteps = [
+const effacementSteps = [
   'PortefeuilleBeneficiaires',
   'NotesAccompagnements',
   'EmpreinteRdv',

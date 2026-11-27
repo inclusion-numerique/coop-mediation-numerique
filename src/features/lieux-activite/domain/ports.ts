@@ -25,9 +25,7 @@ export type EnregistrerLesSections = (entree: {
   readonly maintenant: Date
 }) => Promise<void>
 
-export type EtatDuLieu =
-  | { readonly _tag: 'Actif' }
-  | { readonly _tag: 'Inactif' }
+type EtatDuLieu = { readonly _tag: 'Actif' } | { readonly _tag: 'Inactif' }
 
 export type LireLEtatDuLieu = (lieuId: LieuId) => Promise<EtatDuLieu | null>
 

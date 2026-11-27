@@ -8,7 +8,7 @@ type Issue =
   | { readonly _tag: 'Fait' }
   | { readonly _tag: 'Echec'; readonly cause: string }
 
-export type IssueDeLExamen = Issue | { readonly _tag: 'Simule' }
+type IssueDeLExamen = Issue | { readonly _tag: 'Simule' }
 
 export type CompteExamine = {
   readonly utilisateurId: UtilisateurId

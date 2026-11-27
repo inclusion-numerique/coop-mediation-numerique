@@ -1,6 +1,6 @@
 import type { Tag, TagId } from '../../../domain'
 
-export type TagsDeLaFusion = {
+type TagsDeLaFusion = {
   readonly sourceId: TagId
   readonly destinationId: TagId
 }

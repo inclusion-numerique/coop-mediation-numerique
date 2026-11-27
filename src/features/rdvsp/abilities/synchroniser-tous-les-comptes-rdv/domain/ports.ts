@@ -3,7 +3,7 @@ import type { CompteRdv } from '../../../domain/compte/compte-rdv'
 import type { UtilisateurCoopId } from '../../../domain/identifiants/utilisateur-coop-id'
 import type { EchecDeLaSynchronisationDuCompte } from './errors'
 
-export type LireLesComptesRdv = () => Promise<readonly CompteRdv[]>
+type LireLesComptesRdv = () => Promise<readonly CompteRdv[]>
 
 export type DeclencherLaSynchronisation = (declenchement: {
   readonly demandeur: {

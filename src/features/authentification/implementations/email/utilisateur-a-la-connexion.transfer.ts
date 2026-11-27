@@ -14,7 +14,5 @@ const UtilisateurALaConnexion = z.object({
   siret: facultatif,
 })
 
-export type UtilisateurALaConnexion = z.output<typeof UtilisateurALaConnexion>
-
 export const lireLUtilisateurALaConnexion = (utilisateur: unknown) =>
   UtilisateurALaConnexion.safeParse(utilisateur)

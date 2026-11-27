@@ -7,7 +7,7 @@ export type StructuresLues<Structure> = {
   readonly total: number
 }
 
-export type LireLAnnuaireDesEntreprises<Etablissement> = (
+type LireLAnnuaireDesEntreprises<Etablissement> = (
   recherche: string,
 ) => Promise<Result<StructuresLues<Etablissement>, AnnuaireIndisponible>>
 

@@ -6,7 +6,7 @@ import type {
   TypeDActiviteDeCoordination,
 } from '../../../domain'
 
-export type ActiviteDeCoordinationExistante = {
+type ActiviteDeCoordinationExistante = {
   readonly type: TypeDActiviteDeCoordination
   readonly creation: Date
 }

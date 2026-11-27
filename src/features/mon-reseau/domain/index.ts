@@ -2,7 +2,6 @@ export {
   type Acteur,
   type ActeurAvecCommunes,
   type CoordinateurAvecCommune,
-  type CoordinateurDeLActeur,
   type Mediation,
   type MediationAvecCommunes,
   type ProfilActeur,

@@ -13,11 +13,11 @@ export type AvertirDeLaSuppression = (avertissement: {
   readonly dateDeSuppression: Date
 }) => Promise<Result<void, EchecTechnique>>
 
-export type LireLesComptesAExaminer = (
+type LireLesComptesAExaminer = (
   maintenant: Date,
 ) => Promise<readonly CompteAExaminer[]>
 
-export type NoterLAvertissement = (
+type NoterLAvertissement = (
   utilisateurId: UtilisateurId,
   avertiLe: Date,
 ) => Promise<Result<void, EchecTechnique>>

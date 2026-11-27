@@ -139,7 +139,6 @@ export { AUTONOMIES, Autonomie } from './mediation/autonomie'
 export {
   creationOuModification,
   type EcritureDeMediation,
-  type EnregistrementDeMediation,
   ecrireLActiviteDeMediation,
   ecritureDe,
   enregistrementDeMediation,
@@ -186,14 +185,10 @@ export { Notes, NotesSaisies, notesDe } from './notes'
 export type {
   ActiviteDeMediationDuMediateur,
   ActiviteDeMediationExistante,
-  ActiviteDeMediationPrecedente,
   CreerLActiviteDeMediation,
   EmployeuseALaDate,
   EmployeuseDeLaDate,
-  LieuUtilisable,
-  MarquerLeRendezVousHonore,
   ModifierLActiviteDeMediation,
-  NouvelIdentifiantDActivite,
   RendezVousDejaSaisi,
   RendezVousDUnAutreMediateur,
   SaisieDeMediationPorts,

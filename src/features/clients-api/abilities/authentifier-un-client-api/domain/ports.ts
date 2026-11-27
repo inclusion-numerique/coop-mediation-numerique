@@ -11,7 +11,7 @@ export type LireLeClientApiAAuthentifier = (
   id: ClientApiId,
 ) => Promise<ClientApiAAuthentifier | null>
 
-export type VerifierUnSecret = (secret: string, secretHash: string) => boolean
+type VerifierUnSecret = (secret: string, secretHash: string) => boolean
 
 export type AuthentifierUnClientApiPorts = {
   readonly lireLeClientApiAAuthentifier: LireLeClientApiAAuthentifier

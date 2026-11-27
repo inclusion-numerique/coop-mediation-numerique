@@ -47,20 +47,20 @@ export type EmployeusesNommees = (demande: {
   readonly ids: readonly EmployeuseId[]
 }) => Promise<readonly EmployeuseDesActivites[]>
 
-export type LieuxNommes = (perimetre: {
+type LieuxNommes = (perimetre: {
   readonly mediateurs: readonly MediateurId[]
   readonly mediateurId: MediateurId | null
   readonly coordinateurId: CoordinateurId | null
 }) => Promise<readonly LieuNomme[]>
 
-export type CommunesEtDepartements = (perimetre: {
+type CommunesEtDepartements = (perimetre: {
   readonly mediateurIds: readonly MediateurId[]
 }) => Promise<{
   readonly communes: readonly CommuneNommee[]
   readonly departements: readonly DepartementNomme[]
 }>
 
-export type BeneficiairesNommes = (demande: {
+type BeneficiairesNommes = (demande: {
   readonly mediateurId: MediateurId
   readonly ids: readonly BeneficiaireId[]
 }) => Promise<readonly BeneficiaireNomme[]>

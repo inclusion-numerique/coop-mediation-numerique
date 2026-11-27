@@ -18,9 +18,9 @@ export type AccepterLesInvitations<Acceptation, Echec> = (entree: {
   readonly maintenant: Date
 }) => Promise<Result<Acceptation, Echec>>
 
-export type SignalerLEchec<Echec> = (echec: Echec) => void
+type SignalerLEchec<Echec> = (echec: Echec) => void
 
-export type InscrireALaListeDeDiffusion<Inscription> = (entree: {
+type InscrireALaListeDeDiffusion<Inscription> = (entree: {
   readonly utilisateurId: UtilisateurId
 }) => Promise<Result<Inscription, never>>
 

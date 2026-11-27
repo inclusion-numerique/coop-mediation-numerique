@@ -6,7 +6,7 @@ export type LireLInscritARecapituler = (
   utilisateurId: UtilisateurId,
 ) => Promise<InscritARecapituler>
 
-export type ListerLesLieux<Lieu> = (critere: {
+type ListerLesLieux<Lieu> = (critere: {
   readonly mediateurId: MediateurId
 }) => Promise<readonly Lieu[]>
 

@@ -15,21 +15,13 @@ export {
   type SituationDansLeDispositif,
   situationDansLeDispositif,
 } from './contact-brevo'
-export type {
-  PresenceDuContact,
-  RetraitDeLaListe,
-  RetraitDuContact,
-  SortDuContact,
-} from './contacts/contact-des-listes'
+export type { RetraitDuContact } from './contacts/contact-des-listes'
 export { retirerLeContactDesListes } from './contacts/retrait-du-contact'
 export { Dispositif, dispositifDe, estEnPoste } from './dispositif'
 export {
   CibleIntrouvable,
-  CompteSupprime,
-  type EchecDeRelance,
   type EchecDuChangementDeRoles,
   EffacementRefuse,
-  RoleNonVierge,
   RoleProtege,
   SourceIntrouvable,
   SuppressionRefusee,
@@ -83,7 +75,6 @@ export { NomEmployeuse } from './nom-employeuse'
 export { OrigineCompte } from './origine-compte'
 export type {
   AppliquerLePlan,
-  EffacerLeDestinataire,
   EnvoyerLAvertissement,
   EnvoyerLAvisDEffacement,
   EnvoyerLaRelance,
@@ -92,7 +83,6 @@ export type {
   LireLeCompteAReaffecter,
   LireLesComptesARelancer,
   NoterLaRelance,
-  PortsDeRelance,
   PortsDuRetraitDuContact,
   RetirerLeContactDeLaListe,
   SupprimerLeCompte,
@@ -103,8 +93,6 @@ export {
   coordinateurEstVierge,
   mediateurEstVierge,
   type Production,
-  type ProductionCoordinateur,
-  type ProductionMediateur,
 } from './production'
 export {
   coordinateurDe,
@@ -125,7 +113,6 @@ export type {
   ActionDecidee,
   CompteARelancer,
   DestinataireDeRelance,
-  IssueDeRelance,
   ProfilDuDestinataire,
   RapportDeRelance,
   RelancesDeroulees,

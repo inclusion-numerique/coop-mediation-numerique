@@ -15,13 +15,9 @@ export {
   proprietaireDuPerimetre,
   proprietairesPossibles,
 } from './proprietaire-partage'
-export {
-  type RuptureDuMediateur,
-  ruptureDuMediateur,
-} from './rupture-du-mediateur'
+export { ruptureDuMediateur } from './rupture-du-mediateur'
 export {
   type Contrat,
-  type EtatContrat,
   etatContrat,
   type RuptureEnAttente,
 } from './rupture-en-attente'

@@ -12,7 +12,7 @@ export type LieuConnu = {
   readonly id: LieuId
 }
 
-export type LieuNouveau<Creation> = {
+type LieuNouveau<Creation> = {
   readonly _tag: 'LieuACreer'
   readonly id: LieuId
   readonly creation: Creation

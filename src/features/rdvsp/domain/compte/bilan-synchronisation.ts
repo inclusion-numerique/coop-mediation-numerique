@@ -5,8 +5,6 @@ export type BilanModele = {
   readonly deleted: number
 }
 
-export type OperationSynchronisation = keyof BilanModele
-
 export const bilanVide: BilanModele = {
   noop: 0,
   created: 0,

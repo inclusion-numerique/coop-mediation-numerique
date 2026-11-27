@@ -1,5 +1,4 @@
-export type { EchecDeFusionnerDesLieux } from './errors'
 export type { FicheFusionnable } from './fiche-fusionnable'
 export type { FusionDeLieux } from './fusion-de-lieux'
 export { fusionnerDesLieux } from './fusionner-des-lieux'
-export type { FichesAFusionner, FusionnerLesLieux } from './ports'
+export type { FichesAFusionner } from './ports'

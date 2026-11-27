@@ -20,7 +20,7 @@ export type GarantieDuRoleCoordinateur =
   | { readonly _tag: 'HorsDuDispositif' }
   | { readonly _tag: 'RoleCree' }
 
-export type GarantirLeRoleCoordinateur = (entree: {
+type GarantirLeRoleCoordinateur = (entree: {
   readonly utilisateurId: UtilisateurId
 }) => Promise<Result<GarantieDuRoleCoordinateur, never>>
 

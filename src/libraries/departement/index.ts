@@ -1,7 +1,6 @@
 export {
   DEPARTEMENT_PAR_DEFAUT,
   type Departement,
-  DepartementInconnu,
   departementConnu,
   departementDuCode,
   departementsDesCodesInsee,

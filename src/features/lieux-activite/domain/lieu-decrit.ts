@@ -13,7 +13,7 @@ type Localite = {
   readonly codeInsee: CodeInsee
 }
 
-export type AdresseGeocodeeDuLieu = Localite & {
+type AdresseGeocodeeDuLieu = Localite & {
   readonly _tag: 'AdresseGeocodee'
   readonly voie: string
   readonly banId: BanId
@@ -21,7 +21,7 @@ export type AdresseGeocodeeDuLieu = Localite & {
   readonly longitude: number
 }
 
-export type AdresseDeclareeDuLieu = Localite & {
+type AdresseDeclareeDuLieu = Localite & {
   readonly _tag: 'AdresseDeclaree'
   readonly voie: string | null
 }

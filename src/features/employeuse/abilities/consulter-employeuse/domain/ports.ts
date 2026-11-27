@@ -2,7 +2,7 @@ import type { Employeuse } from '../../../domain/employeuse'
 import type { EmployeuseId } from '../../../domain/employeuse-id'
 import type { PersonneEmployee } from './employeuse-consultee'
 
-export type EmployeuseLue = {
+type EmployeuseLue = {
   readonly employeuse: Employeuse
   readonly affectations: readonly {
     readonly personne: PersonneEmployee | null

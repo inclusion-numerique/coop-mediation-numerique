@@ -47,7 +47,7 @@ const ban = (lieu: SaisieDeLAdresse) =>
         longitude: lieu.longitude,
       }
 
-export const adresseSoumise = (lieu: SaisieDeLAdresse) => {
+const adresseSoumise = (lieu: SaisieDeLAdresse) => {
   const saisie = ban(lieu)
 
   return {

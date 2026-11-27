@@ -4,11 +4,11 @@ import type {
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
 
-export type LireLInscritAInscrire = (
+type LireLInscritAInscrire = (
   utilisateurId: UtilisateurId,
 ) => Promise<InscritDeLaListe | null>
 
-export type ImporterLeContact = (contact: ContactAImporter) => Promise<void>
+type ImporterLeContact = (contact: ContactAImporter) => Promise<void>
 
 export type InscrireALaListeDeDiffusionPorts = {
   readonly lireLInscritAInscrire: LireLInscritAInscrire

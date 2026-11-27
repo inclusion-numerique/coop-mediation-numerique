@@ -9,7 +9,7 @@ export type EcritureAuRegistre =
 
 export const FicheComplete: EcritureAuRegistre = { _tag: 'FicheComplete' }
 
-export const IdentiteSeule: EcritureAuRegistre = { _tag: 'IdentiteSeule' }
+const IdentiteSeule: EcritureAuRegistre = { _tag: 'IdentiteSeule' }
 
 export const ecritureALaCreation = (
   visibilite: VisibiliteCartographie,

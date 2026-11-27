@@ -18,7 +18,7 @@ export type CompteDuMediateur = (
 
 export type LierUsagerAuBeneficiaire = (liaison: LiaisonUsager) => Promise<void>
 
-export type UrlDossierBeneficiaire = (id: BeneficiaireCibleId) => UrlRetour
+type UrlDossierBeneficiaire = (id: BeneficiaireCibleId) => UrlRetour
 
 export type PrendreRendezVousPorts = {
   readonly beneficiaireADemander: BeneficiaireADemander

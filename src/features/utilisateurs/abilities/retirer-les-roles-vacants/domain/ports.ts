@@ -5,12 +5,12 @@ import type {
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
 
-export type RolesVacants = {
+type RolesVacants = {
   readonly coordinateursVacants: readonly UtilisateurId[]
   readonly mediateursVacants: readonly UtilisateurId[]
 }
 
-export type LireLesRolesVacants = (maintenant: Date) => Promise<RolesVacants>
+type LireLesRolesVacants = (maintenant: Date) => Promise<RolesVacants>
 
 export type RetirerLesRolesVacantsPorts = {
   readonly lireLesRolesVacants: LireLesRolesVacants

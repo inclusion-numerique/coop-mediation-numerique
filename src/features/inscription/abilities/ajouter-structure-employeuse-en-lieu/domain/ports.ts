@@ -34,7 +34,7 @@ export type EmployeuseLue = {
       }
 }
 
-export type ConsulterEmployeuseActuelle = (input: {
+type ConsulterEmployeuseActuelle = (input: {
   readonly userId: UtilisateurId
 }) => Promise<{ readonly employeuse: EmployeuseLue } | null>
 
@@ -89,26 +89,26 @@ export type TraceDeLEmployeuse = {
   readonly structureId: EmployeuseId
 }
 
-export type DestinationDuLieuDecrit<Destination> = (input: {
+type DestinationDuLieuDecrit<Destination> = (input: {
   readonly lieu: LieuDecritGeocode
 }) => Promise<Result<Destination, never>>
 
-export type RattachementAuLieuDecrit =
+type RattachementAuLieuDecrit =
   | { readonly _tag: 'Rattaches' }
   | { readonly _tag: 'LieuDisparu'; readonly lieuId: LieuId }
 
-export type RattacherAuLieuDecrit<Destination> = (input: {
+type RattacherAuLieuDecrit<Destination> = (input: {
   readonly utilisateurId: UtilisateurId
   readonly destination: Destination
   readonly trace: TraceDeLEmployeuse
   readonly maintenant: Date
 }) => Promise<RattachementAuLieuDecrit>
 
-export type LieuCorreleAuLieuDecrit = (input: {
+type LieuCorreleAuLieuDecrit = (input: {
   readonly lieu: LieuDecrit
 }) => Promise<Result<LieuId | null, never>>
 
-export type DetacherDuLieu = (input: {
+type DetacherDuLieu = (input: {
   readonly utilisateurId: UtilisateurId
   readonly lieuId: LieuId
   readonly trace: TraceDeLEmployeuse

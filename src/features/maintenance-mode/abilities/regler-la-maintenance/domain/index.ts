@@ -1,1 +1,1 @@
-export type { DemandeDeReglage, Reglage } from './reglage'
+export type { DemandeDeReglage } from './reglage'

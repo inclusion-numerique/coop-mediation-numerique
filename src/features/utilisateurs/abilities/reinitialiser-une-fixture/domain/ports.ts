@@ -9,7 +9,7 @@ export type LireLeMarquageFixture = (
   utilisateurId: UtilisateurId,
 ) => Promise<MarquageFixture>
 
-export type Reinitialiser<Demonstration> = (
+type Reinitialiser<Demonstration> = (
   utilisateurId: UtilisateurId,
   demonstration: Demonstration,
 ) => Promise<NomAffiche>

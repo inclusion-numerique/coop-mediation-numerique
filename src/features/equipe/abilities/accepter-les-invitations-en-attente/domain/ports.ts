@@ -4,7 +4,7 @@ import type {
   MediateurInvite,
 } from './acceptations-en-attente'
 
-export type MediateurInviteLu = Omit<MediateurInvite, 'email'> & {
+type MediateurInviteLu = Omit<MediateurInvite, 'email'> & {
   readonly email: Courriel | null
 }
 

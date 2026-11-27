@@ -3,7 +3,7 @@ import type {
   UtilisateurId,
 } from '@/features/utilisateurs/domain'
 
-export type InscritsVivantsParmi = (
+type InscritsVivantsParmi = (
   identifiants: readonly UtilisateurId[],
 ) => Promise<ReadonlySet<UtilisateurId>>
 

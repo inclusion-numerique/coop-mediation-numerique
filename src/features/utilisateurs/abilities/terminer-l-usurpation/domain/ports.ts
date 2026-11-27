@@ -1,9 +1,9 @@
 import type { NomAffiche, UtilisateurId } from '@/features/utilisateurs/domain'
 import type { SessionCourante } from './session-courante'
 
-export type LireLaSession = (jeton: string) => Promise<SessionCourante | null>
+type LireLaSession = (jeton: string) => Promise<SessionCourante | null>
 
-export type RendreLaSession = (session: {
+type RendreLaSession = (session: {
   readonly jeton: string
   readonly usurpateurId: UtilisateurId
 }) => Promise<NomAffiche>

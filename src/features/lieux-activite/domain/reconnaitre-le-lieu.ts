@@ -14,7 +14,7 @@ export type LieuxPrevus = {
 
 export const AUCUN_LIEU_PREVU: LieuxPrevus = { crees: [], releves: [] }
 
-export const endroitDe = ({
+const endroitDe = ({
   codeInsee,
   codePostal,
 }: LieuAMaterialiser): Endroit | null =>

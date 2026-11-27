@@ -39,7 +39,7 @@ export type NoterLaRelance = (
   suppressionAnnoncee: Date | null,
 ) => Promise<Result<void, EchecTechnique>>
 
-export type EffacerLeDestinataire = (
+type EffacerLeDestinataire = (
   destinataire: DestinataireDeRelance,
 ) => Promise<Result<void, EchecDeRelance>>
 

@@ -1,4 +1,4 @@
-export type PreparerLExport<Perimetre, Export> = (
+type PreparerLExport<Perimetre, Export> = (
   perimetre: Perimetre,
 ) => Promise<Export>
 

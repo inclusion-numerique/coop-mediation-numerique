@@ -8,7 +8,7 @@ export type LeNomEstPris = (critere: {
   readonly saufClientApiId: ClientApiId | null
 }) => Promise<boolean>
 
-export type SecretGenere = {
+type SecretGenere = {
   readonly secret: string
   readonly secretHash: string
 }

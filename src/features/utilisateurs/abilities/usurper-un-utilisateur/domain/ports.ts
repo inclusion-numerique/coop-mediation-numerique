@@ -1,11 +1,11 @@
 import type { UtilisateurId } from '@/features/utilisateurs/domain'
 import type { CibleUsurpation } from './usurpation'
 
-export type LireLaCible = (
+type LireLaCible = (
   utilisateurId: UtilisateurId,
 ) => Promise<CibleUsurpation | null>
 
-export type OuvrirLUsurpation = (usurpation: {
+type OuvrirLUsurpation = (usurpation: {
   readonly jetonDeSession: string
   readonly cibleId: UtilisateurId
   readonly usurpateurId: UtilisateurId

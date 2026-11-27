@@ -9,7 +9,7 @@ import type {
 } from '@/features/utilisateurs/domain'
 import type { EchecTechnique, Result } from '@/libraries/result'
 
-export type EffacerLInscription = (
+type EffacerLInscription = (
   utilisateurId: UtilisateurId,
 ) => Promise<Result<void, EchecTechnique>>
 

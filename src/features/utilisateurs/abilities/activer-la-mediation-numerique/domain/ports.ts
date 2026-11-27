@@ -11,22 +11,20 @@ export type CompteQuiActive = {
   readonly rattachements: RattachementsDuCompte
 }
 
-export type LireLeCompteQuiActive = (
+type LireLeCompteQuiActive = (
   utilisateurId: UtilisateurId,
 ) => Promise<CompteQuiActive | null>
 
-export type Activer = (activation: {
+type Activer = (activation: {
   readonly utilisateurId: UtilisateurId
   readonly coordinateurId: CoordinateurId
 }) => Promise<void>
 
-export type LireLInscritAInscrire = (
+type LireLInscritAInscrire = (
   utilisateurId: UtilisateurId,
 ) => Promise<InscritDeLaListe | null>
 
-export type InscrireALaListeDeDiffusion = (
-  contact: ContactAImporter,
-) => Promise<void>
+type InscrireALaListeDeDiffusion = (contact: ContactAImporter) => Promise<void>
 
 export type ActiverLaMediationNumeriquePorts = {
   readonly lireLeCompteQuiActive: LireLeCompteQuiActive

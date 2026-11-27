@@ -1,7 +1,4 @@
-export type {
-  ActeursDuDepartement,
-  PageDActeurs,
-} from './acteurs-du-departement'
+export type { PageDActeurs } from './acteurs-du-departement'
 export {
   type CriteresActeurs,
   estFiltre,

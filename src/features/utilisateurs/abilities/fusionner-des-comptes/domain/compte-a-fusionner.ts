@@ -31,7 +31,7 @@ export type EtatDuPartage =
   | { readonly _tag: 'Partage' }
   | { readonly _tag: 'PartageRevoque' }
 
-export type RoleDuCompte = { readonly partage: EtatDuPartage }
+type RoleDuCompte = { readonly partage: EtatDuPartage }
 
 export type CompteAFusionner = {
   readonly id: UtilisateurId
@@ -120,7 +120,7 @@ export const autoriserFusion = (
   })
 }
 
-export type RetraitDeLaSource =
+type RetraitDeLaSource =
   | { readonly _tag: 'Retire'; readonly retrait: RetraitDuContact }
   | { readonly _tag: 'NonRetire'; readonly echec: EchecTechnique }
 

@@ -5,7 +5,7 @@ import {
 } from '@/features/rdvsp/domain/compte/sante-compte'
 import type { UtilisateurCoopId } from '@/features/rdvsp/domain/identifiants/utilisateur-coop-id'
 
-export type CompteEnEchec = {
+type CompteEnEchec = {
   readonly utilisateurId: UtilisateurCoopId
   readonly raison: string
 }

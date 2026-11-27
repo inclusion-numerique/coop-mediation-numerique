@@ -8,7 +8,7 @@ export type FichesAComparer = {
   readonly ficheCoop: Fiche
 }
 
-export type ConsulterLesFichesAComparer = (
+type ConsulterLesFichesAComparer = (
   id: LieuId,
 ) => Promise<FichesAComparer | null>
 

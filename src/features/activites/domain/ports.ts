@@ -30,7 +30,7 @@ export type ActiviteDeMediationDuMediateur = (criteres: {
   readonly mediateurId: MediateurId
 }) => Promise<ActiviteDeMediationExistante | null>
 
-export type NouvelIdentifiantDActivite = () => ActiviteId
+type NouvelIdentifiantDActivite = () => ActiviteId
 
 export type RendezVousDUnAutreMediateur = (criteres: {
   readonly rdvId: RdvId
@@ -60,12 +60,12 @@ export type EmployeuseDeLaDate = (
   date: DateDActivite,
 ) => Promise<EmployeuseALaDate | null>
 
-export type LieuUtilisable = (
+type LieuUtilisable = (
   lieu: LieuActiviteId,
   lieuActuel: LieuActiviteId | null,
 ) => Promise<boolean>
 
-export type MarquerLeRendezVousHonore = (rdvId: RdvId) => Promise<void>
+type MarquerLeRendezVousHonore = (rdvId: RdvId) => Promise<void>
 
 export type TagsUtilisables = (
   tagIds: readonly TagId[],

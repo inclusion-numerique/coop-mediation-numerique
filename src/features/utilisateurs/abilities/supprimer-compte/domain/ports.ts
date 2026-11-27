@@ -10,16 +10,16 @@ import type {
 import type { EchecTechnique, Result } from '@/libraries/result'
 import type { CompteSupprime } from './autoriser-la-suppression'
 
-export type AnonymiserPortefeuille = (input: {
+type AnonymiserPortefeuille = (input: {
   readonly mediateurId: MediateurId
   readonly maintenant: Date
 }) => Promise<Result<{ readonly anonymises: number }, EchecTechnique>>
 
-export type EffacerNotes = (
+type EffacerNotes = (
   input: IdentifiantsRattaches,
 ) => Promise<Result<{ readonly effacees: number }, EchecTechnique>>
 
-export type EffacerEmpreinteRdv = (input: {
+type EffacerEmpreinteRdv = (input: {
   readonly utilisateurId: UtilisateurId
 }) => Promise<
   Result<
@@ -36,7 +36,7 @@ export type EffacementDatee = IdentifiantsRattaches & {
   readonly maintenant: Date
 }
 
-export type RetirerLesTagsDUnCompte = (input: EffacementDatee) => Promise<
+type RetirerLesTagsDUnCompte = (input: EffacementDatee) => Promise<
   Result<
     {
       readonly transferes: number
@@ -46,7 +46,7 @@ export type RetirerLesTagsDUnCompte = (input: EffacementDatee) => Promise<
   >
 >
 
-export type DetacherDesEquipes = (input: EffacementDatee) => Promise<
+type DetacherDesEquipes = (input: EffacementDatee) => Promise<
   Result<
     {
       readonly invitationsSupprimees: number
@@ -56,30 +56,30 @@ export type DetacherDesEquipes = (input: EffacementDatee) => Promise<
   >
 >
 
-export type RetirerDesLieux = (input: {
+type RetirerDesLieux = (input: {
   readonly mediateurId: MediateurId
 }) => Promise<
   Result<{ readonly rattachementsSupprimes: number }, EchecTechnique>
 >
 
-export type RevoquerPartageStatistiques = (
+type RevoquerPartageStatistiques = (
   input: EffacementDatee,
 ) => Promise<Result<{ readonly partagesRevoques: number }, EchecTechnique>>
 
 export type Hash = (seed: string) => CourrielHash
 
-export type LireLeCompteASupprimer = (
+type LireLeCompteASupprimer = (
   utilisateurId: UtilisateurId,
 ) => Promise<CompteASupprimer | null>
 
-export type CouperLAcces = (input: {
+type CouperLAcces = (input: {
   readonly utilisateurId: UtilisateurId
   readonly identite: IdentiteAnonyme
   readonly supprimeLe: Date
   readonly dejaAnonymise: boolean
 }) => Promise<Result<void, EchecTechnique>>
 
-export type JournaliserLEffacement = (compte: CompteSupprime) => void
+type JournaliserLEffacement = (compte: CompteSupprime) => void
 
 export type EffacementsDuCompte = PortsDuRetraitDuContact & {
   readonly anonymiserPortefeuille: AnonymiserPortefeuille

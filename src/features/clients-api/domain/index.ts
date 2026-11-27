@@ -14,5 +14,4 @@ export type {
   ClientApiExiste,
   GenererUnSecret,
   LeNomEstPris,
-  SecretGenere,
 } from './ports'

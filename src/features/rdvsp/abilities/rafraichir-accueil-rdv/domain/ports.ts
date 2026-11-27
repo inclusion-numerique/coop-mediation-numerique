@@ -7,14 +7,14 @@ export type DemandeurDuRafraichissement = {
   readonly role: 'User' | 'Admin'
 }
 
-export type RattraperLesRdvsSansWebhook = (rattrapage: {
+type RattraperLesRdvsSansWebhook = (rattrapage: {
   readonly demandeur: DemandeurDuRafraichissement
   readonly utilisateurId: UtilisateurCoopId
   readonly seulementSansWebhook: true
   readonly maintenant: Date
 }) => Promise<Result<{ readonly derive: number }, EchecDuRattrapage>>
 
-export type ConsulterLAccueil<Widget> = (consultation: {
+type ConsulterLAccueil<Widget> = (consultation: {
   readonly utilisateurId: UtilisateurCoopId
   readonly maintenant: Date
 }) => Promise<Result<{ readonly widget: Widget }, never>>

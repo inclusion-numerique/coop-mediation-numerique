@@ -14,7 +14,7 @@ export type CompteACible = (utilisateurId: UtilisateurCoopId) => Promise<{
   readonly mediateurId: MediateurId | null
 } | null>
 
-export type SynchroniserLeCompte = (synchronisation: {
+type SynchroniserLeCompte = (synchronisation: {
   readonly compte: CompteRdvUtilisable
   readonly mediateurId: MediateurId | null
   readonly portee: PorteeDeSynchronisation
@@ -25,7 +25,7 @@ export type MarquerEchecDeSynchronisation = (
   marquage: MarquageDEchec,
 ) => Promise<void>
 
-export type SignalerLEchec = (erreur: unknown) => void
+type SignalerLEchec = (erreur: unknown) => void
 
 export type DeclencherSynchronisationPorts = {
   readonly compteACible: CompteACible

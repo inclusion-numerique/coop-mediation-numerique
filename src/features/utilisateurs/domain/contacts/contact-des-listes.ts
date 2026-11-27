@@ -6,7 +6,7 @@ export type PresenceDuContact =
   | { readonly _tag: 'Introuvable' }
   | { readonly _tag: 'Present'; readonly listes: number }
 
-export type SortDuContact =
+type SortDuContact =
   | { readonly _tag: 'Supprime' }
   | { readonly _tag: 'Conserve' }
 

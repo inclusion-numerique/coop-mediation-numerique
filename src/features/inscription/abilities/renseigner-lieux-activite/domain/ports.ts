@@ -11,15 +11,15 @@ import type { LieuDesire } from './lieu-soumis'
 import type { RattachementId } from './rattachement-id'
 import type { LieuActiviteExistant } from './reconcilier'
 
-export type LireLieuxActiviteExistants = (
+type LireLieuxActiviteExistants = (
   userId: UtilisateurId,
 ) => Promise<readonly LieuActiviteExistant[]>
 
-export type TrouverStructuresCarto<StructuresCarto> = (
+type TrouverStructuresCarto<StructuresCarto> = (
   cartoIds: readonly IdentifiantCartographie[],
 ) => Promise<StructuresCarto>
 
-export type PlanifierLesRattachements<Adresse, StructuresCarto, Destination> =
+type PlanifierLesRattachements<Adresse, StructuresCarto, Destination> =
   (input: {
     readonly lieux: readonly LieuDesire<Adresse>[]
     readonly structuresCarto: StructuresCarto

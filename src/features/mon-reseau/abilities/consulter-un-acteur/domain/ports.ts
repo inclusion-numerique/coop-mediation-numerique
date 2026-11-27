@@ -8,18 +8,16 @@ import type { StatistiquesSur30Jours } from './fiche-acteur'
 import type { AdhesionLue } from './relation-d-equipe'
 import type { DerniereActivite } from './statut-d-activite-public'
 
-export type ActeurLu = {
+type ActeurLu = {
   readonly acteur: ActeurAvecCommunes
   readonly profilCreeLe: Date
 }
 
 export type LireLActeur = (acteurId: ActeurId) => Promise<ActeurLu | null>
 
-export type LireLaDerniereActivite = (
-  acteurId: ActeurId,
-) => Promise<DerniereActivite>
+type LireLaDerniereActivite = (acteurId: ActeurId) => Promise<DerniereActivite>
 
-export type LireLesStatistiquesSur30Jours = (
+type LireLesStatistiquesSur30Jours = (
   coordinateurId: CoordinateurId,
   mediateurId: MediateurId,
   periode: { readonly du: Date; readonly au: Date },

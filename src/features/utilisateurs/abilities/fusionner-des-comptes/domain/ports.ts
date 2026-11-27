@@ -4,7 +4,7 @@ import type {
 } from '@/features/utilisateurs/domain'
 import type { CompteAFusionner, FusionAutorisee } from './compte-a-fusionner'
 
-export type LireLesComptesAFusionner = (ids: {
+type LireLesComptesAFusionner = (ids: {
   readonly sourceId: UtilisateurId
   readonly cibleId: UtilisateurId
 }) => Promise<{
@@ -12,7 +12,7 @@ export type LireLesComptesAFusionner = (ids: {
   readonly cible: CompteAFusionner | null
 }>
 
-export type Fusionner = (fusion: FusionAutorisee) => Promise<void>
+type Fusionner = (fusion: FusionAutorisee) => Promise<void>
 
 export type FusionnerDesComptesPorts = PortsDuRetraitDuContact & {
   readonly lireLesComptesAFusionner: LireLesComptesAFusionner

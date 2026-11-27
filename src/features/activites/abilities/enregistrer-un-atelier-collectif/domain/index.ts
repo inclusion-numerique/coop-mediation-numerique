@@ -1,9 +1,6 @@
 export { enregistrerUnAtelierCollectif } from './enregistrer-un-atelier-collectif'
 export type { EchecDEnregistrerUnAtelierCollectif } from './errors'
-export type {
-  EnregistrerUnAtelierCollectifPorts,
-  NombreDeSuivisDuMediateur,
-} from './ports'
+export type { NombreDeSuivisDuMediateur } from './ports'
 export type {
   AtelierCollectifEnregistre,
   SaisieCollective,
