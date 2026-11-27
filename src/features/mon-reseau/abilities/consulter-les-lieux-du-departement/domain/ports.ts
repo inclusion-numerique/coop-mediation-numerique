@@ -3,8 +3,8 @@ import type { CommunesDesLieux } from '../../../domain'
 import type { CriteresDesLieux } from './criteres-des-lieux'
 
 export type LieuxDuDepartement<Lieux> = (options: {
-  departementCode: CodeDepartement
-  criteres: CriteresDesLieux
+  readonly departementCode: CodeDepartement
+  readonly criteres: CriteresDesLieux
 }) => Promise<Lieux>
 
 export type ConsulterLesLieuxDuDepartementPorts<Lieux, Communes> = {
