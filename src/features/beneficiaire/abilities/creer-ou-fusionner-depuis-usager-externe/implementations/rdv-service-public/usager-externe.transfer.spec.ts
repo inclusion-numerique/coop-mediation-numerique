@@ -11,6 +11,8 @@ import {
   type DemandeDUsagersExternes,
   demandeNormalisee,
   type UsagerExterneAFusionner,
+  type ValeurInvalideDeRdvsp,
+  valeursInvalidesDeLaDemande,
 } from './usager-externe.transfer'
 
 const maintenant = new Date('2026-06-15T12:00:00.000Z')
@@ -124,5 +126,47 @@ describe('demande de fusion reçue de RDV Service Public', () => {
       mediateurId,
       maintenant,
     })
+  })
+})
+
+describe('valeurs invalides reçues de RDV Service Public', () => {
+  it.each<{
+    cas: string
+    usager: UsagerExterneAFusionner
+    attendu: readonly ValeurInvalideDeRdvsp[]
+  }>([
+    {
+      cas: 'ne relève rien pour un usager sans donnée',
+      usager: usagerSansDonnees,
+      attendu: [],
+    },
+    {
+      cas: 'ne relève pas la date que RDV Service Public donne à défaut',
+      usager: {
+        ...usagerSansDonnees,
+        birthDate: new Date('1900-01-01T12:00:00.000Z'),
+      },
+      attendu: [],
+    },
+    {
+      cas: 'relève chaque champ fourni mais illisible',
+      usager: {
+        ...usagerSansDonnees,
+        nom: '   ',
+        prenom: '   ',
+        email: 'pas-un-courriel',
+        telephone: 'pas-un-numero',
+        birthDate: new Date('2999-05-04T12:00:00.000Z'),
+      },
+      attendu: [
+        { rdvUserId: RdvUserId(42), champ: 'nom' },
+        { rdvUserId: RdvUserId(42), champ: 'prenom' },
+        { rdvUserId: RdvUserId(42), champ: 'telephone' },
+        { rdvUserId: RdvUserId(42), champ: 'email' },
+        { rdvUserId: RdvUserId(42), champ: 'anneeNaissance' },
+      ],
+    },
+  ])('$cas', ({ usager, attendu }) => {
+    expect(valeursInvalidesDeLaDemande(demande(usager))).toEqual(attendu)
   })
 })

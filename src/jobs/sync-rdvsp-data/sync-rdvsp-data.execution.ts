@@ -5,10 +5,8 @@ import { lireLeBeneficiaireLie } from '@/features/beneficiaire/abilities/creer-o
 import { creerLeBeneficiaire } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/creer-le-beneficiaire.mutation'
 import { trouverUnDoublon } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/doublon-de-l-usager.query'
 import { mettreAJourLeBeneficiaire } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/mettre-a-jour-le-beneficiaire.mutation'
-import {
-  type DemandeDUsagersExternes,
-  demandeNormalisee,
-} from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/rdv-service-public/usager-externe.transfer'
+import { demandeSignalee } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/rdv-service-public/demande-signalee.adapter'
+import type { DemandeDUsagersExternes } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/rdv-service-public/usager-externe.transfer'
 import { signalerLesUsagersEcartes } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/telemetrie/usagers-ecartes.adapter'
 import { declencherSynchronisation } from '@/features/rdvsp/abilities/declencher-synchronisation/domain/declencher-synchronisation'
 import { compteACible } from '@/features/rdvsp/abilities/declencher-synchronisation/implementations/prisma/compte-a-cible.query'
@@ -61,9 +59,7 @@ const fusionnerLesUsagers = creerOuFusionnerDepuisUsagerExterne({
 })
 
 const creerOuFusionnerLesUsagers = (demande: DemandeDUsagersExternes) =>
-  fusionnerLesUsagers(demandeNormalisee(demande)).then(
-    signalerLesUsagersEcartes,
-  )
+  fusionnerLesUsagers(demandeSignalee(demande)).then(signalerLesUsagersEcartes)
 
 const declencher = declencherSynchronisation({
   compteACible,

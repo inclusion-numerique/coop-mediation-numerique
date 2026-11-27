@@ -64,3 +64,34 @@ export const demandeNormalisee = ({
   mediateurId,
   maintenant,
 })
+
+export type ValeurInvalideDeRdvsp = {
+  readonly rdvUserId: RdvUserId
+  readonly champ: 'nom' | 'prenom' | 'telephone' | 'email' | 'anneeNaissance'
+}
+
+const anneeFournie = (birthDate: Date | null): boolean =>
+  birthDate !== null &&
+  birthDate.getFullYear() > ANNEE_DE_NAISSANCE_ABSENTE_DE_RDVSP
+
+const valeursInvalidesDeLUsager =
+  (maintenant: Date) =>
+  (usager: UsagerExterneAFusionner): readonly ValeurInvalideDeRdvsp[] => {
+    const normalise = usagerNormalise(maintenant)(usager)
+    const fournis = {
+      nom: Boolean(usager.nom),
+      prenom: Boolean(usager.prenom),
+      telephone: Boolean(usager.telephone),
+      email: Boolean(usager.email),
+      anneeNaissance: anneeFournie(usager.birthDate),
+    }
+    return (['nom', 'prenom', 'telephone', 'email', 'anneeNaissance'] as const)
+      .filter((champ) => fournis[champ] && normalise[champ] === null)
+      .map((champ) => ({ rdvUserId: usager.rdvUserId, champ }))
+  }
+
+export const valeursInvalidesDeLaDemande = ({
+  usagers,
+  maintenant,
+}: DemandeDUsagersExternes): readonly ValeurInvalideDeRdvsp[] =>
+  usagers.flatMap(valeursInvalidesDeLUsager(maintenant))

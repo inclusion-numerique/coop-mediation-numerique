@@ -12,10 +12,8 @@ import { lireLeBeneficiaireLie } from '@/features/beneficiaire/abilities/creer-o
 import { creerLeBeneficiaire } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/creer-le-beneficiaire.mutation'
 import { trouverUnDoublon } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/doublon-de-l-usager.query'
 import { mettreAJourLeBeneficiaire } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/prisma/mettre-a-jour-le-beneficiaire.mutation'
-import {
-  type DemandeDUsagersExternes,
-  demandeNormalisee,
-} from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/rdv-service-public/usager-externe.transfer'
+import { demandeSignalee } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/rdv-service-public/demande-signalee.adapter'
+import type { DemandeDUsagersExternes } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/rdv-service-public/usager-externe.transfer'
 import { signalerLesUsagersEcartes } from '@/features/beneficiaire/abilities/creer-ou-fusionner-depuis-usager-externe/implementations/telemetrie/usagers-ecartes.adapter'
 import { withMaintenance } from '@/features/maintenance-mode/middlewares/with-maintenance'
 import { CREER_ACTIVITE_DEPUIS_RDV_ERRORS } from '@/features/rdvsp/abilities/creer-activite-depuis-rdv/action/creer-activite-depuis-rdv.errors'
@@ -37,9 +35,7 @@ const fusionnerLesUsagers = creerOuFusionnerDepuisUsagerExterne({
 })
 
 const creerOuFusionnerLesUsagers = (demande: DemandeDUsagersExternes) =>
-  fusionnerLesUsagers(demandeNormalisee(demande)).then(
-    signalerLesUsagersEcartes,
-  )
+  fusionnerLesUsagers(demandeSignalee(demande)).then(signalerLesUsagersEcartes)
 
 const creerUneActiviteDepuisUnRdv = creerActiviteDepuisRdv({
   lireRdv: lireRdvPourActivite,
