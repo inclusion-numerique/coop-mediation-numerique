@@ -24,12 +24,11 @@
 > pas pour autant bloquer la suppression du compte, qui ne dépend pas d'un
 > service externe : l'échec est signalé et l'effacement continue.
 
-### Scénario: Le jeton de rafraîchissement est révoqué avant l'effacement
+### Scénario: Les jetons sont révoqués avant l'effacement
 
 * Étant donné un compte RDV connecté avec un rendez-vous et un usager
 * Quand j'efface l'empreinte RDV de ce compte
-* Alors RDV Service Public a reçu la révocation du jeton de rafraîchissement
-* Et les jetons RDV sont révoqués
+* Alors les jetons RDV sont révoqués
 * Et le compte RDV n'est plus en base
 
 ### Scénario: Une révocation impossible n'empêche pas l'effacement

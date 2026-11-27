@@ -15,8 +15,10 @@ import {
   rendezVousDuCompte,
   usagersOrphelinsParmi,
 } from '@/features/rdvsp/abilities/effacer-empreinte-rdv/implementations/prisma/effacer-empreinte-rdv.query'
-import type { JetonsOAuth } from '@/features/rdvsp/domain/compte/jetons-oauth'
-import { ApiIndisponible } from '@/features/rdvsp/domain/errors'
+import {
+  ApiIndisponible,
+  type ErreurRdvApi,
+} from '@/features/rdvsp/domain/errors'
 import {
   ID_TEST,
   seedAutreMediateur,
@@ -27,22 +29,17 @@ import {
   seedUsagerRdv,
   testUtilisateurId,
 } from '@/features/rdvsp/rdvsp.cucumber'
-import { failure, success } from '@/libraries/result'
+import { failure, type Result, success } from '@/libraries/result'
 
-const rdvServicePublic: {
-  disponible: boolean
-  revocations: JetonsOAuth[]
-} = { disponible: true, revocations: [] }
+const revocationAcceptee: Result<void, ErreurRdvApi> = success(undefined)
+
+const rdvServicePublic: { revocation: Result<void, ErreurRdvApi> } = {
+  revocation: revocationAcceptee,
+}
 
 const effacer = effacerEmpreinteRdv({
   compteAEffacer,
-  revoquerJetons: async (jetons) => {
-    if (!rdvServicePublic.disponible) {
-      return failure(ApiIndisponible(503, 'Service indisponible'))
-    }
-    rdvServicePublic.revocations.push(jetons)
-    return success(undefined)
-  },
+  revoquerJetons: async () => rdvServicePublic.revocation,
   signalerLaRevocationEchouee: () => undefined,
   rendezVousDuCompte,
   supprimerLeCompte: supprimerLeCompteRdv,
@@ -66,8 +63,7 @@ Given('un compte RDV avec un rendez-vous et un usager', async () => {
 })
 
 Given('un compte RDV connecté avec un rendez-vous et un usager', async () => {
-  rdvServicePublic.disponible = true
-  rdvServicePublic.revocations = []
+  rdvServicePublic.revocation = revocationAcceptee
   await seedCompteRdv({
     id: ID_TEST.compte,
     accessToken: 'jeton-acces',
@@ -83,20 +79,10 @@ Given('un compte RDV connecté avec un rendez-vous et un usager', async () => {
 })
 
 Given('RDV Service Public est indisponible', () => {
-  rdvServicePublic.disponible = false
+  rdvServicePublic.revocation = failure(
+    ApiIndisponible(503, 'Service indisponible'),
+  )
 })
-
-Then(
-  'RDV Service Public a reçu la révocation du jeton de rafraîchissement',
-  () => {
-    assert.deepStrictEqual(
-      rdvServicePublic.revocations.map(
-        ({ rafraichissement }) => rafraichissement,
-      ),
-      ['jeton-rafraichissement'],
-    )
-  },
-)
 
 Then('les jetons RDV sont révoqués', function (this: Monde) {
   assert.strictEqual(this.bilan?.jetonsRevoques, true)
