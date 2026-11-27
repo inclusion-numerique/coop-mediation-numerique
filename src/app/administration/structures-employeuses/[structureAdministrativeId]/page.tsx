@@ -19,8 +19,6 @@ const Page = async (props: {
   await authenticateAdmin()
   const { structureAdministrativeId } = await props.params
 
-  // Le segment de route porte l'identifiant `main` (entier) : tout le reste ne
-  // désigne aucune employeuse.
   const employeuseId = EmployeuseId.safe(Number(structureAdministrativeId))
   if (!employeuseId) return notFound()
 

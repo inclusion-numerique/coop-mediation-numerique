@@ -22,7 +22,6 @@ export const metadata = {
 const StructureEmployeuseLieuxActivitePageRoute = async () => {
   const user = await authenticateUser()
 
-  // If inscription is already complete (validated with a role profile), redirect to coop
   if (aTermineSonInscription(user)) {
     redirect('/coop')
   }
@@ -31,7 +30,6 @@ const StructureEmployeuseLieuxActivitePageRoute = async () => {
     redirect('/inscription/initialiser')
   }
 
-  // User must have an emploi (structure employeuse)
   const { data: employeuseActuelle } = await consulterEmployeuseActuelle({
     lireLEmploiActuel,
   })({
@@ -40,7 +38,6 @@ const StructureEmployeuseLieuxActivitePageRoute = async () => {
   })
 
   if (!employeuseActuelle) {
-    // No structure employeuse, skip this step
     redirect('/inscription/lieux-activite')
   }
 

@@ -13,9 +13,6 @@ export const metadata = {
 const InscriptionPage = async () => {
   const user = await authenticateUser()
 
-  // L’inscription n’est complète qu’avec un profil de rôle : un compte
-  // « validé » sans profil doit pouvoir reprendre le parcours au lieu de
-  // boucler entre /coop et /connexion
   if (aTermineSonInscription(user)) {
     redirect('/coop')
   }
