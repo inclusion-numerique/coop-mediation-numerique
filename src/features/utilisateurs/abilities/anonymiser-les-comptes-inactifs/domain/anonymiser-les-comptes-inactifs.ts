@@ -4,19 +4,21 @@ import { type CompteAExaminer, derniereActivite } from './compte-a-examiner'
 import { type EtapeInactivite, etapeInactivite } from './etape-inactivite'
 import type { AnonymiserLesComptesInactifsPorts } from './ports'
 
+type Issue =
+  | { readonly _tag: 'Fait' }
+  | { readonly _tag: 'Echec'; readonly cause: string }
+
+export type IssueDeLExamen = Issue | { readonly _tag: 'Simule' }
+
 export type CompteExamine = {
   readonly utilisateurId: UtilisateurId
   readonly etape: EtapeInactivite
-} & (
-  | { readonly issue: 'simule' | 'fait' }
-  | { readonly issue: 'echec'; readonly cause: string }
-)
+  readonly issue: IssueDeLExamen
+}
 
-type Issue =
-  | { readonly issue: 'fait' }
-  | { readonly issue: 'echec'; readonly cause: string }
+const FAIT: Issue = { _tag: 'Fait' }
 
-const FAIT: Issue = { issue: 'fait' }
+const echec = (cause: string): Issue => ({ _tag: 'Echec', cause })
 
 const avertir = async (
   compte: CompteAExaminer,
@@ -32,11 +34,10 @@ const avertir = async (
     prenom: compte.prenom,
     dateDeSuppression,
   })
-  if (!avertissement.success)
-    return { issue: 'echec', cause: avertissement.error.cause }
+  if (!avertissement.success) return echec(avertissement.error.cause)
 
   const note = await noterLAvertissement(compte.id, maintenant)
-  return note.success ? FAIT : { issue: 'echec', cause: note.error.cause }
+  return note.success ? FAIT : echec(note.error.cause)
 }
 
 const supprimer = async (
@@ -48,9 +49,7 @@ const supprimer = async (
     utilisateurId: compte.id,
     maintenant,
   })
-  return suppression.success
-    ? FAIT
-    : { issue: 'echec', cause: suppression.error.motif }
+  return suppression.success ? FAIT : echec(suppression.error.motif)
 }
 
 const agir = (
@@ -78,12 +77,13 @@ const examiner =
       maintenant,
     })
 
-    if (simuler) return { utilisateurId: compte.id, etape, issue: 'simule' }
+    if (simuler)
+      return { utilisateurId: compte.id, etape, issue: { _tag: 'Simule' } }
 
     return {
       utilisateurId: compte.id,
       etape,
-      ...(await agir(compte, etape, maintenant, ports)),
+      issue: await agir(compte, etape, maintenant, ports),
     }
   }
 

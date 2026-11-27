@@ -48,13 +48,15 @@ export const destinataireDe = ({
 
 export type ActionDecidee = Exclude<ActionDeRelance, { readonly _tag: 'Rien' }>
 
+export type IssueDeRelance =
+  | { readonly _tag: 'Fait' }
+  | { readonly _tag: 'Echec'; readonly cause: string }
+
 export type RapportDeRelance = {
   readonly utilisateurId: UtilisateurId
   readonly profil: ProfilDuDestinataire
   readonly action: ActionDecidee
-} & (
-  | { readonly issue: 'fait' }
-  | { readonly issue: 'echec'; readonly cause: string }
-)
+  readonly issue: IssueDeRelance
+}
 
 export type RelancesDeroulees = readonly RapportDeRelance[]

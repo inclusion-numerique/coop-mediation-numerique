@@ -183,7 +183,11 @@ export const executeAnonymiserLesComptesInactifs: JobExecutor<
       .filter((compte) => compte.etape._tag === etape)
       .map((compte) => compte.utilisateurId)
 
-  const echecs = comptes.filter((compte) => compte.issue === 'echec')
+  const echecs = comptes.flatMap(({ utilisateurId, etape, issue }) =>
+    issue._tag === 'Echec'
+      ? [{ utilisateurId, etape: etape._tag, cause: issue.cause }]
+      : [],
+  )
 
   output.log(
     `anonymiser-les-comptes-inactifs: ${comptes.length} comptes examinés, ${echecs.length} échecs${simuler ? ' (simulation)' : ''}`,
@@ -195,10 +199,6 @@ export const executeAnonymiserLesComptesInactifs: JobExecutor<
     avertis: parEtape('aAvertir'),
     supprimes: parEtape('aSupprimer'),
     enAttente: parEtape('enAttente').length,
-    echecs: echecs.map(({ utilisateurId, etape, cause }) => ({
-      utilisateurId,
-      etape: etape._tag,
-      cause,
-    })),
+    echecs,
   }
 }

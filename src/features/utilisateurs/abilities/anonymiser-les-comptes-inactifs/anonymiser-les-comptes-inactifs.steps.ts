@@ -150,7 +150,7 @@ Then('ce compte est signalé comme à avertir', () => {
     ({ utilisateurId }) => utilisateurId === compte().userId,
   )
   assert.deepStrictEqual(
-    { etape: examine?.etape._tag, issue: examine?.issue },
-    { etape: 'aAvertir', issue: 'simule' },
+    { etape: examine?.etape._tag, issue: examine?.issue._tag },
+    { etape: 'aAvertir', issue: 'Simule' },
   )
 })

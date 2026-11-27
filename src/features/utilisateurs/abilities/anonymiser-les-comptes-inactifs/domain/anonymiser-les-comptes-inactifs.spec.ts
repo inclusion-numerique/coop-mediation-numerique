@@ -138,7 +138,7 @@ describe('anonymiser les comptes inactifs', () => {
     },
   ])('en simulation, $cas sans agir', async ({ compteExamine, etape }) => {
     expect(await simuler([compteExamine])).toEqual(
-      success([{ utilisateurId, etape, issue: 'simule' }]),
+      success([{ utilisateurId, etape, issue: { _tag: 'Simule' } }]),
     )
   })
 
@@ -162,12 +162,12 @@ describe('anonymiser les comptes inactifs', () => {
             _tag: 'aAvertir',
             dateDeSuppression: new Date('2026-11-19T01:00:00.000Z'),
           },
-          issue: 'fait',
+          issue: { _tag: 'Fait' },
         },
         {
           utilisateurId: autreUtilisateurId,
           etape: { _tag: 'aSupprimer' },
-          issue: 'fait',
+          issue: { _tag: 'Fait' },
         },
       ]),
     )
@@ -183,7 +183,9 @@ describe('anonymiser les comptes inactifs', () => {
         ]),
       ),
     ).toEqual(
-      success([{ utilisateurId, etape: { _tag: 'actif' }, issue: 'fait' }]),
+      success([
+        { utilisateurId, etape: { _tag: 'actif' }, issue: { _tag: 'Fait' } },
+      ]),
     )
   })
 
@@ -204,8 +206,7 @@ describe('anonymiser les comptes inactifs', () => {
             _tag: 'aAvertir',
             dateDeSuppression: new Date('2026-11-19T01:00:00.000Z'),
           },
-          issue: 'echec',
-          cause: 'Brevo indisponible',
+          issue: { _tag: 'Echec', cause: 'Brevo indisponible' },
         },
       ]),
     )
@@ -228,8 +229,7 @@ describe('anonymiser les comptes inactifs', () => {
             _tag: 'aAvertir',
             dateDeSuppression: new Date('2026-11-19T01:00:00.000Z'),
           },
-          issue: 'echec',
-          cause: 'base indisponible',
+          issue: { _tag: 'Echec', cause: 'base indisponible' },
         },
       ]),
     )
@@ -252,8 +252,7 @@ describe('anonymiser les comptes inactifs', () => {
         {
           utilisateurId,
           etape: { _tag: 'aSupprimer' },
-          issue: 'echec',
-          cause: 'RoleProtege',
+          issue: { _tag: 'Echec', cause: 'RoleProtege' },
         },
       ]),
     )
@@ -301,6 +300,6 @@ describe('anonymiser les comptes inactifs', () => {
   ])('$cas', async ({ inscritLe, avertiLe, etape }) => {
     expect(
       await simuler([compte({ inscritLe: new Date(inscritLe), avertiLe })]),
-    ).toEqual(success([{ utilisateurId, etape, issue: 'simule' }]))
+    ).toEqual(success([{ utilisateurId, etape, issue: { _tag: 'Simule' } }]))
   })
 })

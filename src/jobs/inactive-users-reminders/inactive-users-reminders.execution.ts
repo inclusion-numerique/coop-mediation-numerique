@@ -218,12 +218,12 @@ const supprimerComptePorts: EffacementsDuCompte = {
 const resume = (rapports: readonly RapportDeRelance[]) => ({
   traites: rapports.length,
   echecs: rapports.flatMap((rapport) =>
-    rapport.issue === 'echec'
+    rapport.issue._tag === 'Echec'
       ? [
           {
             utilisateurId: rapport.utilisateurId,
             action: rapport.action._tag,
-            cause: rapport.cause,
+            cause: rapport.issue.cause,
           },
         ]
       : [],

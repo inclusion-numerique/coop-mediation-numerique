@@ -58,13 +58,12 @@ const rapporter = async (
   const { utilisateurId, profil } = destinataire
 
   return resultat.success
-    ? { utilisateurId, profil, action, issue: 'fait' }
+    ? { utilisateurId, profil, action, issue: { _tag: 'Fait' } }
     : {
         utilisateurId,
         profil,
         action,
-        issue: 'echec',
-        cause: causeDe(resultat.error),
+        issue: { _tag: 'Echec', cause: causeDe(resultat.error) },
       }
 }
 

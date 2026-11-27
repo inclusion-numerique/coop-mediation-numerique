@@ -121,7 +121,9 @@ describe('relancer les inscriptions inachevées', () => {
     },
   ])('$cas', async ({ compteLu, action }) => {
     expect(await relancer(ports([compteLu]))).toEqual(
-      success([{ utilisateurId, profil: SANS_ROLE, action, issue: 'fait' }]),
+      success([
+        { utilisateurId, profil: SANS_ROLE, action, issue: { _tag: 'Fait' } },
+      ]),
     )
   })
 
@@ -209,8 +211,7 @@ describe('relancer les inscriptions inachevées', () => {
             utilisateurId,
             profil: SANS_ROLE,
             action,
-            issue: 'echec',
-            cause: 'service indisponible',
+            issue: { _tag: 'Echec', cause: 'service indisponible' },
           },
         ]),
       )

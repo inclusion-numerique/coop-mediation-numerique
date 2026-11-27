@@ -103,7 +103,9 @@ describe('relancer les inscrits inactifs', () => {
     },
   ])('$cas', async ({ compteLu, action }) => {
     expect(await relancer(ports([compteLu]))).toEqual(
-      success([{ utilisateurId, profil: MEDIATEUR, action, issue: 'fait' }]),
+      success([
+        { utilisateurId, profil: MEDIATEUR, action, issue: { _tag: 'Fait' } },
+      ]),
     )
   })
 
@@ -128,8 +130,7 @@ describe('relancer les inscrits inactifs', () => {
           utilisateurId,
           profil: MEDIATEUR,
           action: { _tag: 'Effacer' },
-          issue: 'echec',
-          cause: 'RoleProtege',
+          issue: { _tag: 'Echec', cause: 'RoleProtege' },
         },
       ]),
     )
@@ -148,8 +149,7 @@ describe('relancer les inscrits inactifs', () => {
           utilisateurId,
           profil: MEDIATEUR,
           action: { _tag: 'Effacer' },
-          issue: 'echec',
-          cause: 'SMTP indisponible',
+          issue: { _tag: 'Echec', cause: 'SMTP indisponible' },
         },
       ]),
     )
@@ -186,7 +186,7 @@ describe('relancer les inscrits inactifs', () => {
           utilisateurId,
           profil: MEDIATEUR,
           action: { _tag: 'Relancer', palier },
-          issue: 'fait',
+          issue: { _tag: 'Fait' },
         },
       ]),
     )
@@ -211,7 +211,7 @@ describe('relancer les inscrits inactifs', () => {
           utilisateurId,
           profil: { _tag: 'MediateurEtCoordinateur' },
           action: { _tag: 'Relancer', palier: 7 },
-          issue: 'fait',
+          issue: { _tag: 'Fait' },
         },
       ]),
     )
