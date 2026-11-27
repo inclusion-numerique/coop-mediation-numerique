@@ -35,5 +35,5 @@ export const beneficiaireEnregistreDe = <Ligne extends ColonnesDecodees>(
   telephone: siPresent(ligne.telephone, Telephone),
   email: siPresent(ligne.email, Email),
   anneeNaissance: siPresent(ligne.anneeNaissance, AnneeNaissance(maintenant)),
-  notes: siPresent(ligne.notes, Notes),
+  notes: siPresent(ligne.notes, Notes.safe),
 })

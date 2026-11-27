@@ -64,4 +64,10 @@ describe('bénéficiaire enregistré lu en base', () => {
       commune: 'Évreux',
     })
   })
+
+  it('tient pour absentes des notes vides', () => {
+    expect(
+      beneficiaireEnregistreDe({ ...ligne, notes: '   ' }, maintenant).notes,
+    ).toBeNull()
+  })
 })
