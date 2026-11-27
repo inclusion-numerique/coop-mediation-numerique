@@ -21,12 +21,7 @@ export type {
   NomDeFiltreDeBeneficiaire,
   NomsDesFiltresExportes,
 } from './noms-des-filtres-exportes'
-export {
-  type Demandeur,
-  estUnExportPersonnel,
-  mediateursAutorises,
-  perimetreDeLExport,
-} from './perimetre-de-l-export'
+export type { Demandeur } from './perimetre-de-l-export'
 export type {
   AccompagnementsExportes,
   BeneficiairesNommes,

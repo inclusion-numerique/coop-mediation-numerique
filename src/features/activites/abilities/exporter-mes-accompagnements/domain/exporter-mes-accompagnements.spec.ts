@@ -44,6 +44,12 @@ const coordinateurSeul: Demandeur = {
   equipe: [membre, ancien],
 }
 
+const coordinateurMediateur: Demandeur = {
+  mediateurId: moi,
+  coordinateurId: coordinateur,
+  equipe: [membre, ancien],
+}
+
 const coordinateurSansEquipe: Demandeur = {
   mediateurId: null,
   coordinateurId: coordinateur,
@@ -143,6 +149,12 @@ describe('exporter mes accompagnements', () => {
       demandeur: mediateurSeul,
       importsV1Presents: async () => true,
       attendu: exportDe(sansNom, { personnel: true, source: true }),
+    },
+    {
+      cas: 'l’export d’un médiateur qui coordonne une équipe n’est pas personnel',
+      demandeur: coordinateurMediateur,
+      importsV1Presents: async () => false,
+      attendu: exportDe(sansNom, { personnel: false, source: true }),
     },
     {
       cas: 'affiche toujours la source pour un coordinateur, dont l’export n’est pas personnel',
